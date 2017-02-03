@@ -1,6 +1,5 @@
 # eg.InfiniteGrid
-A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.  
-You can implement a user interface by applying the logical coordinates provided. 
+A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
 
 ## Documentation
 * API Documentation
@@ -13,29 +12,22 @@ The following table shows browsers supported by eg.InfiniteGrid
 
 |Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
 |---|---|---|---|---|---|
-|10+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
+|8+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
 
 
 
 ## Dependency
 eg.InfiniteGrid has the dependencies for the following libraries:
 
-|[eg.Component]()|[Hammer.JS](http://hammerjs.github.io/)|
-|----|----|
-|2.0.0+|2.0.4+|
+|[eg.Component]()|
+|----|
+|2.0.0+|
 
 ## How to Use
 ### 1. Load dependency library before eg.infiniteGrid.js (or eg.infiniteGrid.min.js) load.
 ```html
 <script src="../node_modules/eg.component/dist/eg.component.js"></script>
-<script src="../node_modules/hammerjs/hammer.js"></script>
 ```
-> #### How to supports IE8  
-> The hammerjs supports [IE9+](http://hammerjs.github.io/browser-support/)  
-if you want to use hammer.js in IE8, you should include `hammerjs-compatible` before using  
-For more information about hammerjs-compatible, please check following link.  
-[https://github.com/naver/hammerjs-compatible](https://github.com/naver/hammerjs-compatible)
-
 
 ### 2. Load eg.infiniteGrid.js
 ```html
@@ -45,24 +37,34 @@ For more information about hammerjs-compatible, please check following link.
 ### 3. Make a target element
 ```html
 <!-- Target DOM -->
-<div id="area">
+<ul id="grid">
+    <li class="card">
+        <div>test1</div>
+    </li>
+    <li class="card">
+        <div>test2</div>
+    </li>
+    <li class="card">
+        <div>test3</div>
+    </li>
+    <li class="card">
+        <div>test4</div>
+    </li>
+    <li class="card">
+        <div>test5</div>
+    </li>
+    <li class="card">
+        <div>test6</div>
+    </li>
+</ul>
 ```
 
 ### 4. Use eg.InfiniteGrid
 ```javascript
 // create MovableCoord with option
 var instance = new eg.InfiniteGrid("#area", {
-  max : [ 300, 400 ]
+  itemSelector: "card"
 });
-
-// call bind method
-instance.bind(el, {
-  direction : eg.InfiniteGrid.DIRECTION_ALL,
-  scale: [1, 1.5]
-});
-
-// call unbind method
-instance.unbind(el);
 ```
 
 ## Bug Report
