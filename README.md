@@ -62,7 +62,7 @@ eg.InfiniteGrid has the dependencies for the following libraries:
 ### 4. Use eg.InfiniteGrid
 ```javascript
 // create MovableCoord with option
-var instance = new eg.InfiniteGrid("#area", {
+var instance = new eg.InfiniteGrid("#grid", {
   itemSelector: "card"
 });
 ```
