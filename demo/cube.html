@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>demo::eg.InfiniteGrid</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<style>
+#area {
+  position:relative;
+  width:400px; height:400px;
+  -webkit-perspective: 450px;
+  -moz-perspective: 450px;
+  -ms-perspective: 450px;
+  -o-perspective: 450px;
+  perspective: 450px;
+}
+
+#box {
+  position:absolute;
+  left:50%; top:50%;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+.face {
+  position:absolute;
+  width:200px; height:200px;
+  color:#fff; font-size:6em; font-weight:bold;
+  text-align:center; line-height:2.5;
+  -webkit-backface-visibility:hidden;
+  -moz-backface-visibility:hidden;
+  -ms-backface-visibility:hidden;
+  -o-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+</style>
+<script src="../node_modules/eg.component/dist/eg.component.js"></script>
+<script src="../node_modules/hammerjs/hammer.js"></script>
+<script src="../dist/eg.infiniteGrid.js"></script>
+</head>
+<body>
+<div id="area">
+      <div id="box">
+        <div class="face" style="background-color:#f00; -webkit-transform:rotateX(0deg) rotateY(0deg) translate3d(-100px,-100px,100px);">1</div>
+        <div class="face" style="background-color:#0f0; -webkit-transform:rotateY(-90deg) translate3d(0px,-100px,200px);">2</div>
+        <div class="face" style="background-color:#00f; -webkit-transform:rotateY(90deg) translate3d(0px,-100px,0px);">3</div>
+        <div class="face" style="background-color:#f80; -webkit-transform:rotateX(90deg) translate3d(-100px,0px,200px);">4</div>
+        <div class="face" style="background-color:#f0f; -webkit-transform:rotateY(180deg) translate3d(100px,-100px,100px);">5</div>
+        <div class="face" style="background-color:#0ff; -webkit-transform:rotateX(-90deg) translate3d(-100px,00px,0px);">6</div>
+      </div>
+	</div>
+<script src="./js/util.js"></script>
+<script src="./js/cube.js"></script>
+</body>
+</html>

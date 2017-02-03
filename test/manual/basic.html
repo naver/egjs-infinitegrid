@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>demo::eg.InfiniteGrid</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<style>
+#area {
+  position:relative; border:5px solid #444; width:200px; height:300px; color:#aaa; margin:0;
+  box-sizing:content-box; z-index:9;
+}
+
+#dot {
+  position:absolute; background-color:#f00; width:9px; height:9px;
+  left:0; top:0; color:#000; margin:-4px; border-radius:100%;
+}
+
+#hmove {
+  position:relative; border:5px solid #888; background-color:yellowgreen;
+  width:200px; height:80px;
+}
+
+#vmove {
+  position:relative; border:5px solid #888; background-color:skyblue;
+  width:80px; height:300px; left:210px; top:-400px;
+}
+
+.log{border:solid 1px #000;overflow:scroll;-webkit-overflow-scrolling:touch; width:99%;height:300px}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script>
+<script src="../../node_modules/eg.component/dist/eg.component.js"></script>
+<script src="../../node_modules/hammerjs/hammer.js"></script>
+<script src="../../dist/eg.infiniteGrid.js"></script>
+</head>
+<body>
+    <div id="area">
+        <div id="dot"></div>
+    </div>
+    <div id="hmove"></div>
+    <div id="vmove"></div>
+    <button id="clear">LOG CLEAR</button>
+    <textarea id="log" class="log"></textarea>
+<script src="js/basic.js"></script>
+</body>
+</html>

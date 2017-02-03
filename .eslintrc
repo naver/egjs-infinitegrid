@@ -1,0 +1,192 @@
+{
+    // https://github.com/airbnb/javascript
+    // https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb-base
+    "extends": "airbnb-base",
+    "env": {
+        "browser": true,
+        "jquery": true,
+        "node": true,
+        "amd": true
+    },
+    "globals": {
+        "eg": true,
+        "Hammer": true,
+        "JSON": true
+    },
+    "rules": {
+        // override property
+        "newline-after-var": "off",
+        "no-else-return": "off",
+        "no-nested-ternary": "off",
+        "guard-for-in": "off",
+        "no-cond-assign": "off",
+        "wrap-iife": "off",
+        "no-plusplus": "off",
+        "no-tabs": "off",
+        "no-restricted-properties": "off",
+        "no-param-reassign": "off",
+        "no-mixed-operators": "off",
+        "no-bitwise": "off",
+        "default-case": "off",
+        "no-unused-expressions": "off",
+        "class-methods-use-this": "off",
+        "no-unused-vars": [ "error", { "args": "none" } ],
+        "eqeqeq": [ "error",  "always", {"null": "ignore"}],
+        "no-restricted-syntax": ["error", "WithStatement"],
+        "space-before-function-paren": ["error", {
+            "anonymous": "ignore",
+            "named": "ignore",
+            "asyncArrow": "always"
+        }],
+        "func-names": "off",
+        "indent": ["error",
+            "tab",
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "comma-dangle": ["error", {
+            "arrays": "never",
+            "objects": "never",
+            "imports": "never",
+            "exports": "never",
+            "functions": "ignore"
+        }],
+        "arrow-parens": ["error", "as-needed", { "requireForBlockBody": false }], // 확인이 필요.
+        "no-empty": [ "error", { "allowEmptyCatch": true } ],  // 확인이 필요.
+        "consistent-return": "off",
+        "no-continue": "off",
+        "quote-props": "off",
+        "no-lonely-if": "off",
+        "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
+
+
+        // "no-trailing-spaces": ["error", { "skipBlankLines": true }],
+
+        /* ES6 확인해야할것 */
+        // Expected property shorthand. (object-shorthand) 
+        // Use 'const' instead. (prefer-const)
+        
+
+
+        // https://oss.navercorp.com/engineering/coding-convention
+        // http://docs.navercorp.com/coding-convention/js.html
+        // 1.1 메소드 체인
+        "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 2 }],
+        
+        // 2.1 줄의 끝에서 중괄호 시작
+        "brace-style": "error",
+        
+        // 2.2 조건/반복문/제어문에 중괄호 사용
+        "curly": "error",
+        
+        // 3.1 최대 줄 너비는 80
+        "max-len": ["error", {
+            "code": 80,
+            "tabWidth": 1,
+            "ignoreComments": true,
+            "ignoreTrailingComments": true,
+            "ignoreRegExpLiterals": true,
+            "ignoreTemplateLiterals": true,
+            "ignoreStrings": true,
+            "ignoreUrls": true
+        }], 
+        
+        // 3.2 줄 바꿈 
+        "operator-linebreak": ["error", "after"],
+        "comma-style": ["error", "last"],
+        // "comma-style": ["error", "first"],
+        
+        // @todo 3.3. 긴 문자의 경우 줄바꿈시 escape 문자 금지(\)
+        // @todo 3.4. 개행 전에
+        // @todo 4.1. 복수행 주석
+        // @todo 4.2. 한줄 주석
+
+        // 5.1 함수 선언 후 빈줄 사용 지양
+        "padded-blocks": ["error", "never"],
+        
+        // 5.2. 함수 선언 간, 변수 선언 후 빈 줄 사용 준수
+        // "newline-after-var": ["error", "always"],
+        "one-var": ["error", "never"],
+
+        // @todo 5.3. 명령문, 제어문간 빈 줄 사용 준수
+
+        
+        // 6.1 오브젝트 리터럴은 키와 값을 한 쌍으로 새 줄을 삽입한다.
+        "object-property-newline": "error",
+
+        // @todo 6.2. else if, else, catch, finally, do 문 새 줄 사용 지양
+        // @todo 6.3. 한 줄 명령문 새 줄 사용 준수
+        // @todo 6.4. 함수의 빈 블록, 빈 몸체 새 줄 사용 준수(for, do..)
+        // @todo 6.5. 파라미터, 닫는 괄호간 새 줄 사용 지양
+
+        // @todo 7.1. 공백은 탭을 사용한다.
+        
+        // 7.2 중괄호({})의 앞에 공백을 하나 넣는다.
+        "space-before-blocks": "error",
+        
+        // 7.3. 단항 연산자(!, ++..)와 피연산자 사이에 공백을 두지 않는다.
+        "space-unary-ops": ["error", {
+            "nonwords": false
+        }],
+        
+        // 7.4. 산술 연산자, 비교 연산자 앞,뒤에 공백을 추가한다.
+        "space-infix-ops": "error",
+        
+        // 7.5 종료 구분자(;) 앞에는 공백 사용 지양.
+        "semi-spacing": ["error", {
+            "before": false, "after": true
+        }],
+        
+        // 7.6. 콤마(,)은 뒤에 공백을 삽입한다.
+        "comma-spacing": ["error", { 
+            "before": false, "after": true 
+        }],
+        
+        // 7.7. 콜론(:)을 사용하는 경우에는 반드시 뒤에 공백을 삽입한다. 
+        "key-spacing": ["error", { 
+            "afterColon": true 
+        }],
+        
+        // 7.8. 괄호 안에 공백을 삽입하지 않는다.(disallowSpacesInsideArrayBrackets, disallowSpacesInsideObjectBrackets, disallowSpacesInsideParentheses)
+        "array-bracket-spacing": [ "error", "never"],
+        "object-curly-spacing": [ "error", "never"],
+
+        // 7.9. 특정 키워드의 경우 뒤에 공백을 삽입한다. 
+        "keyword-spacing": ["error", { 
+            "before": true,
+            "after": true
+        }],
+
+        // @todo 8.1.1. 영문 사용
+        // @todo 8.1.2. 한글 발음 사용 금지
+        // @todo 8.1.3. 특수 문자 사용 금지
+        // @todo 8.1.4. 네임스페이스, 오브젝트, 함수, 그리고 인스턴스로는 Upper camel case(Pascal case)를 사용한다.
+        // @todo 8.2.1. 소문자 사용 준수
+        // @todo 8.3.1. 클래스. 명사 사용 준수
+        // @todo 8.3.2. Class와 생성자에는 Upper camel case(Pascal case)를 사용한다.
+        // @todo 8.4.1. 메소드. 동사 사용 준수
+        // @todo 8.4.2. 외부에서 접근할 수 있는 경우, 사용하면 안되는 메서드는 _을 사용한다.
+        // @todo 8.4.3. 외부에서 접근할 수 없다면, 메서드에 _을 사용하지 않는다.
+        // @todo 8.5.1. 변수. 명사 사용 준수
+        // @todo 8.5.2. this의 참조를 저장할 때 self 를 사용한다. 깊이가 깊은 경우 적절하게 작명하지만 가능하면 $.proxy, bind을 사용한다.
+        // @todo 8.5.3. jQuery레퍼런스의 경우 $을 접미사로 일반적인 변수명에 준하여 작성한다.
+        // @todo 8.6.1. 속성. 외부에서 접근할 수 있는 경우, 사용하면 안되는 속성은 _을 사용한다.
+        
+        // @todo 8.6.2. 외부에서 접근할 수 없다면, 변수에 _을 사용하지 않는다.
+        "no-underscore-dangle": "off",
+        // "no-underscore-dangle": ["error", { "allowAfterThis": true, "allowAfterSuper": true }],
+
+        // @todo 8.6.3. 오브젝트에 속성으로 접근할 때는 .(점)을 사용한다.
+        // @todo 8.7.1. 상수. 대문자 사용 준수
+
+        // 9.1. 변수 선언은 상단에 변수당 하나씩 사용한다.
+        "vars-on-top": "error",
+        
+        // 10.1 따옴표는 쌍따옴표를 사용한다. 이스케이프한 경우는 예외로 홑따옴표를 사용할 수 있다.
+        "quotes": ["error", "double", {
+            "avoidEscape": true,
+            "allowTemplateLiterals": true 
+        }]
+    }
+}
