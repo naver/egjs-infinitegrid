@@ -1,5 +1,6 @@
 var webpack = require("webpack");
 var CleanWebpackPlugin = require("clean-webpack-plugin");
+var WriteFilePlugin = require("write-file-webpack-plugin");
 var banner = require("./config/banner");
 var config = require("./config/webpack");
 var path = require("path");
@@ -10,7 +11,7 @@ module.exports = function(env) {
 	if(/pkgd/.test(env.mode)) {
 		config.externals = [];
 	}
-	
+
 	if(!/server/.test(env.mode)) {
 		config.module.rules.push({
 			test: /(\.js)$/,
@@ -50,12 +51,7 @@ module.exports = function(env) {
 			}), new webpack.BannerPlugin(banner.pkgd)
 		);
 	} else {
-		config.plugins.push(
-			new CleanWebpackPlugin(["dist"], {
-				root: path.resolve(__dirname),
-				verbose: true, 
-				dry: false
-			}), new webpack.BannerPlugin(banner.common));
+		config.plugins.push(new WriteFilePlugin());
 	}
 
 	return config;

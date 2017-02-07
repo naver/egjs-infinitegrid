@@ -1,54 +1,52 @@
-/**
- * Copyright (c) NAVER Corp.
- */
-
-var log = document.getElementById("log");
-function addLog(msg) {
-    log.innerHTML = msg + "\n" + log.innerHTML;
-}
-document.getElementById("clear").addEventListener("click", function(e) {
-    log.innerHTML = "";
+var oinst = new eg.InfiniteGrid("#grid", {
+  
 });
+// var HTML = '<li class="item"><div>테스트1</div></li><li class="item"><div>테스트2</div></li><li class="item"><div>테스트3</div></li><li class="item"><div>테스트4</div></li><li class="item"><div>테스트5</div></li><li class="item"><div>테스트6</div></li><li class="item"><div>테스트7</div></li>';
 
-var dot = document.getElementById("dot"),
-  inst = new eg.InfiniteGrid({
-    min : [ 0, 0 ],
-    max : [ 200, 300 ],
-    bounce : 100,
-    deceleration : 0.0024
-  }).on({
-    "hold" : function(evt) {
-      addLog("[Hold] " + evt.pos);
-    },
-    "release" : function(evt) {
-      addLog("[Release] " + evt.destPos);
-    },
-    "animationStart" : function(evt) {
-      addLog("[animationStart ==>]");
-    },
-    "animationEnd" : function(evt) {
-      addLog("[==> animationEnd]");
-    },
-    "change" : function(evt) {
-      var pos = evt.pos;
-      dot.setAttribute("style",
-          "left:"+ (pos[0]) + 'px;' + "top:"+ (pos[1]) + "px"
-        );
-    }
-  });
+// var tmpStatus = {};
 
-inst.bind("#area", {
-  direction : eg.InfiniteGrid.DIRECTION_ALL,
-  scale : [ 0.5, 1],
-  maximumSpeed : 50
-}).
-bind("#hmove", {
-  direction : eg.InfiniteGrid.DIRECTION_HORIZONTAL,
-  maximumSpeed : 50
-}).
-bind("#vmove", {
-  direction : eg.InfiniteGrid.DIRECTION_VERTICAL,
-  maximumSpeed : 50
+document.getElementById("controller").addEventListener("click", function() {
+  // var $el = $(e.target),
+  //   $elements = null;
+  // if ($el.hasClass("append")) {
+  //   $elements = $(HTML);
+  //   $elements.addClass("append").find("div").height(function() {
+  //     var val = parseInt(Math.random() * 100,10);
+  //     return val < 40 ? 40 : val;
+  //   });
+  //   oinst.append($elements );
+  // } else if ($el.hasClass("prepend")) {
+  //   $elements = $(HTML);
+  //   $elements.addClass("prepend").find("div").height(function() {
+  //     var val = parseInt(Math.random() * 100,10);
+  //     return val < 40 ? 40 : val;
+  //   })
+  //   oinst.prepend($elements);
+  // } else if ($el.hasClass("fit")) {
+  //   oinst.fit();
+  // } else if ($el.hasClass("layout")) {
+  //   oinst.layout();
+  // } else if ($el.hasClass("clear")) {
+  //   oinst.clear();
+  // } else if ($el.hasClass("getStatus")) {
+  //   tmpStatus = oinst.getStatus();
+  // } else if ($el.hasClass("setStatus")) {
+  //   oinst.setStatus(tmpStatus);
+  // } else if ($el.hasClass("getTopElement")) {
+  //   var $el = $(oinst.getTopElement());
+  //   $el.animate({
+  //           "fontSize" : "3em"
+  //   }, 1000)
+  //       .animate({
+  //           "fontSize" : "1em"
+  //       });
+  // } else if ($el.hasClass("getBottomElement")) {
+  //   var $el = $(oinst.getBottomElement());
+  //   $el.animate({
+  //           "fontSize" : "3em"
+  //   }, 1000)
+  //       .animate({
+  //           "fontSize" : "1em"
+  //       });
+  // }
 });
-
-// inst.setTo(200,200);

@@ -10,7 +10,7 @@ import ImageLoaded from "./imageloaded";
 */
 
 // jscs:disable validateLineBreaks, maximumLineLength
-const InfiniteGrid = class MovableCoord
+const InfiniteGrid = class InfiniteGrid
 extends Mixin(Component).with(EventHandler) {
 	/**
 	 * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -90,7 +90,9 @@ extends Mixin(Component).with(EventHandler) {
 
 	_refreshViewport() {
 		if (this.view) {
-			this._clientHeight = this.view[this.view === window ? "innerHeight" : "clientHeight"]();
+			// this._clientHeight = this.view[this.view === window ? "innerHeight" : "clientHeight"]();
+			// @todo
+			this._clientHeight = utils.innerHeight(this.view);
 		}
 	}
 
@@ -195,7 +197,7 @@ extends Mixin(Component).with(EventHandler) {
 	_layoutItems(items) {
 		// for performance
 		items.map(v => {
-			v.position = self._getItemLayoutPosition(v);
+			v.position = this._getItemLayoutPosition(v);
 			return v;
 		}).forEach(v => {
 			if (v.el) {
@@ -398,7 +400,7 @@ extends Mixin(Component).with(EventHandler) {
 	}
 
 	_waitResource(items, isRefresh) {
-		const needCheck = ImageLoaded.checkImageLoaded();
+		const needCheck = ImageLoaded.checkImageLoaded(this.el);
 		const self = this;
 		const callback = function() {
 			if (self._isProcessing) {
@@ -533,7 +535,7 @@ extends Mixin(Component).with(EventHandler) {
 
 	_measureColumns() {
 		this.el.style.width = null;
-		this._containerWidth = this.$el.innerWidth();
+		this._containerWidth = utils.innerWidth(this.el);
 		this._columnWidth = this._getColumnWidth() || this._containerWidth;
 		let cols = this._containerWidth / this._columnWidth;
 		const excess = this._columnWidth - this._containerWidth % this._columnWidth;

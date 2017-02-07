@@ -4,8 +4,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "webpack-dev-server --env.mode server",
-    "build": "webpack --env.mode dev --config webpack.config.js",
-    "build:prod": "webpack --env.mode production --config webpack.config.js && webpack --env.mode pkgd --config webpack.config.js",
+    "build": "webpack --env.mode production --config webpack.config.js && webpack --env.mode pkgd --config webpack.config.js",
     "test": "karma start",
     "test:chrome": "karma start --chrome",
     "lint": "eslint src",
@@ -57,6 +56,7 @@
     "sinon": "^1.17.7",
     "string-replace-webpack-plugin": "0.0.5",
     "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.2.0"
+    "webpack-dev-server": "^2.2.0",
+    "write-file-webpack-plugin": "^3.4.2"
   }
 }

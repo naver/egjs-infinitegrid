@@ -2,8 +2,8 @@ import {IS_IE} from "./consts";
 import {addEvent, removeEvent} from "./utils";
 
 const ImageLoaded = {
-	checkImageLoaded() {
-		return Array.from(this.el.querySelectorAll("img"))
+	checkImageLoaded(el) {
+		return Array.from(el.querySelectorAll("img"))
 		.filter(v => {
 			if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
 				return !v.complete;

@@ -9,7 +9,7 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, "../dist"),
 		filename: "[name].js",
-		library:  ["eg", "MovableCoord" ],
+		library:  ["eg", "InfiniteGrid" ],
 		libraryTarget: "umd",
 	},
 	externals: [{
@@ -18,8 +18,7 @@ module.exports = {
 			commonjs2: "eg.component",
 			amd: "eg.component",
 			root: ["eg", "Component"]
-		},
-		"hammerjs": "Hammer"
+		}
 	}],
 	devServer: {
 		publicPath: "/dist/"
