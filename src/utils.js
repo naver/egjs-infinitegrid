@@ -10,6 +10,52 @@ const utils = {
 		} else {
 			return el;
 		}
+	},
+	getElements(el) {
+		if (typeof el === "string") {
+			return Array.from(document.querySelectorAll(el));
+		} else if (window.jQuery && (el instanceof jQuery)) {
+			// if you were using jQuery
+			return el.toArray();
+		} else {
+			Array.isArray(el) ? el : [el];
+		}
+	},
+	addEvent(element, type, handler) {
+		if (element.addEventListener) {
+			element.addEventListener(type, handler, false);
+		} else if (element.attachEvent) {
+			element.attachEvent(`on${type}`, handler);
+		} else {
+			element[`on${type}`] = handler;
+		}
+	},
+	removeEvent(element, type, handler) {
+		if (element.removeEventListener) {
+			element.removeEventListener(type, handler, false);
+		} else if (element.detachEvent) {
+			element.detachEvent(`on${type}`, handler);
+		} else {
+			element[`on${type}`] = null;
+		}
+	},
+	scrollTop() {
+		return document.body.scrollTop || document.documentElement.scrollTop;
+	},
+	innerWidth(el) {
+		// @todo check it!
+		return el.innerWidth;
+	},
+	innerHeight(el) {
+		// @todo check it!
+		return el.innerHeight;
+	},
+	isEmptyObject(obj) {
+		let name;
+		for (name in obj) {
+			return false;
+		}
+		return true;
 	}
 };
 

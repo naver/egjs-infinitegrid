@@ -15,6 +15,8 @@
     },
     "rules": {
         // override property
+        "arrow-body-style": ["error", "as-needed", { "requireReturnForObjectLiteral": true }],
+        "no-confusing-arrow": "off",
         "newline-after-var": "off",
         "no-else-return": "off",
         "no-nested-ternary": "off",
@@ -30,6 +32,8 @@
         "default-case": "off",
         "no-unused-expressions": "off",
         "class-methods-use-this": "off",
+        "no-multi-assign": "off",
+        "no-prototype-builtins": "off",
         "no-unused-vars": [ "error", { "args": "none" } ],
         "eqeqeq": [ "error",  "always", {"null": "ignore"}],
         "no-restricted-syntax": ["error", "WithStatement"],
