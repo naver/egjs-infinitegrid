@@ -1,7 +1,7 @@
 import Component from "eg.component";
 import EventHandler from "./eventHandler";
 import {Mixin, utils} from "./utils";
-import {window, document} from "./browser";
+import {document} from "./browser";
 import ImageLoaded from "./imageloaded";
 
 /**
@@ -9,7 +9,6 @@ import ImageLoaded from "./imageloaded";
 * egjs projects are licensed under the MIT license
 */
 
-// jscs:disable validateLineBreaks, maximumLineLength
 const InfiniteGrid = class InfiniteGrid
 extends Mixin(Component).with(EventHandler) {
 	/**
@@ -60,7 +59,7 @@ extends Mixin(Component).with(EventHandler) {
 		</script>
 	 */
 	constructor(el, options) {
-		super();
+		super(el, options);
 		Object.assign(this.options = {
 			isEqualSize: false,
 			defaultGroupKey: null,
@@ -68,30 +67,24 @@ extends Mixin(Component).with(EventHandler) {
 			threshold: 300
 		}, options);
 
-		// if el is jQuery instance, el should change to HTMLElement.
 		this.el = utils.getElement(el);
 		this.el.style.position = "relative";
 		this._appendCols = this._prependCols = [];
 
-		this.view = window;
 		this._reset();
 		this._refreshViewport();
 		if (this.el.children.length > 0) {
 			this.items = this._itemize(
-				Array.from(this.el.children), this.options.defaultGroupKey, true);
+				Array.from(this.el.children),
+				this.options.defaultGroupKey,
+				true
+			);
 			this.layout(this.items, true);
 		}
-
-		this._onScroll = this._onScroll.bind(this);
-		this._onResize = this._onResize.bind(this);
-		utils.addEvent(this.view, this._onScroll);
-		utils.addEvent(this.view, this._onResize);
 	}
 
 	_refreshViewport() {
 		if (this.view) {
-			// this._clientHeight = this.view[this.view === window ? "innerHeight" : "clientHeight"]();
-			// @todo
 			this._clientHeight = utils.innerHeight(this.view);
 		}
 	}
@@ -182,9 +175,8 @@ extends Mixin(Component).with(EventHandler) {
 	 * @method eg.InfiniteGrid#layout
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
-	layout(items, isRefresh) {
+	layout(items, isRefresh = true) {
 		items = items || this.items;
-		isRefresh = typeof isRefresh === "undefined" ? true : isRefresh;
 		this._isProcessing = true;
 		isRefresh && (items = items.map(v => {
 			v.isAppend = true;
@@ -547,8 +539,7 @@ extends Mixin(Component).with(EventHandler) {
 		this._resetCols(cols || 0);
 	}
 
-	_resetCols(count) {
-		count = typeof count === "undefined" ? 0 : count;
+	_resetCols(count = 0) {
 		const arr = [];
 		while (count--) {
 			arr.push(0);
@@ -559,7 +550,7 @@ extends Mixin(Component).with(EventHandler) {
 
 	_getContainerSize() {
 		return {
-			height: Math.max.apply(...this._appendCols),
+			height: Math.max(...this._appendCols),
 			width: this._containerWidth
 		};
 	}
@@ -677,8 +668,7 @@ extends Mixin(Component).with(EventHandler) {
 	 */
 	destroy() {
 		this.off();
-		utils.removeEvent(this.view, "scroll", this._onScroll);
-		utils.removeEvent(this.view, "resize", this._onResize);
+		this._detatchEvent();
 		this._reset();
 	}
 };

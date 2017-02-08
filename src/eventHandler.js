@@ -1,7 +1,19 @@
 import {IS_IOS} from "./consts";
 import {utils} from "./utils";
+import {window} from "./browser";
 
 export default superclass => class extends superclass {
+	constructor(el, options) {
+		super();
+		this.view = window;
+		this._onScroll = this._onScroll.bind(this);
+		this._onResize = this._onResize.bind(this);
+		this._attachEvent();
+	}
+	_attachEvent() {
+		utils.addEvent(this.view, "scroll", this._onScroll);
+		utils.addEvent(this.view, "resize", this._onResize);
+	}
 	_onScroll() {
 		if (this.isProcessing()) {
 			return;
@@ -82,5 +94,10 @@ export default superclass => class extends superclass {
 			this._resizeTimeout = null;
 			this._prevScrollTop = -1;
 		}, 100);
+	}
+
+	_detachEvent() {
+		utils.removeEvent(this.view, "scroll", this._onScroll);
+		utils.removeEvent(this.view, "resize", this._onResize);
 	}
 };

@@ -1,12 +1,15 @@
 import {window, document} from "./browser";
 
+const SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in window);
+
+
 const utils = {
 	getElement(el) {
 		if (typeof el === "string") {
 			return document.querySelector(el);
-		} else if (window.jQuery && (el instanceof jQuery) && el.length > 0) {
+		} else if (window.jQuery && (el instanceof jQuery)) {
 			// if you were using jQuery
-			return el[0];
+			return el.length > 0 ? el[0] : null;
 		} else {
 			return el;
 		}
@@ -42,61 +45,32 @@ const utils = {
 	scrollTop() {
 		return document.body.scrollTop || document.documentElement.scrollTop;
 	},
+	getSize(el, name, hasBorder = false, hasMargin = false) {
+		if (el === window) {	// WINDOW
+			return el.document.documentElement[`client${name}`];
+		} else if (el.nodeType === 9) {	// DOCUMENT_NODE
+			const doc = el.documentElement;
+			return Math.max(
+				el.body[`scroll${name}`], doc[`scroll${name}`],
+				el.body[`offset${name}`], doc[`offset${name}`],
+				doc[`client${name}`]
+			);
+		} else { // NODE
+			const style = SUPPORT_COMPUTEDSTYLE ?
+				window.getComputedStyle(el) : el.currentStyle;
+			const p1 = name === "Height" ? "Top" : "Left";
+			const p2 = name === "Height" ? "Bottom" : "Right";
+			return parseFloat(style[name.toLowerCase()]) +
+				parseFloat(style[`padding${p1}`]) + parseFloat(style[`padding${p2}`]) +
+				(hasBorder ? parseFloat(style[`border${p1}`]) + parseFloat(style[`border${p2}`]) : 0) +
+				(hasMargin ? parseFloat(style[`margin${p1}`]) + parseFloat(style[`margin${p2}`]) : 0);
+		}
+	},
 	innerWidth(el) {
-		// @todo check it!
-
-
-		// // Create innerHeight, innerWidth, height, width, outerHeight and outerWidth methods
-		// jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
-		// 	jQuery.each( { padding: "inner" + name, content: type, "": "outer" + name },
-		// 		function( defaultExtra, funcName ) {
-
-		// 		// Margin is only for outerHeight, outerWidth
-		// 		jQuery.fn[ funcName ] = function( margin, value ) {
-		// 			var chainable = arguments.length && ( defaultExtra || typeof margin !== "boolean" ),
-		// 				extra = defaultExtra || ( margin === true || value === true ? "margin" : "border" );
-
-		// 			return access( this, function( elem, type, value ) {
-		// 				var doc;
-
-		// 				if ( jQuery.isWindow( elem ) ) {
-
-		// 					// As of 5/8/2012 this will yield incorrect results for Mobile Safari, but there
-		// 					// isn't a whole lot we can do. See pull request at this URL for discussion:
-		// 					// https://github.com/jquery/jquery/pull/764
-		// 					return elem.document.documentElement[ "client" + name ];
-		// 				}
-
-		// 				// Get document width or height
-		// 				if ( elem.nodeType === 9 ) {
-		// 					doc = elem.documentElement;
-
-		// 					// Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height],
-		// 					// whichever is greatest
-		// 					return Math.max(
-		// 						elem.body[ "scroll" + name ], doc[ "scroll" + name ],
-		// 						elem.body[ "offset" + name ], doc[ "offset" + name ],
-		// 						doc[ "client" + name ]
-		// 					);
-		// 				}
-
-		// 				return value === undefined ?
-
-		// 					// Get width or height on the element, requesting but not forcing parseFloat
-		// 					jQuery.css( elem, type, extra ) :
-
-		// 					// Set width or height on the element
-		// 					jQuery.style( elem, type, value, extra );
-		// 			}, type, chainable ? margin : undefined, chainable, null );
-		// 		};
-		// 	} );
-		// } );
-
-		return el.innerWidth;
+		return this.getSize(el, "Width");
 	},
 	innerHeight(el) {
-		// @todo check it!
-		return el.innerHeight;
+		return this.getSize(el, "Height");
 	},
 	isEmptyObject(obj) {
 		let name;
