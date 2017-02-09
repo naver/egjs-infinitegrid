@@ -24,14 +24,14 @@ eg.InfiniteGrid has the dependencies for the following libraries:
 |2.0.0+|
 
 ## How to Use
-### 1. Load dependency library before eg.infiniteGrid.js (or eg.infiniteGrid.min.js) load.
+### 1. Load dependency library before infinitegrid.js (or infinitegrid.min.js) load.
 ```html
-<script src="../node_modules/eg.component/dist/eg.component.js"></script>
+<script src="../node_modules/@egjs/component/dist/component.js"></script>
 ```
 
-### 2. Load eg.infiniteGrid.js
+### 2. Load infinitegrid.js
 ```html
-<script src="../dist/eg.infiniteGrid.js"></script>
+<script src="../dist/infinitegrid.js"></script>
 ```
 
 ### 3. Make a target element
@@ -69,7 +69,7 @@ var instance = new eg.InfiniteGrid("#grid", {
 
 ## Bug Report
 
-If you find a bug, please report it to us using the [Issues](https://github.com/naver/eg.infiniteGrid/issues) page on GitHub.
+If you find a bug, please report it to us using the [Issues](https://github.com/naver/egjs-infinitegrid/issues) page on GitHub.
 
 
 ## License

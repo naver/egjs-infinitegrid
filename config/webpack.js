@@ -4,7 +4,7 @@ var StringReplacePlugin = require("string-replace-webpack-plugin");
 
 module.exports = {
 	entry: {
-		"eg.infiniteGrid": "./src/index.js"
+		"infinitegrid": "./src/index.js"
 	},
 	output: {
 		path: path.resolve(__dirname, "../dist"),

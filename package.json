@@ -1,5 +1,5 @@
 {
-  "name": "eg.infiniteGrid",
+  "name": "@egjs/infinitegrid",
   "version": "2.0.0-beta",
   "main": "src/index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "author": {
     "name": "NAVER corp"
   },
-  "homepage": "https://github.com/naver/eg.infiniteGrid",
+  "homepage": "https://github.com/naver/egjs-infinitegrid",
   "license": "MIT <https://naver.github.io/egjs/license.txt>",
   "dependencies": {
     "eg.component": "github:naver/eg.component",

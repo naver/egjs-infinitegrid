@@ -1,5 +1,5 @@
 {
-	"name": "eg.infiniteGrid",
+	"name": "egjs-infinitegrid",
 	"version": "2.0.0-beta",
 	"license": "MIT",
 	"keywords": [
@@ -13,5 +13,5 @@
 		"bower_components",
 		"node_modules"
 	],
-	"main": "dist/eg.infiniteGrid.js"
+	"main": "dist/infinitegrid.js"
 }
