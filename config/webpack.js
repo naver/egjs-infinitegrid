@@ -20,9 +20,6 @@ module.exports = {
 			root: ["eg", "Component"]
 		}
 	}],
-	devServer: {
-		publicPath: "/dist/"
-	},
 	devtool: "source-map",
 	module: {
 		rules: [
@@ -56,5 +53,5 @@ module.exports = {
             }
 		]
 	},
-	plugins: [ new StringReplacePlugin() ]
+	plugins: [new StringReplacePlugin()]
 };

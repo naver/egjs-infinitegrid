@@ -8,11 +8,10 @@ var path = require("path");
 module.exports = function(env) {
 	env = env || {};
 
-	if(/pkgd/.test(env.mode)) {
-		config.externals = [];
-	}
-
-	if(!/server/.test(env.mode)) {
+	if (env.mode === "production") {
+		for (var p in config.entry) {
+			config.entry[p + ".min"] = config.entry[p];
+		}
 		config.module.rules.push({
 			test: /(\.js)$/,
 			loader: "eslint-loader",
@@ -20,16 +19,10 @@ module.exports = function(env) {
 			exclude: /(node_modules)/,
 			enforce: "pre"
 		});
-	}
-
-	if(env.mode === "production") {
-		for(var p in config.entry) {
-			config.entry[p + ".min"] = config.entry[p];
-		}
 		config.plugins.push(
 			new CleanWebpackPlugin(["dist"], {
 				root: path.resolve(__dirname),
-				verbose: true, 
+				verbose: true,
 				dry: false
 			}),
 			new webpack.optimize.UglifyJsPlugin({
@@ -38,8 +31,8 @@ module.exports = function(env) {
 			}),
 			new webpack.BannerPlugin(banner.common)
 		);
-	} else if(env.mode === "pkgd") {
-		for(var p in config.entry) {
+	} else if (env.mode === "pkgd") {
+		for (var p in config.entry) {
 			config.entry[p + ".pkgd"] = config.entry[p];
 			config.entry[p + ".pkgd.min"] = config.entry[p];
 			delete config.entry[p];
@@ -50,9 +43,12 @@ module.exports = function(env) {
 				minimize: true
 			}), new webpack.BannerPlugin(banner.pkgd)
 		);
-	} else {
+		config.externals = [];
+	} else if (env.mode === "server") {
+		config.devServer = {
+			publicPath: "/dist/"
+		};
 		config.plugins.push(new WriteFilePlugin());
 	}
-
 	return config;
 };
