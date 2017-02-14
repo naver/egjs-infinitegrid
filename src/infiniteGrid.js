@@ -1,4 +1,4 @@
-import Component from "eg.component";
+import Component from "@egjs/component";
 import EventHandler from "./eventHandler";
 import {Mixin, utils} from "./utils";
 import {document} from "./browser";
@@ -97,6 +97,7 @@ extends Mixin(Component).with(EventHandler) {
 	 */
 	getStatus() {
 		const data = {};
+
 		for (const p in this) {
 			if (this.hasOwnProperty(p) && /^_/.test(p) &&
 				typeof this[p] !== "function" && !(this[p] instanceof Element)) {
@@ -108,6 +109,7 @@ extends Mixin(Component).with(EventHandler) {
 			options: Object.assign({}, this.options),
 			items: this.items.map(v => {
 				const clone = Object.assign({}, v);
+
 				delete clone.el;
 				return clone;
 			}),
@@ -194,6 +196,7 @@ extends Mixin(Component).with(EventHandler) {
 		}).forEach(v => {
 			if (v.el) {
 				const style = v.el.style;
+
 				style.left = `${v.position.x}px`;
 				style.top = `${v.position.y}px`;
 			}
@@ -266,6 +269,7 @@ extends Mixin(Component).with(EventHandler) {
 	_getTopItem() {
 		let item = null;
 		let min = Infinity;
+		
 		this._getColItems(false).forEach(v => {
 			if (v && v.position.y < min) {
 				min = v.position.y;

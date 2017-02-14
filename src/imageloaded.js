@@ -21,10 +21,12 @@ const ImageLoaded = {
 			removeEvent(e.target, "error", onCheck);
 			checkCount <= 0 && callback && callback();
 		};
+
 		needCheck.forEach(v => {
 			// for IE
 			if (IS_IE) {
 				const url = v.getAttribute("src");
+
 				v.setAttribute("src", "");
 				v.setAttribute("src", url);
 			}

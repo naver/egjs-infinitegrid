@@ -26,6 +26,7 @@ export default superclass => class extends superclass {
 		}
 		let ele;
 		let rect;
+
 		if (prevScrollTop < scrollTop) {
 			if (utils.isEmptyObject(this._bottomElement)) {
 				this._bottomElement = this.getBottomElement();
@@ -70,6 +71,7 @@ export default superclass => class extends superclass {
 					 * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
 					 */
 					const croppedDistance = this.fit();
+
 					if (croppedDistance > 0) {
 						scrollTop -= croppedDistance;
 						this.view.scrollTo(0, scrollTop);

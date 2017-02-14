@@ -50,6 +50,7 @@ const utils = {
 			return el.document.documentElement[`client${name}`];
 		} else if (el.nodeType === 9) {	// DOCUMENT_NODE
 			const doc = el.documentElement;
+
 			return Math.max(
 				el.body[`scroll${name}`], doc[`scroll${name}`],
 				el.body[`offset${name}`], doc[`offset${name}`],
@@ -60,6 +61,7 @@ const utils = {
 				window.getComputedStyle(el) : el.currentStyle;
 			const p1 = name === "Height" ? "Top" : "Left";
 			const p2 = name === "Height" ? "Bottom" : "Right";
+
 			return parseFloat(style[name.toLowerCase()]) +
 				parseFloat(style[`padding${p1}`]) + parseFloat(style[`padding${p2}`]) +
 				(hasBorder ? parseFloat(style[`border${p1}`]) + parseFloat(style[`border${p2}`]) : 0) +
@@ -74,6 +76,7 @@ const utils = {
 	},
 	isEmptyObject(obj) {
 		let name;
+
 		for (name in obj) {
 			return false;
 		}
