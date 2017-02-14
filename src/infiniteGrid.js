@@ -177,8 +177,9 @@ extends Mixin(Component).with(EventHandler) {
 	 * @method eg.InfiniteGrid#layout
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
-	layout(items, isRefresh = true) {
-		items = items || this.items;
+	layout(itemsParam, isRefresh = true) {
+		let items = itemsParam || this.items;
+
 		this._isProcessing = true;
 		isRefresh && (items = items.map(v => {
 			v.isAppend = true;
@@ -212,12 +213,12 @@ extends Mixin(Component).with(EventHandler) {
 	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
 	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
 	 */
-	append(elements, groupKey) {
-		if (this._isProcessing || elements.length === 0) {
-			return;
+	append(paramElements, groupKey) {
+		if (this._isProcessing || paramElements.length === 0) {
+			return 0;
 		}
+		let elements = utils.getElements(paramElements);
 
-		elements = utils.getElements(elements);
 		elements = elements.filter(v => /DIV|SPAN|LI/.test(v.tagName));
 		this._isProcessing = true;
 		if (!this.isRecycling()) {
@@ -236,13 +237,13 @@ extends Mixin(Component).with(EventHandler) {
 	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
 	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
 	 */
-	prepend(elements, groupKey) {
+	prepend(paramElements, groupKey) {
 		if (!this.isRecycling() || this._removedContent === 0 ||
-			this._isProcessing || elements.length === 0) {
-			return;
+			this._isProcessing || paramElements.length === 0) {
+			return 0;
 		}
+		let elements = utils.getElements(paramElements);
 
-		elements = utils.getElements(elements);
 		elements = elements.filter(v => /DIV|SPAN|LI/.test(v.tagName));
 		this._isProcessing = true;
 		this._fit();
@@ -269,7 +270,7 @@ extends Mixin(Component).with(EventHandler) {
 	_getTopItem() {
 		let item = null;
 		let min = Infinity;
-		
+
 		this._getColItems(false).forEach(v => {
 			if (v && v.position.y < min) {
 				min = v.position.y;
@@ -288,12 +289,14 @@ extends Mixin(Component).with(EventHandler) {
 	 */
 	getTopElement() {
 		const item = this._getTopItem();
+
 		return item && item.el;
 	}
 
 	_getBottomItem() {
 		let item = null;
 		let max = -Infinity;
+
 		this._getColItems(true).forEach(v => {
 			if (v && v.position.y + v.size.height > max) {
 				max = v.position.y + v.size.height;
@@ -312,6 +315,7 @@ extends Mixin(Component).with(EventHandler) {
 	 */
 	getBottomElement() {
 		const item = this._getBottomItem();
+
 		return item && item.el;
 	}
 
@@ -321,6 +325,7 @@ extends Mixin(Component).with(EventHandler) {
 		}
 
 		const size = this._getContainerSize();
+
 		this.el.style.height = `${size.height}px`;
 
 		// refresh element
@@ -329,6 +334,7 @@ extends Mixin(Component).with(EventHandler) {
 
 		let distance = 0;
 		const isAppend = items[0].isAppend;
+
 		if (!isAppend) {
 			this._isFitted = false;
 			this._fit(true);
@@ -370,11 +376,13 @@ extends Mixin(Component).with(EventHandler) {
 		}
 		const cloneElements = elements.concat();
 		const dummy = `${-this._clientHeight}px`;
+
 		elements.forEach(v => {
 			v.style.position = "absolute";
 			v.style.top = dummy;
 		});
 		let items = this._itemize(elements, groupKey, isAppend);
+
 		if (isAppend) {
 			this.items = this.items.concat(items);
 		} else {
@@ -384,6 +392,7 @@ extends Mixin(Component).with(EventHandler) {
 		this.isRecycling() && this._adjustRange(isAppend, cloneElements);
 
 		const docFragment = document.createDocumentFragment();
+
 		cloneElements.forEach(v => {
 			docFragment.appendChild(v);
 		});
@@ -399,6 +408,7 @@ extends Mixin(Component).with(EventHandler) {
 		const needCheck = ImageLoaded.checkImageLoaded(this.el);
 		const self = this;
 		const callback = function() {
+			/* eslint-disable no-underscore-dangle */
 			if (self._isProcessing) {
 				if (isRefresh || !self._appendCols.length) {
 					items.forEach(v => {
@@ -409,7 +419,9 @@ extends Mixin(Component).with(EventHandler) {
 				self._layoutItems(items);
 				self._postLayout(items);
 			}
+			/* eslint-disable no-underscore-dangle */
 		};
+
 		if (needCheck.length > 0) {
 			ImageLoaded.waitImageLoaded(needCheck, callback);
 		} else {
@@ -424,6 +436,7 @@ extends Mixin(Component).with(EventHandler) {
 		const diff = this.items.length - this.options.count;
 		let targets;
 		let idx;
+
 		if (diff <= 0 || (idx = this._getDelimiterIndex(isTop, diff)) < 0) {
 			return;
 		}
@@ -453,6 +466,7 @@ extends Mixin(Component).with(EventHandler) {
 		const baseIdx = isTop ? removeCount - 1 : len - removeCount;
 		const targetIdx = baseIdx + (isTop ? 1 : -1);
 		const groupKey = this.items[baseIdx].groupKey;
+
 		if (groupKey != null && groupKey === this.items[targetIdx].groupKey) {
 			if (isTop) {
 				for (i = baseIdx; i > 0; i--) {
@@ -479,9 +493,7 @@ extends Mixin(Component).with(EventHandler) {
 	_fit(applyDom) {
 		// for caching
 		if (this.options.count <= 0) {
-			this._fit = function() {
-				return false;
-			};
+			this._fit = () => false;
 			this._isFitted = true;
 			return false;
 		}
@@ -490,12 +502,14 @@ extends Mixin(Component).with(EventHandler) {
 			return false;
 		}
 		const y = this._updateCols();	// for prepend
+
 		this.items.forEach(v => {
 			v.position.y -= y;
 			applyDom && (v.el.style.top = `${v.position.y}px`);
 		});
 		this._updateCols(true);	// for append
 		const height = this._getContainerSize().height;
+
 		applyDom && (this.el.style.height = `${height}px`);
 		this._isFitted = true;
 		return true;
@@ -511,6 +525,7 @@ extends Mixin(Component).with(EventHandler) {
 	fit() {
 		const item = this._getTopItem();
 		const distance = item ? item.position.y : 0;
+
 		this._fit(true);
 		return distance;
 	}
@@ -545,7 +560,9 @@ extends Mixin(Component).with(EventHandler) {
 
 	_resetCols(count = 0) {
 		const arr = [];
-		while (count--) {
+		let idx = count;
+
+		while (idx--) {
 			arr.push(0);
 		}
 		this._appendCols = arr.concat();
@@ -562,6 +579,7 @@ extends Mixin(Component).with(EventHandler) {
 	_getColumnWidth() {
 		const el = this.items[0] && this.items[0].el;
 		let width = 0;
+
 		if (el) {
 			width = utils.innerWidth(el);
 			if (this.options.isEqualSize) {
@@ -581,8 +599,9 @@ extends Mixin(Component).with(EventHandler) {
 		let i = 0;
 		let item;
 		const len = col.length;
+
 		for (; i < len; i++) {
-			if (item = items[i]) {
+			if ((item = items[i])) {
 				col[i] = item.position.y + (isAppend ? item.size.height : -base);
 			} else {
 				col[i] = 0;
@@ -606,7 +625,8 @@ extends Mixin(Component).with(EventHandler) {
 		let idx;
 		let count = 0;
 		let i = isTail ? this.items.length - 1 : 0;
-		while (item = this.items[i]) {
+
+		while ((item = this.items[i])) {
 			idx = this._getColIdx(item);
 			if (!colItems[idx]) {
 				colItems[idx] = item;
@@ -620,22 +640,23 @@ extends Mixin(Component).with(EventHandler) {
 	}
 
 	_itemize(elements, groupKey, isAppend) {
-		return elements.map(v => {
-			return {
-				el: v,
-				position: {
-					x: 0,
-					y: 0
-				},
-				isAppend: typeof isAppend === "undefined" ? true : isAppend,
-				groupKey: typeof groupKey === "undefined" ? null : groupKey
-			};
-		});
+		return elements.map(v => ({
+			el: v,
+			position: {
+				x: 0,
+				y: 0
+			},
+			isAppend: typeof isAppend === "undefined" ? true : isAppend,
+			groupKey: typeof groupKey === "undefined" ? null : groupKey
+		}));
 	}
 
 	_getItemLayoutPosition(item) {
 		if (!item.el) {
-			return;
+			return {
+				x: 0,
+				y: 0
+			};
 		}
 		item.size = this._equalItemSize || {
 			width: utils.innerWidth(item.el),
@@ -650,6 +671,7 @@ extends Mixin(Component).with(EventHandler) {
 			shortColIndex = cols.indexOf(y);
 		} else {
 			let i = cols.length;
+
 			while (i-- >= 0) {
 				if (cols[i] === y) {
 					shortColIndex = i;

@@ -21,7 +21,7 @@ const utils = {
 			// if you were using jQuery
 			return el.toArray();
 		} else {
-			Array.isArray(el) ? el : [el];
+			return Array.isArray(el) ? el : [el];
 		}
 	},
 	addEvent(element, type, handler) {
