@@ -1,7 +1,21 @@
 import {window, document} from "./browser";
 
 const SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in window);
+const SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
+const SUPPORT_PASSIVE = (() => {
+	let supportsPassiveOption = false;
 
+	try {
+		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
+			document.addEventListener("test", null, Object.defineProperty({}, "passive", {
+				get() {
+					supportsPassiveOption = true;
+				}
+			}));
+		}
+	} catch (e) {}
+	return supportsPassiveOption;
+})();
 
 const utils = {
 	getElement(el) {
@@ -24,9 +38,14 @@ const utils = {
 			return Array.isArray(el) ? el : [el];
 		}
 	},
-	addEvent(element, type, handler) {
-		if (element.addEventListener) {
-			element.addEventListener(type, handler, false);
+	addEvent(element, type, handler, eventListenerOptions) {
+		if (SUPPORT_ADDEVENTLISTENER) {
+			let options = eventListenerOptions || false;
+
+			if (typeof eventListenerOptions === "object") {
+				options = SUPPORT_PASSIVE ? eventListenerOptions : false;
+			}
+			element.addEventListener(type, handler, options);
 		} else if (element.attachEvent) {
 			element.attachEvent(`on${type}`, handler);
 		} else {
