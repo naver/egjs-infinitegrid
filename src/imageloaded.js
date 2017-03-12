@@ -4,13 +4,13 @@ import {addEvent, removeEvent} from "./utils";
 const ImageLoaded = {
 	checkImageLoaded(el) {
 		return Array.from(el.querySelectorAll("img"))
-		.filter(v => {
-			if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
-				return !v.complete;
-			} else {
-				return false;
-			}
-		});
+			.filter(v => {
+				if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
+					return !v.complete;
+				} else {
+					return false;
+				}
+			});
 	},
 
 	waitImageLoaded(needCheck, callback) {

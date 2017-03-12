@@ -9,7 +9,7 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, "../dist"),
 		filename: "[name].js",
-		library:  ["eg", "InfiniteGrid" ],
+		library:  ["eg", "InfiniteGrid"],
 		libraryTarget: "umd",
 	},
 	externals: [{
@@ -20,14 +20,14 @@ module.exports = {
 			root: ["eg", "Component"]
 		}
 	}],
-	devtool: "source-map",
+	devtool: "inline-source-map",
 	module: {
 		rules: [
 			{
 				test: /(\.js)$/,
 				exclude: /(node_modules)/,
 				loader: "babel-loader",
-				query: {
+				options: {
 					"presets": [ 
 						[
 							"es2015",
@@ -36,10 +36,13 @@ module.exports = {
 								"modules": false
 							}
 						]
+					],
+					"plugins": [
+						"add-module-exports"
 					]
 				}
 			},
-			{ 
+			{
 				test: /(\.js)$/,
 				loader: StringReplacePlugin.replace({
 					replacements: [
@@ -49,7 +52,8 @@ module.exports = {
 								return pkg.version;
 							}
 						}
-					]})
+					]}
+				)
             }
 		]
 	},

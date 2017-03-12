@@ -4,6 +4,7 @@ var WriteFilePlugin = require("write-file-webpack-plugin");
 var banner = require("./config/banner");
 var config = require("./config/webpack");
 var path = require("path");
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = function(env) {
 	env = env || {};
@@ -25,9 +26,21 @@ module.exports = function(env) {
 				verbose: true,
 				dry: false
 			}),
-			new webpack.optimize.UglifyJsPlugin({
+			new UglifyJSPlugin({
 				include: /\.min\.js$/,
-				minimize: true
+				beautify: false,
+				mangle: {
+					screw_ie8: true,
+					keep_fnames: true
+				},
+				compress: {
+					screw_ie8: true,
+					warnings: false
+				},
+				output: {
+					screw_ie8: false
+				},
+				comments: false
 			}),
 			new webpack.BannerPlugin(banner.common)
 		);
@@ -38,10 +51,26 @@ module.exports = function(env) {
 			delete config.entry[p];
 		}
 		config.plugins.push(
-			new webpack.optimize.UglifyJsPlugin({
+			new UglifyJSPlugin({
 				include: /\.min\.js$/,
-				minimize: true
-			}), new webpack.BannerPlugin(banner.pkgd)
+				beautify: false,
+				mangle: {
+					screw_ie8: true,
+					keep_fnames: true
+				},
+				compress: {
+					screw_ie8: true,
+					warnings: false
+				},
+				output: {
+					screw_ie8: false
+				},
+				comments: false,
+				extractComments: {
+					banner: banner.pkgd
+				}
+			}),
+			new webpack.BannerPlugin(banner.pkgd)
 		);
 		config.externals = [];
 	} else if (env.mode === "server") {
