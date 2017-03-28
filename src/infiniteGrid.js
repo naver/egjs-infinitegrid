@@ -1,9 +1,10 @@
 import Component from "@egjs/component";
 import EventHandler from "./eventHandler";
-import {Mixin, utils} from "./utils";
 import {document} from "./browser";
-import ImageLoaded from "./imageloaded";
 import {RETRY} from "./consts";
+import {Mixin, utils} from "./utils";
+import ImageLoaded from "./imageloaded";
+import ItemManager from "./itemManager";
 
 /**
 * Copyright (c) 2015 NAVER Corp.
@@ -65,27 +66,25 @@ extends Mixin(Component).with(EventHandler) {
 			isEqualSize: false,
 			defaultGroupKey: null,
 			count: 30,
-			threshold: 300
+			threshold: 300,
 		}, options);
 
-		this.el = utils.getElement(el);
-		this.el.style.position = "relative";
-		this._appendCols = [];
-		this._prependCols = [];
-
+		this.view = window;
+		this.el = utils.$(el);
+		this.itemManager = new ItemManager(this.el, options);
 		this._reset();
-		this._refreshViewport();
+		this._resizeViewport();
 		if (this.el.children.length > 0) {
-			this.layout(true,
-				this._itemize(Array.from(this.el.children),
-				this.options.defaultGroupKey));
+			this.layout(
+				true,
+				ItemManager.itemize(this.el.children, this.options.defaultGroupKey),
+			);
 		}
-	}
 
-	_refreshViewport() {
-		if (this.view) {
-			this._clientHeight = utils.innerHeight(this.view);
-		}
+		this._attachEvent();
+	}
+	_resizeViewport() {
+		this._status.clientHeight = utils.innerHeight(this.view);
 	}
 
 	/**
@@ -98,7 +97,7 @@ extends Mixin(Component).with(EventHandler) {
 		const data = {};
 
 		for (const p in this) {
-			if (this.hasOwnProperty(p) && /^_/.test(p) &&
+			if (Object.prototype.hasOwnProperty.call(this, p) && /^_/.test(p) &&
 				typeof this[p] !== "function" && !(this[p] instanceof Element)) {
 				data[p] = this[p];
 			}
@@ -113,7 +112,7 @@ extends Mixin(Component).with(EventHandler) {
 				return clone;
 			}),
 			html: this.el.innerHTML,
-			cssText: this.el.style.cssText
+			cssText: this.el.style.cssText,
 		};
 	}
 
@@ -131,9 +130,10 @@ extends Mixin(Component).with(EventHandler) {
 		}
 		this.el.style.cssText = status.cssText;
 		this.el.innerHTML = status.html;
-		Object.assign(this, status.prop);
-		this._topElement = null;
-		this._bottomElement = null;
+		Object.assign(this._status, status.prop);
+		this._status.topElement = null;
+		this._status.bottomElement = null;
+
 		this.items = Array.from(this.el.children).map((v, i) => {
 			status.items[i].el = v;
 			return status.items[i];
@@ -148,7 +148,7 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {Boolean} Indicates whether a card element is being added <ko>카드 엘리먼트 추가 진행 중 여부</ko>
 	 */
 	isProcessing() {
-		return this._isProcessing;
+		return this._status.isProcessing;
 	}
 
 	/**
@@ -158,7 +158,7 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {Boolean} Indicates whether the total number of added card elements is greater than the value of the count option. <ko>추가된 카드 엘리먼트의 전체 개수가 count 옵션의 값보다 큰지 여부</ko>
 	 */
 	isRecycling() {
-		return (this.options.count > 0) && this._isRecycling;
+		return (this.options.count > 0) && this._status.isRecycling;
 	}
 
 	/**
@@ -168,7 +168,7 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {Array} List of group keys <ko>그룹 키의 목록</ko>
 	 */
 	getGroupKeys() {
-		return this.items.map(v => v.groupKey);
+		return this.itemManager.getGroupKeys();
 	}
 
 	/**
@@ -188,75 +188,23 @@ extends Mixin(Component).with(EventHandler) {
 	layout(isRelayout = true, _addItems, _options) {
 		const options = Object.assign({
 			isAppend: true,
-			removedCount: 0
+			removedCount: 0,
 		}, _options);
 
-		// for except case.
+		// for exception
 		if (!_addItems && !options.isAppend) {
 			options.isAppend = true;
 		}
-		this._waitResource(isRelayout,
+		this._waitResource(
+			isRelayout,
 			options.isAppend ? _addItems : _addItems.reverse(),
-			options);
+			options,
+		);
 		return this;
 	}
-	_layoutComplete(isRelayout, addItems, options) {
-		const isInit = !this.items.length;
-
-		// insert items (when appending)
-		if (addItems && options.isAppend) {
-			this.items = this.items.concat(addItems);
-		}
-
-		if (isInit) {
-			addItems.forEach(v => {
-				v.el.style.position = "absolute";
-			});
-		}
-
-		if (isInit || isRelayout) {
-			this._resetCols(this._measureColumns());
-		} else {
-			if (!addItems) {
-				this._appendCols = this._prependCols.concat();
-			}
-		}
-		this._layoutItems(isRelayout, addItems, options);
+	_onLayoutComplete(isRelayout, addItems, options) {
+		this.itemManager.layout(isRelayout, addItems, options);
 		this._postLayout(isRelayout, addItems, options);
-	}
-	_layoutItems(isRelayout, addItems, options) {
-		// var self = this;
-		let items = addItems || this.items;
-
-		items.forEach(v => {
-			v.position = this._getItemLayoutPosition(isRelayout, v, options.isAppend);
-		});
-		if (addItems && !options.isAppend) {
-			// insert items (when prepending)
-			this.items = addItems.sort((p, c) => p.position.y - c.position.y)
-				.concat(this.items);
-
-			const y = this._getTopPositonY();
-
-			if (y !== 0) {
-				items = this.items;
-				items.forEach(v => {
-					v.position.y -= y;
-				});
-				this._syncCols(false);	// for prepending
-				this._syncCols(true);	// for appending
-			}
-		}
-
-		// for performance
-		items.forEach(v => {
-			if (v.el) {
-				const style = v.el.style;
-
-				style.left = `${v.position.x}px`;
-				style.top = `${v.position.y}px`;
-			}
-		});
 	}
 
 	/**
@@ -264,38 +212,24 @@ extends Mixin(Component).with(EventHandler) {
 	 * @ko 카드 엘리먼트를 그리드 레이아웃의 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
 	 * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
 	 * @method eg.InfiniteGrid#append
-	 * @param {Array|String|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
+	 * @param {Array} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
 	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
 	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
 	 */
 	append(paramElements, groupKey) {
-		if (this._isProcessing || paramElements.length === 0) {
-			return 0;
-		}
-		let elements = utils.getElements(paramElements);
-
-		elements = elements.filter(v => /DIV|SPAN|LI/.test(v.tagName));
-		this._insert(elements, groupKey, true);
-		return elements.length;
+		return this._insert(paramElements, groupKey, true);
 	}
 
 	/**
 	 * Adds a card element at the top of a grid layout. This method is available only if the isProcessing() method returns false and the isRecycling() method returns true.
 	 * @ko 카드 엘리먼트를 그리드 레이아웃의 위에 추가한다. isProcessing() 메서드의 반환값이 'false'이고, isRecycling() 메서드의 반환값이 'true'일 때만 이 메서드를 사용할 수 있다
 	 * @method eg.InfiniteGrid#prepend
-	 * @param {Array|String|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
+	 * @param {Array} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
 	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
 	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
 	 */
 	prepend(paramElements, groupKey) {
-		if (this._isProcessing || paramElements.length === 0) {
-			return 0;
-		}
-		let elements = utils.getElements(paramElements);
-
-		elements = elements.filter(v => /DIV|SPAN|LI/.test(v.tagName));
-		this._insert(elements, groupKey, false);
-		return elements.length;
+		return this._insert(paramElements, groupKey, false);
 	}
 
 	/**
@@ -320,28 +254,9 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {HTMLElement} Card element at the top of a layout. (if the position of card elements are same, it returns the first left element) <ko>레이아웃의 맨 위에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 왼쪽 엘리먼트가 반환된다)</ko>
 	 */
 	getTopElement() {
-		const item = this._getTopItem();
+		const item = this.itemManager.getTopItem();
 
 		return item && item.el;
-	}
-
-	_getTopItem() {
-		let item = null;
-		let min = Infinity;
-
-		this._getColItems(false).forEach(v => {
-			if (v && v.position.y < min) {
-				min = v.position.y;
-				item = v;
-			}
-		});
-		return item;
-	}
-
-	_getTopPositonY() {
-		const item = this._getTopItem();
-
-		return item ? item.position.y : 0;
 	}
 
 	/**
@@ -352,46 +267,39 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {HTMLElement} Card element at the bottom of a layout (if the position of card elements are same, it returns the first right element)<ko>레이아웃의 맨 아래에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 오른쪽 엘리먼트가 반환된다)</ko>
 	 */
 	getBottomElement() {
-		let item = null;
-		let max = -Infinity;
-		let pos;
+		const item = this.itemManager.getBottomItem();
 
-		this._getColItems(true).forEach(v => {
-			pos = v ? v.position.y + v.size.height : 0;
-			if (pos >= max) {
-				max = pos;
-				item = v;
-			}
-		});
 		return item && item.el;
 	}
 
+	_resizeContainerHeight() {
+		this.el.style.height = `${this.itemManager.getLogicalHeight()}px`;
+	}
+
 	_postLayout(isRelayout, addItems = [], options) {
-		if (!this._isProcessing) {
+		if (!this.isProcessing()) {
 			return;
 		}
-		const size = this._getContainerSize();
-
-		this.el.style.height = `${size.height}px`;
-		this._doubleCheckCount = RETRY;
+		this._resizeContainerHeight();
+		this._timer.doubleCheckCount = RETRY;
 
 		// refresh element
-		this._topElement = this.getTopElement();
-		this._bottomElement = this.getBottomElement();
+		this._status.topElement = this.getTopElement();
+		this._status.bottomElement = this.getBottomElement();
 
 		let distance = 0;
 
 		if (!options.isAppend) {
-			distance = addItems.length >= this.items.length ?
-					0 : this.items[addItems.length].position.y;
+			distance = addItems.length >= this.itemManager.items.length ?
+					0 : this.itemManager.items[addItems.length].position.y;
 			if (distance > 0) {
-				this._prevScrollTop = utils.scrollTop() + distance;
-				this.view.scrollTo(0, this._prevScrollTop);
+				this._status.prevScrollTop = utils.scrollTop() + distance;
+				this.view.scrollTo(0, this._status.prevScrollTop);
 			}
 		}
 
 		// reset flags
-		this._isProcessing = false;
+		this._status.isProcessing = false;
 
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
@@ -409,38 +317,48 @@ extends Mixin(Component).with(EventHandler) {
 			target: addItems.concat(),
 			isAppend: options.isAppend,
 			distance,
-			croppedCount: options.removedCount
+			croppedCount: options.removedCount,
 		});
 
+		!options.isAppend && this._doubleCheckForPrepend();
+	}
+
+	_doubleCheckForPrepend() {
 		// doublecheck!!! (workaround)
-		if (!options.isAppend) {
-			if (this._getScrollTop() === 0) {
-				// var self = this;
-				clearInterval(this._doubleCheckTimer);
-				this._doubleCheckTimer = setInterval(() => {
-					if (this._getScrollTop() === 0) {
-						this.trigger("prepend", {
-							scrollTop: 0
-						});
-						(--this._doubleCheckCount <= 0) && clearInterval(this._doubleCheckTimer);
-					}
-				}, 500);
-			}
+		if (utils.scrollTop() === 0) {
+			// var self = this;
+			clearInterval(this._timer.doubleCheck);
+			this._timer.doubleCheck = setInterval(() => {
+				if (utils.scrollTop() === 0) {
+					this.trigger("prepend", {
+						scrollTop: 0,
+					});
+					(--this._timer.doubleCheckCount <= 0) && clearInterval(this._timer.doubleCheck);
+				}
+			}, 500);
 		}
 	}
 
-	// elements => [HTMLElement, HTMLElement, ...]
-	_insert(elements, groupKey, isAppend) {
-		this._isProcessing = true;
+	_prepareElement(paramElements) {
+		let elements = utils.$(paramElements);
+
+		elements = elements.filter(v => /DIV|SPAN|LI/.test(v.tagName));
+		this._status.isProcessing = true;
 		if (!this.isRecycling()) {
-			this._isRecycling =
-				(this.items.length + elements.length) >= this.options.count;
+			this._status.isRecycling =
+				(this.itemManager.items.length + elements.length) >= this.options.count;
 		}
-		if (elements.length === 0) {
-			return;
+		return elements;
+	}
+
+	// elements => [HTMLElement, HTMLElement, ...]
+	_insert(paramElements, groupKey, isAppend) {
+		if (this.isProcessing() || paramElements.length === 0) {
+			return 0;
 		}
+		const elements = this._prepareElement(paramElements);
 		const cloneElements = elements.concat();
-		const dummy = `${-this._clientHeight}px`;
+		const dummy = `${-this._status.clientHeight}px`;
 
 		elements.forEach(v => {
 			v.style.position = "absolute";
@@ -451,24 +369,24 @@ extends Mixin(Component).with(EventHandler) {
 		// prepare HTML
 		const docFragment = document.createDocumentFragment();
 
-		cloneElements.forEach(v => {
-			docFragment.appendChild(v);
-		});
-		if (isAppend) {
-			this.el.appendChild(docFragment);
-		} else {
+		cloneElements.forEach(v => docFragment.appendChild(v));
+		isAppend ? this.el.appendChild(docFragment) :
 			this.el.insertBefore(docFragment, this.el.firstChild);
-		}
-		this.layout(false, this._itemize(cloneElements, groupKey), {
-			isAppend,
-			removedCount
-		});
+		this.layout(
+			false,
+			ItemManager.itemize(cloneElements, groupKey),
+			{
+				isAppend,
+				removedCount,
+			},
+		);
+		return cloneElements.length;
 	}
 
 	_waitResource(isRelayout, addItems, options) {
 		const needCheck = ImageLoaded.checkImageLoaded(this.el);
 		const callback = function() {
-			this._layoutComplete(isRelayout, addItems, options);
+			this._onLayoutComplete(isRelayout, addItems, options);
 		}.bind(this);
 
 		if (needCheck.length > 0) {
@@ -495,26 +413,18 @@ extends Mixin(Component).with(EventHandler) {
 				elements.splice(this.options.count).length;
 		}
 
-		const diff = this.items.length - this.options.count;
-		let targets;
+		const diff = this.itemManager.items.length - this.options.count;
 		let idx;
 
-		if (diff <= 0 || (idx = this._getDelimiterIndex(isTop, diff)) < 0) {
+		if (diff <= 0 || (idx = this.itemManager.getDelimiterIndex(isTop, diff)) < 0) {
 			return removedCount;
 		}
-		if (isTop) {
-			targets = this.items.splice(0, idx);
-			this._syncCols(false);	// for prepending
-		} else {
-			targets = idx === this.items.length ?
-				this.items.splice(0) :
-				this.items.splice(idx, this.items.length - idx);
-			this._syncCols(true);	// for appending;
-		}
+
+		const targets = this.itemManager.adjustItems(isTop, idx);
 
 		// @todo improve performance
 		targets.forEach(v => {
-			idx = elements.index(v.el);
+			idx = elements.indexOf(v.el);
 			if (idx !== -1) {
 				elements.splice(idx, 1);
 			} else {
@@ -525,220 +435,34 @@ extends Mixin(Component).with(EventHandler) {
 		return removedCount;
 	}
 
-	_getDelimiterIndex(isTop, removeCount) {
-		const len = this.items.length;
-
-		if (len === removeCount) {
-			return len;
-		}
-		let i;
-		let idx = 0;
-		const baseIdx = isTop ? removeCount - 1 : len - removeCount;
-		const targetIdx = baseIdx + (isTop ? 1 : -1);
-		const groupKey = this.items[baseIdx].groupKey;
-
-		if (groupKey != null && groupKey === this.items[targetIdx].groupKey) {
-			if (isTop) {
-				for (i = baseIdx; i > 0; i--) {
-					if (groupKey !== this.items[i].groupKey) {
-						break;
-					}
-				}
-				idx = i === 0 ? -1 : i + 1;
-			} else {
-				for (i = baseIdx; i < len; i++) {
-					if (groupKey !== this.items[i].groupKey) {
-						break;
-					}
-				}
-				idx = i === len ? -1 : i;
-			}
-		} else {
-			idx = isTop ? targetIdx : baseIdx;
-		}
-		return idx;
-	}
-
-	// fit size
-	_fit(applyDom) {
-		// for caching
-		if (this.options.count <= 0) {
-			this._fit = () => 0;
-			return false;
-		}
-
-		const y = this._getTopPositonY();
-
-		if (y !== 0) {
-			// need to fit
-			this.items.forEach(v => {
-				v.position.y -= y;
-				applyDom && (v.el.style.top = `${v.position.y}px`);
-			});
-			this._syncCols(false);	// for prepending
-			this._syncCols(true);	// for appending
-			applyDom && (this.el.style.height = `${this._getContainerSize().height}px`);
-		}
-		return y;
-	}
-
 	/**
 	* Removes extra space caused by adding card elements.
 	*/
-	// @todo should change method name.
-	fit() {
-		return this._fit(true);
+	_fitItems() {
+		const y = this.itemManager.fit();
+
+		(y !== 0) && this._resizeContainerHeight();
+		return y;
 	}
 
 	_reset() {
-		this._isProcessing = false;
-		this._topElement = null;
-		this._bottomElement = null;
-		this._isRecycling = false;
-		this._prevScrollTop = 0;
-		this._equalItemSize = 0;
-		this._resizeTimeout = null;
-		this._doubleCheckTimer = null;
-		this._doubleCheckCount = RETRY;
-		this._resetCols(this._appendCols.length || 0);
-		this.items = [];
-	}
-
-	_measureColumns() {
-		this.el.style.width = null;
-		this._containerWidth = utils.innerWidth(this.el);
-		this._columnWidth = this._getColumnWidth() || this._containerWidth;
-		let cols = this._containerWidth / this._columnWidth;
-		const excess = this._columnWidth - this._containerWidth % this._columnWidth;
-
-		// if overshoot is less than a pixel, round up, otherwise floor it
-		cols = Math.max(Math[excess && excess <= 1 ? "round" : "floor"](cols), 1);
-		return cols || 0;
-	}
-
-	_resetCols(count = 0) {
-		const arr = [];
-		let tmpCount = count;
-
-		while (tmpCount--) {
-			arr.push(0);
-		}
-		this._appendCols = arr.concat();
-		this._prependCols = arr.concat();
-	}
-
-	_getContainerSize() {
-		return {
-			height: Math.max(...this._appendCols),
-			width: this._containerWidth
+		this._status = {
+			isProcessing: false,
+			isRecycling: false,
+			prevScrollTop: 0,
+			topElement: null,
+			bottomElement: null,
+			clientHeight: this._status && this._status.clientHeight,
 		};
-	}
-
-	_getColumnWidth() {
-		const el = this.items[0] && this.items[0].el;
-		let width = 0;
-
-		if (el) {
-			width = utils.innerWidth(el);
-			if (this.options.isEqualSize) {
-				this._equalItemSize = {
-					width,
-					height: utils.innerHeight(el)
-				};
-			}
-		}
-		return width;
-	}
-
-	_syncCols(isBottom) {
-		if (!this.items.length) {
-			return;
-		}
-		const items = this._getColItems(isBottom);
-		const col = isBottom ? this._appendCols : this._prependCols;
-		const len = col.length;
-
-		for (let i = 0; i < len; i++) {
-			col[i] = items[i].position.y + (isBottom ? items[i].size.height : 0);
-		}
-	}
-
-	_getColIdx(item) {
-		return parseInt(item.position.x / parseInt(this._columnWidth, 10), 10);
-	}
-
-	_getColItems(isBottom) {
-		const len = this._appendCols.length;
-		const colItems = new Array(len);
-		let item;
-		let idx;
-		let count = 0;
-		let i = isBottom ? this.items.length - 1 : 0;
-
-		while ((item = this.items[i])) {
-			idx = this._getColIdx(item);
-			if (!colItems[idx]) {
-				colItems[idx] = item;
-				if (++count === len) {
-					return colItems;
-				}
-			}
-			i += isBottom ? -1 : 1;
-		}
-		return colItems;
-	}
-
-	_itemize(elements, groupKey, isAppend) {
-		return elements.map(v => ({
-			el: v,
-			position: {
-				x: 0,
-				y: 0
-			},
-			groupKey: typeof groupKey === "undefined" ? null : groupKey
-		}));
-	}
-
-	_getItemLayoutPosition(isRelayout, item, isAppend) {
-		if (!item || !item.el) {
-			return {
-				x: 0,
-				y: 0
-			};
-		}
-
-		if (isRelayout || !item.size) {
-			item.size = this._getItemSize(item.el);
-		}
-		const cols = isAppend ? this._appendCols : this._prependCols;
-		const y = Math[isAppend ? "min" : "max"](...cols);
-		let shortColIndex;
-
-		if (isAppend) {
-			shortColIndex = cols.indexOf(y);
-		} else {
-			let i = cols.length;
-
-			while (i-- >= 0) {
-				if (cols[i] === y) {
-					shortColIndex = i;
-					break;
-				}
-			}
-		}
-		cols[shortColIndex] = y + (isAppend ? item.size.height : -item.size.height);
-
-		return {
-			x: this._columnWidth * shortColIndex,
-			y: isAppend ? y : y - item.size.height
+		this._timer = {
+			resize: null,
+			doubleCheck: null,
+			doubleCheckCount: RETRY,
 		};
+		this.itemManager.resetCols();
+		this.itemManager.clear();
 	}
-	_getItemSize(el) {
-		return this._equalItemSize || {
-			width: utils.innerWidth(el),
-			height: utils.innerHeight(el)
-		};
-	}
+
 	/**
 	 * Removes a card element on a grid layout.
 	 * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
@@ -747,24 +471,7 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {Object}  Removed card element <ko>삭제된 카드 엘리먼트 정보</ko>
 	 */
 	remove(element) {
-		let item = null;
-		let idx = -1;
-
-		for (let i = 0, len = this.items.length; i < len; i++) {
-			if (this.items[i].el === element) {
-				idx = i;
-				break;
-			}
-		}
-		if (~idx) {
-			// remove item information
-			item = Object.assign({}, this.items[idx]);
-			this.items.splice(idx, 1);
-
-			// remove item element
-			item.el.parentNode.removeChild(item.el);
-		}
-		return item;
+		return this.itemManager.remove(element);
 	}
 
 	/**

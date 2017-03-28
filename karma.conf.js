@@ -21,20 +21,28 @@ module.exports = function(config) {
       }
     },
 
-    // list of files to exclude
-    exclude: [
-    ],
-
     webpack: {
-      devtool: 'source-map',
+      devtool: 'inline-source-map',
       module: {
-        rules: [
-          {
-            test: /(\.js)$/,
-            exclude: /(node_modules)/,
-            loader: 'babel-loader'
-          }
-        ]
+          rules: [
+              {
+                  test: /\.js$/,
+                  exclude: /node_modules/,
+                  loader: "babel-loader",
+                  options: {
+                      presets: [ 
+                          [
+                              "es2015",
+                              {
+                                "loose": true,
+                                "mouldes": false
+                              }
+                          ]
+                      ],
+                      plugins: ["add-module-exports"]
+                  }
+              }
+          ]
       }
     },
 
@@ -44,57 +52,27 @@ module.exports = function(config) {
       './test/**/*.spec.js': config.coverage ? ['webpack'] : ['webpack', 'sourcemap']
     },
 
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha'],
-
-    // web server port
-    port: 9876,
-
-    // enable / disable colors in the output (reporters and logs)
-    colors: true,
-
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: [],
-
-    webpackServer: {
-      noInfo: true
-    },
-
-    // Concurrency level
-    // how many browser should be started simultaneous
-    concurrency: Infinity,
-    singleRun: false,
-    captureTimeout: 60000
+    
+    reporters: ['mocha'],
+    webpackMiddleware: {
+        noInfo: true
+    }
   };
   
   karmaConfig.browsers.push(config.chrome ? "Chrome" : "PhantomJS");
 
   if(config.coverage) {
-    karmaConfig.reporters.push("coverage");
-    karmaConfig.coverageReporter = {
-        type: 'html',
-        dir: 'coverage'
+    karmaConfig.reporters.push('coverage-istanbul');
+    karmaConfig.coverageIstanbulReporter = {
+      reports: [ 'text-summary', 'html'],
+      dir: './coverage'
     };
-    karmaConfig.webpack.module.rules.push(
-      {
-        test: /(\.js)$/,
-        exclude: /(test|node_modules)/,
-        enforce: "pre",
-        loader: 'isparta-loader'
-      }
-    );
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
+    karmaConfig.webpack.module.rules.unshift({
+        test: /\.js$/,
+        exclude: /(node_modules|test)/,
+        loader: 'istanbul-instrumenter-loader'
+    });
     karmaConfig.singleRun = true;
   }
 

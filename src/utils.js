@@ -10,7 +10,7 @@ const SUPPORT_PASSIVE = (() => {
 			document.addEventListener("test", null, Object.defineProperty({}, "passive", {
 				get() {
 					supportsPassiveOption = true;
-				}
+				},
 			}));
 		}
 	} catch (e) {}
@@ -18,25 +18,35 @@ const SUPPORT_PASSIVE = (() => {
 })();
 
 const utils = {
-	getElement(el) {
-		if (typeof el === "string") {
-			return document.querySelector(el);
-		} else if (window.jQuery && (el instanceof jQuery)) {
-			// if you were using jQuery
-			return el.length > 0 ? el[0] : null;
-		} else {
-			return el;
+	/**
+	 * Select or create element
+	 * @param {String|HTMLElement} param
+	 *  when string given is as HTML tag, then create element
+	 *  otherwise it returns selected elements
+	 * @returns {HTMLElement}
+	 */
+	$(param) {
+		let el = null;
+
+		if (typeof param === "string") {
+			// check if string is HTML tag format
+			const match = param.match(/^<([a-z]+)\s*([^>]*)>/);
+
+			// creating element
+			if (match) {
+				const dummy = document.createElement("div");
+
+				dummy.innerHTML = param;
+				el = Array.prototype.slice.call(dummy.childNodes);
+			} else {
+				el = document.querySelectorAll(param);
+				el = el.length === 1 ? el[0] : Array.prototype.slice.call(el);
+			}
+		} else if (param.nodeName && param.nodeType === 1) {
+			el = param;
 		}
-	},
-	getElements(el) {
-		if (typeof el === "string") {
-			return Array.from(document.querySelectorAll(el));
-		} else if (window.jQuery && (el instanceof jQuery)) {
-			// if you were using jQuery
-			return el.toArray();
-		} else {
-			return Array.isArray(el) ? el : [el];
-		}
+
+		return el;
 	},
 	addEvent(element, type, handler, eventListenerOptions) {
 		if (SUPPORT_ADDEVENTLISTENER) {
@@ -73,7 +83,7 @@ const utils = {
 			return Math.max(
 				el.body[`scroll${name}`], doc[`scroll${name}`],
 				el.body[`offset${name}`], doc[`offset${name}`],
-				doc[`client${name}`]
+				doc[`client${name}`],
 			);
 		} else { // NODE
 			const style = SUPPORT_COMPUTEDSTYLE ?
@@ -82,7 +92,6 @@ const utils = {
 			const p2 = name === "Height" ? "Bottom" : "Right";
 
 			return parseFloat(style[name.toLowerCase()]) +
-				parseFloat(style[`padding${p1}`]) + parseFloat(style[`padding${p2}`]) +
 				(hasBorder ? parseFloat(style[`border${p1}`]) + parseFloat(style[`border${p2}`]) : 0) +
 				(hasMargin ? parseFloat(style[`margin${p1}`]) + parseFloat(style[`margin${p2}`]) : 0);
 		}
@@ -100,7 +109,7 @@ const utils = {
 			return false;
 		}
 		return true;
-	}
+	},
 };
 
 class MixinBuilder {

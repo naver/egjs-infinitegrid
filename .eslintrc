@@ -1,9 +1,6 @@
 {
-    // Airbnb en https://github.com/airbnb/javascript
-    // Airbnb ko https://github.com/tipjs/javascript-style-guide
-    // Naver https://oss.navercorp.com/engineering/coding-convention
-    // Naver http://docs.navercorp.com/coding-convention/js.html
-    "extends": "eslint-config-naver",
+    // Naver https://github.com/naver/eslint-config-naver/blob/master/STYLE_GUIDE.md
+    "extends": "naver",
     "rules": {
     }
 }

@@ -1,0 +1,46 @@
+var template = Handlebars.compile(document.getElementById("items-template").innerHTML);
+var data = {
+	getItems: function(groupNo) {
+		groupNo *= 30;
+		var items = [];
+		for(var i=0; i<30; i++) {
+			items.push(groupNo + i);
+		}
+		items = items.map(function(v) {
+			return {
+				offset: v,
+				imgSrc: "http://naver.github.io/egjs-experiment/infiniteGridService/demo/img/" + ( ( (v + 1) % 60) + 1 ) + ".jpg",
+				href: "http://www.google.com/",
+				desc: "Cras justo odio bla bla bla bla bla bla bla bla"
+			};
+		});
+		return {items: items};
+	}
+};
+
+var grid = document.getElementById("grid");
+var ig = new eg.InfiniteGrid(grid, {
+	count : 100,
+	defaultGroupKey : 0
+})
+.on({
+	"append" : function(e) {
+		console.log("append");
+		var gk = this.getGroupKeys();
+		var lastGk = gk[gk.length-1];
+		lastGk++;
+		ig.append(template(data.getItems(lastGk)), lastGk);
+	},
+	"prepend" : function(e) {
+		console.log("prepend");
+		var firstGk = this.getGroupKeys()[0];
+		firstGk--;
+		if(firstGk >= 0) {
+			ig.prepend(template(data.getItems(firstGk)), firstGk);
+		}
+	},
+	"layoutComplete" : function(e) {
+		grid.style.opacity = 1;
+	}
+});
+ig.append(template(data.getItems(0)), 0);
