@@ -32,10 +32,11 @@ border:0;
 }
 
 ul,ol {
-list-style:none;
+  list-style:none;
 }
 li {
-  width : 30%;
+  width : 33%;
+  height : 100px;
 
 }
 
@@ -43,6 +44,7 @@ li div {
     margin:10px;
     border:1px solid red;
     background-color:#eee;
+    height: calc(100% - 20px);
 }
 
 li.append {
@@ -51,7 +53,7 @@ li.append {
 li.prepend {
    background-color:#333;
 }
-#controller {
+#controler {
   position:fixed;
   z-index:2000;
   bottom:0px;
@@ -65,41 +67,43 @@ li.prepend {
 </style>
 </head>
 <body>
-<div id="controller">
+<div id="controler">
   <button class="append">append</button>
   <button class="prepend">prepend</button>
   <button class="fit">fit</button>
-  <button class="layout">layout</button><br>
+  <button class="layout">layout()</button><br>
+  <button class="layout_false">layout(false)</button><br>
   <button class="clear">clear</button>
   <button class="getStatus">getStatus</button>
   <button class="setStatus">setStatus</button><br>
   <button class="getTopElement">getTopElement</button>
   <button class="getBottomElement">getBottomElement</button>
 </div>
-  <ul id="grid">
-    <li class="item">
-      <div>테스트1</div>
-    </li>
-    <li class="item">
-      <div>테스트2</div>
-    </li>
-    <li class="item">
-      <div>테스트3</div>
-    </li>
-    <li class="item">
-      <div>테스트4</div>
-    </li>
-    <li class="item">
-      <div>테스트5</div>
-    </li>
-    <li class="item">
-      <div>테스트6</div>
-    </li>
-  </ul>
+<ul id="grid">
+  <li class="item">
+    <div>테스트1</div>
+  </li>
+  <li class="item">
+    <div>테스트2</div>
+  </li>
+  <li class="item">
+    <div>테스트3</div>
+  </li>
+  <li class="item">
+    <div>테스트4</div>
+  </li>
+  <li class="item">
+    <div>테스트5</div>
+  </li>
+  <li class="item">
+    <div>테스트6</div>
+  </li>
+</ul>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script>
 <script src="../../node_modules/@egjs/component/dist/component.js"></script>
 <script src="../../dist/infinitegrid.js"></script>  
+<script src="../../node_modules/jquery/dist/jquery.js"></script>  
 <script src="js/basic.js"></script>
 </body>
 </html>

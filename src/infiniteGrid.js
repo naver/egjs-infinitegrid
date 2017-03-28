@@ -71,7 +71,7 @@ extends Mixin(Component).with(EventHandler) {
 
 		this.view = window;
 		this.el = utils.$(el);
-		this.itemManager = new ItemManager(this.el, options);
+		this.itemManager = new ItemManager(this.el, this.options);
 		this._reset();
 		this._resizeViewport();
 		if (this.el.children.length > 0) {
@@ -212,7 +212,7 @@ extends Mixin(Component).with(EventHandler) {
 	 * @ko 카드 엘리먼트를 그리드 레이아웃의 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
 	 * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
 	 * @method eg.InfiniteGrid#append
-	 * @param {Array} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
+	 * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
 	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
 	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
 	 */
@@ -224,7 +224,7 @@ extends Mixin(Component).with(EventHandler) {
 	 * Adds a card element at the top of a grid layout. This method is available only if the isProcessing() method returns false and the isRecycling() method returns true.
 	 * @ko 카드 엘리먼트를 그리드 레이아웃의 위에 추가한다. isProcessing() 메서드의 반환값이 'false'이고, isRecycling() 메서드의 반환값이 'true'일 때만 이 메서드를 사용할 수 있다
 	 * @method eg.InfiniteGrid#prepend
-	 * @param {Array} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
+	 * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
 	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
 	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
 	 */

@@ -2,7 +2,7 @@ import {utils} from "./utils";
 
 export default class ItemManager {
 	static itemize(elements, groupKey, isAppend) {
-		return elements.map(v => ({
+		return Array.prototype.slice.call(elements).map(v => ({
 			el: v,
 			position: {
 				x: 0,

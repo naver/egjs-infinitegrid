@@ -44,6 +44,8 @@ const utils = {
 			}
 		} else if (param.nodeName && param.nodeType === 1) {
 			el = param;
+		} else if (window.jQuery && (param instanceof jQuery)) {
+			return param.length === 1 ? param[0] : param.toArray();
 		}
 
 		return el;
