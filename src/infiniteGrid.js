@@ -3,7 +3,7 @@ import EventHandler from "./eventHandler";
 import {document} from "./browser";
 import {RETRY} from "./consts";
 import {Mixin, utils} from "./utils";
-import ImageLoaded from "./imageloaded";
+import ImageLoaded from "./imageLoaded";
 import LayoutManager from "./layoutManager";
 
 /**
@@ -482,7 +482,7 @@ extends Mixin(Component).with(EventHandler) {
 	 */
 	destroy() {
 		this.off();
-		this._detatchEvent();
+		this._detachEvent();
 		this._reset();
 	}
 };

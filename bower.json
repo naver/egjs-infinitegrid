@@ -4,9 +4,9 @@
 	"license": "MIT",
 	"keywords": [
 		"egjs",
-		"movableCoord",
+		"infinitegrid",
 		"javaScript",
-		"hammerjs"
+		"masonry"
 	],
 	"ignore": [
 		"**/.*",

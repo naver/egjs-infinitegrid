@@ -2,5 +2,15 @@
     // Naver https://github.com/naver/eslint-config-naver/blob/master/STYLE_GUIDE.md
     "extends": "naver",
     "rules": {
-    }
+        "no-unused-expressions": "off",
+    },
+    "env": {
+        "mocha": true
+    },
+    "globals": {
+        "sandbox": true,
+        "cleanup": true,
+        "expect": true,
+        "sinon": true,
+    },
 }

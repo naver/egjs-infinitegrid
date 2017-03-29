@@ -29,18 +29,6 @@ module.exports = function(config) {
                   test: /\.js$/,
                   exclude: /node_modules/,
                   loader: "babel-loader",
-                  options: {
-                      presets: [ 
-                          [
-                              "es2015",
-                              {
-                                "loose": true,
-                                "mouldes": false
-                              }
-                          ]
-                      ],
-                      plugins: ["add-module-exports"]
-                  }
               }
           ]
       }
@@ -57,7 +45,7 @@ module.exports = function(config) {
     reporters: ['mocha'],
     webpackMiddleware: {
         noInfo: true
-    }
+    },
   };
   
   karmaConfig.browsers.push(config.chrome ? "Chrome" : "PhantomJS");

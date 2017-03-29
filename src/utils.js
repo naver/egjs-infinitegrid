@@ -43,12 +43,17 @@ const utils = {
 				el = Array.prototype.slice.call(document.querySelectorAll(param));
 			}
 			if (!multi) {
-				el = el.length > 1 ? el[0] : undefined;
+				el = el.length >= 1 ? el[0] : undefined;
 			}
 		} else if (param.nodeName && param.nodeType === 1) {	// HTMLElement
 			el = param;
 		} else if (window.jQuery && (param instanceof jQuery)) {	// jQuery
 			el = multi ? param.toArray() : param.get(0);
+		} else if (Array.isArray(param)) {
+			el = param.map(v => utils.$(v));
+			if (!multi) {
+				el = el.length >= 1 ? el[0] : undefined;
+			}
 		}
 
 		return el;

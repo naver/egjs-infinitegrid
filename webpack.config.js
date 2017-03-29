@@ -29,20 +29,6 @@ var config = {
 				test: /(\.js)$/,
 				exclude: /(node_modules)/,
 				loader: "babel-loader",
-				options: {
-					"presets": [ 
-						[
-							"es2015",
-							{
-								"loose": true,
-								"mouldes": false
-							}
-						]
-					],
-					"plugins": [
-						"add-module-exports"
-					]
-				}
 			},
 			{
 				test: /(\.js)$/,
