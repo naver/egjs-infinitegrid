@@ -20,32 +20,35 @@ const SUPPORT_PASSIVE = (() => {
 const utils = {
 	/**
 	 * Select or create element
-	 * @param {String|HTMLElement} param
+	 * @param {String|HTMLElement|jQuery} param
 	 *  when string given is as HTML tag, then create element
 	 *  otherwise it returns selected elements
+	 * @param {Boolean} multi
 	 * @returns {HTMLElement}
 	 */
-	$(param) {
-		let el = null;
+	$(param, multi = false) {
+		let el;
 
-		if (typeof param === "string") {
+		if (typeof param === "string") {	// String (HTML, Selector)
 			// check if string is HTML tag format
 			const match = param.match(/^<([a-z]+)\s*([^>]*)>/);
 
 			// creating element
-			if (match) {
+			if (match) {	 // HTML
 				const dummy = document.createElement("div");
 
 				dummy.innerHTML = param;
 				el = Array.prototype.slice.call(dummy.childNodes);
-			} else {
-				el = document.querySelectorAll(param);
-				el = el.length === 1 ? el[0] : Array.prototype.slice.call(el);
+			} else {	// Selector
+				el = Array.prototype.slice.call(document.querySelectorAll(param));
 			}
-		} else if (param.nodeName && param.nodeType === 1) {
+			if (!multi) {
+				el = el.length > 1 ? el[0] : undefined;
+			}
+		} else if (param.nodeName && param.nodeType === 1) {	// HTMLElement
 			el = param;
-		} else if (window.jQuery && (param instanceof jQuery)) {
-			return param.length === 1 ? param[0] : param.toArray();
+		} else if (window.jQuery && (param instanceof jQuery)) {	// jQuery
+			el = multi ? param.toArray() : param.get(0);
 		}
 
 		return el;

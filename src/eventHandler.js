@@ -85,7 +85,7 @@ export default superclass => class extends superclass {
 			clearTimeout(this._timer.resize);
 		}
 		this._timer.resize = setTimeout(() => {
-			if (this.itemManager.isNeededResize()) {
+			if (this.layoutManager.isNeededResize()) {
 				this._resizeViewport();
 				this.layout(true);
 			}

@@ -1,6 +1,6 @@
 import {utils} from "./utils";
 
-export default class ItemManager {
+export default class LayoutManager {
 	static itemize(elements, groupKey, isAppend) {
 		return Array.prototype.slice.call(elements).map(v => ({
 			el: v,
@@ -24,10 +24,10 @@ export default class ItemManager {
 		this.prependCols = [];
 		this.appendCols = [];
 	}
-	append(items) {
+	appendItems(items) {
 		this.items = this.items.concat(items);
 	}
-	prepend(items) {
+	prependItems(items) {
 		// insert items (when prepending)
 		this.items = items.concat(this.items);
 		const y = this.getTopPositonY();
@@ -38,9 +38,11 @@ export default class ItemManager {
 			});
 			this.syncCols(false);	// for prepending
 			this.syncCols(true);	// for appending
+			return this.items;
 		}
+		return items;
 	}
-	remove(element) {
+	removeItem(element) {
 		let item = null;
 		let idx = -1;
 
@@ -65,9 +67,9 @@ export default class ItemManager {
 
 		// insert items (when appending)
 		if (addItems && isAppend) {
-			this.append(addItems);
+			this.appendItems(addItems);
 		}
-		if (isInit) {
+		if (isInit && addItems) {
 			addItems.forEach(v => {
 				v.el.style.position = "absolute";
 			});
@@ -78,16 +80,16 @@ export default class ItemManager {
 			this.appendCols = [...this.prependCols];
 		}
 	}
-	layout(isRelayout, addItems, options) {
+	layoutItems(isRelayout, addItems, options) {
 		this.prepareLayout(isRelayout, addItems, options.isAppend);
-		const items = addItems || this.items;
+		let items = addItems || this.items;
 
 		items.forEach(v => {
-			v.position = this.getItemLayoutPosition(isRelayout, v, options.isAppend);
+			v.position = this.getItemPosition(isRelayout, v, options.isAppend);
 		});
 		if (addItems && !options.isAppend) {
 			// insert items (when prepending)
-			this.prepend(addItems.sort((p, c) => p.position.y - c.position.y));
+			items = this.prependItems(addItems.sort((p, c) => p.position.y - c.position.y));
 		}
 
 		// for performance
@@ -114,7 +116,7 @@ export default class ItemManager {
 	clear() {
 		this.items = [];
 	}
-	getItemLayoutPosition(isRelayout, item, isAppend) {
+	getItemPosition(isRelayout, item, isAppend) {
 		if (!item || !item.el) {
 			return {
 				x: 0,
@@ -290,13 +292,6 @@ export default class ItemManager {
 			this.syncCols(true);	// for appending;
 		}
 		return targets;
-	}
-	getBaseElement() {
-		if (this.items.length > 0) {
-			return this.items[0] && this.items[0].el;
-		} else {
-			return null;
-		}
 	}
 	measureColumns() {
 		this.el.style.width = null;

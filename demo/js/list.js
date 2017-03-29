@@ -9,7 +9,7 @@ var data = {
 		items = items.map(function(v) {
 			return {
 				offset: v,
-				imgSrc: "http://naver.github.io/egjs-experiment/infiniteGridService/demo/img/" + ( ( (v + 1) % 60) + 1 ) + ".jpg",
+				imgSrc: "../demo/image/" + ( ( (v + 1) % 60) + 1 ) + ".jpg",
 				href: "http://www.google.com/",
 				desc: "Cras justo odio bla bla bla bla bla bla bla bla"
 			};
@@ -25,14 +25,12 @@ var ig = new eg.InfiniteGrid(grid, {
 })
 .on({
 	"append" : function(e) {
-		console.log("append");
 		var gk = this.getGroupKeys();
 		var lastGk = gk[gk.length-1];
 		lastGk++;
 		ig.append(template(data.getItems(lastGk)), lastGk);
 	},
 	"prepend" : function(e) {
-		console.log("prepend");
 		var firstGk = this.getGroupKeys()[0];
 		firstGk--;
 		if(firstGk >= 0) {

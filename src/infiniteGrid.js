@@ -4,10 +4,10 @@ import {document} from "./browser";
 import {RETRY} from "./consts";
 import {Mixin, utils} from "./utils";
 import ImageLoaded from "./imageloaded";
-import ItemManager from "./itemManager";
+import LayoutManager from "./layoutManager";
 
 /**
-* Copyright (c) 2015 NAVER Corp.
+* Copyright (c) 2017 NAVER Corp.
 * egjs projects are licensed under the MIT license
 */
 
@@ -71,13 +71,13 @@ extends Mixin(Component).with(EventHandler) {
 
 		this.view = window;
 		this.el = utils.$(el);
-		this.itemManager = new ItemManager(this.el, this.options);
+		this.layoutManager = new LayoutManager(this.el, this.options);
 		this._reset();
 		this._resizeViewport();
 		if (this.el.children.length > 0) {
 			this.layout(
 				true,
-				ItemManager.itemize(this.el.children, this.options.defaultGroupKey),
+				LayoutManager.itemize(this.el.children, this.options.defaultGroupKey),
 			);
 		}
 
@@ -168,7 +168,7 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {Array} List of group keys <ko>그룹 키의 목록</ko>
 	 */
 	getGroupKeys() {
-		return this.itemManager.getGroupKeys();
+		return this.layoutManager.getGroupKeys();
 	}
 
 	/**
@@ -186,6 +186,7 @@ extends Mixin(Component).with(EventHandler) {
 	 *}
 	 */
 	layout(isRelayout = true, _addItems, _options) {
+		this._status.isProcessing = true;
 		const options = Object.assign({
 			isAppend: true,
 			removedCount: 0,
@@ -203,7 +204,7 @@ extends Mixin(Component).with(EventHandler) {
 		return this;
 	}
 	_onLayoutComplete(isRelayout, addItems, options) {
-		this.itemManager.layout(isRelayout, addItems, options);
+		this.layoutManager.layoutItems(isRelayout, addItems, options);
 		this._postLayout(isRelayout, addItems, options);
 	}
 
@@ -254,7 +255,7 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {HTMLElement} Card element at the top of a layout. (if the position of card elements are same, it returns the first left element) <ko>레이아웃의 맨 위에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 왼쪽 엘리먼트가 반환된다)</ko>
 	 */
 	getTopElement() {
-		const item = this.itemManager.getTopItem();
+		const item = this.layoutManager.getTopItem();
 
 		return item && item.el;
 	}
@@ -267,13 +268,13 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {HTMLElement} Card element at the bottom of a layout (if the position of card elements are same, it returns the first right element)<ko>레이아웃의 맨 아래에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 오른쪽 엘리먼트가 반환된다)</ko>
 	 */
 	getBottomElement() {
-		const item = this.itemManager.getBottomItem();
+		const item = this.layoutManager.getBottomItem();
 
 		return item && item.el;
 	}
 
 	_resizeContainerHeight() {
-		this.el.style.height = `${this.itemManager.getLogicalHeight()}px`;
+		this.el.style.height = `${this.layoutManager.getLogicalHeight()}px`;
 	}
 
 	_postLayout(isRelayout, addItems = [], options) {
@@ -290,8 +291,8 @@ extends Mixin(Component).with(EventHandler) {
 		let distance = 0;
 
 		if (!options.isAppend) {
-			distance = addItems.length >= this.itemManager.items.length ?
-					0 : this.itemManager.items[addItems.length].position.y;
+			distance = addItems.length >= this.layoutManager.items.length ?
+					0 : this.layoutManager.items[addItems.length].position.y;
 			if (distance > 0) {
 				this._status.prevScrollTop = utils.scrollTop() + distance;
 				this.view.scrollTo(0, this._status.prevScrollTop);
@@ -340,13 +341,13 @@ extends Mixin(Component).with(EventHandler) {
 	}
 
 	_prepareElement(paramElements) {
-		let elements = utils.$(paramElements);
+		let elements = utils.$(paramElements, true);
 
 		elements = elements.filter(v => /DIV|SPAN|LI/.test(v.tagName));
 		this._status.isProcessing = true;
 		if (!this.isRecycling()) {
 			this._status.isRecycling =
-				(this.itemManager.items.length + elements.length) >= this.options.count;
+				(this.layoutManager.items.length + elements.length) >= this.options.count;
 		}
 		return elements;
 	}
@@ -374,7 +375,7 @@ extends Mixin(Component).with(EventHandler) {
 			this.el.insertBefore(docFragment, this.el.firstChild);
 		this.layout(
 			false,
-			ItemManager.itemize(cloneElements, groupKey),
+			LayoutManager.itemize(cloneElements, groupKey),
 			{
 				isAppend,
 				removedCount,
@@ -413,14 +414,14 @@ extends Mixin(Component).with(EventHandler) {
 				elements.splice(this.options.count).length;
 		}
 
-		const diff = this.itemManager.items.length - this.options.count;
+		const diff = this.layoutManager.items.length - this.options.count;
 		let idx;
 
-		if (diff <= 0 || (idx = this.itemManager.getDelimiterIndex(isTop, diff)) < 0) {
+		if (diff <= 0 || (idx = this.layoutManager.getDelimiterIndex(isTop, diff)) < 0) {
 			return removedCount;
 		}
 
-		const targets = this.itemManager.adjustItems(isTop, idx);
+		const targets = this.layoutManager.adjustItems(isTop, idx);
 
 		// @todo improve performance
 		targets.forEach(v => {
@@ -439,7 +440,7 @@ extends Mixin(Component).with(EventHandler) {
 	* Removes extra space caused by adding card elements.
 	*/
 	_fitItems() {
-		const y = this.itemManager.fit();
+		const y = this.layoutManager.fit();
 
 		(y !== 0) && this._resizeContainerHeight();
 		return y;
@@ -459,8 +460,8 @@ extends Mixin(Component).with(EventHandler) {
 			doubleCheck: null,
 			doubleCheckCount: RETRY,
 		};
-		this.itemManager.resetCols();
-		this.itemManager.clear();
+		this.layoutManager.resetCols();
+		this.layoutManager.clear();
 	}
 
 	/**
@@ -471,7 +472,7 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {Object}  Removed card element <ko>삭제된 카드 엘리먼트 정보</ko>
 	 */
 	remove(element) {
-		return this.itemManager.remove(element);
+		return this.layoutManager.removeItem(element);
 	}
 
 	/**

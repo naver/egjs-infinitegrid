@@ -3,41 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-<title>InfiniteGrid</title>
+<title>InfiniteGrid: demo</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
 <style>
 html,body {
-height:100%;
+  height:100%;
 }
 
 body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select {
-margin:0;
-padding:0;
+  margin:0;
+  padding:0;
 }
 
 body,input,textarea,select,button,table {
-font-family:Helvetica Neue,AppleSDGothicNeo,sans-serif;
-font-size:14px;
-line-height:1.25em;
+  font-family:Helvetica Neue,AppleSDGothicNeo,sans-serif;
+  font-size:14px;
+  line-height:1.25em;
 }
 
 body {
-position:relative;
-width:100%;
+  position:relative;
+  width:100%;
 }
 
 img,fieldset {
-border:0;
+  border:0;
 }
 
 ul,ol {
   list-style:none;
 }
+
 li {
   width : 33%;
   height : 100px;
-
 }
 
 li div {
@@ -56,13 +56,21 @@ li.prepend {
 #controler {
   position:fixed;
   z-index:2000;
-  bottom:0px;
+  bottom:50px;
   left :0px;
-  background-color: #efefef;
+  background-color: #333;
   padding : 5px;
+  width: 100%;
+  opacity: 0.5;
 }
 #grid {
   border : 1px solid blue;
+}
+button {
+  height: 30px;
+  width: 30%;
+  margin: 5px;
+  float:left;
 }
 </style>
 </head>
@@ -70,12 +78,11 @@ li.prepend {
 <div id="controler">
   <button class="append">append</button>
   <button class="prepend">prepend</button>
-  <button class="fit">fit</button>
-  <button class="layout">layout()</button><br>
-  <button class="layout_false">layout(false)</button><br>
   <button class="clear">clear</button>
+  <button class="layout">layout()</button>
+  <button class="layout_false">layout(false)</button>
   <button class="getStatus">getStatus</button>
-  <button class="setStatus">setStatus</button><br>
+  <button class="setStatus">setStatus</button>
   <button class="getTopElement">getTopElement</button>
   <button class="getBottomElement">getBottomElement</button>
 </div>

@@ -1,5 +1,4 @@
-var grid = document.getElementById("grid");
-var oinst = new eg.InfiniteGrid(grid);
+var oinst = new eg.InfiniteGrid($("#grid"));
 
 var HTML = '<li class="item"><div>test1</div></li><li class="item"><div>test2</div></li><li class="item"><div>test3</div></li><li class="item"><div>test4</div></li><li class="item"><div>test5</div></li><li class="item"><div>test6</div></li><li class="item"><div>test7</div></li>';
 
@@ -27,8 +26,6 @@ $("#controler").click(function(e) {
       return val < 40 ? 40 : val;
     })
     oinst.prepend($elements);
-  } else if ($el.hasClass("fit")) {
-    oinst.fit();
   } else if ($el.hasClass("layout")) {
     oinst.layout();
   } else if ($el.hasClass("layout_false")) {
