@@ -381,6 +381,8 @@ extends Mixin(Component).with(EventHandler) {
 				removedCount,
 			},
 		);
+		// console.info("remove count", removedCount, this.el.children.length, "+", elements.length, "||", cloneElements.length);
+
 		return cloneElements.length;
 	}
 
@@ -414,7 +416,7 @@ extends Mixin(Component).with(EventHandler) {
 				elements.splice(this.options.count).length;
 		}
 
-		const diff = this.layoutManager.items.length - this.options.count;
+		const diff = this.layoutManager.items.length + elements.length - this.options.count;
 		let idx;
 
 		if (diff <= 0 || (idx = this.layoutManager.getDelimiterIndex(isTop, diff)) < 0) {

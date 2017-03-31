@@ -5,12 +5,12 @@ const IMG_LIST = [
 ];
 
 // create content
-function getContent(className, x) {
+function getContent(className, x, hasImage = false) {
 	let s = "";
 	const num = x || ((parseInt(Math.random() * 100, 10) % 10) + 1);
 
 	for (let i = 0; i < num; i++) {
-		s += '<li class="item"><div><img></img></div></li>';
+		s += hasImage ? '<li class="item"><div><img></img></div></li>' : '<li class="item"><div></div></li>';
 	}
 	const elements = utils.$(s, true);
 	let val;
@@ -18,23 +18,28 @@ function getContent(className, x) {
 
 	elements.forEach(e => {
 		e.className = className;
-		Array.prototype.slice.call(e.querySelectorAll("img"))
-			.forEach(v => {
-				val = parseInt(Math.random() * 100, 10);
-				r = parseInt(Math.random() * 100, 10) % IMG_LIST.length;
-				v.setAttribute("src", IMG_LIST[r]);
-				return val < 40 ? 40 : val;
-			});
+		if (hasImage) {
+			Array.prototype.slice.call(e.querySelectorAll("img"))
+				.forEach(v => {
+					val = parseInt(Math.random() * 100, 10);
+					r = parseInt(Math.random() * 100, 10) % IMG_LIST.length;
+					v.setAttribute("src", IMG_LIST[r]);
+					v.style.height = val < 40 ? 40 : val;
+				});
+		} else {
+			val = parseInt(Math.random() * 100, 10);
+			e.style.height = val < 40 ? 40 : val;
+		}
 	});
 	return elements;
 }
 
 const Content = {
-    append(num) {
-        return getContent("append", num);
+    append(num, hasImage = false) {
+        return getContent("append", num, hasImage);
     },
-    prepend(num) {
-        return getContent("prepnd", num);
+    prepend(num, hasImage = false) {
+        return getContent("prepnd", num, hasImage);
     }
 };
 

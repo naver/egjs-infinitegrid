@@ -1,6 +1,6 @@
-import InfiniteGrid from "../../src/infiniteGrid.js";
-import {Content} from "../content.js";
-import $ from "jquery";
+import InfiniteGrid from "../../src/infiniteGrid";
+import {window} from "../../src/browser";
+import {Content} from "../content";
 
 describe("InfiniteGrid initailization/destroy Test", function() {
 	beforeEach(() => {
@@ -79,6 +79,205 @@ describe("InfiniteGrid initailization/destroy Test", function() {
 });
 
 
+describe("InfiniteGrid append/prepend on layoutComplete Test", function() {
+	beforeEach(() => {
+		this.el = sandbox();
+		this.el.innerHTML = `<ul id="nochildren_grid"></ul>`;
+		this.inst = new InfiniteGrid("#nochildren_grid", {
+			"count": 18,
+		});
+	});
+	afterEach(() => {
+		if (this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+		cleanup();
+	});
+
+	it("should check a append method", done => {
+        // Given
+		const REPEAT = 10;
+		let retry = 0;
+		let appendedCount = 0;
+		let totalCroppedCount = 0;
+		let beforeTotalCroppedCount = 0;
+
+		this.inst.on("layoutComplete", e => {
+			// Then
+			const itemCount = this.inst.layoutManager.items.length;
+
+			expect(e.isAppend).to.be.true;
+			expect(e.distance).to.be.equal(0);
+			expect(this.inst.el.children.length).to.be.equal(itemCount);
+			if (this.inst.isRecycling()) {
+				totalCroppedCount = appendedCount - itemCount;
+				expect(itemCount).to.be.equal(this.inst.options.count); // a number of elements are always 18
+				expect(e.croppedCount).to.be.equal(totalCroppedCount - beforeTotalCroppedCount); // check croppedCount
+				beforeTotalCroppedCount = totalCroppedCount;
+			} else {
+				expect(appendedCount).to.be.equal(itemCount);
+			}
+
+			// When
+			if (retry++ < REPEAT) {
+				appendedCount += this.inst.append(Content.append());
+			} else {
+				done();
+			}
+		});
+
+		// When
+		appendedCount += this.inst.append(Content.append());
+    });
+
+	it("should check a append method with groupkey", done => {
+        // Given
+		const REPEAT = 10;
+		let retry = 0;
+		let appendedCount = 0;
+		let totalCroppedCount = 0;
+		let beforeTotalCroppedCount = 0;
+		let groupkey = 0;
+		const group = {};
+
+		function appendWithGroup(inst) {
+			const count = inst.append(Content.append(), ++groupkey);
+
+			appendedCount += count;
+			group[groupkey] = count;
+		}
+
+		function getTotalCount(inst) {
+			const groupKeys = inst.getGroupKeys();
+			let total = 0;
+
+			for (let i = groupKeys[0]; i <= groupKeys[groupKeys.length - 1]; i++) {
+				total += group[i];
+			}
+			return total;
+		}
+
+		this.inst.on("layoutComplete", e => {
+			// Then
+			const itemCount = this.inst.layoutManager.items.length;
+
+			expect(e.isAppend).to.be.true;
+			expect(e.distance).to.be.equal(0);
+			expect(this.inst.el.children.length).to.be.equal(itemCount);
+			if (this.inst.isRecycling()) {
+				totalCroppedCount = appendedCount - itemCount;
+				expect(e.croppedCount).to.be.equal(totalCroppedCount - beforeTotalCroppedCount); // check croppedCount
+				expect(itemCount).to.be.equal(getTotalCount(this.inst));
+				beforeTotalCroppedCount = totalCroppedCount;
+			} else {
+				expect(appendedCount).to.be.equal(itemCount);
+			}
+
+			// When
+			if (retry++ < REPEAT) {
+				appendWithGroup(this.inst);
+			} else {
+				done();
+			}
+		});
+
+		// When
+		appendWithGroup(this.inst);
+    });
+
+	it("should check a prepend method", done => {
+        // Given
+		const REPEAT = 10;
+		let retry = 0;
+		let prependedCount = 0;
+
+		this.inst.on("layoutComplete", e => {
+			// Then
+			const itemCount = this.inst.layoutManager.items.length;
+			const beforeItemY = itemCount > e.target.length ? 
+				this.inst.layoutManager.items[e.target.length].position.y : 0;
+
+			expect(e.isAppend).to.be.false;
+			expect(e.distance).to.be.equal(beforeItemY);
+			if (this.inst.isRecycling()) {
+				expect(itemCount).to.be.equal(18); // a number of elements are always 18
+				expect(this.inst.el.children.length).to.be.equal(18); // a number of elements(DOM) are always 18
+			} else {
+				expect(prependedCount).to.be.equal(itemCount);
+			}
+			expect(this.inst.el.children.length).to.be.equal(itemCount);
+
+			// When
+			if (retry++ < REPEAT) {
+				prependedCount += this.inst.prepend(Content.prepend());
+			} else {
+				done();
+			}
+		});
+
+		// When
+		prependedCount += this.inst.prepend(Content.prepend());
+    });
+
+	it("should check a prepend method with groupkey", done => {
+        // Given
+		const REPEAT = 10;
+		let retry = 0;
+		let prependedCount = 0;
+		let totalCroppedCount = 0;
+		let beforeTotalCroppedCount = 0;
+		let groupkey = 0;
+		const group = {};
+
+		function prependWithGroup(inst) {
+			const count = inst.prepend(Content.prepend(), ++groupkey);
+
+			prependedCount += count;
+			group[groupkey] = count;
+		}
+
+		function getTotalCount(inst) {
+			const groupKeys = inst.getGroupKeys();
+			let total = 0;
+
+			for (let i = groupKeys[groupKeys.length - 1]; i <= groupKeys[0]; i++) {
+				total += group[i];
+			}
+			return total;
+		}
+
+		this.inst.on("layoutComplete", e => {
+			// Then
+			const itemCount = this.inst.layoutManager.items.length;
+			const beforeItemY = itemCount > e.target.length ? 
+				this.inst.layoutManager.items[e.target.length].position.y : 0;
+
+			expect(e.isAppend).to.be.false;
+			expect(e.distance).to.be.equal(beforeItemY);
+			if (this.inst.isRecycling()) {
+				totalCroppedCount = prependedCount - itemCount;
+				expect(e.croppedCount).to.be.equal(totalCroppedCount - beforeTotalCroppedCount); // check croppedCount
+				expect(itemCount).to.be.equal(getTotalCount(this.inst));
+				beforeTotalCroppedCount = totalCroppedCount;
+			} else {
+				expect(prependedCount).to.be.equal(itemCount);
+			}
+			expect(this.inst.el.children.length).to.be.equal(itemCount);
+
+			// When
+			if (retry++ < REPEAT) {
+				prependWithGroup(this.inst);
+			} else {
+				done();
+			}
+		});
+
+		// When
+		prependWithGroup(this.inst);
+    });
+});
+
 describe("InfiniteGrid workaround Test", function() {
 	beforeEach(() => {
 		this.inst = null;
@@ -104,7 +303,7 @@ describe("InfiniteGrid workaround Test", function() {
             "layoutComplete": e => {
                 // Then
                 expect(e.isAppend).to.be.false;
-                $(window).scrollTop(0);
+                window.scrollTo(0, 0);
                 expect(prependHandler.callCount).to.be.equal(0);
             }
         });
@@ -120,3 +319,18 @@ describe("InfiniteGrid workaround Test", function() {
         }, 2000);
     });
 });
+
+// describe("InfiniteGrid setStatus/getStatue Test", function() {
+// 	beforeEach(() => {
+// 		this.inst = null;
+// 		this.el = sandbox();
+// 		this.el.innerHTML = `<ul id="nochildren_grid"></ul>`;
+// 	});
+// 	afterEach(() => {
+// 		if (this.inst) {
+// 			this.inst.destroy();
+// 			this.inst = null;
+// 		}
+// 		cleanup();
+// 	});
+// });

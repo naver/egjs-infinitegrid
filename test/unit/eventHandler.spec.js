@@ -1,7 +1,7 @@
-import InfiniteGrid from "../../src/infiniteGrid.js";
-import {Content} from "../content.js";
-import {window} from "../../src/browser.js";
-import {utils} from "../../src/utils.js";
+import InfiniteGrid from "../../src/infiniteGrid";
+import {Content} from "../content";
+import {window} from "../../src/browser";
+import {utils} from "../../src/utils";
 
 describe("InfiniteGrid eventHandler Test", function() {
 	beforeEach(() => {
@@ -63,6 +63,7 @@ describe("InfiniteGrid eventHandler Test", function() {
             expect(this.resizeHandler.calledOnce).to.be.true;
             expect(initValue).to.be.equal(0);
             expect(this.inst._status.prevScrollTop).to.be.equal(-1);
+            utils.removeEvent(window, "resize", this.resizeHandler);
             done();
         }, 200);
     });
