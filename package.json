@@ -8,7 +8,7 @@
     "test": "karma start",
     "test:chrome": "karma start --chrome",
     "lint": "eslint src",
-    "jsdoc": "jsdoc -c jsdoc.json",
+    "jsdoc": "rm -rf ./doc && jsdoc -c jsdoc.json",
     "coverage": "karma start --coverage",
     "prepush": "npm run lint",
     "commitmsg": "node config/validate-commit-msg.js"

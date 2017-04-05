@@ -278,6 +278,58 @@ describe("InfiniteGrid append/prepend on layoutComplete Test", function() {
     });
 });
 
+// describe("InfiniteGrid unit Test", function() {
+// 	beforeEach(() => {
+// 		this.inst = null;
+// 		this.el = sandbox();
+// 		this.el.innerHTML = `<ul id="grid">
+// 			<li style="width:50%"><div>test</div></li>
+// 			<li style="width:50%"><div>test</div></li>
+// 			<li style="width:50%"><div>test</div></li>
+// 			<li style="width:50%"><div>test</div></li>
+// 			<li style="width:50%"><div>test</div></li>
+// 			<li style="width:50%"><div>test</div></li>
+// 		</ul>
+// 		<ul id="nochildren_grid"></ul>`;
+// 	});
+// 	afterEach(() => {
+// 		if (this.inst) {
+// 			this.inst.destroy();
+// 			this.inst = null;
+// 		}
+// 		cleanup();
+// 	});
+
+// 	it("should checka a clear after scrolling", () => {
+// 	var done = assert.async();
+// 	// Given
+// 	// When
+// 	var self = this;
+// 	this.inst = new eg.InfiniteGrid("#grid");
+// 	this.inst.on("layoutComplete",function(e) {
+// 		// Then
+// 		assert.equal(this.isProcessing(), false, "idel in layoutComplete");
+// 		assert.equal(e.target.length, 6, "a number of elements are 6");
+// 		assert.equal(this.items.length, 6, "a number of elements are 6");
+// 		assert.equal(this.el.children.length, 6, "a number of DOM are 6");
+
+// 		// When
+// 		this.clear();
+
+// 		assert.equal(this.items.length, 0, "a number of elements are 0");
+// 		assert.equal(this.el.children.length, 0, "a number of DOM are 0");
+// 		assert.equal(this._isRecycling, false, "_isRecycling is false");
+// 		assert.equal(this._isProcessing, false, "_isProcessing is false");
+// 		assert.equal(e.croppedCount, 0, "a number of removedContent are 0");
+// 		self.fakeDoc.body.scrollTop = 100;
+// 		$(window).trigger("scroll");
+// 		setTimeout(function() {
+// 			done();
+// 		}, 100);
+// 	});		
+// 	});
+// });
+
 describe("InfiniteGrid workaround Test", function() {
 	beforeEach(() => {
 		this.inst = null;
@@ -320,17 +372,107 @@ describe("InfiniteGrid workaround Test", function() {
     });
 });
 
-// describe("InfiniteGrid setStatus/getStatue Test", function() {
-// 	beforeEach(() => {
-// 		this.inst = null;
-// 		this.el = sandbox();
-// 		this.el.innerHTML = `<ul id="nochildren_grid"></ul>`;
-// 	});
-// 	afterEach(() => {
-// 		if (this.inst) {
-// 			this.inst.destroy();
-// 			this.inst = null;
-// 		}
-// 		cleanup();
-// 	});
-// });
+describe("InfiniteGrid setStatus/getStatue Test", function() {
+	beforeEach(() => {
+		this.el = sandbox();
+		this.el.innerHTML = `<ul id="grid"></ul>`;
+		this.inst = new eg.InfiniteGrid("#grid", {
+			"count" : 18
+		});
+	});
+	afterEach(() => {
+		if (this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+		cleanup();
+	});
+
+	it("should check object in restore method", function(assert) {
+		// Given
+		var before = this.inst.getStatus();
+		this.inst.setStatus({});
+
+		// Then
+		assert.equal(this.inst.el.style.cssText, before.cssText, "check cssText");
+		assert.equal(this.inst.el.innerHTML, before.html, "check html");
+
+		// When
+		this.inst.setStatus();
+
+		// Then
+		assert.equal(this.inst.el.style.cssText, before.cssText, "check cssText");
+		assert.equal(this.inst.el.innerHTML, before.html, "check html");
+	});
+
+	// QUnit.test("restore status", function(assert) {
+	// 	var done = assert.async();
+	// 	var $el;
+	// 	// Given
+	// 	this.inst = new eg.InfiniteGrid("#grid", {
+	// 		"count" : 18
+	// 	});
+
+	// 	// When
+	// 	this.inst.on("layoutComplete",function(e) {
+	// 		var parseCssText = function(str) {
+	// 			var ht = {};
+	// 			var $styles = $(str.split(";"));
+	// 			$styles = $styles.map(function(i,v) {
+	// 			return $.trim(v);
+	// 			}).filter(function(i,v) {
+	// 				return !$.isEmptyObject(v);
+	// 			}).each(function(i,v) {
+	// 			var a =v.split(":");
+	// 			var val = $.trim(a[1]);
+	// 			if(!$.isEmptyObject(val)) {
+	// 				ht[a[0]] = $.trim(a[1]);
+	// 			}
+	// 			});
+	// 			return ht;
+	// 		};
+	// 		var beforeStatus = this.getStatus();
+	// 		// Then
+	// 		assert.equal(beforeStatus.html, this.$el.html(), "check html");
+	// 		assert.equal(beforeStatus.cssText, this.el.style.cssText, "check cssText");
+	// 		var self = this;
+	// 		beforeStatus.items.forEach( function(v,i) {
+	// 			assert.deepEqual(v.position, self.items[i].position, "check html and position information");
+	// 			assert.deepEqual(v.size, self.items[i].size,"check html and size information");
+	// 		});
+	// 		for(var v in beforeStatus.prop) {
+	// 			assert.equal(this[v], beforeStatus.prop[v], "check infiniteGrid properties " + v);
+	// 		};
+
+	// 		// Given
+	// 		this.destroy();
+	// 		var infinite = new eg.InfiniteGrid("#grid", {
+	// 			"count" : 18
+	// 		});
+
+	// 		// When
+	// 		infinite.setStatus(beforeStatus);
+
+	// 		// Then
+	// 		assert.deepEqual(parseCssText(infinite.el.style.cssText), parseCssText(beforeStatus.cssText), "check cssText");
+	// 		infinite.items.forEach( function(v,i) {
+	// 			assert.deepEqual(v.position, beforeStatus.items[i].position, "check html and position information");
+	// 			assert.deepEqual(v.size, beforeStatus.items[i].size,"check html and size information");
+	// 			$el = $(v.el);
+	// 			assert.deepEqual(v.position, {
+	// 				"x" : parseInt(v.el.style.left, 10),
+	// 				"y" : parseInt(v.el.style.top, 10)
+	// 			}, "check html and position information-3");
+	// 		});
+	// 		assert.deepEqual(infinite.options, beforeStatus.options, "check options info");
+	// 		for(var v in beforeStatus.prop) {
+	// 			assert.equal(infinite[v], beforeStatus.prop[v], "check infiniteGrid properties " + v);
+	// 		};
+	// 		// infinite.destroy();
+	// 		done();
+	// 	});
+
+	// 	// Then
+	// 	this.inst.append(getContent("append",50));
+	// });
+});

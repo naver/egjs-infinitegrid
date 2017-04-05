@@ -15,11 +15,9 @@ const InfiniteGrid = class InfiniteGrid
 extends Mixin(Component).with(EventHandler) {
 	/**
 	 * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
-	 * @group egjs
 	 * @ko 콘텐츠가 있는 카드 엘리먼트를 그리드 레이아웃에 무한으로 배치하는 모듈. 다양한 크기의 카드 엘리먼트를 격자 모양으로 배치하는 UI를 만들 수 있다. 카드 엘리먼트의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
-	 * @class
-	 * @name eg.InfiniteGrid
-	 * @extends eg.Component
+	 * @alias eg.InfiniteGrid
+	 * @extends Component
 	 *
 	 * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
 	 * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
@@ -90,7 +88,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Returns the current state of a module such as location information. You can use the setStatus() method to restore the information returned through a call to this method.
 	 * @ko 카드의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
-	 * @method eg.InfiniteGrid#getStatus
 	 * @return {Object} State object of the eg.InfiniteGrid module<ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
 	 */
 	getStatus() {
@@ -119,7 +116,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Sets the state of the eg.InfiniteGrid module with the information returned through a call to the getStatue() method.
 	 * @ko getStatue() 메서드가 저장한 정보로 eg.InfiniteGrid 모듈의 상태를 설정한다.
-	 * @method eg.InfiniteGrid#setStatus
 	 * @param {Object} status State object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
@@ -144,7 +140,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Checks whether a card element is being added.
 	 * @ko 카드 엘리먼트 추가가 진행 중인지 확인한다
-	 * @method eg.InfiniteGrid#isProcessing
 	 * @return {Boolean} Indicates whether a card element is being added <ko>카드 엘리먼트 추가 진행 중 여부</ko>
 	 */
 	isProcessing() {
@@ -154,7 +149,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Checks whether the total number of added card elements is greater than the value of the count option. Note that the value of the count option is always greater than zero. If it returns true, the number of DOMs won't increase even though card elements are added; instead of adding a new DOM, existing DOMs are recycled to maintain the number of DOMs.
 	 * @ko 추가된 카드 엘리먼트의 전체 개수가 count 옵션의 값보다 큰지 확인한다. 단, count 옵션의 값은 0보다 크다. 'true'가 반환되면 카드 엘리먼트가 더 추가돼도 DOM의 개수를 증가하지 않고 기존 DOM을 재활용(recycle)해 DOM의 개수를 일정하게 유지한다
-	 * @method eg.InfiniteGrid#isRecycling
 	 * @return {Boolean} Indicates whether the total number of added card elements is greater than the value of the count option. <ko>추가된 카드 엘리먼트의 전체 개수가 count 옵션의 값보다 큰지 여부</ko>
 	 */
 	isRecycling() {
@@ -164,7 +158,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Returns the list of group keys which belongs to card elements currently being maintained. You can use the append() or prepend() method to configure group keys so that multiple card elements can be managed at once. If you do not use these methods to configure group keys, it returns undefined as a group key.
 	 * @ko 현재 유지하고 있는 카드 엘리먼트의 그룹 키 목록을 반환한다. 여러 개의 카드 엘리먼트를 묶어서 관리할 수 있도록 append() 메서드나 prepend() 메서드에서 그룹 키를 지정할 수 있다. append() 메서드나 prepend() 메서드에서 그룹 키를 지정하지 않았다면 'undefined'가 그룹 키로 반환된다
-	 * @method eg.InfiniteGrid#getGroupKeys
 	 * @return {Array} List of group keys <ko>그룹 키의 목록</ko>
 	 */
 	getGroupKeys() {
@@ -174,7 +167,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Rearranges a layout.
 	 * @ko 레이아웃을 다시 배치한다.
-	 * @method eg.InfiniteGrid#layout
 	 * @param {Boolean} [isRelayout=true] Indicates whether a card element is being relayouted <ko>카드 엘리먼트 재배치 여부</ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 *
@@ -212,7 +204,6 @@ extends Mixin(Component).with(EventHandler) {
 	 * Adds a card element at the bottom of a grid layout. This method is available only if the isProcessing() method returns false.
 	 * @ko 카드 엘리먼트를 그리드 레이아웃의 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
 	 * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
-	 * @method eg.InfiniteGrid#append
 	 * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
 	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
 	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
@@ -224,7 +215,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Adds a card element at the top of a grid layout. This method is available only if the isProcessing() method returns false and the isRecycling() method returns true.
 	 * @ko 카드 엘리먼트를 그리드 레이아웃의 위에 추가한다. isProcessing() 메서드의 반환값이 'false'이고, isRecycling() 메서드의 반환값이 'true'일 때만 이 메서드를 사용할 수 있다
-	 * @method eg.InfiniteGrid#prepend
 	 * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
 	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
 	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
@@ -236,7 +226,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Clears added card elements and data.
 	 * @ko 추가된 카드 엘리먼트와 데이터를 모두 지운다.
-	 * @method eg.InfiniteGrid#clear
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	clear() {
@@ -250,7 +239,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Returns a card element at the top of a layout.
 	 * @ko 레이아웃의 맨 위에 있는 카드 엘리먼트를 반환한다.
-	 * @method eg.InfiniteGrid#getTopElement
 	 *
 	 * @return {HTMLElement} Card element at the top of a layout. (if the position of card elements are same, it returns the first left element) <ko>레이아웃의 맨 위에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 왼쪽 엘리먼트가 반환된다)</ko>
 	 */
@@ -263,7 +251,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Returns a card element at the bottom of a layout.
 	 * @ko 레이아웃의 맨 아래에 있는 카드 엘리먼트를 반환한다.
-	 * @method eg.InfiniteGrid#getBottomElement
 	 *
 	 * @return {HTMLElement} Card element at the bottom of a layout (if the position of card elements are same, it returns the first right element)<ko>레이아웃의 맨 아래에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 오른쪽 엘리먼트가 반환된다)</ko>
 	 */
@@ -305,8 +292,7 @@ extends Mixin(Component).with(EventHandler) {
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
 		 * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
-		 * @name eg.InfiniteGrid#layoutComplete
-		 * @event
+		 * @event eg.InfiniteGrid#layoutComplete
 		 *
 		 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
 		 * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
@@ -469,7 +455,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Removes a card element on a grid layout.
 	 * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
-	 * @method eg.InfiniteGrid#remove
 	 * @param {HTMLElement} Card element to be removed <ko>삭제될 카드 엘리먼트</ko>
 	 * @return {Object}  Removed card element <ko>삭제된 카드 엘리먼트 정보</ko>
 	 */
@@ -480,7 +465,6 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * Destroys elements, properties, and events used on a grid layout.
 	 * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
-	 * @method eg.InfiniteGrid#destroy
 	 */
 	destroy() {
 		this.off();
