@@ -93,7 +93,7 @@ const utils = {
 			return Math.max(
 				el.body[`scroll${name}`], doc[`scroll${name}`],
 				el.body[`offset${name}`], doc[`offset${name}`],
-				doc[`client${name}`],
+				doc[`client${name}`]
 			);
 		} else { // NODE
 			const style = SUPPORT_COMPUTEDSTYLE ?

@@ -1,3 +1,14 @@
+/**
+ * Copyright (c) 2017 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+*/
+
+/**
+ * The built in string object.
+ * @external eg.Component
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String|eg.Component}
+ */
+
 import Component from "@egjs/component";
 import EventHandler from "./eventHandler";
 import {document} from "./browser";
@@ -7,18 +18,16 @@ import ImageLoaded from "./imageLoaded";
 import LayoutManager from "./layoutManager";
 
 /**
-* Copyright (c) 2017 NAVER Corp.
-* egjs projects are licensed under the MIT license
-*/
-
+ * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
+ * @ko 콘텐츠가 있는 카드 엘리먼트를 그리드 레이아웃에 무한으로 배치하는 모듈. 다양한 크기의 카드 엘리먼트를 격자 모양으로 배치하는 UI를 만들 수 있다. 카드 엘리먼트의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
+ * @alias eg.InfiniteGrid
+ * @extends Component
+ */
 const InfiniteGrid = class InfiniteGrid
 extends Mixin(Component).with(EventHandler) {
 	/**
-	 * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
-	 * @ko 콘텐츠가 있는 카드 엘리먼트를 그리드 레이아웃에 무한으로 배치하는 모듈. 다양한 크기의 카드 엘리먼트를 격자 모양으로 배치하는 UI를 만들 수 있다. 카드 엘리먼트의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
-	 * @alias eg.InfiniteGrid
-	 * @extends Component
-	 *
+	 * Create a InfiniteGrid
+	 * @ko eg.InfiniteGrid을 생성한다.
 	 * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
 	 * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
 	 * @param {String} [options.itemSelector] A selector to select card elements that make up the layout (@deprecated since 1.3.0)<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector) (@deprecated since 1.3.0)</ko>
@@ -75,7 +84,7 @@ extends Mixin(Component).with(EventHandler) {
 		if (this.el.children.length > 0) {
 			this.layout(
 				true,
-				LayoutManager.itemize(this.el.children, this.options.defaultGroupKey),
+				LayoutManager.itemize(this.el.children, this.options.defaultGroupKey)
 			);
 		}
 
@@ -191,7 +200,7 @@ extends Mixin(Component).with(EventHandler) {
 		this._waitResource(
 			isRelayout,
 			options.isAppend ? _addItems : _addItems.reverse(),
-			options,
+			options
 		);
 		return this;
 	}
@@ -365,7 +374,7 @@ extends Mixin(Component).with(EventHandler) {
 			{
 				isAppend,
 				removedCount,
-			},
+			}
 		);
 		// console.info("remove count", removedCount, this.el.children.length, "+", elements.length, "||", cloneElements.length);
 
@@ -426,6 +435,7 @@ extends Mixin(Component).with(EventHandler) {
 
 	/**
 	* Removes extra space caused by adding card elements.
+	* @private
 	*/
 	_fitItems() {
 		const y = this.layoutManager.fit();
