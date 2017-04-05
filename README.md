@@ -1,4 +1,4 @@
-# eg.InfiniteGrid
+# egjs-infiniteGrid
 A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
 
 ## Documentation
@@ -73,7 +73,7 @@ If you find a bug, please report it to us using the [Issues](https://github.com/
 
 
 ## License
-eg.InfiniteGrid is released under the [MIT license](http://naver.github.io/egjs/license.txt).
+egjs-infiniteGrid is released under the [MIT license](http://naver.github.io/egjs/license.txt).
 
 ```
 Copyright (c) 2015 NAVER Corp.
