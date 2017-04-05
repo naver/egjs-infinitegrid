@@ -202,7 +202,6 @@ GitHub.sublime-settings
 
 ### Custom ###
 dist/
-doc/
 report/
 temp/
 

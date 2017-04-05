@@ -18,16 +18,45 @@ import ImageLoaded from "./imageLoaded";
 import LayoutManager from "./layoutManager";
 
 /**
- * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
+ * @description A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance 
  * @ko 콘텐츠가 있는 카드 엘리먼트를 그리드 레이아웃에 무한으로 배치하는 모듈. 다양한 크기의 카드 엘리먼트를 격자 모양으로 배치하는 UI를 만들 수 있다. 카드 엘리먼트의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
  * @alias eg.InfiniteGrid
  * @extends Component
- */
+ *
+ * @example
+	<!-- HTML -->
+	<ul id="grid">
+		<li class="card">
+			<div>test1</div>
+		</li>
+		<li class="card">
+			<div>test2</div>
+		</li>
+		<li class="card">
+			<div>test3</div>
+		</li>
+		<li class="card">
+			<div>test4</div>
+		</li>
+		<li class="card">
+			<div>test5</div>
+		</li>
+		<li class="card">
+			<div>test6</div>
+		</li>
+	</ul>
+	<script>
+	var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
+		// ...
+	});
+	</script>
+ *
+ * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
+ * @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+ **/
 const InfiniteGrid = class InfiniteGrid
 extends Mixin(Component).with(EventHandler) {
 	/**
-	 * Create a InfiniteGrid
-	 * @ko eg.InfiniteGrid을 생성한다.
 	 * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
 	 * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
 	 * @param {String} [options.itemSelector] A selector to select card elements that make up the layout (@deprecated since 1.3.0)<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector) (@deprecated since 1.3.0)</ko>
@@ -36,36 +65,6 @@ extends Mixin(Component).with(EventHandler) {
 	 * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
 	 * @param {Number} [options.threshold=300] The threshold size of an event area where card elements are added to a layout.<br>- append event: If the current vertical position of the scroll bar is greater than "the bottom property value of the card element at the top of the layout" plus "the value of the threshold option", the append event will occur.<br>- prepend event: If the current vertical position of the scroll bar is less than "the bottom property value of the card element at the top of the layout" minus "the value of the threshold option", the prepend event will occur. <ko>−	레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.<br>- append 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 아래에 있는 카드 엘리먼트의 top 속성의 값 + threshold 옵션의 값'보다 크면 append 이벤트가 발생한다.<br>- prepend 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 위에 있는 카드 엘리먼트의 bottom 속성의 값 - threshold 옵션의 값'보다 작으면 prepend 이벤트가 발생한다</ko>
 	 *
-	 * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
-	 *  @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
-	 *
-	 * @example
-		<!-- HTML -->
-		<ul id="grid">
-			<li class="card">
-				<div>test1</div>
-			</li>
-			<li class="card">
-				<div>test2</div>
-			</li>
-			<li class="card">
-				<div>test3</div>
-			</li>
-			<li class="card">
-				<div>test4</div>
-			</li>
-			<li class="card">
-				<div>test5</div>
-			</li>
-			<li class="card">
-				<div>test6</div>
-			</li>
-		</ul>
-		<script>
-		var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
-			// ...
-		});
-		</script>
 	 */
 	constructor(el, options) {
 		super(el, options);
