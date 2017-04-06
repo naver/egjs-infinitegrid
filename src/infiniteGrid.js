@@ -101,21 +101,16 @@ extends Mixin(Component).with(EventHandler) {
 	getStatus() {
 		const data = {};
 
-		for (const p in this) {
-			if (Object.prototype.hasOwnProperty.call(this, p) && /^_/.test(p) &&
-				typeof this[p] !== "function" && !(this[p] instanceof Element)) {
-				data[p] = this[p];
+		for (const p in this._status) {
+			if (Object.prototype.hasOwnProperty.call(this._status, p) &&
+				!(this._status[p] instanceof Element)) {
+				data[p] = this._status[p];
 			}
 		}
 		return {
-			prop: data,
 			options: Object.assign({}, this.options),
-			items: this.items.map(v => {
-				const clone = Object.assign({}, v);
-
-				delete clone.el;
-				return clone;
-			}),
+			prop: data,
+			layoutManager: this.layoutManager.getStatus(),
 			html: this.el.innerHTML,
 			cssText: this.el.style.cssText,
 		};
@@ -128,20 +123,18 @@ extends Mixin(Component).with(EventHandler) {
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	setStatus(status) {
-		if (!status || !status.cssText || !status.html ||
-			!status.prop || !status.items) {
+		if (!status || !status.options || !status.prop ||
+			!status.layoutManager || !status.html || !status.cssText) {
 			return this;
 		}
+		Object.assign(this.options, status.options);
+		Object.assign(this._status, status.prop);
+		// this.status.topElement = null;
+		// this.status.bottomElement = null;
+		this.layoutManager.setStatus(status.layoutManager);
 		this.el.style.cssText = status.cssText;
 		this.el.innerHTML = status.html;
-		Object.assign(this._status, status.prop);
-		this._status.topElement = null;
-		this._status.bottomElement = null;
 
-		this.items = Array.from(this.el.children).map((v, i) => {
-			status.items[i].el = v;
-			return status.items[i];
-		});
 		return this;
 	}
 

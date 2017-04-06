@@ -328,4 +328,37 @@ export default class LayoutManager {
 	isNeededResize() {
 		return utils.innerWidth(this.el) !== this.size.containerWidth;
 	}
+	getStatus() {
+		const data = {};
+
+		for (const p in this) {
+			if (Object.prototype.hasOwnProperty.call(this, p) &&
+				typeof this[p] !== "function" && !(this[p] instanceof Element)) {
+				data[p] = this[p];
+			}
+		}
+		console.info(data);
+		return {
+			options: Object.assign({}, this.options),
+			prop: data,
+			items: this.items.map(v => {
+				const clone = Object.assign({}, v);
+
+				delete clone.el;
+				return clone;
+			}),
+		};
+	}
+	setStatus(status) {
+		if (!status || !status.options || !status.prop || !status.items) {
+			return this;
+		}
+		Object.assign(this.options, status.options);
+		Object.assign(this, status.prop);
+		this.items = Array.prototype.slice.call(this.el.children).map((v, i) => {
+			status.items[i].el = v;
+			return status.items[i];
+		});
+		return this;
+	}
 }

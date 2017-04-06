@@ -1,5 +1,6 @@
 import InfiniteGrid from "../../src/infiniteGrid";
 import {window} from "../../src/browser";
+import {utils} from "../../src/utils";
 import {Content} from "../content";
 
 describe("InfiniteGrid initailization/destroy Test", function() {
@@ -250,7 +251,7 @@ describe("InfiniteGrid append/prepend on layoutComplete Test", function() {
 		this.inst.on("layoutComplete", e => {
 			// Then
 			const itemCount = this.inst.layoutManager.items.length;
-			const beforeItemY = itemCount > e.target.length ? 
+			const beforeItemY = itemCount > e.target.length ?
 				this.inst.layoutManager.items[e.target.length].position.y : 0;
 
 			expect(e.isAppend).to.be.false;
@@ -376,8 +377,8 @@ describe("InfiniteGrid setStatus/getStatue Test", function() {
 	beforeEach(() => {
 		this.el = sandbox();
 		this.el.innerHTML = `<ul id="grid"></ul>`;
-		this.inst = new eg.InfiniteGrid("#grid", {
-			"count" : 18
+		this.inst = new InfiniteGrid("#grid", {
+			"count": 18,
 		});
 	});
 	afterEach(() => {
@@ -388,91 +389,101 @@ describe("InfiniteGrid setStatus/getStatue Test", function() {
 		cleanup();
 	});
 
-	it("should check object in restore method", function(assert) {
+	it("should check object in restore method", () => {
 		// Given
-		var before = this.inst.getStatus();
+		const before = this.inst.getStatus();
+
 		this.inst.setStatus({});
 
 		// Then
-		assert.equal(this.inst.el.style.cssText, before.cssText, "check cssText");
-		assert.equal(this.inst.el.innerHTML, before.html, "check html");
+		expect(this.inst.el.style.cssText).to.be.equal(before.cssText);
+		expect(this.inst.el.innerHTML).to.be.equal(before.html);
 
 		// When
 		this.inst.setStatus();
 
 		// Then
-		assert.equal(this.inst.el.style.cssText, before.cssText, "check cssText");
-		assert.equal(this.inst.el.innerHTML, before.html, "check html");
+		expect(this.inst.el.style.cssText).to.be.equal(before.cssText);
+		expect(this.inst.el.innerHTML).to.be.equal(before.html);
 	});
 
-	// QUnit.test("restore status", function(assert) {
-	// 	var done = assert.async();
-	// 	var $el;
-	// 	// Given
-	// 	this.inst = new eg.InfiniteGrid("#grid", {
-	// 		"count" : 18
-	// 	});
+	it("should check getStatus values", done => {
+		this.inst.on("layoutComplete", function (e) {
+			// Given
+			// When
+			const beforeStatus = this.getStatus();
+			const beforeLayoutStatus = beforeStatus.layoutManager;
 
-	// 	// When
-	// 	this.inst.on("layoutComplete",function(e) {
-	// 		var parseCssText = function(str) {
-	// 			var ht = {};
-	// 			var $styles = $(str.split(";"));
-	// 			$styles = $styles.map(function(i,v) {
-	// 			return $.trim(v);
-	// 			}).filter(function(i,v) {
-	// 				return !$.isEmptyObject(v);
-	// 			}).each(function(i,v) {
-	// 			var a =v.split(":");
-	// 			var val = $.trim(a[1]);
-	// 			if(!$.isEmptyObject(val)) {
-	// 				ht[a[0]] = $.trim(a[1]);
-	// 			}
-	// 			});
-	// 			return ht;
-	// 		};
-	// 		var beforeStatus = this.getStatus();
-	// 		// Then
-	// 		assert.equal(beforeStatus.html, this.$el.html(), "check html");
-	// 		assert.equal(beforeStatus.cssText, this.el.style.cssText, "check cssText");
-	// 		var self = this;
-	// 		beforeStatus.items.forEach( function(v,i) {
-	// 			assert.deepEqual(v.position, self.items[i].position, "check html and position information");
-	// 			assert.deepEqual(v.size, self.items[i].size,"check html and size information");
-	// 		});
-	// 		for(var v in beforeStatus.prop) {
-	// 			assert.equal(this[v], beforeStatus.prop[v], "check infiniteGrid properties " + v);
-	// 		};
+			// Then
+			expect(beforeStatus.html).to.be.equal(this.el.innerHTML);
+			expect(beforeStatus.cssText).to.be.equal(this.el.style.cssText);
 
-	// 		// Given
-	// 		this.destroy();
-	// 		var infinite = new eg.InfiniteGrid("#grid", {
-	// 			"count" : 18
-	// 		});
+			beforeLayoutStatus.items.forEach((v, i) => {
+				expect(v.position).to.be.deep.equal(this.layoutManager.items[i].position);
+				expect(v.size).to.be.deep.equal(this.layoutManager.items[i].size);
+			});
+			for (let v in beforeStatus.status) {
+				expect(this._status[v]).to.be.equal(beforeStatus.status[v]);
+			}
+			done();
+		});
+		this.inst.append(Content.append(50));
+	});
 
-	// 		// When
-	// 		infinite.setStatus(beforeStatus);
+	it("should check restore status", done => {
+		function parseCssText(str) {
+			const ht = {};
 
-	// 		// Then
-	// 		assert.deepEqual(parseCssText(infinite.el.style.cssText), parseCssText(beforeStatus.cssText), "check cssText");
-	// 		infinite.items.forEach( function(v,i) {
-	// 			assert.deepEqual(v.position, beforeStatus.items[i].position, "check html and position information");
-	// 			assert.deepEqual(v.size, beforeStatus.items[i].size,"check html and size information");
-	// 			$el = $(v.el);
-	// 			assert.deepEqual(v.position, {
-	// 				"x" : parseInt(v.el.style.left, 10),
-	// 				"y" : parseInt(v.el.style.top, 10)
-	// 			}, "check html and position information-3");
-	// 		});
-	// 		assert.deepEqual(infinite.options, beforeStatus.options, "check options info");
-	// 		for(var v in beforeStatus.prop) {
-	// 			assert.equal(infinite[v], beforeStatus.prop[v], "check infiniteGrid properties " + v);
-	// 		};
-	// 		// infinite.destroy();
-	// 		done();
-	// 	});
+			str.split(";").map(v => v.trim())
+				.filter(v => !utils.isEmptyObject(v))
+				.forEach(v => {
+					const a = v.split(":");
+					const val = a[1].trim();
 
-	// 	// Then
-	// 	this.inst.append(getContent("append",50));
-	// });
+					if (!utils.isEmptyObject(val)) {
+						ht[a[0]] = a[1].trim();
+					}
+				});
+			return ht;
+		}
+
+		this.inst.on("layoutComplete", function (e) {
+			// Given
+			const beforeStatus = this.getStatus();
+			const beforeLayoutStatus = beforeStatus.layoutManager;
+
+			this.destroy();
+			const infinite = new InfiniteGrid("#grid", {
+				"count": 18,
+			});
+
+			// When
+			infinite.setStatus(beforeStatus);
+
+			// Then (check infiniteGrid)
+			expect(infinite.options).to.be.deep.equal(beforeStatus.options);
+			for(let v in beforeStatus.prop) {
+				expect(infinite._status[v]).to.be.equal(beforeStatus.prop[v]); // check infiniteGrid properties
+			};
+			expect(parseCssText(infinite.el.style.cssText)).to.be.deep.equal(parseCssText(beforeStatus.cssText));
+
+			// Then (check layoutManager)
+			expect(infinite.layoutManager.options).to.be.deep.equal(beforeLayoutStatus.options);
+			// for(let v in beforeLayoutStatus.prop) {
+			// 	console.info(beforeLayoutStatus.prop[v]);
+
+			// 	expect(infinite.layoutManager[v]).to.be.equal(beforeLayoutStatus.prop[v]); // check LayoutManager properties
+			// };			
+			infinite.layoutManager.items.forEach((v, i) => {
+				expect(v.position).to.be.deep.equal(beforeLayoutStatus.items[i].position); // check html and position information
+				expect(v.size).to.be.deep.equal(beforeLayoutStatus.items[i].size); // check html and size information
+				expect(v.position).to.be.deep.equal({
+					"x": parseInt(v.el.style.left, 10),
+					"y": parseInt(v.el.style.top, 10),
+				});
+			});
+			done();
+		});
+		this.inst.append(Content.append(50));
+	});
 });
