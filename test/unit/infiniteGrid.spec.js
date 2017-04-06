@@ -432,3 +432,78 @@ describe("InfiniteGrid setStatus/getStatue Test", function() {
 		this.inst.append(Content.append(50));
 	});
 });
+
+
+describe("InfiniteGrid layout(false) Test", function() {
+	beforeEach(() => {
+		this.el = sandbox();
+		this.el.innerHTML = `<ul id="grid"></ul>`;
+		this.inst = new InfiniteGrid("#grid", {
+			"count": 30,
+		});
+	});
+	afterEach(() => {
+		if (this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+		cleanup();
+	});
+
+	it("should check a remove method", done => {
+		function getItem(items, position) {
+			return items.filter(v => v.position.x === position.x && v.position.y === position.y);
+		}
+
+		// Given
+		let beforePrependCols = null;
+		let beforePosition = null;
+
+		// Given
+		// When
+		this.inst.on("layoutComplete", function(e) {
+			// prependCols values are zero
+			this.layoutManager.prependCols.forEach(v => expect(v).to.be.equal(0));
+
+			this.off();
+			this.on("layoutComplete", function(e) {
+				// Given
+				beforePrependCols = [...this.layoutManager.prependCols];
+				// prependCols values aren't zero
+				this.layoutManager.prependCols.forEach(v => expect(v).to.be.not.equal(0));
+
+				beforePosition = e.target[5].position;
+				const beforeItemLen = this.layoutManager.items.length;
+				const beforeElementLen = this.el.children.length;
+				let ret = getItem(this.layoutManager.items, beforePosition);
+				expect(ret.length).to.be.equal(1);
+				
+				// When 
+				this.remove(e.target[5].el);
+				
+				// Then 
+				ret = getItem(this.layoutManager.items, beforePosition);
+				expect(ret.length).to.be.equal(0);
+				expect(this.layoutManager.items.length).to.be.equal(beforeItemLen - 1);
+				expect(this.el.children.length).to.be.equal(beforeElementLen - 1);
+
+				this.off();
+				this.on("layoutComplete", function(e) {
+					beforePrependCols = [...this.layoutManager.prependCols];
+					this.layoutManager.prependCols.forEach((v, i) => expect(v).to.be.equal(beforePrependCols[i]));
+					
+					// Then
+					var ret = getItem(this.layoutManager.items, beforePosition);
+					expect(ret.length).to.be.equal(1);
+					done();
+				});
+				// Then
+				this.layout(false);
+			});
+			this.append(Content.append(25));
+		});
+
+		// Then
+		this.inst.append(Content.append(25));
+	});
+});
