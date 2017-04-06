@@ -195,7 +195,7 @@ describe("InfiniteGrid scroll eventHandler Test", function() {
                 expect(self.itemHandler.calledOnce).to.be.true;
                 done();
             },
-            "append":  self.itemHandler
+            "append": self.itemHandler
         });
         // When
 	    this.inst.append(Content.append(200));

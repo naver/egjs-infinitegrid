@@ -17,32 +17,33 @@ import LayoutManager from "./layoutManager";
  * @extends Component
  *
  * @example
-	<!-- HTML -->
-	<ul id="grid">
-		<li class="card">
-			<div>test1</div>
-		</li>
-		<li class="card">
-			<div>test2</div>
-		</li>
-		<li class="card">
-			<div>test3</div>
-		</li>
-		<li class="card">
-			<div>test4</div>
-		</li>
-		<li class="card">
-			<div>test5</div>
-		</li>
-		<li class="card">
-			<div>test6</div>
-		</li>
-	</ul>
-	<script>
-	var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
-		// ...
-	});
-	</script>
+```
+<ul id="grid">
+	<li class="card">
+		<div>test1</div>
+	</li>
+	<li class="card">
+		<div>test2</div>
+	</li>
+	<li class="card">
+		<div>test3</div>
+	</li>
+	<li class="card">
+		<div>test4</div>
+	</li>
+	<li class="card">
+		<div>test5</div>
+	</li>
+	<li class="card">
+		<div>test6</div>
+	</li>
+</ul>
+<script>
+var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
+	// ...
+});
+</script>
+```
  *
  * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
  * @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
@@ -468,5 +469,4 @@ extends Mixin(Component).with(EventHandler) {
 	}
 };
 
-InfiniteGrid.VERSION = "#__VERSION__#";
 export default InfiniteGrid;

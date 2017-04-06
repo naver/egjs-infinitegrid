@@ -2,18 +2,19 @@ import InfiniteGrid from "../../src/infiniteGrid";
 import {window} from "../../src/browser";
 import {utils} from "../../src/utils";
 import {Content} from "../content";
+import $ from "jquery";
 
-describe("InfiniteGrid initailization/destroy Test", function() {
+describe("InfiniteGrid initailization/unit Test", function() {
 	beforeEach(() => {
 		this.inst = null;
 		this.el = sandbox();
-		this.el.innerHTML = `<ul id="grid">
-			<li style="width:50%"><div>test</div></li>
-			<li style="width:50%"><div>test</div></li>
-			<li style="width:50%"><div>test</div></li>
-			<li style="width:50%"><div>test</div></li>
-			<li style="width:50%"><div>test</div></li>
-			<li style="width:50%"><div>test</div></li>
+		this.el.innerHTML = `<ul style="margin:0px;padding:0;" id="grid">
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
 		</ul>
 		<ul id="nochildren_grid"></ul>`;
 	});
@@ -77,8 +78,44 @@ describe("InfiniteGrid initailization/destroy Test", function() {
 		// Then
 		expect(elements.length).to.be.equal(appendedCount);
 	});
+
+	it("should check getBottomElement method (same position)", done => {
+		// Given
+		this.inst = new InfiniteGrid("#grid", {
+			"count" : 18
+		}).on("layoutComplete", function(e) {
+			const bottomStyle = this.getBottomElement().style;
+			const topStyle = this.getTopElement().style;
+			expect(bottomStyle.left).to.not.equal("0px");
+			expect(bottomStyle.top).to.not.equal("0px");
+			expect(topStyle.left).to.be.equal("0px");
+			expect(topStyle.top).to.be.equal("0px");
+			done();
+		});
+	});
 });
 
+describe("InfiniteGrid item Test", function() {
+	beforeEach(() => {
+		this.inst = null;
+		this.el = sandbox();
+		this.el.innerHTML = `<ul style="margin:0px;padding:0;" id="grid">
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+		</ul>`;
+	});
+	afterEach(() => {
+		if (this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+		cleanup();
+	});
+});
 
 describe("InfiniteGrid append/prepend on layoutComplete Test", function() {
 	beforeEach(() => {
@@ -277,6 +314,88 @@ describe("InfiniteGrid append/prepend on layoutComplete Test", function() {
 		// When
 		prependWithGroup(this.inst);
     });
+
+	it("should check a count of remove contents", done => {
+		// Given
+		// When
+		// Then
+		expect(this.inst.isRecycling()).to.be.false;
+
+		//When
+		this.inst.once("layoutComplete",function(e) {
+			// Then
+			expect(this.layoutManager.items.length).to.be.equal(18);
+			expect(e.croppedCount).to.be.equal(188);
+
+			// When
+			this.on("layoutComplete", function(e) {
+				// Then
+				expect(this.layoutManager.items.length).to.be.equal(18);
+				expect(this.el.children.length).to.be.equal(18);
+				expect(e.croppedCount).to.be.equal(200);
+				done();
+			});
+			this.prepend(Content.prepend(200));
+		});
+		this.inst.append(Content.append(206));
+	});
+	
+	it("should check item/element order and check removed parts", done => {
+		function getUniqueX(target) {
+			var temp = {};
+			target.map(v => v.position.x)
+				.forEach(v => {
+					if (!(v in temp)) {
+						temp[v] = v;
+					} 
+				});
+			
+			var ret = [];
+			for(var p in temp) {
+				ret.push(p);
+			}
+			return ret;
+		}
+
+		function getGroups(target) {
+			var x = getUniqueX(target);
+			var group = {};
+			x.forEach(v => {
+				group[v] = target.filter(gv => gv.position.x === ~~v)
+					.sort((p, c) => p.position.y - c.position.y);
+			});
+			return group;
+		}
+
+		//When
+		this.inst.once("layoutComplete", function(e) {
+			this.on("layoutComplete", function(e) {
+				// Then
+				Array.prototype.slice.call(this.el.children).slice(0, e.target.length).forEach((v, i) => {
+					expect(~~v.getAttribute("prepend-index")).to.be.equal(i); // check order
+				});
+				const groups = getGroups(e.target);
+
+				for (let p in groups) {
+					groups[p].forEach((v, i) => {
+						if (i > 0) {
+							expect(v.position.y >=  groups[p][i-1].position.y).to.be.true; // it's greater than or equal to previous value
+							expect(~~v.el.getAttribute("prepend-index") >= ~~groups[p][i-1].el.getAttribute("prepend-index")).to.be.true; // it's greater than or equal to previous value
+						}
+					});
+				}
+				done();
+			});
+
+			// When
+			const prependElement = Content.prepend(20);
+			prependElement.forEach((v, i) => {
+				v.setAttribute("prepend-index", i);
+			});
+			this.prepend(prependElement);
+		});
+		this.inst.append(Content.append(30));
+	});
 });
 
 describe("InfiniteGrid workaround Test", function() {
@@ -356,7 +475,7 @@ describe("InfiniteGrid setStatus/getStatue Test", function() {
 	});
 
 	it("should check getStatus values", done => {
-		this.inst.on("layoutComplete", function (e) {
+		this.inst.on("layoutComplete", function(e) {
 			// Given
 			// When
 			const beforeStatus = this.getStatus();
@@ -506,4 +625,119 @@ describe("InfiniteGrid layout(false) Test", function() {
 		// Then
 		this.inst.append(Content.append(25));
 	});
+});
+
+
+describe("InfiniteGrid data type Test", function() {
+    const complicatedHTML = "<div class='item'><div class='thumbnail'><img class='img-rounded' src='#' /><div class='caption'><p><a href='http://www.naver.com'></a></p></div></div></div>";
+	
+    beforeEach(() => {
+        this.el = sandbox();
+		this.el.innerHTML = `<ul id="grid"></ul>`;
+        window.jQuery = $;
+        this.inst = new InfiniteGrid("#grid", {
+			"count": 20
+		});
+	});
+	afterEach(() => {
+        if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+        delete window.jQuery;
+        cleanup();
+	});
+
+	it("should check type #1 - concated String type", done => {
+        // Given
+        let data = [];
+        
+        for (var i = 0; i < 100; i++) {
+            data.push(complicatedHTML);
+        }
+        data = data.join("");
+
+        this.inst.on("layoutComplete", function(e) {
+            if(e.isAppend) {
+                // Then
+                expect(e.target.length).to.be.equal(20);
+                expect(this.layoutManager.items.length).to.be.equal(20);
+                expect(this.el.children.length).to.be.equal(20);
+
+                // When
+                this.prepend(data);
+            } else {
+                // Then
+                expect(e.target.length).to.be.equal(20);
+                expect(this.layoutManager.items.length).to.be.equal(20);
+                expect(this.el.children.length).to.be.equal(20);
+                done();
+            }
+        });
+
+        // When
+        this.inst.append(data);
+	});
+
+
+	it("should check type #2 - array has HTMLElement type", done => {
+        // Given
+        let data = [];
+        
+        for (var i = 0; i < 100; i++) {
+            data.push(complicatedHTML);
+        }
+
+        this.inst.on("layoutComplete", function(e) {
+            if(e.isAppend) {
+                // Then
+                expect(e.target.length).to.be.equal(20);
+                expect(this.layoutManager.items.length).to.be.equal(20);
+                expect(this.el.children.length).to.be.equal(20);
+
+                // When
+                this.prepend(data.concat());
+            } else {
+                // Then
+                expect(e.target.length).to.be.equal(20);
+                expect(this.layoutManager.items.length).to.be.equal(20);
+                expect(this.el.children.length).to.be.equal(20);
+                done();
+            }
+        });
+
+        // When
+        this.inst.append(data.concat());
+	});
+
+    it("should check type #3 - jQuery type", done => {
+        // Given
+        let data = [];
+        
+        for (var i = 0; i < 100; i++) {
+            data.push(complicatedHTML);
+        }
+        data = data.join("");
+
+        this.inst.on("layoutComplete", function(e) {
+            if(e.isAppend) {
+                // Then
+                expect(e.target.length).to.be.equal(20);
+                expect(this.layoutManager.items.length).to.be.equal(20);
+                expect(this.el.children.length).to.be.equal(20);
+
+                // When
+                this.prepend($(data));
+            } else {
+                // Then
+                expect(e.target.length).to.be.equal(20);
+                expect(this.layoutManager.items.length).to.be.equal(20);
+                expect(this.el.children.length).to.be.equal(20);
+                done();
+            }
+        });
+
+        // When
+        this.inst.append($(data));
+	});        
 });
