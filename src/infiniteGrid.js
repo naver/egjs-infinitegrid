@@ -2,13 +2,6 @@
  * Copyright (c) 2017 NAVER Corp.
  * egjs projects are licensed under the MIT license
 */
-
-/**
- * The built in string object.
- * @external eg.Component
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String|eg.Component}
- */
-
 import Component from "@egjs/component";
 import EventHandler from "./eventHandler";
 import {document} from "./browser";
@@ -129,8 +122,8 @@ extends Mixin(Component).with(EventHandler) {
 		}
 		Object.assign(this.options, status.options);
 		Object.assign(this._status, status.prop);
-		// this.status.topElement = null;
-		// this.status.bottomElement = null;
+		this._status.topElement = null;
+		this._status.bottomElement = null;
 		this.layoutManager.setStatus(status.layoutManager);
 		this.el.style.cssText = status.cssText;
 		this.el.innerHTML = status.html;

@@ -279,58 +279,6 @@ describe("InfiniteGrid append/prepend on layoutComplete Test", function() {
     });
 });
 
-// describe("InfiniteGrid unit Test", function() {
-// 	beforeEach(() => {
-// 		this.inst = null;
-// 		this.el = sandbox();
-// 		this.el.innerHTML = `<ul id="grid">
-// 			<li style="width:50%"><div>test</div></li>
-// 			<li style="width:50%"><div>test</div></li>
-// 			<li style="width:50%"><div>test</div></li>
-// 			<li style="width:50%"><div>test</div></li>
-// 			<li style="width:50%"><div>test</div></li>
-// 			<li style="width:50%"><div>test</div></li>
-// 		</ul>
-// 		<ul id="nochildren_grid"></ul>`;
-// 	});
-// 	afterEach(() => {
-// 		if (this.inst) {
-// 			this.inst.destroy();
-// 			this.inst = null;
-// 		}
-// 		cleanup();
-// 	});
-
-// 	it("should checka a clear after scrolling", () => {
-// 	var done = assert.async();
-// 	// Given
-// 	// When
-// 	var self = this;
-// 	this.inst = new eg.InfiniteGrid("#grid");
-// 	this.inst.on("layoutComplete",function(e) {
-// 		// Then
-// 		assert.equal(this.isProcessing(), false, "idel in layoutComplete");
-// 		assert.equal(e.target.length, 6, "a number of elements are 6");
-// 		assert.equal(this.items.length, 6, "a number of elements are 6");
-// 		assert.equal(this.el.children.length, 6, "a number of DOM are 6");
-
-// 		// When
-// 		this.clear();
-
-// 		assert.equal(this.items.length, 0, "a number of elements are 0");
-// 		assert.equal(this.el.children.length, 0, "a number of DOM are 0");
-// 		assert.equal(this._isRecycling, false, "_isRecycling is false");
-// 		assert.equal(this._isProcessing, false, "_isProcessing is false");
-// 		assert.equal(e.croppedCount, 0, "a number of removedContent are 0");
-// 		self.fakeDoc.body.scrollTop = 100;
-// 		$(window).trigger("scroll");
-// 		setTimeout(function() {
-// 			done();
-// 		}, 100);
-// 	});		
-// 	});
-// });
-
 describe("InfiniteGrid workaround Test", function() {
 	beforeEach(() => {
 		this.inst = null;
@@ -447,7 +395,7 @@ describe("InfiniteGrid setStatus/getStatue Test", function() {
 			return ht;
 		}
 
-		this.inst.on("layoutComplete", function (e) {
+		this.inst.on("layoutComplete", function(e) {
 			// Given
 			const beforeStatus = this.getStatus();
 			const beforeLayoutStatus = beforeStatus.layoutManager;
@@ -468,12 +416,9 @@ describe("InfiniteGrid setStatus/getStatue Test", function() {
 			expect(parseCssText(infinite.el.style.cssText)).to.be.deep.equal(parseCssText(beforeStatus.cssText));
 
 			// Then (check layoutManager)
-			expect(infinite.layoutManager.options).to.be.deep.equal(beforeLayoutStatus.options);
-			// for(let v in beforeLayoutStatus.prop) {
-			// 	console.info(beforeLayoutStatus.prop[v]);
-
-			// 	expect(infinite.layoutManager[v]).to.be.equal(beforeLayoutStatus.prop[v]); // check LayoutManager properties
-			// };			
+			for (let v in beforeLayoutStatus.prop) {
+				expect(infinite.layoutManager[v]).to.be.deep.equal(beforeLayoutStatus.prop[v]); // check LayoutManager properties
+			};			
 			infinite.layoutManager.items.forEach((v, i) => {
 				expect(v.position).to.be.deep.equal(beforeLayoutStatus.items[i].position); // check html and position information
 				expect(v.size).to.be.deep.equal(beforeLayoutStatus.items[i].size); // check html and size information

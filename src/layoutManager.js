@@ -337,9 +337,7 @@ export default class LayoutManager {
 				data[p] = this[p];
 			}
 		}
-		console.info(data);
 		return {
-			options: Object.assign({}, this.options),
 			prop: data,
 			items: this.items.map(v => {
 				const clone = Object.assign({}, v);
@@ -350,10 +348,9 @@ export default class LayoutManager {
 		};
 	}
 	setStatus(status) {
-		if (!status || !status.options || !status.prop || !status.items) {
+		if (!status || !status.prop || !status.items) {
 			return this;
 		}
-		Object.assign(this.options, status.options);
 		Object.assign(this, status.prop);
 		this.items = Array.prototype.slice.call(this.el.children).map((v, i) => {
 			status.items[i].el = v;
