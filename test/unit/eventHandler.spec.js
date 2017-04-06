@@ -1,7 +1,8 @@
 import InfiniteGrid from "../../src/infiniteGrid";
+import InfiniteGridInjector from "inject-loader!../../src/infiniteGrid";
 import {Content} from "../content";
 import {window} from "../../src/browser";
-import {utils} from "../../src/utils";
+import {utils, Mixin} from "../../src/utils";
 
 describe("InfiniteGrid eventHandler Test", function() {
 	beforeEach(() => {
@@ -119,37 +120,115 @@ describe("InfiniteGrid eventHandler Test", function() {
 });
 
 
-// describe("InfiniteGrid scroll eventHandler Test", function() {
-// 	beforeEach(() => {
-//         this.el = sandbox();
-// 		this.el.innerHTML = `<ul id="grid"></ul>`;
-//         this.scrollHandler = sinon.spy();
-//         this.inst = new eg.InfiniteGrid("#grid", {
-// 			"count": 20,
-// 			"threshold": 100
-// 		});
-// 	});
-// 	afterEach(() => {
-//         if(this.inst) {
-// 			this.inst.destroy();
-// 			this.inst = null;
-// 		}
-//         this.scrollHandler.reset();
-//         cleanup();
-// 	});
+describe("InfiniteGrid scroll eventHandler Test", function() {
+	beforeEach(() => {
+        this.el = sandbox();
+		this.el.innerHTML = `<ul id="grid"></ul>`;
+        
+        var self = this;
+        this.scrollPos = { x: 0, y: 0 };
+        this.rect = {
+            top: 0,
+            bottom: 0,
+        };
+        const MockInfiniteGrid = InfiniteGridInjector({
+            "./utils": {
+                "utils": Object.assign(utils, {
+                    "scrollTop": function() {
+                        return self.scrollPos.y;
+                    },
+                }),
+                "Mixin": Mixin,
+            }
+        });
+        this.inst = new MockInfiniteGrid("#grid", {
+			"count": 20,
+			"threshold": 100
+		});
+        this.inst.getBottomElement = function() {
+            return {
+                getBoundingClientRect : function() {
+                    return self.rect;
+                }
+            };
+        };
+        this.inst.getTopElement = function() {
+            return {
+                getBoundingClientRect : function() {
+                    return self.rect;
+                }
+            };
+        };
 
-// 	it("should", () => {
-//         var rect = {
-//             top : 0
-//         };
+        this.scrollHandler = sinon.spy();
+        this.itemHandler = sinon.spy();
+        utils.addEvent(window, "scroll", this.scrollHandler);
+	});
+	afterEach(() => {
+        if(this.inst) {
+			this.inst.destroy();
+			this.inst = null;
+		}
+        utils.removeEvent(window, "scroll", this.scrollHandler);
+        this.scrollHandler.reset();
+        this.itemHandler.reset();
+        cleanup();
+	});
 
-//         this.inst.getBottomElement = function() {
-//             return {
-//                 getBoundingClientRect : function() {
-//                     return rect;
-//                 }
-//             };
-//         };
- 
-// 	});
-// });
+	it("should append on scroll", done => {
+        // Given
+        const self = this;
+        this.inst.on({
+            "layoutComplete": function(e) {
+                self.rect.top = this._status.clientHeight + this.options.threshold;
+                // When
+                self.scrollPos.y = 100;
+                window.dispatchEvent(new Event("scroll"));
+
+                // When
+                self.rect.top += 1;
+                self.scrollPos.y = 110;
+                window.dispatchEvent(new Event("scroll"));
+
+                // Then
+                expect(self.scrollHandler.callCount).to.be.equal(2);
+                expect(self.itemHandler.calledOnce).to.be.true;
+                done();
+            },
+            "append":  self.itemHandler
+        });
+        // When
+	    this.inst.append(Content.append(200));
+	});
+
+    it("should prepend on scroll", done => {
+        // Given
+        const self = this;
+        this.inst.on({
+            "layoutComplete": function(e) {
+                // Then
+                expect(self.inst.isRecycling()).to.be.true;
+                expect(e.croppedCount).to.be.equal(200 - self.inst.options.count);
+
+                // When
+                this._status.prevScrollTop = 300;
+                self.rect.bottom -= self.inst.options.threshold;
+                self.scrollPos.y = 100;
+                window.dispatchEvent(new Event("scroll"));
+
+                // When 
+                self.rect.bottom -= 1;
+                self.scrollPos.y = 90;
+                window.dispatchEvent(new Event("scroll"));
+
+                // Then
+                expect(self.scrollHandler.callCount).to.be.equal(2);
+                expect(self.itemHandler.calledOnce).to.be.true;
+                done();
+            },
+            "prepend": self.itemHandler
+        });
+        // When
+	    this.inst.prepend(Content.prepend(200));
+	});
+});

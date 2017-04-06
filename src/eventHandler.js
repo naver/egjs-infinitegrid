@@ -24,6 +24,7 @@ export default superclass => class extends superclass {
 		let ele;
 		let rect;
 
+		
 		if (prevScrollTop < scrollTop) {
 			if (utils.isEmptyObject(this._status.bottomElement)) {
 				this._status.bottomElement = this.getBottomElement();
