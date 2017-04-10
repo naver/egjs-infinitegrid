@@ -102,11 +102,11 @@ extends Mixin(Component).with(EventHandler) {
 			}
 		}
 		return {
-			options: Object.assign({}, this.options),
-			prop: data,
-			layoutManager: this.layoutManager.getStatus(),
 			html: this.el.innerHTML,
 			cssText: this.el.style.cssText,
+			layoutManager: this.layoutManager.getStatus(),
+			options: Object.assign({}, this.options),
+			prop: data,
 		};
 	}
 
@@ -121,13 +121,13 @@ extends Mixin(Component).with(EventHandler) {
 			!status.layoutManager || !status.html || !status.cssText) {
 			return this;
 		}
-		Object.assign(this.options, status.options);
-		Object.assign(this._status, status.prop);
-		this._status.topElement = null;
-		this._status.bottomElement = null;
-		this.layoutManager.setStatus(status.layoutManager);
 		this.el.style.cssText = status.cssText;
 		this.el.innerHTML = status.html;
+		Object.assign(this.options, status.options);
+		Object.assign(this._status, status.prop);
+		this.layoutManager.setStatus(status.layoutManager);
+		this._status.topElement = this.getTopElement();
+		this._status.bottomElement = this.getBottomElement();
 
 		return this;
 	}
