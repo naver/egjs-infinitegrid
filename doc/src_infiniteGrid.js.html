@@ -42,7 +42,7 @@
 <div id="wrap" class="clearfix">
     
 <div class="navigation">
-    <h3 class="applicationName"><a href="index.html">egjs</a></h3>
+    <h3 class="applicationName"><a href="http://naver.github.io/egjs/">egjs</a></h3>
 
     <div class="search">
         <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
@@ -85,7 +85,7 @@
     
         <li data-name="eg.InfiniteGrid#getTopElement"><a href="eg.InfiniteGrid.html#getTopElement">getTopElement</a></li>
     
-        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a></li>
+        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
     
         <li data-name="eg.InfiniteGrid#isProcessing"><a href="eg.InfiniteGrid.html#isProcessing">isProcessing</a></li>
     
@@ -93,13 +93,13 @@
     
         <li data-name="eg.InfiniteGrid#layout"><a href="eg.InfiniteGrid.html#layout">layout</a></li>
     
-        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a></li>
+        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
     
-        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a></li>
+        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
     
-        <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a></li>
+        <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
     
-        <li data-name="eg.InfiniteGrid#option"><a href="eg.InfiniteGrid.html#option">option</a></li>
+        <li data-name="eg.InfiniteGrid#option"><a href="eg.InfiniteGrid.html#option">option</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
     
         <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
     
@@ -107,7 +107,7 @@
     
         <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
     
-        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a></li>
+        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
     
     </ul>
     <ul class="events itemMembers expends">
@@ -123,6 +123,7 @@
     </ul>
 
     
+    <span class="title" style="margin-top:10px"><a href="index.html">readme</a></span>
 
 </li>
 
@@ -152,10 +153,10 @@ import ImageLoaded from "./imageLoaded";
 import LayoutManager from "./layoutManager";
 
 /**
- * @description A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
+ * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
  * @ko 콘텐츠가 있는 카드 엘리먼트를 그리드 레이아웃에 무한으로 배치하는 모듈. 다양한 크기의 카드 엘리먼트를 격자 모양으로 배치하는 UI를 만들 수 있다. 카드 엘리먼트의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
  * @alias eg.InfiniteGrid
- * @extends Component
+ * @extends eg.Component
  *
  * @example
 ```
@@ -243,11 +244,11 @@ extends Mixin(Component).with(EventHandler) {
 			}
 		}
 		return {
-			options: Object.assign({}, this.options),
-			prop: data,
-			layoutManager: this.layoutManager.getStatus(),
 			html: this.el.innerHTML,
 			cssText: this.el.style.cssText,
+			layoutManager: this.layoutManager.getStatus(),
+			options: Object.assign({}, this.options),
+			prop: data,
 		};
 	}
 
@@ -262,13 +263,13 @@ extends Mixin(Component).with(EventHandler) {
 			!status.layoutManager || !status.html || !status.cssText) {
 			return this;
 		}
-		Object.assign(this.options, status.options);
-		Object.assign(this._status, status.prop);
-		this._status.topElement = null;
-		this._status.bottomElement = null;
-		this.layoutManager.setStatus(status.layoutManager);
 		this.el.style.cssText = status.cssText;
 		this.el.innerHTML = status.html;
+		Object.assign(this.options, status.options);
+		Object.assign(this._status, status.prop);
+		this.layoutManager.setStatus(status.layoutManager);
+		this._status.topElement = this.getTopElement();
+		this._status.bottomElement = this.getBottomElement();
 
 		return this;
 	}
@@ -629,12 +630,11 @@ export default InfiniteGrid;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Apr 06 2017 19:14:51 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Apr 11 2017 18:01:59 GMT+0900 (KST)
         </footer>
     </div>
 </div>
 <script>prettyPrint();</script>
-<script src="scripts/linenumber.js"></script>
 <script src="scripts/main.js"></script>
 </body>
 </html>

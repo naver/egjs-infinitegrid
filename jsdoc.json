@@ -11,7 +11,7 @@
     "opts": {
         "template": "node_modules/egjs-jsdoc-template",
         "destination": "./doc/",
-        "ignores": ["eg.Component", "Component"],
+        "ignores": ["eg.Component"],
         "expendsItemMembers": true
     },
     "plugins": [
