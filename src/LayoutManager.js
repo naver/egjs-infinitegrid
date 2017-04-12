@@ -175,7 +175,7 @@ export default class LayoutManager {
 		let item = null;
 		let min = Infinity;
 
-		this.items.forEach(v => {
+		this.getColItems(false).forEach(v => {
 			if (v && v.position.y < min) {
 				min = v.position.y;
 				item = v;
