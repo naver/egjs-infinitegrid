@@ -1,5 +1,5 @@
-import InfiniteGrid from "../../src/infiniteGrid";
-import InfiniteGridInjector from "inject-loader!../../src/infiniteGrid";
+import InfiniteGrid from "../../src/InfiniteGrid";
+import InfiniteGridInjector from "inject-loader!../../src/InfiniteGrid";
 import {Content} from "../content";
 import {window} from "../../src/browser";
 import {utils, Mixin} from "../../src/utils";
@@ -65,15 +65,15 @@ describe("InfiniteGrid eventHandler Test", function() {
 
         // When
         window.dispatchEvent(new Event("resize"));
+        utils.removeEvent(window, "resize", this.resizeHandler);
 
         // Then
         setTimeout(() => {
             expect(this.resizeHandler.calledOnce).to.be.true;
             expect(initValue).to.be.equal(0);
             expect(this.inst._status.prevScrollTop).to.be.equal(-1);
-            utils.removeEvent(window, "resize", this.resizeHandler);
             done();
-        }, 200);
+        }, 500);
     });
 
     it("should check a clear after scrolling", done => {

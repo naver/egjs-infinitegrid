@@ -1,4 +1,4 @@
-import InfiniteGrid from "./infiniteGrid";
+import InfiniteGrid from "./InfiniteGrid";
 
 InfiniteGrid.VERSION = "#__VERSION__#";
 module.exports = InfiniteGrid;

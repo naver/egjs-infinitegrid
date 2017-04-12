@@ -7,8 +7,8 @@ import EventHandler from "./eventHandler";
 import {document} from "./browser";
 import {RETRY} from "./consts";
 import {Mixin, utils} from "./utils";
-import ImageLoaded from "./imageLoaded";
-import LayoutManager from "./layoutManager";
+import ImageLoaded from "./ImageLoaded";
+import LayoutManager from "./LayoutManager";
 
 /**
  * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance

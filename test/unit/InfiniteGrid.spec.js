@@ -1,4 +1,4 @@
-import InfiniteGrid from "../../src/infiniteGrid";
+import InfiniteGrid from "../../src/InfiniteGrid";
 import {window} from "../../src/browser";
 import {utils} from "../../src/utils";
 import {Content} from "../content";
@@ -536,7 +536,9 @@ describe("InfiniteGrid setStatus/getStatue Test", function() {
 
 			// Then (check layoutManager)
 			for (let v in beforeLayoutStatus.prop) {
-				expect(infinite.layoutManager[v]).to.be.deep.equal(beforeLayoutStatus.prop[v]); // check LayoutManager properties
+				if (v !== "items") {
+					expect(infinite.layoutManager[v]).to.be.deep.equal(beforeLayoutStatus.prop[v]); // check LayoutManager properties
+				}
 			};			
 			infinite.layoutManager.items.forEach((v, i) => {
 				expect(v.position).to.be.deep.equal(beforeLayoutStatus.items[i].position); // check html and position information
