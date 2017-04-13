@@ -54,7 +54,7 @@ export default class LayoutManager {
 		}
 		if (~idx) {
 			// remove item information
-			item = Object.assign({}, this.items[idx]);
+			item = utils.extend({}, this.items[idx]);
 			this.items.splice(idx, 1);
 
 			// remove item element
@@ -340,7 +340,7 @@ export default class LayoutManager {
 		return {
 			prop: data,
 			items: this.items.map(v => {
-				const clone = Object.assign({}, v);
+				const clone = utils.extend({}, v);
 
 				delete clone.el;
 				return clone;
@@ -351,7 +351,7 @@ export default class LayoutManager {
 		if (!status || !status.prop || !status.items) {
 			return this;
 		}
-		Object.assign(this, status.prop);
+		utils.extend(this, status.prop);
 		this.items = Array.prototype.slice.call(this.el.children).map((v, i) => {
 			status.items[i].el = v;
 			return status.items[i];

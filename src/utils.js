@@ -120,6 +120,14 @@ const utils = {
 		}
 		return true;
 	},
+	extend(target = {}, source) {
+		let p;
+
+		for (p in source) {
+			target[p] = source[p];
+		}
+		return target;
+	},
 };
 
 class MixinBuilder {
