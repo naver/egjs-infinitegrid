@@ -1,6 +1,8 @@
 # egjs-infiniteGrid
 A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
 
+![](https://sculove.github.io/slides/university/image/infinitegrid.gif)
+
 ## Documentation
 * API Documentation
     - Latest: [http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html](http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html)
@@ -66,6 +68,14 @@ var instance = new eg.InfiniteGrid("#grid", {
   itemSelector: "card"
 });
 ```
+
+## Benchmark
+
+
+[![eg.IniniteGrid vs Masonry](https://img.youtube.com/vi/6Kv-NV0dZXw/0.jpg)](https://www.youtube.com/watch?v=6Kv-NV0dZXw)
+
+[Introducing eg.InfiniteGrid, a new library for implementing a card layout](https://github.com/naver/egjs/wiki/Introducing-eg.InfiniteGrid,-a-new-library-for-implementing-a-card-layout)
+
 
 ## Bug Report
 
