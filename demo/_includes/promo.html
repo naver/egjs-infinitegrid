@@ -1,0 +1,21 @@
+<section id="promo" class="promo section offset-header" style="padding-top:90px">
+    <div class="container text-center" style="margin-bottom:60px">
+        <h2 class="title"><span class="highlight">{{ page.component }}</span></h2>
+        <p class="intro">{{ page.desc }}</p>
+        <div class="btns">
+            <a class="btn btn-cta-secondary" href="https://{{ page.github.user }}.github.io/{{ page.github.repo }}/doc/" target="_blank">API</a>
+            <a class="btn btn-cta-primary" href="https://{{ page.github.user }}.github.io/{{ page.github.repo }}/dist/visible.pkgd.min.js" target="_blank">Download</a>
+        </div>
+    </div>
+    <div class="social-media">
+        <div class="social-media-inner container text-center">
+            <ul class="list-inline">
+                <li class="facebook-like">
+                     <div class="fb-like" data-href="https://{{ page.github.user }}.github.io/{{ page.github.repo }}/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+                </li>
+                <li class="github-star"><iframe src="http://ghbtns.com/github-btn.html?user={{ page.github.user }}&repo={{ page.github.repo }}&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe></li>
+                <li class="github-fork"><iframe src="http://ghbtns.com/github-btn.html?user={{ page.github.user }}&repo={{ page.github.repo }}&type=fork" allowtransparency="true" frameborder="0" scrolling="0" width="53" height="20"></iframe></li>
+            </ul>
+        </div>
+    </div>
+</section>

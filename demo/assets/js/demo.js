@@ -1,4 +1,5 @@
-var template = Handlebars.compile(document.getElementById("items-template").innerHTML);
+/* YOUR DEMO JAVASCRIPT CODE HERE */
+var template = Handlebars.compile('{{~#each items~}}<div class="item"><div class="thumbnail"><img class="img-rounded" src="{{imgSrc}}" /><div class="caption"><p><a href="{{href}}">{{desc}}</a></p></div></div></div>{{~/each~}}');
 var data = {
 	getItems: function(groupNo) {
 		groupNo *= 30;
@@ -9,7 +10,7 @@ var data = {
 		items = items.map(function(v) {
 			return {
 				offset: v,
-				imgSrc: "../demo/image/" + ( ( (v + 1) % 60) + 1 ) + ".jpg",
+				imgSrc: "assets/image/" + ( ( (v + 1) % 60) + 1 ) + ".jpg",
 				href: "http://www.google.com/",
 				desc: "Cras justo odio bla bla bla bla bla bla bla bla"
 			};
@@ -19,7 +20,7 @@ var data = {
 };
 
 var grid = document.getElementById("grid");
-var ig = new eg.InfiniteGrid(grid, {
+var ig = new eg.InfiniteGrid("#grid", {
 	count : 100,
 	defaultGroupKey : 0
 })

@@ -9,6 +9,9 @@
     "test:chrome": "karma start --chrome",
     "lint": "eslint src",
     "jsdoc": "rm -rf ./doc && jsdoc -c jsdoc.json",
+    "start-demo": "npm run prebuild-demo && jekyll serve -s demo",
+    "prebuild-demo": "cpx 'doc/**/*' demo/doc/ --clean && cpx 'dist/**/*' demo/dist --clean",
+    "build-demo": "jekyll build -s demo",
     "coverage": "karma start --coverage",
     "prepush": "npm run lint",
     "commitmsg": "node config/validate-commit-msg.js"
@@ -29,6 +32,7 @@
     "bootflat": "^2.0.4",
     "chai": "^3.5.0",
     "clean-webpack-plugin": "^0.1.16",
+    "cpx": "^1.5.0",
     "egjs-jsdoc-template": "*",
     "eslint": "^3.18.0",
     "eslint-config-naver": "^1.0.0",
