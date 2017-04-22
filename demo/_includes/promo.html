@@ -4,7 +4,7 @@
         <p class="intro">{{ page.desc }}</p>
         <div class="btns">
             <a class="btn btn-cta-secondary" href="https://{{ page.github.user }}.github.io/{{ page.github.repo }}/doc/" target="_blank">API</a>
-            <a class="btn btn-cta-primary" href="https://{{ page.github.user }}.github.io/{{ page.github.repo }}/dist/visible.pkgd.min.js" target="_blank">Download</a>
+            <a class="btn btn-cta-primary" href="https://{{ page.github.user }}.github.io/{{ page.github.repo }}/dist/{{ page.component | replace_first: 'egjs-', '' }}.pkgd.min.js" target="_blank">Download</a>
         </div>
     </div>
     <div class="social-media">
