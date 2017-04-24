@@ -55,7 +55,7 @@ egjs-infinitegrid has the dependencies for the following libraries:
 #### ES5
 ```html
 <script src="../node_modules/@egjs/infinitegrid/dist/infinitegrid.pkgd.min.js"></script>
-<!--<script src="../node_modules/@egjs/component/dist/component.js"></script>
+<!--<script src="../node_modules/@egjs/component/dist/component.min.js"></script>
 <script src="../node_modules/@egjs/infinitegrid/dist/infinitegrid.min.js"></script>-->
 ```
 
