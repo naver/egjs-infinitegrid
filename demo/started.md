@@ -3,12 +3,6 @@ IE 8+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.1+ (ex
 
 ### Quick steps to use:
 
-#### Load files
-
-``` html
-<script src="http://naver.github.io/egjs-infinitegrid/dist/infinitegrid.pkgd.min.js"></script>
-```
-
 #### Set up your HTML
 
 ``` html
@@ -35,7 +29,21 @@ IE 8+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.1+ (ex
 </ul>
 ```
 
+#### Load files or import library
+
+##### ES5
+```html
+<script src="http://naver.github.io/egjs-infinitegrid/dist/infinitegrid.pkgd.min.js"></script>
+```
+
+##### ES6+
+```js
+import InfiniteGrid from "@egjs/infinitegrid";
+```
+
 ### Initialize it and all done!
+
+#### ES5
 ```javascript
 // create InfiniteGrid ui without option
 new eg.InfiniteGrid("#grid");
@@ -45,11 +53,16 @@ new eg.InfiniteGrid("#grid",{
   itemSelector: ".item",
   count: -1
 });
+```
 
-// create InfiniteGrid ui and get instance of it
-var instance = new eg.InfiniteGrid("#grid");
+#### ES6+
+```javascript
+// create InfiniteGrid ui without option
+new InfiniteGrid("#grid");
 
-// call some methods
-instance.getBottomElement();
-instance.layout();
+// create InfiniteGrid ui with options
+new InfiniteGrid("#grid",{
+  itemSelector: ".item",
+  count: -1
+});
 ```
