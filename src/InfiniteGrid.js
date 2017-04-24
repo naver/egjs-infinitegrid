@@ -62,7 +62,7 @@ extends Mixin(Component).with(EventHandler) {
 	 */
 	constructor(el, options) {
 		super(el, options);
-		utils.extend(this.options = {
+		Object.assign(this.options = {
 			isEqualSize: false,
 			defaultGroupKey: null,
 			count: 30,
@@ -105,7 +105,7 @@ extends Mixin(Component).with(EventHandler) {
 			html: this.el.innerHTML,
 			cssText: this.el.style.cssText,
 			layoutManager: this.layoutManager.getStatus(),
-			options: utils.extend({}, this.options),
+			options: Object.assign({}, this.options),
 			prop: data,
 		};
 	}
@@ -123,8 +123,8 @@ extends Mixin(Component).with(EventHandler) {
 		}
 		this.el.style.cssText = status.cssText;
 		this.el.innerHTML = status.html;
-		utils.extend(this.options, status.options);
-		utils.extend(this._status, status.prop);
+		Object.assign(this.options, status.options);
+		Object.assign(this._status, status.prop);
 		this.layoutManager.setStatus(status.layoutManager);
 		this._status.topElement = this.getTopElement();
 		this._status.bottomElement = this.getBottomElement();
@@ -174,7 +174,7 @@ extends Mixin(Component).with(EventHandler) {
 	 */
 	layout(isRelayout = true, _addItems, _options) {
 		this._status.isProcessing = true;
-		const options = utils.extend({
+		const options = Object.assign({
 			isAppend: true,
 			removedCount: 0,
 		}, _options);

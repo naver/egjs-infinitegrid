@@ -133,7 +133,7 @@ describe("InfiniteGrid scroll eventHandler Test", function() {
         };
         const MockInfiniteGrid = InfiniteGridInjector({
             "./utils": {
-                "utils": utils.extend(utils, {
+                "utils": Object.assign(utils, {
                     "scrollTop": function() {
                         return self.scrollPos.y;
                     },
