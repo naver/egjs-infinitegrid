@@ -1,7 +1,9 @@
 {
   "name": "@egjs/infinitegrid",
   "version": "2.0.0-beta",
-  "main": "src/index.js",
+  "main": "dist/infinitegrid.js",
+  "module": "src/index.js",
+  "es2015": "src/index.js",
   "scripts": {
     "start": "webpack-dev-server --open",
     "build": "webpack --env production && webpack --env packaged",
