@@ -10,7 +10,7 @@ A module used to arrange card elements including content infinitely on a grid la
 * An advanced demo is available here: [http://codepen.io/collection/AKpkGW/](http://codepen.io/collection/AKpkGW/)
 
 ## Supported Browsers
-The following table shows browsers supported by eg.InfiniteGrid
+The following table shows browsers supported by egjs-infinitegrid
 
 |Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
 |---|---|---|---|---|---|
@@ -19,7 +19,7 @@ The following table shows browsers supported by eg.InfiniteGrid
 
 
 ## Dependency
-eg.InfiniteGrid has the dependencies for the following libraries:
+egjs-infinitegrid has the dependencies for the following libraries:
 
 |[eg.Component]()|
 |----|
