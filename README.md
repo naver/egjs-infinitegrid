@@ -51,7 +51,7 @@ eg.InfiniteGrid has the dependencies for the following libraries:
 </ul>
 ```
 
-### 2. load/import library 
+### 2. Load/import library 
 #### ES5
 ```html
 <script src="../node_modules/@egjs/infinitegrid/dist/infinitegrid.pkgd.min.js"></script>
