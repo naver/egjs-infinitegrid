@@ -201,7 +201,6 @@ GitHub.sublime-settings
 !.vscode/extensions.json
 
 ### Custom ###
-dist/
 report/
 temp/
 doc/
