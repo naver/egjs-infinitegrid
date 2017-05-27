@@ -1,3 +1,7 @@
+[![Issue Stats](http://issuestats.com/github/naver/egjs-infinitegrid/badge/pr?style=flat)](http://issuestats.com/github/naver/egjs-infinitegrid)
+[![Issue Stats](http://issuestats.com/github/naver/egjs-infinitegrid/badge/issue?style=flat)](http://issuestats.com/github/naver/egjs-infinitegrid)
+[![npm version](https://badge.fury.io/js/%40egjs%2Finfinitegrid.svg)](https://badge.fury.io/js/%40egjs%2Finfinitegrid)
+
 # egjs-infinitegrid
 A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
 
