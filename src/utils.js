@@ -47,7 +47,7 @@ const utils = {
 			}
 		} else if (param.nodeName && param.nodeType === 1) {	// HTMLElement
 			el = param;
-		} else if (window.jQuery && (param instanceof jQuery)) {	// jQuery
+		} else if ((window.jQuery && param instanceof jQuery) || param.constructor.prototype.jquery) {	// jQuery
 			el = multi ? param.toArray() : param.get(0);
 		} else if (Array.isArray(param)) {
 			el = param.map(v => utils.$(v));
