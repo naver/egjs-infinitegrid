@@ -2,7 +2,6 @@
 
 A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
 
-![infinitegrid](demo/assets/image/infinitegrid.gif)
 ![infinitegrid](https://github.com/naver/egjs-infinitegrid/raw/master/demo/assets/image/infinitegrid.gif)
 
 ## Documents
