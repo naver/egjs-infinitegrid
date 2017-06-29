@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>egjs-infinitegrid</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700">
+    <link rel="stylesheet" href="./common/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./common/css/page.css">
+    <link rel="stylesheet" href="./common/css/monokai.css">
+    <script src="./common/js/jquery-2.2.4.js"></script>
+    <script src="./common/js/bootstrap.min.js"></script>
+</head>
+
+	<link rel="stylesheet" href="assets/css/demo.css">
+
+
+	<script src="release/latest/dist/infinitegrid.pkgd.min.js"></script>
+
+<script>
+	window.LIBLINK = [];
+	
+	window.LIBLINK.push(window.location.href.replace("/index.html", "/")
+            .replace("/gallery.html", "/") + "release/latest/dist/infinitegrid.pkgd.min.js");
+	
+</script>
+<body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+    <!-- ******HEADER****** -->
+    <header id="header" class="header">
+        <div class="container">
+            <a href="//naver.github.io/egjs">
+                <h1 class="logo pull-left"></h1>
+            </a><!--//logo-->
+            <nav id="main-nav" class="main-nav navbar-right" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="true">
+                        <img src="common/image/logo.svg">
+                    </button>
+                </div><!--//navbar-header-->
+                 <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a class="page-scroll" href="//github.com/naver/egjs-infinitegrid" target="_blank">Github</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="release/latest/doc" target="_blank">API Document</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="//github.com/naver/egjs-infinitegrid/releases" target="_blank">v2.0.0-rc.1</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav><!--//main-nav-->
+        </div>
+    </header><!--//header-->
+
+<section id="promo" class="promo section offset-header" style="padding-top:90px">
+    <div class="container text-center">
+        <h2 class="title"><span class="highlight">InfiniteGrid</span></h2>
+        <p class="intro">A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance</p>
+        <div class="btns">
+            <!--<a class="btn btn-cta-primary" href="release/latest/doc" target="_blank">Github</a>-->
+            <a class="btn btn-cta-primary" href="release/latest/doc" target="_blank">API Document</a>
+            <a class="btn btn-cta-primary" href="//github.com/naver/egjs-infinitegrid/releases" target="_blank">v2.0.0-rc.1</a>
+        </div>
+    </div>
+    <div class="social-media">
+        <div class="social-media-inner container text-center">
+            <ul class="list-inline">
+                <li class="facebook-like">
+                     <div class="fb-like" data-href="//naver.github.io/egjs-infinitegrid/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+                </li>
+                <li class="github-fork"><iframe src="//ghbtns.com/github-btn.html?user=naver&repo=egjs-infinitegrid&type=fork" allowtransparency="true" frameborder="0" scrolling="0" width="53" height="20"></iframe></li>
+                <li class="github-star"><iframe src="//ghbtns.com/github-btn.html?user=naver&repo=egjs-infinitegrid&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100" height="20"></iframe></li>
+            </ul>
+        </div>
+    </div>
+</section>
+<div>
+	<section id="about" class="docs section">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title text-center">Get Started</h2>
+				
+				<h3 id="browser-support">Browser support</h3>
+<p>IE 8+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.1+ (except 3.x)</p>
+
+<h3 id="quick-steps-to-use">Quick steps to use:</h3>
+
+<h4 id="set-up-your-html">Set up your HTML</h4>
+
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">"grid"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div&gt;</span>test1<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div&gt;</span>test2<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div&gt;</span>test3<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div&gt;</span>test4<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div&gt;</span>test5<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div&gt;</span>test6<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+</div>
+
+<h4 id="load-files-or-import-library">Load files or import library</h4>
+
+<h5 id="es5">ES5</h5>
+<div class="language-html highlighter-rouge"><pre class="highlight"><code>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+</code></pre>
+</div>
+
+<h5 id="es6">ES6+</h5>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">InfiniteGrid</span> <span class="nx">from</span> <span class="s2">"@egjs/infinitegrid"</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<h3 id="initialize">Initialize</h3>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// create InfiniteGrid ui without option</span>
+<span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">);</span>
+
+<span class="c1">// create InfiniteGrid ui with options</span>
+<span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,{</span>
+  <span class="na">itemSelector</span><span class="p">:</span> <span class="s2">".item"</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+			</div>
+		</div>
+	</section>
+	<section id="docs" class="docs section demos">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title text-center">Demos</h2>
+				
+				<h3 id="basic">Basic</h3>
+
+<div class="demobox" codepen="demo">
+  <div id="grid" class="row" style="opacity:0.01"></div>
+</div>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// creating instance</span>
+<span class="kd">var</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,</span> <span class="p">{</span>
+	<span class="na">count</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+	<span class="na">defaultGroupKey</span> <span class="p">:</span> <span class="mi">0</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">on</span><span class="p">({</span>
+	<span class="s2">"append"</span> <span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">gk</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGroupKeys</span><span class="p">();</span>
+		<span class="kd">var</span> <span class="nx">lastGk</span> <span class="o">=</span> <span class="nx">gk</span><span class="p">[</span><span class="nx">gk</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+		<span class="nx">lastGk</span><span class="o">++</span><span class="p">;</span>
+		<span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">template</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">lastGk</span><span class="p">)),</span> <span class="nx">lastGk</span><span class="p">);</span>
+	<span class="p">},</span>
+	<span class="s2">"prepend"</span> <span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">firstGk</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGroupKeys</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
+		<span class="nx">firstGk</span><span class="o">--</span><span class="p">;</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">firstGk</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">ig</span><span class="p">.</span><span class="nx">prepend</span><span class="p">(</span><span class="nx">template</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">firstGk</span><span class="p">)),</span> <span class="nx">firstGk</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">});</span>
+<span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">template</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">getItems</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span> <span class="mi">0</span><span class="p">);</span>
+</code></pre>
+</div>
+
+			</div>
+		</div>
+	</section>
+</div>
+    <!-- ******FOOTER****** -->
+    <footer class="footer">
+        <div class="container text-center">
+            <small class="copyright"><img style="width:40px;" src="common/image/type_white.svg"/> by <a href="//navercorp.com/" target="_blank">© NAVER Corp.</a></small>
+        </div><!--//container-->
+    </footer><!--//footer-->
+
+    <!-- Javascript -->
+    <script type="text/javascript" src="./common/js/app.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-70842526-18', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
+	<script src="assets/js/demo.js"></script>
+
+</body>
+</html>
