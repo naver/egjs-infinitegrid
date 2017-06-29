@@ -3,10 +3,10 @@ IE 8+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.1+ (ex
 
 ### Quick steps to use:
 
+
 #### Set up your HTML
 
 ``` html
-<!-- Target DOM -->
 <ul id="grid">
     <li class="card">
         <div>test1</div>
@@ -31,9 +31,12 @@ IE 8+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.1+ (ex
 
 #### Load files or import library
 
+
 ##### ES5
-```html
-<script src="http://naver.github.io/egjs-infinitegrid/dist/infinitegrid.pkgd.min.js"></script>
+``` html
+{% for dist in site.data.egjs.dist %}
+<script src="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/{{ dist }}"></script>
+{% endfor %}
 ```
 
 ##### ES6+
@@ -41,28 +44,14 @@ IE 8+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.1+ (ex
 import InfiniteGrid from "@egjs/infinitegrid";
 ```
 
-### Initialize it and all done!
+### Initialize
 
-#### ES5
 ```javascript
 // create InfiniteGrid ui without option
 new eg.InfiniteGrid("#grid");
 
 // create InfiniteGrid ui with options
 new eg.InfiniteGrid("#grid",{
-  itemSelector: ".item",
-  count: -1
-});
-```
-
-#### ES6+
-```javascript
-// create InfiniteGrid ui without option
-new InfiniteGrid("#grid");
-
-// create InfiniteGrid ui with options
-new InfiniteGrid("#grid",{
-  itemSelector: ".item",
-  count: -1
+  itemSelector: ".item"
 });
 ```

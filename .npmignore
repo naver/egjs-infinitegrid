@@ -24,9 +24,9 @@ README.md
 .idea
 .editorconfig
 
-
 coverage/
 node_modules/
 .github
 .babelrc
 mocha.opts
+demo

@@ -9,6 +9,6 @@ var config = {
 	plugins: [new WriteFilePlugin()]
 };
 
-module.exports = function(common) {
+module.exports = function (common) {
 	return merge(common, config);
 };

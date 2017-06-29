@@ -10,45 +10,40 @@ var config = {
 	output: {
 		path: path.resolve(__dirname, "dist"),
 		filename: "[name].js",
-		library: ["eg", "InfiniteGrid"],
+		library: [pkg.namespace.eg, "InfiniteGrid"],
 		libraryTarget: "umd",
 		umdNamedDefine: true
 	},
-	externals: [{
-		"@egjs/component": {
+	externals: {
+		"@egjs/component" : {
 			commonjs: "@egjs/component",
 			commonjs2: "@egjs/component",
 			amd: "@egjs/component",
-			root: ["eg", "Component"]
+			root: [pkg.namespace.eg, "Component"]
 		}
-	}],
-	devtool: "cheap-module-source-map",
+	},	
 	module: {
-		rules: [
-			{
-				test: /(\.js)$/,
-				exclude: /(node_modules)/,
-				loader: "babel-loader",
-			},
-			{
-				test: /(\.js)$/,
-				loader: StringReplacePlugin.replace({
-					replacements: [
-						{
-							pattern: /#__VERSION__#/ig,
-							replacement: function (match, p1, offset, string) {
-								return pkg.version;
-							}
-						}
-					]}
-				)
-            }
-		]
+		rules: [{
+			test: /\.js$/,
+			exclude: /node_modules/,
+			loader: "babel-loader"
+		},
+		{
+			test: /(\.js)$/,
+			loader: StringReplacePlugin.replace({
+				replacements: [{
+					pattern: /#__VERSION__#/ig,
+					replacement: function (match, p1, offset, string) {
+						return pkg.version;
+					}
+				}]
+			})
+		}]
 	},
 	plugins: [new StringReplacePlugin()]
 };
 
-module.exports = function(env) {
+module.exports = function (env) {
 	env = env || "development";
 	return require("./config/webpack.config." + env + ".js")(config);
 };

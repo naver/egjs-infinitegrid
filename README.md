@@ -1,94 +1,128 @@
-[![Issue Stats](http://issuestats.com/github/naver/egjs-infinitegrid/badge/pr?style=flat)](http://issuestats.com/github/naver/egjs-infinitegrid)
-[![Issue Stats](http://issuestats.com/github/naver/egjs-infinitegrid/badge/issue?style=flat)](http://issuestats.com/github/naver/egjs-infinitegrid)
-[![npm version](https://badge.fury.io/js/%40egjs%2Finfinitegrid.svg)](https://badge.fury.io/js/%40egjs%2Finfinitegrid)
+# egjs-infinitegrid [![npm version](https://badge.fury.io/js/%40egjs%2Finfinitegrid.svg)](https://badge.fury.io/js/%40egjs%2Finfinitegrid) [![Build Status](https://travis-ci.org/naver/egjs-infinitegrid.svg?branch=master)](https://travis-ci.org/naver/egjs-infinitegrid) [![Coverage Status](https://coveralls.io/repos/github/naver/egjs-infinitegrid/badge.svg?branch=master)](https://coveralls.io/github/naver/egjs-infinitegrid?branch=master)
 
-# egjs-infinitegrid
 A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
 
-![](demo/assets/image/infinitegrid.gif)
+![](https://naver.github.io/egjs-infinitegrid/assets/image/infinitegrid.gif)
 
-## Documentation
-* API Documentation
-    - Latest: [http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html](http://naver.github.io/egjs/latest/doc/eg.InfiniteGrid.html)
-    - Specific version: [http://naver.github.io/egjs/[VERSION]/doc/eg.InfiniteGrid.html](http://naver.github.io/egjs/[VERSION]/doc/eg.InfiniteGrid.html)
-* An advanced demo is available here: [http://codepen.io/collection/AKpkGW/](http://codepen.io/collection/AKpkGW/)
+## Documents
+- [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
+- [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
+
+## Download and Installation
+
+Download dist files from repo directly or install it via npm. 
+
+### For development (Uncompressed)
+
+You can download the uncompressed files for development
+
+- Latest : https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.js
+- Specific version : https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/infinitegrid.js
+
+### For production (Compressed)
+
+You can download the compressed files for production
+
+- Latest : https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js
+- Specific version : https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/infinitegrid.min.js
+
+### Packaged version (with Dependencies)
+> Packaged version is not an official distribution.
+> Is just to provide for ease use of 'egjs-infinitegrid' with dependency.
+
+ - **Latest**
+    - https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.js
+    - https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.min.js
+
+ - **Specific version**
+    - https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/infinitegrid.pkgd.js
+    - https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/infinitegrid.pkgd.min.js
+
+### Installation with npm
+
+The following command shows how to install egjs-infinitegrid using npm.
+
+```bash
+$ npm install @egjs/infinitegrid
+```
+
 
 ## Supported Browsers
-The following table shows browsers supported by egjs-infinitegrid
+The following are the supported browsers.
 
 |Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
 |---|---|---|---|---|---|
 |8+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
 
-
-
 ## Dependency
+
 egjs-infinitegrid has the dependencies for the following libraries:
 
-|[eg.Component]()|
+|[egjs-component](http://github.com/naver/egjs/egjs-component)|
 |----|
 |2.0.0+|
 
-## How to Use
-### 1. Make a target element
-```html
-<!-- Target DOM -->
-<ul id="grid">
-    <li class="card">
-        <div>test1</div>
-    </li>
-    <li class="card">
-        <div>test2</div>
-    </li>
-    <li class="card">
-        <div>test3</div>
-    </li>
-    <li class="card">
-        <div>test4</div>
-    </li>
-    <li class="card">
-        <div>test5</div>
-    </li>
-    <li class="card">
-        <div>test6</div>
-    </li>
-</ul>
+
+## How to start developing egjs-infinitegrid?
+
+For anyone interested to develop egjs-infinitegrid, follow the instructions below.
+
+### Development Environment
+
+#### 1. Clone the repository
+
+Clone the egjs-infinitegrid repository and install the dependency modules.
+
+```bash
+# Clone the repository.
+$ git clone https://github.com/naver/egjs-infinitegrid.git
 ```
 
-### 2. Load/import library 
-#### ES5
-```html
-<script src="../node_modules/@egjs/infinitegrid/dist/infinitegrid.pkgd.min.js"></script>
-<!--<script src="../node_modules/@egjs/component/dist/component.min.js"></script>
-<script src="../node_modules/@egjs/infinitegrid/dist/infinitegrid.min.js"></script>-->
+#### 2. Install dependencies
+`npm` is supported.
+
+```
+# Install the dependency modules.
+$ npm install
 ```
 
-#### ES6+
-```js
-import InfiniteGrid from "@egjs/infinitegrid";
+#### 3. Build
+
+Use npm script to build billboard.js
+
+```bash
+# Run webpack-dev-server for development
+$ npm start
+
+# Build
+$ npm run build
+
+# Generate jsdoc
+$ npm run jsdoc
 ```
 
-### 3. Use egjs-infinitegrid
-#### ES5
-```javascript
-// create eg.InfiniteGrid with option
-var instance = new eg.InfiniteGrid("#grid", {
-  itemSelector: "card"
-});
-```
-#### ES6+
-```js
-// create InfiniteGrid with option
-const instance = new InfiniteGrid("#grid", {
-  itemSelector: "card"
-});
+Two folders will be created after complete build is completed.
+
+- **dist** folder: Includes the **infinitegrid.js** and **infinitegrid.min.js** files.
+- **doc** folder: Includes API documentation. The home page for the documentation is **doc/index.html**.
+
+### Linting
+
+To keep the same code style, we adopted [ESLint](http://eslint.org/) to maintain our code quality. The [rules](https://github.com/naver/eslint-config-naver/tree/master/rules) are modified version based on [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript).
+Setup your editor for check or run below command for linting.
+
+```bash
+$ npm run lint
 ```
 
-## Benchmark
+### Test
 
-[![eg.IniniteGrid vs Masonry](https://img.youtube.com/vi/6Kv-NV0dZXw/0.jpg)](https://www.youtube.com/watch?v=6Kv-NV0dZXw)
+Once you created a branch and done with development, you must perform a test running `npm run test` command before you push code to a remote repository.
 
-[Introducing eg.InfiniteGrid, a new library for implementing a card layout](https://github.com/naver/egjs/wiki/Introducing-eg.InfiniteGrid,-a-new-library-for-implementing-a-card-layout)
+```bash
+$ npm run test
+```
+Running a `npm run test` command will start [Mocha](https://mochajs.org/) tests via [Karma-runner](https://karma-runner.github.io/).
 
 
 ## Bug Report
@@ -98,6 +132,7 @@ If you find a bug, please report it to us using the [Issues](https://github.com/
 
 ## License
 egjs-infinitegrid is released under the [MIT license](http://naver.github.io/egjs/license.txt).
+
 
 ```
 Copyright (c) 2015 NAVER Corp.

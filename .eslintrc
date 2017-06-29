@@ -1,22 +1,13 @@
 {
-    // Naver https://github.com/naver/eslint-config-naver/blob/master/STYLE_GUIDE.md
-    "extends": "naver",
-    "rules": {
-        "comma-dangle": ["error", {
-            "arrays": "always-multiline",
-            "objects": "always-multiline",
-            "imports": "always-multiline",
-            "exports": "always-multiline",
-            "functions": "never",
-        }],
-    },
-    "env": {
-        "mocha": true
-    },
-    "globals": {
-        "sandbox": true,
-        "cleanup": true,
-        "expect": true,
-        "sinon": true,
-    },
+	// Naver https://github.com/naver/eslint-config-naver/blob/master/STYLE_GUIDE.md
+	"extends": "naver",
+	"rules": {
+		"comma-dangle": ["error", {
+			"arrays": "always-multiline",
+			"objects": "always-multiline",
+			"imports": "always-multiline",
+			"exports": "always-multiline",
+			"functions": "never"
+		}]
+	}
 }

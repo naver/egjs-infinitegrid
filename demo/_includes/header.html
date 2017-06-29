@@ -1,21 +1,29 @@
     <!-- ******HEADER****** -->
     <header id="header" class="header">
         <div class="container">
-            <h1 class="logo pull-left">
-                <a href="{{page.egjs_demo}}">
-                    <span class="logo-title">egjs demo</span>
-                </a>
-            </h1><!--//logo-->
+            <a href="{{site.data.egjs.home}}">
+                <h1 class="logo pull-left"></h1>
+            </a><!--//logo-->
             <nav id="main-nav" class="main-nav navbar-right" role="navigation">
                 <div class="navbar-header">
-                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button><!--//nav-toggle-->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="true">
+                        <img src="common/image/logo.svg">
+                    </button>
                 </div><!--//navbar-header-->
-
+                 <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a class="page-scroll" href="//github.com/{{ site.data.egjs.github.user }}/{{ site.data.egjs.github.repo }}" target="_blank">Github</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="release/latest/doc" target="_blank">API Document</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="//github.com/{{ site.data.egjs.github.user }}/{{ site.data.egjs.github.repo }}/releases" target="_blank">v{{ site.data.version }}</a>
+                        </li>
+                    </ul>
+                </div>
             </nav><!--//main-nav-->
         </div>
     </header><!--//header-->

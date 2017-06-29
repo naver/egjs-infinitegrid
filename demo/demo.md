@@ -1,7 +1,8 @@
-#### infiniteGrid demo
-This is a simple infiniteGrid demos
+### Basic
 
-```javascript
+{% include_relative assets/html/demo.html %}
+
+```js
 // creating instance
 var ig = new eg.InfiniteGrid("#grid", {
 	count : 100,
@@ -24,6 +25,3 @@ var ig = new eg.InfiniteGrid("#grid", {
 });
 ig.append(template(data.getItems(0)), 0);
 ```
-
-<!-- infinite grid -->
-<div id="grid" class="row" style="opacity:0.01"></div>
