@@ -15,7 +15,7 @@ export default superclass => class extends superclass {
 		if (this.isProcessing()) {
 			return;
 		}
-		let scrollTop = utils.scrollTop();
+		let scrollTop = utils.scrollTop(this.view);
 		const prevScrollTop = this._status.prevScrollTop;
 
 		if ((IS_IOS && scrollTop === 0) || prevScrollTop === scrollTop) {
@@ -68,7 +68,7 @@ export default superclass => class extends superclass {
 
 				if (croppedDistance > 0) {
 					scrollTop -= croppedDistance;
-					this.view.scrollTo(0, scrollTop);
+					utils.scrollTo(this.view, 0, scrollTop);
 				}
 				this.trigger("prepend", {
 					scrollTop,
