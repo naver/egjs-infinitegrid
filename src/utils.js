@@ -7,11 +7,12 @@ const SUPPORT_PASSIVE = (() => {
 
 	try {
 		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
-			document.addEventListener("test", null, Object.defineProperty({}, "passive", {
-				get() {
-					supportsPassiveOption = true;
-				},
-			}));
+			document.addEventListener("test", null, Object.defineProperty({},
+				"passive", {
+					get() {
+						supportsPassiveOption = true;
+					},
+				}));
 		}
 	} catch (e) {}
 	return supportsPassiveOption;
@@ -29,25 +30,29 @@ const utils = {
 	$(param, multi = false) {
 		let el;
 
-		if (typeof param === "string") {	// String (HTML, Selector)
+		if (typeof param === "string") { // String (HTML, Selector)
 			// check if string is HTML tag format
 			const match = param.match(/^<([a-z]+)\s*([^>]*)>/);
 
 			// creating element
-			if (match) {	 // HTML
+			if (match) { // HTML
 				const dummy = document.createElement("div");
 
 				dummy.innerHTML = param;
 				el = Array.prototype.slice.call(dummy.childNodes);
-			} else {	// Selector
+			} else { // Selector
 				el = Array.prototype.slice.call(document.querySelectorAll(param));
 			}
 			if (!multi) {
 				el = el.length >= 1 ? el[0] : undefined;
 			}
-		} else if (param.nodeName && param.nodeType === 1) {	// HTMLElement
+		} else if (param === window) { // window
 			el = param;
-		} else if ((window.jQuery && param instanceof jQuery) || param.constructor.prototype.jquery) {	// jQuery
+		} else if (param.nodeName &&
+			(param.nodeType === 1 || param.nodeType === 9)) { // HTMLElement, Document
+			el = param;
+		} else if (("jQuery" in window && param instanceof jQuery) ||
+			param.constructor.prototype.jquery) { // jQuery
 			el = multi ? param.toArray() : param.get(0);
 		} else if (Array.isArray(param)) {
 			el = param.map(v => utils.$(v));
@@ -55,7 +60,6 @@ const utils = {
 				el = el.length >= 1 ? el[0] : undefined;
 			}
 		}
-
 		return el;
 	},
 	addEvent(element, type, handler, eventListenerOptions) {
@@ -81,13 +85,25 @@ const utils = {
 			element[`on${type}`] = null;
 		}
 	},
-	scrollTop() {
-		return document.body.scrollTop || document.documentElement.scrollTop;
+	scrollTop(el) {
+		if (el === window) {
+			return document.body.scrollTop || document.documentElement.scrollTop;
+		} else {
+			return el.scrollTop;
+		}
+	},
+	scrollTo(el, x, y) {
+		if (el === window) {
+			el.scrollTo(x, y);
+		} else {
+			el.scrollTop = x;
+			el.scrollLeft = y;
+		}
 	},
 	getSize(el, name, hasBorder = false, hasMargin = false) {
-		if (el === window) {	// WINDOW
+		if (el === window) { // WINDOW
 			return el.document.documentElement[`client${name}`];
-		} else if (el.nodeType === 9) {	// DOCUMENT_NODE
+		} else if (el.nodeType === 9) { // DOCUMENT_NODE
 			const doc = el.documentElement;
 
 			return Math.max(
@@ -102,8 +118,10 @@ const utils = {
 			const p2 = name === "Height" ? "Bottom" : "Right";
 
 			return parseFloat(style[name.toLowerCase()]) +
-				(hasBorder ? parseFloat(style[`border${p1}`]) + parseFloat(style[`border${p2}`]) : 0) +
-				(hasMargin ? parseFloat(style[`margin${p1}`]) + parseFloat(style[`margin${p2}`]) : 0);
+				(hasBorder ? parseFloat(style[`border${p1}`]) + parseFloat(style[
+					`border${p2}`]) : 0) +
+				(hasMargin ? parseFloat(style[`margin${p1}`]) + parseFloat(style[
+					`margin${p2}`]) : 0);
 		}
 	},
 	innerWidth(el) {
@@ -133,4 +151,7 @@ class MixinBuilder {
 
 const Mixin = superclass => new MixinBuilder(superclass);
 
-export {Mixin, utils};
+export {
+	Mixin,
+	utils,
+};

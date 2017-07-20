@@ -4,11 +4,28 @@
 */
 import Component from "@egjs/component";
 import EventHandler from "./eventHandler";
-import {document} from "./browser";
+import {document, window} from "./browser";
 import {RETRY} from "./consts";
 import {Mixin, utils} from "./utils";
 import ImageLoaded from "./ImageLoaded";
 import LayoutManager from "./LayoutManager";
+
+// IE8
+// https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
+/* eslint-disable */
+if (typeof Object.create !== "function") {
+	Object.create = function (o, properties) {
+		if (typeof o !== "object" && typeof o !== "function") {
+			throw new TypeError("Object prototype may only be an Object: " + o);
+		} else if (o === null) {
+			throw new Error("This browser's implementation of Object.create is a shim and doesn't support 'null' as the first argument.");
+		}
+		function F() {}
+		F.prototype = o;
+		return new F();
+	};
+}
+/* eslint-enable */
 
 /**
  * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -45,7 +62,6 @@ var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
 </script>
 ```
  *
- * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
  * @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
  **/
 const InfiniteGrid = class InfiniteGrid
@@ -65,12 +81,12 @@ extends Mixin(Component).with(EventHandler) {
 		Object.assign(this.options = {
 			isEqualSize: false,
 			defaultGroupKey: null,
-			count: 30,
+			count: 100,
+			isOverflowScroll: false,
 			threshold: 300,
 		}, options);
 
-		this.view = window;
-		this.el = utils.$(el);
+		this._initElements(el);
 		this.layoutManager = new LayoutManager(this.el, this.options);
 		this._reset();
 		this._resizeViewport();
@@ -83,6 +99,25 @@ extends Mixin(Component).with(EventHandler) {
 
 		this._attachEvent();
 	}
+
+	_initElements(el) {
+		if (this.options.isOverflowScroll) {
+			this.view = utils.$(el);
+			this.el = document.createElement("div");
+			const children = this.view && this.view.children;
+			const length = children.length;	// for IE8
+
+			for (let i = 0; i < length; i++) {
+				this.el.appendChild(children[0]);
+			}
+			this.view.style.overflowY = "scroll";
+			this.view.appendChild(this.el);
+		} else {
+			this.el = utils.$(el);
+			this.view = window;
+		}
+	}
+
 	_resizeViewport() {
 		this._status.clientHeight = utils.innerHeight(this.view);
 	}
@@ -276,8 +311,8 @@ extends Mixin(Component).with(EventHandler) {
 			distance = addItems.length >= this.layoutManager.items.length ?
 					0 : this.layoutManager.items[addItems.length].position.y;
 			if (distance > 0) {
-				this._status.prevScrollTop = utils.scrollTop() + distance;
-				this.view.scrollTo(0, this._status.prevScrollTop);
+				this._status.prevScrollTop = utils.scrollTop(this.view) + distance;
+				utils.scrollTo(this.view, 0, this._status.prevScrollTop);
 			}
 		}
 
@@ -307,11 +342,11 @@ extends Mixin(Component).with(EventHandler) {
 
 	_doubleCheckForPrepend() {
 		// doublecheck!!! (workaround)
-		if (utils.scrollTop() === 0) {
+		if (utils.scrollTop(this.view) === 0) {
 			// var self = this;
 			clearInterval(this._timer.doubleCheck);
 			this._timer.doubleCheck = setInterval(() => {
-				if (utils.scrollTop() === 0) {
+				if (utils.scrollTop(this.view) === 0) {
 					this.trigger("prepend", {
 						scrollTop: 0,
 					});

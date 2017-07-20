@@ -14,23 +14,25 @@ const ImageLoaded = {
 	},
 	waitImageLoaded(needCheck, callback) {
 		let checkCount = needCheck.length;
-		const onCheck = function(e) {
+		const checkImage = function() {
 			checkCount--;
-			utils.removeEvent(e.target, "load", onCheck);
-			utils.removeEvent(e.target, "error", onCheck);
 			checkCount <= 0 && callback && callback();
 		};
+		const onCheck = function(e) {
+			utils.removeEvent(e.target, "load", onCheck);
+			utils.removeEvent(e.target, "error", onCheck);
+			checkImage();
+		};
 
+		// workaround for IE
+		IS_IE && needCheck.forEach(v => v.setAttribute("src", v.getAttribute("src")));
 		needCheck.forEach(v => {
-			// workaround for IE
-			if (IS_IE) {
-				const url = v.getAttribute("src");
-
-				v.setAttribute("src", "");
-				v.setAttribute("src", url);
+			if (v.complete) {
+				checkImage();
+			} else {
+				utils.addEvent(v, "load", onCheck);
+				utils.addEvent(v, "error", onCheck);
 			}
-			utils.addEvent(v, "load", onCheck);
-			utils.addEvent(v, "error", onCheck);
 		});
 	},
 };

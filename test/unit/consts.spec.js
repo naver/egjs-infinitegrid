@@ -9,7 +9,7 @@ const UA = {
     "safari": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/600.3.18 (KHTML, like Gecko) Version/8.0.3 Safari/600.3.18",
 };
 
-describe("Const module Test", function() {
+describe("Const Test", function() {
     for(let p in UA) {
         // Given
         // When
@@ -32,9 +32,3 @@ describe("Const module Test", function() {
         });            
     }
 });
-
-
-
-
-
-

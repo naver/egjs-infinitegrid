@@ -4,6 +4,13 @@ A module used to arrange card elements including content infinitely on a grid la
 
 ![infinitegrid](https://github.com/naver/egjs-infinitegrid/raw/master/demo/assets/image/infinitegrid.gif)
 
+## Benchmark
+[![eg.infiniteGrid benchmark](https://img.youtube.com/vi/NyFtShC2yq8/0.jpg)](http://www.youtube.com/watch?v=NyFtShC2yq8)
+
+eg.infiniteGrid benchmark: append item performance with [masonry](https://masonry.desandro.com/)
+
+
+
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
 - [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
