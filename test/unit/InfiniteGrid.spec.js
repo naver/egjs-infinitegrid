@@ -1,9 +1,10 @@
-import InfiniteGrid from "../../src/InfiniteGrid";
+import $ from "jquery";
 import InfiniteGridInjector from "inject-loader!../../src/InfiniteGrid";
+import InfiniteGrid from "../../src/InfiniteGrid";
 import {window} from "../../src/browser";
 import {utils} from "../../src/utils";
+import {CONTAINER_CLASSNAME} from "../../src/consts";
 import {Content} from "../content";
-import $ from "jquery";
 
 describe("InfiniteGrid Test", function() {
 	describe("initailization Test", function() {
@@ -17,6 +18,16 @@ describe("InfiniteGrid Test", function() {
 				<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
 				<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
 				<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+			</ul>
+			<ul style="margin:0px;padding:0;" id="overflow_grid">
+				<div class=${{CONTAINER_CLASSNAME}}>
+					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+				</div>
 			</ul>
 			<ul id="nochildren_grid"></ul>`;
 		});
@@ -89,7 +100,8 @@ describe("InfiniteGrid Test", function() {
 			});
 
 			// Then
-			expect(this.inst.view).to.be.not.equal(window);
+			expect(this.inst.view).to.be.eql(utils.$("#grid"));
+			expect(this.inst.view).to.be.eql(this.inst.el.parentNode);
 			expect(this.inst.view.style.overflowY).to.be.equal("scroll");
 		});
 		it("should check a initialization dom (there aren't children. isOverflowScroll:true)", () => {
@@ -100,7 +112,20 @@ describe("InfiniteGrid Test", function() {
 			});
 
 			// Then
-			expect(this.inst.view).to.be.not.equal(window);
+			expect(this.inst.view).to.be.eql(utils.$("#nochildren_grid"));
+			expect(this.inst.view).to.be.eql(this.inst.el.parentNode);
+			expect(this.inst.view.style.overflowY).to.be.equal("scroll");
+		});
+		it("should check a initialization dom (already have a container dom. isOverflowScroll:true)", () => {
+			// Given
+			// When
+			this.inst = new InfiniteGrid("#overflow_grid", {
+				isOverflowScroll: true
+			});
+
+			// Then
+			expect(this.inst.view).to.be.eql(utils.$("#overflow_grid"));
+			expect(this.inst.view).to.be.eql(this.inst.el.parentNode);
 			expect(this.inst.view.style.overflowY).to.be.equal("scroll");
 		});
 	});
@@ -191,7 +216,7 @@ describe("InfiniteGrid Test", function() {
 
 			// When
 			appendedCount += this.inst.append(Content.append());
-			});
+		});
 
 		it("should check a append method with groupkey", done => {
 					// Given
@@ -246,7 +271,7 @@ describe("InfiniteGrid Test", function() {
 
 			// When
 			appendWithGroup(this.inst);
-			});
+		});
 
 		it("should check a prepend method", done => {
 					// Given
@@ -280,7 +305,7 @@ describe("InfiniteGrid Test", function() {
 
 			// When
 			prependedCount += this.inst.prepend(Content.prepend());
-			});
+		});
 
 		it("should check a prepend method with groupkey", done => {
 					// Given
@@ -337,7 +362,7 @@ describe("InfiniteGrid Test", function() {
 
 			// When
 			prependWithGroup(this.inst);
-			});
+		});
 
 		it("should check a count of remove contents", done => {
 			// Given
@@ -473,10 +498,10 @@ describe("InfiniteGrid Test", function() {
 
 			// When
 			appendedCount += this.inst.append(Content.append());
-			});
+		});
 
 		it("should check a append method with groupkey", done => {
-					// Given
+			// Given
 			const REPEAT = 10;
 			let retry = 0;
 			let appendedCount = 0;
@@ -528,7 +553,7 @@ describe("InfiniteGrid Test", function() {
 
 			// When
 			appendWithGroup(this.inst);
-			});
+		});
 
 		it("should check a prepend method", done => {
 					// Given
@@ -562,7 +587,7 @@ describe("InfiniteGrid Test", function() {
 
 			// When
 			prependedCount += this.inst.prepend(Content.prepend());
-			});
+		});
 
 		it("should check a prepend method with groupkey", done => {
 					// Given
@@ -619,7 +644,7 @@ describe("InfiniteGrid Test", function() {
 
 			// When
 			prependWithGroup(this.inst);
-			});
+		});
 
 		it("should check a count of remove contents", done => {
 			// Given
@@ -724,31 +749,31 @@ describe("InfiniteGrid Test", function() {
 			this.inst = new InfiniteGrid("#nochildren_grid", {
 				"count" : 18
 			}).on({
-						"prepend": prependHandler,
-						"layoutComplete": e => {
-								// Then
-								expect(e.isAppend).to.be.false;
-								window.scrollTo(0, 0);
-								expect(prependHandler.callCount).to.be.equal(0);
-						}
-				});
-
-				// When
-				this.inst.prepend(Content.prepend(200));
-
-				setTimeout(() => {
+				"prepend": prependHandler,
+				"layoutComplete": e => {
 						// Then
-						expect(prependHandler.callCount).to.be.equal(3);
-						prependHandler.reset();
-						done();
-				}, 2000);
+						expect(e.isAppend).to.be.false;
+						window.scrollTo(0, 0);
+						expect(prependHandler.callCount).to.be.equal(0);
+				}
+			});
+
+			// When
+			this.inst.prepend(Content.prepend(200));
+
+			setTimeout(() => {
+				// Then
+				expect(prependHandler.callCount).to.be.equal(3);
+				prependHandler.reset();
+				done();
+			}, 2000);
 		});
 		it("should check isOverflowScroll value when android 2.x", () => {
 			// Given
 			const MockInfiniteGrid = InfiniteGridInjector({
-					"./consts": {
-							"IS_ANDROID2": true
-					}
+				"./consts": {
+						"IS_ANDROID2": true
+				}
 			});
 			this.inst = new MockInfiniteGrid("#nochildren_grid", {
 				"isOverflowScroll": true
@@ -756,6 +781,7 @@ describe("InfiniteGrid Test", function() {
 
 			// Then
 			expect(this.inst.options.isOverflowScroll).to.be.false;
+			expect(this.inst.el).to.be.eql(utils.$("#nochildren_grid"));
 			expect(this.inst.view).to.be.equal(window);
 		});	
 	});
@@ -874,6 +900,64 @@ describe("InfiniteGrid Test", function() {
 		});
 	});
 
+	describe("setStatus/getStatue Test (isOverflowScroll: true)", function() {
+		beforeEach(() => {
+			this.el = sandbox();
+			this.el.innerHTML = `<ul id="grid"></ul>`;
+			this.inst = new InfiniteGrid("#grid", {
+				"count": 18,
+				"isOverflowScroll": true,
+			});
+		});
+		afterEach(() => {
+			if (this.inst) {
+				this.inst.destroy();
+				this.inst = null;
+			}
+			cleanup();
+		});
+
+		it("should check object in restore method", () => {
+			// Given
+			const before = this.inst.getStatus();
+
+			this.inst.setStatus({});
+
+			// Then
+			expect(this.inst.view.style.cssText).to.be.equal(before.cssText);
+			expect(this.inst.view.innerHTML).to.be.equal(before.html);
+
+			// When
+			this.inst.setStatus();
+
+			// Then
+			expect(this.inst.view.style.cssText).to.be.equal(before.cssText);
+			expect(this.inst.view.innerHTML).to.be.equal(before.html);
+		});
+
+		it("should check getStatus values", done => {
+			this.inst.on("layoutComplete", function(e) {
+				// Given
+				// When
+				const beforeStatus = this.getStatus();
+				const beforeLayoutStatus = beforeStatus.layoutManager;
+
+				// Then
+				expect(beforeStatus.html).to.be.equal(this.view.innerHTML);
+				expect(beforeStatus.cssText).to.be.equal(this.view.style.cssText);
+
+				beforeLayoutStatus.items.forEach((v, i) => {
+					expect(v.position).to.be.deep.equal(this.layoutManager.items[i].position);
+					expect(v.size).to.be.deep.equal(this.layoutManager.items[i].size);
+				});
+				for (let v in beforeStatus.status) {
+					expect(this._status[v]).to.be.equal(beforeStatus.status[v]);
+				}
+				done();
+			});
+			this.inst.append(Content.append(50));
+		});
+	});
 
 	describe("layout(false) Test", function() {
 		beforeEach(() => {
@@ -951,116 +1035,116 @@ describe("InfiniteGrid Test", function() {
 
 
 	describe("data type Test", function() {
-			const complicatedHTML = "<div class='item'><div class='thumbnail'><img class='img-rounded' src='#' /><div class='caption'><p><a href='http://www.naver.com'></a></p></div></div></div>";
-		
-			beforeEach(() => {
-					this.el = sandbox();
+		const complicatedHTML = "<div class='item'><div class='thumbnail'><img class='img-rounded' src='#' /><div class='caption'><p><a href='http://www.naver.com'></a></p></div></div></div>";
+	
+		beforeEach(() => {
+			this.el = sandbox();
 			this.el.innerHTML = `<ul id="grid"></ul>`;
-					window.jQuery = $;
-					this.inst = new InfiniteGrid("#grid", {
+			window.jQuery = $;
+			this.inst = new InfiniteGrid("#grid", {
 				"count": 20
 			});
 		});
 		afterEach(() => {
-					if(this.inst) {
+			if(this.inst) {
 				this.inst.destroy();
 				this.inst = null;
 			}
-					delete window.jQuery;
-					cleanup();
+			delete window.jQuery;
+			cleanup();
 		});
 
 		it("should check type #1 - concated String type", done => {
-					// Given
-					let data = [];
-					
-					for (var i = 0; i < 100; i++) {
-							data.push(complicatedHTML);
-					}
-					data = data.join("");
+			// Given
+			let data = [];
+			
+			for (var i = 0; i < 100; i++) {
+				data.push(complicatedHTML);
+			}
+			data = data.join("");
 
-					this.inst.on("layoutComplete", function(e) {
-							if(e.isAppend) {
-									// Then
-									expect(e.target.length).to.be.equal(20);
-									expect(this.layoutManager.items.length).to.be.equal(20);
-									expect(this.el.children.length).to.be.equal(20);
-
-									// When
-									this.prepend(data);
-							} else {
-									// Then
-									expect(e.target.length).to.be.equal(20);
-									expect(this.layoutManager.items.length).to.be.equal(20);
-									expect(this.el.children.length).to.be.equal(20);
-									done();
-							}
-					});
+			this.inst.on("layoutComplete", function(e) {
+				if(e.isAppend) {
+					// Then
+					expect(e.target.length).to.be.equal(20);
+					expect(this.layoutManager.items.length).to.be.equal(20);
+					expect(this.el.children.length).to.be.equal(20);
 
 					// When
-					this.inst.append(data);
+					this.prepend(data);
+				} else {
+					// Then
+					expect(e.target.length).to.be.equal(20);
+					expect(this.layoutManager.items.length).to.be.equal(20);
+					expect(this.el.children.length).to.be.equal(20);
+					done();
+				}
+			});
+
+			// When
+			this.inst.append(data);
 		});
 
 
 		it("should check type #2 - array has HTMLElement type", done => {
-					// Given
-					let data = [];
-					
-					for (var i = 0; i < 100; i++) {
-							data.push(complicatedHTML);
-					}
+			// Given
+			let data = [];
+			
+			for (var i = 0; i < 100; i++) {
+				data.push(complicatedHTML);
+			}
 
-					this.inst.on("layoutComplete", function(e) {
-							if(e.isAppend) {
-									// Then
-									expect(e.target.length).to.be.equal(20);
-									expect(this.layoutManager.items.length).to.be.equal(20);
-									expect(this.el.children.length).to.be.equal(20);
-
-									// When
-									this.prepend(data.concat());
-							} else {
-									// Then
-									expect(e.target.length).to.be.equal(20);
-									expect(this.layoutManager.items.length).to.be.equal(20);
-									expect(this.el.children.length).to.be.equal(20);
-									done();
-							}
-					});
+			this.inst.on("layoutComplete", function(e) {
+				if(e.isAppend) {
+					// Then
+					expect(e.target.length).to.be.equal(20);
+					expect(this.layoutManager.items.length).to.be.equal(20);
+					expect(this.el.children.length).to.be.equal(20);
 
 					// When
-					this.inst.append(data.concat());
+					this.prepend(data.concat());
+				} else {
+					// Then
+					expect(e.target.length).to.be.equal(20);
+					expect(this.layoutManager.items.length).to.be.equal(20);
+					expect(this.el.children.length).to.be.equal(20);
+					done();
+				}
+			});
+
+			// When
+			this.inst.append(data.concat());
 		});
 
-			it("should check type #3 - jQuery type", done => {
-					// Given
-					let data = [];
-					
-					for (var i = 0; i < 100; i++) {
-							data.push(complicatedHTML);
-					}
-					data = data.join("");
+		it("should check type #3 - jQuery type", done => {
+			// Given
+			let data = [];
+			
+			for (var i = 0; i < 100; i++) {
+				data.push(complicatedHTML);
+			}
+			data = data.join("");
 
-					this.inst.on("layoutComplete", function(e) {
-							if(e.isAppend) {
-									// Then
-									expect(e.target.length).to.be.equal(20);
-									expect(this.layoutManager.items.length).to.be.equal(20);
-									expect(this.el.children.length).to.be.equal(20);
-
-									// When
-									this.prepend($(data));
-							} else {
-									// Then
-									expect(e.target.length).to.be.equal(20);
-									expect(this.layoutManager.items.length).to.be.equal(20);
-									expect(this.el.children.length).to.be.equal(20);
-									done();
-							}
-					});
+			this.inst.on("layoutComplete", function(e) {
+				if(e.isAppend) {
+					// Then
+					expect(e.target.length).to.be.equal(20);
+					expect(this.layoutManager.items.length).to.be.equal(20);
+					expect(this.el.children.length).to.be.equal(20);
 
 					// When
-					this.inst.append($(data));
+					this.prepend($(data));
+				} else {
+					// Then
+					expect(e.target.length).to.be.equal(20);
+					expect(this.layoutManager.items.length).to.be.equal(20);
+					expect(this.el.children.length).to.be.equal(20);
+					done();
+				}
+			});
+
+			// When
+			this.inst.append($(data));
 		});        
 	});
 });

@@ -5,7 +5,7 @@
 import Component from "@egjs/component";
 import EventHandler from "./eventHandler";
 import {document, window} from "./browser";
-import {RETRY, IS_ANDROID2} from "./consts";
+import {RETRY, IS_ANDROID2, CONTAINER_CLASSNAME} from "./consts";
 import {Mixin, utils} from "./utils";
 import ImageLoaded from "./ImageLoaded";
 import LayoutManager from "./LayoutManager";
@@ -103,20 +103,29 @@ extends Mixin(Component).with(EventHandler) {
 	}
 
 	_initElements(el) {
-		if (this.options.isOverflowScroll) {
-			this.view = utils.$(el);
-			this.el = document.createElement("div");
-			const children = this.view && this.view.children;
-			const length = children.length;	// for IE8
+		const base = utils.$(el);
 
-			for (let i = 0; i < length; i++) {
-				this.el.appendChild(children[0]);
+		if (this.options.isOverflowScroll) {
+			let container = base.querySelector(`.${CONTAINER_CLASSNAME}`);
+
+			if (!container) {
+				container = document.createElement("div");
+				container.className = CONTAINER_CLASSNAME;
+
+				const children = base.children;
+				const length = children.length;	// for IE8
+
+				for (let i = 0; i < length; i++) {
+					container.appendChild(children[0]);
+				}
+				base.style.overflowY = "scroll";
+				base.appendChild(container);
+				this.view = base;
+				this.el = container;
 			}
-			this.view.style.overflowY = "scroll";
-			this.view.appendChild(this.el);
 		} else {
-			this.el = utils.$(el);
 			this.view = window;
+			this.el = base;
 		}
 	}
 
@@ -131,6 +140,7 @@ extends Mixin(Component).with(EventHandler) {
 	 */
 	getStatus() {
 		const data = {};
+		const target = this.view === window ? this.el : this.view;
 
 		for (const p in this._status) {
 			if (Object.prototype.hasOwnProperty.call(this._status, p) &&
@@ -139,8 +149,8 @@ extends Mixin(Component).with(EventHandler) {
 			}
 		}
 		return {
-			html: this.el.innerHTML,
-			cssText: this.el.style.cssText,
+			html: target.innerHTML,
+			cssText: target.style.cssText,
 			layoutManager: this.layoutManager.getStatus(),
 			options: Object.assign({}, this.options),
 			prop: data,
@@ -158,13 +168,18 @@ extends Mixin(Component).with(EventHandler) {
 			!status.layoutManager || !status.html || !status.cssText) {
 			return this;
 		}
-		this.el.style.cssText = status.cssText;
-		this.el.innerHTML = status.html;
+		const target = status.options.isOverflowScroll ? this.view : this.el;
+
+		this._detachEvent();
+		this._initElements(this.view === window ? this.el : this.view);
+		target.style.cssText = status.cssText;
+		target.innerHTML = status.html;
 		Object.assign(this.options, status.options);
 		Object.assign(this._status, status.prop);
 		this.layoutManager.setStatus(status.layoutManager);
 		this._status.topElement = this.getTopElement();
 		this._status.bottomElement = this.getBottomElement();
+		this._attachEvent();
 
 		return this;
 	}
