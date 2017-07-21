@@ -16,8 +16,7 @@
 	var grid = document.getElementById("grid");
 	var ig = new eg.InfiniteGrid("#grid", {
 			count: 40,
-      defaultGroupKey: 0,
-      isOverflowScroll: true
+      defaultGroupKey: 0
 		})
 		.on({
 			"append": function (e) {
