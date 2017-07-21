@@ -12,20 +12,20 @@ describe("InfiniteGrid Test", function() {
 			this.inst = null;
 			this.el = sandbox();
 			this.el.innerHTML = `<ul style="margin:0px;padding:0;" id="grid">
+				<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>
+				<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>
+				<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>
 				<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
-				<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
-				<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
-				<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
-				<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+				<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>
 				<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
 			</ul>
 			<ul style="margin:0px;padding:0;" id="overflow_grid">
 				<div class=${{CONTAINER_CLASSNAME}}>
 					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
-					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
-					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
-					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
-					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
+					<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>
+					<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>
+					<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>
+					<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>
 					<li style="margin:0px;padding:0;width:50%"><div>test</div></li>
 				</div>
 			</ul>
@@ -128,6 +128,50 @@ describe("InfiniteGrid Test", function() {
 			expect(this.inst.view).to.be.eql(this.inst.el.parentNode);
 			expect(this.inst.view.style.overflowY).to.be.equal("scroll");
 		});
+
+		it("should check a count of items (itemSelector)", done => {
+			// Given
+			// When
+			this.inst = new InfiniteGrid("#grid", {
+				itemSelector: "item"
+			}).on("layoutComplete", function(e) {
+				// Then
+				// Then
+				expect(this.layoutManager.items.length).to.be.equal(4);
+				expect(this.el.children.length).to.be.equal(6);
+				expect(e.target.length).to.be.equal(4);
+				expect(this.layoutManager.items.length).to.be.equal(e.target.length);
+				done();
+			});
+		});
+
+		it("should check a count of items after appended (itemSelector)", done => {
+			// Given
+			let appendedCount = 0;
+			const elements = [
+				'<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>',
+				'<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>',
+				'<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>',
+				'<li style="margin:0px;padding:0;width:50%"><div>test</div></li>',
+				'<li class="item" style="margin:0px;padding:0;width:50%"><div>test</div></li>',
+				'<li style="margin:0px;padding:0;width:50%"><div>test</div></li>'
+			];
+
+			this.inst = new InfiniteGrid("#nochildren_grid",{
+				itemSelector: "item"
+			}).on("layoutComplete", function(e) {
+				// Then
+				expect(e.target.length).to.be.equal(4);
+				expect(this.layoutManager.items.length).to.be.equal(e.target.length);
+				done();
+			});
+
+			// When
+			appendedCount = this.inst.append(elements);
+			
+			// Then
+			expect(appendedCount).to.be.equal(4);
+		});		
 	});
 
 	describe("instance method Test", function() {

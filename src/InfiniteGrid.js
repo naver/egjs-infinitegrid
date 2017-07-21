@@ -69,7 +69,7 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
 	 * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
-	 * @param {String} [options.itemSelector] A selector to select card elements that make up the layout (@deprecated since 1.3.0)<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector) (@deprecated since 1.3.0)</ko>
+	 * @param {String} [options.itemSelector] A selector to select card elements that make up the layout<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)</ko>
 	 * @param {Number} [options.count=30] The number of DOMs handled by module. If the count value is greater than zero, the number of DOMs is maintained. If the count value is zero or less than zero, the number of DOMs will increase as card elements are added. <ko>모듈이 유지할 실제 DOM의 개수. count 값이 0보다 크면 DOM 개수를 일정하게 유지한다. count 값이 0 이하면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
 	 * @param {String} [options.defaultGroupKey=null] The default group key configured in a card element contained in the markup upon initialization of a module object <ko>모듈 객체를 초기화할 때 마크업에 있는 카드 엘리먼트에 설정할 그룹 키 </ko>
 	 * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
@@ -84,6 +84,7 @@ extends Mixin(Component).with(EventHandler) {
 			defaultGroupKey: null,
 			count: 100,
 			isOverflowScroll: false,
+			itemSelector: "*",
 			threshold: 300,
 		}, options);
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);
@@ -92,13 +93,21 @@ extends Mixin(Component).with(EventHandler) {
 		this.layoutManager = new LayoutManager(this.el, this.options);
 		this._reset();
 		this._resizeViewport();
-		if (this.el.children.length > 0) {
+
+		// for IE8
+		let elements = [];
+
+		for (let i = 0, children = this.el.children, len = children.length;
+			i < len; i++) {
+			elements.push(children[i]);
+		}
+		elements = this._selectItems(elements);
+		if (elements.length > 0) {
 			this.layout(
 				true,
-				LayoutManager.itemize(this.el.children, this.options.defaultGroupKey)
+				LayoutManager.itemize(elements, this.options.defaultGroupKey)
 			);
 		}
-
 		this._attachEvent();
 	}
 
@@ -372,10 +381,21 @@ extends Mixin(Component).with(EventHandler) {
 		}
 	}
 
+	_selectItems(elements) {
+		return elements.filter(v => {
+			if (this.options.itemSelector === "*") {
+				return /DIV|SPAN|LI/.test(v.tagName);
+			} else {
+				return v.className.split(" ")
+					.some(c => c === this.options.itemSelector);
+			}
+		});
+	}
+
 	_prepareElement(paramElements) {
 		let elements = utils.$(paramElements, true);
 
-		elements = elements.filter(v => /DIV|SPAN|LI/.test(v.tagName));
+		elements = this._selectItems(elements);
 		this._status.isProcessing = true;
 		if (!this.isRecycling()) {
 			this._status.isRecycling =
