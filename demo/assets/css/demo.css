@@ -1,10 +1,21 @@
 body {background-color: #f1f2f6;}
+#grid {
+  height: 450px;
+  margin: 0;
+}
+.thumbnail {
+  margin-bottom: 5px;
+}
 .item {
   width:50%;
   min-height: 1px;
-    padding-right: 15px;
-    padding-left: 15px;
+  padding-right: 5px;
+  padding-left: 5px;
 }
+.caption a {
+  color: black;
+}
+
 @media (min-width: 768px) {
   .item {
     width : 33.33333333%;

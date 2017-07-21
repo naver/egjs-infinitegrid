@@ -1,4 +1,5 @@
 import InfiniteGrid from "../../src/InfiniteGrid";
+import InfiniteGridInjector from "inject-loader!../../src/InfiniteGrid";
 import {window} from "../../src/browser";
 import {utils} from "../../src/utils";
 import {Content} from "../content";
@@ -80,7 +81,7 @@ describe("InfiniteGrid Test", function() {
 			expect(elements.length).to.be.equal(appendedCount);
 		});
 
-		it("should check a initialization dom (there are children. isOverflowScroll:false)", () => {
+		it("should check a initialization dom (there are children. isOverflowScroll:true)", () => {
 			// Given
 			// When
 			this.inst = new InfiniteGrid("#grid", {
@@ -91,7 +92,7 @@ describe("InfiniteGrid Test", function() {
 			expect(this.inst.view).to.be.not.equal(window);
 			expect(this.inst.view.style.overflowY).to.be.equal("scroll");
 		});
-		it("should check a initialization dom (there aren't children. isOverflowScroll:false)", () => {
+		it("should check a initialization dom (there aren't children. isOverflowScroll:true)", () => {
 			// Given
 			// When
 			this.inst = new InfiniteGrid("#nochildren_grid", {
@@ -716,33 +717,47 @@ describe("InfiniteGrid Test", function() {
 			}
 			cleanup();
 		});
-
 		it("should check a prepend workaround code (doublecheck)", done => {
-					// Given
-					const prependHandler = sinon.spy();
+			// Given
+			const prependHandler = sinon.spy();
 
-					this.inst = new InfiniteGrid("#nochildren_grid", {
+			this.inst = new InfiniteGrid("#nochildren_grid", {
 				"count" : 18
 			}).on({
-							"prepend": prependHandler,
-							"layoutComplete": e => {
-									// Then
-									expect(e.isAppend).to.be.false;
-									window.scrollTo(0, 0);
-									expect(prependHandler.callCount).to.be.equal(0);
-							}
-					});
+						"prepend": prependHandler,
+						"layoutComplete": e => {
+								// Then
+								expect(e.isAppend).to.be.false;
+								window.scrollTo(0, 0);
+								expect(prependHandler.callCount).to.be.equal(0);
+						}
+				});
 
-					// When
-					this.inst.prepend(Content.prepend(200));
+				// When
+				this.inst.prepend(Content.prepend(200));
 
-					setTimeout(() => {
-							// Then
-							expect(prependHandler.callCount).to.be.equal(3);
-							prependHandler.reset();
-							done();
-					}, 2000);
+				setTimeout(() => {
+						// Then
+						expect(prependHandler.callCount).to.be.equal(3);
+						prependHandler.reset();
+						done();
+				}, 2000);
+		});
+		it("should check isOverflowScroll value when android 2.x", () => {
+			// Given
+			const MockInfiniteGrid = InfiniteGridInjector({
+					"./consts": {
+							"IS_ANDROID2": true
+					}
 			});
+			this.inst = new MockInfiniteGrid("#nochildren_grid", {
+				"isOverflowScroll": true
+			});
+
+			// Then
+			expect(this.inst.options.isOverflowScroll).to.be.false;
+			expect(this.inst.view).to.be.equal(window);
+		});	
 	});
 
 	describe("setStatus/getStatue Test", function() {

@@ -96,8 +96,8 @@ const utils = {
 		if (el === window) {
 			el.scrollTo(x, y);
 		} else {
-			el.scrollTop = x;
-			el.scrollLeft = y;
+			el.scrollLeft = x;
+			el.scrollTop = y;
 		}
 	},
 	getSize(el, name, hasBorder = false, hasMargin = false) {
