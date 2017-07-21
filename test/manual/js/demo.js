@@ -1,6 +1,6 @@
 (function () {
   function imgSrc(v) {
-    return "../../../demo/assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
+    return "../../demo/assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
   }
   function getItems(groupNo) {
     groupNo *= 30;
