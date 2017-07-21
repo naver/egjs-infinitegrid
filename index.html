@@ -18,13 +18,13 @@
 	<link rel="stylesheet" href="assets/css/demo.css">
 
 
-	<script src="release/latest/dist/infinitegrid.pkgd.min.js"></script>
+	<script src="release/latest/dist/infinitegrid.pkgd.js"></script>
 
 <script>
 	window.LIBLINK = [];
 	
 	window.LIBLINK.push(window.location.href.replace("/index.html", "/")
-            .replace("/gallery.html", "/") + "release/latest/dist/infinitegrid.pkgd.min.js");
+            .replace("/gallery.html", "/") + "release/latest/dist/infinitegrid.pkgd.js");
 	
 </script>
 <body>
@@ -129,7 +129,7 @@
 
 <h5 id="es5">ES5</h5>
 <div class="language-html highlighter-rouge"><pre class="highlight"><code>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 
 </code></pre>
 </div>
@@ -159,33 +159,34 @@
 			<div class="docs-inner">
 				<h2 class="title text-center">Demos</h2>
 				
-				<h3 id="basic">Basic</h3>
+				<h3 id="basic-overflow-scroll">Basic (overflow: scroll)</h3>
 
 <div class="demobox" codepen="demo">
-  <div id="grid" class="row" style="opacity:0.01"></div>
+  <div id="grid" class="row"></div>
 </div>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// creating instance</span>
 <span class="kd">var</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,</span> <span class="p">{</span>
-	<span class="na">count</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-	<span class="na">defaultGroupKey</span> <span class="p">:</span> <span class="mi">0</span>
+	<span class="na">count</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+	<span class="na">defaultGroupKey</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+	<span class="na">isOverflowScroll</span><span class="p">:</span> <span class="kc">true</span>
 <span class="p">})</span>
 <span class="p">.</span><span class="nx">on</span><span class="p">({</span>
-	<span class="s2">"append"</span> <span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+	<span class="s2">"append"</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
 		<span class="kd">var</span> <span class="nx">gk</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGroupKeys</span><span class="p">();</span>
-		<span class="kd">var</span> <span class="nx">lastGk</span> <span class="o">=</span> <span class="nx">gk</span><span class="p">[</span><span class="nx">gk</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+		<span class="kd">var</span> <span class="nx">lastGk</span> <span class="o">=</span> <span class="nx">gk</span><span class="p">[</span><span class="nx">gk</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
 		<span class="nx">lastGk</span><span class="o">++</span><span class="p">;</span>
-		<span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">template</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">lastGk</span><span class="p">)),</span> <span class="nx">lastGk</span><span class="p">);</span>
+		<span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">lastGk</span><span class="p">),</span> <span class="nx">lastGk</span><span class="p">);</span>
 	<span class="p">},</span>
-	<span class="s2">"prepend"</span> <span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+	<span class="s2">"prepend"</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
 		<span class="kd">var</span> <span class="nx">firstGk</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGroupKeys</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
 		<span class="nx">firstGk</span><span class="o">--</span><span class="p">;</span>
-		<span class="k">if</span><span class="p">(</span><span class="nx">firstGk</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-			<span class="nx">ig</span><span class="p">.</span><span class="nx">prepend</span><span class="p">(</span><span class="nx">template</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">firstGk</span><span class="p">)),</span> <span class="nx">firstGk</span><span class="p">);</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">firstGk</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">ig</span><span class="p">.</span><span class="nx">prepend</span><span class="p">(</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">firstGk</span><span class="p">),</span> <span class="nx">firstGk</span><span class="p">);</span>
 		<span class="p">}</span>
 	<span class="p">}</span>
 <span class="p">});</span>
-<span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">template</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">getItems</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span> <span class="mi">0</span><span class="p">);</span>
+<span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">getItems</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
 </code></pre>
 </div>
 
@@ -213,9 +214,7 @@
     </script>
 
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
 
 	<script src="assets/js/demo.js"></script>
 

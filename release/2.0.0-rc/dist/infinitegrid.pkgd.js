@@ -205,8 +205,8 @@ var utils = {
 		if (el === _browser.window) {
 			el.scrollTo(x, y);
 		} else {
-			el.scrollTop = x;
-			el.scrollLeft = y;
+			el.scrollLeft = x;
+			el.scrollTop = y;
 		}
 	},
 	getSize: function getSize(el, name) {
@@ -230,15 +230,6 @@ var utils = {
 			return parseFloat(style[name.toLowerCase()]) + (hasBorder ? parseFloat(style["border" + p1]) + parseFloat(style["border" + p2]) : 0) + (hasMargin ? parseFloat(style["margin" + p1]) + parseFloat(style["margin" + p2]) : 0);
 		}
 	},
-
-	// getStyle(el) {
-	// 	if (el === window || el.nodeType === 9) { // WINDOW, DOCUMENT_NODE
-	// 		return null;
-	// 	} else { // NODE
-	// 		return SUPPORT_COMPUTEDSTYLE ?
-	// 			window.getComputedStyle(el) : el.currentStyle;
-	// 	}
-	// },
 	innerWidth: function innerWidth(el) {
 		return this.getSize(el, "Width");
 	},
@@ -296,7 +287,7 @@ exports.utils = utils;
 
 
 exports.__esModule = true;
-exports.RETRY = exports.IS_IOS = exports.IS_IE = undefined;
+exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = undefined;
 
 var _browser = __webpack_require__(2);
 
@@ -304,7 +295,9 @@ var ua = _browser.window.navigator.userAgent;
 
 var IS_IE = exports.IS_IE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
 var IS_IOS = exports.IS_IOS = /iPhone|iPad/.test(ua);
+var IS_ANDROID2 = exports.IS_ANDROID2 = /Android 2\./.test(ua);
 var RETRY = exports.RETRY = 3;
+var CONTAINER_CLASSNAME = exports.CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
 
 /***/ }),
 /* 2 */
@@ -452,6 +445,7 @@ var InfiniteGrid = function (_Mixin$with) {
   * @param {Number} [options.count=30] The number of DOMs handled by module. If the count value is greater than zero, the number of DOMs is maintained. If the count value is zero or less than zero, the number of DOMs will increase as card elements are added. <ko>모듈이 유지할 실제 DOM의 개수. count 값이 0보다 크면 DOM 개수를 일정하게 유지한다. count 값이 0 이하면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
   * @param {String} [options.defaultGroupKey=null] The default group key configured in a card element contained in the markup upon initialization of a module object <ko>모듈 객체를 초기화할 때 마크업에 있는 카드 엘리먼트에 설정할 그룹 키 </ko>
   * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
+  * @param {Boolean} [options.isOverflowScroll=false] Indicates whether overflow:scroll is applied<ko>overflow:scroll 적용여부를 결정한다.</ko>
   * @param {Number} [options.threshold=300] The threshold size of an event area where card elements are added to a layout.<br>- append event: If the current vertical position of the scroll bar is greater than "the bottom property value of the card element at the top of the layout" plus "the value of the threshold option", the append event will occur.<br>- prepend event: If the current vertical position of the scroll bar is less than "the bottom property value of the card element at the top of the layout" minus "the value of the threshold option", the prepend event will occur. <ko>−	레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.<br>- append 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 아래에 있는 카드 엘리먼트의 top 속성의 값 + threshold 옵션의 값'보다 크면 append 이벤트가 발생한다.<br>- prepend 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 위에 있는 카드 엘리먼트의 bottom 속성의 값 - threshold 옵션의 값'보다 작으면 prepend 이벤트가 발생한다</ko>
   *
   */
@@ -463,10 +457,11 @@ var InfiniteGrid = function (_Mixin$with) {
 		_extends(_this.options = {
 			isEqualSize: false,
 			defaultGroupKey: null,
-			count: -1,
+			count: 100,
 			isOverflowScroll: false,
 			threshold: 300
 		}, options);
+		_consts.IS_ANDROID2 && (_this.options.isOverflowScroll = false);
 
 		_this._initElements(el);
 		_this.layoutManager = new _LayoutManager2["default"](_this.el, _this.options);
@@ -481,20 +476,29 @@ var InfiniteGrid = function (_Mixin$with) {
 	}
 
 	InfiniteGrid.prototype._initElements = function _initElements(el) {
-		if (this.options.isOverflowScroll) {
-			this.view = _utils.utils.$(el);
-			this.el = _browser.document.createElement("div");
-			var children = this.view && this.view.children;
-			var length = children.length; // for IE8
+		var base = _utils.utils.$(el);
 
-			for (var i = 0; i < length; i++) {
-				this.el.appendChild(children[0]);
+		if (this.options.isOverflowScroll) {
+			var container = base.querySelector("." + _consts.CONTAINER_CLASSNAME);
+
+			if (!container) {
+				container = _browser.document.createElement("div");
+				container.className = _consts.CONTAINER_CLASSNAME;
+
+				var children = base.children;
+				var length = children.length; // for IE8
+
+				for (var i = 0; i < length; i++) {
+					container.appendChild(children[0]);
+				}
+				base.style.overflowY = "scroll";
+				base.appendChild(container);
+				this.view = base;
+				this.el = container;
 			}
-			this.view.style.overflowY = "scroll";
-			this.view.appendChild(this.el);
 		} else {
-			this.el = _utils.utils.$(el);
 			this.view = _browser.window;
+			this.el = base;
 		}
 	};
 
@@ -511,6 +515,7 @@ var InfiniteGrid = function (_Mixin$with) {
 
 	InfiniteGrid.prototype.getStatus = function getStatus() {
 		var data = {};
+		var target = this.view === _browser.window ? this.el : this.view;
 
 		for (var p in this._status) {
 			if (Object.prototype.hasOwnProperty.call(this._status, p) && !(this._status[p] instanceof Element)) {
@@ -518,8 +523,8 @@ var InfiniteGrid = function (_Mixin$with) {
 			}
 		}
 		return {
-			html: this.el.innerHTML,
-			cssText: this.el.style.cssText,
+			html: target.innerHTML,
+			cssText: target.style.cssText,
 			layoutManager: this.layoutManager.getStatus(),
 			options: _extends({}, this.options),
 			prop: data
@@ -538,13 +543,18 @@ var InfiniteGrid = function (_Mixin$with) {
 		if (!status || !status.options || !status.prop || !status.layoutManager || !status.html || !status.cssText) {
 			return this;
 		}
-		this.el.style.cssText = status.cssText;
-		this.el.innerHTML = status.html;
+		var target = status.options.isOverflowScroll ? this.view : this.el;
+
+		this._detachEvent();
+		this._initElements(this.view === _browser.window ? this.el : this.view);
+		target.style.cssText = status.cssText;
+		target.innerHTML = status.html;
 		_extends(this.options, status.options);
 		_extends(this._status, status.prop);
 		this.layoutManager.setStatus(status.layoutManager);
 		this._status.topElement = this.getTopElement();
 		this._status.bottomElement = this.getBottomElement();
+		this._attachEvent();
 
 		return this;
 	};
@@ -747,7 +757,6 @@ var InfiniteGrid = function (_Mixin$with) {
 
 		// doublecheck!!! (workaround)
 		if (_utils.utils.scrollTop(this.view) === 0) {
-			// var self = this;
 			clearInterval(this._timer.doubleCheck);
 			this._timer.doubleCheck = setInterval(function () {
 				if (_utils.utils.scrollTop(_this2.view) === 0) {
@@ -1372,7 +1381,7 @@ exports["default"] = function (superclass) {
 
 		_class.prototype._attachEvent = function _attachEvent() {
 			_utils.utils.addEvent(this.view, "scroll", this._onScroll);
-			_utils.utils.addEvent(this.view, "resize", this._onResize);
+			_utils.utils.addEvent(window, "resize", this._onResize);
 		};
 
 		_class.prototype._onScroll = function _onScroll() {
@@ -1460,7 +1469,7 @@ exports["default"] = function (superclass) {
 
 		_class.prototype._detachEvent = function _detachEvent() {
 			_utils.utils.removeEvent(this.view, "scroll", this._onScroll);
-			_utils.utils.removeEvent(this.view, "resize", this._onResize);
+			_utils.utils.removeEvent(window, "resize", this._onResize);
 		};
 
 		return _class;
@@ -1494,23 +1503,27 @@ var ImageLoaded = {
 	},
 	waitImageLoaded: function waitImageLoaded(needCheck, callback) {
 		var checkCount = needCheck.length;
-		var onCheck = function onCheck(e) {
+		var checkImage = function checkImage() {
 			checkCount--;
-			_utils.utils.removeEvent(e.target, "load", onCheck);
-			_utils.utils.removeEvent(e.target, "error", onCheck);
 			checkCount <= 0 && callback && callback();
 		};
+		var onCheck = function onCheck(e) {
+			_utils.utils.removeEvent(e.target, "load", onCheck);
+			_utils.utils.removeEvent(e.target, "error", onCheck);
+			checkImage();
+		};
 
+		// workaround for IE
+		_consts.IS_IE && needCheck.forEach(function (v) {
+			return v.setAttribute("src", v.getAttribute("src"));
+		});
 		needCheck.forEach(function (v) {
-			// workaround for IE
-			if (_consts.IS_IE) {
-				var url = v.getAttribute("src");
-
-				v.setAttribute("src", "");
-				v.setAttribute("src", url);
+			if (v.complete) {
+				checkImage();
+			} else {
+				_utils.utils.addEvent(v, "load", onCheck);
+				_utils.utils.addEvent(v, "error", onCheck);
 			}
-			_utils.utils.addEvent(v, "load", onCheck);
-			_utils.utils.addEvent(v, "error", onCheck);
 		});
 	}
 };
