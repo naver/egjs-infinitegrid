@@ -9,7 +9,7 @@ export default superclass => class extends superclass {
 	}
 	_attachEvent() {
 		utils.addEvent(this.view, "scroll", this._onScroll);
-		utils.addEvent(this.view, "resize", this._onResize);
+		utils.addEvent(window, "resize", this._onResize);
 	}
 	_onScroll() {
 		if (this.isProcessing()) {
@@ -94,6 +94,6 @@ export default superclass => class extends superclass {
 
 	_detachEvent() {
 		utils.removeEvent(this.view, "scroll", this._onScroll);
-		utils.removeEvent(this.view, "resize", this._onResize);
+		utils.removeEvent(window, "resize", this._onResize);
 	}
 };
