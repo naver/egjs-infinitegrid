@@ -327,12 +327,10 @@ var _InfiniteGrid2 = _interopRequireDefault(_InfiniteGrid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-_InfiniteGrid2["default"].VERSION = "2.0.0-rc"; /**
-                                                 * Copyright (c) NAVER Corp.
-                                                 * egjs-infinitegrid projects are licensed under the MIT license
-                                                 */
-
-module.exports = _InfiniteGrid2["default"];
+module.exports = _InfiniteGrid2["default"]; /**
+                                             * Copyright (c) NAVER Corp.
+                                             * egjs-infinitegrid projects are licensed under the MIT license
+                                             */
 
 /***/ }),
 /* 4 */
@@ -944,6 +942,7 @@ var InfiniteGrid = function (_Mixin$with) {
 	return InfiniteGrid;
 }((0, _utils.Mixin)(_component2["default"])["with"](_eventHandler2["default"]));
 
+InfiniteGrid.VERSION = "2.0.0-rc";
 exports["default"] = InfiniteGrid;
 module.exports = exports["default"];
 

@@ -540,4 +540,5 @@ extends Mixin(Component).with(EventHandler) {
 	}
 };
 
+InfiniteGrid.VERSION = "#__VERSION__#";
 export default InfiniteGrid;
