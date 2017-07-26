@@ -144,10 +144,10 @@ var utils = {
 				var dummy = _browser.document.createElement("div");
 
 				dummy.innerHTML = param;
-				el = Array.prototype.slice.call(dummy.childNodes);
+				el = this.toArray(dummy.childNodes);
 			} else {
 				// Selector
-				el = Array.prototype.slice.call(_browser.document.querySelectorAll(param));
+				el = this.toArray(_browser.document.querySelectorAll(param));
 			}
 			if (!multi) {
 				el = el.length >= 1 ? el[0] : undefined;
@@ -210,9 +210,6 @@ var utils = {
 		}
 	},
 	getSize: function getSize(el, name) {
-		var hasBorder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-		var hasMargin = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-
 		if (el === _browser.window) {
 			// WINDOW
 			return el.document.documentElement["client" + name];
@@ -224,10 +221,9 @@ var utils = {
 		} else {
 			// NODE
 			var style = SUPPORT_COMPUTEDSTYLE ? _browser.window.getComputedStyle(el) : el.currentStyle;
-			var p1 = name === "Height" ? "Top" : "Left";
-			var p2 = name === "Height" ? "Bottom" : "Right";
+			var value = style[name.toLowerCase()];
 
-			return parseFloat(style[name.toLowerCase()]) + (hasBorder ? parseFloat(style["border" + p1]) + parseFloat(style["border" + p2]) : 0) + (hasMargin ? parseFloat(style["margin" + p1]) + parseFloat(style["margin" + p2]) : 0);
+			return parseFloat(/auto|%/.test(value) ? el["offset" + name] : style[name.toLowerCase()]);
 		}
 	},
 	innerWidth: function innerWidth(el) {
@@ -243,6 +239,17 @@ var utils = {
 			return false;
 		}
 		return true;
+	},
+	toArray: function toArray(nodes) {
+		// SCRIPT5014 in IE8
+		var array = [];
+
+		if (nodes) {
+			for (var i = 0, len = nodes.length; i < len; i++) {
+				array.push(nodes[i]);
+			}
+		}
+		return array;
 	}
 };
 
@@ -1512,7 +1519,7 @@ var _utils = __webpack_require__(0);
 
 var ImageLoaded = {
 	checkImageLoaded: function checkImageLoaded(el) {
-		return Array.prototype.slice.call(el.querySelectorAll("img")).filter(function (v) {
+		return _utils.utils.toArray(el.querySelectorAll("img")).filter(function (v) {
 			if (v.nodeType && [1, 9, 11].indexOf(v.nodeType) !== -1) {
 				return !v.complete;
 			} else {
@@ -1527,8 +1534,8 @@ var ImageLoaded = {
 			checkCount <= 0 && callback && callback();
 		};
 		var onCheck = function onCheck(e) {
-			_utils.utils.removeEvent(e.target, "load", onCheck);
-			_utils.utils.removeEvent(e.target, "error", onCheck);
+			_utils.utils.removeEvent(e.target || e.srcElement, "load", onCheck);
+			_utils.utils.removeEvent(e.target || e.srcElement, "error", onCheck);
 			checkImage();
 		};
 
@@ -1567,7 +1574,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var LayoutManager = function () {
 	LayoutManager.itemize = function itemize(elements, groupKey, isAppend) {
-		return Array.prototype.slice.call(elements).map(function (v) {
+		return _utils.utils.toArray(elements).map(function (v) {
 			return {
 				el: v,
 				position: {
@@ -1950,7 +1957,7 @@ var LayoutManager = function () {
 			return this;
 		}
 		_extends(this, status.prop);
-		this.items = Array.prototype.slice.call(this.el.children).map(function (v, i) {
+		this.items = _utils.utils.toArray(this.el.children).map(function (v, i) {
 			status.items[i].el = v;
 			return status.items[i];
 		});

@@ -2,7 +2,7 @@ import {utils} from "./utils";
 
 export default class LayoutManager {
 	static itemize(elements, groupKey, isAppend) {
-		return Array.prototype.slice.call(elements).map(v => ({
+		return utils.toArray(elements).map(v => ({
 			el: v,
 			position: {
 				x: 0,
@@ -352,7 +352,7 @@ export default class LayoutManager {
 			return this;
 		}
 		Object.assign(this, status.prop);
-		this.items = Array.prototype.slice.call(this.el.children).map((v, i) => {
+		this.items = utils.toArray(this.el.children).map((v, i) => {
 			status.items[i].el = v;
 			return status.items[i];
 		});

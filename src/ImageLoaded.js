@@ -3,14 +3,13 @@ import {utils} from "./utils";
 
 const ImageLoaded = {
 	checkImageLoaded(el) {
-		return Array.prototype.slice.call(el.querySelectorAll("img"))
-			.filter(v => {
-				if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
-					return !v.complete;
-				} else {
-					return false;
-				}
-			});
+		return utils.toArray(el.querySelectorAll("img")).filter(v => {
+			if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
+				return !v.complete;
+			} else {
+				return false;
+			}
+		});
 	},
 	waitImageLoaded(needCheck, callback) {
 		let checkCount = needCheck.length;
@@ -19,8 +18,8 @@ const ImageLoaded = {
 			checkCount <= 0 && callback && callback();
 		};
 		const onCheck = function(e) {
-			utils.removeEvent(e.target, "load", onCheck);
-			utils.removeEvent(e.target, "error", onCheck);
+			utils.removeEvent(e.target || e.srcElement, "load", onCheck);
+			utils.removeEvent(e.target || e.srcElement, "error", onCheck);
 			checkImage();
 		};
 

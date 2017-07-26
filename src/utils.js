@@ -39,9 +39,9 @@ const utils = {
 				const dummy = document.createElement("div");
 
 				dummy.innerHTML = param;
-				el = Array.prototype.slice.call(dummy.childNodes);
+				el = this.toArray(dummy.childNodes);
 			} else { // Selector
-				el = Array.prototype.slice.call(document.querySelectorAll(param));
+				el = this.toArray(document.querySelectorAll(param));
 			}
 			if (!multi) {
 				el = el.length >= 1 ? el[0] : undefined;
@@ -100,7 +100,7 @@ const utils = {
 			el.scrollTop = y;
 		}
 	},
-	getSize(el, name, hasBorder = false, hasMargin = false) {
+	getSize(el, name) {
 		if (el === window) { // WINDOW
 			return el.document.documentElement[`client${name}`];
 		} else if (el.nodeType === 9) { // DOCUMENT_NODE
@@ -114,14 +114,9 @@ const utils = {
 		} else { // NODE
 			const style = SUPPORT_COMPUTEDSTYLE ?
 				window.getComputedStyle(el) : el.currentStyle;
-			const p1 = name === "Height" ? "Top" : "Left";
-			const p2 = name === "Height" ? "Bottom" : "Right";
+			const value = style[name.toLowerCase()];
 
-			return parseFloat(style[name.toLowerCase()]) +
-				(hasBorder ? parseFloat(style[`border${p1}`]) + parseFloat(style[
-					`border${p2}`]) : 0) +
-				(hasMargin ? parseFloat(style[`margin${p1}`]) + parseFloat(style[
-					`margin${p2}`]) : 0);
+			return parseFloat(/auto|%/.test(value) ? el[`offset${name}`] : style[name.toLowerCase()]);
 		}
 	},
 	innerWidth(el) {
@@ -137,6 +132,17 @@ const utils = {
 			return false;
 		}
 		return true;
+	},
+	toArray(nodes) {
+		// SCRIPT5014 in IE8
+		const array = [];
+
+		if (nodes) {
+			for (let i = 0, len = nodes.length; i < len; i++) {
+				array.push(nodes[i]);
+			}
+		}
+		return array;
 	},
 };
 
