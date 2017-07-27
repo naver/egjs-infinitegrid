@@ -8,7 +8,7 @@ egjs-infinitegrid has several style guidelines to follow.
 Before your start, please read attentively below instructions.
 
 ### Linting and Code Conventions
-We adopted we adopted [ESLint](http://eslint.org/) to maintain our code quality. The [rules](https://github.com/naver/eslint-config-naver/tree/master/rules) are modified version based on [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript).
+We adopted [ESLint](http://eslint.org/) to maintain our code quality. The [rules](https://github.com/naver/eslint-config-naver/tree/master/rules) are modified version based on [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript).
 All rules are described at [.eslintrc](.eslintrc) file.
 
 ### Commit Log Guidelines

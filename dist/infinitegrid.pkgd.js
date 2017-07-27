@@ -1173,7 +1173,7 @@ var Component = function () {
 			arg = arg.concat(restParam);
 		}
 
-		for (i in handlerList) {
+		for (i = 0; handlerList[i]; i++) {
 			handlerList[i].apply(this, arg);
 		}
 
