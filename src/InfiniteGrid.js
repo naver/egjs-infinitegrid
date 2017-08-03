@@ -152,7 +152,7 @@ extends Mixin(Component).with(EventHandler) {
 		const target = this.view === window ? this.el : this.view;
 
 		for (const p in this._status) {
-			if (Object.prototype.hasOwnProperty.call(this._status, p) &&
+			if (this._status.hasOwnProperty.call(p) &&
 				!(this._status[p] instanceof Element)) {
 				data[p] = this._status[p];
 			}

@@ -531,7 +531,7 @@ var InfiniteGrid = function (_Mixin$with) {
 		var target = this.view === _browser.window ? this.el : this.view;
 
 		for (var p in this._status) {
-			if (Object.prototype.hasOwnProperty.call(this._status, p) && !(this._status[p] instanceof Element)) {
+			if (this._status.hasOwnProperty.call(p) && !(this._status[p] instanceof Element)) {
 				data[p] = this._status[p];
 			}
 		}
