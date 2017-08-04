@@ -84,7 +84,7 @@ jQuery(document).ready(function($) {
                     css_pre_processor  : "none",
                     css_starter        : "neither",
                     css_prefix_free    : false,
-                    js                 : js[0].replace("window.HOMELINK", getDomainUrl()),
+                    js                 : js[0].replace("window.HOMELINK", '"' + getDomainUrl() + '"'),
                     js_pre_processor   : "babel",
                     html_classes       : "loading",
                     css_external       : "",
