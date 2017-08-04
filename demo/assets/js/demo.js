@@ -1,6 +1,6 @@
 (function () {
 	function imgSrc(v) {
-    return "../../assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
+    return window.HOMELINK + "assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
   }
   function getItems(groupNo) {
     groupNo *= 30;
