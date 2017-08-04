@@ -5,22 +5,18 @@
  * @egjs/infinitegrid JavaScript library
  * 
  * 
- * @version 2.0.0-rc
- * 
- * All-in-one packaged file for ease use of '@egjs/infinitegrid' with below dependencies.
- * NOTE: This is not an official distribution file and is only for user convenience.
- * 
+ * @version 2.0.0-rc.1
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
+		module.exports = factory(require("@egjs/component"));
 	else if(typeof define === 'function' && define.amd)
-		define("InfiniteGrid", [], factory);
+		define("InfiniteGrid", ["@egjs/component"], factory);
 	else if(typeof exports === 'object')
-		exports["InfiniteGrid"] = factory();
+		exports["InfiniteGrid"] = factory(require("@egjs/component"));
 	else
-		root["eg"] = root["eg"] || {}, root["eg"]["InfiniteGrid"] = factory();
-})(this, function() {
+		root["eg"] = root["eg"] || {}, root["eg"]["InfiniteGrid"] = factory(root["eg"]["Component"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_8__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -56,6 +52,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -83,7 +82,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -98,7 +97,7 @@ exports.utils = exports.Mixin = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _browser = __webpack_require__(2);
+var _browser = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -144,21 +143,18 @@ var utils = {
 				var dummy = _browser.document.createElement("div");
 
 				dummy.innerHTML = param;
-				el = this.toArray(dummy.childNodes);
+				el = Array.prototype.slice.call(dummy.childNodes);
 			} else {
 				// Selector
-				el = this.toArray(_browser.document.querySelectorAll(param));
+				el = Array.prototype.slice.call(_browser.document.querySelectorAll(param));
 			}
 			if (!multi) {
 				el = el.length >= 1 ? el[0] : undefined;
 			}
-		} else if (param === _browser.window) {
-			// window
+		} else if (param.nodeName && param.nodeType === 1) {
+			// HTMLElement
 			el = param;
-		} else if (param.nodeName && (param.nodeType === 1 || param.nodeType === 9)) {
-			// HTMLElement, Document
-			el = param;
-		} else if ("jQuery" in _browser.window && param instanceof jQuery || param.constructor.prototype.jquery) {
+		} else if (_browser.window.jQuery && param instanceof jQuery || param.constructor.prototype.jquery) {
 			// jQuery
 			el = multi ? param.toArray() : param.get(0);
 		} else if (Array.isArray(param)) {
@@ -169,6 +165,7 @@ var utils = {
 				el = el.length >= 1 ? el[0] : undefined;
 			}
 		}
+
 		return el;
 	},
 	addEvent: function addEvent(element, type, handler, eventListenerOptions) {
@@ -194,22 +191,13 @@ var utils = {
 			element["on" + type] = null;
 		}
 	},
-	scrollTop: function scrollTop(el) {
-		if (el === _browser.window) {
-			return _browser.document.body.scrollTop || _browser.document.documentElement.scrollTop;
-		} else {
-			return el.scrollTop;
-		}
-	},
-	scrollTo: function scrollTo(el, x, y) {
-		if (el === _browser.window) {
-			el.scrollTo(x, y);
-		} else {
-			el.scrollLeft = x;
-			el.scrollTop = y;
-		}
+	scrollTop: function scrollTop() {
+		return _browser.document.body.scrollTop || _browser.document.documentElement.scrollTop;
 	},
 	getSize: function getSize(el, name) {
+		var hasBorder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+		var hasMargin = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
 		if (el === _browser.window) {
 			// WINDOW
 			return el.document.documentElement["client" + name];
@@ -221,9 +209,10 @@ var utils = {
 		} else {
 			// NODE
 			var style = SUPPORT_COMPUTEDSTYLE ? _browser.window.getComputedStyle(el) : el.currentStyle;
-			var value = style[name.toLowerCase()];
+			var p1 = name === "Height" ? "Top" : "Left";
+			var p2 = name === "Height" ? "Bottom" : "Right";
 
-			return parseFloat(/auto|%/.test(value) ? el["offset" + name] : style[name.toLowerCase()]);
+			return parseFloat(style[name.toLowerCase()]) + (hasBorder ? parseFloat(style["border" + p1]) + parseFloat(style["border" + p2]) : 0) + (hasMargin ? parseFloat(style["margin" + p1]) + parseFloat(style["margin" + p2]) : 0);
 		}
 	},
 	innerWidth: function innerWidth(el) {
@@ -239,17 +228,6 @@ var utils = {
 			return false;
 		}
 		return true;
-	},
-	toArray: function toArray(nodes) {
-		// SCRIPT5014 in IE8
-		var array = [];
-
-		if (nodes) {
-			for (var i = 0, len = nodes.length; i < len; i++) {
-				array.push(nodes[i]);
-			}
-		}
-		return array;
 	}
 };
 
@@ -266,7 +244,7 @@ var MixinBuilder = function () {
 		}();
 	}
 
-	MixinBuilder.prototype["with"] = function _with() {
+	MixinBuilder.prototype.with = function _with() {
 		for (var _len = arguments.length, mixins = Array(_len), _key = 0; _key < _len; _key++) {
 			mixins[_key] = arguments[_key];
 		}
@@ -294,17 +272,12 @@ exports.utils = utils;
 
 
 exports.__esModule = true;
-exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = undefined;
+/* eslint-disable no-new-func, no-nested-ternary */
+var win = typeof window !== "undefined" && window.Math === Math ? window : typeof self !== "undefined" && self.Math === Math ? self : Function("return this")();
+/* eslint-enable no-new-func, no-nested-ternary */
 
-var _browser = __webpack_require__(2);
-
-var ua = _browser.window.navigator.userAgent;
-
-var IS_IE = exports.IS_IE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
-var IS_IOS = exports.IS_IOS = /iPhone|iPad/.test(ua);
-var IS_ANDROID2 = exports.IS_ANDROID2 = /Android 2\./.test(ua);
-var RETRY = exports.RETRY = 3;
-var CONTAINER_CLASSNAME = exports.CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
+exports.window = win;
+var document = exports.document = win.document;
 
 /***/ }),
 /* 2 */
@@ -314,33 +287,18 @@ var CONTAINER_CLASSNAME = exports.CONTAINER_CLASSNAME = "_eg-infinitegrid-contai
 
 
 exports.__esModule = true;
-/* eslint-disable no-new-func, no-nested-ternary */
-var win = typeof window !== "undefined" && window.Math === Math ? window : typeof self !== "undefined" && self.Math === Math ? self : Function("return this")();
-/* eslint-enable no-new-func, no-nested-ternary */
+exports.RETRY = exports.IS_IOS = exports.IS_IE = undefined;
 
-exports.window = win;
-var document = exports.document = win.document;
+var _browser = __webpack_require__(1);
+
+var ua = _browser.window.navigator.userAgent;
+
+var IS_IE = exports.IS_IE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
+var IS_IOS = exports.IS_IOS = /iPhone|iPad/.test(ua);
+var RETRY = exports.RETRY = 3;
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _InfiniteGrid = __webpack_require__(4);
-
-var _InfiniteGrid2 = _interopRequireDefault(_InfiniteGrid);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-module.exports = _InfiniteGrid2["default"]; /**
-                                             * Copyright (c) NAVER Corp.
-                                             * egjs-infinitegrid projects are licensed under the MIT license
-                                             */
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -350,13 +308,7 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; /**
-                                                                                                                                                                                                                                                                               * Copyright (c) 2017 NAVER Corp.
-                                                                                                                                                                                                                                                                               * egjs projects are licensed under the MIT license
-                                                                                                                                                                                                                                                                              */
-
-
-var _component = __webpack_require__(5);
+var _component = __webpack_require__(8);
 
 var _component2 = _interopRequireDefault(_component);
 
@@ -364,44 +316,31 @@ var _eventHandler = __webpack_require__(6);
 
 var _eventHandler2 = _interopRequireDefault(_eventHandler);
 
-var _browser = __webpack_require__(2);
+var _browser = __webpack_require__(1);
 
-var _consts = __webpack_require__(1);
+var _consts = __webpack_require__(2);
 
 var _utils = __webpack_require__(0);
 
-var _ImageLoaded = __webpack_require__(7);
+var _ImageLoaded = __webpack_require__(4);
 
 var _ImageLoaded2 = _interopRequireDefault(_ImageLoaded);
 
-var _LayoutManager = __webpack_require__(8);
+var _LayoutManager = __webpack_require__(5);
 
 var _LayoutManager2 = _interopRequireDefault(_LayoutManager);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Copyright (c) 2017 NAVER Corp.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * egjs projects are licensed under the MIT license
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
-// IE8
-// https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
-/* eslint-disable */
-if (typeof Object.create !== "function") {
-	Object.create = function (o, properties) {
-		if ((typeof o === "undefined" ? "undefined" : _typeof(o)) !== "object" && typeof o !== "function") {
-			throw new TypeError("Object prototype may only be an Object: " + o);
-		} else if (o === null) {
-			throw new Error("This browser's implementation of Object.create is a shim and doesn't support 'null' as the first argument.");
-		}
-		function F() {}
-		F.prototype = o;
-		return new F();
-	};
-}
-/* eslint-enable */
 
 /**
  * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -438,6 +377,7 @@ var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
 </script>
 ```
  *
+ * @codepen {"id":"zvrbap", "ko":"InfiniteGrid 데모", "en":"InfiniteGrid example", "collectionId":"DPYEww", "height": 403}
  * @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
  **/
 var InfiniteGrid = function (_Mixin$with) {
@@ -446,11 +386,10 @@ var InfiniteGrid = function (_Mixin$with) {
 	/**
   * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
   * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
-  * @param {String} [options.itemSelector] A selector to select card elements that make up the layout<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)</ko>
+  * @param {String} [options.itemSelector] A selector to select card elements that make up the layout (@deprecated since 1.3.0)<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector) (@deprecated since 1.3.0)</ko>
   * @param {Number} [options.count=30] The number of DOMs handled by module. If the count value is greater than zero, the number of DOMs is maintained. If the count value is zero or less than zero, the number of DOMs will increase as card elements are added. <ko>모듈이 유지할 실제 DOM의 개수. count 값이 0보다 크면 DOM 개수를 일정하게 유지한다. count 값이 0 이하면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
   * @param {String} [options.defaultGroupKey=null] The default group key configured in a card element contained in the markup upon initialization of a module object <ko>모듈 객체를 초기화할 때 마크업에 있는 카드 엘리먼트에 설정할 그룹 키 </ko>
   * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
-  * @param {Boolean} [options.isOverflowScroll=false] Indicates whether overflow:scroll is applied<ko>overflow:scroll 적용여부를 결정한다.</ko>
   * @param {Number} [options.threshold=300] The threshold size of an event area where card elements are added to a layout.<br>- append event: If the current vertical position of the scroll bar is greater than "the bottom property value of the card element at the top of the layout" plus "the value of the threshold option", the append event will occur.<br>- prepend event: If the current vertical position of the scroll bar is less than "the bottom property value of the card element at the top of the layout" minus "the value of the threshold option", the prepend event will occur. <ko>−	레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.<br>- append 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 아래에 있는 카드 엘리먼트의 top 속성의 값 + threshold 옵션의 값'보다 크면 append 이벤트가 발생한다.<br>- prepend 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 위에 있는 카드 엘리먼트의 bottom 속성의 값 - threshold 옵션의 값'보다 작으면 prepend 이벤트가 발생한다</ko>
   *
   */
@@ -462,58 +401,22 @@ var InfiniteGrid = function (_Mixin$with) {
 		_extends(_this.options = {
 			isEqualSize: false,
 			defaultGroupKey: null,
-			count: 100,
-			isOverflowScroll: false,
-			itemSelector: "*",
+			count: 30,
 			threshold: 300
 		}, options);
-		_consts.IS_ANDROID2 && (_this.options.isOverflowScroll = false);
 
-		_this._initElements(el);
-		_this.layoutManager = new _LayoutManager2["default"](_this.el, _this.options);
+		_this.view = window;
+		_this.el = _utils.utils.$(el);
+		_this.layoutManager = new _LayoutManager2.default(_this.el, _this.options);
 		_this._reset();
 		_this._resizeViewport();
-
-		// for IE8
-		var elements = [];
-
-		for (var i = 0, children = _this.el.children, len = children.length; i < len; i++) {
-			elements.push(children[i]);
+		if (_this.el.children.length > 0) {
+			_this.layout(true, _LayoutManager2.default.itemize(_this.el.children, _this.options.defaultGroupKey));
 		}
-		elements = _this._selectItems(elements);
-		if (elements.length > 0) {
-			_this.layout(true, _LayoutManager2["default"].itemize(elements, _this.options.defaultGroupKey));
-		}
+
 		_this._attachEvent();
 		return _this;
 	}
-
-	InfiniteGrid.prototype._initElements = function _initElements(el) {
-		var base = _utils.utils.$(el);
-
-		if (this.options.isOverflowScroll) {
-			var container = base.querySelector("." + _consts.CONTAINER_CLASSNAME);
-
-			if (!container) {
-				container = _browser.document.createElement("div");
-				container.className = _consts.CONTAINER_CLASSNAME;
-
-				var children = base.children;
-				var length = children.length; // for IE8
-
-				for (var i = 0; i < length; i++) {
-					container.appendChild(children[0]);
-				}
-				base.style.overflowY = "scroll";
-				base.appendChild(container);
-				this.view = base;
-				this.el = container;
-			}
-		} else {
-			this.view = _browser.window;
-			this.el = base;
-		}
-	};
 
 	InfiniteGrid.prototype._resizeViewport = function _resizeViewport() {
 		this._status.clientHeight = _utils.utils.innerHeight(this.view);
@@ -528,16 +431,15 @@ var InfiniteGrid = function (_Mixin$with) {
 
 	InfiniteGrid.prototype.getStatus = function getStatus() {
 		var data = {};
-		var target = this.view === _browser.window ? this.el : this.view;
 
 		for (var p in this._status) {
-			if (this._status.hasOwnProperty.call(p) && !(this._status[p] instanceof Element)) {
+			if (Object.prototype.hasOwnProperty.call(this._status, p) && !(this._status[p] instanceof Element)) {
 				data[p] = this._status[p];
 			}
 		}
 		return {
-			html: target.innerHTML,
-			cssText: target.style.cssText,
+			html: this.el.innerHTML,
+			cssText: this.el.style.cssText,
 			layoutManager: this.layoutManager.getStatus(),
 			options: _extends({}, this.options),
 			prop: data
@@ -556,18 +458,13 @@ var InfiniteGrid = function (_Mixin$with) {
 		if (!status || !status.options || !status.prop || !status.layoutManager || !status.html || !status.cssText) {
 			return this;
 		}
-		var target = status.options.isOverflowScroll ? this.view : this.el;
-
-		this._detachEvent();
-		this._initElements(this.view === _browser.window ? this.el : this.view);
-		target.style.cssText = status.cssText;
-		target.innerHTML = status.html;
+		this.el.style.cssText = status.cssText;
+		this.el.innerHTML = status.html;
 		_extends(this.options, status.options);
 		_extends(this._status, status.prop);
 		this.layoutManager.setStatus(status.layoutManager);
 		this._status.topElement = this.getTopElement();
 		this._status.bottomElement = this.getBottomElement();
-		this._attachEvent();
 
 		return this;
 	};
@@ -736,8 +633,8 @@ var InfiniteGrid = function (_Mixin$with) {
 		if (!options.isAppend) {
 			distance = addItems.length >= this.layoutManager.items.length ? 0 : this.layoutManager.items[addItems.length].position.y;
 			if (distance > 0) {
-				this._status.prevScrollTop = _utils.utils.scrollTop(this.view) + distance;
-				_utils.utils.scrollTo(this.view, 0, this._status.prevScrollTop);
+				this._status.prevScrollTop = _utils.utils.scrollTop() + distance;
+				this.view.scrollTo(0, this._status.prevScrollTop);
 			}
 		}
 
@@ -769,10 +666,11 @@ var InfiniteGrid = function (_Mixin$with) {
 		var _this2 = this;
 
 		// doublecheck!!! (workaround)
-		if (_utils.utils.scrollTop(this.view) === 0) {
+		if (_utils.utils.scrollTop() === 0) {
+			// var self = this;
 			clearInterval(this._timer.doubleCheck);
 			this._timer.doubleCheck = setInterval(function () {
-				if (_utils.utils.scrollTop(_this2.view) === 0) {
+				if (_utils.utils.scrollTop() === 0) {
 					_this2.trigger("prepend", {
 						scrollTop: 0
 					});
@@ -782,25 +680,13 @@ var InfiniteGrid = function (_Mixin$with) {
 		}
 	};
 
-	InfiniteGrid.prototype._selectItems = function _selectItems(elements) {
-		var _this3 = this;
-
-		return elements.filter(function (v) {
-			if (_this3.options.itemSelector === "*") {
-				return (/DIV|SPAN|LI/.test(v.tagName)
-				);
-			} else {
-				return v.className.split(" ").some(function (c) {
-					return c === _this3.options.itemSelector;
-				});
-			}
-		});
-	};
-
 	InfiniteGrid.prototype._prepareElement = function _prepareElement(paramElements) {
 		var elements = _utils.utils.$(paramElements, true);
 
-		elements = this._selectItems(elements);
+		elements = elements.filter(function (v) {
+			return (/DIV|SPAN|LI/.test(v.tagName)
+			);
+		});
 		this._status.isProcessing = true;
 		if (!this.isRecycling()) {
 			this._status.isRecycling = this.layoutManager.items.length + elements.length >= this.options.count;
@@ -832,7 +718,7 @@ var InfiniteGrid = function (_Mixin$with) {
 			return docFragment.appendChild(v);
 		});
 		isAppend ? this.el.appendChild(docFragment) : this.el.insertBefore(docFragment, this.el.firstChild);
-		this.layout(false, _LayoutManager2["default"].itemize(cloneElements, groupKey), {
+		this.layout(false, _LayoutManager2.default.itemize(cloneElements, groupKey), {
 			isAppend: isAppend,
 			removedCount: removedCount
 		});
@@ -842,13 +728,13 @@ var InfiniteGrid = function (_Mixin$with) {
 	};
 
 	InfiniteGrid.prototype._waitResource = function _waitResource(isRelayout, addItems, options) {
-		var needCheck = _ImageLoaded2["default"].checkImageLoaded(this.el);
+		var needCheck = _ImageLoaded2.default.checkImageLoaded(this.el);
 		var callback = function () {
 			this._onLayoutComplete(isRelayout, addItems, options);
 		}.bind(this);
 
 		if (needCheck.length > 0) {
-			_ImageLoaded2["default"].waitImageLoaded(needCheck, callback);
+			_ImageLoaded2.default.waitImageLoaded(needCheck, callback);
 		} else {
 			// convert to async
 			setTimeout(function () {
@@ -947,105 +833,13 @@ var InfiniteGrid = function (_Mixin$with) {
 	};
 
 	return InfiniteGrid;
-}((0, _utils.Mixin)(_component2["default"])["with"](_eventHandler2["default"]));
+}((0, _utils.Mixin)(_component2.default).with(_eventHandler2.default));
 
-InfiniteGrid.VERSION = "2.0.0-rc";
-exports["default"] = InfiniteGrid;
+exports.default = InfiniteGrid;
 module.exports = exports["default"];
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*!
- * Copyright (c) 2017 NAVER Corp.
- * @egjs/component project is licensed under the MIT license
- * 
- * @egjs/component JavaScript library
- * http://naver.github.io/egjs/component
- * 
- * @version 2.0.0-rc
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(true)
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["Component"] = factory();
-	else
-		root["eg"] = root["eg"] || {}, root["eg"]["Component"] = factory();
-})(this, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1053,473 +847,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 exports.__esModule = true;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * Copyright (c) 2015 NAVER Corp.
- * egjs projects are licensed under the MIT license
- */
-
-/**
- * A class used to manage events and options in a component
- * @ko 컴포넌트의 이벤트와 옵션을 관리할 수 있게 하는 클래스
- * @alias eg.Component
- */
-var Component = function () {
-	/**
-  * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
-  */
-	function Component() {
-		_classCallCheck(this, Component);
-
-		this._eventHandler = {};
-		this.options = {};
-	}
-
-	/**
-  * Sets options in a component or returns them.
-  * @ko 컴포넌트에 옵션을 설정하거나 옵션을 반환한다
-  * @param {String} key The key of the option<ko>옵션의 키</ko>
-  * @param {Object} [value] The option value that corresponds to a given key <ko>키에 해당하는 옵션값</ko>
-  * @return {eg.Component|Object} An instance, an option value, or an option object of a component itself.<br>- If both key and value are used to set an option, it returns an instance of a component itself.<br>- If only a key is specified for the parameter, it returns the option value corresponding to a given key.<br>- If nothing is specified, it returns an option object. <ko>컴포넌트 자신의 인스턴스나 옵션값, 옵션 객체.<br>- 키와 값으로 옵션을 설정하면 컴포넌트 자신의 인스턴스를 반환한다.<br>- 파라미터에 키만 설정하면 키에 해당하는 옵션값을 반환한다.<br>- 파라미터에 아무것도 설정하지 않으면 옵션 객체를 반환한다.</ko>
-  * @example
- class Some extends eg.Component {
- }
- const some = new Some({
-  "foo": 1,
-  "bar": 2
- });
- some.option("foo"); // return 1
- some.option("foo",3); // return some instance
- some.option(); // return options object.
- some.option({
-  "foo" : 10,
-  "bar" : 20,
-  "baz" : 30
- }); // return some instance.
-  */
-
-
-	Component.prototype.option = function option() {
-		if (arguments.length >= 2) {
-			var _key = arguments.length <= 0 ? undefined : arguments[0];
-			var value = arguments.length <= 1 ? undefined : arguments[1];
-
-			this.options[_key] = value;
-			return this;
-		}
-
-		var key = arguments.length <= 0 ? undefined : arguments[0];
-
-		if (typeof key === "string") {
-			return this.options[key];
-		}
-
-		if (arguments.length === 0) {
-			return this.options;
-		}
-
-		var options = key;
-
-		this.options = options;
-
-		return this;
-	};
-	/**
-  * Triggers a custom event.
-  * @ko 커스텀 이벤트를 발생시킨다
-  * @param {String} eventName The name of the custom event to be triggered <ko>발생할 커스텀 이벤트의 이름</ko>
-  * @param {Object} customEvent Event data to be sent when triggering a custom event <ko>커스텀 이벤트가 발생할 때 전달할 데이터</ko>
-  * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. <ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다.</ko>
-  * @example
- class Some extends eg.Component {
-  some(){
-    this.trigger("hi");// fire hi event.
-  }
- }
-  */
-
-
-	Component.prototype.trigger = function trigger(eventName) {
-		var customEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-		var handlerList = this._eventHandler[eventName] || [];
-		var hasHandlerList = handlerList.length > 0;
-
-		if (!hasHandlerList) {
-			return true;
-		}
-
-		// If detach method call in handler in first time then handeler list calls.
-		handlerList = handlerList.concat();
-
-		customEvent.eventType = eventName;
-
-		var isCanceled = false;
-		var arg = [customEvent];
-		var i = void 0;
-
-		customEvent.stop = function () {
-			isCanceled = true;
-		};
-
-		for (var _len = arguments.length, restParam = Array(_len > 2 ? _len - 2 : 0), _key2 = 2; _key2 < _len; _key2++) {
-			restParam[_key2 - 2] = arguments[_key2];
-		}
-
-		if (restParam.length >= 1) {
-			arg = arg.concat(restParam);
-		}
-
-		for (i in handlerList) {
-			handlerList[i].apply(this, arg);
-		}
-
-		return !isCanceled;
-	};
-	/**
-  * Executed event just one time.
-  * @ko 이벤트가 한번만 실행된다.
-  * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
-  * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
-  * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
-  * @example
- class Some extends eg.Component {
-  hi() {
-    alert("hi");
-  }
-  thing() {
-    this.once("hi", this.hi);
-  }
- }
- var some = new Some();
- some.thing();
- some.trigger("hi");
- // fire alert("hi");
- some.trigger("hi");
- // Nothing happens
-  */
-
-
-	Component.prototype.once = function once(eventName, handlerToAttach) {
-		if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
-			var eventHash = eventName;
-			var i = void 0;
-
-			for (i in eventHash) {
-				this.once(i, eventHash[i]);
-			}
-			return this;
-		} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
-			var self = this;
-
-			this.on(eventName, function listener() {
-				for (var _len2 = arguments.length, arg = Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-					arg[_key3] = arguments[_key3];
-				}
-
-				handlerToAttach.apply(self, arg);
-				self.off(eventName, listener);
-			});
-		}
-
-		return this;
-	};
-
-	/**
-  * Checks whether an event has been attached to a component.
-  * @ko 컴포넌트에 이벤트가 등록됐는지 확인한다.
-  * @param {String} eventName The name of the event to be attached <ko>등록 여부를 확인할 이벤트의 이름</ko>
-  * @return {Boolean} Indicates whether the event is attached. <ko>이벤트 등록 여부</ko>
-  * @example
- class Some extends eg.Component {
-  some() {
-    this.hasOn("hi");// check hi event.
-  }
- }
-  */
-
-
-	Component.prototype.hasOn = function hasOn(eventName) {
-		return !!this._eventHandler[eventName];
-	};
-
-	/**
-  * Attaches an event to a component.
-  * @ko 컴포넌트에 이벤트를 등록한다.
-  * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
-  * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
-  * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
-  * @example
- class Some extends eg.Component {
-  hi() {
-    console.log("hi");
-  }
-  some() {
-    this.on("hi",this.hi); //attach event
-  }
- }
- */
-
-
-	Component.prototype.on = function on(eventName, handlerToAttach) {
-		if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
-			var eventHash = eventName;
-			var name = void 0;
-
-			for (name in eventHash) {
-				this.on(name, eventHash[name]);
-			}
-			return this;
-		} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
-			var handlerList = this._eventHandler[eventName];
-
-			if (typeof handlerList === "undefined") {
-				this._eventHandler[eventName] = [];
-				handlerList = this._eventHandler[eventName];
-			}
-
-			handlerList.push(handlerToAttach);
-		}
-
-		return this;
-	};
-	/**
-  * Detaches an event from the component.
-  * @ko 컴포넌트에 등록된 이벤트를 해제한다
-  * @param {eventName} eventName The name of the event to be detached <ko>해제할 이벤트의 이름</ko>
-  * @param {Function} handlerToDetach The handler function of the event to be detached <ko>해제할 이벤트의 핸들러 함수</ko>
-  * @return {eg.Component} An instance of a component itself <ko>컴포넌트 자신의 인스턴스</ko>
-  * @example
- class Some extends eg.Component {
-  hi() {
-    console.log("hi");
-  }
-  some() {
-    this.off("hi",this.hi); //detach event
-  }
- }
-  */
-
-
-	Component.prototype.off = function off(eventName, handlerToDetach) {
-		// All event detach.
-		if (typeof eventName === "undefined") {
-			this._eventHandler = {};
-			return this;
-		}
-
-		// All handler of specific event detach.
-		if (typeof handlerToDetach === "undefined") {
-			if (typeof eventName === "string") {
-				this._eventHandler[eventName] = undefined;
-				return this;
-			} else {
-				var eventHash = eventName;
-				var name = void 0;
-
-				for (name in eventHash) {
-					this.off(name, eventHash[name]);
-				}
-				return this;
-			}
-		}
-
-		// The handler of specific event detach.
-		var handlerList = this._eventHandler[eventName];
-
-		if (handlerList) {
-			var k = void 0;
-			var handlerFunction = void 0;
-
-			for (k = 0; (handlerFunction = handlerList[k]) !== undefined; k++) {
-				if (handlerFunction === handlerToDetach) {
-					handlerList = handlerList.splice(k, 1);
-					break;
-				}
-			}
-		}
-
-		return this;
-	};
-
-	return Component;
-}();
-
-exports["default"] = Component;
-module.exports = exports["default"];
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _Component = __webpack_require__(0);
-
-var _Component2 = _interopRequireDefault(_Component);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-_Component2["default"].VERSION = "2.0.0-rc";
-module.exports = _Component2["default"];
-
-/***/ })
-/******/ ]);
-});
-//# sourceMappingURL=component.js.map
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _consts = __webpack_require__(1);
-
-var _utils = __webpack_require__(0);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-exports["default"] = function (superclass) {
-	return function (_superclass) {
-		_inherits(_class, _superclass);
-
-		function _class(el, options) {
-			_classCallCheck(this, _class);
-
-			var _this = _possibleConstructorReturn(this, _superclass.call(this));
-
-			_this._onScroll = _this._onScroll.bind(_this);
-			_this._onResize = _this._onResize.bind(_this);
-			return _this;
-		}
-
-		_class.prototype._attachEvent = function _attachEvent() {
-			_utils.utils.addEvent(this.view, "scroll", this._onScroll);
-			_utils.utils.addEvent(window, "resize", this._onResize);
-		};
-
-		_class.prototype._onScroll = function _onScroll() {
-			if (this.isProcessing()) {
-				return;
-			}
-			var scrollTop = _utils.utils.scrollTop(this.view);
-			var prevScrollTop = this._status.prevScrollTop;
-
-			if (_consts.IS_IOS && scrollTop === 0 || prevScrollTop === scrollTop) {
-				return;
-			}
-			var ele = void 0;
-			var rect = void 0;
-
-			if (prevScrollTop < scrollTop) {
-				if (_utils.utils.isEmptyObject(this._status.bottomElement)) {
-					this._status.bottomElement = this.getBottomElement();
-					if (this._status.bottomElement == null) {
-						return;
-					}
-				}
-				ele = this._status.bottomElement;
-				rect = ele.getBoundingClientRect();
-				if (rect.top <= this._status.clientHeight + this.options.threshold) {
-					/**
-      * This event is fired when a card element must be added at the bottom of a grid layout because there is no card to be displayed on screen when a user scrolls near bottom.
-      * @ko 카드 엘리먼트가 그리드 레이아웃의 아래에 추가돼야 할 때 발생하는 이벤트. 사용자가 아래로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다
-      * @event eg.InfiniteGrid#append
-      *
-      * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-      * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
-      */
-					this.trigger("append", {
-						scrollTop: scrollTop
-					});
-				}
-			} else {
-				if (_utils.utils.isEmptyObject(this._status.topElement)) {
-					this._status.topElement = this.getTopElement();
-					if (this._status.topElement == null) {
-						return;
-					}
-				}
-				ele = this._status.topElement;
-				rect = ele.getBoundingClientRect();
-				if (rect.bottom >= -this.options.threshold) {
-					/**
-      * This event is fired when a card element must be added at the top of a grid layout because there is no card to be displayed on screen when a user scrolls near top. This event is available only if the isRecycling() method returns true.
-      * @ko 카드가 그리드 레이아웃의 위에 추가돼야 할 때 발생하는 이벤트. 사용자가 위로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다. 이 이벤트는 isRecycling() 메서드의 반환값이 'true'일 때만 발생한다
-      * @event eg.InfiniteGrid#prepend
-      *
-      * @param {Object} param The object of data to be sent to an event<ko>이벤트에 전달되는 데이터 객체</ko>
-      * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
-      */
-					var croppedDistance = this._fitItems();
-
-					if (croppedDistance > 0) {
-						scrollTop -= croppedDistance;
-						_utils.utils.scrollTo(this.view, 0, scrollTop);
-					}
-					this.trigger("prepend", {
-						scrollTop: scrollTop
-					});
-				}
-			}
-			this._status.prevScrollTop = scrollTop;
-		};
-
-		_class.prototype._onResize = function _onResize() {
-			var _this2 = this;
-
-			if (this._timer.resize) {
-				clearTimeout(this._timer.resize);
-			}
-			this._timer.resize = setTimeout(function () {
-				if (_this2.layoutManager.isNeededResize()) {
-					_this2._resizeViewport();
-					_this2.layout(true);
-				}
-				_this2._timer.resize = null;
-				_this2._status.prevScrollTop = -1;
-			}, 100);
-		};
-
-		_class.prototype._detachEvent = function _detachEvent() {
-			_utils.utils.removeEvent(this.view, "scroll", this._onScroll);
-			_utils.utils.removeEvent(window, "resize", this._onResize);
-		};
-
-		return _class;
-	}(superclass);
-};
-
-module.exports = exports["default"];
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _consts = __webpack_require__(1);
+var _consts = __webpack_require__(2);
 
 var _utils = __webpack_require__(0);
 
 var ImageLoaded = {
 	checkImageLoaded: function checkImageLoaded(el) {
-		return _utils.utils.toArray(el.querySelectorAll("img")).filter(function (v) {
+		return Array.prototype.slice.call(el.querySelectorAll("img")).filter(function (v) {
 			if (v.nodeType && [1, 9, 11].indexOf(v.nodeType) !== -1) {
 				return !v.complete;
 			} else {
@@ -1529,36 +863,32 @@ var ImageLoaded = {
 	},
 	waitImageLoaded: function waitImageLoaded(needCheck, callback) {
 		var checkCount = needCheck.length;
-		var checkImage = function checkImage() {
+		var onCheck = function onCheck(e) {
 			checkCount--;
+			_utils.utils.removeEvent(e.target, "load", onCheck);
+			_utils.utils.removeEvent(e.target, "error", onCheck);
 			checkCount <= 0 && callback && callback();
 		};
-		var onCheck = function onCheck(e) {
-			_utils.utils.removeEvent(e.target || e.srcElement, "load", onCheck);
-			_utils.utils.removeEvent(e.target || e.srcElement, "error", onCheck);
-			checkImage();
-		};
 
-		// workaround for IE
-		_consts.IS_IE && needCheck.forEach(function (v) {
-			return v.setAttribute("src", v.getAttribute("src"));
-		});
 		needCheck.forEach(function (v) {
-			if (v.complete) {
-				checkImage();
-			} else {
-				_utils.utils.addEvent(v, "load", onCheck);
-				_utils.utils.addEvent(v, "error", onCheck);
+			// workaround for IE
+			if (_consts.IS_IE) {
+				var url = v.getAttribute("src");
+
+				v.setAttribute("src", "");
+				v.setAttribute("src", url);
 			}
+			_utils.utils.addEvent(v, "load", onCheck);
+			_utils.utils.addEvent(v, "error", onCheck);
 		});
 	}
 };
 
-exports["default"] = ImageLoaded;
+exports.default = ImageLoaded;
 module.exports = exports["default"];
 
 /***/ }),
-/* 8 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1574,7 +904,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var LayoutManager = function () {
 	LayoutManager.itemize = function itemize(elements, groupKey, isAppend) {
-		return _utils.utils.toArray(elements).map(function (v) {
+		return Array.prototype.slice.call(elements).map(function (v) {
 			return {
 				el: v,
 				position: {
@@ -1957,7 +1287,7 @@ var LayoutManager = function () {
 			return this;
 		}
 		_extends(this, status.prop);
-		this.items = _utils.utils.toArray(this.el.children).map(function (v, i) {
+		this.items = Array.prototype.slice.call(this.el.children).map(function (v, i) {
 			status.items[i].el = v;
 			return status.items[i];
 		});
@@ -1967,8 +1297,166 @@ var LayoutManager = function () {
 	return LayoutManager;
 }();
 
-exports["default"] = LayoutManager;
+exports.default = LayoutManager;
 module.exports = exports["default"];
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _consts = __webpack_require__(2);
+
+var _utils = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+exports.default = function (superclass) {
+	return function (_superclass) {
+		_inherits(_class, _superclass);
+
+		function _class(el, options) {
+			_classCallCheck(this, _class);
+
+			var _this = _possibleConstructorReturn(this, _superclass.call(this));
+
+			_this._onScroll = _this._onScroll.bind(_this);
+			_this._onResize = _this._onResize.bind(_this);
+			return _this;
+		}
+
+		_class.prototype._attachEvent = function _attachEvent() {
+			_utils.utils.addEvent(this.view, "scroll", this._onScroll);
+			_utils.utils.addEvent(this.view, "resize", this._onResize);
+		};
+
+		_class.prototype._onScroll = function _onScroll() {
+			if (this.isProcessing()) {
+				return;
+			}
+			var scrollTop = _utils.utils.scrollTop();
+			var prevScrollTop = this._status.prevScrollTop;
+
+			if (_consts.IS_IOS && scrollTop === 0 || prevScrollTop === scrollTop) {
+				return;
+			}
+			var ele = void 0;
+			var rect = void 0;
+
+			if (prevScrollTop < scrollTop) {
+				if (_utils.utils.isEmptyObject(this._status.bottomElement)) {
+					this._status.bottomElement = this.getBottomElement();
+					if (this._status.bottomElement == null) {
+						return;
+					}
+				}
+				ele = this._status.bottomElement;
+				rect = ele.getBoundingClientRect();
+				if (rect.top <= this._status.clientHeight + this.options.threshold) {
+					/**
+      * This event is fired when a card element must be added at the bottom of a grid layout because there is no card to be displayed on screen when a user scrolls near bottom.
+      * @ko 카드 엘리먼트가 그리드 레이아웃의 아래에 추가돼야 할 때 발생하는 이벤트. 사용자가 아래로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다
+      * @event eg.InfiniteGrid#append
+      *
+      * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+      * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
+      */
+					this.trigger("append", {
+						scrollTop: scrollTop
+					});
+				}
+			} else {
+				if (_utils.utils.isEmptyObject(this._status.topElement)) {
+					this._status.topElement = this.getTopElement();
+					if (this._status.topElement == null) {
+						return;
+					}
+				}
+				ele = this._status.topElement;
+				rect = ele.getBoundingClientRect();
+				if (rect.bottom >= -this.options.threshold) {
+					/**
+      * This event is fired when a card element must be added at the top of a grid layout because there is no card to be displayed on screen when a user scrolls near top. This event is available only if the isRecycling() method returns true.
+      * @ko 카드가 그리드 레이아웃의 위에 추가돼야 할 때 발생하는 이벤트. 사용자가 위로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다. 이 이벤트는 isRecycling() 메서드의 반환값이 'true'일 때만 발생한다
+      * @event eg.InfiniteGrid#prepend
+      *
+      * @param {Object} param The object of data to be sent to an event<ko>이벤트에 전달되는 데이터 객체</ko>
+      * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
+      */
+					var croppedDistance = this._fitItems();
+
+					if (croppedDistance > 0) {
+						scrollTop -= croppedDistance;
+						this.view.scrollTo(0, scrollTop);
+					}
+					this.trigger("prepend", {
+						scrollTop: scrollTop
+					});
+				}
+			}
+			this._status.prevScrollTop = scrollTop;
+		};
+
+		_class.prototype._onResize = function _onResize() {
+			var _this2 = this;
+
+			if (this._timer.resize) {
+				clearTimeout(this._timer.resize);
+			}
+			this._timer.resize = setTimeout(function () {
+				if (_this2.layoutManager.isNeededResize()) {
+					_this2._resizeViewport();
+					_this2.layout(true);
+				}
+				_this2._timer.resize = null;
+				_this2._status.prevScrollTop = -1;
+			}, 100);
+		};
+
+		_class.prototype._detachEvent = function _detachEvent() {
+			_utils.utils.removeEvent(this.view, "scroll", this._onScroll);
+			_utils.utils.removeEvent(this.view, "resize", this._onResize);
+		};
+
+		return _class;
+	}(superclass);
+};
+
+module.exports = exports["default"];
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _InfiniteGrid = __webpack_require__(3);
+
+var _InfiniteGrid2 = _interopRequireDefault(_InfiniteGrid);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_InfiniteGrid2.default.VERSION = "2.0.0-rc.1"; /**
+                                                * Copyright (c) NAVER Corp.
+                                                * egjs-infinitegrid projects are licensed under the MIT license
+                                                */
+
+module.exports = _InfiniteGrid2.default;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_8__;
 
 /***/ })
 /******/ ]);

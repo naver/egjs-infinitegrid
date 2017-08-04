@@ -116,6 +116,8 @@
     
         <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
     
+        <li data-name="eg.InfiniteGrid#option"><a href="eg.InfiniteGrid.html#option">option</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
         <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
     
         <li data-name="eg.InfiniteGrid#remove"><a href="eg.InfiniteGrid.html#remove">remove</a></li>
@@ -1543,7 +1545,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line120">line 120</a>
+            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line170">line 170</a>
         </div>
         
     </div>
@@ -2099,7 +2101,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line180">line 180</a>
+            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line230">line 230</a>
         </div>
         
     </div>
@@ -2288,7 +2290,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line140">line 140</a>
+            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line190">line 190</a>
         </div>
         
     </div>
@@ -2477,7 +2479,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line85">line 85</a>
+            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line135">line 135</a>
         </div>
         
     </div>
@@ -2620,6 +2622,214 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
     <pre class="prettyprint"><code><p>class Some extends eg.Component {<br>  hi() {<br>    alert(&quot;hi&quot;);<br>  }<br>  thing() {<br>    this.once(&quot;hi&quot;, this.hi);<br>  }<br>}</p>
 <p>var some = new Some();<br>some.thing();<br>some.trigger(&quot;hi&quot;);<br>// fire alert(&quot;hi&quot;);<br>some.trigger(&quot;hi&quot;);<br>// Nothing happens</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="option">
+            
+                <span class="inherited"><a href="eg.Component.html#option">inherited</a></span>
+            
+            option<span class="signature">(key, <span class="optional">value</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{eg.Component|Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line44">line 44</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Sets options in a component or returns them.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>컴포넌트에 옵션을 설정하거나 옵션을 반환한다</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>key</strong>
+            
+
+            
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">String</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The key of the option</p></div>
+            <div class="description ko"><p>옵션의 키</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>value</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Object</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The option value that corresponds to a given key </p></div>
+            <div class="description ko"><p>키에 해당하는 옵션값</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                    	eg.Component
+                    	
+                         | 
+                    
+                    	
+                        Object
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance, an option value, or an option object of a component itself.<br>- If both key and value are used to set an option, it returns an instance of a component itself.<br>- If only a key is specified for the parameter, it returns the option value corresponding to a given key.<br>- If nothing is specified, it returns an option object. </div>
+                <div class="ko"><p>컴포넌트 자신의 인스턴스나 옵션값, 옵션 객체.<br>- 키와 값으로 옵션을 설정하면 컴포넌트 자신의 인스턴스를 반환한다.<br>- 파라미터에 키만 설정하면 키에 해당하는 옵션값을 반환한다.<br>- 파라미터에 아무것도 설정하지 않으면 옵션 객체를 반환한다.</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>class Some extends eg.Component {<br>}</p>
+<p>const some = new Some({<br>  &quot;foo&quot;: 1,<br>  &quot;bar&quot;: 2<br>});</p>
+<p>some.option(&quot;foo&quot;); // return 1<br>some.option(&quot;foo&quot;,3); // return some instance<br>some.option(); // return options object.<br>some.option({<br>  &quot;foo&quot; : 10,<br>  &quot;bar&quot; : 20,<br>  &quot;baz&quot; : 30<br>}); // return some instance.</p></code></pre>
     
 
     
@@ -3166,7 +3376,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line32">line 32</a>
+            <a href="node_modules_@egjs_component_src_component.js.html">component.js</a>, <a href="node_modules_@egjs_component_src_component.js.html#line82">line 82</a>
         </div>
         
     </div>
@@ -3896,7 +4106,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 04 2017 13:58:37 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 04 2017 14:59:28 GMT+0900 (KST)
         </footer>
     </div>
 </div>
