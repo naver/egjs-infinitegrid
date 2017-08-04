@@ -31,7 +31,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@egjs/component": "^2.0.0-rc"
+    "@egjs/component": "^2.0.0"
   },
   "devDependencies": {
     "@egjs/common-demo": "github:naver/egjs#common-demo",

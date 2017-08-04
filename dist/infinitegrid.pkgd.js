@@ -964,7 +964,7 @@ module.exports = exports["default"];
  * @egjs/component JavaScript library
  * http://naver.github.io/egjs/component
  * 
- * @version 2.0.0
+ * @version 2.0.0-rc
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(true)
@@ -1011,6 +1011,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -1038,27 +1041,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _Component = __webpack_require__(1);
-
-var _Component2 = _interopRequireDefault(_Component);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-_Component2["default"].VERSION = "2.0.0";
-module.exports = _Component2["default"];
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1090,6 +1077,56 @@ var Component = function () {
 		this._eventHandler = {};
 		this.options = {};
 	}
+
+	/**
+  * Sets options in a component or returns them.
+  * @ko 컴포넌트에 옵션을 설정하거나 옵션을 반환한다
+  * @param {String} key The key of the option<ko>옵션의 키</ko>
+  * @param {Object} [value] The option value that corresponds to a given key <ko>키에 해당하는 옵션값</ko>
+  * @return {eg.Component|Object} An instance, an option value, or an option object of a component itself.<br>- If both key and value are used to set an option, it returns an instance of a component itself.<br>- If only a key is specified for the parameter, it returns the option value corresponding to a given key.<br>- If nothing is specified, it returns an option object. <ko>컴포넌트 자신의 인스턴스나 옵션값, 옵션 객체.<br>- 키와 값으로 옵션을 설정하면 컴포넌트 자신의 인스턴스를 반환한다.<br>- 파라미터에 키만 설정하면 키에 해당하는 옵션값을 반환한다.<br>- 파라미터에 아무것도 설정하지 않으면 옵션 객체를 반환한다.</ko>
+  * @example
+ class Some extends eg.Component {
+ }
+ const some = new Some({
+  "foo": 1,
+  "bar": 2
+ });
+ some.option("foo"); // return 1
+ some.option("foo",3); // return some instance
+ some.option(); // return options object.
+ some.option({
+  "foo" : 10,
+  "bar" : 20,
+  "baz" : 30
+ }); // return some instance.
+  */
+
+
+	Component.prototype.option = function option() {
+		if (arguments.length >= 2) {
+			var _key = arguments.length <= 0 ? undefined : arguments[0];
+			var value = arguments.length <= 1 ? undefined : arguments[1];
+
+			this.options[_key] = value;
+			return this;
+		}
+
+		var key = arguments.length <= 0 ? undefined : arguments[0];
+
+		if (typeof key === "string") {
+			return this.options[key];
+		}
+
+		if (arguments.length === 0) {
+			return this.options;
+		}
+
+		var options = key;
+
+		this.options = options;
+
+		return this;
+	};
 	/**
   * Triggers a custom event.
   * @ko 커스텀 이벤트를 발생시킨다
@@ -1122,21 +1159,21 @@ var Component = function () {
 
 		var isCanceled = false;
 		var arg = [customEvent];
-		var i = 0;
+		var i = void 0;
 
 		customEvent.stop = function () {
 			isCanceled = true;
 		};
 
-		for (var _len = arguments.length, restParam = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-			restParam[_key - 2] = arguments[_key];
+		for (var _len = arguments.length, restParam = Array(_len > 2 ? _len - 2 : 0), _key2 = 2; _key2 < _len; _key2++) {
+			restParam[_key2 - 2] = arguments[_key2];
 		}
 
 		if (restParam.length >= 1) {
 			arg = arg.concat(restParam);
 		}
 
-		for (i = 0; handlerList[i]; i++) {
+		for (i in handlerList) {
 			handlerList[i].apply(this, arg);
 		}
 
@@ -1179,8 +1216,8 @@ var Component = function () {
 			var self = this;
 
 			this.on(eventName, function listener() {
-				for (var _len2 = arguments.length, arg = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-					arg[_key2] = arguments[_key2];
+				for (var _len2 = arguments.length, arg = Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+					arg[_key3] = arguments[_key3];
 				}
 
 				handlerToAttach.apply(self, arg);
@@ -1313,6 +1350,22 @@ var Component = function () {
 
 exports["default"] = Component;
 module.exports = exports["default"];
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Component = __webpack_require__(0);
+
+var _Component2 = _interopRequireDefault(_Component);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+_Component2["default"].VERSION = "2.0.0-rc";
+module.exports = _Component2["default"];
 
 /***/ })
 /******/ ]);
