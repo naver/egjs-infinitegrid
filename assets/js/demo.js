@@ -1,4 +1,4 @@
-(function () {
+$(function () {
 	function imgSrc(v) {
     return window.HOMELINK + "assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
   }
@@ -32,4 +32,4 @@
 		}
 	});
 	ig.append(getItems(0), 0);
-})();
+});

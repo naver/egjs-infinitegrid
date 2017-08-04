@@ -16,6 +16,16 @@ body {background-color: #f1f2f6;}
   color: black;
 }
 
+.thumbnail a>img, .thumbnail>img {
+    margin-right: auto;
+    margin-left: auto;
+}
+.thumbnail a>img, .thumbnail>img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
 @media (min-width: 768px) {
   .item {
     width : 33.33333333%;
