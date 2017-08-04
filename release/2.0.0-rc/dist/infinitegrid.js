@@ -140,10 +140,10 @@ var utils = {
 				var dummy = _browser.document.createElement("div");
 
 				dummy.innerHTML = param;
-				el = Array.prototype.slice.call(dummy.childNodes);
+				el = this.toArray(dummy.childNodes);
 			} else {
 				// Selector
-				el = Array.prototype.slice.call(_browser.document.querySelectorAll(param));
+				el = this.toArray(_browser.document.querySelectorAll(param));
 			}
 			if (!multi) {
 				el = el.length >= 1 ? el[0] : undefined;
@@ -206,9 +206,6 @@ var utils = {
 		}
 	},
 	getSize: function getSize(el, name) {
-		var hasBorder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-		var hasMargin = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-
 		if (el === _browser.window) {
 			// WINDOW
 			return el.document.documentElement["client" + name];
@@ -220,10 +217,9 @@ var utils = {
 		} else {
 			// NODE
 			var style = SUPPORT_COMPUTEDSTYLE ? _browser.window.getComputedStyle(el) : el.currentStyle;
-			var p1 = name === "Height" ? "Top" : "Left";
-			var p2 = name === "Height" ? "Bottom" : "Right";
+			var value = style[name.toLowerCase()];
 
-			return parseFloat(style[name.toLowerCase()]) + (hasBorder ? parseFloat(style["border" + p1]) + parseFloat(style["border" + p2]) : 0) + (hasMargin ? parseFloat(style["margin" + p1]) + parseFloat(style["margin" + p2]) : 0);
+			return parseFloat(/auto|%/.test(value) ? el["offset" + name] : style[name.toLowerCase()]);
 		}
 	},
 	innerWidth: function innerWidth(el) {
@@ -239,6 +235,17 @@ var utils = {
 			return false;
 		}
 		return true;
+	},
+	toArray: function toArray(nodes) {
+		// SCRIPT5014 in IE8
+		var array = [];
+
+		if (nodes) {
+			for (var i = 0, len = nodes.length; i < len; i++) {
+				array.push(nodes[i]);
+			}
+		}
+		return array;
 	}
 };
 
@@ -323,12 +330,10 @@ var _InfiniteGrid2 = _interopRequireDefault(_InfiniteGrid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-_InfiniteGrid2["default"].VERSION = "2.0.0-rc"; /**
-                                                 * Copyright (c) NAVER Corp.
-                                                 * egjs-infinitegrid projects are licensed under the MIT license
-                                                 */
-
-module.exports = _InfiniteGrid2["default"];
+module.exports = _InfiniteGrid2["default"]; /**
+                                             * Copyright (c) NAVER Corp.
+                                             * egjs-infinitegrid projects are licensed under the MIT license
+                                             */
 
 /***/ }),
 /* 4 */
@@ -437,7 +442,7 @@ var InfiniteGrid = function (_Mixin$with) {
 	/**
   * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
   * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
-  * @param {String} [options.itemSelector] A selector to select card elements that make up the layout (@deprecated since 1.3.0)<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector) (@deprecated since 1.3.0)</ko>
+  * @param {String} [options.itemSelector] A selector to select card elements that make up the layout<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)</ko>
   * @param {Number} [options.count=30] The number of DOMs handled by module. If the count value is greater than zero, the number of DOMs is maintained. If the count value is zero or less than zero, the number of DOMs will increase as card elements are added. <ko>모듈이 유지할 실제 DOM의 개수. count 값이 0보다 크면 DOM 개수를 일정하게 유지한다. count 값이 0 이하면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
   * @param {String} [options.defaultGroupKey=null] The default group key configured in a card element contained in the markup upon initialization of a module object <ko>모듈 객체를 초기화할 때 마크업에 있는 카드 엘리먼트에 설정할 그룹 키 </ko>
   * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
@@ -455,6 +460,7 @@ var InfiniteGrid = function (_Mixin$with) {
 			defaultGroupKey: null,
 			count: 100,
 			isOverflowScroll: false,
+			itemSelector: "*",
 			threshold: 300
 		}, options);
 		_consts.IS_ANDROID2 && (_this.options.isOverflowScroll = false);
@@ -463,10 +469,17 @@ var InfiniteGrid = function (_Mixin$with) {
 		_this.layoutManager = new _LayoutManager2["default"](_this.el, _this.options);
 		_this._reset();
 		_this._resizeViewport();
-		if (_this.el.children.length > 0) {
-			_this.layout(true, _LayoutManager2["default"].itemize(_this.el.children, _this.options.defaultGroupKey));
-		}
 
+		// for IE8
+		var elements = [];
+
+		for (var i = 0, children = _this.el.children, len = children.length; i < len; i++) {
+			elements.push(children[i]);
+		}
+		elements = _this._selectItems(elements);
+		if (elements.length > 0) {
+			_this.layout(true, _LayoutManager2["default"].itemize(elements, _this.options.defaultGroupKey));
+		}
 		_this._attachEvent();
 		return _this;
 	}
@@ -514,7 +527,7 @@ var InfiniteGrid = function (_Mixin$with) {
 		var target = this.view === _browser.window ? this.el : this.view;
 
 		for (var p in this._status) {
-			if (Object.prototype.hasOwnProperty.call(this._status, p) && !(this._status[p] instanceof Element)) {
+			if (this._status.hasOwnProperty.call(p) && !(this._status[p] instanceof Element)) {
 				data[p] = this._status[p];
 			}
 		}
@@ -765,13 +778,25 @@ var InfiniteGrid = function (_Mixin$with) {
 		}
 	};
 
+	InfiniteGrid.prototype._selectItems = function _selectItems(elements) {
+		var _this3 = this;
+
+		return elements.filter(function (v) {
+			if (_this3.options.itemSelector === "*") {
+				return (/DIV|SPAN|LI/.test(v.tagName)
+				);
+			} else {
+				return v.className.split(" ").some(function (c) {
+					return c === _this3.options.itemSelector;
+				});
+			}
+		});
+	};
+
 	InfiniteGrid.prototype._prepareElement = function _prepareElement(paramElements) {
 		var elements = _utils.utils.$(paramElements, true);
 
-		elements = elements.filter(function (v) {
-			return (/DIV|SPAN|LI/.test(v.tagName)
-			);
-		});
+		elements = this._selectItems(elements);
 		this._status.isProcessing = true;
 		if (!this.isRecycling()) {
 			this._status.isRecycling = this.layoutManager.items.length + elements.length >= this.options.count;
@@ -920,6 +945,7 @@ var InfiniteGrid = function (_Mixin$with) {
 	return InfiniteGrid;
 }((0, _utils.Mixin)(_component2["default"])["with"](_eventHandler2["default"]));
 
+InfiniteGrid.VERSION = "2.0.0-rc";
 exports["default"] = InfiniteGrid;
 module.exports = exports["default"];
 
@@ -1076,7 +1102,7 @@ var _utils = __webpack_require__(0);
 
 var ImageLoaded = {
 	checkImageLoaded: function checkImageLoaded(el) {
-		return Array.prototype.slice.call(el.querySelectorAll("img")).filter(function (v) {
+		return _utils.utils.toArray(el.querySelectorAll("img")).filter(function (v) {
 			if (v.nodeType && [1, 9, 11].indexOf(v.nodeType) !== -1) {
 				return !v.complete;
 			} else {
@@ -1091,8 +1117,8 @@ var ImageLoaded = {
 			checkCount <= 0 && callback && callback();
 		};
 		var onCheck = function onCheck(e) {
-			_utils.utils.removeEvent(e.target, "load", onCheck);
-			_utils.utils.removeEvent(e.target, "error", onCheck);
+			_utils.utils.removeEvent(e.target || e.srcElement, "load", onCheck);
+			_utils.utils.removeEvent(e.target || e.srcElement, "error", onCheck);
 			checkImage();
 		};
 
@@ -1131,7 +1157,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var LayoutManager = function () {
 	LayoutManager.itemize = function itemize(elements, groupKey, isAppend) {
-		return Array.prototype.slice.call(elements).map(function (v) {
+		return _utils.utils.toArray(elements).map(function (v) {
 			return {
 				el: v,
 				position: {
@@ -1514,7 +1540,7 @@ var LayoutManager = function () {
 			return this;
 		}
 		_extends(this, status.prop);
-		this.items = Array.prototype.slice.call(this.el.children).map(function (v, i) {
+		this.items = _utils.utils.toArray(this.el.children).map(function (v, i) {
 			status.items[i].el = v;
 			return status.items[i];
 		});

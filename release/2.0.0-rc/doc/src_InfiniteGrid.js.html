@@ -51,12 +51,20 @@
 <div id="wrap" class="clearfix">
     
 <div class="navigation">
-    <h3 class="applicationName"><a href="//naver.github.io/egjs/">eg.InfiniteGrid</a></h3>
+    <h3 class="applicationName">
+        <a href="//naver.github.io/egjs/"><img style="width:40px; height:20px;" src="img/type_white.svg"/></a>
+        <a href="//naver.github.io/egjs-infinitegrid/">InfiniteGrid</a>
+    </h3>
 
     <div class="search">
         <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
     </div>
     <ul class="list">
+        <li class="item">
+            <span class="title">
+                <a href="index.html">README</a>
+            </span>
+        </li>
     
         <!-- Non Grouping Version -->
         
@@ -108,8 +116,6 @@
     
         <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
     
-        <li data-name="eg.InfiniteGrid#option"><a href="eg.InfiniteGrid.html#option">option</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
-    
         <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
     
         <li data-name="eg.InfiniteGrid#remove"><a href="eg.InfiniteGrid.html#remove">remove</a></li>
@@ -132,8 +138,6 @@
     </ul>
 
     
-    <span class="title" style="margin-top:10px"><a href="index.html">readme</a></span>
-
 </li>
 
         
@@ -220,7 +224,7 @@ extends Mixin(Component).with(EventHandler) {
 	/**
 	 * @param {HTMLElement|String|jQuery} element A base element for a module &lt;ko>모듈을 적용할 기준 엘리먼트&lt;/ko>
 	 * @param {Object} [options] The option object of the eg.InfiniteGrid module &lt;ko>eg.InfiniteGrid 모듈의 옵션 객체&lt;/ko>
-	 * @param {String} [options.itemSelector] A selector to select card elements that make up the layout (@deprecated since 1.3.0)&lt;ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector) (@deprecated since 1.3.0)&lt;/ko>
+	 * @param {String} [options.itemSelector] A selector to select card elements that make up the layout&lt;ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)&lt;/ko>
 	 * @param {Number} [options.count=30] The number of DOMs handled by module. If the count value is greater than zero, the number of DOMs is maintained. If the count value is zero or less than zero, the number of DOMs will increase as card elements are added. &lt;ko>모듈이 유지할 실제 DOM의 개수. count 값이 0보다 크면 DOM 개수를 일정하게 유지한다. count 값이 0 이하면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.&lt;/ko>
 	 * @param {String} [options.defaultGroupKey=null] The default group key configured in a card element contained in the markup upon initialization of a module object &lt;ko>모듈 객체를 초기화할 때 마크업에 있는 카드 엘리먼트에 설정할 그룹 키 &lt;/ko>
 	 * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. &lt;ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다&lt;/ko>
@@ -235,6 +239,7 @@ extends Mixin(Component).with(EventHandler) {
 			defaultGroupKey: null,
 			count: 100,
 			isOverflowScroll: false,
+			itemSelector: "*",
 			threshold: 300,
 		}, options);
 		IS_ANDROID2 &amp;&amp; (this.options.isOverflowScroll = false);
@@ -243,13 +248,21 @@ extends Mixin(Component).with(EventHandler) {
 		this.layoutManager = new LayoutManager(this.el, this.options);
 		this._reset();
 		this._resizeViewport();
-		if (this.el.children.length > 0) {
+
+		// for IE8
+		let elements = [];
+
+		for (let i = 0, children = this.el.children, len = children.length;
+			i &lt; len; i++) {
+			elements.push(children[i]);
+		}
+		elements = this._selectItems(elements);
+		if (elements.length > 0) {
 			this.layout(
 				true,
-				LayoutManager.itemize(this.el.children, this.options.defaultGroupKey)
+				LayoutManager.itemize(elements, this.options.defaultGroupKey)
 			);
 		}
-
 		this._attachEvent();
 	}
 
@@ -294,7 +307,7 @@ extends Mixin(Component).with(EventHandler) {
 		const target = this.view === window ? this.el : this.view;
 
 		for (const p in this._status) {
-			if (Object.prototype.hasOwnProperty.call(this._status, p) &amp;&amp;
+			if (this._status.hasOwnProperty.call(p) &amp;&amp;
 				!(this._status[p] instanceof Element)) {
 				data[p] = this._status[p];
 			}
@@ -523,10 +536,21 @@ extends Mixin(Component).with(EventHandler) {
 		}
 	}
 
+	_selectItems(elements) {
+		return elements.filter(v => {
+			if (this.options.itemSelector === "*") {
+				return /DIV|SPAN|LI/.test(v.tagName);
+			} else {
+				return v.className.split(" ")
+					.some(c => c === this.options.itemSelector);
+			}
+		});
+	}
+
 	_prepareElement(paramElements) {
 		let elements = utils.$(paramElements, true);
 
-		elements = elements.filter(v => /DIV|SPAN|LI/.test(v.tagName));
+		elements = this._selectItems(elements);
 		this._status.isProcessing = true;
 		if (!this.isRecycling()) {
 			this._status.isRecycling =
@@ -671,6 +695,7 @@ extends Mixin(Component).with(EventHandler) {
 	}
 };
 
+InfiniteGrid.VERSION = "#__VERSION__#";
 export default InfiniteGrid;
 </code></pre>
         </article>
@@ -685,12 +710,12 @@ export default InfiniteGrid;
         <!-- disqus code -->
         <div id="disqus_thread"></div>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
         <!-- // disqus code -->
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Jul 21 2017 18:31:08 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 04 2017 13:27:03 GMT+0900 (KST)
         </footer>
     </div>
 </div>
