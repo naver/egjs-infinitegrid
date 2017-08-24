@@ -31,7 +31,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@egjs/component": "^2.0.0"
+    "@egjs/component": "^2.0.0",
+    "eslint-plugin-import": "^2.7.0"
   },
   "devDependencies": {
     "@egjs/common-demo": "github:naver/egjs#common-demo",
