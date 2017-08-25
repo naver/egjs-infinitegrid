@@ -226,14 +226,16 @@ extends Mixin(Component).with(EventHandler) {
 	 * @param {Boolean} [isRelayout=true] Indicates whether a card element is being relayouted <ko>카드 엘리먼트 재배치 여부</ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 *
-	 *  [private parameter]
-	 * _addItems: added items
-	 * _options: {
-	 *	 isAppend: Checks whether the append() method is used to add a card element.
-	 *	 removedCount: The number of deleted card elements to maintain the number of DOMs.
-	 *}
 	 */
 	layout(isRelayout = true, _addItems, _options) {
+		/**
+		 * [private parameter]
+		 * _addItems: added items
+		 * _options: {
+		 *	 isAppend: Checks whether the append() method is used to add a card element.
+		 *	 removedCount: The number of deleted card elements to maintain the number of DOMs.
+		 * }
+		 */
 		this._status.isProcessing = true;
 		const options = Object.assign({
 			isAppend: true,
@@ -520,10 +522,10 @@ extends Mixin(Component).with(EventHandler) {
 	}
 
 	/**
-	 * Removes a card element on a grid layout.
+	 * Removes a item element on a grid layout.
 	 * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
-	 * @param {HTMLElement} Card element to be removed <ko>삭제될 카드 엘리먼트</ko>
-	 * @return {Object}  Removed card element <ko>삭제된 카드 엘리먼트 정보</ko>
+	 * @param {HTMLElement} item element to be removed <ko>삭제될 아이템 엘리먼트</ko>
+	 * @return {Object}  Removed item element <ko>삭제된 아이템 엘리먼트 정보</ko>
 	 */
 	remove(element) {
 		return this.layoutManager.removeItem(element);
