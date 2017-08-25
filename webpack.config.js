@@ -21,7 +21,8 @@ var config = {
 			amd: "@egjs/component",
 			root: [pkg.namespace.eg, "Component"]
 		}
-	},	
+	},
+	devtool: "cheap-source-map",
 	module: {
 		rules: [{
 			test: /\.js$/,
