@@ -5,6 +5,8 @@ import {window} from "../../src/browser";
 import {utils} from "../../src/utils";
 import {CONTAINER_CLASSNAME} from "../../src/consts";
 import {Content} from "../content";
+import {compareStatus, checkGetStatus} from "./TestHelper";
+
 
 describe("InfiniteGrid Test", function() {
 	describe("initailization Test", function() {
@@ -789,6 +791,7 @@ describe("InfiniteGrid Test", function() {
 		it("should check a prepend workaround code (doublecheck)", done => {
 			// Given
 			const prependHandler = sinon.spy();
+			document.body.style.height = '10000px'; // for Scroll
 
 			this.inst = new InfiniteGrid("#nochildren_grid", {
 				"count" : 18
@@ -797,7 +800,7 @@ describe("InfiniteGrid Test", function() {
 				"layoutComplete": e => {
 						// Then
 						expect(e.isAppend).to.be.false;
-						window.scrollTo(0, 0);
+						window.scrollTo(0,0);
 						expect(prependHandler.callCount).to.be.equal(0);
 				}
 			});
@@ -832,6 +835,8 @@ describe("InfiniteGrid Test", function() {
 
 	describe("setStatus/getStatue Test", function() {
 		beforeEach(() => {
+			document.body.style.height = "10000px"; // for Scroll
+			window.scrollTo(0, 0);
 			this.el = sandbox();
 			this.el.innerHTML = `<ul id="grid"></ul>`;
 			this.inst = new InfiniteGrid("#grid", {
@@ -849,12 +854,20 @@ describe("InfiniteGrid Test", function() {
 		it("should check object in restore method", () => {
 			// Given
 			const before = this.inst.getStatus();
+			const data = {
+				options: {},
+				prop: {},
+				layoutManager: {},
+				html: "setStatus",
+				cssText: "setStatus",
+			};
+			this.inst.setStatus(data);
 
-			this.inst.setStatus({});
-
-			// Then
+			// Then (scrollPos is needed)
 			expect(this.inst.el.style.cssText).to.be.equal(before.cssText);
+			expect(this.inst.el.style.cssText).to.be.not.equal(data.cssText);
 			expect(this.inst.el.innerHTML).to.be.equal(before.html);
+			expect(this.inst.el.innerHTML).to.be.not.equal(data.html);
 
 			// When
 			this.inst.setStatus();
@@ -865,51 +878,33 @@ describe("InfiniteGrid Test", function() {
 		});
 
 		it("should check getStatus values", done => {
+			// Given
+			const toScroll = 300;
+
 			this.inst.on("layoutComplete", function(e) {
 				// Given
 				// When
-				const beforeStatus = this.getStatus();
-				const beforeLayoutStatus = beforeStatus.layoutManager;
-
-				// Then
-				expect(beforeStatus.html).to.be.equal(this.el.innerHTML);
-				expect(beforeStatus.cssText).to.be.equal(this.el.style.cssText);
-
-				beforeLayoutStatus.items.forEach((v, i) => {
-					expect(v.position).to.be.deep.equal(this.layoutManager.items[i].position);
-					expect(v.size).to.be.deep.equal(this.layoutManager.items[i].size);
-				});
-				for (let v in beforeStatus.status) {
-					expect(this._status[v]).to.be.equal(beforeStatus.status[v]);
-				}
+				checkGetStatus(this, this.getStatus());
 				done();
 			});
+			window.scrollTo(0, toScroll);
 			this.inst.append(Content.append(50));
 		});
 
 		it("should check restore status", done => {
-			function parseCssText(str) {
-				const ht = {};
-
-				str.split(";").map(v => v.trim())
-					.filter(v => !utils.isEmptyObject(v))
-					.forEach(v => {
-						const a = v.split(":");
-						const val = a[1].trim();
-
-						if (!utils.isEmptyObject(val)) {
-							ht[a[0]] = a[1].trim();
-						}
-					});
-				return ht;
-			}
-
 			this.inst.on("layoutComplete", function(e) {
 				// Given
-				const beforeStatus = this.getStatus();
-				const beforeLayoutStatus = beforeStatus.layoutManager;
+				const beforeScrollPos = 300;
+				// When
+				window.scrollTo(0, beforeScrollPos);
+				// Then 
+				expect(utils.scrollTop(window)).to.be.equal(beforeScrollPos);
 
+				const beforeStatus = this.getStatus();
+				
+				window.scrollTo(0, 0);
 				this.destroy();
+
 				const infinite = new InfiniteGrid("#grid", {
 					"count": 18,
 				});
@@ -917,27 +912,37 @@ describe("InfiniteGrid Test", function() {
 				// When
 				infinite.setStatus(beforeStatus);
 
-				// Then (check infiniteGrid)
-				expect(infinite.options).to.be.deep.equal(beforeStatus.options);
-				for(let v in beforeStatus.prop) {
-					expect(infinite._status[v]).to.be.equal(beforeStatus.prop[v]); // check infiniteGrid properties
-				};
-				expect(parseCssText(infinite.el.style.cssText)).to.be.deep.equal(parseCssText(beforeStatus.cssText));
+				// Then
+				compareStatus(infinite, beforeStatus, beforeScrollPos);
+				expect(utils.scrollTop(window)).to.be.equal(0);
+				done();
+			});
+			this.inst.append(Content.append(50));
+		});
 
-				// Then (check layoutManager)
-				for (let v in beforeLayoutStatus.prop) {
-					if (v !== "items") {
-						expect(infinite.layoutManager[v]).to.be.deep.equal(beforeLayoutStatus.prop[v]); // check LayoutManager properties
-					}
-				};			
-				infinite.layoutManager.items.forEach((v, i) => {
-					expect(v.position).to.be.deep.equal(beforeLayoutStatus.items[i].position); // check html and position information
-					expect(v.size).to.be.deep.equal(beforeLayoutStatus.items[i].size); // check html and size information
-					expect(v.position).to.be.deep.equal({
-						"x": parseInt(v.el.style.left, 10),
-						"y": parseInt(v.el.style.top, 10),
-					});
+		it("should check restore status (apply scroll position)", done => {
+			this.inst.on("layoutComplete", function(e) {
+				// Given
+				const beforeScrollPos = 300;
+				// When
+				window.scrollTo(0, beforeScrollPos);
+				// Then 
+				expect(utils.scrollTop(window)).to.be.equal(beforeScrollPos);
+
+				const beforeStatus = this.getStatus();
+				const beforeLayoutStatus = beforeStatus.layoutManager;
+				window.scrollTo(0, 0);
+				this.destroy();
+				const infinite = new InfiniteGrid("#grid", {
+					"count": 18,
 				});
+
+				// When
+				infinite.setStatus(beforeStatus, true);
+
+				// Then
+				compareStatus(infinite, beforeStatus, beforeScrollPos);
+				expect(utils.scrollTop(window)).to.be.equal(beforeScrollPos);				
 				done();
 			});
 			this.inst.append(Content.append(50));
@@ -952,6 +957,8 @@ describe("InfiniteGrid Test", function() {
 				"count": 18,
 				"isOverflowScroll": true,
 			});
+			this.inst.el.style.height = "10000px";
+			this.inst.view.style.height = "50px";
 		});
 		afterEach(() => {
 			if (this.inst) {
@@ -961,42 +968,77 @@ describe("InfiniteGrid Test", function() {
 			cleanup();
 		});
 
-		it("should check object in restore method", () => {
-			// Given
-			const before = this.inst.getStatus();
-
-			this.inst.setStatus({});
-
-			// Then
-			expect(this.inst.view.style.cssText).to.be.equal(before.cssText);
-			expect(this.inst.view.innerHTML).to.be.equal(before.html);
-
-			// When
-			this.inst.setStatus();
-
-			// Then
-			expect(this.inst.view.style.cssText).to.be.equal(before.cssText);
-			expect(this.inst.view.innerHTML).to.be.equal(before.html);
-		});
-
 		it("should check getStatus values", done => {
+			// Given
+			const toScroll = 100;
+
 			this.inst.on("layoutComplete", function(e) {
 				// Given
 				// When
+				checkGetStatus(this, this.getStatus());
+				done();
+			});
+			utils.scrollTo(this.inst.view, 0, toScroll);
+			this.inst.append(Content.append(50));
+		});
+
+		it("should check restore status", done => {
+			this.inst.on("layoutComplete", function(e) {
+				// Given
+				const beforeScrollPos = 100;
+				// When
+				utils.scrollTo(this.view, 0, beforeScrollPos);
+				// Then 
+				expect(utils.scrollTop(this.view)).to.be.equal(beforeScrollPos);
+
 				const beforeStatus = this.getStatus();
-				const beforeLayoutStatus = beforeStatus.layoutManager;
+				
+				utils.scrollTo(this.view, 0, 0);
+				this.destroy();
+
+				const infinite = new InfiniteGrid("#grid", {
+					"count": 18,
+					"isOverflowScroll": true,
+				});
+				// infinite.el.style.height = "10000px";
+				// infinite.view.style.height = "50px";
+
+				// When
+				infinite.setStatus(beforeStatus);
 
 				// Then
-				expect(beforeStatus.html).to.be.equal(this.view.innerHTML);
-				expect(beforeStatus.cssText).to.be.equal(this.view.style.cssText);
+				compareStatus(infinite, beforeStatus, beforeScrollPos);
+				expect(utils.scrollTop(infinite.view)).to.be.equal(0);
+				done();
+			});
+			this.inst.append(Content.append(50));
+		});
 
-				beforeLayoutStatus.items.forEach((v, i) => {
-					expect(v.position).to.be.deep.equal(this.layoutManager.items[i].position);
-					expect(v.size).to.be.deep.equal(this.layoutManager.items[i].size);
+		it("should check restore status (apply scroll position)", done => {
+			this.inst.on("layoutComplete", function(e) {
+				// Given
+				const beforeScrollPos = 100;
+				// When
+				utils.scrollTo(this.view, 0, beforeScrollPos);
+				// Then 
+				expect(utils.scrollTop(this.view)).to.be.equal(beforeScrollPos);
+
+				const beforeStatus = this.getStatus();
+				
+				utils.scrollTo(this.view, 0, 0);
+				this.destroy();
+
+				const infinite = new InfiniteGrid("#grid", {
+					"count": 18,
+					"isOverflowScroll": true,
 				});
-				for (let v in beforeStatus.status) {
-					expect(this._status[v]).to.be.equal(beforeStatus.status[v]);
-				}
+				
+				// When
+				infinite.setStatus(beforeStatus, true);
+
+				// Then
+				compareStatus(infinite, beforeStatus, beforeScrollPos);
+				expect(utils.scrollTop(infinite.view)).to.be.equal(beforeScrollPos);
 				done();
 			});
 			this.inst.append(Content.append(50));

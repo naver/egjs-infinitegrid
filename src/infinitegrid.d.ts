@@ -35,6 +35,7 @@ interface InfiniteGridStatus {
   };
   html: string;
   cssText: string;
+  scrollPos: number;
 }
 
 declare class InfiniteGrid {
