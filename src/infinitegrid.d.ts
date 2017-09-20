@@ -52,7 +52,7 @@ declare class InfiniteGrid {
   isRecycling(): boolean;
   layout(isRelayout?: boolean): InfiniteGrid;
   remove(item: HTMLElement): Item;
-  setStatus(status: InfiniteGridStatus): InfiniteGrid;
+  setStatus(status: InfiniteGridStatus, applyScrollPos: boolean): InfiniteGrid;
 }
 
 declare namespace InfiniteGrid {
@@ -68,5 +68,5 @@ declare namespace InfiniteGrid {
   function isRecycling(): boolean;
   function layout(isRelayout?: boolean): InfiniteGrid;
   function remove(item: HTMLElement): Item;
-  function setStatus(status: InfiniteGridStatus): InfiniteGrid;
+  function setStatus(status: InfiniteGridStatus, applyScrollPos: boolean): InfiniteGrid;
 }
