@@ -129,9 +129,9 @@ const InfiniteGrid = class InfiniteGrid
 				}
 				base.style.overflowY = "scroll";
 				base.appendChild(container);
-				this.view = base;
-				this.el = container;
 			}
+			this.view = base;
+			this.el = container;
 		} else {
 			this.view = window;
 			this.el = base;
@@ -163,6 +163,7 @@ const InfiniteGrid = class InfiniteGrid
 			layoutManager: this.layoutManager.getStatus(),
 			options: Object.assign({}, this.options),
 			prop: data,
+			scrollPos: utils.scrollTop(this.view),
 		};
 	}
 
@@ -170,11 +171,12 @@ const InfiniteGrid = class InfiniteGrid
 	 * Sets the state of the eg.InfiniteGrid module with the information returned through a call to the getStatue() method.
 	 * @ko getStatue() 메서드가 저장한 정보로 eg.InfiniteGrid 모듈의 상태를 설정한다.
 	 * @param {Object} status State object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
+	 * @param {boolean} applyScrollPos Checks whether to scroll<ko>스크롤의 위치를 복원할지 결정한다.</ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
-	setStatus(status) {
+	setStatus(status, applyScrollPos) {
 		if (!status || !status.options || !status.prop ||
-			!status.layoutManager || !status.html || !status.cssText) {
+			!status.layoutManager || !status.html || !status.cssText || !("scrollPos" in status)) {
 			return this;
 		}
 		const target = status.options.isOverflowScroll ? this.view : this.el;
@@ -189,7 +191,7 @@ const InfiniteGrid = class InfiniteGrid
 		this._status.topElement = this.getTopElement();
 		this._status.bottomElement = this.getBottomElement();
 		this._attachEvent();
-
+		applyScrollPos && utils.scrollTo(this.view, 0, status.scrollPos);
 		return this;
 	}
 
