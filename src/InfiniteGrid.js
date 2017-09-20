@@ -65,7 +65,7 @@ var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
  * @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
  **/
 const InfiniteGrid = class InfiniteGrid
-extends Mixin(Component).with(EventHandler) {
+	extends Mixin(Component).with(EventHandler) {
 	/**
 	 * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
 	 * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
@@ -337,7 +337,7 @@ extends Mixin(Component).with(EventHandler) {
 
 		if (!options.isAppend) {
 			distance = addItems.length >= this.layoutManager.items.length ?
-					0 : this.layoutManager.items[addItems.length].position.y;
+				0 : this.layoutManager.items[addItems.length].position.y;
 			if (distance > 0) {
 				this._status.prevScrollTop = utils.scrollTop(this.view) + distance;
 				utils.scrollTo(this.view, 0, this._status.prevScrollTop);
