@@ -118,6 +118,28 @@ describe("EventHandler Test", function() {
                 done();
             });
         });    
+
+        it("should check if isTrusted, layoutComplete is called by resize event.", done => {
+            // Given
+            var self = this;
+            utils.addEvent(window, "resize", this.resizeHandler);
+            this.inst.once("layoutComplete", function (e) {
+                this.on("layoutComplete", function (e) {
+                    // Then
+                    expect(e.isTrusted).to.be.true;
+                    done();
+                });
+                
+                this.layoutManager.size.containerWidth = this.layoutManager.size.containerWidth - 1;
+                
+                // When
+                window.dispatchEvent(new Event("resize"));
+                
+                // Then
+                expect(e.isTrusted).to.be.false;
+                expect(self.resizeHandler.callCount).to.be.equal(1);
+            });
+        });
     });
 
     describe("Scroll Event Test", function() {
@@ -193,6 +215,8 @@ describe("EventHandler Test", function() {
                     // Then
                     expect(self.scrollHandler.callCount).to.be.equal(2);
                     expect(self.itemHandler.calledOnce).to.be.true;
+                    expect(self.itemHandler.getCall(0).args[0].isTrusted).to.be.true; // isTrusted: true
+                    expect(e.isTrusted).to.be.false; // isTrusted: false
                     done();
                 },
                 "append": self.itemHandler
@@ -224,6 +248,8 @@ describe("EventHandler Test", function() {
                     // Then
                     expect(self.scrollHandler.callCount).to.be.equal(2);
                     expect(self.itemHandler.calledOnce).to.be.true;
+                    expect(self.itemHandler.getCall(0).args[0].isTrusted).to.be.true; // isTrusted: true
+                    expect(e.isTrusted).to.be.false; // isTrusted: false
                     done();
                 },
                 "prepend": self.itemHandler
