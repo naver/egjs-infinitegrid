@@ -9,11 +9,11 @@ const PREPEND = false;
 // const HORIZONTAL = "horizontal";
 const VERTICAL = "vertical";
 
-function getTopPoint(outlines) {
-	return Math.min(...outlines.map(outline => outline.top));
+function getTopPoint(outlines, pos) {
+	return Math.min(...outlines.map(outline => outline[pos]));
 }
-function getBottomPoint(outlines) {
-	return Math.max(...outlines.map(outline => outline.top));
+function getBottomPoint(outlines, pos) {
+	return Math.max(...outlines.map(outline => outline[pos]));
 }
 
 class GoogleLayout {
@@ -21,6 +21,11 @@ class GoogleLayout {
 		this.options = options;
 	}
 	remove(removedItem, items, outline) {
+		const direction = _style[this.options.direction] ? this.options.direction : VERTICAL;
+		const style = _style[direction];
+		const _pos1 = style[0];
+		const _pos2 = style[1];
+
 		const groupKey = removedItem.groupKey;
 		const index = items.indexOf(removedItem);
 		const length = items.length;
@@ -43,32 +48,39 @@ class GoogleLayout {
 
 		group.splice(group.indexOf(removedItem), 1);
 
-		const bottom = items[end].position._bottom;
+		const pos2 = items[end].position[`_${_pos2}`];
 		const margin = this.options.margin || 0;
 
-		let point = !start ? items[start].position._top - margin : items[start - 1].position._bottom;
+		let point = !start ? items[start].position[`_${_pos1}`] - margin : items[start - 1].position[`_${_pos2}`];
 
 		point = this._layout(group, 0, group.length, point, APPEND);
-		const dist = point - bottom;
+		const dist = point - pos2;
 
 		for (let i = end + 1; i < items.length; ++i) {
-			items[i].position._top += dist;
-			items[i].position._bottom += dist;
+			items[i].position[`_${_pos1}`] += dist;
+			items[i].position[`_${_pos2}`] += dist;
 		}
 	}
+	getStyleNames() {
+		const direction = _style[this.options.direction] ? this.options.direction : VERTICAL;
+		const style = _style[direction];
+
+		return style;
+	}
 	append(items, outlines) {
-		const point = getBottomPoint(outlines);
+		const _pos1 = this.getStyleNames()[0];
+		const point = getBottomPoint(outlines, _pos1);
 
 		this._layout(items, 0, items.length, point, APPEND);
 	}
 	prepend(items, outlines) {
-		const point = getTopPoint(outlines);
+		const _pos1 = this.getStyleNames()[0];
+		const point = getTopPoint(outlines, _pos1);
 
 		this._layout(items, 0, items.length, point, PREPEND);
 	}
 	_layout(items, _i, _j, point, isAppend) {
-		const direction = _style[this.options.direction] ? this.options.direction : VERTICAL;
-		const style = _style[direction];
+		const style = this.getStyleNames();
 		const _size1 = style[2];
 		const _size2 = style[5];
 		const graph = _start => {
@@ -98,8 +110,9 @@ class GoogleLayout {
 	}
 	layout(items, outlines) {
 		const length = items.length;
+		const _pos1 = this.getStyleNames()[0];
+		let point = getBottomPoint(outlines, _pos1);
 		let j = 0;
-		let point = getBottomPoint(outlines);
 
 		for (let i = 0; i < length; i = j) {
 			const item = items[i];
