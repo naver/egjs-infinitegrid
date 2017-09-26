@@ -1,22 +1,109 @@
 import dijkstra from "../../lib/dijkstra";
-import {APPEND, PREPEND} from "./Constants";
-import {getStyleNames, assignOptions} from "./utils";
+
+const STYLE = {
+	vertical: {
+		pos1: "top",
+		endPos1: "bottom",
+		size1: "height",
+		pos2: "left",
+		endPos2: "right",
+		size2: "width",
+	},
+	horizontal: {
+		pos1: "left",
+		endPos1: "right",
+		size1: "width",
+		pos2: "top",
+		endPos2: "bottom",
+		size2: "height",
+	},
+};
+const APPEND = true;
+const PREPEND = false;
+const VERTICAL = "vertical";
+// const HORIZONTAL = "horizontal";
+
+function getTopPoint(outlines, pos) {
+	return Math.min(...outlines.map(outline => outline[pos]));
+}
+function getBottomPoint(outlines, pos) {
+	return Math.max(...outlines.map(outline => outline[pos]));
+}
 
 class JustifiedLayout {
 	constructor(options = {}) {
-		this._options = assignOptions({
-			minSize: 0,
-			maxSize: 0,
-		}, options);
-		this._style = getStyleNames(this._options.direction);
-		this._viewport = {};
+		this.options = Object.assign(
+			{
+				direction: "vertical",
+				margin: 0,
+				minSize: 0,
+				maxSize: 0,
+			},
+			options);
+		this.style = this.getStyleNames();
 	}
-	_layout(items, outline, isAppend) {
-		const style = this._style;
+	remove(removedItem, items, outline) {
+		const style = this.style;
+		const pos1Name = style.pos1;
+		const endPos1Name = style.endPos1;
+
+		const groupKey = removedItem.groupKey;
+		const index = items.indexOf(removedItem);
+		const length = items.length;
+		let start = index;
+		let end = index;
+
+		while (start >= 1) {
+			if (items[start - 1].groupKey !== groupKey) {
+				break;
+			}
+			--start;
+		}
+		while (end <= length - 2) {
+			if (items[end + 1].groupKey !== groupKey) {
+				break;
+			}
+			++end;
+		}
+		const group = items.slice(start, end + 1);
+
+		group.splice(group.indexOf(removedItem), 1);
+
+		const endPos1 = items[end].rect[endPos1Name];
+		const margin = this.options.margin;
+
+		let point = !start ? items[start].rect[pos1Name] - margin : items[start - 1].rect[endPos1Name];
+
+		point = this._layout(group, 0, group.length, point, APPEND);
+		const dist = point - endPos1;
+
+		for (let i = end + 1; i < items.length; ++i) {
+			items[i].rect[pos1Name] += dist;
+			items[i].rect[endPos1Name] += dist;
+		}
+	}
+	getStyleNames() {
+		const direction = this.options.direction in STYLE ? this.options.direction : VERTICAL;
+		const style = STYLE[direction];
+
+		return style;
+	}
+	append(items, outlines) {
+		const pos1Name = this.style.pos1;
+		const point = getBottomPoint(outlines, pos1Name);
+
+		this._layout(items, 0, items.length, point, APPEND);
+	}
+	prepend(items, outlines) {
+		const pos1Name = this.style.pos1;
+		const point = getTopPoint(outlines, pos1Name);
+
+		this._layout(items, 0, items.length, point, PREPEND);
+	}
+	_layout(items, startIndex, endIndex, point, isAppend) {
+		const style = this.style;
 		const size1Name = style.size1;
 		const size2Name = style.size2;
-		const startIndex = 0;
-		const endIndex = items.length;
 		const graph = _start => {
 			const results = {};
 			const start = +_start.replace(/[^0-9]/g, "");
@@ -38,42 +125,52 @@ class JustifiedLayout {
 
 			return results;
 		};
-		// shortest path for items' total height.
 		const path = dijkstra.find_path(graph, `node${startIndex}`, `node${endIndex}`);
 
-		return this._setStyle(items, path, outline, isAppend);
+		return this._setStyle(items, path, point, isAppend);
+	}
+	layout(items, outlines) {
+		const length = items.length;
+		const pos1Name = this.style.pos1;
+		let point = getBottomPoint(outlines, pos1Name);
+		let j = 0;
+
+		for (let i = 0; i < length; i = j) {
+			const item = items[i];
+			const groupKey = item.groupKey;
+
+			for (j = i; j < length; ++j) {
+				if (items[j].groupKey !== groupKey) {
+					break;
+				}
+			}
+			point = this._layout(items, i, j, point, APPEND);
+		}
+	}
+	setViewport(width, height) {
+		this.width = width;
+		this.height = height;
 	}
 	_getSize(items, size1Name, size2Name) {
-		const margin = this._options.margin;
-		const size = items.reduce((sum, item) => sum +
-							(item.size[size2Name]) / item.size[size1Name], 0);
+		const size = items.reduce((sum, item) => sum + item.size[size2Name] / item.size[size1Name], 0);
+		const margin = this.options.margin;
 
-		return (this._viewport[size2Name] - margin * (items.length - 1)) / size;
+		return (this[size2Name] - (margin ? margin * (items.length - 1) : 0)) / size;
 	}
 	_getCost(items, i, j, size1Name, size2Name) {
 		const size = this._getSize(items.slice(i, j), size1Name, size2Name);
-		const min = this._options.minSize;
-		const max = this._options.maxSize || Infinity;
+		const min = this.options.minSize;
+		const max = this.options.maxSize || Infinity;
 
-		if (isFinite(max)) {
-			// if this size is not in range, the cost increases sharply.
-			if (size < min) {
-				return Math.pow(size - min, 2);
-			} else if (size > max) {
-				return Math.pow(size - max, 2);
-			} else {
-				// if this size in range, the cost is negative or low.
-				return size - max;
-			}
-		}
-		// if max is infinite type, caculate cost only with "min".
 		if (size < min) {
-			return Math.max(Math.pow(min, 2), Math.pow(size, 2));
+			return Math.pow(size + min, 2);
+		} else if (size > max) {
+			return Math.pow(size + max, 2);
 		}
-		return size - min;
+		return size;
 	}
-	_setStyle(items, path, outline, isAppend) {
-		const style = this._style;
+	_setStyle(items, path, startPoint, isAppend) {
+		const style = this.style;
 		// if direction is vertical
 		// pos1 : top, pos11 : bottom
 		// size1 : height
@@ -86,95 +183,59 @@ class JustifiedLayout {
 		// pos2 : top, pos22 : bottom
 		// size2 : height
 		const pos1Name = style.pos1;
+		const endPos1Name = style.endPos1;
 		const size1Name = style.size1;
 		const pos2Name = style.pos2;
+		const endPos2Name = style.endPos2;
 		const size2Name = style.size2;
 		const length = path.length;
-		const margin = this._options.margin;
-		const startPoint = outline[0] || 0;
-		let endPoint = startPoint;
+		const margin = this.options.margin;
+		let point = startPoint;
 		let height = 0;
 
 		for (let i = 0; i < length - 1; ++i) {
 			const path1 = parseInt(path[i].replace("node", ""), 10);
 			const path2 = parseInt(path[i + 1].replace("node", ""), 10);
-			// pathItems(path1 to path2) are in 1 line.
 			const pathItems = items.slice(path1, path2);
 			const pathItemsLength = pathItems.length;
 			const size1 = this._getSize(pathItems, size1Name, size2Name);
-			const pos1 = endPoint;
+			const pos1Margin = point === 0 ? 0 : margin;
+			const pos1 = pos1Margin + point;
 
 			for (let j = 0; j < pathItemsLength; ++j) {
 				const item = pathItems[j];
 				const size2 = item.size[size2Name] / item.size[size1Name] * size1;
-				// item has margin bottom and right.
-				// first item has not margin.
-				const prevItemRect = j === 0 ? 0 : pathItems[j - 1].rect;
-				const pos2 = (prevItemRect ? prevItemRect[pos2Name] + prevItemRect[size2Name] + margin : 0);
+				// First item's margin is zero.
+				// Next item have margin.
+				const pos2 = j === 0 ? 0 :
+					(pathItems[j - 1].rect[endPos2Name] + margin);
 
 				item.rect = {
 					[pos1Name]: pos1,
+					[endPos1Name]: pos1 + size1,
 					[pos2Name]: pos2,
+					[endPos2Name]: pos2 + size2,
 					[size1Name]: size1,
 					[size2Name]: size2,
 				};
 			}
-			height += margin + size1;
-			endPoint = startPoint + height;
+			height += pos1Margin + size1;
+			point = startPoint + height;
 		}
-
 		if (isAppend) {
-			// previous group's end outline is current group's start outline
-			return {
-				start: [startPoint],
-				end: [endPoint],
-			};
+			return point;
 		}
-		// for prepend, only substract height from position.
-		// always start is lower than end.
+		// prepend
+		height += margin;
 		const itemsLength = items.length;
 
 		for (let i = 0; i < itemsLength; ++i) {
 			const item = items[i];
 
-			// move items as long as height for prepend
 			item.rect[pos1Name] -= height;
+			item.rect[endPos1Name] -= height;
 		}
-		return {
-			start: [startPoint - height],
-			end: [startPoint], // endPoint - height = startPoint
-		};
-	}
-	_insert(items, outline, type) {
-		// this only needs the size of the item.
-		const clone = items.map(item => Object.assign({}, item));
-
-		return {
-			items: clone,
-			outlines: this._layout(clone, outline, type),
-		};
-	}
-	setViewport(width, height) {
-		this._viewport.width = width;
-		this._viewport.height = height;
-	}
-	append(items, outline) {
-		return this._insert(items, outline, APPEND);
-	}
-	prepend(items, outline) {
-		return this._insert(items, outline, PREPEND);
-	}
-	layout(groups, outlines) {
-		const length = groups.length;
-		let point = outlines;
-
-		for (let i = 0; i < length; ++i) {
-			const group = groups[i];
-
-			point = this._layout(group.items, point, APPEND);
-			group.outlines = point;
-			point = point.end;
-		}
+		return point - height;
 	}
 }
 
