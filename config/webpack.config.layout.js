@@ -7,7 +7,7 @@ var path = require("path");
 
 var config = {
 	entry: {
-		"GoogleLayout": "./src/layouts/GoogleLayout.js",
+		"JustifiedLayout": "./src/layouts/JustifiedLayout.js",
 		"GridLayout": "./src/layouts/GridLayout.js",
 	},
 	output: {

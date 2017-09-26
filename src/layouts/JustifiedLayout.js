@@ -1,4 +1,4 @@
-import dijkstra from "./lib/dijkstra";
+import dijkstra from "../../lib/dijkstra";
 
 const _style = {
 	vertical: ["top", "bottom", "height", "left", "right", "width"],
@@ -16,7 +16,7 @@ function getBottomPoint(outlines, pos) {
 	return Math.max(...outlines.map(outline => outline[pos]));
 }
 
-class GoogleLayout {
+class JustifiedLayout {
 	constructor(options = {}) {
 		this.options = options;
 	}
@@ -212,4 +212,4 @@ class GoogleLayout {
 	}
 }
 
-export default GoogleLayout;
+export default JustifiedLayout;

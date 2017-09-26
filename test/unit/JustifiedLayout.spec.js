@@ -1,4 +1,4 @@
-import GoogleLayout from "../../src/layouts/GoogleLayout";
+import JustifiedLayout from "../../src/layouts/JustifiedLayout";
 
 function getItem(groupNo, i) {
 	const item = {
@@ -28,7 +28,7 @@ describe("GoogleLayout Test", function() {
 	describe("Vertical Layout Test", function() {
 		describe("append/prepend on outline test", function() {
 			before(() => {
-				this.inst = new GoogleLayout({
+				this.inst = new JustifiedLayout({
 					margin: 10,
 				});
 				this.items = [];
@@ -69,7 +69,7 @@ describe("GoogleLayout Test", function() {
 		});
 		describe("remove item in layout", function() {
 			before(() => {
-				this.inst = new GoogleLayout({
+				this.inst = new JustifiedLayout({
 					margin: 10,
 				});
 				this.items = [];
@@ -108,7 +108,7 @@ describe("GoogleLayout Test", function() {
 	describe("Horizontal Layout Test", function() {
 		describe("append/prepend on outline test", function() {
 			before(() => {
-				this.inst = new GoogleLayout({
+				this.inst = new JustifiedLayout({
 					margin: 10,
 					direction: "horizontal",
 				});
@@ -150,7 +150,7 @@ describe("GoogleLayout Test", function() {
 		});
 		describe("remove item in layout", function() {
 			before(() => {
-				this.inst = new GoogleLayout({
+				this.inst = new JustifiedLayout({
 					margin: 10,
 					direction: "horizontal",
 				});
