@@ -1,22 +1,76 @@
 import dijkstra from "./lib/dijkstra";
 
 const _style = {
-	vertical: ["top", "height", "left", "width"],
-	horizontal: ["left", "width", "top", "height"],
+	vertical: ["top", "bottom", "height", "left", "right", "width"],
+	horizontal: ["left", "right", "width", "top", "bottom", "height"],
 };
+const APPEND = true;
+const PREPEND = false;
+// const HORIZONTAL = "horizontal";
+const VERTICAL = "vertical";
+
+function getTopPoint(outlines) {
+	return Math.min(...outlines.map(outline => outline.top));
+}
+function getBottomPoint(outlines) {
+	return Math.max(...outlines.map(outline => outline.top));
+}
 
 class GoogleLayout {
-	constructor(options) {
-		this.startPoint = 0;
-		this.endPoint = 0;
+	constructor(options = {}) {
+		this.options = options;
 	}
-	append(items) {
-		this._layout(items, 0, items.length, true);
+	remove(removedItem, items, outline) {
+		const groupKey = removedItem.groupKey;
+		const index = items.indexOf(removedItem);
+		const length = items.length;
+		let start = index;
+		let end = index;
+
+		while (start >= 1) {
+			if (items[start - 1].groupKey !== groupKey) {
+				break;
+			}
+			--start;
+		}
+		while (end <= length - 2) {
+			if (items[end + 1].groupKey !== groupKey) {
+				break;
+			}
+			++end;
+		}
+		const group = items.slice(start, end + 1);
+
+		group.splice(group.indexOf(removedItem), 1);
+
+		const bottom = items[end].position._bottom;
+		const margin = this.options.margin || 0;
+
+		let point = !start ? items[start].position._top - margin : items[start - 1].position._bottom;
+
+		point = this._layout(group, 0, group.length, point, APPEND);
+		const dist = point - bottom;
+
+		for (let i = end + 1; i < items.length; ++i) {
+			items[i].position._top += dist;
+			items[i].position._bottom += dist;
+		}
 	}
-	prepend(items) {
-		this._layout(items, 0, items.length, false);
+	append(items, outlines) {
+		const point = getBottomPoint(outlines);
+
+		this._layout(items, 0, items.length, point, APPEND);
 	}
-	_layout(items, _i, _j, isAppend) {
+	prepend(items, outlines) {
+		const point = getTopPoint(outlines);
+
+		this._layout(items, 0, items.length, point, PREPEND);
+	}
+	_layout(items, _i, _j, point, isAppend) {
+		const direction = _style[this.options.direction] ? this.options.direction : VERTICAL;
+		const style = _style[direction];
+		const _size1 = style[2];
+		const _size2 = style[5];
 		const graph = _start => {
 			const results = {};
 			const start = +_start.replace(/[^0-9]/g, "");
@@ -26,7 +80,7 @@ class GoogleLayout {
 				if (i - start > 8) {
 					break;
 				}
-				let cost = this._getCost(items, start, i);
+				let cost = this._getCost(items, start, i, _size1, _size2);
 
 				if (cost < 0 && i === length - 1) {
 					cost = 0;
@@ -40,14 +94,12 @@ class GoogleLayout {
 		};
 		const path = dijkstra.find_path(graph, `node${_i}`, `node${_j}`);
 
-		this._setStyle(items, path, isAppend);
+		return this._setStyle(items, path, point, isAppend);
 	}
-	layout() {
-		this.startPoint = 0;
-		this.endPoint = 0;
-		const items = this.items;
+	layout(items, outlines) {
 		const length = items.length;
 		let j = 0;
+		let point = getBottomPoint(outlines);
 
 		for (let i = 0; i < length; i = j) {
 			const item = items[i];
@@ -58,67 +110,50 @@ class GoogleLayout {
 					break;
 				}
 			}
-			this._layout(items, i, j, true);
+			point = this._layout(items, i, j, point, APPEND);
 		}
 	}
 	setViewport(width, height) {
 		this.width = width;
 		this.height = height;
 	}
-	getMinPoint() {
-		return this.startPoint;
-	}
-	getMaxPoint() {
-		return this.endPoint;
-	}
-	getStartPoint() {
-		return this.startPoint;
-	}
-	getEndPoint() {
-		return this.endPoint;
-	}
-	_getWidth(items) {
-		const w = items.reduce((sum, item) => sum + item.size.height / item.size.width, 0);
-		const margin = this.options.margin;
-
-		return (this.height - (margin ? margin * (items.length - 1) : 0)) / w;
-	}
-	_getHeight(items) {
-		const h = items.reduce((sum, item) => sum + item.size.width / item.size.height, 0);
-		const margin = this.options.margin;
-
-		return (this.width - (margin ? margin * (items.length - 1) : 0)) / h;
-	}
 	_getSize(items, _size1, _size2) {
 		const size = items.reduce((sum, item) => sum + item.size[_size2] / item.size[_size1], 0);
-		const margin = this.options.margin;
+		const margin = this.options.margin || 0;
 
 		return (this[_size2] - (margin ? margin * (items.length - 1) : 0)) / size;
 	}
-	_getCost(items, i, j) {
-		const direction = this.options.direction;
-		const size = direction === "horizontal" ?
-			this._getWidth(items.slice(i, j)) : this._getHeight(items.slice(i, j));
+	_getCost(items, i, j, _size1, _size2) {
+		const size = this._getSize(items.slice(i, j), _size1, _size2);
 		const min = this.options.minSize || 0;
 		const max = ("maxSize" in this.options) ? this.options.maxSize : Infinity;
 
 		if (size < min) {
-			return Math.pow(size - min, 2);
+			return Math.pow(size + min, 2);
 		} else if (size > max) {
-			return Math.pow(size - max, 2);
+			return Math.pow(size + max, 2);
 		}
-		return 0;
+		return size;
 	}
-	_setStyle(items, path, isAppend) {
-		const direction = _style[this.options.direction] ? this.options.direction : "vertical";
+	_setStyle(items, path, _point, isAppend) {
+		const direction = _style[this.options.direction] ? this.options.direction : VERTICAL;
 		const style = _style[direction];
-		// if direction is vertical, [pos1, size1, pos2, size2] is [top, height, left, width]
-		// if direction is horizontal, [pos1, size1, pos2, size2] is [left, width, top, height]
-		const [_pos1, _size1, _pos2, _size2] = style;
+		// if direction is vertical
+		// pos1 : top, pos11 : bottom
+		// size1 : height
+		// pos2 : left, pos22 : right
+		// size2 : width
+
+		// if direction is horizontal
+		// pos1 : left, pos11 : right
+		// size1 : width
+		// pos2 : top, pos22 : bottom
+		// size2 : height
+		const [_pos1, _pos11, _size1, _pos2, _pos22, _size2] = style;
 		const length = path.length;
 		const margin = this.options.margin || 0;
-		const _point = isAppend ? "endPoint" : "startPoint";
-		const mark = (isAppend ? 1 : -1);
+		let point = _point;
+		let height = 0;
 
 		for (let i = 0; i < length - 1; ++i) {
 			const path1 = parseInt(path[i].replace("node", ""), 10);
@@ -126,10 +161,8 @@ class GoogleLayout {
 			const _items = items.slice(path1, path2);
 			const _length = _items.length;
 			const size1 = this._getSize(_items, _size1, _size2);
-			// The same startPoint and endPoint means that the layout is initialized.
-			const pos1Margin = this.startPoint === this.endPoint ? 0 : margin;
-			// The position of the item being prepended is subtracted from size.
-			const pos1 = mark * pos1Margin + (isAppend ? 0 : -size1) + this[_point];
+			const pos1Margin = point === 0 ? 0 : margin;
+			const pos1 = pos1Margin + point;
 
 			for (let j = 0; j < _length; ++j) {
 				const item = _items[j];
@@ -137,15 +170,32 @@ class GoogleLayout {
 				// First item's margin is zero.
 				// Next item have margin.
 				const pos2 = j === 0 ? 0 :
-					(_items[j - 1].position[_pos2] + _items[j - 1].size[_size2] + margin);
+					(_items[j - 1].position[`_${_pos22}`] + margin);
 
-				item.position[_pos1] = pos1;
-				item.position[_pos2] = pos2;
-				item.size[_size1] = size1;
-				item.size[_size2] = size2;
+				item.position[`_${_pos1}`] = pos1;
+				item.position[`_${_pos11}`] = pos1 + size1;
+				item.position[`_${_pos2}`] = pos2;
+				item.position[`_${_pos22}`] = pos2 + size2;
+				item.size[`_${_size1}`] = size1;
+				item.size[`_${_size2}`] = size2;
 			}
-			this[_point] += mark * (pos1Margin + size1);
+			height += pos1Margin + size1;
+			point = _point + height;
 		}
+		if (isAppend) {
+			return point;
+		}
+		// prepend
+		height += margin;
+		const itemsLength = items.length;
+
+		for (let i = 0; i < itemsLength; ++i) {
+			const item = items[i];
+
+			item.position[`_${_pos1}`] -= height;
+			item.position[`_${_pos11}`] -= height;
+		}
+		return point - height;
 	}
 }
 
