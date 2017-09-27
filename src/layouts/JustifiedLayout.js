@@ -1,13 +1,27 @@
 import dijkstra from "../../lib/dijkstra";
 
-const _style = {
-	vertical: ["top", "bottom", "height", "left", "right", "width"],
-	horizontal: ["left", "right", "width", "top", "bottom", "height"],
+const STYLE = {
+	vertical: {
+		pos1: "top",
+		endPos1: "bottom",
+		size1: "height",
+		pos2: "left",
+		endPos2: "right",
+		size2: "width",
+	},
+	horizontal: {
+		pos1: "left",
+		endPos1: "right",
+		size1: "width",
+		pos2: "top",
+		endPos2: "bottom",
+		size2: "height",
+	},
 };
 const APPEND = true;
 const PREPEND = false;
-// const HORIZONTAL = "horizontal";
 const VERTICAL = "vertical";
+// const HORIZONTAL = "horizontal";
 
 function getTopPoint(outlines, pos) {
 	return Math.min(...outlines.map(outline => outline[pos]));
@@ -18,13 +32,20 @@ function getBottomPoint(outlines, pos) {
 
 class JustifiedLayout {
 	constructor(options = {}) {
-		this.options = options;
+		this.options = Object.assign(
+		{
+			direction: "vertical",
+			margin: 0,
+			minSize: 0,
+			maxSize: 0,
+		},
+		options);
+		this.style = this.getStyleNames();
 	}
 	remove(removedItem, items, outline) {
-		const direction = _style[this.options.direction] ? this.options.direction : VERTICAL;
-		const style = _style[direction];
-		const _pos1 = style[0];
-		const _pos2 = style[1];
+		const style = this.style;
+		const pos1Name = style.pos1;
+		const endPos1Name = style.endPos1;
 
 		const groupKey = removedItem.groupKey;
 		const index = items.indexOf(removedItem);
@@ -48,51 +69,51 @@ class JustifiedLayout {
 
 		group.splice(group.indexOf(removedItem), 1);
 
-		const pos2 = items[end].position[`_${_pos2}`];
-		const margin = this.options.margin || 0;
+		const endPos1 = items[end].rect[endPos1Name];
+		const margin = this.options.margin;
 
-		let point = !start ? items[start].position[`_${_pos1}`] - margin : items[start - 1].position[`_${_pos2}`];
+		let point = !start ? items[start].rect[pos1Name] - margin : items[start - 1].rect[endPos1Name];
 
 		point = this._layout(group, 0, group.length, point, APPEND);
-		const dist = point - pos2;
+		const dist = point - endPos1;
 
 		for (let i = end + 1; i < items.length; ++i) {
-			items[i].position[`_${_pos1}`] += dist;
-			items[i].position[`_${_pos2}`] += dist;
+			items[i].rect[pos1Name] += dist;
+			items[i].rect[endPos1Name] += dist;
 		}
 	}
 	getStyleNames() {
-		const direction = _style[this.options.direction] ? this.options.direction : VERTICAL;
-		const style = _style[direction];
+		const direction = this.options.direction in STYLE ? this.options.direction : VERTICAL;
+		const style = STYLE[direction];
 
 		return style;
 	}
 	append(items, outlines) {
-		const _pos1 = this.getStyleNames()[0];
-		const point = getBottomPoint(outlines, _pos1);
+		const pos1Name = this.style.pos1;
+		const point = getBottomPoint(outlines, pos1Name);
 
 		this._layout(items, 0, items.length, point, APPEND);
 	}
 	prepend(items, outlines) {
-		const _pos1 = this.getStyleNames()[0];
-		const point = getTopPoint(outlines, _pos1);
+		const pos1Name = this.style.pos1;
+		const point = getTopPoint(outlines, pos1Name);
 
 		this._layout(items, 0, items.length, point, PREPEND);
 	}
-	_layout(items, _i, _j, point, isAppend) {
-		const style = this.getStyleNames();
-		const _size1 = style[2];
-		const _size2 = style[5];
+	_layout(items, startIndex, endIndex, point, isAppend) {
+		const style = this.style;
+		const size1Name = style.size1;
+		const size2Name = style.size2;
 		const graph = _start => {
 			const results = {};
 			const start = +_start.replace(/[^0-9]/g, "");
-			const length = _j + 1;
+			const length = endIndex + 1;
 
 			for (let i = start + 1; i < length; ++i) {
 				if (i - start > 8) {
 					break;
 				}
-				let cost = this._getCost(items, start, i, _size1, _size2);
+				let cost = this._getCost(items, start, i, size1Name, size2Name);
 
 				if (cost < 0 && i === length - 1) {
 					cost = 0;
@@ -104,14 +125,14 @@ class JustifiedLayout {
 
 			return results;
 		};
-		const path = dijkstra.find_path(graph, `node${_i}`, `node${_j}`);
+		const path = dijkstra.find_path(graph, `node${startIndex}`, `node${endIndex}`);
 
 		return this._setStyle(items, path, point, isAppend);
 	}
 	layout(items, outlines) {
 		const length = items.length;
-		const _pos1 = this.getStyleNames()[0];
-		let point = getBottomPoint(outlines, _pos1);
+		const pos1Name = this.style.pos1;
+		let point = getBottomPoint(outlines, pos1Name);
 		let j = 0;
 
 		for (let i = 0; i < length; i = j) {
@@ -130,16 +151,16 @@ class JustifiedLayout {
 		this.width = width;
 		this.height = height;
 	}
-	_getSize(items, _size1, _size2) {
-		const size = items.reduce((sum, item) => sum + item.size[_size2] / item.size[_size1], 0);
-		const margin = this.options.margin || 0;
+	_getSize(items, size1Name, size2Name) {
+		const size = items.reduce((sum, item) => sum + item.size[size2Name] / item.size[size1Name], 0);
+		const margin = this.options.margin;
 
-		return (this[_size2] - (margin ? margin * (items.length - 1) : 0)) / size;
+		return (this[size2Name] - (margin ? margin * (items.length - 1) : 0)) / size;
 	}
-	_getCost(items, i, j, _size1, _size2) {
-		const size = this._getSize(items.slice(i, j), _size1, _size2);
-		const min = this.options.minSize || 0;
-		const max = ("maxSize" in this.options) ? this.options.maxSize : Infinity;
+	_getCost(items, i, j, size1Name, size2Name) {
+		const size = this._getSize(items.slice(i, j), size1Name, size2Name);
+		const min = this.options.minSize;
+		const max = this.options.maxSize || Infinity;
 
 		if (size < min) {
 			return Math.pow(size + min, 2);
@@ -148,9 +169,8 @@ class JustifiedLayout {
 		}
 		return size;
 	}
-	_setStyle(items, path, _point, isAppend) {
-		const direction = _style[this.options.direction] ? this.options.direction : VERTICAL;
-		const style = _style[direction];
+	_setStyle(items, path, startPoint, isAppend) {
+		const style = this.style;
 		// if direction is vertical
 		// pos1 : top, pos11 : bottom
 		// size1 : height
@@ -162,38 +182,45 @@ class JustifiedLayout {
 		// size1 : width
 		// pos2 : top, pos22 : bottom
 		// size2 : height
-		const [_pos1, _pos11, _size1, _pos2, _pos22, _size2] = style;
+		const pos1Name = style.pos1;
+		const endPos1Name = style.endPos1;
+		const size1Name = style.size1;
+		const pos2Name = style.pos2;
+		const endPos2Name = style.endPos2;
+		const size2Name = style.size2;
 		const length = path.length;
-		const margin = this.options.margin || 0;
-		let point = _point;
+		const margin = this.options.margin;
+		let point = startPoint;
 		let height = 0;
 
 		for (let i = 0; i < length - 1; ++i) {
 			const path1 = parseInt(path[i].replace("node", ""), 10);
 			const path2 = parseInt(path[i + 1].replace("node", ""), 10);
-			const _items = items.slice(path1, path2);
-			const _length = _items.length;
-			const size1 = this._getSize(_items, _size1, _size2);
+			const pathItems = items.slice(path1, path2);
+			const pathItemsLength = pathItems.length;
+			const size1 = this._getSize(pathItems, size1Name, size2Name);
 			const pos1Margin = point === 0 ? 0 : margin;
 			const pos1 = pos1Margin + point;
 
-			for (let j = 0; j < _length; ++j) {
-				const item = _items[j];
-				const size2 = item.size[_size2] / item.size[_size1] * size1;
+			for (let j = 0; j < pathItemsLength; ++j) {
+				const item = pathItems[j];
+				const size2 = item.size[size2Name] / item.size[size1Name] * size1;
 				// First item's margin is zero.
 				// Next item have margin.
 				const pos2 = j === 0 ? 0 :
-					(_items[j - 1].position[`_${_pos22}`] + margin);
+					(pathItems[j - 1].rect[endPos2Name] + margin);
 
-				item.position[`_${_pos1}`] = pos1;
-				item.position[`_${_pos11}`] = pos1 + size1;
-				item.position[`_${_pos2}`] = pos2;
-				item.position[`_${_pos22}`] = pos2 + size2;
-				item.size[`_${_size1}`] = size1;
-				item.size[`_${_size2}`] = size2;
+				item.rect = {
+					[pos1Name]: pos1,
+					[endPos1Name]: pos1 + size1,
+					[pos2Name]: pos2,
+					[endPos2Name]: pos2 + size2,
+					[size1Name]: size1,
+					[size2Name]: size2,
+				};
 			}
 			height += pos1Margin + size1;
-			point = _point + height;
+			point = startPoint + height;
 		}
 		if (isAppend) {
 			return point;
@@ -205,8 +232,8 @@ class JustifiedLayout {
 		for (let i = 0; i < itemsLength; ++i) {
 			const item = items[i];
 
-			item.position[`_${_pos1}`] -= height;
-			item.position[`_${_pos11}`] -= height;
+			item.rect[pos1Name] -= height;
+			item.rect[endPos1Name] -= height;
 		}
 		return point - height;
 	}
