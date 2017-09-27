@@ -33,13 +33,13 @@ function getBottomPoint(outlines, pos) {
 class JustifiedLayout {
 	constructor(options = {}) {
 		this.options = Object.assign(
-		{
-			direction: "vertical",
-			margin: 0,
-			minSize: 0,
-			maxSize: 0,
-		},
-		options);
+			{
+				direction: "vertical",
+				margin: 0,
+				minSize: 0,
+				maxSize: 0,
+			},
+			options);
 		this.style = this.getStyleNames();
 	}
 	remove(removedItem, items, outline) {
