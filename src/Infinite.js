@@ -147,8 +147,9 @@ export class Infinite extends Component {
 	requestAppend() { // visible이 호출
 		const items = this.getItems(APPEND);
 		if (items.length) {
-			this._painter.render(items);
-			this._endCursor++;
+			this._recycle(items, APPEND);
+			// this._painter.render(items);
+			// this._endCursor++;
 		} else {
 			this.trigger("append");
 		}
@@ -157,7 +158,7 @@ export class Infinite extends Component {
 		const items = this.getItems(PREPEND);
 		if (items.length) {
 			this._painter.render(items);
-			this._startCursor--;
+			// this._startCursor--;
 		} else {
 			this.trigger("prepend");
 		}
