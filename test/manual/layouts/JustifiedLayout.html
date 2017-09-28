@@ -38,7 +38,7 @@
 <script src="../../../dist/JustifiedLayout.js"></script>
 <script src="../../../dist/GridLayout.js"></script>
 <script src="../../../lib/Render.js"></script>
-<!--<script src="./js/demo.js"></script>-->
+<script src="./js/demo.js"></script>
 	<style>
 		#grid.row {
 			height: 1000px;
@@ -65,83 +65,18 @@
 		}
 	</style>
 <script>
+	var groups = [];
 	var a = new JustifiedLayout({
-//		direction: "vertic",
+		direction: "vertical",
 		margin: 20,
+		minSize: 100,
+//		maxSize: 300,
 	});
-	function imgSrc(v) {
-		return "../../../demo/assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
-	}
-	function getItem(groupNo, i) {
-		const item = {
-			groupKey: groupNo,
-			html: '<div class="item" data-item='+i+'><div class="thumbnail"><img src="' + imgSrc(groupNo + i) + '" /><div class="caption"><p><a href="http://www.google.com/">Cras justo odio bla bla bla bla bla bla bla bla</a></p></div></div></div>',
-			size: {
-				width: parseInt(Math.random() * 200 + 300, 10),
-				height: parseInt(Math.random() * 200 + 300, 10),
-			},
-			rect: {
-
-			}
-		};
-		const dummy = document.createElement("div");
-		dummy.innerHTML = item.html;
-		item.el = dummy.children[0];
-		document.querySelector("#grid").appendChild(item.el);
-
-
-		return item;
-	}
-	function getItems() {
-		const group = parseInt(Math.random() * 100, 10);
-		const items = [];
-		for (i = 0; i < 22; ++i) {
-			items.push(getItem(group, i));
-		}
-		return items;
-	}
 
 	a.width = document.querySelector("#grid").offsetWidth;
 	a.height = document.querySelector("#grid").offsetHeight;
-	let _items = [];
-	function getTopline() {
-		if (!_items.length) {
-			return [{top:0, left: 0}];
-		}
-		return [{top:_items[0].rect.top, left: _items[0].rect.left}];
-	}
-	function getBottomline() {
-		if (!_items.length) {
-			return [{top:0, left: 0}];
-		}
-		return [{top:_items[_items.length - 1].rect.bottom, left: _items[_items.length - 1].rect.right}];
-	}
-	function append() {
-		const items = getItems();
-		console.log(getBottomline());
-		a.append(items, getBottomline());
-		_items = _items.concat(items);
-		render(items);
-	}
-	function _remove(index) {
-		const removed = _items.splice(index, 1);
-		removed[0].el.remove();
-	}
-	function remove(index) {
-		console.log(_items);
-		a.remove(_items[index], _items, getTopline());
-		_remove(index);
-		render(_items);
-	}
-	function prepend() {
-		const items = getItems();
-		a.prepend(items, getTopline());
-		_items = items.concat(_items);//.concat(items);
-		console.log(items);
-		render(items);
-	}
 
-	append();
+	append([400]);
 </script>
 </body>
 </html>
