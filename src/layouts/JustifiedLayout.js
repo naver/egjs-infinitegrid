@@ -4,7 +4,7 @@ import {APPEND, PREPEND, VERTICAL, DEFAULT_OPTIONS, STYLE} from "./Constants";
 
 class JustifiedLayout {
 	constructor(options = {}) {
-		this.options = Object.assign({},
+		this._options = Object.assign({},
 			DEFAULT_OPTIONS,
 			{
 				minSize: 0,
@@ -15,7 +15,7 @@ class JustifiedLayout {
 		this._viewport = {};
 	}
 	getStyleNames() {
-		const direction = this.options.direction in STYLE ? this.options.direction : VERTICAL;
+		const direction = this._options.direction in STYLE ? this._options.direction : VERTICAL;
 		const style = STYLE[direction];
 
 		return style;
@@ -53,7 +53,7 @@ class JustifiedLayout {
 		return this._setStyle(items, path, outline, isAppend);
 	}
 	_getSize(items, size1Name, size2Name) {
-		const margin = this.options.margin;
+		const margin = this._options.margin;
 		const size = items.reduce((sum, item) => sum +
 							(item.size[size2Name]) / item.size[size1Name], 0);
 
@@ -61,8 +61,8 @@ class JustifiedLayout {
 	}
 	_getCost(items, i, j, size1Name, size2Name) {
 		const size = this._getSize(items.slice(i, j), size1Name, size2Name);
-		const min = this.options.minSize;
-		const max = this.options.maxSize || Infinity;
+		const min = this._options.minSize;
+		const max = this._options.maxSize || Infinity;
 
 		if (isFinite(max)) {
 			// if this size is not in range, the cost increases sharply.
@@ -101,7 +101,7 @@ class JustifiedLayout {
 		const endPos2Name = style.endPos2;
 		const size2Name = style.size2;
 		const length = path.length;
-		const margin = this.options.margin;
+		const margin = this._options.margin;
 		const startPoint = outline[0] || 0;
 		let endPoint = startPoint;
 		let height = 0;
