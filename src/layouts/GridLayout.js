@@ -1,10 +1,7 @@
-import {APPEND, PREPEND, VERTICAL, HORIZONTAL, STYLE, DEFAULT_OPTIONS} from "./Constants";
+import {APPEND, PREPEND, VERTICAL, HORIZONTAL, STYLE, DEFAULT_OPTIONS, ALIGN} from "./Constants";
 
 // ALIGN
-const START = "start";
-const CENTER = "center";
-const END = "end";
-const JUSTIFY = "justify";
+const {START, CENTER, END, JUSTIFY} = ALIGN;
 
 function fill(length, pos) {
 	return new Array(length).fill(pos);

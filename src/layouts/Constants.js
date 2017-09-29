@@ -24,3 +24,9 @@ export const STYLE = {
 		size2: "height",
 	},
 };
+export const ALIGN = {
+	START: "start",
+	CENTER: "center",
+	END: "end",
+	JUSTIFY: "justify",
+};
