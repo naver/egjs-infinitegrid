@@ -121,7 +121,7 @@ export class Infinite extends Component {
 	_recycle(items, isAppend) {
 		const baseCount = items.length - this.options.count;
 		let diff;
-	
+
 		while ((diff = this.getVisibleItems().length + baseCount) > 0) {
 			// @todo range가 넘어가는 경우에대한 별도의 처리 및 테스트가 필요함.
 			let toRemoveItems;
@@ -142,12 +142,10 @@ export class Infinite extends Component {
 	_updateCursor(isAppend) {
 		if (isAppend) {
 			this._endCursor++;
+		} else if (this._startCursor > 0) {
+			this._startCursor--;
 		} else {
-			if (this._startCursor > 0) {
-				this._startCursor--;
-			} else {
-				this._endCursor++; // outside prepend
-			}
+			this._endCursor++; // outside prepend
 		}
 		if (this._startCursor < 0) {
 			this._startCursor = 0;
@@ -170,9 +168,9 @@ export class Infinite extends Component {
 				items = this._itemManager.getItems(this._endCursor);
 			}
 		} else if (this._startCursor > 0) {
-				console.log("데이터가 있다");
-				items = this._itemManager.getItems(this._startCursor - 1);
-			}
+			console.log("데이터가 있다");
+			items = this._itemManager.getItems(this._startCursor - 1);
+		}
 		return items;
 	}
 
