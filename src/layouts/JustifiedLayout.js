@@ -24,7 +24,7 @@ class JustifiedLayout {
 	constructor(options = {}) {
 		this.options = Object.assign(
 			{
-				direction: "vertical",
+				direction: VERTICAL,
 				margin: 0,
 				minSize: 0,
 				maxSize: 0,
@@ -176,32 +176,27 @@ class JustifiedLayout {
 			end: [startPoint], // endPoint - height = startPoint
 		};
 	}
+	_insert(items, outline, type) {
+		// this only needs the size of the item.
+		const clone = items.map(item => ({
+			size: Object.assign({}, item.size),
+		}));
+		const result = this._layout(clone, outline, type);
+
+		return {
+			items: clone,
+			outlines: result,
+		};
+	}
 	setViewport(width, height) {
 		this.width = width;
 		this.height = height;
 	}
 	append(items, outline) {
-		// this only needs the size of the item.
-		const clone = items.map(item => ({
-			size: Object.assign({}, item.size),
-		}));
-		const result = this._layout(clone, outline, APPEND);
-
-		return {
-			items: clone,
-			outlines: result,
-		};
+		return this._insert(items, outline, APPEND);
 	}
 	prepend(items, outline) {
-		const clone = items.map(item => ({
-			size: Object.assign({}, item.size),
-		}));
-		const result = this._layout(clone, outline, PREPEND);
-
-		return {
-			items: clone,
-			outlines: result,
-		};
+		return this._insert(items, outline, PREPEND);
 	}
 	layout(groups, outlines) {
 		const length = groups.length;
