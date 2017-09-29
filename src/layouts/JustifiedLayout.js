@@ -178,9 +178,7 @@ class JustifiedLayout {
 	}
 	_insert(items, outline, type) {
 		// this only needs the size of the item.
-		const clone = items.map(item => ({
-			size: Object.assign({}, item.size),
-		}));
+		const clone = items.map(item => Object.assign({}, item));
 		const result = this._layout(clone, outline, type);
 
 		return {
