@@ -1,24 +1,22 @@
-import {APPEND, PREPEND, MULTI, DUMMY_POSITION} from "./consts";
+import {MULTI} from "./consts";
 import {$, toArray, innerWidth, innerHeight} from "./utils";
 
 export default class ItemManager {
 	static from(elements, selector, {groupKey, maxCount, isAppend}) {
 		const filted = ItemManager.selectItems($(elements, MULTI), selector);
 
+		// trim
+		if (maxCount <= filted.length) {
+			isAppend ?
+				filted.splice(0, filted.length - maxCount) :
+				filted.splice(maxCount);
+		}
 		// Item Structure
 		return toArray(filted).map(el => ({
 			el,
 			groupKey,
 			content: el.outerHTML,
 		}));
-
-		// trim
-		if (maxCount <= items.length) {
-			isAppend ?
-				items.splice(0, items.length - maxCount) :
-				items.splice(maxCount);
-		}
-		return items;
 	}
 	static selectItems(elements, selector) {
 		return elements.filter(v => {
@@ -52,15 +50,19 @@ export default class ItemManager {
 		return this.data.length;
 	}
 	getItems(start, end) {
-		if (typeof start !== "undefined" && typeof end !== "undefined") {
-			return ItemManager.pluckItems(this.data.slice(start, end));
+		if (typeof start !== "undefined") {
+			if (typeof end !== "undefined") {
+				return ItemManager.pluckItems(this.data.slice(start, end + 1));
+			} else {
+				return ItemManager.pluckItems(this.data.slice(start, start + 1));
+			}
 		} else {
 			return ItemManager.pluckItems(this.data);
 		}
 	}
 	getOutline(index, isAppend) {
 		if (this.data.length) {
-			return this.data[index - 1].outlines[isAppend ? "end" : "start"];
+			return this.data[index].outlines[isAppend ? "end" : "start"];
 		} else {
 			return [];
 		}
@@ -83,6 +85,7 @@ export default class ItemManager {
 		// 레이아웃에 의해 변경된 아이템 정보
 		return layouted.items;
 	}
+<<<<<<< HEAD
 
 
 
@@ -131,24 +134,9 @@ export default class ItemManager {
 	// 	// layout.layout(this.items);
 	// }
 
+=======
+>>>>>>> upstream/v3.0.0-dev
 	clear() {
 		this.data = [];
 	}
-	// // called by recycleDOM
-	// // return removed items
-	// recycle(count, isAppend) {
-	// 	let targets;
-
-	// 	// if (isAppend) {
-	// 	// 	// remove prepend items
-	// 	// 	targets = this.items.splice(0, count);
-	// 	// } else {
-	// 	// 	// remove append items
-	// 	// 	targets = count >= this.items.length ?
-	// 	// 		this.items.splice(0) :
-	// 	// 		this.items.splice(this.itmes.length - count, this.items.length - 1);
-	// 	// }
-	// 	return targets;
-	// }
-};
-
+}

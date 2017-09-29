@@ -8,73 +8,71 @@ import {
 	PREPEND,
 	DUMMY_POSITION,
 	MULTI,
+	CACHE,
+	NO_CACHE,
 } from "./consts";
 import {
 	$,
 
 } from "./utils";
 
-export class Painter {
+export class ItemRenderer {
 	constructor(element) {
 		this._el = $(element);
 		this._el.style.position = "relative";
 	}
-	remove(items) {
+	static renderItem(item, styles) {
+		if (item.el) {
+			const elStyle = item.el.style;
+
+			elStyle.position = "absolute";
+			["left", "top", "width", "height"].forEach(p => {
+				(p in styles) && (elStyle[p] = `${styles[p]}px`);
+			});
+		}
+	}
+	static removeItems(items) {
 		items.forEach(item => {
-			item.el.parentNode.removeChild(item.el);
-			item.el = null;
+			if (item.el) {
+				item.el.parentNode.removeChild(item.el);
+				item.el = null;
+			}
 		});
 	}
 	append(items) {
-		this._insert(
-			items,
-			APPEND,
-			function(elStyle) {
-				elStyle.top = `${DUMMY_POSITION}px`;
-			});
+		this._insert(items, APPEND, {
+			top: DUMMY_POSITION,
+		});
 	}
 	prepend(items) {
-		this._insert(
-			items,
-			PREPAND,
-			function(elStyle) {
-				elStyle.top = `${DUMMY_POSITION}px`;
-			});
-	}
-	_insert(items, isAppend, renderCallback, styles) {
-		const df = document.createDocumentFragment();
-
-		items.forEach(item => {
-			// to get sizes of images
-			item.el.style.position = "absolute";
-			renderCallback && renderCallback(item.el.style, styles);
-
-			isAppend ? df.appendChild(item.el) : df.insertBefore(item.el, df.firstChild);
-		});
-		isAppend ? this._el.appendChild(df) : this._el.insertBefore(df, this._el.firstChild);
-	}
-	render(items) {
-		console.log("render", items);
-		items.forEach(item => {
-			item.el &&
-				["left", "top", "width", "height"].forEach(p => {
-					(p in item.rect) && (item.el.style[p] = `${item.rect[p]}px`);
-				});
+		this._insert(items, PREPEND, {
+			top: DUMMY_POSITION,
 		});
 	}
-	create(items, isAppend) {
-		const df = document.createDocumentFragment();
+	createAndInsert(items, isAppend) {
 		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(""), MULTI);
 		const itemsWithElement = items.map((item, index) => {
 			item.el = elements[index];
 			return item;
 		});
 
-		this.render(itemsWithElement);
-		itemsWithElement.forEach(item => {
+		ItemRenderer.render(itemsWithElement);
+		this._insert(itemsWithElement, isAppend);
+	}
+	_insert(items, isAppend, styles) {
+		const df = document.createDocumentFragment();
+
+		items.forEach(item => {
+			styles && ItemRenderer.renderItem(item, styles);
+
 			isAppend ? df.appendChild(item.el) : df.insertBefore(item.el, df.firstChild);
 		});
 		isAppend ? this._el.appendChild(df) : this._el.insertBefore(df, this._el.firstChild);
+	}
+	static render(items) {
+		items.forEach(item => {
+			ItemRenderer.renderItem(item, item.rect);
+		});
 	}
 }
 
@@ -86,8 +84,8 @@ export class Infinite extends Component {
 			itemSelector: "*",
 			count: 60,
 		}, options);
-		this._startCursor = 0;
-		this._endCursor = 0;
+		this._startCursor = -1;
+		this._endCursor = -1;
 		// @todo
 		this._layout = new JustifiedLayout({
 			direction: "vertical",
@@ -96,7 +94,7 @@ export class Infinite extends Component {
 		this._layout.setViewport(471, 1320);
 		this._checkImageloaded = new ImageLoaded();
 		this._itemManager = new ItemManager();
-		this._painter = new Painter(element);
+		this._renderer = new ItemRenderer(element);
 	}
 	append(elements, groupKey) { // 사용자가 append를 호출
 		this._insert(elements, groupKey, APPEND);
@@ -104,30 +102,6 @@ export class Infinite extends Component {
 	prepend(elements, groupKey) { // 사용자가 prepend를 호출
 		this._insert(elements, groupKey, PREPEND);
 	}
-	// add items, and remove items for recycling
-	_recycle(items, isAppend) {
-		const baseCount = items.length - this.options.count;
-		let diff;
-
-		while ((diff = this.getVisibleItems().length + baseCount) > 0) {
-			console.log(diff, "recyle이 필요함, DOM 삭제");
-			// @todo range가 넘어가는 경우에대한 별도의 처리 및 테스트가 필요함.
-			let toRemoveItems;
-
-			if (isAppend) {
-				toRemoveItems = this._itemManager.getItems(this._startCursor, this._startCursor + 1);
-				this._startCursor++;
-			} else {
-				toRemoveItems = this._itemManager.getItems(this._endCursor - 1, this._endCursor);
-				this._endCursor--;
-			}
-			// recycle
-			this._painter.remove(toRemoveItems);
-			console.warn("[", this._startCursor, this._endCursor, "]");
-		}
-		this._painter[isAppend ? "append" : "prepend"](items);
-	}
-
 	_insert(elements, groupKey, isAppend) {
 		const key = groupKey || (new Date().getTime() + Math.floor(Math.random() *
 			1000));
@@ -141,29 +115,46 @@ export class Infinite extends Component {
 			return;
 		}
 		this._recycle(items, isAppend);
-
-		// 이미지의 사이즈를 측정해야한다. (단 엘리먼트가 추가된 이후에 가능하다.)
-		this._checkImageloaded.check(items.map(item => item.el), () => {
-			const layouted = this._layout[isAppend ? "append" : "prepend"](
-				ItemManager.updateSize(items),
-				this._itemManager.getOutline(
-					isAppend ? this._endCursor : this._startCursor,
-					isAppend)
-			);
-
-			this._painter.render(this._insertItemManager(layouted, isAppend, key));
-		});
+		this._afterRecycle(NO_CACHE, items, isAppend);
 	}
+	// add items, and remove items for recycling
+	_recycle(items, isAppend) {
+		const baseCount = items.length - this.options.count;
+		let diff;
 
-	_insertItemManager(layouted, isAppend, key) {
-		layouted.groupKey = key;
-		this._itemManager[isAppend ? "append" : "prepend"](layouted);
+		while ((diff = this.getVisibleItems().length + baseCount) > 0) {
+			// @todo range가 넘어가는 경우에대한 별도의 처리 및 테스트가 필요함.
+			let toRemoveItems;
+
+			console.log(diff, "recyle이 필요함, DOM 삭제");
+			if (isAppend) {
+				toRemoveItems = this._itemManager.getItems(this._startCursor);
+				this._startCursor++;
+			} else {
+				toRemoveItems = this._itemManager.getItems(this._endCursor);
+				this._endCursor--;
+			}
+			// recycle
+			ItemRenderer.removeItems(toRemoveItems);
+		}
+		console.warn("recycle [", this._startCursor, this._endCursor, "]");
+	}
+	_updateCursor(isAppend) {
 		if (isAppend) {
 			this._endCursor++;
 		} else if (this._startCursor > 0) {
 			this._startCursor--;
+		} else {
+			this._endCursor++; // outside prepend
 		}
-		return layouted.items;
+		if (this._startCursor < 0) {
+			this._startCursor = 0;
+		}
+		console.warn("_updateCursor [", this._startCursor, this._endCursor, "]");
+	}
+	_insertItemManager(layouted, isAppend) {
+		layouted.groupKey = layouted.items[0].groupKey;
+		this._itemManager[isAppend ? "append" : "prepend"](layouted);
 	}
 	getVisibleItems() {
 		return this._itemManager.getItems(this._startCursor, this._endCursor);
@@ -173,29 +164,22 @@ export class Infinite extends Component {
 
 		if (isAppend) {
 			if (this._itemManager.size() - 1 > this._endCursor) {
-				console.log("데이터가 있다", this._itemManager.getItems(this._endCursor, this._endCursor +
-					1));
-				items = this._itemManager.getItems(this._endCursor, this._endCursor + 1);
-			} else {
-				console.log("더이상 데이터가 없다");
-			}
-		} else {
-			if (this._startCursor > 0) {
 				console.log("데이터가 있다");
-				items = this._itemManager.getItems(this._startCursor - 1, this._startCursor);
-			} else {
-				console.log("더이상 데이터가 없다");
+				items = this._itemManager.getItems(this._endCursor);
 			}
+		} else if (this._startCursor > 0) {
+			console.log("데이터가 있다");
+			items = this._itemManager.getItems(this._startCursor - 1);
 		}
 		return items;
 	}
-
 
 	requestAppend() { // visible이 호출
 		const items = this.getItems(APPEND);
 
 		if (items.length) {
-			this._painter.create(items, APPEND);
+			this._recycle(items, APPEND);
+			this._afterRecycle(CACHE, items, APPEND);
 		} else {
 			this.trigger("append");
 		}
@@ -204,13 +188,37 @@ export class Infinite extends Component {
 		const items = this.getItems(PREPEND);
 
 		if (items.length) {
-			this._painter.create(items, PREPEND);
+			this._recycle(items, PREPEND);
+			this._afterRecycle(CACHE, items, PREPEND);
 		} else {
 			this.trigger("prepend");
+		}
+	}
+	_afterRecycle(fromCache, items, isAppend) {
+		if (fromCache) {
+			this._renderer.createAndInsert(items, isAppend);
+			this._updateCursor(isAppend);
+		} else {
+			const method = isAppend ? "append" : "prepend";
+
+			this._renderer[method](items);
+			// check image sizes after elements are attated on DOM
+			this._checkImageloaded.check(items.map(item => item.el), () => {
+				const layouted = this._layout[method](
+					ItemManager.updateSize(items),
+					this._itemManager.getOutline(
+						isAppend ? this._endCursor : this._startCursor,
+						isAppend)
+				);
+
+				this._insertItemManager(layouted, isAppend);
+				this._updateCursor(isAppend);
+				ItemRenderer.render(layouted.items);
+			});
 		}
 	}
 
 	setLayout(layout) {
 		this._layout = layout;
 	}
-};
+}

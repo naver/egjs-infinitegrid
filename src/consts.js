@@ -9,6 +9,8 @@ export const RETRY = 3;
 export const CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
 
 export const APPEND = true;
+export const CACHE = true;
+export const NO_CACHE = false;
 export const PREPEND = false;
 export const MULTI = true;
 export const SINGLE = false;
