@@ -18,133 +18,133 @@ const SUPPORT_PASSIVE = (() => {
 	return supportsPassiveOption;
 })();
 
-const utils = {
-	/**
-	 * Select or create element
-	 * @param {String|HTMLElement|jQuery} param
-	 *  when string given is as HTML tag, then create element
-	 *  otherwise it returns selected elements
-	 * @param {Boolean} multi
-	 * @returns {HTMLElement}
-	 */
-	$(param, multi = false) {
-		let el;
+export function toArray(nodes) {
+	// SCRIPT5014 in IE8
+	const array = [];
 
-		if (typeof param === "string") { // String (HTML, Selector)
-			// check if string is HTML tag format
-			const match = param.match(/^<([a-z]+)\s*([^>]*)>/);
+	if (nodes) {
+		for (let i = 0, len = nodes.length; i < len; i++) {
+			array.push(nodes[i]);
+		}
+	}
+	return array;
+}
 
-			// creating element
-			if (match) { // HTML
-				const dummy = document.createElement("div");
+/**
+ * Select or create element
+ * @param {String|HTMLElement|jQuery} param
+ *  when string given is as HTML tag, then create element
+ *  otherwise it returns selected elements
+ * @param {Boolean} multi
+ * @returns {HTMLElement}
+ */
+export function $(param, multi = false) {
+	let el;
 
-				dummy.innerHTML = param;
-				el = this.toArray(dummy.childNodes);
-			} else { // Selector
-				el = this.toArray(document.querySelectorAll(param));
-			}
-			if (!multi) {
-				el = el.length >= 1 ? el[0] : undefined;
-			}
-		} else if (param === window) { // window
-			el = param;
-		} else if (param.nodeName &&
-			(param.nodeType === 1 || param.nodeType === 9)) { // HTMLElement, Document
-			el = param;
-		} else if (("jQuery" in window && param instanceof jQuery) ||
-			param.constructor.prototype.jquery) { // jQuery
-			el = multi ? param.toArray() : param.get(0);
-		} else if (Array.isArray(param)) {
-			el = param.map(v => utils.$(v));
-			if (!multi) {
-				el = el.length >= 1 ? el[0] : undefined;
-			}
-		}
-		return el;
-	},
-	addEvent(element, type, handler, eventListenerOptions) {
-		if (SUPPORT_ADDEVENTLISTENER) {
-			let options = eventListenerOptions || false;
+	if (typeof param === "string") { // String (HTML, Selector)
+		// check if string is HTML tag format
+		const match = param.match(/^<([a-z]+)\s*([^>]*)>/);
 
-			if (typeof eventListenerOptions === "object") {
-				options = SUPPORT_PASSIVE ? eventListenerOptions : false;
-			}
-			element.addEventListener(type, handler, options);
-		} else if (element.attachEvent) {
-			element.attachEvent(`on${type}`, handler);
-		} else {
-			element[`on${type}`] = handler;
-		}
-	},
-	removeEvent(element, type, handler) {
-		if (element.removeEventListener) {
-			element.removeEventListener(type, handler, false);
-		} else if (element.detachEvent) {
-			element.detachEvent(`on${type}`, handler);
-		} else {
-			element[`on${type}`] = null;
-		}
-	},
-	scrollTop(el) {
-		if (el === window) {
-			return document.body.scrollTop || document.documentElement.scrollTop;
-		} else {
-			return el.scrollTop;
-		}
-	},
-	scrollTo(el, x, y) {
-		if (el === window) {
-			el.scrollTo(x, y);
-		} else {
-			el.scrollLeft = x;
-			el.scrollTop = y;
-		}
-	},
-	getSize(el, name) {
-		if (el === window) { // WINDOW
-			return el.document.documentElement[`client${name}`];
-		} else if (el.nodeType === 9) { // DOCUMENT_NODE
-			const doc = el.documentElement;
+		// creating element
+		if (match) { // HTML
+			const dummy = document.createElement("div");
 
-			return Math.max(
-				el.body[`scroll${name}`], doc[`scroll${name}`],
-				el.body[`offset${name}`], doc[`offset${name}`],
-				doc[`client${name}`]
-			);
-		} else { // NODE
-			const style = SUPPORT_COMPUTEDSTYLE ?
-				window.getComputedStyle(el) : el.currentStyle;
-			const value = style[name.toLowerCase()];
-
-			return parseFloat(/auto|%/.test(value) ? el[`offset${name}`] : style[name.toLowerCase()]);
+			dummy.innerHTML = param;
+			el = toArray(dummy.childNodes);
+		} else { // Selector
+			el = toArray(document.querySelectorAll(param));
 		}
-	},
-	innerWidth(el) {
-		return this.getSize(el, "Width");
-	},
-	innerHeight(el) {
-		return this.getSize(el, "Height");
-	},
-	isEmptyObject(obj) {
-		let name;
-
-		for (name in obj) {
-			return false;
+		if (!multi) {
+			el = el.length >= 1 ? el[0] : undefined;
 		}
-		return true;
-	},
-	toArray(nodes) {
-		// SCRIPT5014 in IE8
-		const array = [];
-
-		if (nodes) {
-			for (let i = 0, len = nodes.length; i < len; i++) {
-				array.push(nodes[i]);
-			}
+	} else if (param === window) { // window
+		el = param;
+	} else if (param.nodeName &&
+		(param.nodeType === 1 || param.nodeType === 9)) { // HTMLElement, Document
+		el = param;
+	} else if (("jQuery" in window && param instanceof jQuery) ||
+		param.constructor.prototype.jquery) { // jQuery
+		el = multi ? param.toArray() : param.get(0);
+	} else if (Array.isArray(param)) {
+		el = param.map(v => $(v));
+		if (!multi) {
+			el = el.length >= 1 ? el[0] : undefined;
 		}
-		return array;
-	},
-};
+	}
+	return el;
+}
+export function addEvent(element, type, handler, eventListenerOptions) {
+	if (SUPPORT_ADDEVENTLISTENER) {
+		let options = eventListenerOptions || false;
+
+		if (typeof eventListenerOptions === "object") {
+			options = SUPPORT_PASSIVE ? eventListenerOptions : false;
+		}
+		element.addEventListener(type, handler, options);
+	} else if (element.attachEvent) {
+		element.attachEvent(`on${type}`, handler);
+	} else {
+		element[`on${type}`] = handler;
+	}
+}
+export function removeEvent(element, type, handler) {
+	if (element.removeEventListener) {
+		element.removeEventListener(type, handler, false);
+	} else if (element.detachEvent) {
+		element.detachEvent(`on${type}`, handler);
+	} else {
+		element[`on${type}`] = null;
+	}
+}
+export function scrollTop(el) {
+	if (el === window) {
+		return document.body.scrollTop || document.documentElement.scrollTop;
+	} else {
+		return el.scrollTop;
+	}
+}
+export function scrollTo(el, x, y) {
+	if (el === window) {
+		el.scrollTo(x, y);
+	} else {
+		el.scrollLeft = x;
+		el.scrollTop = y;
+	}
+}
+function _getSize(el, name) {
+	if (el === window) { // WINDOW
+		return el.document.documentElement[`client${name}`];
+	} else if (el.nodeType === 9) { // DOCUMENT_NODE
+		const doc = el.documentElement;
+
+		return Math.max(
+			el.body[`scroll${name}`], doc[`scroll${name}`],
+			el.body[`offset${name}`], doc[`offset${name}`],
+			doc[`client${name}`]
+		);
+	} else { // NODE
+		const style = SUPPORT_COMPUTEDSTYLE ?
+			window.getComputedStyle(el) : el.currentStyle;
+		const value = style[name.toLowerCase()];
+
+		return parseFloat(/auto|%/.test(value) ? el[`offset${name}`] : style[name.toLowerCase()]);
+	}
+}
+export function innerWidth(el) {
+	return _getSize(el, "Width");
+}
+export function innerHeight(el) {
+	return _getSize(el, "Height");
+}
+export function isEmptyObject(obj) {
+	let name;
+
+	for (name in obj) {
+		return false;
+	}
+	return true;
+}
+
 
 class MixinBuilder {
 	constructor(superclass) {
@@ -155,9 +155,5 @@ class MixinBuilder {
 	}
 }
 
-const Mixin = superclass => new MixinBuilder(superclass);
+export const Mixin = superclass => new MixinBuilder(superclass);
 
-export {
-	Mixin,
-	utils,
-};
