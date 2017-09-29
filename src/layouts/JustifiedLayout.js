@@ -1,24 +1,15 @@
 import dijkstra from "../../lib/dijkstra";
-import {APPEND, PREPEND, VERTICAL, DEFAULT_OPTIONS, STYLE} from "./Constants";
-
+import {APPEND, PREPEND} from "./Constants";
+import {getStyleNames, assignOptions} from "./utils";
 
 class JustifiedLayout {
 	constructor(options = {}) {
-		this.options = Object.assign({},
-			DEFAULT_OPTIONS,
-			{
-				minSize: 0,
-				maxSize: 0,
-			},
-			options);
-		this._style = this.getStyleNames();
+		this._options = assignOptions({
+			minSize: 0,
+			maxSize: 0,
+		}, options);
+		this._style = getStyleNames(this._options.direction);
 		this._viewport = {};
-	}
-	getStyleNames() {
-		const direction = this.options.direction in STYLE ? this.options.direction : VERTICAL;
-		const style = STYLE[direction];
-
-		return style;
 	}
 	_layout(items, outline, isAppend) {
 		const style = this._style;
@@ -53,7 +44,7 @@ class JustifiedLayout {
 		return this._setStyle(items, path, outline, isAppend);
 	}
 	_getSize(items, size1Name, size2Name) {
-		const margin = this.options.margin;
+		const margin = this._options.margin;
 		const size = items.reduce((sum, item) => sum +
 							(item.size[size2Name]) / item.size[size1Name], 0);
 
@@ -61,8 +52,8 @@ class JustifiedLayout {
 	}
 	_getCost(items, i, j, size1Name, size2Name) {
 		const size = this._getSize(items.slice(i, j), size1Name, size2Name);
-		const min = this.options.minSize;
-		const max = this.options.maxSize || Infinity;
+		const min = this._options.minSize;
+		const max = this._options.maxSize || Infinity;
 
 		if (isFinite(max)) {
 			// if this size is not in range, the cost increases sharply.
@@ -95,13 +86,12 @@ class JustifiedLayout {
 		// pos2 : top, pos22 : bottom
 		// size2 : height
 		const pos1Name = style.pos1;
-		const endPos1Name = style.endPos1;
 		const size1Name = style.size1;
 		const pos2Name = style.pos2;
 		const endPos2Name = style.endPos2;
 		const size2Name = style.size2;
 		const length = path.length;
-		const margin = this.options.margin;
+		const margin = this._options.margin;
 		const startPoint = outline[0] || 0;
 		let endPoint = startPoint;
 		let height = 0;
@@ -120,11 +110,11 @@ class JustifiedLayout {
 				const size2 = item.size[size2Name] / item.size[size1Name] * size1;
 				// item has margin bottom and right.
 				// first item has not margin.
-				const pos2 = (j === 0 ? 0 : pathItems[j - 1].rect[endPos2Name] + margin);
+				const prevItemRect = j === 0 ? 0 : pathItems[j - 1].rect;
+				const pos2 = (prevItemRect ? prevItemRect[pos2Name] + prevItemRect[size2Name] + margin : 0);
 
 				item.rect = {
 					[pos1Name]: pos1,
-					[endPos1Name]: pos1 + size1,
 					[pos2Name]: pos2,
 					[endPos2Name]: pos2 + size2,
 					[size1Name]: size1,
@@ -151,7 +141,6 @@ class JustifiedLayout {
 
 			// move items as long as height for prepend
 			item.rect[pos1Name] -= height;
-			item.rect[endPos1Name] -= height;
 		}
 		return {
 			start: [startPoint - height],
