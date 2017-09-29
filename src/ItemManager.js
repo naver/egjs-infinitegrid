@@ -85,57 +85,6 @@ export default class ItemManager {
 		// 레이아웃에 의해 변경된 아이템 정보
 		return layouted.items;
 	}
-<<<<<<< HEAD
-
-
-
-
-	// append(items, groupKey) {
-	// 	let layouted;
-
-	// 	if (this._layout) {
-	// 		layouted = this._layout.append(items);
-	// 	} else {
-	// 		layouted = {
-	// 			items,
-	// 		};
-	// 	}
-	// 	// const obj = layout.append(items, 전의 bottom || []);
-	// 	// // obj.items
-	// 	// // obj.outlines.start
-	// 	// // obj.outlines.end
-	// 	ItemManager.setGroupKey(layouted, groupKey);
-
-	// 	this.data = this.data.concat(layouted);
-	// 	this.endCursor += layouted.items.length - 1;
-	// }
-	// prepend(items, groupKey) {
-	// 	const layouted = {
-	// 		items,
-	// 	};
-	// 	// const obj = layout.append(items, 전의 bottom || []);
-	// 	// // obj.items
-	// 	// // obj.outlines.start
-	// 	// // obj.outlines.end
-
-	// 	ItemManager.setGroupKey(layouted, groupKey);
-	// 	this.data = items.concat(this.data);
-	// 	this.endCursor += layouted.items.length - 1;
-	// }
-	// remove() {
-	// 	// const relayoutItems = layout.remove(item, this.items);
-	// 	// // relayoutItems[0].items
-	// 	// relayoutItems[0].outlines.start
-	// 	// relayoutItems[0].outlines.end
-	// 	// relayoutItems[0].groupKey
-	// 	// 아이템이 하나도 없을경우라도 group은 삭제하지 않는다.
-	// }
-	// layout() {
-	// 	// layout.layout(this.items);
-	// }
-
-=======
->>>>>>> upstream/v3.0.0-dev
 	clear() {
 		this.data = [];
 	}
