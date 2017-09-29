@@ -13,15 +13,15 @@ function getItems(groupNo) {
 
 
 
-
+var count = 0;
 
 var infinite = new eg.InfiniteGrid.Infinite("#infinite")
   .on({
     "append": function(e) {
-      e.currentTarget.append(getItems(0));
+      e.currentTarget.append(getItems(0), count++);
     },
     "prepend": function(e) {
-      e.currentTarget.prepend(getItems(1));
+      e.currentTarget.prepend(getItems(2), count);
     }
   });
 

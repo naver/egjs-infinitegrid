@@ -189,14 +189,11 @@ class JustifiedLayout {
 		};
 	}
 	prepend(items, outline) {
-		const clone = items.map(item => ({
-			size: Object.assign({}, item.size),
-		}));
-		const result = this._layout(clone, outline, PREPEND);
+		const clone = items.map(item => Object.assign({}, item));
 
 		return {
 			items: clone,
-			outlines: result,
+			outlines: this._layout(clone, outline, PREPEND),
 		};
 	}
 	layout(groups, outlines) {

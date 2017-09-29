@@ -52,15 +52,19 @@ export default class ItemManager {
 		return this.data.length;
 	}
 	getItems(start, end) {
-		if (typeof start !== "undefined" && typeof end !== "undefined") {
-			return ItemManager.pluckItems(this.data.slice(start, end));
+		if (typeof start !== "undefined") {
+			if (typeof end !== "undefined") {
+				return ItemManager.pluckItems(this.data.slice(start, end + 1));
+			} else {
+				return ItemManager.pluckItems(this.data.slice(start, start + 1));
+			}
 		} else {
 			return ItemManager.pluckItems(this.data);
 		}
 	}
 	getOutline(index, isAppend) {
 		if (this.data.length) {
-			return this.data[index - 1].outlines[isAppend ? "end" : "start"];
+			return this.data[index].outlines[isAppend ? "end" : "start"];
 		} else {
 			return [];
 		}
@@ -83,10 +87,27 @@ export default class ItemManager {
 		// 레이아웃에 의해 변경된 아이템 정보 
 		return layouted.items;
 	}
-	
-	
-
-
+	// add items, and remove items for recycling
+	_recycle(items, isAppend) {
+		const baseCount = items.length - this.options.count;
+		let diff;
+		while ((diff = this.getVisibleItems().length + baseCount) > 0) {
+			console.log(diff, "recyle이 필요함, DOM 삭제");
+			// @todo range가 넘어가는 경우에대한 별도의 처리 및 테스트가 필요함.
+			let toRemoveItems;
+			
+			if (isAppend) {
+				toRemoveItems = this._itemManager.getItems(this._startCursor);
+				this._startCursor++;
+			} else {
+				toRemoveItems = this._itemManager.getItems(this._endCursor);
+				this._endCursor--;
+			}
+			// recycle
+			ItemRenderer.removeItems(toRemoveItems);
+		}
+		console.warn("recycle [", this._startCursor, this._endCursor, "]");
+	}
 	// append(items, groupKey) {
 	// 	let layouted;
 
