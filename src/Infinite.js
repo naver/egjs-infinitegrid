@@ -1,39 +1,80 @@
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
+import ImageLoaded from "./ImageLoaded";
+// import GridLayout from "./layouts/GridLayout";
+import JustifiedLayout from "./layouts/JustifiedLayout";
 import {
 	APPEND,
-	PREPEND
+	PREPEND,
+	DUMMY_POSITION,
+	MULTI,
 } from "./consts";
 import {
-	utils
+	$,
+
 } from "./utils";
 
 export class Painter {
 	constructor(element) {
-		this._el = utils.$(element);
+		this._el = $(element);
+		this._el.style.position = "relative";
 	}
 	remove(items) {
 		items.forEach(item => {
 			item.el.parentNode.removeChild(item.el);
+			item.el = null;
 		});
 	}
 	append(items) {
-		this._insert(items, APPEND);
+		this._insert(
+			items,
+			APPEND,
+			function(elStyle) {
+				elStyle.top = `${DUMMY_POSITION}px`;
+			});
 	}
 	prepend(items) {
-		this._insert(items, PREPEND);
+		this._insert(
+			items,
+			PREPAND,
+			function(elStyle) {
+				elStyle.top = `${DUMMY_POSITION}px`;
+			});
 	}
-	_insert(items, isAppend) {
-		// item의 정보를 각 엘리먼트에 반영. (position, size)
+	_insert(items, isAppend, renderCallback, styles) {
 		const df = document.createDocumentFragment();
+
 		items.forEach(item => {
-			item.el.style.float = "left";
+			// to get sizes of images
+			item.el.style.position = "absolute";
+			renderCallback && renderCallback(item.el.style, styles);
+
 			isAppend ? df.appendChild(item.el) : df.insertBefore(item.el, df.firstChild);
 		});
 		isAppend ? this._el.appendChild(df) : this._el.insertBefore(df, this._el.firstChild);
 	}
 	render(items) {
-		console.log(items);
+		console.log("render", items);
+		items.forEach(item => {
+			item.el &&
+				["left", "top", "width", "height"].forEach(p => {
+					(p in item.rect) && (item.el.style[p] = `${item.rect[p]}px`);
+				});
+		});
+	}
+	create(items, isAppend) {
+		const df = document.createDocumentFragment();
+		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(""), MULTI);
+		const itemsWithElement = items.map((item, index) => {
+			item.el = elements[index];
+			return item;
+		});
+
+		this.render(itemsWithElement);
+		itemsWithElement.forEach(item => {
+			isAppend ? df.appendChild(item.el) : df.insertBefore(item.el, df.firstChild);
+		});
+		isAppend ? this._el.appendChild(df) : this._el.insertBefore(df, this._el.firstChild);
 	}
 }
 
@@ -47,6 +88,13 @@ export class Infinite extends Component {
 		}, options);
 		this._startCursor = 0;
 		this._endCursor = 0;
+		// @todo
+		this._layout = new JustifiedLayout({
+			direction: "vertical",
+			minSize: 100,
+		});
+		this._layout.setViewport(471, 1320);
+		this._checkImageloaded = new ImageLoaded();
 		this._itemManager = new ItemManager();
 		this._painter = new Painter(element);
 	}
@@ -56,6 +104,7 @@ export class Infinite extends Component {
 	prepend(elements, groupKey) { // 사용자가 prepend를 호출
 		this._insert(elements, groupKey, PREPEND);
 	}
+	// add items, and remove items for recycling
 	_recycle(items, isAppend) {
 		const baseCount = items.length - this.options.count;
 		let diff;
@@ -66,17 +115,19 @@ export class Infinite extends Component {
 			let toRemoveItems;
 
 			if (isAppend) {
-				toRemoveItems = this._itemManager.getItems(this._startCursor, this._startCursor +
-					1);
+				toRemoveItems = this._itemManager.getItems(this._startCursor, this._startCursor + 1);
 				this._startCursor++;
 			} else {
 				toRemoveItems = this._itemManager.getItems(this._endCursor - 1, this._endCursor);
 				this._endCursor--;
 			}
+			// recycle
 			this._painter.remove(toRemoveItems);
 			console.warn("[", this._startCursor, this._endCursor, "]");
 		}
+		this._painter[isAppend ? "append" : "prepend"](items);
 	}
+
 	_insert(elements, groupKey, isAppend) {
 		const key = groupKey || (new Date().getTime() + Math.floor(Math.random() *
 			1000));
@@ -91,32 +142,28 @@ export class Infinite extends Component {
 		}
 		this._recycle(items, isAppend);
 
-		// 레이아웃에게 일맡기기.
-		const method = isAppend ? "append" : "prepend";
-		const index = isAppend ? this._endCursor : this._startCursor;
-		let layouted;
+		// 이미지의 사이즈를 측정해야한다. (단 엘리먼트가 추가된 이후에 가능하다.)
+		this._checkImageloaded.check(items.map(item => item.el), () => {
+			const layouted = this._layout[isAppend ? "append" : "prepend"](
+				ItemManager.updateSize(items),
+				this._itemManager.getOutline(
+					isAppend ? this._endCursor : this._startCursor,
+					isAppend)
+			);
 
-		if (this._layout) {
-			layouted = this._layout[method](items, this._itemManager.getOutline(index,
-				isAppend));
-		} else {
-			layouted = {
-				items,
-				outlines: {
-					start: [],
-					end: [],
-				},
-			};
-		}
+			this._painter.render(this._insertItemManager(layouted, isAppend, key));
+		});
+	}
+
+	_insertItemManager(layouted, isAppend, key) {
 		layouted.groupKey = key;
-
-		// 실제 데이터를 추가
-		const newItems = this._itemManager[method](layouted);
-
-		!isAppend && (this._startCursor = 0);
-		this._endCursor++;
-
-		this._painter[method](newItems);
+		this._itemManager[isAppend ? "append" : "prepend"](layouted);
+		if (isAppend) {
+			this._endCursor++;
+		} else if (this._startCursor > 0) {
+			this._startCursor--;
+		}
+		return layouted.items;
 	}
 	getVisibleItems() {
 		return this._itemManager.getItems(this._startCursor, this._endCursor);
@@ -146,19 +193,18 @@ export class Infinite extends Component {
 
 	requestAppend() { // visible이 호출
 		const items = this.getItems(APPEND);
+
 		if (items.length) {
-			this._recycle(items, APPEND);
-			// this._painter.render(items);
-			// this._endCursor++;
+			this._painter.create(items, APPEND);
 		} else {
 			this.trigger("append");
 		}
 	}
 	requestPrepend() { // visible이 호출
 		const items = this.getItems(PREPEND);
+
 		if (items.length) {
-			this._painter.render(items);
-			// this._startCursor--;
+			this._painter.create(items, PREPEND);
 		} else {
 			this.trigger("prepend");
 		}

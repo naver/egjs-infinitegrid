@@ -1,23 +1,21 @@
-// import {APPEND, PREPEND} from "./consts";
-// import {utils} from "./utils";
-import {APPEND, PREPEND, MULTI} from "./consts";
-import {utils} from "./utils";
+import {APPEND, PREPEND, MULTI, DUMMY_POSITION} from "./consts";
+import {$, toArray, innerWidth, innerHeight} from "./utils";
 
 export default class ItemManager {
 	static from(elements, selector, {groupKey, maxCount, isAppend}) {
-		const filted = ItemManager.selectItems(utils.$(elements, MULTI), selector);
+		const filted = ItemManager.selectItems($(elements, MULTI), selector);
 
 		// Item Structure
-		const items = utils.toArray(filted).map(el => ({
+		return toArray(filted).map(el => ({
 			el,
 			groupKey,
-			content: el.innerHTML,
+			content: el.outerHTML,
 		}));
 
 		// trim
 		if (maxCount <= items.length) {
 			isAppend ?
-				items.splice(0, items.length - maxCount) : 
+				items.splice(0, items.length - maxCount) :
 				items.splice(maxCount);
 		}
 		return items;
@@ -35,36 +33,23 @@ export default class ItemManager {
 	static pluckItems(data) {
 		return data.reduce((acc, v) => acc.concat(v.items), []);
 	}
+	static updateSize(items) {
+		return items.map(item => {
+			item.size = {
+				width: innerWidth(item.el),
+				height: innerHeight(item.el),
+			};
+			return item;
+		});
+	}
 
 	constructor(options) {
 		Object.assign(this.options = {
 		}, options);
-		console.warn("create itemmanager");
 		this.clear();
 	}
-	setLayout(layout) {
-		this._layout = layout;
-	}
-	// getItems(isAppend) {
-	// 	let items = [];
-
-	// 	if (isAppend) {
-	// 		if (this.data.length - 1 > this.endCursor) {
-	// 			console.log("데이터가 있다", this.data.slice(this.endCursor, ++this.endCursor));
-	// 		} else {
-	// 			console.log("더이상 데이터가 없다");
-	// 		}
-	// 	} else {
-	// 		if (this.startCursor > 0) {
-	// 			console.log("데이터가 있다");
-	// 		} else {
-	// 			console.log("더이상 데이터가 없다");
-	// 		}
-	// 	}
-	// 	return items;
-	// }
 	size() {
-		return this.data.length; 
+		return this.data.length;
 	}
 	getItems(start, end) {
 		if (typeof start !== "undefined" && typeof end !== "undefined") {
@@ -75,21 +60,12 @@ export default class ItemManager {
 	}
 	getOutline(index, isAppend) {
 		if (this.data.length) {
-			return this.data[index].outlines[isAppend ? "end" : "start"];
+			return this.data[index - 1].outlines[isAppend ? "end" : "start"];
 		} else {
 			return [];
 		}
 	}
 	append(layouted) {
-		// const obj = layout.append(items, 전의 bottom || []);
-		    // obj.items
-		    // obj.outlines.start
-		    // obj.outlines.end
-		    
-		    // groupkey 셋팅.
-		    // obj.groupKey
-		    // obj.items[0].groupKey;
-		
 		this.data.push(layouted);
 		this.endCursor++;
 		console.log("append", this.data);

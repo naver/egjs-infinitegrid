@@ -181,15 +181,11 @@ class JustifiedLayout {
 		this.height = height;
 	}
 	append(items, outline) {
-		// this only needs the size of the item.
-		const clone = items.map(item => ({
-			size: Object.assign({}, item.size),
-		}));
-		const result = this._layout(clone, outline, APPEND);
+		const clone = items.map(item => Object.assign({}, item));
 
 		return {
 			items: clone,
-			outlines: result,
+			outlines: this._layout(clone, outline, APPEND),
 		};
 	}
 	prepend(items, outline) {

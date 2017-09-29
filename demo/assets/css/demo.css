@@ -18,8 +18,9 @@
 .item {
   width:50%;
   min-height: 1px;
-  padding-right: 5px;
-  padding-left: 5px;
+  /* padding-right: 5px;
+  padding-left: 5px; */
+  overflow:hidden;
 }
 .caption a {
   color: black;
