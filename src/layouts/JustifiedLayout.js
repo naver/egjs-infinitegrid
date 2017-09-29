@@ -12,6 +12,7 @@ class JustifiedLayout {
 			},
 			options);
 		this._style = this.getStyleNames();
+		this._viewport = {};
 	}
 	getStyleNames() {
 		const direction = this.options.direction in STYLE ? this.options.direction : VERTICAL;
