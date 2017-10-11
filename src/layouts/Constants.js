@@ -13,9 +13,3 @@ export const ALIGN = {
 	END: "end",
 	JUSTIFY: "justify",
 };
-export const ALIGN = {
-	START: "start",
-	CENTER: "center",
-	END: "end",
-	JUSTIFY: "justify",
-};

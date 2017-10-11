@@ -10,7 +10,6 @@ var config = {
 		"JustifiedLayout": "./src/layouts/JustifiedLayout.js",
 		"GridLayout": "./src/layouts/GridLayout.js",
 		"FrameLayout": "./src/layouts/FrameLayout.js"
-		"GridLayout": "./src/layouts/GridLayout.js",
 	},
 	output: {
 		path: path.resolve(__dirname, "../dist"),

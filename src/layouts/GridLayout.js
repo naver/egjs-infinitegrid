@@ -43,8 +43,6 @@ class GridLayout {
 		const size2Name = style.size2;
 		const pos1Name = style.pos1;
 		const pos2Name = style.pos2;
-		const endPos1Name = style.endPos1;
-		const endPos2Name = style.endPos2;
 		const columnSize = this._columnSize;
 		const columnLength = this._columnLength;
 
@@ -73,14 +71,10 @@ class GridLayout {
 			} else if (align === JUSTIFY) {
 				pos2 = (viewSize2 - columnSize) / (columnLength - 1) * index;
 			}
-			const endPos2 = pos2 + columnSize + margin;
-
 			// tetris
 			item.rect = {
 				[pos1Name]: pos1,
 				[pos2Name]: pos2,
-				[endPos1Name]: endPos1,
-				[endPos2Name]: endPos2,
 			};
 			item.column = index;
 			endOutline[index] = isAppend ? endPos1 : pos1;
