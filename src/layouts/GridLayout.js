@@ -1,4 +1,5 @@
-import {APPEND, PREPEND, VERTICAL, HORIZONTAL, STYLE, DEFAULT_OPTIONS, ALIGN} from "./Constants";
+import {APPEND, PREPEND, HORIZONTAL, ALIGN} from "./Constants";
+import {getStyleNames, assignOptions} from "./utils";
 
 // ALIGN
 const {START, CENTER, END, JUSTIFY} = ALIGN;
@@ -8,23 +9,14 @@ function fill(length, pos) {
 }
 class GridLayout {
 	constructor(options = {}) {
-		this._options = Object.assign({},
-			DEFAULT_OPTIONS,
-			{
-				align: START,
-			},
-			options);
+		this._options = assignOptions({
+			align: START,
+		}, options);
 		this._viewport = {};
 		this._isHorizontal = this._options.direction === HORIZONTAL;
 		this._columnSize = 0;
 		this._columnLength = 0;
-		this._style = this.getStyleNames();
-	}
-	getStyleNames() {
-		const direction = this._options.direction in STYLE ? this._options.direction : VERTICAL;
-		const style = STYLE[direction];
-
-		return style;
+		this._style = getStyleNames(this._options.direction);
 	}
 	getPoints(outlines) {
 		const pos = this._isHorizontal ? "left" : "top";
