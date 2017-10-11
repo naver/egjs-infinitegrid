@@ -31,9 +31,9 @@ function getItem(i) {
 
 	return item;
 }
-function getItems() {
+function getItems(num) {
 	const items = [];
-	for (i = 0; i < 22; ++i) {
+	for (i = 0; i < num; ++i) {
 		items.push(getItem(i));
 	}
 	return items;
@@ -53,28 +53,30 @@ function getBottomline(defaultOutline = [0]) {
 }
 
 let _items = [];
-
-function append(line) {
-	const group = parseInt(Math.random() * 10000);
-	const items = getItems();
+let _group = 0;
+function append(line, num = 22) {
+	const group = ++_group;
+	const items = getItems(num);
 	const result = a.append(items, getBottomline(line));
 
 
 	result.items.forEach((item, i) => {
 		item.el = items[i].el;
 		item.groupKey = group;
+		item.el.dataset.group = group;
 	});
 	result.groupKey = result.items[0].groupKey;
 	_items.push(result);
 	render(result.items);
 }
-function prepend(line) {
-	const group = parseInt(Math.random() * 10000);
-	const items = getItems();
+function prepend(line, num = 22) {
+	const group = ++_group;
+	const items = getItems(num);
 	const result = a.prepend(items, getTopline(line));
 	result.items.forEach((item, i) => {
 		item.el = items[i].el;
 		item.groupKey = group;
+		item.el.dataset.group = group;
 	});
 	result.groupKey = result.items[0].groupKey;
 	_items.splice(0, 0, result);
