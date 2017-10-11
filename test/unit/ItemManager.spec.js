@@ -90,7 +90,7 @@ describe.only("ItemManager Test", function() {
       const items = this.inst.get(true);
       items.forEach(v => {
         expect(v.groupKey).to.be.exist;
-      });     
+      });
     });
   });
 });

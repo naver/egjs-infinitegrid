@@ -72,7 +72,7 @@ export default class ItemManager {
 		this.endCursor++;
 		console.log("append", this.data);
 
-		// 레이아웃에 의해 변경된 아이템 정보 
+		// 레이아웃에 의해 변경된 아이템 정보
 		return layouted.items;
 	}
 	prepend(layouted) {
@@ -82,7 +82,7 @@ export default class ItemManager {
 		this.endCursor++;
 		console.log("prepend", this.data);
 
-		// 레이아웃에 의해 변경된 아이템 정보 
+		// 레이아웃에 의해 변경된 아이템 정보
 		return layouted.items;
 	}
 	clear() {

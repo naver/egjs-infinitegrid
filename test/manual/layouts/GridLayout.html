@@ -66,11 +66,12 @@
 	</style>
 <script>
 	var a = new GridLayout({
-		direction: "horizontal",
+		direction: "vertical",
 		margin: 20,
+		align: "start",
 	});
-	a.width = document.querySelector("#grid").offsetWidth;
-	a.height = document.querySelector("#grid").offsetHeight;
+	a._viewport.width = document.querySelector("#grid").offsetWidth;
+	a._viewport.height = document.querySelector("#grid").offsetHeight;
 
 	function getWidth() {
 		return 200;
