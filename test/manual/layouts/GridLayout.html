@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootflat/2.0.4/css/bootflat.css">
 <link rel="stylesheet" href="../../../demo/assets/css/demo.css">
+<link rel="stylesheet" href="./demo.css">
 <!--[if lt IE 9]>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
 <![endif]-->
@@ -80,7 +81,9 @@
 		return parseInt(Math.random() * 200, 10) + 200;
 	}
 
-	append();
+	append([100], 9);
+	append(undefined, 12);
+	append(undefined, 7);
 </script>
 </body>
 </html>
