@@ -9,6 +9,7 @@ var config = {
 	entry: {
 		"JustifiedLayout": "./src/layouts/JustifiedLayout.js",
 		"GridLayout": "./src/layouts/GridLayout.js",
+		"FrameLayout": "./src/layouts/FrameLayout.js"
 	},
 	output: {
 		path: path.resolve(__dirname, "../dist"),
@@ -17,7 +18,7 @@ var config = {
 		libraryTarget: "umd",
 		umdNamedDefine: true
 	},
-	devtool: "cheap-source-map",
+//	devtool: "cheap-source-map",
 	module: {
 		rules: [{
 			test: /\.js$/,
