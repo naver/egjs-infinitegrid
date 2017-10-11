@@ -36,8 +36,7 @@
 <script src="../../../node_modules/jquery/dist/jquery.js"></script>
 <!-- <script src="../../node_modules/@egjs/component/dist/component.js"></script> -->
 <script src="../../../dist/infinitegrid.pkgd.js"></script>
-<script src="../../../dist/JustifiedLayout.js"></script>
-<script src="../../../dist/GridLayout.js"></script>
+<script src="../../../dist/FrameLayout.js"></script>
 <script src="../../../lib/Render.js"></script>
 <script src="./js/demo.js"></script>
 	<style>
@@ -68,19 +67,25 @@
 <script>
 
 	var groups = [];
-	var a = new JustifiedLayout({
+	var a = new FrameLayout({
 		direction: "vertical",
 		margin: 20,
 		minSize: 100,
-//		maxSize: 300,
+		frame: [
+[1, 0, 1, 0, 1],
+[2, 2, 2, 3, 3],
+[2, 2, 2, 3, 3],
+[0, 4, 0, 4, 0],
+],
+		frameFill: true,
 	});
 
 	a._viewport.width = document.querySelector("#grid").offsetWidth;
 	a._viewport.height = document.querySelector("#grid").offsetHeight;
 
-	append([500], 20);
-	append(undefined, 10);
-	prepend(undefined, 10);
+	append([00], 7);
+	append([00], 7);
+	append([00], 7);
 </script>
 </body>
 </html>

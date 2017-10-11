@@ -1,8 +1,8 @@
 import {APPEND, PREPEND, ALIGN} from "./Constants";
-import Layout from "./interface/Layout";
+import {getStyleNames, assignOptions} from "./utils";
 
 // ALIGN
-const {START, CENTER, END} = ALIGN;
+const {START} = ALIGN;
 
 /*
 Frame
@@ -20,27 +20,30 @@ function disableFrame(frame, x, y, width, height) {
 		}
 	}
 }
-function searchShapeInFrame(frame, type, x, y, width, height) {
+function searchShapeInFrame(frame, type, top, left, width, height) {
 	const size = {
-		x,
-		y,
+		left,
+		top,
 		width: 1,
 		height: 1,
 	};
 
-	for (let i = x; i < width; ++i) {
-		if (frame[y][i] !== type) {
-			size.width = i - x + 1;
-			break;
+	for (let i = left; i < width; ++i) {
+		if (frame[top][i] === type) {
+			size.width = i - left + 1;
+			continue;
 		}
+		break;
 	}
-	for (let i = y; i < height; ++i) {
-		if (frame[i][x] !== type) {
-			size.height = i - y + 1;
-			break;
+	for (let i = top; i < height; ++i) {
+		if (frame[i][left] === type) {
+			size.height = i - top + 1;
+			continue;
 		}
+		break;
 	}
-	disableFrame(frame, x, y, width, height);
+	// After finding the shape, it will not find again.
+	disableFrame(frame, left, top, size.width, size.height);
 	return size;
 }
 function getShapes(frame) {
@@ -55,7 +58,8 @@ function getShapes(frame) {
 			if (!type) {
 				continue;
 			}
-			shapes.push(searchShapeInFrame(frame, type, j, i, width, height));
+			// Separate shapes with other numbers.
+			shapes.push(searchShapeInFrame(frame, type, i, j, width, height));
 		}
 	}
 	return {
@@ -64,26 +68,27 @@ function getShapes(frame) {
 		height,
 	};
 }
-class FrameLayout extends Layout {
+class FrameLayout {
 	constructor(options = {}) {
-		super({
+		this._options = assignOptions({
 			itemSize: 0,
 			align: START,
 			frame: [],
+			frameFill: true,
 		}, options);
 		const frame = this._options.frame.map(row => row.slice());
+		// divide frame into shapes.
 		const shapes = getShapes(frame);
 
 		this._itemSize = this._options.itemSize || 0;
-		this._frameHeight = shapes.height;
-		this._frameWidth = shapes.width;
-		this._shapes = shapes.shapes;
+		this._shapes = shapes;
+		this._viewport = {};
+		this._style = getStyleNames(this._options.direction);
 	}
 	_getItemSize() {
-		if (this._itemSize) {
-			return this._itemSize;
+		if (!this._itemSize) {
+			this._checkItemSize();
 		}
-		this._checkItemSize();
 		return this._itemSize;
 	}
 	_checkItemSize() {
@@ -91,16 +96,113 @@ class FrameLayout extends Layout {
 			return;
 		}
 		const style = this._style;
+		const size = style.size2;
 		const margin = this._options.margin;
 
-		this._itemSize = (this._viewport[style.size2] + margin) / (this._frameWidth + margin);
+		// if itemSize is not in options, caculate itemSize from viewport.
+		this._itemSize = (this._viewport[size] + margin) / this._shapes[size] - margin;
 	}
 	_layout(items, outline, isAppend) {
+		const length = items.length;
 		const style = this._style;
+		const frameFill = this._options.frameFill;
+		const margin = this._options.margin;
+		const size1Name = style.size1;
 		const size2Name = style.size2;
-		const viewportSize2 = this._viewport[size2Name];
+		const pos1Name = style.pos1;
+		const pos2Name = style.pos2;
 		const itemSize = this._getItemSize();
+		const shapesSize = this._shapes[size2Name];
+		const shapes = this._shapes.shapes;
+		const shapesLength = shapes.length;
+		const startOutline = new Array(shapesSize).fill(-1);
+		const endOutline = new Array(shapesSize).fill(0);
+		let dist = 0;
+		let end = 0;
 
+		for (let i = 0; i < length; i += shapesLength) {
+			for (let j = 0; j < shapesLength && i + j < length; ++j) {
+				const item = items[i + j];
+				const shape = shapes[j];
+				const shapePos1 = shape[pos1Name];
+				const shapePos2 = shape[pos2Name];
+				const shapeSize1 = shape[size1Name];
+				const shapeSize2 = shape[size2Name];
+				const pos1 = end - dist + shapePos1 * (itemSize + margin);
+				const pos2 = shapePos2 * (itemSize + margin);
+				const size1 = shapeSize1 * (itemSize + margin) - margin;
+				const size2 = shapeSize2 * (itemSize + margin) - margin;
+
+				for (let k = shapePos2; k < shapePos2 + shapeSize2 && k < shapesSize; ++k) {
+					if (startOutline[k] === -1) {
+						startOutline[k] = pos1;
+					}
+					startOutline[k] = Math.min(startOutline[k], pos1);
+					endOutline[k] = Math.max(endOutline[k], pos1 + size1 + margin);
+				}
+				item.rect = {
+					[pos1Name]: pos1,
+					[pos2Name]: pos2,
+					[size1Name]: size1,
+					[size2Name]: size2,
+				};
+			}
+			end = Math.max(...endOutline);
+			if (!frameFill) {
+				continue;
+			}
+			// check dist once
+			if (i !== 0) {
+				continue;
+			}
+			// find & fill empty block
+			dist = end;
+			for (let j = 0; j < shapesSize; ++j) {
+				if (startOutline[j] === -1) {
+					startOutline[j] = Math.max(...startOutline);
+					endOutline[j] = startOutline[j];
+					continue;
+				}
+				// the dist between frame's end outline and next frame's start outline
+				// expect that next frame's start outline is startOutline[j] + end
+				dist = Math.min(startOutline[j] + end - endOutline[j], dist);
+			}
+		}
+		// The target outline is start outline when type is APPENDING
+		const targetOutline = isAppend ? startOutline : endOutline;
+		const prevOutlineEnd = Math[isAppend ? "max" : "min"](...outline);
+		let prevOutlineDist = isAppend ? 0 : end;
+
+		if (frameFill && outline.length === shapesSize) {
+			prevOutlineDist = prevOutlineEnd;
+			for (let i = 0; i < shapesSize; ++i) {
+				if (startOutline[i] === endOutline[i]) {
+					continue;
+				}
+				// if appending type is PREPEND, subtract dist from appending group's height.
+				prevOutlineDist = Math[isAppend ? "min" : "max"](targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
+			}
+		}
+		for (let i = 0; i < shapesSize; ++i) {
+			startOutline[i] += prevOutlineEnd - prevOutlineDist;
+			endOutline[i] += prevOutlineEnd - prevOutlineDist;
+		}
+		items.forEach(item => {
+			item.rect[pos1Name] += prevOutlineEnd - prevOutlineDist;
+		});
+		return {
+			start: startOutline,
+			end: endOutline,
+		};
+	}
+	_insert(items, outline, type) {
+		// this only needs the size of the item.
+		const clone = items.map(item => Object.assign({}, item));
+
+		return {
+			items: clone,
+			outlines: this._layout(clone, outline, type),
+		};
 	}
 	layout(groups, outlines) {
 		const length = groups.length;
@@ -113,6 +215,16 @@ class FrameLayout extends Layout {
 			group.outlines = point;
 			point = point.end;
 		}
+	}
+	append(items, outline) {
+		return this._insert(items, outline, APPEND);
+	}
+	prepend(items, outline) {
+		return this._insert(items, outline, PREPEND);
+	}
+	setViewport(width, height) {
+		this._viewport.width = width;
+		this._viewport.height = height;
 	}
 }
 
