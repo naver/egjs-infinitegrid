@@ -38,7 +38,7 @@
 <script src="../../../dist/infinitegrid.pkgd.js"></script>
 <script src="../../../dist/JustifiedLayout.js"></script>
 <script src="../../../dist/GridLayout.js"></script>
-<script src="../../../lib/Render.js"></script>
+<script src="./js/Render.js"></script>
 <script src="./js/demo.js"></script>
 	<style>
 		#grid.row {
@@ -74,11 +74,11 @@
 	a._viewport.width = document.querySelector("#grid").offsetWidth;
 	a._viewport.height = document.querySelector("#grid").offsetHeight;
 
-	function getWidth() {
+	function getWidth(i) {
 		return 200;
 	}
-	function getHeight() {
-		return parseInt(Math.random() * 200, 10) + 200;
+	function getHeight(i) {
+		return 200 / images[i][0] * images[i][1];
 	}
 
 	append([100], 9);

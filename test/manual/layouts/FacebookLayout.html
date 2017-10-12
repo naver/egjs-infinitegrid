@@ -36,7 +36,7 @@
 <script src="../../../node_modules/jquery/dist/jquery.js"></script>
 <!-- <script src="../../node_modules/@egjs/component/dist/component.js"></script> -->
 <script src="../../../dist/infinitegrid.pkgd.js"></script>
-<script src="../../../dist/FrameLayout.js"></script>
+<script src="../../../dist/FacebookLayout.js"></script>
 <script src="./js/Render.js"></script>
 <script src="./js/demo.js"></script>
 	<style>
@@ -65,27 +65,28 @@
 		}
 	</style>
 <script>
-
-	var groups = [];
-	var a = new FrameLayout({
+	var a = new FacebookLayout({
 		direction: "vertical",
 		margin: 20,
-		minSize: 100,
-		frame: [
-[1, 0, 1, 0, 1],
-[2, 2, 2, 3, 3],
-[2, 2, 2, 3, 3],
-[0, 4, 0, 4, 0],
-],
-		frameFill: true,
+		column: 10,
 	});
-
 	a._viewport.width = document.querySelector("#grid").offsetWidth;
 	a._viewport.height = document.querySelector("#grid").offsetHeight;
+	var _getItems = getItems;
+	getItems = function(num) {
+		const items = _getItems(num);
 
-	append([00], 7);
-	append([00], 7);
-	append([00], 7);
+		items[0].column = 2;
+		items[1].column = 2;
+		if (items.length > 11) {
+			items[11].column = 2;
+		}
+		return items;
+	}
+
+	append([600], 9);
+	append(undefined, 12);
+	prepend(undefined, 7);
 </script>
 </body>
 </html>

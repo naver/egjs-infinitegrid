@@ -1,11 +1,25 @@
-function imgSrc(v) {
-	return "../../../demo/assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
+const images = {
+	1: [518, 517],
+	2: [550, 825],
+	3: [640, 640],
+	4: [364, 520],
+	5: [710, 1020],
+	6: [600, 819],
+	7: [486, 729],
+	8: [544, 784],
+	9: [720, 720],
+	10: [381, 555],
+	11: [521, 775],
 }
-function getWidth() {
-	return  parseInt(Math.random() * 200 + 300, 10);
+
+function imgSrc(n) {
+	return "../../../demo/assets/image/" + n + ".jpg";
 }
-function getHeight() {
-	return  parseInt(Math.random() * 200 + 300, 10);
+function getWidth(n) {
+	return images[n][0];
+}
+function getHeight(n) {
+	return images[n][1];
 }
 function makeElement(item) {
 	const dummy = document.createElement("div");
@@ -20,8 +34,8 @@ function getItem(i) {
 	const item = {
 		html: '<div class="item" data-item='+i+'><div class="thumbnail"><img src="' + imgSrc(i) + '" /><div class="caption"><p><a href="http://www.google.com/">Cras justo odio bla bla bla bla bla bla bla bla</a></p></div></div></div>',
 		size: {
-			width: getWidth(),
-			height: getHeight()
+			width: getWidth(i),
+			height: getHeight(i),
 		},
 		rect: {
 
@@ -34,7 +48,7 @@ function getItem(i) {
 function getItems(num) {
 	const items = [];
 	for (i = 0; i < num; ++i) {
-		items.push(getItem(i));
+		items.push(getItem(i % 11 + 1));
 	}
 	return items;
 }
