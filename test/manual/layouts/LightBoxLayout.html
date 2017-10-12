@@ -68,7 +68,7 @@
 	var a = new LightBoxLayout({
 		direction: "vertical",
 		margin: 20,
-		tolerance: 100,
+		tolerance: 50,
 	});
 	a._viewport.width = document.querySelector("#grid").offsetWidth;
 	a._viewport.height = document.querySelector("#grid").offsetHeight;
@@ -84,10 +84,10 @@
 		return items;
 	}
 	function getWidth() {
-		return 200;
+		return 150;
 	}
 	function getHeight() {
-		return parseInt(Math.random() * 200, 10) + 100;
+		return parseInt(Math.random() * 100, 10) + 200;
 	}
 
 	append([600], 9);

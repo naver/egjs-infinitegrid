@@ -63,10 +63,10 @@ class LightBoxLayout {
 					}
 					break;
 				}
-				// resize according to column count
-				size2 = (columnSize + margin) * columnCount - margin;
-				size1 = size2 * originalSize1 / originalSize2;
 			}
+			// resize according to column count
+			size2 = (columnSize + margin) * columnCount - margin;
+			size1 = size2 * originalSize1 / originalSize2;
 			size1 -= (point < 0 ? (-point + margin + size1) : (point + size1)) % tolerance;
 			const pos1 = isAppend ? point : point - margin - size1;
 			const endPos1 = pos1 + size1 + margin;
