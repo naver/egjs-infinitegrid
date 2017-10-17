@@ -10,7 +10,9 @@ var config = {
 		"JustifiedLayout": "./src/layouts/JustifiedLayout.js",
 		"GridLayout": "./src/layouts/GridLayout.js",
 		"FrameLayout": "./src/layouts/FrameLayout.js",
-		"LightBoxLayout": "./src/layouts/LightBoxLayout.js"
+		"FacebookLayout": "./src/layouts/FacebookLayout.js",
+		"LightBoxLayout": "./src/layouts/LightBoxLayout.js",
+		"PackingLayout": "./src/layouts/PackingLayout.js"
 	},
 	output: {
 		path: path.resolve(__dirname, "../dist"),
@@ -23,10 +25,15 @@ var config = {
 	module: {
 		rules: [{
 			test: /\.js$/,
-			exclude: /node_modules/,
-			loader: "babel-loader"
+			exclude: /node_modules|build/,
+			loader: "babel-loader",
 		}],
 	},
+	plugins: [
+		new webpack.ProvidePlugin({
+			babelHelpers: path.resolve(__dirname, "../lib/PackingLayout/build/babel/babel-external-helpers.js"),
+		}),
+	],
 };
 
 module.exports = function (common) {

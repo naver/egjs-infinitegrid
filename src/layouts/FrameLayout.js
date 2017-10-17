@@ -24,6 +24,7 @@ function searchShapeInFrame(frame, type, top, left, width, height) {
 	const size = {
 		left,
 		top,
+		type,
 		width: 1,
 		height: 1,
 	};
@@ -62,6 +63,7 @@ function getShapes(frame) {
 			shapes.push(searchShapeInFrame(frame, type, i, j, width, height));
 		}
 	}
+	shapes.sort((a, b) => a.type - b.type);
 	return {
 		shapes,
 		width,
@@ -174,7 +176,7 @@ class FrameLayout {
 		let prevOutlineDist = isAppend ? 0 : end;
 
 		if (frameFill && outline.length === shapesSize) {
-			prevOutlineDist = prevOutlineEnd;
+			prevOutlineDist = isAppend ? prevOutlineEnd : 0;
 			for (let i = 0; i < shapesSize; ++i) {
 				if (startOutline[i] === endOutline[i]) {
 					continue;
