@@ -37,7 +37,7 @@
 <!-- <script src="../../node_modules/@egjs/component/dist/component.js"></script> -->
 <script src="../../../dist/infinitegrid.pkgd.js"></script>
 <script src="../../../dist/LightBoxLayout.js"></script>
-<script src="../../../lib/Render.js"></script>
+<script src="./js/Render.js"></script>
 <script src="./js/demo.js"></script>
 	<style>
 		#grid.row {
@@ -72,7 +72,7 @@
 	});
 	a._viewport.width = document.querySelector("#grid").offsetWidth;
 	a._viewport.height = document.querySelector("#grid").offsetHeight;
-	const _getItems = getItems;
+	var _getItems = getItems;
 	getItems = function(num) {
 		const items = _getItems(num);
 
@@ -83,11 +83,12 @@
 		}
 		return items;
 	}
-	function getWidth() {
-		return 150;
+	var width = 150;
+	function getWidth(i) {
+		return width;
 	}
-	function getHeight() {
-		return parseInt(Math.random() * 100, 10) + 200;
+	function getHeight(i) {
+		return width / images[i][0] * images[i][1];
 	}
 
 	append([600], 9);

@@ -35,8 +35,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-sham.js"></script>
 <script src="../../../node_modules/jquery/dist/jquery.js"></script>
 <!-- <script src="../../node_modules/@egjs/component/dist/component.js"></script> -->
+<script type="text/javascript" src="http://viewoss.navercorp.com/sau/_nx/blob/master/release/nx.merged.js"></script>
 <script src="../../../dist/infinitegrid.pkgd.js"></script>
-<script src="../../../dist/FrameLayout.js"></script>
+<script src="../../../dist/PackingLayout.js"></script>
 <script src="./js/Render.js"></script>
 <script src="./js/demo.js"></script>
 	<style>
@@ -65,27 +66,25 @@
 		}
 	</style>
 <script>
-
-	var groups = [];
-	var a = new FrameLayout({
+	var a = new PackingLayout({
 		direction: "vertical",
-		margin: 20,
-		minSize: 100,
-		frame: [
-[1, 0, 1, 0, 1],
-[2, 2, 2, 3, 3],
-[2, 2, 2, 3, 3],
-[0, 4, 0, 4, 0],
-],
-		frameFill: true,
+		margin: 10,
+		aspectRatio: 1.5,
 	});
-
 	a._viewport.width = document.querySelector("#grid").offsetWidth;
 	a._viewport.height = document.querySelector("#grid").offsetHeight;
 
-	append([00], 7);
-	append([00], 7);
-	append([00], 7);
+	function getWidth(i) {
+		return images[i][0];
+	}
+	function getHeight(i) {
+		return images[i][1];
+	}
+
+	append([600], 9);
+	append([200], 7);
+	append([200], 4);
+	prepend([200], 7);
 </script>
 </body>
 </html>
