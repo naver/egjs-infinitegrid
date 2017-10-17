@@ -106,7 +106,7 @@ class FrameLayout {
 	}
 	_layout(items, outline, isAppend) {
 		const length = items.length;
-		const style = this._style;
+		const style = this._gistyle;
 		const frameFill = this._options.frameFill;
 		const margin = this._options.margin;
 		const size1Name = style.size1;
