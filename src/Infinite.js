@@ -1,8 +1,8 @@
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import ImageLoaded from "./ImageLoaded";
-import GridLayout from "./layouts/GridLayout";
-import FrameLayout from "./layouts/FrameLayout";
+// import GridLayout from "./layouts/GridLayout";
+// import FrameLayout from "./layouts/FrameLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
 import {
 	APPEND,
@@ -25,8 +25,9 @@ export class ItemRenderer {
 	static renderItem(item, styles) {
 		if (item.el) {
 			const elStyle = item.el.style;
-			item.el.setAttribute("data-key", item.groupKey);
 
+			// for debugging
+			item.el.setAttribute("data-groupkey", item.groupKey);
 			elStyle.position = "absolute";
 			["left", "top", "width", "height"].forEach(p => {
 				(p in styles) && (elStyle[p] = `${styles[p]}px`);
