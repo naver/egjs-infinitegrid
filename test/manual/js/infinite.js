@@ -21,7 +21,7 @@ var infinite = new eg.InfiniteGrid.Infinite("#infinite")
       e.currentTarget.append(getItems(0), count++);
     },
     "prepend": function(e) {
-      e.currentTarget.prepend(getItems(2), count);
+      e.currentTarget.prepend(getItems(2), count++);
     }
   });
 
