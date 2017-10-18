@@ -95,7 +95,7 @@ class GridLayout {
 			this.checkColumn(items[0]);
 		}
 		if (outline.length !== this._columnLength) {
-			startOutline = fill(this._columnLength, Math[type === APPEND ? "min" : "max"](...outline));
+			startOutline = fill(this._columnLength, outline.length === 0 ? 0 : Math[type === APPEND ? "min" : "max"](...outline));
 		}
 
 		const result = this._layout(clone, startOutline, type);
@@ -117,7 +117,7 @@ class GridLayout {
 		let startOutline;
 
 		if (outline.length !== this._columnLength) {
-			const pos = Math.min(...outline);
+			const pos = outline.length === 0 ? 0 : Math.min(...outline);
 
 			// re-layout items.
 			startOutline = fill(this._columnLength, pos);
