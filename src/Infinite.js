@@ -93,7 +93,9 @@ export class Infinite extends Component {
 	// add items, and remove items for recycling
 	_recycle(items, isAppend) {
 		const baseCount = items.length - this.options.count;
+		/* eslint-disable no-unused-vars */
 		let diff;
+		/* eslint-enable no-unused-vars */
 
 		while ((diff = this.getVisibleItems().length + baseCount) > 0) {
 			const toRemoveItems = this._items.getItems(isAppend ? this._startCursor : this._endCursor);
