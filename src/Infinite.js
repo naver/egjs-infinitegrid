@@ -2,6 +2,7 @@ import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import ImageLoaded from "./ImageLoaded";
 // import GridLayout from "./layouts/GridLayout";
+// import FrameLayout from "./layouts/FrameLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
 import {
 	APPEND,
@@ -25,6 +26,8 @@ export class ItemRenderer {
 		if (item.el) {
 			const elStyle = item.el.style;
 
+			// for debugging
+			item.el.setAttribute("data-groupkey", item.groupKey);
 			elStyle.position = "absolute";
 			["left", "top", "width", "height"].forEach(p => {
 				(p in styles) && (elStyle[p] = `${styles[p]}px`);
@@ -50,7 +53,8 @@ export class ItemRenderer {
 		});
 	}
 	createAndInsert(items, isAppend) {
-		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(""), MULTI);
+		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(
+			""), MULTI);
 		const itemsWithElement = items.map((item, index) => {
 			item.el = elements[index];
 			return item;
@@ -91,6 +95,23 @@ export class Infinite extends Component {
 			direction: "vertical",
 			minSize: 100,
 		});
+		// this._layout = new GridLayout({
+		// 	direction: "vertical",
+		// 	align: "start",
+		// 	// minSize: 100,
+		// });
+		// this._layout = new FrameLayout({
+		// 	direction: "vertical",
+		// 	margin: 20,
+		// 	minSize: 100,
+		// 	frame: [
+		// 		[1, 0, 1, 0, 1],
+		// 		[2, 2, 2, 3, 3],
+		// 		[2, 2, 2, 3, 3],
+		// 		[0, 4, 0, 4, 0],
+		// 	],
+		// 	frameFill: true,
+		// });
 		this._layout.setViewport(471, 1320);
 		this._checkImageloaded = new ImageLoaded();
 		this._itemManager = new ItemManager();
@@ -103,8 +124,9 @@ export class Infinite extends Component {
 		this._insert(elements, groupKey, PREPEND);
 	}
 	_insert(elements, groupKey, isAppend) {
-		const key = groupKey || (new Date().getTime() + Math.floor(Math.random() *
-			1000));
+		const key = typeof groupKey === "undefined" ? (new Date().getTime() + Math.floor(
+			Math.random() * 1000)) : groupKey;
+
 		const items = ItemManager.from(elements, this.options.itemSelector, {
 			isAppend,
 			groupKey: key,
@@ -161,15 +183,17 @@ export class Infinite extends Component {
 	}
 	getItems(isAppend) {
 		let items = [];
+		const size = this._itemManager.size();
 
-		if (isAppend) {
-			if (this._itemManager.size() - 1 > this._endCursor) {
+		// 데이터가 존재한다.
+		if (size > 0 && this._startCursor !== -1 && this._endCursor !== -1) {
+			if (isAppend && size > this._endCursor + 1) {
 				console.log("데이터가 있다");
-				items = this._itemManager.getItems(this._endCursor);
+				items = this._itemManager.getItems(this._endCursor + 1);
+			} else if (!isAppend && this._startCursor > 0) {
+				console.log("데이터가 있다");
+				items = this._itemManager.getItems(this._startCursor - 1);
 			}
-		} else if (this._startCursor > 0) {
-			console.log("데이터가 있다");
-			items = this._itemManager.getItems(this._startCursor - 1);
 		}
 		return items;
 	}

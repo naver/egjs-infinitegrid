@@ -69,7 +69,7 @@ export default class ItemManager {
 	}
 	append(layouted) {
 		this.data.push(layouted);
-		this.endCursor++;
+		// this.endCursor++;
 		console.log("append", this.data);
 
 		// 레이아웃에 의해 변경된 아이템 정보
@@ -78,8 +78,8 @@ export default class ItemManager {
 	prepend(layouted) {
 		// ItemManager.setGroupKey(layouted, groupKey);
 		this.data.unshift(layouted);
-		this.startCursor = 0;
-		this.endCursor++;
+		// this.startCursor = 0;
+		// this.endCursor++;
 		console.log("prepend", this.data);
 
 		// 레이아웃에 의해 변경된 아이템 정보
