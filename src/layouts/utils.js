@@ -32,3 +32,10 @@ export function assignOptions(defaultOptions, options) {
 		defaultOptions,
 		options);
 }
+
+export function toZeroArray(outline) {
+	if (outline.length === 0) {
+		return [0];
+	}
+	return outline;
+}

@@ -9,11 +9,11 @@ function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
 	return outline.map(l => parseInt((l - point) / itemSize, 10));
 }
 
-class FacebookLayout extends FrameLayout {
+class SquareLayout extends FrameLayout {
 	_checkItemSize() {
 		const column = this._options.column;
 
-		if (!this._options.column) {
+		if (!column) {
 			super._checkItemSize();
 			return;
 		}
@@ -27,7 +27,9 @@ class FacebookLayout extends FrameLayout {
 	_layout(items, outline, isAppend) {
 		const style = this._style;
 		const itemSize = this._getItemSize();
-		const columnLength = parseInt(this._viewport[style.size2] / itemSize / 2, 10) * 2;
+		const margin = this._options.margin;
+		const columnLength = this._options.column ||
+				parseInt((this._viewport[style.size2] + margin) / (itemSize + margin), 10);
 		const length = items.length;
 		const endOutline = makeShapeOutline(outline, itemSize, columnLength, isAppend);
 		const pointCaculateName = isAppend ? "min" : "max";
@@ -69,4 +71,4 @@ class FacebookLayout extends FrameLayout {
 	}
 }
 
-export default FacebookLayout;
+export default SquareLayout;

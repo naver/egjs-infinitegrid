@@ -1,8 +1,5 @@
-import {APPEND, PREPEND, ALIGN} from "./Constants";
+import {APPEND, PREPEND} from "./Constants";
 import {getStyleNames, assignOptions} from "./utils";
-
-// ALIGN
-const {START} = ALIGN;
 
 /*
 Frame
@@ -63,7 +60,7 @@ function getShapes(frame) {
 			shapes.push(searchShapeInFrame(frame, type, i, j, width, height));
 		}
 	}
-	shapes.sort((a, b) => a.type - b.type);
+	shapes.sort((a, b) => (a.type < b.type ? -1 : 1));
 	return {
 		shapes,
 		width,
@@ -72,20 +69,19 @@ function getShapes(frame) {
 }
 class FrameLayout {
 	constructor(options = {}) {
-		this._options = assignOptions({
+		this.options = assignOptions({
 			itemSize: 0,
-			align: START,
 			frame: [],
 			frameFill: true,
 		}, options);
-		const frame = this._options.frame.map(row => row.slice());
+		const frame = this.options.frame.map(row => row.slice());
 		// divide frame into shapes.
 		const shapes = getShapes(frame);
 
-		this._itemSize = this._options.itemSize || 0;
+		this._itemSize = this.options.itemSize || 0;
 		this._shapes = shapes;
 		this._viewport = {};
-		this._style = getStyleNames(this._options.direction);
+		this._style = getStyleNames(this.options.direction);
 	}
 	_getItemSize() {
 		if (!this._itemSize) {
@@ -94,21 +90,21 @@ class FrameLayout {
 		return this._itemSize;
 	}
 	_checkItemSize() {
-		if (this._options.itemSize) {
+		if (this.options.itemSize) {
 			return;
 		}
 		const style = this._style;
 		const size = style.size2;
-		const margin = this._options.margin;
+		const margin = this.options.margin;
 
 		// if itemSize is not in options, caculate itemSize from viewport.
 		this._itemSize = (this._viewport[size] + margin) / this._shapes[size] - margin;
 	}
-	_layout(items, outline, isAppend) {
+	_layout(items, outline = [], isAppend) {
 		const length = items.length;
-		const style = this._gistyle;
-		const frameFill = this._options.frameFill;
-		const margin = this._options.margin;
+		const style = this._style;
+		const frameFill = this.options.frameFill;
+		const margin = this.options.margin;
 		const size1Name = style.size1;
 		const size2Name = style.size2;
 		const pos1Name = style.pos1;
@@ -122,6 +118,9 @@ class FrameLayout {
 		let dist = 0;
 		let end = 0;
 
+		if (!shapesLength) {
+			return {start: outline, end: outline};
+		}
 		for (let i = 0; i < length; i += shapesLength) {
 			for (let j = 0; j < shapesLength && i + j < length; ++j) {
 				const item = items[i + j];
@@ -172,7 +171,7 @@ class FrameLayout {
 		}
 		// The target outline is start outline when type is APPENDING
 		const targetOutline = isAppend ? startOutline : endOutline;
-		const prevOutlineEnd = Math[isAppend ? "max" : "min"](...outline);
+		const prevOutlineEnd = outline.length === 0 ? 0 : Math[isAppend ? "max" : "min"](...outline);
 		let prevOutlineDist = isAppend ? 0 : end;
 
 		if (frameFill && outline.length === shapesSize) {
