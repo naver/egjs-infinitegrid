@@ -1,7 +1,7 @@
 import Controller from "../../lib/PackingLayout/src/js/Controller.js";
 import BoxModel from "../../lib/PackingLayout/src/js/BoxModel.js";
 import {HORIZONTAL, APPEND, PREPEND} from "./Constants";
-import {getStyleNames, assignOptions} from "./utils";
+import {getStyleNames, assignOptions, toZeroArray} from "./utils";
 
 function option(name) {
 	return this[name];
@@ -24,7 +24,9 @@ class PackingLayout {
 		const containerWidth = this._viewport.width * (isHorizontal ? aspectRatio : 1);
 		const containerHeight = this._viewport.height / (isHorizontal ? 1 : aspectRatio);
 		const containerSize1 = isHorizontal ? containerWidth : containerHeight;
-		const start = isAppend ? Math.max(...outline) : Math.min(...outline) - containerSize1 - margin;
+		const prevOutline = toZeroArray(outline);
+		const start = isAppend ? Math.max(...prevOutline) :
+			Math.min(...prevOutline) - containerSize1 - margin;
 		const end = start + containerSize1 + margin;
 		const container = new BoxModel({});
 		const controller = {

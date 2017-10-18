@@ -106,7 +106,7 @@ class FrameLayout {
 	}
 	_layout(items, outline, isAppend) {
 		const length = items.length;
-		const style = this._gistyle;
+		const style = this._style;
 		const frameFill = this._options.frameFill;
 		const margin = this._options.margin;
 		const size1Name = style.size1;
@@ -172,7 +172,7 @@ class FrameLayout {
 		}
 		// The target outline is start outline when type is APPENDING
 		const targetOutline = isAppend ? startOutline : endOutline;
-		const prevOutlineEnd = Math[isAppend ? "max" : "min"](...outline);
+		const prevOutlineEnd = outline.length === 0 ? 0 : Math[isAppend ? "max" : "min"](...outline);
 		let prevOutlineDist = isAppend ? 0 : end;
 
 		if (frameFill && outline.length === shapesSize) {

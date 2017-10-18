@@ -1,5 +1,5 @@
 import {APPEND, PREPEND, HORIZONTAL} from "./Constants";
-import {getStyleNames, assignOptions} from "./utils";
+import {getStyleNames, assignOptions, toZeroArray} from "./utils";
 
 function fill(length, pos) {
 	return new Array(length).fill(pos);
@@ -38,8 +38,8 @@ class LightBoxLayout {
 		const pos2Name = style.pos2;
 		const columnSize = this._columnSize;
 		const pointCaculateName = isAppend ? "min" : "max";
-		const startOutline = outline.slice();
-		const endOutline = outline.slice();
+		const startOutline = toZeroArray(outline).slice();
+		const endOutline = startOutline.slice();
 		const columnLength = this._columnLength;
 
 		for (let i = 0; i < length; ++i) {
@@ -92,13 +92,13 @@ class LightBoxLayout {
 	_insert(items, outline, type) {
 		const clone = items.map(item => Object.assign({}, item));
 
-		let startOutline = outline;
+		let startOutline = toZeroArray(outline);
 
 		if (!this._columnLength) {
 			this.checkColumn(items[0]);
 		}
 		if (outline.length !== this._columnLength) {
-			startOutline = fill(this._columnLength, Math[type === APPEND ? "min" : "max"](...outline));
+			startOutline = fill(this._columnLength, Math[type === APPEND ? "min" : "max"](...startOutline));
 		}
 
 		const result = this._layout(clone, startOutline, type);
@@ -117,15 +117,16 @@ class LightBoxLayout {
 	layout(groups, outline) {
 		this.checkColumn(groups[0].items[0]);
 		// if outlines' length and columns' length are now same, re-caculate outlines.
+		const prevOutline = toZeroArray(outline);
 		let startOutline;
 
-		if (outline.length !== this._columnLength) {
-			const pos = Math.min(...outline);
+		if (prevOutline.length !== this._columnLength) {
+			const pos = Math.min(...prevOutline);
 
 			// re-layout items.
 			startOutline = fill(this._columnLength, pos);
 		} else {
-			startOutline = outline.slice();
+			startOutline = prevOutline.slice();
 		}
 		groups.forEach(group => {
 			const items = group.items;
