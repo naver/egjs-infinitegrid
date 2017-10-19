@@ -122,6 +122,9 @@ class FrameLayout {
 		let dist = 0;
 		let end = 0;
 
+		if (!shapesLength) {
+			return {start: outline, end: outline};
+		}
 		for (let i = 0; i < length; i += shapesLength) {
 			for (let j = 0; j < shapesLength && i + j < length; ++j) {
 				const item = items[i + j];
