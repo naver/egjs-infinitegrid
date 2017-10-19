@@ -41,9 +41,7 @@ export default class ItemManager {
 		});
 	}
 
-	constructor(options) {
-		Object.assign(this.options = {
-		}, options);
+	constructor() {
 		this.clear();
 	}
 	size() {
@@ -69,20 +67,12 @@ export default class ItemManager {
 	}
 	append(layouted) {
 		this.data.push(layouted);
-		// this.endCursor++;
 		console.log("append", this.data);
-
-		// 레이아웃에 의해 변경된 아이템 정보
 		return layouted.items;
 	}
 	prepend(layouted) {
-		// ItemManager.setGroupKey(layouted, groupKey);
 		this.data.unshift(layouted);
-		// this.startCursor = 0;
-		// this.endCursor++;
 		console.log("prepend", this.data);
-
-		// 레이아웃에 의해 변경된 아이템 정보
 		return layouted.items;
 	}
 	clear() {

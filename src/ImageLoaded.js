@@ -25,15 +25,7 @@ class ImageLoaded {
 			}
 		});
 	}
-	constructor(options) {
-		Object.assign(this.options = {
-			widthAttr: "data-width",
-			heightAttr: "data-height",
-		}, options);
-	}
-	checkImageLoaded(el) {
-		const widthAttr = this.options.widthAttr;
-		const heightAttr = this.options.heightAttr;
+	static checkImageLoaded(el, widthAttr, heightAttr) {
 		let width;
 		let height;
 
@@ -52,16 +44,21 @@ class ImageLoaded {
 			}
 		});
 	}
-	check(elements, callback) {
+	static check(elements, options) {
+		const opt = Object.assign({
+			widthAttr: "data-width",
+			heightAttr: "data-height",
+		}, options);
+
 		const needCheck = elements
-			.reduce((acc, v) => acc.concat(this.checkImageLoaded(v)), []);
+			.reduce((acc, v) => acc.concat(this.checkImageLoaded(v, opt.widthAttr, opt.heightAttr)), []);
 
 		if (needCheck.length > 0) {
-			ImageLoaded.waitImageLoaded(needCheck, callback);
+			ImageLoaded.waitImageLoaded(needCheck, opt.callback);
 		} else {
 			// convert to async
 			setTimeout(() => {
-				callback && callback();
+				opt.callback && opt.callback();
 			}, 0);
 		}
 	}
