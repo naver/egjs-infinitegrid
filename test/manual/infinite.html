@@ -18,6 +18,35 @@
 	.c {
 		color: black;
 	}
+
+#infinite {
+	border: 3px solid red;
+}
+
+.item {
+  width:25%;
+  min-height: 1px;
+  /* padding-right: 5px;
+  padding-left: 5px; */
+  overflow:hidden;
+}
+
+
+@media (min-width: 768px) {
+  .item {
+    width:25%;
+  }
+}
+@media (min-width: 992px) {
+  .item {
+    width:25%;
+  }
+}
+@media (min-width: 1200px) {
+  .item {
+    width:25%;
+  }
+}
 </style>
 </head>
 <body>
@@ -34,6 +63,9 @@
 	</div>
 	<!-- infinite grid -->
 	<div id="infinite" class="row"></div>
+	<div>
+		이게 밀려서 문제쥐 
+	</div>
 </div>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-sham.js"></script>

@@ -1,6 +1,6 @@
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
-import ItemRenderer from "./ItemRenderer";
+import DOMRenderer from "./DOMRenderer";
 import ImageLoaded from "./ImageLoaded";
 
 import GridLayout from "./layouts/GridLayout";
@@ -15,11 +15,13 @@ import {
 	CACHE,
 	NO_CACHE,
 } from "./consts";
-// import {
-// 	$,
-// 	addEvent,
-// 	removeEvent,
-// } from "./utils";
+import {
+	$,
+	addEvent,
+	removeEvent,
+	innerHeight,
+	innerWidth,
+} from "./utils";
 
 export {JustifiedLayout, GridLayout, FrameLayout, FacebookLayout, PackingLayout};
 
@@ -31,28 +33,133 @@ export class Infinite extends Component {
 			count: 60,
 			widthAttr: "data-width",
 			heightAttr: "data-height",
+			isOverflowScroll: false,
+			direction: "vertical",
 		}, options);
 		this._startCursor = -1;
 		this._endCursor = -1;
+		// this._status = {
+		// 	// isProcessing: false,
+		// 	// isRecycling: false,
+		// 	// prevScrollTop: 0,
+		// 	// topElement: null,
+		// 	// bottomElement: null,
+		// 	clientHeight: this._status && this._status.clientHeight,
+		// };
+		// this._timer = {
+		// 	resize: null,
+		// 	// doubleCheck: null,
+		// 	// doubleCheckCount: RETRY,
+		// };
+
 		this._items = new ItemManager();
-		this._renderer = new ItemRenderer(element);
+		this._renderer = new DOMRenderer(element, this.options.isOverflowScroll);
 	}
-	// called by user
+
+
+
+
+	/**
+	 * Adds a card element at the bottom of a grid layout. This method is available only if the isProcessing() method returns false.
+	 * @ko 카드 엘리먼트를 그리드 레이아웃의 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
+	 * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
+	 * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
+	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
+	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
+	 */
 	append(elements, groupKey) {
 		this._layout && this._insert(elements, groupKey, APPEND);
 	}
-	// called by user
+	/**
+	 * Adds a card element at the top of a grid layout. This method is available only if the isProcessing() method returns false and the isRecycling() method returns true.
+	 * @ko 카드 엘리먼트를 그리드 레이아웃의 위에 추가한다. isProcessing() 메서드의 반환값이 'false'이고, isRecycling() 메서드의 반환값이 'true'일 때만 이 메서드를 사용할 수 있다
+	 * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
+	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
+	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
+	 */
 	prepend(elements, groupKey) {
 		this._layout && this._insert(elements, groupKey, PREPEND);
 	}
-	setLayout(layout) {
-		this._layout = layout;
-	}
-	setViewport(width, height) {
-		this._layout && this._layout.setViewport(width, height);
+	setLayout(LayoutKlass, options) {
+		this._layout = new LayoutKlass(Object.assign(options, {
+			direction: this.options.direction,
+		}));
+		const size = this._renderer.getViewport();
+
+		this._layout.setViewport(size.width, size.height);
 	}
 	getVisibleItems() {
-		return this._items.getItems(this._startCursor, this._endCursor);
+		return this._items.pluck("items", this._startCursor, this._endCursor);
+	}
+	getVisibleOutline(cursor) {
+		return this._items.pluck("outlines", this[`_${cursor}Cursor`]);
+	}
+	_getSize(cursor) {
+		return Math[cursor === "start" ? "min" : "max"](...this.getVisibleOutline(cursor)
+			.reduce((acc, v) => acc.concat(v[cursor]), []));
+	}
+	// called by visible
+	_fit() {
+		let base = 0;
+
+		if (this._layout) {
+			base = this._getSize("start");
+
+			if (base !== 0) {
+				this._items.fit(base, this._layout._options.direction === "vertical");
+				DOMRenderer.renderItems(this.getVisibleItems());
+				this._renderer._container.style.height = this._getSize("end") + "px";
+			}
+		}
+
+		// base 값만큼 fit 전의 scroll 포지션 값을 바꿈.
+		// scrollTop -= croppedDistance;
+		return base;
+	}
+	/**
+	 * Rearranges a layout.
+	 * @ko 레이아웃을 다시 배치한다.
+	 * @param {Boolean} [isRelayout=true] Indicates whether a card element is being relayouted <ko>카드 엘리먼트 재배치 여부</ko>
+	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 *
+	 */	
+	layout(isRelayout = true) {
+		if (!this._layout) {
+			return this;
+		}
+		let data;
+		let outline;
+
+		if (isRelayout) { // remove cache
+			data = this._items.get(this._startCursor, this._endCursor);
+			outline = []; // @todo remove
+		} else {
+			data = this._items.get(this._startCursor, this._items.size());
+			outline = this._items.getOutline(this._startCursor, "start");
+		}
+		this._layout.layout(data, outline);
+
+		if (isRelayout) {
+			this._items.set(data);
+			this._startCursor = 0;
+			this._endCursor = data.length - 1;
+		} else {
+			data.forEach(v => this._items.set(v, v.groupKey));
+		}
+		DOMRenderer.renderItems(this.getVisibleItems());
+		this._renderer._container.style.height = this._getSize("end") + "px";
+		return this;
+	}
+	/**
+	 * Removes a item element on a grid layout.
+	 * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
+	 * @param {HTMLElement} item element to be removed <ko>삭제될 아이템 엘리먼트</ko>
+	 * @return {Object}  Removed item element <ko>삭제된 아이템 엘리먼트 정보</ko>
+	 */
+	remove(element) {
+		const items = this._items.remove(element, this._startCursor, this._endCursor);
+
+		items && DOMRenderer.removeElement(element);
 	}
 	getItems(isAppend) {
 		let items = [];
@@ -61,16 +168,16 @@ export class Infinite extends Component {
 		// from cache
 		if (size > 0 && this._startCursor !== -1 && this._endCursor !== -1) {
 			if (isAppend && size > this._endCursor + 1) {
-				items = this._items.getItems(this._endCursor + 1);
+				items = this._items.pluck("items", this._endCursor + 1);
 			} else if (!isAppend && this._startCursor > 0) {
-				items = this._items.getItems(this._startCursor - 1);
+				items = this._items.pluck("items", this._startCursor - 1);
 			}
 		}
 		return items;
 	}
 	clear() {
-		this._renderer.clear();
 		this._items.clear();
+		this._renderer.clear();
 		this._startCursor = -1;
 		this._endCursor = -1;
 	}
@@ -98,7 +205,7 @@ export class Infinite extends Component {
 		/* eslint-enable no-unused-vars */
 
 		while ((diff = this.getVisibleItems().length + baseCount) > 0) {
-			const toRemoveItems = this._items.getItems(isAppend ? this._startCursor : this._endCursor);
+			const toRemoveItems = this._items.pluck("items", isAppend ? this._startCursor : this._endCursor);
 
 			if (isAppend) {
 				this._startCursor++;
@@ -106,7 +213,7 @@ export class Infinite extends Component {
 				this._endCursor--;
 			}
 			// recycle
-			ItemRenderer.removeItems(toRemoveItems);
+			DOMRenderer.removeItems(toRemoveItems);
 		}
 		console.warn("recycle [", this._startCursor, this._endCursor, "]");
 	}
@@ -151,6 +258,7 @@ export class Infinite extends Component {
 	}
 	_afterRecycle(fromCache, items, isAppend) {
 		if (fromCache) {
+			console.log("이건 캐싱");
 			this._renderer.createAndInsert(items, isAppend);
 			this._updateCursor(isAppend);
 		} else {
@@ -166,14 +274,22 @@ export class Infinite extends Component {
 						ItemManager.updateSize(items),
 						this._items.getOutline(
 							isAppend ? this._endCursor : this._startCursor,
-							isAppend)
+							isAppend ? "end" : "start")
 					);
 
 					this._insertItems(layouted, isAppend);
 					this._updateCursor(isAppend);
-					ItemRenderer.render(layouted.items);
+					DOMRenderer.renderItems(layouted.items);
+					this._renderer._container.style.height = this._getSize("end") + "px";
 				},
 			});
 		}
+	}
+	/**
+	 * Destroys elements, properties, and events used on a grid layout.
+	 * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
+	 */
+	destroy() {
+		// this._reset();
 	}
 }
