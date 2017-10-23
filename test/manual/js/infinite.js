@@ -112,7 +112,7 @@ var facebook = {
   column: 1,
   set: function() {
     infinite.options.direction = guioption.direction;
-    infinite.setLayout(eg.InfiniteGrid.FacebookLayout, {
+    infinite.setLayout(eg.InfiniteGrid.SquareLayout, {
       margin: guioption.margin,
       column: facebook.column
     });
