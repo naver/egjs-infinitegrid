@@ -29,10 +29,14 @@ class GridLayout {
 		// if direction is horizontal, fixed dimension is height
 		// if direction is vertical, fixed dimension is width
 		const sizeName = this._isHorizontal ? "height" : "width";
-		const columnSize = this.options.itemSize || item.size[sizeName];
+		const columnSize = this.options.itemSize || (item && item.size[sizeName]) || 0;
 
 		this._columnSize = columnSize;
-		this._columnLength = parseInt((this._size + margin) / (columnSize + margin), 10);
+		if (!columnSize) {
+			this._columnLength = 1;
+			return;
+		}
+		this._columnLength = Math.max(parseInt((this._size + margin) / (columnSize + margin), 10), 1);
 	}
 	_layout(items, outline, isAppend) {
 		const length = items.length;
@@ -55,13 +59,17 @@ class GridLayout {
 		const endOutline = outline.slice();
 
 		for (let i = 0; i < length; ++i) {
-			const point = Math[pointCaculateName](...endOutline);
-			const index = endOutline.indexOf(point);
+			const point = Math[pointCaculateName](...endOutline) || 0;
+			let index = endOutline.indexOf(point);
 			const item = items[isAppend ? i : length - 1 - i];
 			const size1 = item.size[size1Name];
 			const size2 = item.size[size2Name];
 			const pos1 = isAppend ? point : point - margin - size1;
 			const endPos1 = pos1 + size1 + margin;
+
+			if (index === -1) {
+				index = 0;
+			}
 			let pos2 = (columnSize + margin) * index;
 
 			// ALIGN
@@ -81,7 +89,17 @@ class GridLayout {
 			endOutline[index] = isAppend ? endPos1 : pos1;
 		}
 		if (!isAppend) {
-			items.sort((a, b) => a.rect.top - b.rect.top);
+			items.sort((a, b) => {
+				const item1pos1 = a.rect[pos1Name];
+				const item1pos2 = a.rect[pos2Name];
+				const item2pos1 = b.rect[pos1Name];
+				const item2pos2 = b.rect[pos2Name];
+
+				if (item1pos1 - item2pos1) {
+					return item1pos1 - item2pos1;
+				}
+				return item1pos2 - item2pos2;
+			});
 		}
 		// if append items, startOutline is low, endOutline is high
 		// if prepend items, startOutline is high, endOutline is low
@@ -90,7 +108,7 @@ class GridLayout {
 			end: isAppend ? endOutline : startOutline,
 		};
 	}
-	_insert(items, outline = [], type) {
+	_insert(items = [], outline = [], type) {
 		const clone = items.map(item => Object.assign({}, item));
 
 		let startOutline = outline;
@@ -99,7 +117,7 @@ class GridLayout {
 			this.checkColumn(items[0]);
 		}
 		if (outline.length !== this._columnLength) {
-			startOutline = fill(this._columnLength, outline.length === 0 ? 0 : Math[type === APPEND ? "min" : "max"](...outline));
+			startOutline = fill(this._columnLength, outline.length === 0 ? 0 : (Math[type === APPEND ? "min" : "max"](...outline) || 0));
 		}
 
 		const result = this._layout(clone, startOutline, type);
@@ -115,8 +133,11 @@ class GridLayout {
 	prepend(items, outline) {
 		return this._insert(items, outline, PREPEND);
 	}
-	layout(groups, outline = [], isAppend) {
-		this.checkColumn(groups[0].items[0]);
+	layout(groups = [], outline = [], isAppend) {
+		const firstItem = (groups.length && groups[0].items.length && groups[0].items[0]) || 0;
+
+		this.checkColumn(firstItem);
+
 		// if outlines' length and columns' length are now same, re-caculate outlines.
 		let startOutline;
 

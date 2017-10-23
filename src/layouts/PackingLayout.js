@@ -1,19 +1,113 @@
-import Controller from "../../lib/PackingLayout/src/js/Controller.js";
-import BoxModel from "../../lib/PackingLayout/src/js/BoxModel.js";
+import BoxModel from "./lib/BoxModel.js";
 import {HORIZONTAL, APPEND, PREPEND} from "./Constants";
 import {getStyleNames, assignOptions, toZeroArray} from "./utils";
 
-function option(name) {
-	return this[name];
+
+function getCost(originLength, length) {
+	let cost = originLength / length;
+
+	if (cost < 1) {
+		cost = 1 / cost;
+	}
+
+	return cost - 1;
+}
+function fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertical) {
+	item.height = itemFitSize.height;
+	item.width = itemFitSize.width;
+
+	bestFitArea.height = containerFitSize.height;
+	bestFitArea.width = containerFitSize.width;
+
+	if (layoutVertical) {
+		item.top = bestFitArea.top + bestFitArea.height;
+		item.left = bestFitArea.left;
+	} else {
+		item.left = bestFitArea.left + bestFitArea.width;
+		item.top = bestFitArea.top;
+	}
 }
 class PackingLayout {
 	constructor(options = {}) {
 		this.options = assignOptions({
 			aspectRatio: 1,
+			sizeWeight: 1,
+			ratioWeight: 1,
 		}, options);
 		this._size = 0;
 		this._style = getStyleNames(this.options.direction);
 		this._isHorizontal = this.options.direction === HORIZONTAL;
+	}
+	_findBestFitArea(container, item) {
+		if (container.getRatio() === 0) { // 아이템 최초 삽입시 전체영역 지정
+			container.originWidth = item.width;
+			container.originHeight = item.height;
+			container.width = item.width;
+			container.height = item.height;
+			return;
+		}
+
+		let bestFitArea = null;
+		let minCost = 10000000;
+		let layoutVertical = false;
+		const itemFitSize = {
+			width: 0,
+			height: 0,
+		};
+		const containerFitSize = {
+			width: 0,
+			height: 0,
+		};
+		const {sizeWeight, ratioWeight} = this.options;
+
+		container.innerItem.forEach(v => {
+			const containerSizeCost = getCost(v.getOriginSize(), v.getSize()) * sizeWeight;
+			const containerRatioCost = getCost(v.getOriginRatio(), v.getRatio()) * ratioWeight;
+			let cost;
+
+			for (let i = 0; i < 2; ++i) {
+				let itemWidth;
+				let itemHeight;
+				let containerWidth;
+				let containerHeight;
+
+				if (i === 0) {
+					// 상하에 아이템 추가
+					itemWidth = v.width;
+					itemHeight = v.height * (item.height / (v.originHeight + item.height));
+					containerWidth = v.width;
+					containerHeight = v.height - itemHeight;
+				} else {
+					// 좌우에 아이템 추가
+					itemHeight = v.height;
+					itemWidth = v.width * (item.width / (v.originWidth + item.width));
+					containerHeight = v.height;
+					containerWidth = v.width - itemWidth;
+				}
+
+				const itemSize = itemWidth * itemHeight;
+				const itemRatio = itemWidth / itemHeight;
+				const containerSize = containerWidth * containerHeight;
+				const containerRatio = containerHeight / containerHeight;
+
+				cost = getCost(item.getSize(), itemSize) * sizeWeight;
+				cost += getCost(item.getRatio(), itemRatio) * ratioWeight;
+				cost += getCost(v.getOriginSize(), containerSize) * sizeWeight - containerSizeCost;
+				cost += getCost(v.getOriginRatio(), containerRatio) * ratioWeight - containerRatioCost;
+
+				if (cost === Math.min(cost, minCost)) {
+					minCost = cost;
+					bestFitArea = v;
+					layoutVertical = (i === 0);
+					itemFitSize.width = itemWidth;
+					itemFitSize.height = itemHeight;
+					containerFitSize.width = containerWidth;
+					containerFitSize.height = containerHeight;
+				}
+			}
+		});
+
+		fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertical);
 	}
 	_layout(items, outline = [], isAppend) {
 		const style = this._style;
@@ -29,12 +123,6 @@ class PackingLayout {
 			Math.min(...prevOutline) - containerSize1 - margin;
 		const end = start + containerSize1 + margin;
 		const container = new BoxModel({});
-		const controller = {
-			option,
-			_container: container,
-			sizeWeight: 1,
-			ratioWeight: 1,
-		};
 
 		items.forEach(item => {
 			const model = new BoxModel({
@@ -44,7 +132,7 @@ class PackingLayout {
 				height: item.size.height,
 			});
 
-			Controller.prototype._findBestFitArea.call(controller, model);
+			this._findBestFitArea(container, model);
 			container.pushItem(model);
 			container.scaleTo(containerWidth + margin, containerHeight + margin);
 		});

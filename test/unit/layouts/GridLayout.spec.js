@@ -2,12 +2,29 @@
 import { makeItems, VIEWPORT } from "./data";
 import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend } from "./common";
 import Layout from "../../../src/layouts/GridLayout";
+import {ALIGN} from "../../../src/layouts/Constants";
+import {getStyleNames} from "../../../src/layouts/utils";
 
+// ALIGN
+const {START, CENTER, END, JUSTIFY} = ALIGN;
 
 describe("GirdLayout Test", function () {
+	const items = makeItems(20);
+	const width = 100;
+
+	items.forEach(item => {
+		const ratio = item.size.height / item.size.width;
+		item.size.width = width;
+		item.size.height = width * ratio;
+	});
+	const items2 = makeItems(20);
+	items2.forEach(item => {
+		const ratio = item.size.height / item.size.width;
+		item.size.width = width / ratio;
+		item.size.height = width
+	});
 	describe("layout common test", function () {
 		it("no outline test", () => {
-			const items = makeItems(20);
 			// When
 			const layout = new Layout({
 				itemSize: 200,
@@ -25,7 +42,6 @@ describe("GirdLayout Test", function () {
 			const layout = new Layout({
 				itemSize: 200,
 			});
-			const items = makeItems(24);
 
 			layout.setSize(VIEWPORT.width);
 			// Then
@@ -36,8 +52,6 @@ describe("GirdLayout Test", function () {
 			const layout = new Layout({
 
 			});
-			const items = makeItems(24);
-
 			layout.setSize(VIEWPORT.width);
 
 			// Then
@@ -48,14 +62,6 @@ describe("GirdLayout Test", function () {
 		checkMargin([0, 10, 20], margin => {
 			it(`append items (margin = ${margin})`, () => {
 				// Given
-				const items = makeItems(20);
-				
-				items.forEach(item => {
-					const ratio = item.size.height / item.size.width;
-					item.size.width = items[0].size.width;
-					item.size.height = item.size.widht * ratio;
-				});
-
 				const layout = new Layout({
 					margin,
 				});
@@ -73,116 +79,84 @@ describe("GirdLayout Test", function () {
 					margin,
 					direction: "horizontal",
 				});
-			});
-		});
-	});
-	describe("compare group1 and group2", function () {
-		const frame = [
-			["A", "A", "E", "D"],
-			["A", "A", "B", "C"],
-		];
-		const items1 = makeItems(25);
-		const items2 = makeItems(15);
-
-		checkDirection(direction => {
-			it(`compare group1 and group2 (direction = ${direction})`, () => {
-				// Given
-				const layout = new Layout({
-					frame,
-					direction,
+				expectConnectItems({
+					item1: gitems[1],
+					item2: gitems[2],
+					margin,
+					direction: "horizontal",
 				});
-
-				layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
-				// When
-				const group1 = layout.append(items1, [100]);
-				const group2 = layout.append(items2, group1.outlines.end);
-				const gitems1 = group1.items;
-				const gitems2 = group2.items;
-
-				let bottom;
-				let top;
-
-				if (direction === "vertical") {
-					bottom = [gitems1[20], gitems1[20], gitems1[21], gitems1[22]];
-					top = [gitems2[0], gitems2[0], gitems2[4], gitems2[3]];
-				} else {
-					bottom = [gitems1[23], gitems1[22]];
-					top = [gitems2[0], gitems2[0]];
+				for (let i = 1; i < gitems.length; ++i) {
+					expect(gitems[i].rect.top).to.be.at.least(gitems[i - 1].rect.top);
 				}
-				// Then
-				// bottom is outline.end, top is outline.start
-				// outline.end === outline.start
-				expectConnectGroups({
-					group1,
-					items1: bottom,
-					group2,
-					items2: top,
-					direction,
+			});
+		});
+	});
+	describe("prepend test", function () {
+		checkMargin([0, 10, 20], margin => {
+			checkDirection(direction => {
+				it(`prepend items (margin = ${margin}, direction = ${direction})`, () => {
+					// Given
+					const layout = new Layout({
+						margin,
+						direction,
+					});
+					layout.setSize(direction === "vertical" ?VIEWPORT.width : VIEWPORT.height);
+					// When
+					const group = layout.prepend(items, []);
+
+					// Then
+
+					const gitems = group.items;
+					const pos = direction === "vertical" ? "top" : "left";
+					for (let i = 1; i < gitems.length; ++i) {
+						expect(gitems[i].rect[pos]).to.be.at.least(gitems[i - 1].rect[pos]);
+					}
 				});
 			});
 		});
 	});
-	describe("tooth frame test", function () {
-		const frame = [
-			["A", "", "B", "", "C"],
-			["", "D", "", "E", ""],
-		];
-		const items1 = makeItems(15);
-		const items2 = makeItems(15);
+	describe("align test", function () {
+		checkMargin([0, 10, 20], margin => {
+			[CENTER, END, JUSTIFY].forEach(align => {
+				checkDirection(direction => {
+					it(`test align (margin = ${margin}, direction = ${direction}, align=${align})`, () => {
+						// Given
+						const layout = new Layout({
+							margin,
+							direction,
+							align,
+						});
+						layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
+						// When
+						const group = layout.append(direction === "vertical" ? items : items2, []);
 
-		beforeEach(() => {
-			this.layout = new Layout({
-				frame,
-				margin: 30,
-			});
-			this.layout.setSize(VIEWPORT.width);
-		});
-		afterEach(() => {
-			this.layout = null;
-		})
-		it("append test", () => {
-			// Given
-			const layout = this.layout;
-			// When
-			const group1 = layout.append(items1, [300]);
-			const group2 = layout.append(items2, group1.outlines.end);
+						// Then
 
-			const gitems1 = group1.items;
-			const gitems2 = group2.items;
-
-			const bottom = [gitems1[10], gitems1[13], gitems1[11], gitems1[14], gitems1[12]]
-			const top = [gitems2[0], gitems2[3], gitems2[1], gitems2[4], gitems2[2]];
-
-			// Then
-			expectConnectGroups({
-				group1: group1,
-				items1: bottom,
-				group2: group2,
-				items2: top,
-				margin: 30,
-			});
-		});
-		it("prepend test", () => {
-			// Given
-			const layout = this.layout;
-
-			// When
-			const group2 = layout.append(items1, [300]);
-			const group1 = layout.prepend(items2, group2.outlines.start);
-
-			const gitems1 = group1.items;
-			const gitems2 = group2.items;
-
-			const bottom = [gitems1[10], gitems1[13], gitems1[11], gitems1[14], gitems1[12]]
-			const top = [gitems2[0], gitems2[3], gitems2[1], gitems2[4], gitems2[2]];
-
-			// Then
-			expectConnectGroups({
-				group1: group1,
-				items1: bottom,
-				group2: group2,
-				items2: top,
-				margin: 30,
+						const gitems = group.items;
+						const pos = direction === "vertical" ? "top" : "left";
+						for (let i = 1; i < gitems.length; ++i) {
+							expect(gitems[i].rect[pos]).to.be.at.least(gitems[i - 1].rect[pos]);
+						}
+						const itemLength = parseInt((layout._size + margin) / (100 + margin), 10);
+						const style = getStyleNames(direction);
+						const {size2, pos2} = style;
+						if (align === CENTER) {
+							expectConnectItems({
+								item1: gitems[0],
+								item2: gitems[1],
+								margin,
+								direction: direction === "vertical" ? "horizontal" : "vertical",
+							});
+							
+							expect(gitems[0].rect[pos2]).to.be.equal(layout._size - (gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2]));
+						} else if (align === END) {
+							expect((gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2])).to.be.equal(layout._size);
+						} else if (align === JUSTIFY) {
+							expect(gitems[0].rect[pos2]).to.be.equal(0);
+							expect(gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2]).to.be.equal(layout._size);
+						}
+					});
+				});
 			});
 		});
 	});

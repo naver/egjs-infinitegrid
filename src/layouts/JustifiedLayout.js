@@ -1,4 +1,4 @@
-import dijkstra from "../../lib/dijkstra";
+import dijkstra from "./lib/dijkstra";
 import {APPEND, PREPEND} from "./Constants";
 import {getStyleNames, assignOptions} from "./utils";
 
