@@ -79,6 +79,9 @@ class GridLayout {
 			item.column = index;
 			endOutline[index] = isAppend ? endPos1 : pos1;
 		}
+		if (!isAppend) {
+			items.sort((a, b) => a.rect.top - b.rect.top);
+		}
 		// if append items, startOutline is low, endOutline is high
 		// if prepend items, startOutline is high, endOutline is low
 		return {
