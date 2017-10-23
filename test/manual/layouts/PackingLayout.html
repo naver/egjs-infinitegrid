@@ -71,8 +71,8 @@
 		margin: 10,
 		aspectRatio: 1.5,
 	});
-	a._viewport.width = document.querySelector("#grid").offsetWidth;
-	a._viewport.height = document.querySelector("#grid").offsetHeight;
+	a.setSize(document.querySelector("#grid").offsetWidth);
+	// a._viewport.height = document.querySelector("#grid").offsetHeight;
 
 	function getWidth(i) {
 		return images[i][0];

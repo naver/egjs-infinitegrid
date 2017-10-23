@@ -11,25 +11,23 @@ function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
 
 class SquareLayout extends FrameLayout {
 	_checkItemSize() {
-		const column = this._options.column;
+		const column = this.options.column;
 
 		if (!column) {
 			super._checkItemSize();
 			return;
 		}
-		const style = this._style;
-		const size = style.size2;
-		const margin = this._options.margin;
+		const margin = this.options.margin;
 
-		// if itemSize is not in options, caculate itemSize from viewport.
-		this._itemSize = (this._viewport[size] + margin) / column - margin;
+		// if itemSize is not in options, caculate itemSize from size.
+		this._itemSize = (this._size + margin) / column - margin;
 	}
 	_layout(items, outline, isAppend) {
 		const style = this._style;
 		const itemSize = this._getItemSize();
-		const margin = this._options.margin;
-		const columnLength = this._options.column ||
-				parseInt((this._viewport[style.size2] + margin) / (itemSize + margin), 10);
+		const margin = this.options.margin;
+		const columnLength = this.options.column ||
+				parseInt((this._size + margin) / (itemSize + margin), 10);
 		const length = items.length;
 		const endOutline = makeShapeOutline(outline, itemSize, columnLength, isAppend);
 		const pointCaculateName = isAppend ? "min" : "max";

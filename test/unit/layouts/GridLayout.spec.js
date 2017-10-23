@@ -1,83 +1,40 @@
 /* global describe, beforeEach, afterEach, it, expect */
-import {makeItems, VIEWPORT} from "./data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend} from "./common";
-import Layout from "../../../src/layouts/FrameLayout";
+import { makeItems, VIEWPORT } from "./data";
+import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend } from "./common";
+import Layout from "../../../src/layouts/GridLayout";
 
 
-describe("FrameLayout Test", function () {
-	describe("frame's shapes test", function () {
-		beforeEach(() => {
-			this.inst = null;
-			this.groups = [];
-		});
-		afterEach(() => {
-		});
-		it("sholud check frame's shapes", () => {
-			// Given
-			const frame = [
-				["A", "A", "B", "C", "D"],
-				["A", "A", "E", "F", "G"],
-				["H", "I", "J", "K", "L"],
-			];
-
-			// When
-			const layout = new Layout({
-				frame,
-			});
-
-			// Then
-			expect(layout._shapes.width).to.be.equal(5);
-			expect(layout._shapes.height).to.be.equal(3);
-			layout._shapes.shapes.should.have.lengthOf(12);
-		});
-	});
+describe("GirdLayout Test", function () {
 	describe("layout common test", function () {
 		it("no outline test", () => {
-			// Given
-			const frame = [
-				["A", "A", "B", "C", "D"],
-				["A", "A", "E", "F", "G"],
-				["H", "I", "J", "K", "L"],
-			];
 			const items = makeItems(20);
 			// When
 			const layout = new Layout({
-				frame,
-			});	
+				itemSize: 200,
+				margin: 10,
+			});
 
 			layout.setSize(VIEWPORT.width);
 
-			
 			// Then
 			expectNoOutline(layout, items);
-			
+
 		});
-		it("test append", function() {
+		it("test append", function () {
 			// Given
-			const frame = [
-				["A", "A", "B", "C", "D"],
-				["A", "A", "E", "F", "G"],
-				["H", "I", "J", "K", "L"],
-			];
 			const layout = new Layout({
-				frame,
+				itemSize: 200,
 			});
 			const items = makeItems(24);
 
 			layout.setSize(VIEWPORT.width);
-
 			// Then
-			expectAppend(layout, items, [100, 100, 100, 100, 100]);
+			expectAppend(layout, items, [100, 100, 100, 100]);
 		});
-		it("test prepend from end outline and append from start outline are the same", function() {
+		it("test prepend from end outline and append from start outline are the same", function () {
 			// Given
-			const frame = [
-				["A", "A", "B", "C", "D"],
-				["A", "A", "E", "F", "G"],
-				["H", "I", "J", "K", "L"],
-			];
 			const layout = new Layout({
-				frame,
+
 			});
 			const items = makeItems(24);
 
@@ -87,22 +44,21 @@ describe("FrameLayout Test", function () {
 			expectSameAppendPrepend(layout, items);
 		});
 	});
-	describe("append test", function() {
-		const frame = [
-			["A", "A", "D", "C"],
-			["A", "A", "B", ""],
-		];
-
+	describe("append test", function () {
 		checkMargin([0, 10, 20], margin => {
 			it(`append items (margin = ${margin})`, () => {
 				// Given
 				const items = makeItems(20);
+				
+				items.forEach(item => {
+					const ratio = item.size.height / item.size.width;
+					item.size.width = items[0].size.width;
+					item.size.height = item.size.widht * ratio;
+				});
+
 				const layout = new Layout({
-					frame,
 					margin,
 				});
-				const shapes = layout._shapes.shapes;
-
 				layout.setSize(VIEWPORT.width);
 				// When
 				const group = layout.append(items, []);
@@ -110,43 +66,12 @@ describe("FrameLayout Test", function () {
 				// Then
 				const itemSize = (VIEWPORT.width + margin) / 4 - margin;
 				const gitems = group.items;
-				expect(layout._itemSize).to.be.equal(itemSize);
-				expect(gitems.length).to.be.equal(20);
-				expect(gitems[0].rect.width).to.be.equal(itemSize * 2 + margin);
-				expect(gitems[0].rect.height).to.be.equal(itemSize * 2 + margin);
-				expect(shapes[1].type).to.be.equal("B");
-				expect(gitems[1].rect.top).to.be.equal(itemSize + margin);
-				expect(gitems[1].rect.left).to.be.equal((itemSize + margin) * 2);
-				expect(shapes[2].type).to.be.equal("C");
-				expect(gitems[2].rect.top).to.be.equal(0);
-				expect(gitems[2].rect.left).to.be.equal((itemSize + margin) * 3);
-				expect(shapes[3].type).to.be.equal("D");
-				expect(gitems[3].rect.top).to.be.equal(0);
-				expect(gitems[3].rect.left).to.be.equal((itemSize + margin) * 2);
-				
-				expect(gitems[4].rect.top).to.be.equal((itemSize + margin) * 2);
-				expect(gitems[4].rect.left).to.be.equal(0);
 
 				expectConnectItems({
 					item1: gitems[0],
 					item2: gitems[1],
 					margin,
 					direction: "horizontal",
-				});
-				expectConnectItems({
-					item1: gitems[3],
-					item2: gitems[1],
-					margin,
-				});
-				expectConnectItems({
-					item1: gitems[0],
-					item2: gitems[4],
-					margin,
-				});
-				expectConnectItems({
-					item1: gitems[1],
-					item2: gitems[7],
-					margin,
 				});
 			});
 		});
@@ -167,7 +92,7 @@ describe("FrameLayout Test", function () {
 					direction,
 				});
 
-				layout.setSize(direction === "vertical" ? VIEWPORT.width: VIEWPORT.height);
+				layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
 				// When
 				const group1 = layout.append(items1, [100]);
 				const group2 = layout.append(items2, group1.outlines.end);

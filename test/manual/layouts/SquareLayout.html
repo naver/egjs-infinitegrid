@@ -70,8 +70,8 @@
 		margin: 20,
 		column: 10,
 	});
-	a._viewport.width = document.querySelector("#grid").offsetWidth;
-	a._viewport.height = document.querySelector("#grid").offsetHeight;
+	a.setSize(document.querySelector("#grid").offsetWidth);
+	//a._viewport.height = document.querySelector("#grid").offsetHeight;
 	var _getItems = getItems;
 	getItems = function(num) {
 		const items = _getItems(num);

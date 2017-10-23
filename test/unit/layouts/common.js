@@ -5,6 +5,29 @@ export function checkDirection(callback, callback2 = callback) {
 	callback("vertical");
 	callback2("horizontal");
 }
+export function expectAppend(layout, items, outline) {
+	// When
+	const group1 = layout.append(items, outline);
+	const group2 = layout.append(items, [outline[0]]);
+
+	// Then
+	expect(group1.outlines.start).to.deep.equal(outline);
+	expect(group2.outlines.start[0]).to.deep.equal(outline[0]);
+}
+export function expectSameAppendPrepend(layout, items) {
+	// When
+	const group1 = layout.append(items, [0]);
+	const group2 = layout.prepend(items, group1.outlines.end);
+
+	const group3 = layout.prepend(items, [0]);
+	const group4 = layout.append(group3.items, group3.outlines.start);
+
+	// Then
+	expect(group1.items.map(item => item.rect)).to.deep.equal(group2.items.map(item => item.rect));
+	expect(group3.items.map(item => item.rect)).to.deep.equal(group4.items.map(item => item.rect));
+	
+	
+}
 export function expectNoOutline(layout, items) {
 	// When
 	const group1 = layout.append(items);
