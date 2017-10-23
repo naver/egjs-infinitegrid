@@ -20,7 +20,7 @@ export function expectSameAppendPrepend(layout, items) {
 	const group2 = layout.prepend(items, group1.outlines.end);
 
 	const group3 = layout.prepend(items, [0]);
-	const group4 = layout.append(group3.items, [-960, -960, -960, -960, -960]);
+	const group4 = layout.append(group3.items, group3.outlines.start);
 
 	// Then
 	expect(group1.items.map(item => item.rect)).to.deep.equal(group2.items.map(item => item.rect));

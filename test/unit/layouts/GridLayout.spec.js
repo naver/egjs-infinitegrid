@@ -11,6 +11,7 @@ describe("GirdLayout Test", function () {
 			// When
 			const layout = new Layout({
 				itemSize: 200,
+				margin: 10,
 			});
 
 			layout.setSize(VIEWPORT.width);
@@ -21,30 +22,19 @@ describe("GirdLayout Test", function () {
 		});
 		it("test append", function () {
 			// Given
-			const frame = [
-				["A", "A", "B", "C", "D"],
-				["A", "A", "E", "F", "G"],
-				["H", "I", "J", "K", "L"],
-			];
 			const layout = new Layout({
-				frame,
+				itemSize: 200,
 			});
 			const items = makeItems(24);
 
 			layout.setSize(VIEWPORT.width);
-
 			// Then
-			expectAppend(layout, items, [100, 100, 100, 100, 100]);
+			expectAppend(layout, items, [100, 100, 100, 100]);
 		});
 		it("test prepend from end outline and append from start outline are the same", function () {
 			// Given
-			const frame = [
-				["A", "A", "B", "C", "D"],
-				["A", "A", "E", "F", "G"],
-				["H", "I", "J", "K", "L"],
-			];
 			const layout = new Layout({
-				frame,
+
 			});
 			const items = makeItems(24);
 
@@ -55,21 +45,20 @@ describe("GirdLayout Test", function () {
 		});
 	});
 	describe("append test", function () {
-		const frame = [
-			["A", "A", "D", "C"],
-			["A", "A", "B", ""],
-		];
-
 		checkMargin([0, 10, 20], margin => {
 			it(`append items (margin = ${margin})`, () => {
 				// Given
 				const items = makeItems(20);
+				
+				items.forEach(item => {
+					const ratio = item.size.height / item.size.width;
+					item.size.width = items[0].size.width;
+					item.size.height = item.size.widht * ratio;
+				});
+
 				const layout = new Layout({
-					frame,
 					margin,
 				});
-				const shapes = layout._shapes.shapes;
-
 				layout.setSize(VIEWPORT.width);
 				// When
 				const group = layout.append(items, []);
@@ -77,43 +66,12 @@ describe("GirdLayout Test", function () {
 				// Then
 				const itemSize = (VIEWPORT.width + margin) / 4 - margin;
 				const gitems = group.items;
-				expect(layout._itemSize).to.be.equal(itemSize);
-				expect(gitems.length).to.be.equal(20);
-				expect(gitems[0].rect.width).to.be.equal(itemSize * 2 + margin);
-				expect(gitems[0].rect.height).to.be.equal(itemSize * 2 + margin);
-				expect(shapes[1].type).to.be.equal("B");
-				expect(gitems[1].rect.top).to.be.equal(itemSize + margin);
-				expect(gitems[1].rect.left).to.be.equal((itemSize + margin) * 2);
-				expect(shapes[2].type).to.be.equal("C");
-				expect(gitems[2].rect.top).to.be.equal(0);
-				expect(gitems[2].rect.left).to.be.equal((itemSize + margin) * 3);
-				expect(shapes[3].type).to.be.equal("D");
-				expect(gitems[3].rect.top).to.be.equal(0);
-				expect(gitems[3].rect.left).to.be.equal((itemSize + margin) * 2);
-
-				expect(gitems[4].rect.top).to.be.equal((itemSize + margin) * 2);
-				expect(gitems[4].rect.left).to.be.equal(0);
 
 				expectConnectItems({
 					item1: gitems[0],
 					item2: gitems[1],
 					margin,
 					direction: "horizontal",
-				});
-				expectConnectItems({
-					item1: gitems[3],
-					item2: gitems[1],
-					margin,
-				});
-				expectConnectItems({
-					item1: gitems[0],
-					item2: gitems[4],
-					margin,
-				});
-				expectConnectItems({
-					item1: gitems[1],
-					item2: gitems[7],
-					margin,
 				});
 			});
 		});

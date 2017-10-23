@@ -17,8 +17,6 @@ class SquareLayout extends FrameLayout {
 			super._checkItemSize();
 			return;
 		}
-		const style = this._style;
-		const size = style.size2;
 		const margin = this.options.margin;
 
 		// if itemSize is not in options, caculate itemSize from size.

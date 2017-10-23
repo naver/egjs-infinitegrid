@@ -90,7 +90,7 @@ class GridLayout {
 			end: isAppend ? endOutline : startOutline,
 		};
 	}
-	_insert(items, outline, type) {
+	_insert(items, outline = [], type) {
 		const clone = items.map(item => Object.assign({}, item));
 
 		let startOutline = outline;
@@ -115,7 +115,7 @@ class GridLayout {
 	prepend(items, outline) {
 		return this._insert(items, outline, PREPEND);
 	}
-	layout(groups, outline, isAppend) {
+	layout(groups, outline = [], isAppend) {
 		this.checkColumn(groups[0].items[0]);
 		// if outlines' length and columns' length are now same, re-caculate outlines.
 		let startOutline;

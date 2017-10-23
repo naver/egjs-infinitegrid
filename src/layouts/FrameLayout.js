@@ -181,9 +181,6 @@ class FrameLayout {
 					continue;
 				}
 				// if appending type is PREPEND, subtract dist from appending group's height.
-				if (isAppend) [
-					prevOutlineEnd - outline[i]
-				]
 				prevOutlineDist = Math[isAppend ? "min" : "max"](targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
 			}
 		}
