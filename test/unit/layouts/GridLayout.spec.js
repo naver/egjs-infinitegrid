@@ -1,58 +1,25 @@
 /* global describe, beforeEach, afterEach, it, expect */
-import {makeItems, VIEWPORT} from "./data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend} from "./common";
-import Layout from "../../../src/layouts/FrameLayout";
+import { makeItems, VIEWPORT } from "./data";
+import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend } from "./common";
+import Layout from "../../../src/layouts/GridLayout";
 
 
-describe("FrameLayout Test", function () {
-	describe("frame's shapes test", function () {
-		beforeEach(() => {
-			this.inst = null;
-			this.groups = [];
-		});
-		afterEach(() => {
-		});
-		it("sholud check frame's shapes", () => {
-			// Given
-			const frame = [
-				["A", "A", "B", "C", "D"],
-				["A", "A", "E", "F", "G"],
-				["H", "I", "J", "K", "L"],
-			];
-
-			// When
-			const layout = new Layout({
-				frame,
-			});
-
-			// Then
-			expect(layout._shapes.width).to.be.equal(5);
-			expect(layout._shapes.height).to.be.equal(3);
-			layout._shapes.shapes.should.have.lengthOf(12);
-		});
-	});
+describe("GirdLayout Test", function () {
 	describe("layout common test", function () {
 		it("no outline test", () => {
-			// Given
-			const frame = [
-				["A", "A", "B", "C", "D"],
-				["A", "A", "E", "F", "G"],
-				["H", "I", "J", "K", "L"],
-			];
 			const items = makeItems(20);
 			// When
 			const layout = new Layout({
-				frame,
-			});	
+				itemSize: 200,
+			});
 
 			layout.setSize(VIEWPORT.width);
 
-			
 			// Then
 			expectNoOutline(layout, items);
-			
+
 		});
-		it("test append", function() {
+		it("test append", function () {
 			// Given
 			const frame = [
 				["A", "A", "B", "C", "D"],
@@ -69,7 +36,7 @@ describe("FrameLayout Test", function () {
 			// Then
 			expectAppend(layout, items, [100, 100, 100, 100, 100]);
 		});
-		it("test prepend from end outline and append from start outline are the same", function() {
+		it("test prepend from end outline and append from start outline are the same", function () {
 			// Given
 			const frame = [
 				["A", "A", "B", "C", "D"],
@@ -87,7 +54,7 @@ describe("FrameLayout Test", function () {
 			expectSameAppendPrepend(layout, items);
 		});
 	});
-	describe("append test", function() {
+	describe("append test", function () {
 		const frame = [
 			["A", "A", "D", "C"],
 			["A", "A", "B", ""],
@@ -123,7 +90,7 @@ describe("FrameLayout Test", function () {
 				expect(shapes[3].type).to.be.equal("D");
 				expect(gitems[3].rect.top).to.be.equal(0);
 				expect(gitems[3].rect.left).to.be.equal((itemSize + margin) * 2);
-				
+
 				expect(gitems[4].rect.top).to.be.equal((itemSize + margin) * 2);
 				expect(gitems[4].rect.left).to.be.equal(0);
 
@@ -167,7 +134,7 @@ describe("FrameLayout Test", function () {
 					direction,
 				});
 
-				layout.setSize(direction === "vertical" ? VIEWPORT.width: VIEWPORT.height);
+				layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
 				// When
 				const group1 = layout.append(items1, [100]);
 				const group2 = layout.append(items2, group1.outlines.end);

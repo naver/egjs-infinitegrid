@@ -80,7 +80,7 @@ class FrameLayout {
 
 		this._itemSize = this.options.itemSize || 0;
 		this._shapes = shapes;
-		this._viewport = {};
+		this._size = 0;
 		this._style = getStyleNames(this.options.direction);
 	}
 	_getItemSize() {
@@ -97,8 +97,8 @@ class FrameLayout {
 		const size = style.size2;
 		const margin = this.options.margin;
 
-		// if itemSize is not in options, caculate itemSize from viewport.
-		this._itemSize = (this._viewport[size] + margin) / this._shapes[size] - margin;
+		// if itemSize is not in options, caculate itemSize from size.
+		this._itemSize = (this._size + margin) / this._shapes[size] - margin;
 	}
 	_layout(items, outline = [], isAppend) {
 		const length = items.length;
@@ -175,12 +175,15 @@ class FrameLayout {
 		let prevOutlineDist = isAppend ? 0 : end;
 
 		if (frameFill && outline.length === shapesSize) {
-			prevOutlineDist = isAppend ? prevOutlineEnd : 0;
+			prevOutlineDist = isAppend ? Math.abs(prevOutlineEnd) : 0;
 			for (let i = 0; i < shapesSize; ++i) {
 				if (startOutline[i] === endOutline[i]) {
 					continue;
 				}
 				// if appending type is PREPEND, subtract dist from appending group's height.
+				if (isAppend) [
+					prevOutlineEnd - outline[i]
+				]
 				prevOutlineDist = Math[isAppend ? "min" : "max"](targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
 			}
 		}
@@ -223,9 +226,8 @@ class FrameLayout {
 	prepend(items, outline) {
 		return this._insert(items, outline, PREPEND);
 	}
-	setViewport(width, height) {
-		this._viewport.width = width;
-		this._viewport.height = height;
+	setSize(size) {
+		this._size = size;
 	}
 }
 

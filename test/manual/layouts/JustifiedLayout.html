@@ -75,8 +75,8 @@
 //		maxSize: 300,
 	});
 
-	a._viewport.width = document.querySelector("#grid").offsetWidth;
-	a._viewport.height = document.querySelector("#grid").offsetHeight;
+	a.setSize(document.querySelector("#grid").offsetWidth);
+	// a._viewport.height = document.querySelector("#grid").offsetHeight;
 
 	append([], 20);
 	append(undefined, 10);

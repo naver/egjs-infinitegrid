@@ -11,8 +11,9 @@ class GridLayout {
 	constructor(options = {}) {
 		this.options = assignOptions({
 			align: START,
+			itemSize: 0,
 		}, options);
-		this._viewport = {};
+		this._size = 0;
 		this._isHorizontal = this.options.direction === HORIZONTAL;
 		this._columnSize = 0;
 		this._columnLength = 0;
@@ -28,10 +29,10 @@ class GridLayout {
 		// if direction is horizontal, fixed dimension is height
 		// if direction is vertical, fixed dimension is width
 		const sizeName = this._isHorizontal ? "height" : "width";
-		const columnSize = item.size[sizeName];
+		const columnSize = this.options.itemSize || item.size[sizeName];
 
 		this._columnSize = columnSize;
-		this._columnLength = parseInt((this._viewport[sizeName] + margin) / (columnSize + margin), 10);
+		this._columnLength = parseInt((this._size + margin) / (columnSize + margin), 10);
 	}
 	_layout(items, outline, isAppend) {
 		const length = items.length;
@@ -46,8 +47,8 @@ class GridLayout {
 		const columnSize = this._columnSize;
 		const columnLength = this._columnLength;
 
-		const viewSize2 = this._viewport[size2Name];
-		const viewDist = (viewSize2 - (columnSize + margin) * columnLength + margin);
+		const size = this._size;
+		const viewDist = (size - (columnSize + margin) * columnLength + margin);
 
 		const pointCaculateName = isAppend ? "min" : "max";
 		const startOutline = outline.slice();
@@ -69,7 +70,7 @@ class GridLayout {
 			} else if (align === END) {
 				pos2 += viewDist + columnSize - size2;
 			} else if (align === JUSTIFY) {
-				pos2 = (viewSize2 - columnSize) / (columnLength - 1) * index;
+				pos2 = (size - columnSize) / (columnLength - 1) * index;
 			}
 			// tetris
 			item.rect = {
@@ -135,11 +136,8 @@ class GridLayout {
 			startOutline = result.end;
 		});
 	}
-	setViewport(width, height) {
-		const viewport = this._viewport;
-
-		viewport.width = width;
-		viewport.height = height;
+	setSize(size) {
+		this._size = size;
 	}
 }
 
