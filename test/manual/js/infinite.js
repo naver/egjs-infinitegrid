@@ -29,19 +29,6 @@ $("#infinite").click(function(e) {
   var $el = $(e.target);
   infinite.remove($el.closest(".item").get(0));
 });
-  
-
-
-		// this._layout = new FrameLayout({
-		// 	direction: "vertical",
-		// 	margin: 20,
-		// 	frame: [
-		// 		["C", "", "A", "A", "A"],
-		// 		["C", "B", "B", "E", "E"],
-		// 		["C", "D", "D", "E", "E"],
-		// 		["F", "F", "", "H", "H"],
-		// 	],
-		// });
 
 // 테스트를 위한 코드
 var gui = new dat.GUI();
@@ -71,13 +58,15 @@ var guioption = {
 };
 
 function setViewport() {
-  infinite._layout.setViewport(guioption.width, guioption.height);
+  infinite._layout.setSize(guioption.direction === "vertical" ?
+    guioption.width : guioption.height);
 }
 var justified = {
   minSize: 100,
   maxSize: 200,
   set: function() {
     infinite.options.direction = guioption.direction;
+    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.JustifiedLayout, {
       margin: guioption.margin,
       minSize: justified.minSize,
@@ -90,6 +79,7 @@ var grid = {
   align: "start",
   set: function() {
     infinite.options.direction = guioption.direction;
+    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.GridLayout, {
       direction: guioption.direction,
       margin: guioption.margin,
@@ -108,24 +98,26 @@ var packing = {
     setViewport();
   }
 };
-var facebook = {
+var square = {
   column: 1,
   set: function() {
     infinite.options.direction = guioption.direction;
+    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.SquareLayout, {
       margin: guioption.margin,
-      column: facebook.column
+      column: square.column
     });
     setViewport();
   }
 };
 var frame = {
-  frame: [[]],
+  frame: [],
   set: function() {
     infinite.options.direction = guioption.direction;
+    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.FrameLayout, {
       margin: guioption.margin,
-      frame: facebook.column
+      frame: frame.frame
     });
     setViewport();
   }
@@ -163,13 +155,12 @@ fold4.add(packing, "aspectRatio", 1, 3).onFinishChange(() => packing.set());
 fold4.add(packing, "set");
 fold4.open();
 
-var fold5 = gui.addFolder("FacebookLayout");
-fold5.add(facebook, "column", 1, 10).step(1).onFinishChange(() => facebook.set());
-fold5.add(facebook, "set");
+var fold5 = gui.addFolder("SquareLayout");
+fold5.add(square, "column", 1, 10).step(1).onFinishChange(() => square.set());
+fold5.add(square, "set");
 fold5.open();
 
 var fold6 = gui.addFolder("FrameLayout");
-// fold5.add(facebook, "frame", 1, 10).onFinishChange(() => facebook.set());
 fold6.add(frame, "set");
 fold6.open();
 

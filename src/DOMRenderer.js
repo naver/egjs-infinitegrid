@@ -45,15 +45,15 @@ export default class DOMRenderer {
 	}
 	constructor(element, isVertical = true, isOverflowScroll = false) {
 		this._isVertical = isVertical;
-		this._init(element, isOverflowScroll);
+		this._init(element, isVertical, isOverflowScroll);
 		this.resize();
 	}
-	_init(el, isOverflowScroll) {
+	_init(el, isVertical, isOverflowScroll) {
 		const base = $(el);
 
 		base.style.position = "relative";
 		base.style.width = "100%";
-		base.style.height = "0px";
+		base.style.height = "100%";
 
 		if (isOverflowScroll) {
 			let container = base.querySelector(`.${CONTAINER_CLASSNAME}`);
@@ -64,12 +64,14 @@ export default class DOMRenderer {
 
 				const children = base.children;
 				const length = children.length;	// for IE8
+				const target = isVertical ? ["Y", "X"] : ["X", "Y"];
 
 				for (let i = 0; i < length; i++) {
 					container.appendChild(children[0]);
 				}
-				base.style.overflowY = "scroll";
-				base.style.overflowX = "hidden";
+
+				base.style.overflow[target[0]] = "scroll";
+				base.style.overflow[target[1]] = "hidden";
 				base.appendChild(container);
 			}
 			this._view = base;
@@ -136,7 +138,6 @@ export default class DOMRenderer {
 		return false;
 	}
 	_isNeededResize() {
-		console.log("isNeededResize - ", this._calcSize(), this._size);
 		return this._calcSize() !== this._size;
 	}
 	// _attachEvent() {
