@@ -75,7 +75,6 @@ function append(line, num = 22) {
 
 
 	result.items.forEach((item, i) => {
-		item.el = items[i].el;
 		item.groupKey = group;
 		item.el.dataset.group = group;
 	});
@@ -88,7 +87,6 @@ function prepend(line, num = 22) {
 	const items = getItems(num);
 	const result = a.prepend(items, getTopline(line));
 	result.items.forEach((item, i) => {
-		item.el = items[i].el;
 		item.groupKey = group;
 		item.el.dataset.group = group;
 	});
