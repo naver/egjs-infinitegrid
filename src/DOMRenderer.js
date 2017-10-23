@@ -8,8 +8,8 @@ import {
 } from "./consts";
 import {
 	$,
-	addEvent,
-	removeEvent,
+	// addEvent,
+	// removeEvent,
 	innerHeight,
 	innerWidth,
 } from "./utils";
@@ -43,16 +43,17 @@ export default class DOMRenderer {
 	static removeElement(element) {
 		element.parentNode.removeChild(element);
 	}
-	constructor(element, isOverflowScroll) {
+	constructor(element, isVertical = true, isOverflowScroll = false) {
+		this._isVertical = isVertical;
 		this._init(element, isOverflowScroll);
-		this.resizeViewport();
+		this.resize();
 	}
 	_init(el, isOverflowScroll) {
 		const base = $(el);
 
 		base.style.position = "relative";
 		base.style.width = "100%";
-		base.style.height = "100%";
+		base.style.height = "0px";
 
 		if (isOverflowScroll) {
 			let container = base.querySelector(`.${CONTAINER_CLASSNAME}`);
@@ -90,7 +91,8 @@ export default class DOMRenderer {
 	}
 	clear() {
 		this._container.innerHTML = "";
-		// this._container.style.height = "";
+		this._container.style.height = "";
+		this._size = -1;
 	}
 	createAndInsert(items, isAppend) {
 		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(
@@ -110,24 +112,36 @@ export default class DOMRenderer {
 			styles && DOMRenderer.renderItem(item, styles);
 			isAppend ? df.appendChild(item.el) : df.insertBefore(item.el, df.firstChild);
 		});
-		isAppend ? this._container.appendChild(df) : this._container.insertBefore(df, this._container.firstChild);
+		isAppend ?
+			this._container.appendChild(df) :
+			this._container.insertBefore(df, this._container.firstChild);
 	}
-	resizeViewport() {
-		this._size = {
-			width: innerWidth(this._container),
-			height: innerHeight(this._container),
-		};
+	_calcSize() {
+		return this._isVertical ?
+			innerWidth(this._container) : innerHeight(this._container);
 	}
-	getViewport() {
-		return Object.assign({}, this._size);
+	setSize(size) {
+		this._container.style[this._isVertical ? "height" : "width"] = `${size}px`;
 	}
-	isNeededResize() {
-		// return innerWidth(this._container) !== this._containerWidth;
+	getSize() {
+		this.resize();
+		return this._size;
 	}
-
-							// _attachEvent() {
-							// 	addEvent(window, "resize", this._onResize);
-							// }
+	resize() {
+		if (this._isNeededResize()) {
+			this._size = this._calcSize();
+			return true;
+		}
+		console.log("resize", this._size);
+		return false;
+	}
+	_isNeededResize() {
+		console.log("isNeededResize - ", this._calcSize(), this._size);
+		return this._calcSize() !== this._size;
+	}
+	// _attachEvent() {
+	// 	addEvent(window, "resize", this._onResize);
+	// }
 	// _onResize() {
 	// 	if (this._timer.resize) {
 	// 		clearTimeout(this._timer.resize);

@@ -5,7 +5,7 @@ import ImageLoaded from "./ImageLoaded";
 
 import GridLayout from "./layouts/GridLayout";
 import FrameLayout from "./layouts/FrameLayout";
-import FacebookLayout from "./layouts/FacebookLayout";
+import SquareLayout from "./layouts/SquareLayout";
 import PackingLayout from "./layouts/PackingLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
 
@@ -23,7 +23,7 @@ import {
 	innerWidth,
 } from "./utils";
 
-export {JustifiedLayout, GridLayout, FrameLayout, FacebookLayout, PackingLayout};
+export {JustifiedLayout, GridLayout, FrameLayout, SquareLayout, PackingLayout};
 
 export class Infinite extends Component {
 	constructor(element, options) {
@@ -34,7 +34,7 @@ export class Infinite extends Component {
 			widthAttr: "data-width",
 			heightAttr: "data-height",
 			isOverflowScroll: false,
-			direction: "vertical",
+			direction: "vertical",	// @todo change const
 		}, options);
 		this._startCursor = -1;
 		this._endCursor = -1;
@@ -53,12 +53,11 @@ export class Infinite extends Component {
 		// };
 
 		this._items = new ItemManager();
-		this._renderer = new DOMRenderer(element, this.options.isOverflowScroll);
+		this._renderer = new DOMRenderer(
+			element,
+			this.options.direction === "vertical",
+			this.options.isOverflowScroll);
 	}
-
-
-
-
 	/**
 	 * Adds a card element at the bottom of a grid layout. This method is available only if the isProcessing() method returns false.
 	 * @ko 카드 엘리먼트를 그리드 레이아웃의 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
@@ -84,9 +83,17 @@ export class Infinite extends Component {
 		this._layout = new LayoutKlass(Object.assign(options, {
 			direction: this.options.direction,
 		}));
-		const size = this._renderer.getViewport();
+		const size = this._renderer.getSize();
 
-		this._layout.setViewport(size.width, size.height);
+		const tmpSize = this.options.direction === "veritcal" ? {
+			width: size,
+			height: 0,
+		} : {
+			width: 0,
+			height: size,
+		};
+
+		this._layout.setViewport(tmpSize.width, tmpSize.height);
 	}
 	getVisibleItems() {
 		return this._items.pluck("items", this._startCursor, this._endCursor);
@@ -106,9 +113,9 @@ export class Infinite extends Component {
 			base = this._getSize("start");
 
 			if (base !== 0) {
-				this._items.fit(base, this._layout._options.direction === "vertical");
+				this._items.fit(base, this._layout.options.direction === "vertical");
 				DOMRenderer.renderItems(this.getVisibleItems());
-				this._renderer._container.style.height = this._getSize("end") + "px";
+				this._renderer.setSize(this._getSize("end"));
 			}
 		}
 
@@ -133,6 +140,10 @@ export class Infinite extends Component {
 		if (isRelayout) { // remove cache
 			data = this._items.get(this._startCursor, this._endCursor);
 			outline = []; // @todo remove
+			this._renderer.resize() &&
+				data.forEach(v => {
+					data.items = ItemManager.updateSize(v.items);
+				});
 		} else {
 			data = this._items.get(this._startCursor, this._items.size());
 			outline = this._items.getOutline(this._startCursor, "start");
@@ -147,7 +158,7 @@ export class Infinite extends Component {
 			data.forEach(v => this._items.set(v, v.groupKey));
 		}
 		DOMRenderer.renderItems(this.getVisibleItems());
-		this._renderer._container.style.height = this._getSize("end") + "px";
+		this._renderer.setSize(this._getSize("end"));
 		return this;
 	}
 	/**
@@ -157,9 +168,11 @@ export class Infinite extends Component {
 	 * @return {Object}  Removed item element <ko>삭제된 아이템 엘리먼트 정보</ko>
 	 */
 	remove(element) {
-		const items = this._items.remove(element, this._startCursor, this._endCursor);
+		if (element) {
+			const items = this._items.remove(element, this._startCursor, this._endCursor);
 
-		items && DOMRenderer.removeElement(element);
+			items && DOMRenderer.removeElement(element);
+		}
 	}
 	getItems(isAppend) {
 		let items = [];
@@ -280,7 +293,7 @@ export class Infinite extends Component {
 					this._insertItems(layouted, isAppend);
 					this._updateCursor(isAppend);
 					DOMRenderer.renderItems(layouted.items);
-					this._renderer._container.style.height = this._getSize("end") + "px";
+					this._renderer.setSize(this._getSize("end"));
 				},
 			});
 		}
