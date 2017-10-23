@@ -11,7 +11,7 @@ class PackingLayout {
 		this.options = assignOptions({
 			aspectRatio: 1,
 		}, options);
-		this._viewport = {};
+		this._size = 0;
 		this._style = getStyleNames(this.options.direction);
 		this._isHorizontal = this.options.direction === HORIZONTAL;
 	}
@@ -21,8 +21,8 @@ class PackingLayout {
 		const aspectRatio = this.options.aspectRatio;
 		const margin = this.options.margin;
 		const pos1Name = style.pos1;
-		const containerWidth = this._viewport.width * (isHorizontal ? aspectRatio : 1);
-		const containerHeight = this._viewport.height / (isHorizontal ? 1 : aspectRatio);
+		const containerWidth = this._size * (isHorizontal ? aspectRatio : 1);
+		const containerHeight = this._size / (isHorizontal ? 1 : aspectRatio);
 		const containerSize1 = isHorizontal ? containerWidth : containerHeight;
 		const prevOutline = toZeroArray(outline);
 		const start = isAppend ? Math.max(...prevOutline) :
@@ -87,11 +87,8 @@ class PackingLayout {
 			point = point.end;
 		}
 	}
-	setViewport(width, height) {
-		const viewport = this._viewport;
-
-		viewport.width = width;
-		viewport.height = height;
+	setSize(size) {
+		this._size = size;
 	}
 }
 

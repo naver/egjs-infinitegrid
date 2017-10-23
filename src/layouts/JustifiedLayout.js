@@ -9,7 +9,7 @@ class JustifiedLayout {
 			maxSize: 0,
 		}, options);
 		this._style = getStyleNames(this.options.direction);
-		this._viewport = {};
+		this._size = 0;
 	}
 	_layout(items, outline, isAppend) {
 		const style = this._style;
@@ -48,7 +48,7 @@ class JustifiedLayout {
 		const size = items.reduce((sum, item) => sum +
 							(item.size[size2Name]) / item.size[size1Name], 0);
 
-		return (this._viewport[size2Name] - margin * (items.length - 1)) / size;
+		return (this._size - margin * (items.length - 1)) / size;
 	}
 	_getCost(items, i, j, size1Name, size2Name) {
 		const size = this._getSize(items.slice(i, j), size1Name, size2Name);
@@ -157,9 +157,8 @@ class JustifiedLayout {
 			outlines: result,
 		};
 	}
-	setViewport(width, height) {
-		this._viewport.width = width;
-		this._viewport.height = height;
+	setSize(size) {
+		this._size = size;
 	}
 	append(items, outline) {
 		return this._insert(items, outline, APPEND);

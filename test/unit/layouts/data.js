@@ -17,8 +17,8 @@ export const VIEWPORT = {
 };
 export const makeItem = i => ({
 	size: {
-		width: images[i],
-		height: images[i],
+		width: images[i][0],
+		height: images[i][1],
 	},
 	rect: {},
 });
