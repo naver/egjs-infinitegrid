@@ -9,7 +9,7 @@ function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
 	return outline.map(l => parseInt((l - point) / itemSize, 10));
 }
 
-class FacebookLayout extends FrameLayout {
+class SquareLayout extends FrameLayout {
 	_checkItemSize() {
 		const column = this._options.column;
 
@@ -71,4 +71,4 @@ class FacebookLayout extends FrameLayout {
 	}
 }
 
-export default FacebookLayout;
+export default SquareLayout;

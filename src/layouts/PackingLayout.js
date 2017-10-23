@@ -8,18 +8,18 @@ function option(name) {
 }
 class PackingLayout {
 	constructor(options = {}) {
-		this._options = assignOptions({
+		this.options = assignOptions({
 			aspectRatio: 1,
 		}, options);
 		this._viewport = {};
-		this._style = getStyleNames(this._options.direction);
-		this._isHorizontal = this._options.direction === HORIZONTAL;
+		this._style = getStyleNames(this.options.direction);
+		this._isHorizontal = this.options.direction === HORIZONTAL;
 	}
-	_layout(items, outline, isAppend) {
+	_layout(items, outline = [], isAppend) {
 		const style = this._style;
 		const isHorizontal = this._isHorizontal;
-		const aspectRatio = this._options.aspectRatio;
-		const margin = this._options.margin;
+		const aspectRatio = this.options.aspectRatio;
+		const margin = this.options.margin;
 		const pos1Name = style.pos1;
 		const containerWidth = this._viewport.width * (isHorizontal ? aspectRatio : 1);
 		const containerHeight = this._viewport.height / (isHorizontal ? 1 : aspectRatio);
@@ -75,9 +75,9 @@ class PackingLayout {
 	prepend(items, outline) {
 		return this._insert(items, outline, PREPEND);
 	}
-	layout(groups, outlines) {
+	layout(groups, outline = []) {
 		const length = groups.length;
-		let point = outlines;
+		let point = outline;
 
 		for (let i = 0; i < length; ++i) {
 			const group = groups[i];

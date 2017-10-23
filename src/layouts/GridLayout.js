@@ -9,14 +9,14 @@ function fill(length, pos) {
 }
 class GridLayout {
 	constructor(options = {}) {
-		this._options = assignOptions({
+		this.options = assignOptions({
 			align: START,
 		}, options);
 		this._viewport = {};
-		this._isHorizontal = this._options.direction === HORIZONTAL;
+		this._isHorizontal = this.options.direction === HORIZONTAL;
 		this._columnSize = 0;
 		this._columnLength = 0;
-		this._style = getStyleNames(this._options.direction);
+		this._style = getStyleNames(this.options.direction);
 	}
 	getPoints(outlines) {
 		const pos = this._isHorizontal ? "left" : "top";
@@ -24,7 +24,7 @@ class GridLayout {
 		return outlines.map(outline => outline[pos]);
 	}
 	checkColumn(item) {
-		const margin = this._options.margin;
+		const margin = this.options.margin;
 		// if direction is horizontal, fixed dimension is height
 		// if direction is vertical, fixed dimension is width
 		const sizeName = this._isHorizontal ? "height" : "width";
@@ -35,8 +35,8 @@ class GridLayout {
 	}
 	_layout(items, outline, isAppend) {
 		const length = items.length;
-		const margin = this._options.margin;
-		const align = this._options.align;
+		const margin = this.options.margin;
+		const align = this.options.align;
 		const style = this._style;
 
 		const size1Name = style.size1;
@@ -79,6 +79,9 @@ class GridLayout {
 			item.column = index;
 			endOutline[index] = isAppend ? endPos1 : pos1;
 		}
+		if (!isAppend) {
+			items.sort((a, b) => a.rect.top - b.rect.top);
+		}
 		// if append items, startOutline is low, endOutline is high
 		// if prepend items, startOutline is high, endOutline is low
 		return {
@@ -111,7 +114,7 @@ class GridLayout {
 	prepend(items, outline) {
 		return this._insert(items, outline, PREPEND);
 	}
-	layout(groups, outline) {
+	layout(groups, outline, isAppend) {
 		this.checkColumn(groups[0].items[0]);
 		// if outlines' length and columns' length are now same, re-caculate outlines.
 		let startOutline;

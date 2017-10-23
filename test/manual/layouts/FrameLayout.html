@@ -70,14 +70,12 @@
 	var a = new FrameLayout({
 		direction: "vertical",
 		margin: 20,
-		minSize: 100,
 		frame: [
-[1, 0, 1, 0, 1],
-[2, 2, 2, 3, 3],
-[2, 2, 2, 3, 3],
-[0, 4, 0, 4, 0],
+["A", "", "B", "", "C"],
+["D", "D", "D", "E", "E"],
+["D", "D", "D", "E", "E"],
+["", "F", "", "G", ""],
 ],
-		frameFill: true,
 	});
 
 	a._viewport.width = document.querySelector("#grid").offsetWidth;

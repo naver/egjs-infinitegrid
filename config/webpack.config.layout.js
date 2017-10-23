@@ -10,7 +10,7 @@ var config = {
 		"JustifiedLayout": "./src/layouts/JustifiedLayout.js",
 		"GridLayout": "./src/layouts/GridLayout.js",
 		"FrameLayout": "./src/layouts/FrameLayout.js",
-		"FacebookLayout": "./src/layouts/FacebookLayout.js",
+		"SquareLayout": "./src/layouts/SquareLayout.js",
 		"LightBoxLayout": "./src/layouts/LightBoxLayout.js",
 		"PackingLayout": "./src/layouts/PackingLayout.js"
 	},
