@@ -15,13 +15,6 @@ import {
 	CACHE,
 	NO_CACHE,
 } from "./consts";
-import {
-	$,
-	addEvent,
-	removeEvent,
-	innerHeight,
-	innerWidth,
-} from "./utils";
 
 export {JustifiedLayout, GridLayout, FrameLayout, SquareLayout, PackingLayout};
 
@@ -292,7 +285,7 @@ export class Infinite extends Component {
 	 * Destroys elements, properties, and events used on a grid layout.
 	 * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
 	 */
-	destroy() {
-		// this._reset();
-	}
+	// destroy() {
+	// 	this._reset();
+	// }
 }
