@@ -40,11 +40,9 @@ export class Infinite extends Component {
 		this._endCursor = -1;
 		// this._status = {
 		// 	// isProcessing: false,
-		// 	// isRecycling: false,
 		// 	// prevScrollTop: 0,
 		// 	// topElement: null,
 		// 	// bottomElement: null,
-		// 	clientHeight: this._status && this._status.clientHeight,
 		// };
 		// this._timer = {
 		// 	resize: null,
@@ -83,17 +81,7 @@ export class Infinite extends Component {
 		this._layout = new LayoutKlass(Object.assign(options, {
 			direction: this.options.direction,
 		}));
-		const size = this._renderer.getSize();
-
-		const tmpSize = this.options.direction === "veritcal" ? {
-			width: size,
-			height: 0,
-		} : {
-			width: 0,
-			height: size,
-		};
-
-		this._layout.setViewport(tmpSize.width, tmpSize.height);
+		this._layout.setSize(this._renderer.getSize());
 	}
 	getVisibleItems() {
 		return this._items.pluck("items", this._startCursor, this._endCursor);
@@ -139,7 +127,6 @@ export class Infinite extends Component {
 
 		if (isRelayout) { // remove cache
 			data = this._items.get(this._startCursor, this._endCursor);
-			outline = []; // @todo remove
 			this._renderer.resize() &&
 				data.forEach(v => {
 					data.items = ItemManager.updateSize(v.items);
@@ -147,6 +134,9 @@ export class Infinite extends Component {
 		} else {
 			data = this._items.get(this._startCursor, this._items.size());
 			outline = this._items.getOutline(this._startCursor, "start");
+		}
+		if (!data.length) {
+			return this;
 		}
 		this._layout.layout(data, outline);
 
