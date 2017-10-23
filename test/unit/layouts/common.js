@@ -1,3 +1,12 @@
+/* global expect */
+function approximate(obj) {
+	const o = {};
+
+	for (const name in obj) {
+		o[name] = parseInt(obj[name] * 10000, 10);
+	}
+	return 0;
+}
 export function checkMargin(margins, callback) {
 	margins.forEach(margin => callback(margin));
 }
@@ -16,17 +25,14 @@ export function expectAppend(layout, items, outline) {
 }
 export function expectSameAppendPrepend(layout, items) {
 	// When
-	const group1 = layout.append(items, [0]);
-	const group2 = layout.prepend(items, group1.outlines.end);
-
-	const group3 = layout.prepend(items, [0]);
-	const group4 = layout.append(group3.items, group3.outlines.start);
+	const group1 = layout.prepend(items, [0]);
+	const group2 = layout.append(group1.items, group1.outlines.start);
 
 	// Then
-	expect(group1.items.map(item => item.rect)).to.deep.equal(group2.items.map(item => item.rect));
-	expect(group3.items.map(item => item.rect)).to.deep.equal(group4.items.map(item => item.rect));
-	
-	
+	const rect1 = group1.items.map(item => approximate(item.rect));
+	const rect2 = group2.items.map(item => approximate(item.rect));
+
+	expect(rect1).to.deep.equal(rect2);	
 }
 export function expectNoOutline(layout, items) {
 	// When
@@ -37,7 +43,7 @@ export function expectNoOutline(layout, items) {
 	const group5 = layout.prepend(items, []);
 	const group6 = layout.prepend(items, [0]);
 
-	//Then
+	// Then
 	expect(group1.outlines.start).to.deep.equal(group3.outlines.start);
 	expect(group1.outlines.start).to.deep.equal(group2.outlines.start);
 
