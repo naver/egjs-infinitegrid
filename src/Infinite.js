@@ -54,8 +54,12 @@ export class Infinite extends Component {
 			direction: "vertical",
 			callback: {
 				layout: () => this._renderer.isNeededResize() && this.layout(),
-				append: null,
-				prepend: null,
+				append: () => {
+					this._requestAppend();
+				},
+				prepend: () => {
+					this._requestPrepend();
+				},
 			},
 		});
 	}
@@ -92,12 +96,32 @@ export class Infinite extends Component {
 	getVisibleItems() {
 		return this._items.pluck("items", this._startCursor, this._endCursor);
 	}
-	getVisibleOutline(cursor) {
-		return this._items.pluck("outlines", this[`_${cursor}Cursor`]);
+	_getEdgeIndex(cursor) {
+		let index = this._endCursor;
+		let prop = "max";
+		let targetValue = -Infinite;
+
+		if (cursor === "start") {
+			index = this._startCursor;
+			prop = "min";
+			targetValue = Infinite;
+		}
+
+		for (let i = this._startCursor; i <= this._endCursor; i++) {
+			const value = Math[prop](...this._items.getOutline(i, cursor));
+
+			if ((cursor === "start" && targetValue > value) ||
+				(cursor === "end" && targetValue < value)) {
+				targetValue = value;
+				index = i;
+			}
+		}
+		return index;
 	}
 	_getEdgePos(cursor) {
-		return Math[cursor === "start" ? "min" : "max"](...this.getVisibleOutline(cursor)
-			.reduce((acc, v) => acc.concat(v[cursor]), []));
+		return Math[cursor === "start" ? "min" : "max"](
+			...this._items.pluck("outlines", this._getEdgeIndex(cursor))
+				.reduce((acc, v) => acc.concat(v[cursor]), []));
 	}
 	_getEdge(cursor) {
 		const pos = this._getEdgePos(cursor);

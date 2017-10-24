@@ -31,15 +31,15 @@ export default class Watcher {
 		this._attachEvent();
 	}
 	_attachEvent() {
-		if (SUPPORT_INTERSECTIONOBSERVER) {
-			this._observer = new IntersectionObserver(this._onCheck, {
-				root: this._target,
-				rootMargin: `${this.options.threshold}px`,
-				threshold: [0],
-			});
-		} else {
+		// if (SUPPORT_INTERSECTIONOBSERVER) {
+		// 	this._observer = new IntersectionObserver(this._onCheck, {
+		// 		root: this._target,
+		// 		rootMargin: `${this.options.threshold}px`,
+		// 		threshold: [0],
+		// 	});
+		// } else {
 			addEvent(this._target, "scroll", this._onCheck);
-		}
+		// }
 		addEvent(window, "resize", this._onResize);
 	}
 	_onCheck() {
