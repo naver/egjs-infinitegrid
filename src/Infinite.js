@@ -2,11 +2,12 @@ import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
 import ImageLoaded from "./ImageLoaded";
+import Watcher from "./Watcher";
 
 import GridLayout from "./layouts/GridLayout";
 import FrameLayout from "./layouts/FrameLayout";
 import SquareLayout from "./layouts/SquareLayout";
-import PackingLayout from "./layouts/PackingLayout";
+// import PackingLayout from "./layouts/PackingLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
 
 import {
@@ -15,8 +16,11 @@ import {
 	CACHE,
 	NO_CACHE,
 } from "./consts";
+// import {
+// 	$,
+// } from "./utils";
 
-export {JustifiedLayout, GridLayout, FrameLayout, SquareLayout, PackingLayout};
+export {JustifiedLayout, GridLayout, FrameLayout, SquareLayout};
 
 export class Infinite extends Component {
 	constructor(element, options) {
@@ -27,7 +31,10 @@ export class Infinite extends Component {
 			widthAttr: "data-width",
 			heightAttr: "data-height",
 			isOverflowScroll: false,
+			threshold: 300,
 			direction: "vertical",	// @todo change const
+			// isEqualSize: false,
+			// defaultGroupKey: null,
 		}, options);
 		this._startCursor = -1;
 		this._endCursor = -1;
@@ -37,17 +44,23 @@ export class Infinite extends Component {
 		// 	// topElement: null,
 		// 	// bottomElement: null,
 		// };
-		// this._timer = {
-		// 	resize: null,
-		// 	// doubleCheck: null,
-		// 	// doubleCheckCount: RETRY,
-		// };
-
 		this._items = new ItemManager();
 		this._renderer = new DOMRenderer(
 			element,
 			this.options.direction === "vertical",
 			this.options.isOverflowScroll);
+		this._watcher = new Watcher(this._renderer.getView(), {
+			threshold: 300,
+			direction: "vertical",
+			callback: {
+				layout: () => this._renderer.isNeededResize() && this.layout(),
+				append: null,
+				prepend: null,
+			},
+		});
+	}
+	_onCheck() {
+		console.log(this._getEdgePos("end") - this._renderer.getViewSize());
 	}
 	/**
 	 * Adds a card element at the bottom of a grid layout. This method is available only if the isProcessing() method returns false.
@@ -71,7 +84,7 @@ export class Infinite extends Component {
 		this._layout && this._insert(elements, groupKey, PREPEND);
 	}
 	setLayout(LayoutKlass, options) {
-		this._layout = new LayoutKlass(Object.assign(options, {
+		this._layout = new LayoutKlass(Object.assign(options || {}, {
 			direction: this.options.direction,
 		}));
 		this._layout.setSize(this._renderer.getSize());
@@ -82,21 +95,33 @@ export class Infinite extends Component {
 	getVisibleOutline(cursor) {
 		return this._items.pluck("outlines", this[`_${cursor}Cursor`]);
 	}
-	_getSize(cursor) {
+	_getEdgePos(cursor) {
 		return Math[cursor === "start" ? "min" : "max"](...this.getVisibleOutline(cursor)
 			.reduce((acc, v) => acc.concat(v[cursor]), []));
+	}
+	_getEdge(cursor) {
+		const pos = this._getEdgePos(cursor);
+		const prop = this.options.direction === "vertical" ?
+			["top", "height"] : ["left", "width"];
+		const items = this._items.pluck("items", this[`_${cursor}Cursor`])
+			.filter(v => {
+				console.log(v.rect[prop[0]] + v.size[prop[1]], pos);
+				return v.rect[prop[0]] + v.size[prop[1]] === pos;
+			});
+
+		return items.length ? items[0] : null;
 	}
 	// called by visible
 	_fit() {
 		let base = 0;
 
 		if (this._layout) {
-			base = this._getSize("start");
+			base = this._getEdgePos("start");
 
 			if (base !== 0) {
 				this._items.fit(base, this._layout.options.direction === "vertical");
 				DOMRenderer.renderItems(this.getVisibleItems());
-				this._renderer.setSize(this._getSize("end"));
+				this._renderer.setSize(this._getEdgePos("end"));
 			}
 		}
 
@@ -141,7 +166,7 @@ export class Infinite extends Component {
 			data.forEach(v => this._items.set(v, v.groupKey));
 		}
 		DOMRenderer.renderItems(this.getVisibleItems());
-		this._renderer.setSize(this._getSize("end"));
+		this._renderer.setSize(this._getEdgePos("end"));
 		return this;
 	}
 	/**
@@ -157,7 +182,7 @@ export class Infinite extends Component {
 			items && DOMRenderer.removeElement(element);
 		}
 	}
-	getItems(isAppend) {
+	_getItems(isAppend) {
 		let items = [];
 		const size = this._items.size();
 
@@ -232,7 +257,7 @@ export class Infinite extends Component {
 	}
 	// called by visible
 	_requestAppend() {
-		const items = this.getItems(APPEND);
+		const items = this._getItems(APPEND);
 
 		if (items.length) {
 			this._recycle(items, APPEND);
@@ -243,7 +268,7 @@ export class Infinite extends Component {
 	}
 	// called by visible
 	_requestPrepend() {
-		const items = this.getItems(PREPEND);
+		const items = this._getItems(PREPEND);
 
 		if (items.length) {
 			this._recycle(items, PREPEND);
@@ -276,7 +301,7 @@ export class Infinite extends Component {
 					this._insertItems(layouted, isAppend);
 					this._updateCursor(isAppend);
 					DOMRenderer.renderItems(layouted.items);
-					this._renderer.setSize(this._getSize("end"));
+					this._renderer.setSize(this._getEdgePos("end"));
 				},
 			});
 		}
@@ -285,7 +310,10 @@ export class Infinite extends Component {
 	 * Destroys elements, properties, and events used on a grid layout.
 	 * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
 	 */
-	// destroy() {
-	// 	this._reset();
-	// }
+	destroy() {
+		this._startCursor = -1;
+		this._endCursor = -1;
+		this._items.clear();
+		this._renderer.destroy();
+	}
 }

@@ -47,22 +47,26 @@ export default class DOMRenderer {
 		this._isVertical = isVertical;
 		this._init(element, isVertical, isOverflowScroll);
 		this.resize();
+		this._size = {
+			container: -1,
+			view: -1,
+		};
 	}
 	_init(el, isVertical, isOverflowScroll) {
-		const base = $(el);
+		const element = $(el);
 
-		base.style.position = "relative";
-		base.style.width = "100%";
-		base.style.height = "100%";
+		element.style.position = "relative";
+		// base.style.width = "100%";
+		// base.style.height = "100%";
 
 		if (isOverflowScroll) {
-			let container = base.querySelector(`.${CONTAINER_CLASSNAME}`);
+			let container = element.querySelector(`.${CONTAINER_CLASSNAME}`);
 
 			if (!container) {
 				container = document.createElement("div");
 				container.className = CONTAINER_CLASSNAME;
 
-				const children = base.children;
+				const children = element.children;
 				const length = children.length;	// for IE8
 				const target = isVertical ? ["Y", "X"] : ["X", "Y"];
 
@@ -70,15 +74,15 @@ export default class DOMRenderer {
 					container.appendChild(children[0]);
 				}
 
-				base.style.overflow[target[0]] = "scroll";
-				base.style.overflow[target[1]] = "hidden";
-				base.appendChild(container);
+				element.style.overflow[target[0]] = "scroll";
+				element.style.overflow[target[1]] = "hidden";
+				element.appendChild(container);
 			}
-			this._view = base;
+			this._view = element;
 			this._container = container;
 		} else {
 			this._view = window;
-			this._container = base;
+			this._container = element;
 		}
 	}
 	append(items) {
@@ -93,8 +97,11 @@ export default class DOMRenderer {
 	}
 	clear() {
 		this._container.innerHTML = "";
-		this._container.style.height = "";
-		this._size = -1;
+		this._container.style[this._isVertical ? "height" : "width"] = "";
+		this._size = {
+			container: -1,
+			view: -1,
+		};
 	}
 	createAndInsert(items, isAppend) {
 		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(
@@ -125,39 +132,32 @@ export default class DOMRenderer {
 	setSize(size) {
 		this._container.style[this._isVertical ? "height" : "width"] = `${size}px`;
 	}
+	getView() {
+		return this._view;
+	}
+	getViewSize() {
+		return this._size.view;
+	}
 	getSize() {
 		this.resize();
-		return this._size;
+		return this._size.container;
 	}
 	resize() {
-		if (this._isNeededResize()) {
-			this._size = this._calcSize();
+		if (this.isNeededResize()) {
+			this._size = {
+				container: this._calcSize(),
+				view: this._isVertical ? innerHeight(this._view) : innerWidth(this._view),
+			};
+			console.log("resize", this._size);
 			return true;
 		}
-		console.log("resize", this._size);
 		return false;
 	}
-	_isNeededResize() {
+	isNeededResize() {
 		return this._calcSize() !== this._size;
 	}
-	// _attachEvent() {
-	// 	addEvent(window, "resize", this._onResize);
-	// }
-	// _onResize() {
-	// 	if (this._timer.resize) {
-	// 		clearTimeout(this._timer.resize);
-	// 	}
-	// 	this._timer.resize = setTimeout(() => {
-	// 		if (this.isNeededResize()) {
-	// 			this._resizeViewport();
-	// 			this.layout();
-	// 		}
-	// 		this._timer.resize = null;
-	// 		this._status.prevScrollTop = -1;
-	// 	}, 100);
-	// }
-	// _detachEvent() {
-	// 	removeEvent(window, "resize", this._onResize);
-	// }
+	destroy() {
+		this._size = -1;
+	}
 }
 

@@ -16,3 +16,4 @@ export const MULTI = true;
 export const SINGLE = false;
 export const DUMMY_POSITION = -100000;
 export const GROUPKEY_ATT = "data-groupkey";
+export const SUPPORT_INTERSECTIONOBSERVER = "IntersectionObserver" in window;
