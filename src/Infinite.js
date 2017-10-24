@@ -16,9 +16,9 @@ import {
 	CACHE,
 	NO_CACHE,
 } from "./consts";
-import {
-	$,
-} from "./utils";
+// import {
+// 	$,
+// } from "./utils";
 
 export {JustifiedLayout, GridLayout, FrameLayout, SquareLayout};
 
