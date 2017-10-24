@@ -96,11 +96,13 @@ export function removeEvent(element, type, handler) {
 		element[`on${type}`] = null;
 	}
 }
-export function scrollTop(el) {
+export function scroll(el, direction) {
+	const prop = `scroll${direction === "vertical" ? "Top" : "Left"}`;
+
 	if (el === window) {
-		return document.body.scrollTop || document.documentElement.scrollTop;
+		return document.body[prop] || document.documentElement[prop];
 	} else {
-		return el.scrollTop;
+		return el[prop];
 	}
 }
 export function scrollTo(el, x, y) {
