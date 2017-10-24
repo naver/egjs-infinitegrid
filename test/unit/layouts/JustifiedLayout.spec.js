@@ -1,14 +1,14 @@
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "./data";
-import { checkMargin, checkDirection, expectConnectItems, expectOutlineIndex, expectNoOutline, expectSameAppendPrepend, expectAppend } from "./common";
-import Layout from "../../../src/layouts/GridLayout";
-import {ALIGN} from "../../../src/layouts/Constants";
-import {getStyleNames} from "../../../src/layouts/utils";
+import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend } from "./common";
+import Layout from "../../../src/layouts/JustifiedLayout";
+import { ALIGN } from "../../../src/layouts/Constants";
+import { getStyleNames } from "../../../src/layouts/utils";
 
 // ALIGN
-const {START, CENTER, END, JUSTIFY} = ALIGN;
+const { START, CENTER, END, JUSTIFY } = ALIGN;
 
-describe("GridLayout Test", function () {
+describe("JustifiedLayout Test", function () {
 	const items = makeItems(20);
 	const width = 100;
 
@@ -46,19 +46,6 @@ describe("GridLayout Test", function () {
 			layout.setSize(VIEWPORT.width);
 			// Then
 			expectAppend(layout, items, [100, 100, 100, 100]);
-			
-		});
-		it("test outline indicies", function () {
-			// Given
-			const layout = new Layout({
-				itemSize: 200,
-			});
-			layout.setSize(VIEWPORT.width);
-			const group = layout.append(items, []);
-			const group2 = layout.append(items, [-1, 1, 2, -2]);
-			// Then
-			expectOutlineIndex(layout, group);
-			expectOutlineIndex(layout, group2);
 		});
 		it("test prepend from end outline and append from start outline are the same", function () {
 			// Given
@@ -113,7 +100,7 @@ describe("GridLayout Test", function () {
 						margin,
 						direction,
 					});
-					layout.setSize(direction === "vertical" ?VIEWPORT.width : VIEWPORT.height);
+					layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
 					// When
 					const group = layout.prepend(items, []);
 
@@ -152,7 +139,7 @@ describe("GridLayout Test", function () {
 						}
 						const itemLength = parseInt((layout._size + margin) / (100 + margin), 10);
 						const style = getStyleNames(direction);
-						const {size2, pos2} = style;
+						const { size2, pos2 } = style;
 						if (align === CENTER) {
 							expectConnectItems({
 								item1: gitems[0],
@@ -160,7 +147,7 @@ describe("GridLayout Test", function () {
 								margin,
 								direction: direction === "vertical" ? "horizontal" : "vertical",
 							});
-							
+
 							expect(gitems[0].rect[pos2]).to.be.equal(layout._size - (gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2]));
 						} else if (align === END) {
 							expect((gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2])).to.be.equal(layout._size);

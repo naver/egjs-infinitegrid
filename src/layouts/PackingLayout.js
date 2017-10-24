@@ -115,6 +115,7 @@ class PackingLayout {
 		const aspectRatio = this.options.aspectRatio;
 		const margin = this.options.margin;
 		const pos1Name = style.pos1;
+		const size1Name = style.size1;
 		const containerWidth = this._size * (isHorizontal ? aspectRatio : 1);
 		const containerHeight = this._size / (isHorizontal ? 1 : aspectRatio);
 		const containerSize1 = isHorizontal ? containerWidth : containerHeight;
@@ -123,6 +124,11 @@ class PackingLayout {
 			Math.min(...prevOutline) - containerSize1 - margin;
 		const end = start + containerSize1 + margin;
 		const container = new BoxModel({});
+
+		let startIndex = -1;
+		let endIndex = -1;
+		let startPos = -1;
+		let endPos = -1;
 
 		items.forEach(item => {
 			const model = new BoxModel({
@@ -141,11 +147,28 @@ class PackingLayout {
 
 			item.rect = {top, left, width: width - margin, height: height - margin};
 			item.rect[pos1Name] += start;
+
+			if (startIndex === -1) {
+				startIndex = i;
+				endIndex = i;
+				startPos = item.rect[pos1Name];
+				endPos = startPos;
+			}
+			if (startPos > item.rect[pos1Name]) {
+				startPos = item.rect[pos1Name];
+				startIndex = i;
+			}
+			if (endPos < item.rect[pos1Name] + item.rect[size1Name] + margin) {
+				endPos = item.rect[pos1Name] + item.rect[size1Name] + margin;
+				endIndex = i;
+			}
 		});
 
 		return {
 			start: [start],
 			end: [end],
+			startIndex,
+			endIndex,
 		};
 	}
 	_insert(items, outline, type) {

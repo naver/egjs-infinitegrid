@@ -124,12 +124,16 @@ class JustifiedLayout {
 			height += margin + size1;
 			endPoint = startPoint + height;
 		}
+		const startIndex = length ? 0 : -1;
+		const endIndex = length ? length - 1 : -1;
 
 		if (isAppend) {
 			// previous group's end outline is current group's start outline
 			return {
 				start: [startPoint],
 				end: [endPoint],
+				startIndex,
+				endIndex,
 			};
 		}
 		// for prepend, only substract height from position.
@@ -145,6 +149,8 @@ class JustifiedLayout {
 		return {
 			start: [startPoint - height],
 			end: [startPoint], // endPoint - height = startPoint
+			startIndex,
+			endIndex,
 		};
 	}
 	_insert(items, outline, type) {

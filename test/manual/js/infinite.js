@@ -25,6 +25,11 @@ var infinite = new eg.InfiniteGrid.Infinite("#infinite")
     }
   });
 
+$("#infinite").click(function(e) {
+  var $el = $(e.target);
+  infinite.remove($el.closest(".item").get(0));
+});
+  
 
 
 		// this._layout = new FrameLayout({
@@ -50,9 +55,15 @@ var guioption = {
   clear: function() {
     infinite.clear();
   },
+  fit: function() {
+    infinite._fit();
+  },
   layout: function() {
     infinite.layout();
   },
+  layout_no: function() {
+    infinite.layout(false);
+  },  
   width: 800,
   height: 1000,
   direction: "vertical",
@@ -60,62 +71,62 @@ var guioption = {
 };
 
 function setViewport() {
-  infinite.setViewport(guioption.width, guioption.height);
+  infinite._layout.setViewport(guioption.width, guioption.height);
 }
 var justified = {
   minSize: 100,
   maxSize: 200,
   set: function() {
-    infinite.setLayout(new eg.InfiniteGrid.JustifiedLayout({
-      direction: guioption.direction,
+    infinite.options.direction = guioption.direction;
+    infinite.setLayout(eg.InfiniteGrid.JustifiedLayout, {
       margin: guioption.margin,
       minSize: justified.minSize,
       maxSize: justified.maxSize
-    }));
+    });
     setViewport();
   }
 };
 var grid = {
   align: "start",
   set: function() {
-    infinite.setLayout(new eg.InfiniteGrid.GridLayout({
+    infinite.options.direction = guioption.direction;
+    infinite.setLayout(eg.InfiniteGrid.GridLayout, {
       direction: guioption.direction,
       margin: guioption.margin,
       align: grid.align
-    }));
+    });
     setViewport();
   }
 };
 var packing = {
   aspectRatio: 1.2,
   set: function() {
-    infinite.setLayout(new eg.InfiniteGrid.PackingLayout({
-      direction: guioption.direction,
+    infinite.setLayout(eg.InfiniteGrid.PackingLayout, {
       margin: guioption.margin,
       aspectRatio: packing.aspectRatio
-    }));
+    });
     setViewport();
   }
 };
 var facebook = {
   column: 1,
   set: function() {
-    infinite.setLayout(new eg.InfiniteGrid.FacebookLayout({
-      direction: guioption.direction,
+    infinite.options.direction = guioption.direction;
+    infinite.setLayout(eg.InfiniteGrid.FacebookLayout, {
       margin: guioption.margin,
       column: facebook.column
-    }));
+    });
     setViewport();
   }
 };
 var frame = {
   frame: [[]],
   set: function() {
-    infinite.setLayout(new eg.InfiniteGrid.FrameLayout({
-      direction: guioption.direction,
+    infinite.options.direction = guioption.direction;
+    infinite.setLayout(eg.InfiniteGrid.FrameLayout, {
       margin: guioption.margin,
       frame: facebook.column
-    }));
+    });
     setViewport();
   }
 };
@@ -124,7 +135,9 @@ var fold0 = gui.addFolder("Action");
 fold0.add(guioption, "requestPrepend");
 fold0.add(guioption, "requestAppend");
 fold0.add(guioption, "clear");
+fold0.add(guioption, "fit");
 fold0.add(guioption, "layout");
+fold0.add(guioption, "layout_no");
 fold0.open();
 
 var fold1 = gui.addFolder("Data");
@@ -151,7 +164,7 @@ fold4.add(packing, "set");
 fold4.open();
 
 var fold5 = gui.addFolder("FacebookLayout");
-fold5.add(facebook, "column", 1, 10).onFinishChange(() => facebook.set());
+fold5.add(facebook, "column", 1, 10).step(1).onFinishChange(() => facebook.set());
 fold5.add(facebook, "set");
 fold5.open();
 
@@ -160,7 +173,12 @@ var fold6 = gui.addFolder("FrameLayout");
 fold6.add(frame, "set");
 fold6.open();
 
-
+infinite.setLayout(eg.InfiniteGrid.GridLayout, {
+  direction: guioption.direction,
+  margin: guioption.margin,
+  align: grid.align
+});
+setViewport();
 // frame: [
 //   // 		["C", "", "A", "A", "A"],
 //   // 		["C", "B", "B", "E", "E"],
