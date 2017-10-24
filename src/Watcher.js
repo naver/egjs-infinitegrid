@@ -50,9 +50,9 @@ export default class Watcher {
 		// 	return;
 		// }
 		const scrollPos = scroll(this._target, this.options.direction);
-		console.log("scrollPos", scrollPos);
 		const prevPos = this._prevPos;
 
+		console.log("scrollPos", scrollPos);
 		if ((IS_IOS && scrollPos === 0) || prevPos === scrollPos) {
 			return;
 		}
