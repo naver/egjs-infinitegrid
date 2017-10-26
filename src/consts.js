@@ -2,6 +2,24 @@ import {window} from "./browser";
 
 const ua = window.navigator.userAgent;
 
+export const SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in window);
+export const SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
+export const SUPPORT_PASSIVE = (() => {
+	let supportsPassiveOption = false;
+
+	try {
+		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
+			document.addEventListener("test", null, Object.defineProperty({},
+				"passive", {
+					get() {
+						supportsPassiveOption = true;
+					},
+				}));
+		}
+	} catch (e) {}
+	return supportsPassiveOption;
+})();
+
 export const IS_IE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
 export const IS_IOS = /iPhone|iPad/.test(ua);
 export const IS_ANDROID2 = /Android 2\./.test(ua);

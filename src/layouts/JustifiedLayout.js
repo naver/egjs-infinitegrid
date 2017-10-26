@@ -52,18 +52,18 @@ class JustifiedLayout {
 	}
 	_getCost(items, i, j, size1Name, size2Name) {
 		const size = this._getSize(items.slice(i, j), size1Name, size2Name);
-		const min = this.options.minSize;
+		const min = this.options.minSize || 0;
 		const max = this.options.maxSize || Infinity;
 
 		if (isFinite(max)) {
 			// if this size is not in range, the cost increases sharply.
 			if (size < min) {
-				return Math.pow(size - min, 2);
+				return Math.pow(size - min, 2) + Math.pow(max, 2);
 			} else if (size > max) {
-				return Math.pow(size - max, 2);
+				return Math.pow(size - max, 2) + Math.pow(max, 2);
 			} else {
 				// if this size in range, the cost is negative or low.
-				return size - max;
+				return Math.min(size - max, min - size);
 			}
 		}
 		// if max is infinite type, caculate cost only with "min".
@@ -72,7 +72,7 @@ class JustifiedLayout {
 		}
 		return size - min;
 	}
-	_setStyle(items, path, outline, isAppend) {
+	_setStyle(items, path, outline = [], isAppend) {
 		const style = this._style;
 		// if direction is vertical
 		// pos1 : top, pos11 : bottom
@@ -124,8 +124,9 @@ class JustifiedLayout {
 			height += margin + size1;
 			endPoint = startPoint + height;
 		}
-		const startIndex = length ? 0 : -1;
-		const endIndex = length ? length - 1 : -1;
+		const itemsLength = items.length;
+		const startIndex = itemsLength ? 0 : -1;
+		const endIndex = itemsLength ? itemsLength - 1 : -1;
 
 		if (isAppend) {
 			// previous group's end outline is current group's start outline
@@ -138,7 +139,6 @@ class JustifiedLayout {
 		}
 		// for prepend, only substract height from position.
 		// always start is lower than end.
-		const itemsLength = items.length;
 
 		for (let i = 0; i < itemsLength; ++i) {
 			const item = items[i];

@@ -31,12 +31,15 @@ export default class ItemManager {
 	static pluck(data, property) {
 		return data.reduce((acc, v) => acc.concat(v[property]), []);
 	}
+	// @todo you should check imagesize from data-attribute
 	static updateSize(items) {
 		return items.map(item => {
-			item.size = {
-				width: innerWidth(item.el),
-				height: innerHeight(item.el),
-			};
+			if (item.el) {
+				item.size = {
+					width: innerWidth(item.el),
+					height: innerHeight(item.el),
+				};
+			}
 			return item;
 		});
 	}
@@ -45,16 +48,16 @@ export default class ItemManager {
 		this.clear();
 	}
 	size() {
-		return this.data.length;
+		return this._data.length;
 	}
 	fit(base, isVertical) {
-		if (!this.data.length) {
+		if (!this._data.length) {
 			return;
 		}
 		const property = isVertical ? "top" : "left";
 
 		if (base !== 0) {
-			this.data = this.data.map(v => {
+			this._data = this._data.map(v => {
 				v.items = v.items.map(item => {
 					item.rect[property] -= base;
 					return item;
@@ -68,33 +71,31 @@ export default class ItemManager {
 	pluck(property, start, end) {
 		if (typeof start !== "undefined") {
 			if (typeof end !== "undefined") {
-				return ItemManager.pluck(this.data.slice(start, end + 1), property);
+				return ItemManager.pluck(this._data.slice(start, end + 1), property);
 			} else {
-				return ItemManager.pluck(this.data.slice(start, start + 1), property);
+				return ItemManager.pluck(this._data.slice(start, start + 1), property);
 			}
 		} else {
-			return ItemManager.pluck(this.data, property);
+			return ItemManager.pluck(this._data, property);
 		}
 	}
 	getOutline(index, property) {
-		if (this.data.length) {
-			return this.data[index].outlines[property];
+		if (this._data.length) {
+			return this._data[index].outlines[property];
 		} else {
 			return [];
 		}
 	}
 	append(layouted) {
-		this.data.push(layouted);
-		console.log("append", this.data);
+		this._data.push(layouted);
 		return layouted.items;
 	}
 	prepend(layouted) {
-		this.data.unshift(layouted);
-		console.log("prepend", this.data);
+		this._data.unshift(layouted);
 		return layouted.items;
 	}
 	clear() {
-		this.data = [];
+		this._data = [];
 	}
 	remove(element, start, end) {
 		let items = null;
@@ -127,28 +128,28 @@ export default class ItemManager {
 	get(start, end) {
 		if (typeof start !== "undefined") {
 			if (typeof end !== "undefined") {
-				return this.data.slice(start, end + 1);
+				return this._data.slice(start, end + 1);
 			} else {
-				return this.data.slice(start, start + 1);
+				return this._data.slice(start, start + 1);
 			}
 		} else {
-			return this.data.concat();
+			return this._data.concat();
 		}
 	}
 	set(data, key) {
 		if (typeof key !== "undefined" && !Array.isArray(data)) {
-			const len = this.data.length;
+			const len = this._data.length;
 			let idx = -1;
 
 			for (let i = 0; i < len; i++) {
-				if (this.data[i].groupKey === key) {
+				if (this._data[i].groupKey === key) {
 					idx = i;
 					break;
 				}
 			}
-			~idx && (this.data[idx] = data);
+			~idx && (this._data[idx] = data);
 		} else {
-			this.data = data.concat();
+			this._data = data.concat();
 		}
 	}
 }

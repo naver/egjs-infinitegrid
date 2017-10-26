@@ -1,7 +1,7 @@
 import FrameLayout from "./FrameLayout";
 
 function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
-	const point = Math[isAppend ? "min" : "max"](...outline);
+	const point = Math[isAppend ? "min" : "max"](...outline) || 0;
 
 	if (outline.length !== columnLength) {
 		return new Array(columnLength).fill(0);
@@ -22,8 +22,7 @@ class SquareLayout extends FrameLayout {
 		// if itemSize is not in options, caculate itemSize from size.
 		this._itemSize = (this._size + margin) / column - margin;
 	}
-	_layout(items, outline, isAppend) {
-		const style = this._style;
+	_layout(items, outline = [], isAppend) {
 		const itemSize = this._getItemSize();
 		const margin = this.options.margin;
 		const columnLength = this.options.column ||
@@ -61,11 +60,39 @@ class SquareLayout extends FrameLayout {
 				endOutline[index + j] = point + sign * columnCount;
 			}
 		}
+		const style = this._style;
+		const pos1Name = style.pos1;
+		const pos2Name = style.pos2;
+
 		this._shapes = {
 			shapes,
 			[style.size2]: columnLength,
 		};
-		return super._layout(items, outline, isAppend);
+		const result = super._layout(items, outline, isAppend);
+
+		shapes.sort((shape1, shape2) => {
+			const item1pos1 = shape1[pos1Name];
+			const item1pos2 = shape1[pos2Name];
+			const item2pos1 = shape2[pos1Name];
+			const item2pos2 = shape2[pos2Name];
+
+			if (item1pos1 - item2pos1) {
+				return item1pos1 - item2pos1;
+			}
+			return item1pos2 - item2pos2;
+		});
+		items.sort((a, b) => {
+			const item1pos1 = a.rect[pos1Name];
+			const item1pos2 = a.rect[pos2Name];
+			const item2pos1 = b.rect[pos1Name];
+			const item2pos2 = b.rect[pos2Name];
+
+			if (item1pos1 - item2pos1) {
+				return item1pos1 - item2pos1;
+			}
+			return item1pos2 - item2pos2;
+		});
+		return result;
 	}
 }
 

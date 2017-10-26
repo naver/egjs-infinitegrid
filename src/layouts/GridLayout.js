@@ -69,6 +69,7 @@ class GridLayout {
 			const size2 = item.size[size2Name];
 			const pos1 = isAppend ? point : point - margin - size1;
 			const endPos1 = pos1 + size1 + margin;
+
 			if (index === -1) {
 				index = 0;
 			}

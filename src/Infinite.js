@@ -1,24 +1,14 @@
-import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
 import ImageLoaded from "./ImageLoaded";
 import Watcher from "./Watcher";
-
-import GridLayout from "./layouts/GridLayout";
-import FrameLayout from "./layouts/FrameLayout";
-import SquareLayout from "./layouts/SquareLayout";
-// import PackingLayout from "./layouts/PackingLayout";
-import JustifiedLayout from "./layouts/JustifiedLayout";
-
 import {
 	APPEND,
 	PREPEND,
 	CACHE,
 	NO_CACHE,
+	IS_ANDROID2,
 } from "./consts";
-// import {
-// 	$,
-// } from "./utils";
 
 export {JustifiedLayout, GridLayout, FrameLayout, SquareLayout};
 
@@ -161,7 +151,7 @@ export class Infinite extends Component {
 	 *
 	 */	
 	layout(isRelayout = true) {
-		if (!this._layout) {
+		if (!this._layout || this.isProcessing() || !this._items.size()) {
 			return this;
 		}
 		let data;
@@ -189,6 +179,7 @@ export class Infinite extends Component {
 		} else {
 			data.forEach(v => this._items.set(v, v.groupKey));
 		}
+		this._onLayoutComplete(data, true, true);
 		DOMRenderer.renderItems(this.getVisibleItems());
 		this._renderer.setSize(this._getEdgePos("end"));
 		return this;
@@ -203,8 +194,12 @@ export class Infinite extends Component {
 		if (element) {
 			const items = this._items.remove(element, this._startCursor, this._endCursor);
 
-			items && DOMRenderer.removeElement(element);
+			if (items) {
+				DOMRenderer.removeElement(element);
+				return items;
+			}
 		}
+		return null;
 	}
 	_getItems(isAppend) {
 		let items = [];
@@ -242,8 +237,11 @@ export class Infinite extends Component {
 		this._recycle(items, isAppend);
 		this._afterRecycle(NO_CACHE, items, isAppend);
 	}
+
 	// add items, and remove items for recycling
 	_recycle(items, isAppend) {
+		// const basicSize = this._renderer.getViewSize() + (2 * this.options.threshold);
+
 		const baseCount = items.length - this.options.count;
 		/* eslint-disable no-unused-vars */
 		let diff;
@@ -287,7 +285,7 @@ export class Infinite extends Component {
 			this._recycle(items, APPEND);
 			this._afterRecycle(CACHE, items, APPEND);
 		} else {
-			this.trigger("append");
+			this.callback.append && this.callback.append();
 		}
 	}
 	// called by visible
@@ -298,7 +296,7 @@ export class Infinite extends Component {
 			this._recycle(items, PREPEND);
 			this._afterRecycle(CACHE, items, PREPEND);
 		} else {
-			this.trigger("prepend");
+			this.callback.prepend && this.callback.prepend();
 		}
 	}
 	_afterRecycle(fromCache, items, isAppend) {
