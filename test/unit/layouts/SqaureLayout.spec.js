@@ -2,25 +2,16 @@
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "./data";
 import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline} from "./common";
-import Layout from "../../../src/layouts/JustifiedLayout";
+import Layout from "../../../src/layouts/SquareLayout";
 import { getStyleNames } from "../../../src/layouts/utils";
 
 
-describe("JustifiedLayout Test", function () {
+describe("SquareLayout Test", function () {
 	const items = makeItems(20);
 	const width = 100;
 
-	items.forEach(item => {
-		const ratio = item.size.height / item.size.width;
-		item.size.width = width;
-		item.size.height = width * ratio;
-	});
-	const items2 = makeItems(20);
-	items2.forEach(item => {
-		const ratio = item.size.height / item.size.width;
-		item.size.width = width / ratio;
-		item.size.height = width
-	});
+	items[0].column = 2;
+	items[2].column = 2;
 	describe("layout common test", function () {
 		it("no outline test", () => {
 			// When
@@ -43,7 +34,9 @@ describe("JustifiedLayout Test", function () {
 
 			layout.setSize(VIEWPORT.width);
 			// Then
-			expectAppend(layout, items, [100]);
+			// Then
+			const length = parseInt(VIEWPORT.width / 200);
+			expectAppend(layout, items, new Array(length).fill(100));
 		});
 		it("test prepend from end outline and append from start outline are the same", function () {
 			// Given
@@ -62,6 +55,7 @@ describe("JustifiedLayout Test", function () {
 				// Given
 				const layout = new Layout({
 					margin,
+					itemSize: 100,
 				});
 				layout.setSize(VIEWPORT.width);
 				// When
@@ -83,36 +77,8 @@ describe("JustifiedLayout Test", function () {
 					margin,
 					direction: "horizontal",
 				});
-			});
-			it(`test items' size (margin = ${margin})`, () => {
-				// Given
-				const layout = new Layout({
-					margin,
-				});
-				layout.setSize(VIEWPORT.width);
-				const group = layout.append(items, [1]);
-
-
-				const lines = [];
-				let top = 0;
-				group.items.forEach(item => {
-					if (item.rect.top !== top) {
-						lines.push([]);
-					}
-					lines[lines.length - 1].push(item);
-					top = item.rect.top;
-				});
-				
-				lines.forEach(line => {
-					expect(line.every(item => item.rect.top === line[0].rect.top)).to.be.true;
-					expect(line[0].rect.left).to.be.equal(0);
-					expect(line[line.length - 1].rect.left + line[line.length - 1].rect.width).to.be.closeTo(VIEWPORT.width, 0.000000000001);
-					for (let i = 1; i < line.length; ++i) {
-						expect(line[i].rect.left).to.be.equal(line[i - 1].rect.left + line[i - 1].rect.width + margin);
-					}
-				});
-				for (let j = 1; j < lines.length; ++j) {
-					expect(lines[j][0].rect.top).to.be.equal(lines[j - 1][0].rect.top + lines[j - 1][0].rect.height + margin);
+				for (let i = 1; i < gitems.length; ++i) {
+					expect(gitems[i].rect.top).to.be.at.least(gitems[i - 1].rect.top);
 				}
 			});
 			it(`test outline indicies (margin = ${margin})`, function () {
@@ -127,56 +93,6 @@ describe("JustifiedLayout Test", function () {
 				// Then
 				expectOutlineIndex(layout, group);
 				expectOutlineIndex(layout, group2);
-			});
-			it(`test min size (margin = ${margin})`, function() {
-				// Given
-				const layout = new Layout({
-					margin,
-					minSize: 200,
-				});
-				layout.setSize(VIEWPORT.width);
-
-				// When
-				const group = layout.append(items, []);
-				
-				// Then
-				group.items.forEach(item => {
-					expect(item.rect.height).to.at.least(200);
-				});
-			});
-			it (`test max size (margin = ${margin})`, function () {
-				// Given
-				const layout = new Layout({
-					margin,
-					maxSize: 300,
-				});
-				layout.setSize(VIEWPORT.width);
-
-				// When
-				const group = layout.append(items, []);
-
-				// Then
-				group.items.forEach(item => {
-					expect(item.rect.height).to.be.below(300);
-				});
-			});
-			it (`test min & max size (margin = ${margin})`, function () {
-				// Given
-				const layout = new Layout({
-					margin,
-					minSize: 200,
-					maxSize: 300,
-				});
-				layout.setSize(VIEWPORT.width);
-
-				// When
-				const group = layout.append(items, []);
-
-				// Then
-				group.items.forEach(item => {
-					expect(item.rect.height).to.at.least(200);
-					expect(item.rect.height).to.below(300);
-				});
 			});
 		});
 	});
@@ -208,11 +124,12 @@ describe("JustifiedLayout Test", function () {
 					const layout = new Layout({
 						margin,
 						direction,
+						itemSize: 100,
 					});
 					layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
+
 					// When
 					const group = layout.prepend(items, []);
-					const group2 = layout.prepend(items, group.outlines.start);
 
 					// Then
 					const gitems = group.items;
@@ -220,7 +137,6 @@ describe("JustifiedLayout Test", function () {
 					for (let i = 1; i < gitems.length; ++i) {
 						expect(gitems[i].rect[pos]).to.be.at.least(gitems[i - 1].rect[pos]);
 					}
-					expectConnectGroupsOutline(group2, group);
 				});
 			});
 		});
