@@ -20,7 +20,12 @@ import {
 // 	$,
 // } from "./utils";
 
-export {JustifiedLayout, GridLayout, FrameLayout, SquareLayout};
+export {
+	JustifiedLayout,
+	GridLayout,
+	FrameLayout,
+	SquareLayout,
+};
 
 export class Infinite extends Component {
 	constructor(element, options) {
@@ -28,43 +33,34 @@ export class Infinite extends Component {
 		Object.assign(this.options = {
 			itemSelector: "*",
 			count: 60,
+			useCache: true,
+			isOverflowScroll: false,
 			widthAttr: "data-width",
 			heightAttr: "data-height",
-			isOverflowScroll: false,
 			threshold: 300,
-			direction: "vertical",	// @todo change const
+			direction: "vertical", // @todo change const
 			// isEqualSize: false,
 			// defaultGroupKey: null,
 		}, options);
-		this._startCursor = -1;
-		this._endCursor = -1;
-		// this._status = {
-		// 	// isProcessing: false,
-		// 	// prevScrollTop: 0,
-		// 	// topElement: null,
-		// 	// bottomElement: null,
-		// };
+		this._isVertical = this.options.direction === "vertical";
+		this._status = {
+			isProcessing: false,
+			startCursor: -1,
+			endCursor: -1,
+			start: null,
+			end: null,
+		};
 		this._items = new ItemManager();
 		this._renderer = new DOMRenderer(
 			element,
 			this.options.direction === "vertical",
 			this.options.isOverflowScroll);
-		this._watcher = new Watcher(this._renderer.getView(), {
-			threshold: 300,
-			direction: "vertical",
-			callback: {
-				layout: () => this._renderer.isNeededResize() && this.layout(),
-				append: () => {
-					this._requestAppend();
-				},
-				prepend: () => {
-					this._requestPrepend();
-				},
-			},
-		});
-	}
-	_onCheck() {
-		console.log(this._getEdgePos("end") - this._renderer.getViewSize());
+		this._watcher = new Watcher(
+			this._renderer,
+			{
+				layout: () => this.layout(),
+				check: param => this._onCheck(param),
+			});
 	}
 	/**
 	 * Adds a card element at the bottom of a grid layout. This method is available only if the isProcessing() method returns false.
@@ -91,23 +87,17 @@ export class Infinite extends Component {
 		this._layout = new LayoutKlass(Object.assign(options || {}, {
 			direction: this.options.direction,
 		}));
-		this._layout.setSize(this._renderer.getSize());
+		this._layout.setSize(this._renderer.getContainerSize());
 	}
 	getVisibleItems() {
-		return this._items.pluck("items", this._startCursor, this._endCursor);
+		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
 	}
 	_getEdgeIndex(cursor) {
-		let index = this._endCursor;
-		let prop = "max";
-		let targetValue = -Infinite;
+		const prop = cursor === "start" ? "min" : "max";
+		let index = this._status[`${cursor}Cursor`];
+		let targetValue = cursor === "start" ? Infinite : -Infinite;
 
-		if (cursor === "start") {
-			index = this._startCursor;
-			prop = "min";
-			targetValue = Infinite;
-		}
-
-		for (let i = this._startCursor; i <= this._endCursor; i++) {
+		for (let i = this._status.startCursor; i <= this._status.endCursor; i++) {
 			const value = Math[prop](...this._items.getOutline(i, cursor));
 
 			if ((cursor === "start" && targetValue > value) ||
@@ -124,34 +114,58 @@ export class Infinite extends Component {
 				.reduce((acc, v) => acc.concat(v[cursor]), []));
 	}
 	_getEdge(cursor) {
-		const pos = this._getEdgePos(cursor);
-		const prop = this.options.direction === "vertical" ?
-			["top", "height"] : ["left", "width"];
-		const items = this._items.pluck("items", this[`_${cursor}Cursor`])
-			.filter(v => {
-				console.log(v.rect[prop[0]] + v.size[prop[1]], pos);
-				return v.rect[prop[0]] + v.size[prop[1]] === pos;
-			});
+		const dataIdx = this._getEdgeIndex(cursor);
+		const items = this._items.pluck("items", dataIdx);
 
-		return items.length ? items[0] : null;
+		if (items.length) {
+			const itemIdx = this._items.getOutline(dataIdx, `${cursor}Index`);
+
+			return items.length > itemIdx ? items[itemIdx] : null;
+		}
+		return null;
 	}
-	// called by visible
-	_fit() {
-		let base = 0;
+	_updateEdge() {
+		this._status.start = this._getEdge("start");
+		this._status.end = this._getEdge("end");
+		// console.warn("update edge", this._status);
+	}
+	_getEdgeOffset(cursor) {
+		let rect = null;
 
-		if (this._layout) {
-			base = this._getEdgePos("start");
+		if (!this._status[cursor]) {
+			const item = this._getEdge(cursor);
 
-			if (base !== 0) {
-				this._items.fit(base, this._layout.options.direction === "vertical");
-				DOMRenderer.renderItems(this.getVisibleItems());
-				this._renderer.setSize(this._getEdgePos("end"));
-			}
+			this._status[cursor] = item;
 		}
 
-		// base 값만큼 fit 전의 scroll 포지션 값을 바꿈.
-		// scrollTop -= croppedDistance;
-		return base;
+		if (this._status[cursor]) {
+			rect = this._status[cursor].rect;
+			if (cursor === "start") {
+				rect.bottom = rect.top + this._status[cursor].size.height;
+				rect.right = rect.left + this._status[cursor].size.width;
+			}
+		}
+		return rect;
+	}
+	// called by visible
+	_fit(scrollCycle = "after") {
+		// for caching
+		if (this.options.count <= 0) {
+			this._fit = () => 0;
+			return;
+		}
+
+		if (this._layout) {
+			const base = this._getEdgePos("start");
+
+			if (base !== 0) {
+				scrollCycle === "before" && this._renderer.scrollBy(-Math.abs(base));
+				this._items.fit(base, this._isVertical);
+				DOMRenderer.renderItems(this.getVisibleItems());
+				this._renderer.setContainerSize(this._getEdgePos("end"));
+				scrollCycle === "after" && this._renderer.scrollBy(Math.abs(base));
+			}
+		}
 	}
 	/**
 	 * Rearranges a layout.
@@ -159,23 +173,24 @@ export class Infinite extends Component {
 	 * @param {Boolean} [isRelayout=true] Indicates whether a card element is being relayouted <ko>카드 엘리먼트 재배치 여부</ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 *
-	 */	
+	 */
 	layout(isRelayout = true) {
 		if (!this._layout) {
 			return this;
 		}
+		this._status.isProcessing = true;
 		let data;
 		let outline;
 
 		if (isRelayout) { // remove cache
-			data = this._items.get(this._startCursor, this._endCursor);
+			data = this._items.get(this._status.startCursor, this._status.endCursor);
 			this._renderer.resize() &&
 				data.forEach(v => {
 					data.items = ItemManager.updateSize(v.items);
 				});
 		} else {
-			data = this._items.get(this._startCursor, this._items.size());
-			outline = this._items.getOutline(this._startCursor, "start");
+			data = this._items.get(this._status.startCursor, this._items.size());
+			outline = this._items.getOutline(this._status.startCursor, "start");
 		}
 		if (!data.length) {
 			return this;
@@ -184,13 +199,13 @@ export class Infinite extends Component {
 
 		if (isRelayout) {
 			this._items.set(data);
-			this._startCursor = 0;
-			this._endCursor = data.length - 1;
+			this._status.startCursor = 0;
+			this._status.endCursor = data.length - 1;
 		} else {
 			data.forEach(v => this._items.set(v, v.groupKey));
 		}
 		DOMRenderer.renderItems(this.getVisibleItems());
-		this._renderer.setSize(this._getEdgePos("end"));
+		this._renderer.setContainerSize(this._getEdgePos("end"));
 		return this;
 	}
 	/**
@@ -201,7 +216,8 @@ export class Infinite extends Component {
 	 */
 	remove(element) {
 		if (element) {
-			const items = this._items.remove(element, this._startCursor, this._endCursor);
+			const items = this._items.remove(element, this._status.startCursor, this._status
+				.endCursor);
 
 			items && DOMRenderer.removeElement(element);
 		}
@@ -211,11 +227,12 @@ export class Infinite extends Component {
 		const size = this._items.size();
 
 		// from cache
-		if (size > 0 && this._startCursor !== -1 && this._endCursor !== -1) {
-			if (isAppend && size > this._endCursor + 1) {
-				items = this._items.pluck("items", this._endCursor + 1);
-			} else if (!isAppend && this._startCursor > 0) {
-				items = this._items.pluck("items", this._startCursor - 1);
+		if (size > 0 && this._status.startCursor !== -1 && this._status.endCursor !==
+			-1) {
+			if (isAppend && size > this._status.endCursor + 1) {
+				items = this._items.pluck("items", this._status.endCursor + 1);
+			} else if (!isAppend && this._status.startCursor > 0) {
+				items = this._items.pluck("items", this._status.startCursor - 1);
 			}
 		}
 		return items;
@@ -223,12 +240,30 @@ export class Infinite extends Component {
 	clear() {
 		this._items.clear();
 		this._renderer.clear();
-		this._startCursor = -1;
-		this._endCursor = -1;
+		this._status = {
+			isProcessing: false,
+			startCursor: -1,
+			endCursor: -1,
+			start: null,
+			end: null,
+		};
+	}
+	/**
+	 * Checks whether a card element is being added.
+	 * @ko 카드 엘리먼트 추가가 진행 중인지 확인한다
+	 * @return {Boolean} Indicates whether a card element is being added <ko>카드 엘리먼트 추가 진행 중 여부</ko>
+	 */
+	isProcessing() {
+		return this._status.isProcessing;
 	}
 	_insert(elements, groupKey, isAppend) {
-		const key = typeof groupKey === "undefined" ? (new Date().getTime() + Math.floor(
-			Math.random() * 1000)) : groupKey;
+		if (this.isProcessing() || elements.length === 0) {
+			return;
+		}
+		this._status.isProcessing = true;
+		const key = typeof groupKey === "undefined" ? (new Date().getTime() + Math
+			.floor(
+				Math.random() * 1000)) : groupKey;
 
 		const items = ItemManager.from(elements, this.options.itemSelector, {
 			isAppend,
@@ -250,30 +285,33 @@ export class Infinite extends Component {
 		/* eslint-enable no-unused-vars */
 
 		while ((diff = this.getVisibleItems().length + baseCount) > 0) {
-			const toRemoveItems = this._items.pluck("items", isAppend ? this._startCursor : this._endCursor);
+			const toRemoveItems = this._items.pluck("items", isAppend ? this._status.startCursor :
+				this._status.endCursor);
 
 			if (isAppend) {
-				this._startCursor++;
+				this._status.startCursor++;
 			} else {
-				this._endCursor--;
+				this._status.endCursor--;
 			}
 			// recycle
 			DOMRenderer.removeItems(toRemoveItems);
 		}
-		console.warn("recycle [", this._startCursor, this._endCursor, "]");
+		// console.warn("recycle [", this._status.startCursor, this._status.endCursor,
+		// "]");
 	}
 	_updateCursor(isAppend) {
 		if (isAppend) {
-			this._endCursor++;
-		} else if (this._startCursor > 0) {
-			this._startCursor--;
+			this._status.endCursor++;
+		} else if (this._status.startCursor > 0) {
+			this._status.startCursor--;
 		} else {
-			this._endCursor++; // outside prepend
+			this._status.endCursor++; // outside prepend
 		}
-		if (this._startCursor < 0) {
-			this._startCursor = 0;
+		if (this._status.startCursor < 0) {
+			this._status.startCursor = 0;
 		}
-		console.warn("_updateCursor [", this._startCursor, this._endCursor, "]");
+		console.warn("_updateCursor [", this._status.startCursor, this._status.endCursor,
+			"]");
 	}
 	_insertItems(layouted, isAppend) {
 		layouted.groupKey = layouted.items[0].groupKey;
@@ -303,9 +341,8 @@ export class Infinite extends Component {
 	}
 	_afterRecycle(fromCache, items, isAppend) {
 		if (fromCache) {
-			console.log("이건 캐싱");
 			this._renderer.createAndInsert(items, isAppend);
-			this._updateCursor(isAppend);
+			this._onLayoutComplete(items, isAppend);
 		} else {
 			const method = isAppend ? "append" : "prepend";
 
@@ -318,25 +355,74 @@ export class Infinite extends Component {
 					const layouted = this._layout[method](
 						ItemManager.updateSize(items),
 						this._items.getOutline(
-							isAppend ? this._endCursor : this._startCursor,
+							isAppend ? this._status.endCursor : this._status.startCursor,
 							isAppend ? "end" : "start")
 					);
 
 					this._insertItems(layouted, isAppend);
-					this._updateCursor(isAppend);
 					DOMRenderer.renderItems(layouted.items);
-					this._renderer.setSize(this._getEdgePos("end"));
+					this._onLayoutComplete(items, isAppend);
 				},
 			});
 		}
+	}
+	_onCheck({cursor, scrollPos, isVertical}) {
+		if (this.isProcessing()) {
+			return;
+		}
+		const rect = this._getEdgeOffset(cursor);
+		const isAppend = cursor === "end";
+
+		if (!rect) {
+			return;
+		}
+		const targetPos = isAppend ?
+			rect[isVertical ? "top" : "left"] - this._renderer.getViewSize() :
+			rect[isVertical ? "bottom" : "right"];
+
+		if (isAppend) {
+			if (scrollPos >= targetPos) {
+				console.trace("append");
+				this._requestAppend();
+			}
+		} else if (scrollPos <= targetPos) {
+			this._fit("before");
+			this._requestPrepend();
+		}
+	}
+	_onLayoutComplete(items, isAppend) {
+		this._updateCursor(isAppend);
+		this._updateEdge();
+		this._renderer.setContainerSize(this._getEdgePos("end"));
+		!isAppend && this._fit("after");
+		this._status.isProcessing = false;
+		/**
+		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
+		 * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
+		 * @event eg.InfiniteGrid#layoutComplete
+		 *
+		 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+		 * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
+		 * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
+		 * @param {Number} param.distance Distance the card element at the top of a grid layout has moved after the layoutComplete event is fired. In other words, it is the same as an increased height with a new card element added using the prepend() method <ko>그리드 레이아웃의 맨 위에 있던 카드 엘리먼트가 layoutComplete 이벤트 발생 후 이동한 거리. 즉, prepend() 메서드로 카드 엘리먼트가 추가돼 늘어난 높이다.</ko>
+		 * @param {Number} param.croppedCount The number of deleted card elements to maintain the number of DOMs<ko>일정한 DOM 개수를 유지하기 위해, 삭제한 카드 엘리먼트들의 개수</ko>
+		 * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+		 */
+		this.trigger("layoutComplete", {
+			target: items.concat(),
+			isAppend,
+			// distance,
+			// croppedCount: options.removedCount,
+			// isTrusted: options.isTrusted,
+		});
 	}
 	/**
 	 * Destroys elements, properties, and events used on a grid layout.
 	 * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
 	 */
 	destroy() {
-		this._startCursor = -1;
-		this._endCursor = -1;
+		this._status.startCursor = -1;
+		this._status.endCursor = -1;
 		this._items.clear();
 		this._renderer.destroy();
 	}

@@ -96,8 +96,8 @@ export function removeEvent(element, type, handler) {
 		element[`on${type}`] = null;
 	}
 }
-export function scroll(el, direction) {
-	const prop = `scroll${direction === "vertical" ? "Top" : "Left"}`;
+export function scroll(el, isVertical) {
+	const prop = `scroll${isVertical ? "Top" : "Left"}`;
 
 	if (el === window) {
 		return document.body[prop] || document.documentElement[prop];
@@ -107,10 +107,18 @@ export function scroll(el, direction) {
 }
 export function scrollTo(el, x, y) {
 	if (el === window) {
-		el.scrollTo(x, y);
+		el.scroll(x, y);
 	} else {
 		el.scrollLeft = x;
 		el.scrollTop = y;
+	}
+}
+export function scrollBy(el, x, y) {
+	if (el === window) {
+		el.scrollBy(x, y);
+	} else {
+		el.scrollLeft += x;
+		el.scrollTop += y;
 	}
 }
 function _getSize(el, name) {

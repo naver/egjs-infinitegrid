@@ -10,6 +10,8 @@ import {
 	$,
 	// addEvent,
 	// removeEvent,
+	scrollTo,
+	scrollBy,
 	innerHeight,
 	innerWidth,
 } from "./utils";
@@ -44,15 +46,16 @@ export default class DOMRenderer {
 		element.parentNode.removeChild(element);
 	}
 	constructor(element, isVertical = true, isOverflowScroll = false) {
-		this._isVertical = isVertical;
-		this._init(element, isVertical, isOverflowScroll);
-		this.resize();
+		this.isVertical = isVertical;
 		this._size = {
+			containerOffset: 0,
 			container: -1,
 			view: -1,
 		};
+		this._init(element, isOverflowScroll);
+		this.resize();
 	}
-	_init(el, isVertical, isOverflowScroll) {
+	_init(el, isOverflowScroll) {
 		const element = $(el);
 
 		element.style.position = "relative";
@@ -68,7 +71,7 @@ export default class DOMRenderer {
 
 				const children = element.children;
 				const length = children.length;	// for IE8
-				const target = isVertical ? ["Y", "X"] : ["X", "Y"];
+				const target = this.isVertical ? ["Y", "X"] : ["X", "Y"];
 
 				for (let i = 0; i < length; i++) {
 					container.appendChild(children[0]);
@@ -78,11 +81,11 @@ export default class DOMRenderer {
 				element.style.overflow[target[1]] = "hidden";
 				element.appendChild(container);
 			}
-			this._view = element;
-			this._container = container;
+			this.view = element;
+			this.container = container;
 		} else {
-			this._view = window;
-			this._container = element;
+			this.view = window;
+			this.container = element;
 		}
 	}
 	append(items) {
@@ -96,9 +99,10 @@ export default class DOMRenderer {
 		});
 	}
 	clear() {
-		this._container.innerHTML = "";
-		this._container.style[this._isVertical ? "height" : "width"] = "";
+		this.container.innerHTML = "";
+		this.container.style[this.isVertical ? "height" : "width"] = "";
 		this._size = {
+			containerOffset: 0,
 			container: -1,
 			view: -1,
 		};
@@ -122,31 +126,39 @@ export default class DOMRenderer {
 			isAppend ? df.appendChild(item.el) : df.insertBefore(item.el, df.firstChild);
 		});
 		isAppend ?
-			this._container.appendChild(df) :
-			this._container.insertBefore(df, this._container.firstChild);
+			this.container.appendChild(df) :
+			this.container.insertBefore(df, this.container.firstChild);
 	}
 	_calcSize() {
-		return this._isVertical ?
-			innerWidth(this._container) : innerHeight(this._container);
-	}
-	setSize(size) {
-		this._container.style[this._isVertical ? "height" : "width"] = `${size}px`;
-	}
-	getView() {
-		return this._view;
+		return this.isVertical ?
+			innerWidth(this.container) : innerHeight(this.container);
 	}
 	getViewSize() {
 		return this._size.view;
 	}
-	getSize() {
+	scrollBy(point) {
+		const pos = this.isVertical ? [0, point] : [point, 0];
+
+		scrollBy(this.view, ...pos);
+	}
+	getContainerOffset() {
+		return this._size.containerOffset;
+	}
+	getContainerSize() {
 		this.resize();
 		return this._size.container;
 	}
+	setContainerSize(size) {
+		this.container.style[this.isVertical ? "height" : "width"] = `${size}px`;
+	}
 	resize() {
 		if (this.isNeededResize()) {
+			const containerPos = this.container.getBoundingClientRect();
+
 			this._size = {
+				containerOffset: this.isVertical ? containerPos.top : containerPos.left,
 				container: this._calcSize(),
-				view: this._isVertical ? innerHeight(this._view) : innerWidth(this._view),
+				view: this.isVertical ? innerHeight(this.view) : innerWidth(this.view),
 			};
 			console.log("resize", this._size);
 			return true;
@@ -154,7 +166,7 @@ export default class DOMRenderer {
 		return false;
 	}
 	isNeededResize() {
-		return this._calcSize() !== this._size;
+		return this._calcSize() !== this._size.container;
 	}
 	destroy() {
 		this._size = -1;

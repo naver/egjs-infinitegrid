@@ -34,7 +34,7 @@ export function assignOptions(defaultOptions, options) {
 }
 
 export function toZeroArray(outline) {
-	if (outline.length === 0) {
+	if (!outline || !outline.length) {
 		return [0];
 	}
 	return outline;

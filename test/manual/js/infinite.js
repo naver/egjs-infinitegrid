@@ -20,9 +20,9 @@ var infinite = new eg.InfiniteGrid.Infinite("#infinite")
     "append": function(e) {
       e.currentTarget.append(getItems(0), count++);
     },
-    "prepend": function(e) {
-      e.currentTarget.prepend(getItems(2), count++);
-    }
+    // "prepend": function(e) {
+    //   e.currentTarget.prepend(getItems(2), count++);
+    // }
   });
 
 $("#infinite").click(function(e) {

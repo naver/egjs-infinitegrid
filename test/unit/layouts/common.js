@@ -22,9 +22,9 @@ export function expectOutlineIndex(layout, group) {
 
 	const startItem = group.items[startIndex];
 	const endItem = group.items[endIndex];
-	
-	expect(startItem.rect[pos1]).to.be.equal(Math.min(...start));
-	expect(endItem.rect[pos1] + (endItem.rect[size1] || endItem.size[size1]) + margin).to.be.equal(Math.max(...end));
+
+	expect(approximate(startItem.rect[pos1])).to.be.equal(approximate(Math.min(...start)));
+	expect(approximate(endItem.rect[pos1] + (endItem.rect[size1] || endItem.size[size1]) + margin)).to.be.equal(approximate((Math.max(...end))));
 }
 export function expectAppend(layout, items, outline) {
 	// When
@@ -44,7 +44,7 @@ export function expectSameAppendPrepend(layout, items) {
 	const rect1 = group1.items.map(item => approximate(item.rect));
 	const rect2 = group2.items.map(item => approximate(item.rect));
 
-	expect(rect1).to.deep.equal(rect2);	
+	expect(rect1).to.deep.equal(rect2);
 }
 export function expectNoOutline(layout, items) {
 	// When
@@ -69,6 +69,10 @@ export function expectConnectItems({item1, item2, margin = 0, direction = "verti
 	} else {
 		expect(item1.rect.left + (item1.rect.width || item1.size.width) + margin).to.be.equal(item2.rect.left);
 	}
+}
+export function expectConnectGroupsOutline(group1, group2) {
+	expect(group1.outlines.end.length).to.be.equal(group2.outlines.start.length);
+	expect(group1.outlines.end).to.deep.equal(group2.outlines.start);
 }
 export function expectConnectGroups({group1, items1, group2, items2, margin = 0, isConnect = true, direction = "vertical"}) {
 	const end = group1.outlines.end;
