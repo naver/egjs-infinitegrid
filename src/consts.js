@@ -1,9 +1,10 @@
 import {window} from "./browser";
 
 const ua = window.navigator.userAgent;
-const SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in window);
-const SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
-const SUPPORT_PASSIVE = (() => {
+
+export const SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in window);
+export const SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
+export const SUPPORT_PASSIVE = (() => {
 	let supportsPassiveOption = false;
 
 	try {
