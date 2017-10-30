@@ -1,22 +1,9 @@
 import {window, document} from "./browser";
-
-const SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in window);
-const SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
-const SUPPORT_PASSIVE = (() => {
-	let supportsPassiveOption = false;
-
-	try {
-		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
-			document.addEventListener("test", null, Object.defineProperty({},
-				"passive", {
-					get() {
-						supportsPassiveOption = true;
-					},
-				}));
-		}
-	} catch (e) {}
-	return supportsPassiveOption;
-})();
+import {
+	SUPPORT_COMPUTEDSTYLE,
+	SUPPORT_ADDEVENTLISTENER,
+	SUPPORT_PASSIVE,
+} from "./consts";
 
 export function toArray(nodes) {
 	// SCRIPT5014 in IE8
@@ -146,24 +133,3 @@ export function innerWidth(el) {
 export function innerHeight(el) {
 	return _getSize(el, "Height");
 }
-export function isEmptyObject(obj) {
-	let name;
-
-	for (name in obj) {
-		return false;
-	}
-	return true;
-}
-
-
-class MixinBuilder {
-	constructor(superclass) {
-		this.superclass = superclass || class {};
-	}
-	with(...mixins) {
-		return mixins.reduce((c, m) => m(c), this.superclass);
-	}
-}
-
-export const Mixin = superclass => new MixinBuilder(superclass);
-

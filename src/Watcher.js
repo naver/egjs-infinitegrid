@@ -36,16 +36,16 @@ export default class Watcher {
 		addEvent(window, "resize", this._onResize);
 	}
 	_onCheck() {
-		const scrollPos = scroll(this._renderer.view, this._renderer.isVertical);
+		let scrollPos = scroll(this._renderer.view, this._renderer.isVertical);
 		const prevPos = this._prevPos;
 
-		// console.log("raw scrollPos", scrollPos);
 		if ((IS_IOS && scrollPos === 0) || prevPos === scrollPos) {
 			return;
 		}
+		scrollPos -= this._renderer.getContainerOffset();
 		this._callback.check && this._callback.check({
 			cursor: prevPos < scrollPos ? "end" : "start",
-			scrollPos: scrollPos - this._renderer.getContainerOffset(),
+			scrollPos,
 			isVertical: this._renderer.isVertical,
 		});
 		this._prevPos = scrollPos;

@@ -10,7 +10,6 @@ import {
 	$,
 	// addEvent,
 	// removeEvent,
-	scrollTo,
 	scrollBy,
 	innerHeight,
 	innerWidth,

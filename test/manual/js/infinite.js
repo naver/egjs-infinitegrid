@@ -15,14 +15,20 @@ function getItems(groupNo) {
 
 var count = 0;
 
-var infinite = new eg.InfiniteGrid.Infinite("#infinite")
+var infinite = new eg.InfiniteGrid("#infinite")
   .on({
+    "layoutComplete": function(e) {
+      // cached.  
+    },
+    "change": function(e) {
+      
+    },
     "append": function(e) {
       e.currentTarget.append(getItems(0), count++);
     },
-    // "prepend": function(e) {
-    //   e.currentTarget.prepend(getItems(2), count++);
-    // }
+    "prepend": function(e) {
+      e.currentTarget.prepend(getItems(2), count++);
+    }
   });
 
 $("#infinite").click(function(e) {
