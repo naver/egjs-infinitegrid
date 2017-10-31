@@ -151,14 +151,11 @@ export default class DOMRenderer {
 	}
 	resize() {
 		if (this.isNeededResize()) {
-			const containerPos = this.container.getBoundingClientRect();
-
 			this._size = {
-				containerOffset: this.isVertical ? containerPos.top : containerPos.left,
+				containerOffset: this.container[`offset${this.isVertical ? "Top" : "Left"}`],
 				container: this._calcSize(),
 				view: this.isVertical ? innerHeight(this.view) : innerWidth(this.view),
 			};
-			console.log("resize", this._size);
 			return true;
 		}
 		return false;

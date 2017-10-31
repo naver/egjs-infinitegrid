@@ -2,15 +2,9 @@ import {MULTI, GROUPKEY_ATT} from "./consts";
 import {$, toArray, innerWidth, innerHeight} from "./utils";
 
 export default class ItemManager {
-	static from(elements, selector, {groupKey, maxCount, isAppend}) {
+	static from(elements, selector, {groupKey, isAppend}) {
 		const filted = ItemManager.selectItems($(elements, MULTI), selector);
 
-		// trim
-		if (maxCount <= filted.length) {
-			isAppend ?
-				filted.splice(0, filted.length - maxCount) :
-				filted.splice(maxCount);
-		}
 		// Item Structure
 		return toArray(filted).map(el => ({
 			el,

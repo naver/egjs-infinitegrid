@@ -27,11 +27,12 @@ export const RETRY = 3;
 export const CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
 
 export const APPEND = true;
+export const PREPEND = false;
 export const CACHE = true;
 export const NO_CACHE = false;
-export const PREPEND = false;
+export const TRUSTED = true;
+export const NO_TRUSTED = false;
 export const MULTI = true;
 export const SINGLE = false;
 export const DUMMY_POSITION = -100000;
 export const GROUPKEY_ATT = "data-groupkey";
-export const SUPPORT_INTERSECTIONOBSERVER = "IntersectionObserver" in window;
