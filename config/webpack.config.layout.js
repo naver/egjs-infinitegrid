@@ -12,7 +12,8 @@ var config = {
 		"FrameLayout": "./src/layouts/FrameLayout.js",
 		"SquareLayout": "./src/layouts/SquareLayout.js",
 		"LightBoxLayout": "./src/layouts/LightBoxLayout.js",
-		"PackingLayout": "./src/layouts/PackingLayout.js"
+		"PackingLayout": "./src/layouts/PackingLayout.js",
+		"Parallax": "./src/Parallax.js",
 	},
 	output: {
 		path: path.resolve(__dirname, "../dist"),
