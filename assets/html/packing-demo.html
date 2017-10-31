@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Packing layout demo</title>
+    <style>
+        ._item{
+            overflow:hidden;
+            width:0;
+            height:0;
+            position:absolute;
+            border:2px solid #fff;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<h1 style="text-align: center;">Packing Layout demo</h1>
+<div class="_layout" style="position:relative; width:1200px; height:900px; margin: 20px auto;">
+    <div class="_item">
+        <img src="../image/1.jpg" class="_img" />
+    </div>
+    <div class="_item">
+        <img src="../image/2.jpg" class="_img" />
+    </div>
+    <div class="_item">
+        <img src="../image/3.jpg" class="_img" />
+    </div>
+    <div class="_item">
+        <img src="../image/26.jpg" class="_img" />
+    </div>
+    <div class="_item">
+        <img src="../image/5.jpg" class="_img" />
+    </div>
+    <div class="_item">
+        <img src="../image/7.jpg" class="_img" />
+    </div>
+    <div class="_item">
+        <img src="../image/8.jpg" class="_img" />
+    </div>
+    <div class="_item">
+        <img src="../image/19.jpg" class="_img" />
+    </div>
+    <div class="_item">
+        <img src="../image/18.jpg" class="_img" />
+    </div>
+</div>
+<script type="text/javascript" src="../../common/js/jquery-2.2.4.js"></script>
+<script type="text/javascript" src="../js/eg.min.js"></script>
+<script type="text/javascript" src="../js/PackingLayout.js"></script>
+<script>
+new PackingLayout({
+    containerWidth: 1200,
+    containerHeight: 900
+})
+</script>
+</body>
+</html>
