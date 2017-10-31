@@ -72,7 +72,6 @@ var justified = {
   maxSize: 200,
   set: function() {
     infinite.options.direction = guioption.direction;
-    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.JustifiedLayout, {
       margin: guioption.margin,
       minSize: justified.minSize,
@@ -85,7 +84,6 @@ var grid = {
   align: "start",
   set: function() {
     infinite.options.direction = guioption.direction;
-    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.GridLayout, {
       direction: guioption.direction,
       margin: guioption.margin,
@@ -108,7 +106,6 @@ var square = {
   column: 1,
   set: function() {
     infinite.options.direction = guioption.direction;
-    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.SquareLayout, {
       margin: guioption.margin,
       column: square.column
@@ -120,7 +117,6 @@ var frame = {
   frame: [],
   set: function() {
     infinite.options.direction = guioption.direction;
-    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.FrameLayout, {
       margin: guioption.margin,
       frame: frame.frame

@@ -29,26 +29,32 @@ export default class Watcher {
 		return this._prevPos;
 	}
 	setScrollPos(pos) {
-		this._prevPos = pos;
+		let rawPos = pos;
+
+		if (typeof pos === "undefined") {
+			rawPos = scroll(this._renderer.view, this._renderer.isVertical);
+		}
+		this._prevPos = rawPos - this._renderer.getContainerOffset();
 	}
 	_attachEvent() {
 		addEvent(this._renderer.view, "scroll", this._onCheck);
 		addEvent(window, "resize", this._onResize);
 	}
 	_onCheck() {
-		let scrollPos = scroll(this._renderer.view, this._renderer.isVertical);
-		const prevPos = this._prevPos;
+		const rawScrollPos = scroll(this._renderer.view, this._renderer.isVertical);
+		const prevPos = this.getScrollPos();
 
-		if ((IS_IOS && scrollPos === 0) || prevPos === scrollPos) {
+		this.setScrollPos(rawScrollPos);
+		const scrollPos = this.getScrollPos();
+
+		if ((IS_IOS && rawScrollPos === 0) || prevPos === scrollPos) {
 			return;
 		}
-		scrollPos -= this._renderer.getContainerOffset();
 		this._callback.check && this._callback.check({
 			cursor: prevPos < scrollPos ? "end" : "start",
 			scrollPos,
 			isVertical: this._renderer.isVertical,
 		});
-		this._prevPos = scrollPos;
 	}
 	_onResize() {
 		if (this._timer.resize) {

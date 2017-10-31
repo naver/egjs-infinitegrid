@@ -80,48 +80,15 @@ export default class Infinite {
 	getVisibleItems() {
 		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
 	}
-	_getEdgeIndex(cursor) {
-		const prop = cursor === "start" ? "min" : "max";
-		let index = this._status[`${cursor}Cursor`];
-		let targetValue = cursor === "start" ? Infinite : -Infinite;
-
-		for (let i = this._status.startCursor; i <= this._status.endCursor; i++) {
-			const value = Math[prop](...this._items.getOutline(i, cursor));
-
-			if ((cursor === "start" && targetValue > value) ||
-				(cursor === "end" && targetValue < value)) {
-				targetValue = value;
-				index = i;
-			}
-		}
-		return index;
-	}
-	_getEdgePos(cursor) {
-		return Math[cursor === "start" ? "min" : "max"](
-			...this._items.pluck("outlines", this._getEdgeIndex(cursor))
-				.reduce((acc, v) => acc.concat(v[cursor]), []));
-	}
-	_getEdge(cursor) {
-		const dataIdx = this._getEdgeIndex(cursor);
-		const items = this._items.pluck("items", dataIdx);
-
-		if (items.length) {
-			const itemIdx = this._items.getOutline(dataIdx, `${cursor}Index`);
-
-			return items.length > itemIdx ? items[itemIdx] : null;
-		}
-		return null;
-	}
 	_updateEdge() {
-		this._status.start = this._getEdge("start");
-		this._status.end = this._getEdge("end");
-		// console.warn("update edge", this._status);
+		this._status.start = this._items.getEdge("start", this._status.startCursor, this._status.endCursor);
+		this._status.end = this._items.getEdge("end", this._status.startCursor, this._status.endCursor);
 	}
 	_getEdgeOffset(cursor) {
 		let rect = null;
 
 		if (!this._status[cursor]) {
-			const item = this._getEdge(cursor);
+			const item = this._items.getEdge(cursor);
 
 			this._status[cursor] = item;
 		}
@@ -144,16 +111,25 @@ export default class Infinite {
 		}
 
 		if (this._layout) {
-			const base = this._getEdgePos("start");
+			const base = this._getEdgeValue("start");
 
 			if (base !== 0) {
-				scrollCycle === "before" && this._renderer.scrollBy(-Math.abs(base));
+				if (scrollCycle === "before") {
+					this._renderer.scrollBy(-Math.abs(base));
+					this._watcher.setScrollPos();
+				}
 				this._items.fit(base, this._isVertical);
 				DOMRenderer.renderItems(this.getVisibleItems());
-				this._renderer.setContainerSize(this._getEdgePos("end"));
-				scrollCycle === "after" && this._renderer.scrollBy(Math.abs(base));
+				this._renderer.setContainerSize(this._getEdgeValue("end"));
+				if (scrollCycle === "after") {
+					this._renderer.scrollBy(Math.abs(base));
+					this._watcher.setScrollPos();
+				}
 			}
 		}
+	}
+	_getEdgeValue(cursor) {
+		return this._items.getEdgeValue(cursor, this._status.startCursor, this._status.endCursor);
 	}
 	/**
 	 * Rearranges a layout.
@@ -266,76 +242,37 @@ export default class Infinite {
 		if (!items.length) {
 			return;
 		}
-		this._recycle(items, isAppend);
-		this._afterRecycle(NO_CACHE, items, isAppend);
+		this._postLayout(NO_CACHE, items, isAppend);
 	}
+	// add items, and remove items for recycling	
+	_recycle(isAppend) {
+		const toBeStart = this._status.startCursor;
+		const toBeEnd = this._status.endCursor;
+		let target = isAppend ? toBeStart : toBeEnd;
 
-	// add items, and remove items for recycling
-	_recycle(items, isAppend) {
-		// const basicSize = this._renderer.getViewSize() + (2 * this.options.threshold);
+		while (toBeStart < toBeEnd && this._isVisible(target) < 0) {
+			isAppend ? target++ : target--;
+		}
+		const start = isAppend ? this._status.startCursor : target + 1;
+		const end = isAppend ? target : this._status.endCursor;
 
-		const baseCount = items.length - this.options.count;
-		/* eslint-disable no-unused-vars */
-		let diff;
-		/* eslint-enable no-unused-vars */
-
-		while ((diff = this.getVisibleItems().length + baseCount) > 0) {
-			const toRemoveItems = this._items.pluck("items", isAppend ? this._status.startCursor :
-				this._status.endCursor);
-
-			if (isAppend) {
-				this._status.startCursor++;
-			} else {
-				this._status.endCursor--;
+		if (start <= end) {
+			if (this._isVisible(isAppend ? start : end) !== 0) {
+				DOMRenderer.removeItems(this._items.pluck("items", start, end));
+				if (isAppend) {
+					this._status.startCursor = end + 1;
+				} else {
+					this._status.endCursor = start - 1;
+				}
 			}
-			// recycle
-			DOMRenderer.removeItems(toRemoveItems);
 		}
-		console.warn("recycle [", this._status.startCursor, this._status.endCursor, "]");
 	}
-	_updateCursor(isAppend) {
-		if (isAppend) {
-			this._status.endCursor++;
-		} else if (this._status.startCursor > 0) {
-			this._status.startCursor--;
-		} else {
-			this._status.endCursor++; // outside prepend
-		}
-		if (this._status.startCursor < 0) {
-			this._status.startCursor = 0;
-		}
-		console.warn("_updateCursor [", this._status.startCursor, this._status.endCursor,
-			"]");
-	}
-	_insertItems(layouted, isAppend) {
-		layouted.groupKey = layouted.items[0].groupKey;
-		this._items[isAppend ? "append" : "prepend"](layouted);
-	}
-	// called by visible
-	_requestAppend() {
-		const items = this._getItems(APPEND);
 
-		if (items.length) {
-			this._recycle(items, APPEND);
-			this._afterRecycle(CACHE, items, APPEND);
-		} else {
-			this.callback.append && this.callback.append();
-		}
-	}
-	// called by visible
-	_requestPrepend() {
-		const items = this._getItems(PREPEND);
-
-		if (items.length) {
-			this._recycle(items, PREPEND);
-			this._afterRecycle(CACHE, items, PREPEND);
-		} else {
-			this.callback.prepend && this.callback.prepend();
-		}
-	}
-	_afterRecycle(fromCache, items, isAppend) {
+	_postLayout(fromCache, items, isAppend) {
 		if (fromCache) {
 			this._renderer.createAndInsert(items, isAppend);
+			this._updateCursor(isAppend);
+			this.options.useRecycle && this._recycle(isAppend);
 			this._onLayoutComplete(items, isAppend);
 		} else {
 			const method = isAppend ? "append" : "prepend";
@@ -354,10 +291,61 @@ export default class Infinite {
 					);
 
 					this._insertItems(layouted, isAppend);
+					this._updateCursor(isAppend);
+					this.options.useRecycle && this._recycle(isAppend);
 					DOMRenderer.renderItems(layouted.items);
 					this._onLayoutComplete(items, isAppend);
 				},
 			});
+		}
+	}
+	_isVisible(index) {
+		const min = Math.min(...this._items.getOutline(index, "start"));
+		const max = Math.max(...this._items.getOutline(index, "end"));
+		const pos = this._watcher.getScrollPos();
+		const viewSize = this._renderer.getViewSize();
+
+		if (pos + viewSize + this.options.threshold < min) {
+			return -1;
+		} else if (pos - this.options.threshold > max) {
+			return 1;
+		}
+		return 0;
+	}
+	_updateCursor(isAppend) {
+		if (isAppend) {
+			this._status.endCursor++;
+		} else if (this._status.startCursor > 0) {
+			this._status.startCursor--;
+		} else {
+			this._status.endCursor++; // outside prepend
+		}
+		if (this._status.startCursor < 0) {
+			this._status.startCursor = 0;
+		}
+	}
+	_insertItems(layouted, isAppend) {
+		layouted.groupKey = layouted.items[0].groupKey;
+		this._items[isAppend ? "append" : "prepend"](layouted);
+	}
+	// called by visible
+	_requestAppend() {
+		const items = this._getItems(APPEND);
+
+		if (items.length) {
+			this._postLayout(CACHE, items, APPEND);
+		} else {
+			this.callback.append && this.callback.append();
+		}
+	}
+	// called by visible
+	_requestPrepend() {
+		const items = this._getItems(PREPEND);
+
+		if (items.length) {
+			this._postLayout(CACHE, items, PREPEND);
+		} else {
+			this.callback.prepend && this.callback.prepend();
 		}
 	}
 	_onCheck({cursor, scrollPos, isVertical}) {
@@ -376,7 +364,6 @@ export default class Infinite {
 
 		if (isAppend) {
 			if (scrollPos >= targetPos) {
-				console.trace("append");
 				this._requestAppend();
 			}
 		} else if (scrollPos <= targetPos) {
@@ -385,9 +372,9 @@ export default class Infinite {
 		}
 	}
 	_onLayoutComplete(items, isAppend, dontcareCursor) {
-		!dontcareCursor && this._updateCursor(isAppend);
+		// !dontcareCursor && this._updateCursor(isAppend);
 		this._updateEdge();
-		this._renderer.setContainerSize(this._getEdgePos("end"));
+		this._renderer.setContainerSize(this._getEdgeValue("end"));
 		!isAppend && this._fit("after");
 		this._status.isProcessing = false;
 		/**
@@ -405,6 +392,7 @@ export default class Infinite {
 			isAppend,
 			// isTrusted: options.isTrusted,
 		});
+		console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
 	}
 	/**
 	 * Destroys elements, properties, and events used on a grid layout.
