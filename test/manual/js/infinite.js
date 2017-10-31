@@ -17,18 +17,18 @@ var count = 0;
 
 var infinite = new eg.InfiniteGrid("#infinite")
   .on({
-    "layoutComplete": function(e) {
-      // cached.  
-    },
-    "change": function(e) {
+    // "layoutComplete": function(e) {
+    //   // cached.  
+    // },
+    // "change": function(e) {
       
-    },
+    // },
     "append": function(e) {
       e.currentTarget.append(getItems(0), count++);
     },
-    "prepend": function(e) {
-      e.currentTarget.prepend(getItems(2), count++);
-    }
+    // "prepend": function(e) {
+    //   e.currentTarget.prepend(getItems(2), count++);
+    // }
   });
 
 $("#infinite").click(function(e) {
@@ -40,16 +40,16 @@ $("#infinite").click(function(e) {
 var gui = new dat.GUI();
 var guioption = {
 	requestAppend: function() {
-		infinite._requestAppend();
+		infinite._infinite._requestAppend();
 	},
 	requestPrepend: function() {
-    infinite._requestPrepend();
+    infinite._infinite._requestPrepend();
   },
   clear: function() {
     infinite.clear();
   },
   fit: function() {
-    infinite._fit();
+    infinite._infinite._fit();
   },
   layout: function() {
     infinite.layout();
@@ -64,7 +64,7 @@ var guioption = {
 };
 
 function setViewport() {
-  infinite._layout.setSize(guioption.direction === "vertical" ?
+  infinite._infinite._layout.setSize(guioption.direction === "vertical" ?
     guioption.width : guioption.height);
 }
 var justified = {

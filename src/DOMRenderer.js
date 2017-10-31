@@ -8,8 +8,6 @@ import {
 } from "./consts";
 import {
 	$,
-	// addEvent,
-	// removeEvent,
 	scrollBy,
 	innerHeight,
 	innerWidth,
