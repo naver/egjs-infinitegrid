@@ -55,7 +55,6 @@ export default class DOMRenderer {
 	_init(el, isOverflowScroll) {
 		const element = $(el);
 
-		element.style.position = "relative";
 		// base.style.width = "100%";
 		// base.style.height = "100%";
 
@@ -74,13 +73,15 @@ export default class DOMRenderer {
 					container.appendChild(children[0]);
 				}
 
-				element.style.overflow[target[0]] = "scroll";
-				element.style.overflow[target[1]] = "hidden";
+				element.style[`overflow${target[0]}`] = "scroll";
+				element.style[`overflow${target[1]}`] = "hidden";
 				element.appendChild(container);
 			}
 			this.view = element;
 			this.container = container;
 		} else {
+			element.style.position = "relative";
+
 			this.view = window;
 			this.container = element;
 		}
