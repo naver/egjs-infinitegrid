@@ -2,15 +2,9 @@ import {MULTI, GROUPKEY_ATT} from "./consts";
 import {$, toArray, innerWidth, innerHeight} from "./utils";
 
 export default class ItemManager {
-	static from(elements, selector, {groupKey, maxCount, isAppend}) {
+	static from(elements, selector, {groupKey, isAppend}) {
 		const filted = ItemManager.selectItems($(elements, MULTI), selector);
 
-		// trim
-		if (maxCount <= filted.length) {
-			isAppend ?
-				filted.splice(0, filted.length - maxCount) :
-				filted.splice(maxCount);
-		}
 		// Item Structure
 		return toArray(filted).map(el => ({
 			el,
@@ -85,6 +79,38 @@ export default class ItemManager {
 		} else {
 			return [];
 		}
+	}
+	getEdgeIndex(cursor, start, end) {
+		const prop = cursor === "start" ? "min" : "max";
+		let index = -1;
+		let targetValue = cursor === "start" ? Infinity : -Infinity;
+
+		for (let i = start; i <= end; i++) {
+			const value = Math[prop](...this.getOutline(i, cursor));
+
+			if ((cursor === "start" && targetValue > value) ||
+				(cursor === "end" && targetValue < value)) {
+				targetValue = value;
+				index = i;
+			}
+		}
+		return index;
+	}
+	getEdge(cursor, start, end) {
+		const dataIdx = this.getEdgeIndex(cursor, start, end);
+		const items = this.pluck("items", dataIdx);
+
+		if (items.length) {
+			const itemIdx = this.getOutline(dataIdx, `${cursor}Index`);
+
+			return items.length > itemIdx ? items[itemIdx] : null;
+		}
+		return null;
+	}
+	getEdgeValue(cursor, start, end) {
+		return Math[cursor === "start" ? "min" : "max"](
+			...this.pluck("outlines", this.getEdgeIndex(cursor, start, end))
+				.reduce((acc, v) => acc.concat(v[cursor]), []));
 	}
 	append(layouted) {
 		this._data.push(layouted);

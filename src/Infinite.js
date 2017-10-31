@@ -7,6 +7,8 @@ import {
 	PREPEND,
 	CACHE,
 	NO_CACHE,
+	TRUSTED,
+	NO_TRUSTED,
 	IS_ANDROID2,
 } from "./consts";
 
@@ -56,24 +58,9 @@ export class Infinite extends Component {
 	_onCheck() {
 		console.log(this._getEdgePos("end") - this._renderer.getViewSize());
 	}
-	/**
-	 * Adds a card element at the bottom of a grid layout. This method is available only if the isProcessing() method returns false.
-	 * @ko 카드 엘리먼트를 그리드 레이아웃의 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
-	 * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
-	 * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
-	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
-	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
-	 */
 	append(elements, groupKey) {
 		this._layout && this._insert(elements, groupKey, APPEND);
 	}
-	/**
-	 * Adds a card element at the top of a grid layout. This method is available only if the isProcessing() method returns false and the isRecycling() method returns true.
-	 * @ko 카드 엘리먼트를 그리드 레이아웃의 위에 추가한다. isProcessing() 메서드의 반환값이 'false'이고, isRecycling() 메서드의 반환값이 'true'일 때만 이 메서드를 사용할 수 있다
-	 * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
-	 * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
-	 * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
-	 */
 	prepend(elements, groupKey) {
 		this._layout && this._insert(elements, groupKey, PREPEND);
 	}
@@ -143,6 +130,9 @@ export class Infinite extends Component {
 		// scrollTop -= croppedDistance;
 		return base;
 	}
+	_getEdgeValue(cursor) {
+		return this._items.getEdgeValue(cursor, this._status.startCursor, this._status.endCursor);
+	}
 	/**
 	 * Rearranges a layout.
 	 * @ko 레이아웃을 다시 배치한다.
@@ -163,6 +153,7 @@ export class Infinite extends Component {
 				data.forEach(v => {
 					data.items = ItemManager.updateSize(v.items);
 				});
+			}
 		} else {
 			data = this._items.get(this._startCursor, this._items.size());
 			outline = this._items.getOutline(this._startCursor, "start");
@@ -179,17 +170,11 @@ export class Infinite extends Component {
 		} else {
 			data.forEach(v => this._items.set(v, v.groupKey));
 		}
-		this._onLayoutComplete(data, true, true);
+		this._onLayoutComplete(data, APPEND, NO_TRUSTED);
 		DOMRenderer.renderItems(this.getVisibleItems());
 		this._renderer.setSize(this._getEdgePos("end"));
 		return this;
 	}
-	/**
-	 * Removes a item element on a grid layout.
-	 * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
-	 * @param {HTMLElement} item element to be removed <ko>삭제될 아이템 엘리먼트</ko>
-	 * @return {Object}  Removed item element <ko>삭제된 아이템 엘리먼트 정보</ko>
-	 */
 	remove(element) {
 		if (element) {
 			const items = this._items.remove(element, this._startCursor, this._endCursor);
@@ -228,24 +213,36 @@ export class Infinite extends Component {
 		const items = ItemManager.from(elements, this.options.itemSelector, {
 			isAppend,
 			groupKey: key,
-			maxCount: this.options.count,
 		});
 
 		if (!items.length) {
 			return;
 		}
-		this._recycle(items, isAppend);
-		this._afterRecycle(NO_CACHE, items, isAppend);
+		this._postLayout(NO_CACHE, items, isAppend, NO_TRUSTED);
 	}
+	// add items, and remove items for recycling	
+	_recycle(isAppend) {
+		const toBeStart = this._status.startCursor;
+		const toBeEnd = this._status.endCursor;
+		let target = isAppend ? toBeStart : toBeEnd;
 
-	// add items, and remove items for recycling
-	_recycle(items, isAppend) {
-		// const basicSize = this._renderer.getViewSize() + (2 * this.options.threshold);
+		while (toBeStart < toBeEnd && this._isVisible(target) < 0) {
+			isAppend ? target++ : target--;
+		}
+		const start = isAppend ? this._status.startCursor : target + 1;
+		const end = isAppend ? target : this._status.endCursor;
 
-		const baseCount = items.length - this.options.count;
-		/* eslint-disable no-unused-vars */
-		let diff;
-		/* eslint-enable no-unused-vars */
+		if (start <= end) {
+			if (this._isVisible(isAppend ? start : end) !== 0) {
+				DOMRenderer.removeItems(this._items.pluck("items", start, end));
+				if (isAppend) {
+					this._status.startCursor = end + 1;
+				} else {
+					this._status.endCursor = start - 1;
+				}
+			}
+		}
+	}
 
 		while ((diff = this.getVisibleItems().length + baseCount) > 0) {
 			const toRemoveItems = this._items.pluck("items", isAppend ? this._startCursor : this._endCursor);
@@ -282,8 +279,7 @@ export class Infinite extends Component {
 		const items = this._getItems(APPEND);
 
 		if (items.length) {
-			this._recycle(items, APPEND);
-			this._afterRecycle(CACHE, items, APPEND);
+			this._postLayout(CACHE, items, APPEND, TRUSTED);
 		} else {
 			this.callback.append && this.callback.append();
 		}
@@ -293,8 +289,7 @@ export class Infinite extends Component {
 		const items = this._getItems(PREPEND);
 
 		if (items.length) {
-			this._recycle(items, PREPEND);
-			this._afterRecycle(CACHE, items, PREPEND);
+			this._postLayout(CACHE, items, PREPEND, TRUSTED);
 		} else {
 			this.callback.prepend && this.callback.prepend();
 		}

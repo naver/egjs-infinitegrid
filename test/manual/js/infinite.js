@@ -57,41 +57,31 @@ var guioption = {
   layout_no: function() {
     infinite.layout(false);
   },  
-  width: 800,
-  height: 1000,
   direction: "vertical",
   margin: 10,
 };
 
-function setViewport() {
-  infinite._infinite._layout.setSize(guioption.direction === "vertical" ?
-    guioption.width : guioption.height);
-}
 var justified = {
   minSize: 100,
   maxSize: 200,
   set: function() {
     infinite.options.direction = guioption.direction;
-    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.JustifiedLayout, {
       margin: guioption.margin,
       minSize: justified.minSize,
       maxSize: justified.maxSize
     });
-    setViewport();
   }
 };
 var grid = {
   align: "start",
   set: function() {
     infinite.options.direction = guioption.direction;
-    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.GridLayout, {
       direction: guioption.direction,
       margin: guioption.margin,
       align: grid.align
     });
-    setViewport();
   }
 };
 var packing = {
@@ -101,31 +91,26 @@ var packing = {
       margin: guioption.margin,
       aspectRatio: packing.aspectRatio
     });
-    setViewport();
   }
 };
 var square = {
   column: 1,
   set: function() {
     infinite.options.direction = guioption.direction;
-    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.SquareLayout, {
       margin: guioption.margin,
       column: square.column
     });
-    setViewport();
   }
 };
 var frame = {
   frame: [],
   set: function() {
     infinite.options.direction = guioption.direction;
-    infinite._renderer._isVertical = infinite.options.direction === "vertical";
     infinite.setLayout(eg.InfiniteGrid.FrameLayout, {
       margin: guioption.margin,
       frame: frame.frame
     });
-    setViewport();
   }
 };
 
@@ -139,8 +124,6 @@ fold0.add(guioption, "layout_no");
 fold0.open();
 
 var fold1 = gui.addFolder("Data");
-fold1.add(guioption, "width", 800, 1600).onFinishChange(() => setViewport());
-fold1.add(guioption, "height", 1000, 2000).onFinishChange(() => setViewport());
 fold1.add(guioption, "direction", ["vertical", "horizontal"]).onFinishChange(() => infinite.clear());
 fold1.add(guioption, "margin", 10, 50).onFinishChange(() => infinite.clear());
 fold1.open();
@@ -175,7 +158,6 @@ infinite.setLayout(eg.InfiniteGrid.GridLayout, {
   margin: guioption.margin,
   align: grid.align
 });
-setViewport();
 // frame: [
 //   // 		["C", "", "A", "A", "A"],
 //   // 		["C", "B", "B", "E", "E"],
