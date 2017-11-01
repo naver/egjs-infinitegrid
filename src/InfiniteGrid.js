@@ -94,8 +94,9 @@ class InfiniteGrid extends Component {
 	 * @ko 카드의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
 	 * @return {Object} State object of the eg.InfiniteGrid module<ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
 	 */
-	// getStatus() {
-	// }
+	getStatus() {
+		return this._infinite.getStatus();
+	}
 
 	/**
 	 * Sets the state of the eg.InfiniteGrid module with the information returned through a call to the getStatue() method.
@@ -104,9 +105,10 @@ class InfiniteGrid extends Component {
 	 * @param {boolean} applyScrollPos Checks whether to scroll<ko>스크롤의 위치를 복원할지 결정한다.</ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
-	// setStatus(status, applyScrollPos) {
-	// 	return this;
-	// }
+	setStatus(status, applyScrollPos) {
+		this._infinite.setStatus(status, applyScrollPos);
+		return this;
+	}
 
 	/**
 	 * Checks whether a card element is being added.

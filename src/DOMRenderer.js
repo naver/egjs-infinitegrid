@@ -43,6 +43,15 @@ export default class DOMRenderer {
 	static removeElement(element) {
 		element.parentNode.removeChild(element);
 	}
+	static createElements(items) {
+		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(
+			""), MULTI);
+
+		return items.map((item, index) => {
+			item.el = elements[index];
+			return item;
+		});
+	}
 	constructor(element, isVertical = true, isOverflowScroll = false) {
 		this._isVertical = isVertical;
 		this._init(element, isVertical, isOverflowScroll);
@@ -103,12 +112,7 @@ export default class DOMRenderer {
 		};
 	}
 	createAndInsert(items, isAppend) {
-		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(
-			""), MULTI);
-		const itemsWithElement = items.map((item, index) => {
-			item.el = elements[index];
-			return item;
-		});
+		const itemsWithElement = DOMRenderer.createElements(items);
 
 		DOMRenderer.renderItems(itemsWithElement);
 		this._insert(itemsWithElement, isAppend);
@@ -155,7 +159,11 @@ export default class DOMRenderer {
 		return this._calcSize() !== this._size;
 	}
 	destroy() {
-		this._size = -1;
+		this._size = {
+			containerOffset: 0,
+			container: -1,
+			view: -1,
+		};
 	}
 }
 

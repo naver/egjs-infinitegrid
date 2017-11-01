@@ -206,6 +206,31 @@ export class Infinite extends Component {
 
 		return data.map(v => v.groupKey);
 	}
+	getStatus() {
+		return {
+			options: Object.assign({}, this.options),
+			// callback: Object.assign({}, this.callback),
+			_status: Object.assign({}, this._status),
+			_items: this._items.getStatus(),
+			_renderer: this._renderer.getStatus(),
+			_watcher: this._watcher.getStatus(),
+		};
+	}
+	setStatus(status, applyScrollPos) {
+		if (!status || !status.options || !status._status ||
+			!status._renderer || !status._items || !status._watcher) {
+			return this;
+		}
+		this._watcher.detachEvent();
+		Object.assign(this.options, status.options);
+		Object.assign(this._status, status._status);
+		this._items.setStatus(status._items, this._status.startCursor, this._status.endCursor);
+		this._renderer.setStatus(status._renderer, this.getVisibleItems());
+		this._watcher.setStatus(status._watcher, applyScrollPos);
+		this._updateEdge();
+		this._watcher.attachEvent();
+		return this;
+	}
 	clear() {
 		this._items.clear();
 		this._renderer.clear();

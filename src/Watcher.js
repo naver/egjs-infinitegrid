@@ -6,6 +6,7 @@ import {
 	addEvent,
 	removeEvent,
 	scroll,
+	scrollTo,
 } from "./utils";
 
 export default class Watcher {
@@ -28,7 +29,7 @@ export default class Watcher {
 		this._target = view;
 		this._onCheck = this._onCheck.bind(this);
 		this._onResize = this._onResize.bind(this);
-		this._attachEvent();
+		this.attachEvent();
 		this.setScrollPos();
 	}
 	_attachEvent() {
@@ -108,7 +109,7 @@ export default class Watcher {
 			this._prevPos = -1;
 		}, 100);
 	}
-	_detachEvent() {
+	detachEvent() {
 		removeEvent(window, "resize", this._onResize);
 	}
 	destroy() {
