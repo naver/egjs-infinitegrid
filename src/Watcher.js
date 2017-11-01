@@ -29,6 +29,7 @@ export default class Watcher {
 		this._onCheck = this._onCheck.bind(this);
 		this._onResize = this._onResize.bind(this);
 		this._attachEvent();
+		this.setScrollPos();
 	}
 	_attachEvent() {
 		// if (SUPPORT_INTERSECTIONOBSERVER) {

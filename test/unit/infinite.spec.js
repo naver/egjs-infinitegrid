@@ -4,7 +4,8 @@ import FrameLayout from "../../src/layouts/FrameLayout";
 import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
-import {getItems} from "./TestHelper";
+import {insert} from "./TestHelper";
+import {APPEND} from "../../src/consts";
 
 const LAYOUTS = [
   GridLayout,
@@ -33,19 +34,9 @@ describe("Infinite Test", function() {
     });
     it("should check a append method", done => {
       // Given
-      let groupKey = 0;
-      const layoutHandler = sinon.spy(function(e) {
-        console.log(e);
-        // Then
-        done();
-      })
-      this.inst.callback = {
-        layoutComplete: layoutHandler
-      };
-      
-      // When
-      this.inst.append(getItems(groupKey++), groupKey);
+      insert(this.inst, APPEND, () => {}, 30, 10);
     });
+      
   });  
   describe("setLayout method Test", function() {
     beforeEach(() => {

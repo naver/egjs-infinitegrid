@@ -1,20 +1,32 @@
 // import {utils} from "../../src/utils";
 // import {} from "../../src/utils";
 
-function imgSrc(v) {
-  return "../../demo/assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
+export function getItems(count) {
+	const items = [];
+	const size = [100, 200, 300];
+
+	for (let i = 0; i < count; i++) {
+		items.push(`<li class="item" style="border:1px solid #333; margin:0px;padding:0;width:${size[Math.floor((Math.random() * 3))]}px; height:${size[Math.floor((Math.random() * 3))]}px;"><div>test ${i}</div></li>`);
+	}
+	return items;
 }
 
-export function getItems(groupNo) {
-  groupNo *= 30;
-  var items = [];
-
-  for (var i = 0; i < 30; i++) {
-    items.push('<div class="item"><div class="thumbnail"><img src="' + imgSrc(groupNo + i) + '" /><div class="caption"><p><a href="http://www.google.com/">Cras justo odio bla bla bla bla bla bla bla bla</a></p></div></div></div>');
-  }
-  return items;
-};
-
+export function insert(instance, isAppend, callback, count = 30, retry = 1) {
+	let idx = 1;
+	const oldHandler = instance.callback.layoutComplete;
+	const method = isAppend ? "append" : "prepend";
+	const layoutHandler = sinon.spy(function(e) {
+		oldHandler && oldHandler(e);
+		if (idx <= retry) {
+			instance[method](getItems(count), idx++);
+		} else {
+			instance.callback.layoutComplete = oldHandler;
+			callback();
+		}
+	});
+	instance.callback.layoutComplete = layoutHandler;
+	instance[method](getItems(count), idx++);
+}
 
 
 // function parseCssText(str) {
@@ -66,7 +78,7 @@ export function getItems(groupNo) {
 // 		if (v !== "items") {
 // 			expect(infinite.layoutManager[v]).to.be.deep.equal(beforeLayoutStatus.prop[v]); // check LayoutManager properties
 // 		}
-// 	};			
+// 	};
 // 	infinite.layoutManager.items.forEach((v, i) => {
 // 		expect(v.position).to.be.deep.equal(beforeLayoutStatus.items[i].position); // check html and position information
 // 		expect(v.size).to.be.deep.equal(beforeLayoutStatus.items[i].size); // check html and size information
