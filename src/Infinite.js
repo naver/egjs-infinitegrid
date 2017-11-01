@@ -200,6 +200,12 @@ export class Infinite extends Component {
 		}
 		return items;
 	}
+	getGroupKeys(includeCached) {
+		const data = includeCached ?
+			this._items.get() : this._items.get(this._status.startCursor, this._status.endCursor);
+
+		return data.map(v => v.groupKey);
+	}
 	clear() {
 		this._items.clear();
 		this._renderer.clear();

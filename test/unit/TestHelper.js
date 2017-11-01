@@ -1,5 +1,19 @@
 // import {utils} from "../../src/utils";
-import {} from "../../src/utils";
+// import {} from "../../src/utils";
+
+function imgSrc(v) {
+  return "../../demo/assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
+}
+
+export function getItems(groupNo) {
+  groupNo *= 30;
+  var items = [];
+
+  for (var i = 0; i < 30; i++) {
+    items.push('<div class="item"><div class="thumbnail"><img src="' + imgSrc(groupNo + i) + '" /><div class="caption"><p><a href="http://www.google.com/">Cras justo odio bla bla bla bla bla bla bla bla</a></p></div></div></div>');
+  }
+  return items;
+};
 
 
 

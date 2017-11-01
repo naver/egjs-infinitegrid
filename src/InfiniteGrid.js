@@ -84,6 +84,7 @@ class InfiniteGrid extends Component {
 		this._infinite = new Infinite(el, options, {
 			append: () => this.trigger("append"),
 			prepend: () => this.trigger("prepend"),
+			change: param => this.trigger("change", param),
 			layoutComplete: param => this.trigger("layoutComplete", param),
 		});
 	}
@@ -171,8 +172,12 @@ class InfiniteGrid extends Component {
 		return this;
 	}
 
+	/**
+	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 */
 	setLayout(LayoutKlass, options) {
 		this._infinite.setLayout(LayoutKlass, options);
+		return this;
 	}
 
 	/**
@@ -183,6 +188,15 @@ class InfiniteGrid extends Component {
 	 */
 	remove(element) {
 		return this._infinite.remove(element);
+	}
+
+	/**
+	 * Returns the list of group keys which belongs to card elements currently being maintained. You can use the append() or prepend() method to configure group keys so that multiple card elements can be managed at once. If you do not use these methods to configure group keys, it returns undefined as a group key.
+	 * @ko 현재 유지하고 있는 카드 엘리먼트의 그룹 키 목록을 반환한다. 여러 개의 카드 엘리먼트를 묶어서 관리할 수 있도록 append() 메서드나 prepend() 메서드에서 그룹 키를 지정할 수 있다. append() 메서드나 prepend() 메서드에서 그룹 키를 지정하지 않았다면 'undefined'가 그룹 키로 반환된다
+	 * @return {Array} List of group keys <ko>그룹 키의 목록</ko>
+	 */
+	getGroupKeys(includeCached = false) {
+		return this.layoutManager.getGroupKeys(includeCached);
 	}
 
 	/**
