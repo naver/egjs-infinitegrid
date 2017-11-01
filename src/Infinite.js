@@ -17,6 +17,7 @@ export default class Infinite {
 		Object.assign(this.callback = {
 			append: null,
 			prepend: null,
+			change: null,
 			layoutComplete: null,
 		}, callback);
 		Object.assign(this.options = {
@@ -175,6 +176,12 @@ export default class Infinite {
 		}
 		return items;
 	}
+	getGroupKeys(includeCached) {
+		const data = includeCached ?
+			this._items.get() : this._items.get(this._status.startCursor, this._status.endCursor);
+
+		return data.map(v => v.groupKey);
+	}
 	clear() {
 		this._items.clear();
 		this._renderer.clear();
@@ -252,7 +259,7 @@ export default class Infinite {
 					this._updateCursor(isAppend);
 					this.options.useRecycle && this._recycle(isAppend);
 					DOMRenderer.renderItems(layouted.items);
-					this._onLayoutComplete(items, isAppend, isTrusted);
+					this._onLayoutComplete(layouted.items, isAppend, isTrusted);
 				},
 			});
 		}
@@ -306,21 +313,27 @@ export default class Infinite {
 			this.callback.prepend && this.callback.prepend();
 		}
 	}
-	_onCheck({cursor, scrollPos, isVertical}) {
+	_onCheck({direction, scrollPos, isVertical, orgScrollPos}) {
+		this.callback.change && this.callback.change({
+			direction,
+			scrollPos,
+			orgScrollPos,
+			isVertical,
+		});
 		if (this.isProcessing()) {
 			return;
 		}
-		const rect = this._getEdgeOffset(cursor);
-		const isAppend = cursor === "end";
+		const rect = this._getEdgeOffset(direction);
+		const isGoToEnd = direction === "end";
 
 		if (!rect) {
 			return;
 		}
-		const targetPos = isAppend ?
+		const targetPos = isGoToEnd ?
 			rect[isVertical ? "top" : "left"] - this._renderer.getViewSize() :
 			rect[isVertical ? "bottom" : "right"];
 
-		if (isAppend) {
+		if (isGoToEnd) {
 			if (scrollPos >= targetPos) {
 				this._requestAppend();
 			}

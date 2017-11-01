@@ -11,8 +11,7 @@ export default class Watcher {
 	constructor(renderer, callback) {
 		Object.assign(this._callback = {
 			layout: null,
-			append: null,
-			prepend: null,
+			check: null,
 		}, callback);
 		this._timer = {
 			resize: null,
@@ -41,18 +40,19 @@ export default class Watcher {
 		addEvent(window, "resize", this._onResize);
 	}
 	_onCheck() {
-		const rawScrollPos = scroll(this._renderer.view, this._renderer.isVertical);
+		const orgScrollPos = scroll(this._renderer.view, this._renderer.isVertical);
 		const prevPos = this.getScrollPos();
 
-		this.setScrollPos(rawScrollPos);
+		this.setScrollPos(orgScrollPos);
 		const scrollPos = this.getScrollPos();
 
-		if ((IS_IOS && rawScrollPos === 0) || prevPos === scrollPos) {
+		if ((IS_IOS && orgScrollPos === 0) || prevPos === scrollPos) {
 			return;
 		}
 		this._callback.check && this._callback.check({
-			cursor: prevPos < scrollPos ? "end" : "start",
+			direction: prevPos < scrollPos ? "end" : "start",
 			scrollPos,
+			orgScrollPos,
 			isVertical: this._renderer.isVertical,
 		});
 	}
