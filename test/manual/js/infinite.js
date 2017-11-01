@@ -20,9 +20,9 @@ var infinite = new eg.InfiniteGrid("#infinite")
     // "layoutComplete": function(e) {
     //   // cached.  
     // },
-    "change": function(e) {
-      console.log("change", e);
-    },
+    // "change": function(e) {
+    //   console.log("change", e);
+    // },
     "append": function(e) {
       e.currentTarget.append(getItems(0), count++);
     },

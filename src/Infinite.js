@@ -211,24 +211,22 @@ export default class Infinite {
 	}
 	// add items, and remove items for recycling	
 	_recycle(isAppend) {
-		const toBeStart = this._status.startCursor;
-		const toBeEnd = this._status.endCursor;
-		let target = isAppend ? toBeStart : toBeEnd;
+		const remove = [];
 
-		while (toBeStart < toBeEnd && this._isVisible(target) < 0) {
-			isAppend ? target++ : target--;
+		for (let i = this._status.startCursor; i <= this._status.endCursor; i++) {
+			remove.push(this._isVisible(i));
 		}
-		const start = isAppend ? this._status.startCursor : target + 1;
-		const end = isAppend ? target : this._status.endCursor;
+		let start = remove.indexOf(isAppend ? 1 : -1);
+		let end = remove.lastIndexOf(isAppend ? 1 : -1);
 
-		if (start <= end) {
-			if (this._isVisible(isAppend ? start : end) !== 0) {
-				DOMRenderer.removeItems(this._items.pluck("items", start, end));
-				if (isAppend) {
-					this._status.startCursor = end + 1;
-				} else {
-					this._status.endCursor = start - 1;
-				}
+		if (start !== -1 && end !== -1) {
+			start = this._status.startCursor + start;
+			end = start + end;
+			DOMRenderer.removeItems(this._items.pluck("items", start, end));
+			if (isAppend) {
+				this._status.startCursor = end + 1;
+			} else {
+				this._status.endCursor = start - 1;
 			}
 		}
 	}
