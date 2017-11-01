@@ -1,4 +1,5 @@
 import {MULTI, GROUPKEY_ATT} from "./consts";
+import DOMRenderer from "./DOMRenderer";
 import {$, toArray, innerWidth, innerHeight} from "./utils";
 
 export default class ItemManager {
@@ -40,6 +41,25 @@ export default class ItemManager {
 
 	constructor() {
 		this.clear();
+	}
+	getStatus() {
+		return {
+			_data: this._data.map(data => {
+				data.items = data.items.map(item => {
+					delete item.el;
+					return item;
+				});
+				return data;
+			}),
+		};
+	}
+	setStatus(status, start, end) {
+		const data = status._data;
+
+		for (let i = start; i <= end; i++) {
+			data[i].items = DOMRenderer.createElements(data[i].items);
+		}
+		this.set(data);
 	}
 	size() {
 		return this._data.length;

@@ -5,6 +5,7 @@ import {
 	addEvent,
 	removeEvent,
 	scroll,
+	scrollTo,
 } from "./utils";
 
 export default class Watcher {
@@ -22,8 +23,22 @@ export default class Watcher {
 		this._renderer = renderer;
 		this._onCheck = this._onCheck.bind(this);
 		this._onResize = this._onResize.bind(this);
-		this._attachEvent();
+		this.attachEvent();
 		this.setScrollPos();
+	}
+	getStatus() {
+		return {
+			_prevPos: this._prevPos,
+			scrollPos: scroll(this._renderer.view, this._renderer.isVertical),
+		};
+	}
+	setStatus(status, applyScrollPos) {
+		this._prevPos = status._prevPos;
+		if (applyScrollPos) {
+			const pos = this._renderer.isVertical ? [0, status.scrollPos] : [status.scrollPos, 0];
+
+			scrollTo(this._renderer.view, ...pos);
+		}
 	}
 	getScrollPos() {
 		return this._prevPos;
@@ -36,7 +51,7 @@ export default class Watcher {
 		}
 		this._prevPos = rawPos - this._renderer.getContainerOffset();
 	}
-	_attachEvent() {
+	attachEvent() {
 		addEvent(this._renderer.view, "scroll", this._onCheck);
 		addEvent(window, "resize", this._onResize);
 	}
@@ -67,7 +82,7 @@ export default class Watcher {
 			this._prevPos = -1;
 		}, 100);
 	}
-	_detachEvent() {
+	detachEvent() {
 		removeEvent(window, "resize", this._onResize);
 	}
 	destroy() {
