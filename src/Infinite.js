@@ -220,7 +220,7 @@ export default class Infinite {
 		}
 		const start = isAppend ? this._status.startCursor : target + 1;
 		const end = isAppend ? target : this._status.endCursor;
-
+		console.warn("recycle", start, end);
 		if (start <= end) {
 			if (this._isVisible(isAppend ? start : end) !== 0) {
 				DOMRenderer.removeItems(this._items.pluck("items", start, end));

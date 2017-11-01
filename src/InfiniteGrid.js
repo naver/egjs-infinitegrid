@@ -196,7 +196,7 @@ class InfiniteGrid extends Component {
 	 * @return {Array} List of group keys <ko>그룹 키의 목록</ko>
 	 */
 	getGroupKeys(includeCached = false) {
-		return this.layoutManager.getGroupKeys(includeCached);
+		return this._infinite.getGroupKeys(includeCached);
 	}
 
 	/**
