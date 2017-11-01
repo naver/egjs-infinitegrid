@@ -9,7 +9,6 @@ import {
 import {
 	$,
 	scrollBy,
-	scrollTo,
 	innerHeight,
 	innerWidth,
 } from "./utils";
