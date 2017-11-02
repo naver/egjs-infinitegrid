@@ -22,22 +22,21 @@ export default class Infinite {
 		}, callback);
 		Object.assign(this.options = {
 			itemSelector: "*",
-			useRecycle: true,
 			isOverflowScroll: false,
-			widthAttr: "data-width",
-			heightAttr: "data-height",
 			threshold: 300,
-			direction: "vertical", // @todo change const
 			isEqualSize: false,
+			useRecycle: true,
+			direction: "vertical", // @todo change const
 		}, options);
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);
 		this._isVertical = this.options.direction === "vertical";
 		this._reset();
 		this._items = new ItemManager();
-		this._renderer = new DOMRenderer(
-			element,
-			this.options.direction === "vertical",
-			this.options.isOverflowScroll);
+		this._renderer = new DOMRenderer(element, {
+			isOverflowScroll: this.options.isOverflowScroll,
+			isEqualSize: this.options.isEqualSize,
+			isVertical: this.options.direction === "vertical",
+		});
 		this._watcher = new Watcher(
 			this._renderer,
 			{
@@ -124,7 +123,7 @@ export default class Infinite {
 			if (this._renderer.resize()) {
 				this._layout.setSize(this._renderer.getContainerSize());
 				data.forEach(v => {
-					data.items = ItemManager.updateSize(v.items);
+					data.items = this._renderer.updateSize(v.items);
 				});
 			}
 		} else {
@@ -267,12 +266,10 @@ export default class Infinite {
 
 			this._renderer[method](items);
 			// check image sizes after elements are attated on DOM
-			ImageLoaded.check(items.map(item => item.el), {
-				widthAttr: this.options.widthAttr,
-				heightAttr: this.options.heightAttr,
-				callback: () => {
+			ImageLoaded.check(items.map(item => item.el),
+				() => {
 					const layouted = this._layout[method](
-						ItemManager.updateSize(items),
+						this._renderer.updateSize(items),
 						this._items.getOutline(
 							isAppend ? this._status.endCursor : this._status.startCursor,
 							isAppend ? "end" : "start")
@@ -283,8 +280,8 @@ export default class Infinite {
 					this.options.useRecycle && this._recycle(isAppend);
 					DOMRenderer.renderItems(layouted.items);
 					this._onLayoutComplete(layouted.items, isAppend, isTrusted);
-				},
-			});
+				}
+			);
 		}
 	}
 	_isVisible(index) {
@@ -387,6 +384,7 @@ export default class Infinite {
 		};
 	}
 	destroy() {
+		this._watcher.destroy();
 		this._reset();
 		this._items.clear();
 		this._renderer.destroy();

@@ -51,38 +51,62 @@ export default class DOMRenderer {
 			return item;
 		});
 	}
-	constructor(element, isVertical = true, isOverflowScroll = false) {
-		this.isVertical = isVertical;
+	constructor(element, options) {
+		Object.assign(this.options = {
+			isOverflowScroll: false,
+			isEqualSize: false,
+			isVertical: true,
+		}, options);
 		this._size = {
 			containerOffset: 0,
 			container: -1,
 			view: -1,
+			item: null,
 		};
-		this._init(element, isOverflowScroll);
+		this._init(element);
 		this.resize();
 	}
 	getStatus() {
 		return {
 			cssText: this.container.style.cssText,
-			isVertical: this.isVertical,
+			options: Object.assign({}, this.options),
 			_size: Object.assign({}, this._size),
 		};
 	}
 	setStatus(status, items) {
 		this.container.style.cssText = status.cssText;
-		this.isVertical = status.isVertical;
+		Object.assign(this.options, status.options);
 		Object.assign(this._size, status._size);
 
 		DOMRenderer.renderItems(items);
 		this._insert(items, APPEND);
 	}
-	_init(el, isOverflowScroll) {
+	updateSize(items) {
+		return items.map(item => {
+			if (item.el) {
+				if (this.options.isEqualSize) {
+					this._size.item = this._size.item || {
+						width: innerWidth(item.el),
+						height: innerHeight(item.el),
+					};
+				} else {
+					item.size = {
+						width: innerWidth(item.el),
+						height: innerHeight(item.el),
+					};
+				}
+			}
+			return item;
+		});
+	}
+	_init(el) {
 		const element = $(el);
 
+		element.style.position = "relative";
 		// base.style.width = "100%";
 		// base.style.height = "100%";
 
-		if (isOverflowScroll) {
+		if (this.options.isOverflowScroll) {
 			let container = element.querySelector(`.${CONTAINER_CLASSNAME}`);
 
 			if (!container) {
@@ -91,7 +115,7 @@ export default class DOMRenderer {
 
 				const children = element.children;
 				const length = children.length;	// for IE8
-				const target = this.isVertical ? ["Y", "X"] : ["X", "Y"];
+				const target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
 
 				for (let i = 0; i < length; i++) {
 					container.appendChild(children[0]);
@@ -104,8 +128,6 @@ export default class DOMRenderer {
 			this.view = element;
 			this.container = container;
 		} else {
-			element.style.position = "relative";
-
 			this.view = window;
 			this.container = element;
 		}
@@ -122,7 +144,7 @@ export default class DOMRenderer {
 	}
 	clear() {
 		this.container.innerHTML = "";
-		this.container.style[this.isVertical ? "height" : "width"] = "";
+		this.container.style[this.options.isVertical ? "height" : "width"] = "";
 		this._size = {
 			containerOffset: 0,
 			container: -1,
@@ -147,14 +169,14 @@ export default class DOMRenderer {
 			this.container.insertBefore(df, this.container.firstChild);
 	}
 	_calcSize() {
-		return this.isVertical ?
+		return this.options.isVertical ?
 			innerWidth(this.container) : innerHeight(this.container);
 	}
 	getViewSize() {
 		return this._size.view;
 	}
 	scrollBy(point) {
-		const pos = this.isVertical ? [0, point] : [point, 0];
+		const pos = this.options.isVertical ? [0, point] : [point, 0];
 
 		scrollBy(this.view, ...pos);
 	}
@@ -166,14 +188,16 @@ export default class DOMRenderer {
 		return this._size.container;
 	}
 	setContainerSize(size) {
-		this.container.style[this.isVertical ? "height" : "width"] = `${size}px`;
+		this.container.style[this.options.isVertical ? "height" : "width"] = `${size}px`;
 	}
 	resize() {
 		if (this.isNeededResize()) {
+			const isVertical = this.options.isVertical;
 			this._size = {
-				containerOffset: this.container[`offset${this.isVertical ? "Top" : "Left"}`],
+				containerOffset: this.container[`offset${isVertical ? "Top" : "Left"}`],
 				container: this._calcSize(),
-				view: this.isVertical ? innerHeight(this.view) : innerWidth(this.view),
+				view: isVertical ? innerHeight(this.view) : innerWidth(this.view),
+				item: null,
 			};
 			return true;
 		}
@@ -187,6 +211,7 @@ export default class DOMRenderer {
 			containerOffset: 0,
 			container: -1,
 			view: -1,
+			item: null,
 		};
 	}
 }

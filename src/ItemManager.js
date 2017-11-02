@@ -26,19 +26,6 @@ export default class ItemManager {
 	static pluck(data, property) {
 		return data.reduce((acc, v) => acc.concat(v[property]), []);
 	}
-	// @todo you should check imagesize from data-attribute
-	static updateSize(items) {
-		return items.map(item => {
-			if (item.el) {
-				item.size = {
-					width: innerWidth(item.el),
-					height: innerHeight(item.el),
-				};
-			}
-			return item;
-		});
-	}
-
 	constructor() {
 		this.clear();
 	}

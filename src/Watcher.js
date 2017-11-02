@@ -29,16 +29,17 @@ export default class Watcher {
 	getStatus() {
 		return {
 			_prevPos: this._prevPos,
-			scrollPos: scroll(this._renderer.view, this._renderer.isVertical),
+			scrollPos: this.getOrgScrollPos(),
 		};
 	}
 	setStatus(status, applyScrollPos) {
 		this._prevPos = status._prevPos;
-		if (applyScrollPos) {
-			const pos = this._renderer.isVertical ? [0, status.scrollPos] : [status.scrollPos, 0];
+		applyScrollPos && this.scrollTo(status.scrollPos);
+	}
+	scrollTo(pos) {
+		const arrPos = this._renderer.options.isVertical ? [0, pos] : [pos, 0];
 
-			scrollTo(this._renderer.view, ...pos);
-		}
+		scrollTo(this._renderer.view, ...arrPos);
 	}
 	getScrollPos() {
 		return this._prevPos;
@@ -47,7 +48,7 @@ export default class Watcher {
 		let rawPos = pos;
 
 		if (typeof pos === "undefined") {
-			rawPos = scroll(this._renderer.view, this._renderer.isVertical);
+			rawPos = this.getOrgScrollPos();
 		}
 		this._prevPos = rawPos - this._renderer.getContainerOffset();
 	}
@@ -55,8 +56,11 @@ export default class Watcher {
 		addEvent(this._renderer.view, "scroll", this._onCheck);
 		addEvent(window, "resize", this._onResize);
 	}
+	getOrgScrollPos() {
+		return scroll(this._renderer.view, this._renderer.options.isVertical);
+	}
 	_onCheck() {
-		const orgScrollPos = scroll(this._renderer.view, this._renderer.isVertical);
+		const orgScrollPos = this.getOrgScrollPos();
 		const prevPos = this.getScrollPos();
 
 		this.setScrollPos(orgScrollPos);
@@ -69,7 +73,7 @@ export default class Watcher {
 			direction: prevPos < scrollPos ? "end" : "start",
 			scrollPos,
 			orgScrollPos,
-			isVertical: this._renderer.isVertical,
+			isVertical: this._renderer.options.isVertical,
 		});
 	}
 	_onResize() {
@@ -77,7 +81,9 @@ export default class Watcher {
 			clearTimeout(this._timer.resize);
 		}
 		this._timer.resize = setTimeout(() => {
-			this._renderer.isNeededResize() && this._callback.layout && this._callback.layout();
+			this._renderer.isNeededResize() &&
+				this._callback.layout &&
+				this._callback.layout();
 			this._timer.resize = null;
 			this._prevPos = -1;
 		}, 100);
@@ -86,7 +92,8 @@ export default class Watcher {
 		removeEvent(window, "resize", this._onResize);
 	}
 	destroy() {
-		this._detachEvent();
+		this.detachEvent();
+		this._prevPos = -1;
 	}
 }
 
