@@ -56,6 +56,9 @@ export default class Infinite {
 		}));
 		this._layout.setSize(this._renderer.getContainerSize());
 	}
+	getItems() {
+		return this._items.pluck("items", 0, this._items.size());
+	}
 	getVisibleItems() {
 		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
 	}

@@ -200,7 +200,9 @@ class InfiniteGrid extends Component {
 	getGroupKeys(includeCached = false) {
 		return this._infinite.getGroupKeys(includeCached);
 	}
-
+	getItems(includeCached = false) {
+		return this._infinite[includeCached ? "getItems" : "getVisibleItems"]();
+	}
 	/**
 	 * Destroys elements, properties, and events used on a grid layout.
 	 * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
