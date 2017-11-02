@@ -372,7 +372,7 @@ export default class Infinite {
 			isAppend,
 			isTrusted,
 		});
-		console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
+		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
 	}
 	_reset() {
 		this._status = {
