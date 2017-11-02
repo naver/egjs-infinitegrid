@@ -9,6 +9,9 @@ const style = {
 	"horizontal": {position: "left", size: "width", cammelSize: "Width", coordinate: "X"},
 };
 
+const START = "start";
+const CENTER = "center";
+
 class Parallax {
 	constructor(root = window, options = {}) {
 		this.options = Object.assign({
@@ -17,12 +20,14 @@ class Parallax {
 			strength: 1,
 			center: 0,
 			range: [-1, 1],
+			align: START,
 			direction: "vertical",
 		}, options);
 		this._root = root;
 		this._rootSize = 0;
 		this._containerPosition = 0;
 		this._style = style[this.options.direction];
+		this.resize();
 	}
 	_checkParallaxItem(element) {
 		if (!element) {
@@ -56,7 +61,7 @@ class Parallax {
 		if (!container || root === container) {
 			this._containerPosition = 0;
 		} else {
-			const rootRect = root.getBoundingClientRect();
+			const rootRect = (isWindow(root) ? document.body : root).getBoundingClientRect();
 			const containertRect = container.getBoundingClientRect();
 
 			this._containerPosition = containertRect[positionName] - rootRect[positionName];
@@ -78,7 +83,7 @@ class Parallax {
 		const coordinateName = styleNames.coordinate;
 		const sizeName = styleNames.size;
 		const options = this.options;
-		const {strength, center, range} = options;
+		const {strength, center, range, align} = options;
 		const rootSize = this._rootSize;
 		const scrollPositionEnd = scrollPositionStart + rootSize;
 		const containerPosition = this._containerPosition;
@@ -127,7 +132,11 @@ class Parallax {
 
 			// dist is the position when thumnail's image is centered.
 			const dist = (boxSize - imageSize) / 2;
-			const translate = dist * (1 - ratio);
+			let translate = dist * (1 - ratio);
+
+			if (align === CENTER) {
+				translate -= dist;
+			}
 
 			imageElement.__TRANSLATE__ = translate;
 			imageElement.__RATIO__ = ratio;

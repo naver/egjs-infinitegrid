@@ -11,7 +11,6 @@ var config = {
 		"GridLayout": "./src/layouts/GridLayout.js",
 		"FrameLayout": "./src/layouts/FrameLayout.js",
 		"SquareLayout": "./src/layouts/SquareLayout.js",
-		"LightBoxLayout": "./src/layouts/LightBoxLayout.js",
 		"PackingLayout": "./src/layouts/PackingLayout.js",
 		"Parallax": "./src/Parallax.js",
 	},
