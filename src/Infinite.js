@@ -151,7 +151,7 @@ export class Infinite extends Component {
 			data = this._items.get(this._startCursor, this._endCursor);
 			this._renderer.resize() &&
 				data.forEach(v => {
-					data.items = ItemManager.updateSize(v.items);
+					data.items = this._renderer.updateSize(v.items);
 				});
 			}
 		} else {

@@ -44,6 +44,9 @@ export default class Watcher {
 		// }
 		addEvent(window, "resize", this._onResize);
 	}
+	getOrgScrollPos() {
+		return scroll(this._renderer.view, this._renderer.options.isVertical);
+	}
 	_onCheck() {
 		// if (SUPPORT_INTERSECTIONOBSERVER) {
 
@@ -113,7 +116,8 @@ export default class Watcher {
 		removeEvent(window, "resize", this._onResize);
 	}
 	destroy() {
-		this._detachEvent();
+		this.detachEvent();
+		this._prevPos = -1;
 	}
 }
 

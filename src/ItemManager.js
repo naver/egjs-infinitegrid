@@ -1,6 +1,6 @@
 import {MULTI, GROUPKEY_ATT} from "./consts";
 import DOMRenderer from "./DOMRenderer";
-import {$, toArray, innerWidth, innerHeight} from "./utils";
+import {$, toArray} from "./utils";
 
 export default class ItemManager {
 	static from(elements, selector, {groupKey, isAppend}) {
@@ -26,19 +26,6 @@ export default class ItemManager {
 	static pluck(data, property) {
 		return data.reduce((acc, v) => acc.concat(v[property]), []);
 	}
-	// @todo you should check imagesize from data-attribute
-	static updateSize(items) {
-		return items.map(item => {
-			if (item.el) {
-				item.size = {
-					width: innerWidth(item.el),
-					height: innerHeight(item.el),
-				};
-			}
-			return item;
-		});
-	}
-
 	constructor() {
 		this.clear();
 	}

@@ -26,8 +26,19 @@ export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 	});
 	instance.callback.layoutComplete = layoutHandler;
 	instance[method](getItems(count), idx++);
+	return layoutHandler;
 }
 
+// check layout properties
+export function checkLayoutComplete(handler, isAppend, count) {
+	for (let i = 0, len = handler.callCount; i < len; i++) {
+		const param = handler.getCall(i).args[0];
+
+		expect(param.target.length).to.be.equal(count);
+		expect(param.isAppend).to.be.equal(isAppend);
+		expect(param.isTrusted).to.be.false;
+	}
+}
 
 // function parseCssText(str) {
 // 	const ht = {};

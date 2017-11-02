@@ -4,8 +4,8 @@ import FrameLayout from "../../src/layouts/FrameLayout";
 import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
-import {insert} from "./TestHelper";
-import {APPEND} from "../../src/consts";
+import {insert, checkLayoutComplete} from "./TestHelper";
+import {APPEND, PREPEND} from "../../src/consts";
 
 const LAYOUTS = [
   GridLayout,
@@ -15,7 +15,7 @@ const LAYOUTS = [
   JustifiedLayout
 ];
 
-describe("Infinite Test", function() {
+describe("Infinite (useRecycle:true) Test", function() {
   describe("append/prepend Test on layoutComplete (useRecycle:true)", function() {
     beforeEach(() => {
       this.el = sandbox();
@@ -32,11 +32,65 @@ describe("Infinite Test", function() {
       }
       cleanup();
     });
-    it("should check a append method", done => {
+    it("should check a append with recycle method", done => {
       // Given
-      insert(this.inst, APPEND, () => {}, 30, 10);
+      const itemCount = 30;
+      const retry = 7;
+
+      // When
+      const handler = insert(this.inst, APPEND, () => {
+        // Then
+        expect(this.inst._status.startCursor).to.be.equal(0);
+        expect(this.inst._status.endCursor).to.be.equal(retry - 1);
+        expect(this.inst.getGroupKeys()).to.have.lengthOf(retry);
+
+        // Then: check layout property
+        checkLayoutComplete(handler, APPEND, itemCount);
+
+        // Given
+        const centerIdx = Number.parseInt(retry / 2);
+        const centerEndValue = this.inst._items
+          .getEdgeValue("end", this.inst._status.startCursor, centerIdx);
+
+        // When
+        this.inst._watcher.scrollTo(centerEndValue);
+        setTimeout(() => {
+          this.inst._recycle(APPEND);
+          // Then
+          expect(this.inst.getGroupKeys()).to.have.lengthOf.below(retry);
+          done();
+        }, 100);
+      }, itemCount, retry);
     });
-      
+    it("should check a prepend with recycle method", done => {
+      // Given
+      const itemCount = 30;
+      const retry = 7;
+      // When
+      const handler = insert(this.inst, PREPEND, () => {
+        // Then
+        expect(this.inst._status.startCursor).to.be.equal(0);
+        expect(this.inst._status.endCursor).to.be.equal(retry - 1);
+        expect(this.inst.getGroupKeys()).to.have.lengthOf(retry);
+
+        // Then: check layout property
+        checkLayoutComplete(handler, PREPEND, itemCount);
+
+        // Given
+        const centerIdx = Number.parseInt(retry / 2);
+        const centerEndValue = this.inst._items
+          .getEdgeValue("start", this.inst._status.startCursor, centerIdx);
+
+        // When
+        this.inst._watcher.scrollTo(centerEndValue);
+        setTimeout(() => {
+          this.inst._recycle(PREPEND);
+          // Then
+          expect(this.inst.getGroupKeys()).to.have.lengthOf.below(retry);
+          done();
+        }, 100);
+      }, itemCount, retry);
+    });
   });  
   describe("setLayout method Test", function() {
     beforeEach(() => {

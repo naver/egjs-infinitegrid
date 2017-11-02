@@ -59,15 +59,17 @@ export default class DOMRenderer {
 		this._size = {
 			container: -1,
 			view: -1,
+			item: null,
 		};
 	}
 	_init(el, isVertical, isOverflowScroll) {
 		const element = $(el);
 
+		element.style.position = "relative";
 		// base.style.width = "100%";
 		// base.style.height = "100%";
 
-		if (isOverflowScroll) {
+		if (this.options.isOverflowScroll) {
 			let container = element.querySelector(`.${CONTAINER_CLASSNAME}`);
 
 			if (!container) {
@@ -147,6 +149,8 @@ export default class DOMRenderer {
 	}
 	resize() {
 		if (this.isNeededResize()) {
+			const isVertical = this.options.isVertical;
+
 			this._size = {
 				container: this._calcSize(),
 				view: this._isVertical ? innerHeight(this._view) : innerWidth(this._view),
@@ -163,6 +167,7 @@ export default class DOMRenderer {
 			containerOffset: 0,
 			container: -1,
 			view: -1,
+			item: null,
 		};
 	}
 }

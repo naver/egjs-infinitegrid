@@ -25,40 +25,25 @@ class ImageLoaded {
 			}
 		});
 	}
-	static checkImageLoaded(el, widthAttr, heightAttr) {
-		let width;
-		let height;
-
+	static checkImageLoaded(el) {
 		return toArray(el.querySelectorAll("img")).filter(v => {
 			if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
-				width = v.getAttribute(widthAttr) || 0;
-				height = v.getAttribute(heightAttr) || 0;
-
-				if (width && height) {
-					return false;
-				} else {
-					return !v.complete;
-				}
+				return !v.complete;
 			} else {
 				return false;
 			}
 		});
 	}
-	static check(elements, options) {
-		const opt = Object.assign({
-			widthAttr: "data-width",
-			heightAttr: "data-height",
-		}, options);
-
+	static check(elements, callback) {
 		const needCheck = elements
-			.reduce((acc, v) => acc.concat(this.checkImageLoaded(v, opt.widthAttr, opt.heightAttr)), []);
+			.reduce((acc, v) => acc.concat(this.checkImageLoaded(v)), []);
 
 		if (needCheck.length > 0) {
-			ImageLoaded.waitImageLoaded(needCheck, opt.callback);
+			ImageLoaded.waitImageLoaded(needCheck, callback);
 		} else {
 			// convert to async
 			setTimeout(() => {
-				opt.callback && opt.callback();
+				callback && callback();
 			}, 0);
 		}
 	}
