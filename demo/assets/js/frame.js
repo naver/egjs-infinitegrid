@@ -47,14 +47,40 @@ ig.setLayout(eg.InfiniteGrid.FrameLayout, {
 	]
 });
 var groupKey = 1;
+var parallax = new Parallax(window, {
+	container: document.querySelector(".container"),
+	direction: "vertical",
+	// strength: 0.5,
+});
+
+
+
 ig.on("append", function (e) {
 	var items = getItems(30);
 	ig.append(items, ++groupKey);
 	no += 30;
 });
-ig.on("layoutComplete", function(e) {
+ig.on("layoutComplete", function (e) {
 	console.log(e);
+	parallax.refresh(e.target, document.body.scrollTop);
 });
 var items = getItems(30);
 
 ig.append(items, ++groupKey);
+
+
+
+
+window.addEventListener("resize", function (e) {
+	ig._infinite._items._data.forEach(function (group) {
+		parallax.resize(group.items);
+		parallax.refresh(group.items, document.body.scrollTop);
+	});
+})
+ig.on("change", function (e) {
+	var scrollPos = e.orgScrollPos;
+
+	ig._infinite._items._data.forEach(function (group) {
+		parallax.refresh(group.items, scrollPos);
+	});
+});
