@@ -193,6 +193,7 @@ export default class DOMRenderer {
 	resize() {
 		if (this.isNeededResize()) {
 			const isVertical = this.options.isVertical;
+
 			this._size = {
 				containerOffset: this.container[`offset${isVertical ? "Top" : "Left"}`],
 				container: this._calcSize(),

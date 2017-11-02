@@ -1,6 +1,6 @@
 import {MULTI, GROUPKEY_ATT} from "./consts";
 import DOMRenderer from "./DOMRenderer";
-import {$, toArray, innerWidth, innerHeight} from "./utils";
+import {$, toArray} from "./utils";
 
 export default class ItemManager {
 	static from(elements, selector, {groupKey, isAppend}) {
