@@ -70,6 +70,9 @@ export class Infinite extends Component {
 		}));
 		this._layout.setSize(this._renderer.getSize());
 	}
+	getItems() {
+		return this._items.pluck("items", 0, this._items.size());
+	}
 	getVisibleItems() {
 		return this._items.pluck("items", this._startCursor, this._endCursor);
 	}

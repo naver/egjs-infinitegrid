@@ -12,7 +12,6 @@ var config = {
 		filename: "[name].js",
 		library: [pkg.namespace.eg, "InfiniteGrid"],
 		libraryTarget: "umd",
-		umdNamedDefine: true
 	},
 	externals: {
 		"@egjs/component" : {
