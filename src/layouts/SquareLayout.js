@@ -8,7 +8,23 @@ function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
 	}
 	return outline.map(l => parseInt((l - point) / itemSize, 10));
 }
+function getColumn(item) {
+	if (item.column) {
+		return item.column;
+	}
+	if (item.el) {
+		const dataset = item.el.dataset;
 
+		if (dataset) {
+			item.column = dataset.column || 1;
+		} else {
+			item.column = item.el.getAttribute("column") || 1;
+		}
+		return item.column;
+	}
+	item.column = 1;
+	return 1;
+}
 class SquareLayout extends FrameLayout {
 	_checkItemSize() {
 		const column = this.options.column;
@@ -37,7 +53,7 @@ class SquareLayout extends FrameLayout {
 			const point = Math[pointCaculateName](...endOutline);
 			const index = endOutline.indexOf(point);
 			const item = items[isAppend ? i : length - 1 - i];
-			const column = item.column;
+			const column = getColumn(item);
 			let columnCount = 1;
 
 			if (column > 1) {
