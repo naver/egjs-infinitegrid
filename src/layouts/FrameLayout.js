@@ -98,6 +98,7 @@ class FrameLayout {
 	_checkItemSize() {
 		if (this.options.itemSize) {
 			this._itemSize = this.options.itemSize;
+			return;
 		}
 		const style = this._style;
 		const size = style.size2;

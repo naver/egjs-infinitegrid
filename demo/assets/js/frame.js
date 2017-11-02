@@ -69,8 +69,6 @@ var items = getItems(30);
 ig.append(items, ++groupKey);
 
 
-
-
 window.addEventListener("resize", function (e) {
 	ig._infinite._items._data.forEach(function (group) {
 		parallax.resize(group.items);
