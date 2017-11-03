@@ -1,6 +1,6 @@
 /* global describe, beforeEach, afterEach, it, expect */
-import {makeItems, VIEWPORT} from "./data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex} from "./common";
+import {makeItems, VIEWPORT} from "../helper/data";
+import {checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex} from "../helper/common";
 import Layout from "../../../src/layouts/FrameLayout";
 
 

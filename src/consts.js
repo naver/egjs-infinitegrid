@@ -28,6 +28,8 @@ export const CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
 
 export const APPEND = true;
 export const PREPEND = false;
+export const VERTICAL = "vertical";
+export const HORIZONTAL = "horizontal";
 export const CACHE = true;
 export const NO_CACHE = false;
 export const TRUSTED = true;
@@ -36,3 +38,17 @@ export const MULTI = true;
 export const SINGLE = false;
 export const DUMMY_POSITION = -100000;
 export const GROUPKEY_ATT = "data-groupkey";
+
+
+
+export const DEFAULT_OPTIONS = {
+	direction: VERTICAL,
+	margin: 0,
+};
+
+export const ALIGN = {
+	START: "start",
+	CENTER: "center",
+	END: "end",
+	JUSTIFY: "justify",
+};

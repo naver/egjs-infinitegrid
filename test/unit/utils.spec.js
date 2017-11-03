@@ -1,5 +1,5 @@
-import {utils} from "../../src/utils";
-import {window} from "../../src/browser";
+import {$, scrollTo, scroll} from "../../src/utils";
+import {VERTICAL} from "../../src/consts";
 
 describe("Util Test", function() {
   beforeEach(() => {
@@ -16,14 +16,14 @@ describe("Util Test", function() {
     }
     cleanup();
   });
-  it("should check `scrollTop/scrollTo` method", () => {
+  it("should check `scrollTo/scroll` method", () => {
       // Given
-      const view = utils.$("#view");
-      expect(utils.scrollTop(view)).to.be.not.equal(100);
+      const view = $("#view");
+      expect(scroll(view, VERTICAL)).to.be.not.equal(100);
       // When 
       
-      utils.scrollTo(view, 0, 100);
+      scrollTo(view, 0, 100);
       // Then
-      expect(utils.scrollTop(view)).to.be.equal(100);
+      expect(scroll(view, VERTICAL)).to.be.equal(100);
   });
 });

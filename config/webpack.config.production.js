@@ -5,13 +5,7 @@ var CleanWebpackPlugin = require("clean-webpack-plugin");
 var UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 var uglifyConfig = require("./uglify");
 var banner = require("./banner");
-
-
 var config = {
-	entry: {
-		"infinitegrid": "./src/index.js",
-		"infinitegrid.min": "./src/index.js"
-	},
 	module: {
 		rules: [{
 			test: /(\.js)$/,
@@ -22,20 +16,24 @@ var config = {
 		}]
 	},
 	plugins: [
-		new CleanWebpackPlugin([path.resolve(__dirname, "../dist")], {
-			root: path.resolve(__dirname, "../"),
-			verbose: true,
-			dry: false
-		}),
+		// new CleanWebpackPlugin([path.resolve(__dirname, "../dist")], {
+		// 	root: path.resolve(__dirname, "../"),
+		// 	verbose: true,
+		// 	dry: false
+		// }),
 		new UglifyJSPlugin(uglifyConfig),
 		new webpack.BannerPlugin(banner.common)
 	]
 };
 
-module.exports = function (common) {
+module.exports = function(common, name, localpath) {
+	config.entry = {
+		[name]: localpath,
+		[`${name}.min`]: localpath,
+	};
 	return merge.strategy({
 		entry: "replace",
 		module: "append",
-		plugins: "append"
+		plugins: "append",
 	})(common, config);
 };

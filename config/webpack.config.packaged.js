@@ -5,10 +5,6 @@ var uglifyConfig = require("./uglify");
 var banner = require("./banner");
 
 var config = {
-	entry: {
-		"infinitegrid.pkgd": "./src/index.js",
-		"infinitegrid.pkgd.min": "./src/index.js"
-	},
 	externals: [],
 	plugins: [
 		new UglifyJSPlugin(uglifyConfig),
@@ -16,7 +12,11 @@ var config = {
 	]
 };
 
-module.exports = function (common) {
+module.exports = function(common, name, localpath) {
+	config.entry = {
+		[`${name}.pkgd`]: localpath,
+		[`${name}.pkgd.min`]: localpath,
+	};
 	return merge.strategy({
 		entry: "replace",
 		externals: "replace",

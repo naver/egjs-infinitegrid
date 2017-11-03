@@ -1,4 +1,5 @@
-import {getStyleNames} from "../../../src/layouts/utils";
+import {getStyleNames} from "../../../src/utils";
+
 /* global expect */
 function approximate(obj) {
 	const o = {};

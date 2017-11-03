@@ -1,6 +1,6 @@
 import dijkstra from "./lib/dijkstra";
-import {APPEND, PREPEND} from "./Constants";
-import {getStyleNames, assignOptions} from "./utils";
+import {APPEND, PREPEND} from "../consts";
+import {getStyleNames, assignOptions} from "../utils";
 
 class JustifiedLayout {
 	constructor(options = {}) {

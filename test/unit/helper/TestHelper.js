@@ -13,18 +13,18 @@ export function getItems(count) {
 
 export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 	let idx = 1;
-	const oldHandler = instance.callback.layoutComplete;
+	// const oldHandler = instance.callback.layoutComplete;
 	const method = isAppend ? "append" : "prepend";
 	const layoutHandler = sinon.spy(function(e) {
-		oldHandler && oldHandler(e);
+		// oldHandler && oldHandler(e);
 		if (idx <= retry) {
 			instance[method](getItems(count), idx++);
 		} else {
-			instance.callback.layoutComplete = oldHandler;
+			// instance.callback.layoutComplete = oldHandler;
 			callback();
 		}
 	});
-	instance.callback.layoutComplete = layoutHandler;
+	instance.on("layoutComplete", layoutHandler);
 	instance[method](getItems(count), idx++);
 	return layoutHandler;
 }
