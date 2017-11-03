@@ -5,7 +5,7 @@
  * @egjs/infinitegrid JavaScript library
  * https://github.com/naver/egjs-infinitegrid
  * 
- * @version 2.1.1-rc
+ * @version 2.1.1
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -953,7 +953,7 @@ var InfiniteGrid = function (_Mixin$with) {
 	return InfiniteGrid;
 }((0, _utils.Mixin)(_component2["default"])["with"](_eventHandler2["default"]));
 
-InfiniteGrid.VERSION = "2.1.1-rc";
+InfiniteGrid.VERSION = "2.1.1";
 exports["default"] = InfiniteGrid;
 module.exports = exports["default"];
 
