@@ -34,7 +34,7 @@ var className = isSupportClipPath ? "item_clip" : "";
 function getItems(length) {
 	var arr = [];
 	for (let i = 0; i < length; ++i) {
-		arr.push(getItem({ no: i + no, title: "egjs gallery item", subtitle: "egjs item", className: className}));
+		arr.push(getItem({no: i + no, title: "egjs gallery item", subtitle: "egjs item", className}));
 	}
 	no += length;
 
@@ -52,34 +52,30 @@ var parallax = new eg.Parallax(window, {
 });
 
 ig.setLayout(eg.InfiniteGrid.GridLayout, {
-	margin: isSupportClipPath ? -80 : 0, 
+	margin: isSupportClipPath ? -80 : 0,
 });
-var groupKey = 1;
-ig.on("append", function (e) {
-	var items = getItems(30);
+let groupKey = 1;
+ig.on("append", e => {
+	const items = getItems(30);
+
 	ig.append(items, ++groupKey);
 	no += 30;
 });
-ig.on("layoutComplete", function(e) {
+ig.on("layoutComplete", e => {
 	console.log(e);
 	parallax.refresh(e.target, document.body.scrollLeft);
 });
-var items = getItems(30);
+ig.append(getItems(30), ++groupKey);
 
-ig.append(items, ++groupKey);
+window.addEventListener("resize", e => {
+	const items = ig.getItems();
 
-window.addEventListener("resize", function(e) {
-	ig._items._data.forEach(function(group) {
-		parallax.resize(group.items);
-		parallax.refresh(group.items, document.body.scrollLeft);
-	});
-})
-ig.on("change", function (e) {
-	console.log("ddd");
-	var scrollPos = e.orgScrollPos;
+	parallax.resize(items);
+	parallax.refresh(items, e.orgScrollPos);
+});
+ig.on("change", e => {
+	const scrollPos = e.orgScrollPos;
 
-	ig._items._data.forEach(function (group) {
-		parallax.refresh(group.items, scrollPos);
-	});
+	parallax.refresh(ig.getItems(), scrollPos);
 });
 
