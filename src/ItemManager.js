@@ -16,7 +16,7 @@ export default class ItemManager {
 	static selectItems(elements, selector) {
 		return elements.filter(v => {
 			if (selector === "*") {
-				return /DIV|SPAN|LI/.test(v.tagName);
+				return /DIV|SPAN|LI|IMG/.test(v.tagName);
 			} else {
 				return v.className.split(" ")
 					.some(c => c === selector);

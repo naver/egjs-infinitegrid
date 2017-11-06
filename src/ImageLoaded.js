@@ -26,13 +26,17 @@ class ImageLoaded {
 		});
 	}
 	static checkImageLoaded(el) {
-		return toArray(el.querySelectorAll("img")).filter(v => {
-			if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
-				return !v.complete;
-			} else {
-				return false;
-			}
-		});
+		if (el.tagName === "IMG") {
+			return !el.complete ? [el] : [];
+		} else {
+			return toArray(el.querySelectorAll("img")).filter(v => {
+				if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
+					return !v.complete;
+				} else {
+					return false;
+				}
+			});
+		}
 	}
 	static check(elements, callback) {
 		const needCheck = elements
