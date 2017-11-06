@@ -1,13 +1,13 @@
-import Infinite from "../../src/Infinite";
+import InfiniteGrid from "../../src/InfiniteGrid";
 import GridLayout from "../../src/layouts/GridLayout";
 import FrameLayout from "../../src/layouts/FrameLayout";
 import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
-import {insert, checkLayoutComplete} from "./TestHelper";
+import {insert, checkLayoutComplete} from "./helper/TestHelper";
 import {APPEND, PREPEND} from "../../src/consts";
 
-describe("Infinite Test", function() {
+describe("InfiniteGrid Test", function() {
   describe("setStatus/getStatus Test", function() {
     [true, false].forEach(isOverflowScroll => {
       beforeEach(() => {
@@ -15,7 +15,7 @@ describe("Infinite Test", function() {
         // window.scrollTo(0, 0);
         // this.el = sandbox();
         // this.el.innerHTML = "<div id='infinite'></div>";
-        // this.inst = new Infinite("#infinite", {
+        // this.inst = new InfiniteGrid("#infinite", {
         //   useRecycle: true,
         //   isOverflowScroll,
         // });
@@ -35,7 +35,7 @@ describe("Infinite Test", function() {
       beforeEach(() => {
         this.el = sandbox();
         this.el.innerHTML = "<div id='infinite'></div>";
-        this.inst = new Infinite("#infinite", {
+        this.inst = new InfiniteGrid("#infinite", {
           useRecycle: true,
           isOverflowScroll,
         });
@@ -87,7 +87,7 @@ describe("Infinite Test", function() {
     beforeEach(() => {
       this.el = sandbox();
       this.el.innerHTML = "<div id='infinite'></div>";
-      this.inst = new Infinite("#infinite");
+      this.inst = new InfiniteGrid("#infinite");
     });
     afterEach(() => {
       if (this.inst) {

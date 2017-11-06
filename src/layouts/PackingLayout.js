@@ -1,6 +1,6 @@
 import BoxModel from "./lib/BoxModel.js";
-import {HORIZONTAL, APPEND, PREPEND} from "./Constants";
-import {getStyleNames, assignOptions, toZeroArray} from "./utils";
+import {HORIZONTAL, APPEND, PREPEND} from "../consts";
+import {getStyleNames, assignOptions, toZeroArray} from "../utils";
 
 
 function getCost(originLength, length) {

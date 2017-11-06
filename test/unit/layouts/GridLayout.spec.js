@@ -1,9 +1,9 @@
 /* global describe, beforeEach, afterEach, it, expect */
-import { makeItems, VIEWPORT } from "./data";
-import { checkMargin, checkDirection, expectConnectItems, expectOutlineIndex, expectNoOutline, expectSameAppendPrepend, expectAppend } from "./common";
+import { makeItems, VIEWPORT } from "../helper/data";
+import { checkMargin, checkDirection, expectConnectItems, expectOutlineIndex, expectNoOutline, expectSameAppendPrepend, expectAppend} from "../helper/common";
 import Layout from "../../../src/layouts/GridLayout";
-import {ALIGN} from "../../../src/layouts/Constants";
-import {getStyleNames} from "../../../src/layouts/utils";
+import {ALIGN} from "../../../src/consts";
+import {getStyleNames} from "../../../src/utils";
 
 // ALIGN
 const {START, CENTER, END, JUSTIFY} = ALIGN;

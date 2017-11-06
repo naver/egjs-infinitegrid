@@ -40,16 +40,16 @@ $("#infinite").click(function(e) {
 var gui = new dat.GUI();
 var guioption = {
 	requestAppend: function() {
-		infinite._infinite._requestAppend();
+		infinite._requestAppend();
 	},
 	requestPrepend: function() {
-    infinite._infinite._requestPrepend();
+    infinite._requestPrepend();
   },
   clear: function() {
     infinite.clear();
   },
   fit: function() {
-    infinite._infinite._fit();
+    infinite._fit();
   },
   layout: function() {
     infinite.layout();

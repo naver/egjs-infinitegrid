@@ -1,5 +1,5 @@
-import {APPEND, PREPEND, HORIZONTAL, ALIGN} from "./Constants";
-import {getStyleNames, assignOptions} from "./utils";
+import {APPEND, PREPEND, HORIZONTAL, ALIGN} from "../consts";
+import {getStyleNames, assignOptions} from "../utils";
 
 // ALIGN
 const {START, CENTER, END, JUSTIFY} = ALIGN;

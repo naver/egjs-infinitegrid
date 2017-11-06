@@ -8,7 +8,6 @@ const style = {
 	"vertical": {position: "top", size: "height", cammelSize: "Height", coordinate: "Y"},
 	"horizontal": {position: "left", size: "width", cammelSize: "Width", coordinate: "X"},
 };
-
 const START = "start";
 const CENTER = "center";
 
@@ -145,4 +144,4 @@ class Parallax {
 	}
 }
 
-export default Parallax;
+module.exports = Parallax;

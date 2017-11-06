@@ -1,6 +1,6 @@
 /* global describe, beforeEach, afterEach, it, expect */
-import {makeItems, VIEWPORT} from "./data";
-import Parallax from "../../../src/Parallax";
+import {makeItems, VIEWPORT} from "./helper/data";
+import Parallax from "../../src/Parallax";
 
 function getItem({top = window.innerHeight, left = 0, width = 100, height = 400}) {
 	const el = document.createElement("div");

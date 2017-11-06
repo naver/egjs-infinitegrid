@@ -9,6 +9,9 @@ var config = {
 	plugins: [new WriteFilePlugin()]
 };
 
-module.exports = function (common) {
+module.exports = function(common, name, localpath) {
+	config.entry = {
+		[name]: localpath,
+	};
 	return merge(common, config);
 };
