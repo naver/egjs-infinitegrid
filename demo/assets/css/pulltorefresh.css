@@ -38,7 +38,11 @@ body {
 .container {
 	position: absolute;
 	top: 50px;
+	width: 100%;
 	height: 500px;
+}
+.contents {
+	height: 100%;
 }
 #table .post {
 	border-bottom: 1px solid #ddd;
@@ -61,11 +65,16 @@ body {
   text-align:center;
   left:0;
   font-weight:bold;
-  font-size:1.2em;
-  color: #8e8e8f;
+  font-size:1.7em;
+  color: #777;
+  background: #eee;
   overflow: hidden;
   height: 0;
+  line-height: 100px;
 }
 #prepend {
 	top: 0;
+}
+#append {
+	bottom: 0;
 }

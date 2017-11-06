@@ -44,7 +44,7 @@ function getItems(length) {
 var ig = new eg.InfiniteGrid(document.querySelector(".container"), {
 	direction: "horizontal",
 });
-var parallax = new Parallax(window, {
+var parallax = new eg.Parallax(window, {
 	container: document.querySelector(".container"),
 	direction: "horizontal",
 	// strength: 0.5,
