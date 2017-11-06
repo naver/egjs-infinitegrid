@@ -7,6 +7,7 @@ function getItems(groupNo) {
 
   for (var i = 0; i < 30; i++) {
     items.push('<div class="item"><div class="thumbnail"><img src="' + imgSrc(groupNo + i) + '" /><div class="caption"><p><a href="http://www.google.com/">Cras justo odio bla bla bla bla bla bla bla bla</a></p></div></div></div>');
+    // items.push('<img src="' + imgSrc(groupNo + i) + '" />');
   }
   return items;
 }
