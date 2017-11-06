@@ -1,0 +1,57 @@
+body {
+	padding: 0;
+	margin: 0;
+	background: #EDEDF0;
+	font-size: 13px;
+}
+.container {
+	position: absolute;
+	height: 100%;
+}
+.item {
+	height: 100%;
+	width: 400px;
+	overflow: hidden;
+	
+	transition: all ease 0.5s;
+	-webkit-transition: all ease 0.5s;
+	-ms-transition: all ease 0.5s;
+	transition-property: margin-left, width, clip-path;
+	-webkit-transition-property: margin-left, width, -webkit-clip-path;
+	-ms-transition-property: margin-left, width, -ms-clip-path;
+}
+.item:hover {
+	z-index: 2;
+	width: 500px;
+	margin-left: -50px;	
+}
+.item_clip {
+	-webkit-clip-path: polygon(80px 0%, 100% 0%, 320px 100%, 0% 100%);
+	-moz-clip-path: polygon(80px 0%, 100% 0%, 320px 100%, 0% 100%);
+	clip-path: polygon(80px 0%, 100% 0%, 320px 100%, 0% 100%);
+}
+.item_clip:hover {
+	-webkit-clip-path: polygon(80px 0%, 100% 0%, 420px 100%, 0% 100%);
+	-moz-clip-path: polygon(80px 0%, 100% 0%, 420px 100%, 0% 100%);
+	clip-path: polygon(80px 0%, 100% 0%, 420px 100%, 0% 100%);
+}
+.item img{
+	min-width: 200%;
+	height: 100%;
+	position: absolute;
+	left: -100%;
+	right: -100%;
+	margin: auto;
+}
+.item .info p {
+	position: absolute;
+	top: 60%;
+	left: 40px;
+	padding: 10px 15px;
+	background: rgba(0, 0, 0, 0.8);
+	color: white;
+	font-weight: bold;
+}
+.item .info .subtitle {
+	margin-top: 55px;
+}

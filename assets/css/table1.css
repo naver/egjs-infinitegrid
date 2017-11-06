@@ -1,0 +1,55 @@
+body {
+	font-family: 나눔고딕, nanumgothic, 돋움, Dotum, Helvetica, "Apple SD Gothic Neo", sans-serif;
+	font-size: 12px;
+	margin: 0;
+	padding: 0;
+}
+#table span {
+	float: left;
+}
+.header {
+	background: #282D37;
+	color: #fff;
+	position: fixed;
+	width: 100%;
+	z-index: 2;
+}
+.header span {
+	height: 40px;
+	line-height: 40px;
+	font-size: 14px;
+	padding: 5px 10px;
+}
+#table span.no {
+	width: 100px;
+	margin-left: 20px;
+}
+#table span.writer, #table span.date {
+	float: right;
+	width: 100px;
+}
+#table span.date {
+	width: 150px;
+}
+#table span.title {
+	float: none;
+	display: block;
+}
+.container {
+	position: absolute;
+	top: 50px;
+}
+#table .post {
+	border-bottom: 1px solid #ddd;
+	width: 100%;
+}
+#table .post span {
+	padding: 15px 10px;
+	color: #333;
+}
+#table .post .title {
+	font-weight: bold;
+}
+#table .post .date {
+	color: #999;
+}
