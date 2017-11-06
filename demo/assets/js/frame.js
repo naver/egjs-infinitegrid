@@ -47,7 +47,7 @@ ig.setLayout(eg.InfiniteGrid.FrameLayout, {
 	]
 });
 var groupKey = 1;
-var parallax = new Parallax(window, {
+var parallax = new eg.Parallax(window, {
 	container: document.querySelector(".container"),
 	direction: "vertical",
 	// strength: 0.5,

@@ -23,7 +23,6 @@
 		return arr;
 	}
 	var ig = new eg.InfiniteGrid(document.querySelector(".container3"), {
-		count: 100,
 		direction: "horizontal",
 		isOverflowScroll: true,	
 	});
@@ -43,14 +42,14 @@
 		refresh(pos);
 	});
 	ig.on("layoutComplete", function(e) {
-		var pos = ig._infinite._watcher._prevPos;
+		var pos = ig._watcher._prevPos;
 		refresh(pos);
 	});
 	function refresh(pos) {
-		var size = ig._infinite._renderer._size.view;
+		var size = ig._renderer._size.view;
 		var csize = Math.pow(size / 2, 2);
 		var centerPos = pos + size / 2;
-		ig._infinite._items._data.forEach(function (group) {
+		ig._items._data.forEach(function (group) {
 			group.items.forEach(function (item) {
 				if (pos > item.rect.left + item.size.width || pos + size < item.rect.left) {
 					return;

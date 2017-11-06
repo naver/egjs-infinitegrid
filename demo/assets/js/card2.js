@@ -44,7 +44,7 @@ function getItems(length) {
 var ig = new eg.InfiniteGrid(document.querySelector(".container"), {
 	direction: "horizontal",
 });
-var parallax = new Parallax(window, {
+var parallax = new eg.Parallax(window, {
 	container: document.querySelector(".container"),
 	direction: "horizontal",
 	// strength: 0.5,
@@ -69,15 +69,16 @@ var items = getItems(30);
 ig.append(items, ++groupKey);
 
 window.addEventListener("resize", function(e) {
-	ig._infinite._items._data.forEach(function(group) {
+	ig._items._data.forEach(function(group) {
 		parallax.resize(group.items);
 		parallax.refresh(group.items, document.body.scrollLeft);
 	});
 })
 ig.on("change", function (e) {
+	console.log("ddd");
 	var scrollPos = e.orgScrollPos;
 
-	ig._infinite._items._data.forEach(function (group) {
+	ig._items._data.forEach(function (group) {
 		parallax.refresh(group.items, scrollPos);
 	});
 });
