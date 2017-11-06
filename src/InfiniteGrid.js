@@ -150,7 +150,7 @@ class InfiniteGrid extends Component {
 		return this;
 	}
 	getItems(includeCached = false) {
-		return this[includeCached ? "_getItems" : "__getVisibleItems"]();
+		return this[includeCached ? "_getItems" : "_getVisibleItems"]();
 	}
 	_getItems() {
 		return this._items.pluck("items", 0, this._items.size());
