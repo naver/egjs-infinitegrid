@@ -88,7 +88,6 @@ class JustifiedLayout {
 		const pos1Name = style.pos1;
 		const size1Name = style.size1;
 		const pos2Name = style.pos2;
-		const endPos2Name = style.endPos2;
 		const size2Name = style.size2;
 		const length = path.length;
 		const margin = this.options.margin;
@@ -116,7 +115,6 @@ class JustifiedLayout {
 				item.rect = {
 					[pos1Name]: pos1,
 					[pos2Name]: pos2,
-					[endPos2Name]: pos2 + size2,
 					[size1Name]: size1,
 					[size2Name]: size2,
 				};
@@ -156,11 +154,10 @@ class JustifiedLayout {
 	_insert(items, outline, type) {
 		// this only needs the size of the item.
 		const clone = items.map(item => Object.assign({}, item));
-		const result = this._layout(clone, outline, type);
 
 		return {
 			items: clone,
-			outlines: result,
+			outlines: this._layout(clone, outline, type),
 		};
 	}
 	setSize(size) {

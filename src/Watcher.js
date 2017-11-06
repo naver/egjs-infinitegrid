@@ -1,6 +1,5 @@
 import {
 	IS_IOS,
-	SUPPORT_INTERSECTIONOBSERVER,
 } from "./consts";
 import {
 	addEvent,
@@ -10,104 +9,81 @@ import {
 } from "./utils";
 
 export default class Watcher {
-	constructor(view, options) {
-		Object.assign(this.options = {
-			threshold: 300,
-			direction: "vertical",
-			callback: {
-				layout: null,
-				append: null,
-				prepend: null,
-			},
-		});
+	constructor(renderer, callback) {
+		Object.assign(this._callback = {
+			layout: null,
+			check: null,
+		}, callback);
 		this._timer = {
 			resize: null,
 			// doubleCheck: null,
 			// doubleCheckCount: RETRY,
 		};
 		this._prevPos = -1;
-		this._target = view;
+		this._renderer = renderer;
 		this._onCheck = this._onCheck.bind(this);
 		this._onResize = this._onResize.bind(this);
 		this.attachEvent();
 		this.setScrollPos();
 	}
-	_attachEvent() {
-		// if (SUPPORT_INTERSECTIONOBSERVER) {
-		// 	this._observer = new IntersectionObserver(this._onCheck, {
-		// 		root: this._target,
-		// 		rootMargin: `${this.options.threshold}px`,
-		// 		threshold: [0],
-		// 	});
-		// } else {
-			addEvent(this._target, "scroll", this._onCheck);
-		// }
+	getStatus() {
+		return {
+			_prevPos: this._prevPos,
+			scrollPos: this.getOrgScrollPos(),
+		};
+	}
+	setStatus(status, applyScrollPos) {
+		this._prevPos = status._prevPos;
+		applyScrollPos && this.scrollTo(status.scrollPos);
+	}
+	scrollTo(pos) {
+		const arrPos = this._renderer.options.isVertical ? [0, pos] : [pos, 0];
+
+		scrollTo(this._renderer.view, ...arrPos);
+	}
+	getScrollPos() {
+		return this._prevPos;
+	}
+	setScrollPos(pos) {
+		let rawPos = pos;
+
+		if (typeof pos === "undefined") {
+			rawPos = this.getOrgScrollPos();
+		}
+		this._prevPos = rawPos - this._renderer.getContainerOffset();
+	}
+	attachEvent() {
+		addEvent(this._renderer.view, "scroll", this._onCheck);
 		addEvent(window, "resize", this._onResize);
 	}
 	getOrgScrollPos() {
 		return scroll(this._renderer.view, this._renderer.options.isVertical);
 	}
 	_onCheck() {
-		// if (SUPPORT_INTERSECTIONOBSERVER) {
+		const orgScrollPos = this.getOrgScrollPos();
+		const prevPos = this.getScrollPos();
 
-		// }
-		// if (this.isProcessing()) {
-		// 	return;
-		// }
-		const scrollPos = scroll(this._target, this.options.direction);
-		const prevPos = this._prevPos;
+		this.setScrollPos(orgScrollPos);
+		const scrollPos = this.getScrollPos();
 
-		console.log("scrollPos", scrollPos);
-		if ((IS_IOS && scrollPos === 0) || prevPos === scrollPos) {
+		if ((IS_IOS && orgScrollPos === 0) || prevPos === scrollPos) {
 			return;
 		}
-		// let ele;
-		// let rect;
-
-		if (prevPos < scrollPos) {
-			// if (utils.isEmptyObject(this._status.bottomElement)) {
-			// 	this._status.bottomElement = this.getBottomElement();
-			// 	if (this._status.bottomElement == null) {
-			// 		return;
-			// 	}
-			// }
-		// 	ele = this._status.bottomElement;
-		// 	rect = ele.getBoundingClientRect();
-			// if (rect.top <= this._status.clientHeight + this.options.threshold) {
-			// 	this.options.callback.append && this.options.callback.append({
-			// 		scrollPos,
-			// 		isTrusted: true,
-			// 	});
-			// }
-		} else {
-		// 	if (utils.isEmptyObject(this._status.topElement)) {
-		// 		this._status.topElement = this.getTopElement();
-		// 		if (this._status.topElement == null) {
-		// 			return;
-		// 		}
-		// 	}
-		// 	ele = this._status.topElement;
-		// 	rect = ele.getBoundingClientRect();
-			// if (rect.bottom >= -this.options.threshold) {
-			// 	const croppedDistance = this._fitItems();
-
-			// 	if (croppedDistance > 0) {
-			// 		scrollTop -= croppedDistance;
-			// 		scrollTo(this.view, 0, scrollTop);
-			// 	}
-			// 	this.options.callback.prepend && this.options.callback.prepend({
-			// 		scrollPos,
-			// 		isTrusted: true,
-			// 	});
-		}
-		this._prevPos = scrollPos;
+		this._callback.check && this._callback.check({
+			direction: prevPos < scrollPos ? "end" : "start",
+			scrollPos,
+			orgScrollPos,
+			isVertical: this._renderer.options.isVertical,
+		});
 	}
 	_onResize() {
 		if (this._timer.resize) {
 			clearTimeout(this._timer.resize);
 		}
 		this._timer.resize = setTimeout(() => {
-			this.options.callback.layout && this.options.callback.layout();
+			this._renderer.isNeededResize() &&
+				this._callback.layout &&
+				this._callback.layout();
 			this._timer.resize = null;
 			this._prevPos = -1;
 		}, 100);

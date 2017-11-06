@@ -1,7 +1,6 @@
 var merge = require("webpack-merge");
 var webpack = require("webpack");
 var path = require("path");
-var CleanWebpackPlugin = require("clean-webpack-plugin");
 var UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 var uglifyConfig = require("./uglify");
 var banner = require("./banner");
@@ -16,11 +15,6 @@ var config = {
 		}]
 	},
 	plugins: [
-		// new CleanWebpackPlugin([path.resolve(__dirname, "../dist")], {
-		// 	root: path.resolve(__dirname, "../"),
-		// 	verbose: true,
-		// 	dry: false
-		// }),
 		new UglifyJSPlugin(uglifyConfig),
 		new webpack.BannerPlugin(banner.common)
 	]
