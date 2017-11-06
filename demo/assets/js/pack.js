@@ -19,13 +19,13 @@
 
 		return arr;
 	}
-	var ig = new eg.InfiniteGrid(document.querySelector(".container2"), {
+	var ig = new eg.InfiniteGrid(document.querySelector(".container"), {
 		count: 100,
-		direction: "horizontal",
-		isOverflowScroll: true,	
+		direction: "vertical",
+		// isOverflowScroll: true,	
 	});
-	ig.setLayout(eg.InfiniteGrid.GridLayout, {
-		margin: 20,
+	ig.setLayout(eg.InfiniteGrid.PackingLayout, {
+		margin: 0,
 	});
 	var groupKey = 1;
 	ig.on("append", function (e) {
@@ -35,4 +35,7 @@
 	});
 	var items = getItems(30);
 	ig.append(items, ++groupKey);
+	setTimeout(function() {
+		ig.append(items, ++groupKey);
+	}, 100);
 })();
