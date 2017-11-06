@@ -473,7 +473,7 @@ class InfiniteGrid extends Component {
 		}
 	}
 	_onCheck({direction, scrollPos, isVertical, orgScrollPos}) {
-		this.trigger("chagne", {
+		this.trigger("change", {
 			direction,
 			scrollPos,
 			orgScrollPos,
@@ -510,6 +510,8 @@ class InfiniteGrid extends Component {
 			target: items.concat(),
 			isAppend,
 			isTrusted,
+			scrollPos: this._watcher.getScrollPos(),
+			orgScrollPos: this._watcher.getOrgScrollPos(),
 		});
 		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
 	}
