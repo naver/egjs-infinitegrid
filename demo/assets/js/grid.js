@@ -1,34 +1,31 @@
-function getImage({no}) {
+function getImage({ no, text }) {
 	return `<div class="item">
-		<img src="../image/${no % 60 + 1}.jpg">
+		<div class="thumbnail">
+			<img src="../image/${no % 60 + 1}.jpg">
+		</div>
+		<div class="info">
+			${text}
+		</div>
 	</div>`;
 }
 function getItems(length) {
 	const arr = [];
 
 	for (let i = 0; i < length; ++i) {
-		arr.push(getImage({no: i}));
+		arr.push(getImage({ no: i , text: `egjs post ${i}`}));
 	}
 	return arr;
 }
 
 const ig = new eg.InfiniteGrid(document.querySelector(".container"), {
-	direction: "horizontal",
+	direction: "vertical",
 });
 
-ig.setLayout(eg.InfiniteGrid.FrameLayout, {
-	margin: 0,
-	frame: [
-		[0, 0, 0, 0, 2, 2, 0, 0, 0],
-		[0, 1, 1, 1, 2, 2, 0, 0, 0],
-		[0, 1, 1, 1, 2, 2, 3, 3, 3],
-		[0, 0, 4, 4, 0, 0, 3, 3, 3],
-		[5, 5, 4, 4, 0, 0, 8, 8, 0],
-		[5, 5, 4, 4, 7, 7, 8, 8, 0],
-		[5, 5, 6, 6, 7, 7, 8, 8, 0],
-		[0, 0, 6, 6, 7, 7, 0, 0, 0],
-	],
+ig.setLayout(eg.InfiniteGrid.GridLayout, {
+	margin: 30,
+	align: "center",
 });
+const num = 21;
 const groups = {};
 
 ig.on({
@@ -47,13 +44,21 @@ ig.on({
 
 		if (!(groupKey in groups)) {
 			// allow append
-			groups[groupKey] = getItems(24);
+			groups[groupKey] = getItems(num);
 			return;
 		}
 		ig.append(groups[groupKey], groupKey);
 	},
+	"layoutComplete": e => {
+		e.target.forEach(item => {
+			if (!item.el) {
+				return;
+			}
+			item.el.classList.add("animate");
+		})
+	},
 });
 
-groups[0] = getItems(24);
+groups[0] = getItems(num * 2);
 
 ig.append(groups[0], 0);

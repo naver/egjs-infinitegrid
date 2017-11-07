@@ -1,4 +1,4 @@
-function getImage({no}) {
+function getImage({ no }) {
 	return `<div class="item">
 		<img src="../image/${no % 60 + 1}.jpg">
 	</div>`;
@@ -13,22 +13,18 @@ function getItems(length) {
 }
 
 const ig = new eg.InfiniteGrid(document.querySelector(".container"), {
-	direction: "horizontal",
+	direction: "vertical",
 });
 
 ig.setLayout(eg.InfiniteGrid.FrameLayout, {
-	margin: 0,
+	margin: 30,
+	frameFill: false,
 	frame: [
-		[0, 0, 0, 0, 2, 2, 0, 0, 0],
-		[0, 1, 1, 1, 2, 2, 0, 0, 0],
-		[0, 1, 1, 1, 2, 2, 3, 3, 3],
-		[0, 0, 4, 4, 0, 0, 3, 3, 3],
-		[5, 5, 4, 4, 0, 0, 8, 8, 0],
-		[5, 5, 4, 4, 7, 7, 8, 8, 0],
-		[5, 5, 6, 6, 7, 7, 8, 8, 0],
-		[0, 0, 6, 6, 7, 7, 0, 0, 0],
+		[1, 0, 2, 0, 3, 0, 4],
+		[0, 5, 0, 6, 0, 7, 0]
 	],
 });
+const num = 21;
 const groups = {};
 
 ig.on({
@@ -47,13 +43,13 @@ ig.on({
 
 		if (!(groupKey in groups)) {
 			// allow append
-			groups[groupKey] = getItems(24);
+			groups[groupKey] = getItems(num);
 			return;
 		}
 		ig.append(groups[groupKey], groupKey);
 	},
 });
 
-groups[0] = getItems(24);
+groups[0] = getItems(num * 2);
 
 ig.append(groups[0], 0);

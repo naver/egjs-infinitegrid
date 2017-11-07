@@ -1,0 +1,23 @@
+.item {
+	width: 250px;
+	opacity: 0;
+}
+.item .thumbnail {
+	max-height: 300px;
+	overflow: hidden;
+	border-radius: 8px;
+}
+.item .thumbnail img {
+	width: 100%;
+}
+.item .info {
+	margin-top: 10px;
+	font-weight: bold;
+	color: #777;
+}
+
+.item.animate {
+	transition: opacity ease 1s;
+	transition-delay: 0.2s;
+	opacity: 1;
+}

@@ -36,7 +36,7 @@ body {
 	clip-path: polygon(80px 0%, 100% 0%, 420px 100%, 0% 100%);
 }
 .item img{
-	min-width: 200%;
+	min-width: 120%;
 	height: 100%;
 	position: absolute;
 	left: -100%;
