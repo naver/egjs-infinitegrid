@@ -1,0 +1,31 @@
+body {
+	padding: 0;
+	margin: 0;
+	background: #EDEDF0;
+	font-size: 15px;
+}
+.container {
+	position: relative;
+	width: 80%;
+	margin: 0px auto;
+	min-width: 850px;
+}
+.item {
+	height: 100%;
+	width: 400px;
+	overflow: hidden;
+}
+.item img {
+	width: 100%;
+	/* height: 100%; */
+}
+.item .info {
+	margin: 20px;
+}
+.item .info .title {
+	font-weight: bold;
+	font-size: 30px;
+}
+.item .info .description {
+	line-height: 1.4;
+}

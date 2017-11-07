@@ -1,0 +1,112 @@
+<style>
+	a {
+		display: inline;
+		margin: 10px 40px;
+		font-weight: bold;
+	}
+	a[href="#"] {
+		cursor: no-drop;
+	}
+	.layout {
+
+	}
+	.layout h1 {
+		
+	}
+	.layout a {
+		color: #333;
+		text-decoration: none;
+	}
+	.layout .tags span {
+		padding: 3px 8px;
+		margin: 10px;
+		background: #ddd;
+		border-radius: 5px;
+		font-weight: bold;
+	}
+
+	.layout.disabled a {
+		color: #ccc;
+	}
+</style>
+<body>
+	
+</body>
+<script>
+	const layouts = {
+		"Default GridLayout": {
+			"tags": ["GridLayout", "gallery", "animation", "vertical"],
+			"href": "grid.html",
+		},
+		"Grid Gallery": {
+			"tags": ["GridLayout", "gallery", "horizontal"],
+			"href": "cards.html",
+		},
+		"Grid Page": {
+			"tags": ["GridLayout", "gallery", "page", "horizontal", "parallax"],
+			"href": "card2.html",
+		},
+		"Table 1Column": {
+			"tags": ["GridLayout", "table", "vertical", "status"],
+			"href": "table1.html",
+		},
+		"Table 2Column": {
+			"tags": ["GridLayout", "table", "vertical", "status"],
+			"href": "table1.html",
+		},
+		"Table (Pull to refresh)": {
+			"tags": ["GridLayout", "table", "vertical", "pull to refresh"],
+			"href": "pulltorefresh.html",
+		},
+		"Image Search1": {
+			"tags": ["JustifiedLayout", "gallery", "vertical"],
+			"href": "search.html",
+		},
+		"Image Search2": {
+			"tags": ["JustifiedLayout", "gallery", "vertical", "pull to refresh"],
+			"href": "search2.html",
+		},
+		"FrameLayout1": {
+			"tags": ["FrameLayout", "gallery", "post", "vertical", "parallax"],
+			"href": "frame.html",
+		},
+		"FrameLayout2": {
+			"tags": ["FrameLayout", "horizontal", "gallery"],
+			"href": "frame2.html",
+		},
+		"FrameLayout3": {
+			"tags": ["FrameLayout", "vertical", "gallery"],
+			"href": "frame3.html",
+		},
+		"Timeline": {
+			"tags": ["FrameLayout", "horizontal"],
+			"href": "timeline.html",
+		},
+		"PackingLayout": {
+			"tags": ["PackingLayout", "vertical", "gallery"],
+			"href": "pack.html",
+		},
+		"SquareLayout1": {
+			"tags": ["SquareLayout", "vertical", "gallery"],
+			"href": "square.html",
+		},
+	}
+
+	const htmls = [];
+	for (const name in layouts) {
+		const layout = layouts[name];
+		const tags = layout.tags.map(tag => `<span>${tag}</span>`).join("");
+		const enabled = layout.href && layout.href !== "#" ? "enabled" : "disabled";
+		const href = layout.href || "#";
+
+		htmls.push(`
+			<div class="layout ${enabled}">
+				<h1><a href="${href}">${name}</a></h1>
+				<div class="tags">
+					${tags}
+				</div>
+			</div>
+		`);
+	}
+	document.body.insertAdjacentHTML("afterbegin", htmls.join(""));
+</script>

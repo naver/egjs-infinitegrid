@@ -1,0 +1,94 @@
+body {
+	font-family: 나눔고딕, nanumgothic, 돋움, Dotum, Helvetica, "Apple SD Gothic Neo", sans-serif;
+	font-size: 12px;
+	margin: 0;
+	padding: 0;
+}
+#table span {
+	float: left;
+}
+.header {
+	background: #282D37;
+	color: #fff;
+	position: fixed;
+	width: 100%;
+	z-index: 2;
+}
+.header span {
+	height: 40px;
+	line-height: 40px;
+	font-size: 14px;
+	padding: 5px 10px;
+}
+#table span.no {
+	width: 100px;
+	margin-left: 20px;
+}
+#table span.writer, #table span.date {
+	float: right;
+	width: 100px;
+}
+#table span.date {
+	width: 150px;
+}
+#table span.title {
+	float: none;
+	display: block;
+}
+.container {
+	position: absolute;
+	top: 50px;
+	width: 100%;
+	height: 500px;
+}
+.contents {
+	height: 100%;
+}
+#table .post {
+	border-bottom: 1px solid #ddd;
+	width: 100%;
+}
+#table .post span {
+	padding: 15px 10px;
+	color: #333;
+}
+#table .post .title {
+	font-weight: bold;
+}
+#table .post .date {
+	color: #999;
+}
+
+#prepend, #append {
+  position:absolute;
+  width:100%;
+  text-align:center;
+  left:0;
+  font-weight:bold;
+  font-size:1.7em;
+  color: #777;
+  background: #eee;
+  overflow: hidden;
+  height: 0;
+  line-height: 100px;
+}
+#prepend {
+	top: 0;
+}
+#append {
+	bottom: 0;
+}
+
+.container.pull {
+	
+}
+.container.pull:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0);
+	z-index: 100;
+}

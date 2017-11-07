@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: src/utils.js | egjs::infinitegrid - API</title>
+    
+    <meta name="description" content="A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs-infinitegrid/release/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.InfiniteGrid","disqus":"egjs","googleAnalytics":"UA-70842526-18","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::infinitegrid - API","description":"A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-infinitegrid/release/latest/doc/"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName">
+        <a href="//naver.github.io/egjs/"><img style="width:40px; height:20px;" src="img/type_white.svg"/></a>
+
+        <!-- Homepage link (prefer link.home than applicationName) -->
+        
+        <a href="//naver.github.io/egjs-infinitegrid/">InfiniteGrid</a>
+        
+    </h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+        <li class="item">
+            <span class="title">
+                <a href="index.html">README</a>
+            </span>
+        </li>
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid">
+    <span class="title">
+        <a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid#append"><a href="eg.InfiniteGrid.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#clear"><a href="eg.InfiniteGrid.html#clear">clear</a></li>
+    
+        <li data-name="eg.InfiniteGrid#destroy"><a href="eg.InfiniteGrid.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getGroupKeys"><a href="eg.InfiniteGrid.html#getGroupKeys">getGroupKeys</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getStatus"><a href="eg.InfiniteGrid.html#getStatus">getStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#isProcessing"><a href="eg.InfiniteGrid.html#isProcessing">isProcessing</a></li>
+    
+        <li data-name="eg.InfiniteGrid#layout"><a href="eg.InfiniteGrid.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid#remove"><a href="eg.InfiniteGrid.html#remove">remove</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setLayout"><a href="eg.InfiniteGrid.html#setLayout">setLayout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="src_utils.js.html">Source: src/utils.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {window, document} from "./browser";
+import {
+	SUPPORT_COMPUTEDSTYLE,
+	SUPPORT_ADDEVENTLISTENER,
+	SUPPORT_PASSIVE,
+	VERTICAL,
+	DEFAULT_OPTIONS,
+} from "./consts";
+
+export function toArray(nodes) {
+	// SCRIPT5014 in IE8
+	const array = [];
+
+	if (nodes) {
+		for (let i = 0, len = nodes.length; i &lt; len; i++) {
+			array.push(nodes[i]);
+		}
+	}
+	return array;
+}
+
+/**
+ * Select or create element
+ * @param {String|HTMLElement|jQuery} param
+ *  when string given is as HTML tag, then create element
+ *  otherwise it returns selected elements
+ * @param {Boolean} multi
+ * @returns {HTMLElement}
+ */
+export function $(param, multi = false) {
+	let el;
+
+	if (typeof param === "string") { // String (HTML, Selector)
+		// check if string is HTML tag format
+		const match = param.match(/^&lt;([a-z]+)\s*([^>]*)>/);
+
+		// creating element
+		if (match) { // HTML
+			const dummy = document.createElement("div");
+
+			dummy.innerHTML = param;
+			el = toArray(dummy.childNodes);
+		} else { // Selector
+			el = toArray(document.querySelectorAll(param));
+		}
+		if (!multi) {
+			el = el.length >= 1 ? el[0] : undefined;
+		}
+	} else if (param === window) { // window
+		el = param;
+	} else if (param.nodeName &amp;&amp;
+		(param.nodeType === 1 || param.nodeType === 9)) { // HTMLElement, Document
+		el = param;
+	} else if (("jQuery" in window &amp;&amp; param instanceof jQuery) ||
+		param.constructor.prototype.jquery) { // jQuery
+		el = multi ? param.toArray() : param.get(0);
+	} else if (Array.isArray(param)) {
+		el = param.map(v => $(v));
+		if (!multi) {
+			el = el.length >= 1 ? el[0] : undefined;
+		}
+	}
+	return el;
+}
+export function addEvent(element, type, handler, eventListenerOptions) {
+	if (SUPPORT_ADDEVENTLISTENER) {
+		let options = eventListenerOptions || false;
+
+		if (typeof eventListenerOptions === "object") {
+			options = SUPPORT_PASSIVE ? eventListenerOptions : false;
+		}
+		element.addEventListener(type, handler, options);
+	} else if (element.attachEvent) {
+		element.attachEvent(`on${type}`, handler);
+	} else {
+		element[`on${type}`] = handler;
+	}
+}
+export function removeEvent(element, type, handler) {
+	if (element.removeEventListener) {
+		element.removeEventListener(type, handler, false);
+	} else if (element.detachEvent) {
+		element.detachEvent(`on${type}`, handler);
+	} else {
+		element[`on${type}`] = null;
+	}
+}
+export function scroll(el, isVertical) {
+	const prop = `scroll${isVertical ? "Top" : "Left"}`;
+
+	if (el === window) {
+		return document.body[prop] || document.documentElement[prop];
+	} else {
+		return el[prop];
+	}
+}
+export function scrollTo(el, x, y) {
+	if (el === window) {
+		el.scroll(x, y);
+	} else {
+		el.scrollLeft = x;
+		el.scrollTop = y;
+	}
+}
+export function scrollBy(el, x, y) {
+	if (el === window) {
+		el.scrollBy(x, y);
+	} else {
+		el.scrollLeft += x;
+		el.scrollTop += y;
+	}
+}
+function _getSize(el, name) {
+	if (el === window) { // WINDOW
+		return el.document.documentElement[`client${name}`];
+	} else if (el.nodeType === 9) { // DOCUMENT_NODE
+		const doc = el.documentElement;
+
+		return Math.max(
+			el.body[`scroll${name}`], doc[`scroll${name}`],
+			el.body[`offset${name}`], doc[`offset${name}`],
+			doc[`client${name}`]
+		);
+	} else { // NODE
+		const style = SUPPORT_COMPUTEDSTYLE ?
+			window.getComputedStyle(el) : el.currentStyle;
+		const value = style[name.toLowerCase()];
+
+		return parseFloat(/auto|%/.test(value) ? el[`offset${name}`] : style[name.toLowerCase()]);
+	}
+}
+export function innerWidth(el) {
+	return _getSize(el, "Width");
+}
+export function innerHeight(el) {
+	return _getSize(el, "Height");
+}
+
+export const STYLE = {
+	vertical: {
+		pos1: "top",
+		endPos1: "bottom",
+		size1: "height",
+		pos2: "left",
+		endPos2: "right",
+		size2: "width",
+	},
+	horizontal: {
+		pos1: "left",
+		endPos1: "right",
+		size1: "width",
+		pos2: "top",
+		endPos2: "bottom",
+		size2: "height",
+	},
+};
+
+export function getStyleNames(direction) {
+	const style = STYLE[direction in STYLE ? direction : VERTICAL];
+
+	return style;
+}
+
+export function assignOptions(defaultOptions, options) {
+	return Object.assign({},
+		DEFAULT_OPTIONS,
+		defaultOptions,
+		options);
+}
+
+export function toZeroArray(outline) {
+	if (!outline || !outline.length) {
+		return [0];
+	}
+	return outline;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 06 2017 18:59:43 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

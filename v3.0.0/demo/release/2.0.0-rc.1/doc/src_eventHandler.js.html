@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: src/eventHandler.js | egjs::infinitegrid - API</title>
+    
+    <meta name="description" content="A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs-infinitegrid/release/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.InfiniteGrid","disqus":"egjs","googleAnalytics":"UA-70842526-18","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::infinitegrid - API","description":"A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-infinitegrid/release/latest/doc/"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="http://naver.github.io/egjs/">eg.InfiniteGrid</a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid">
+    <span class="title">
+        <a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid#append"><a href="eg.InfiniteGrid.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#clear"><a href="eg.InfiniteGrid.html#clear">clear</a></li>
+    
+        <li data-name="eg.InfiniteGrid#destroy"><a href="eg.InfiniteGrid.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getBottomElement"><a href="eg.InfiniteGrid.html#getBottomElement">getBottomElement</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getGroupKeys"><a href="eg.InfiniteGrid.html#getGroupKeys">getGroupKeys</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getStatus"><a href="eg.InfiniteGrid.html#getStatus">getStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getTopElement"><a href="eg.InfiniteGrid.html#getTopElement">getTopElement</a></li>
+    
+        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#isProcessing"><a href="eg.InfiniteGrid.html#isProcessing">isProcessing</a></li>
+    
+        <li data-name="eg.InfiniteGrid#isRecycling"><a href="eg.InfiniteGrid.html#isRecycling">isRecycling</a></li>
+    
+        <li data-name="eg.InfiniteGrid#layout"><a href="eg.InfiniteGrid.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#option"><a href="eg.InfiniteGrid.html#option">option</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid#remove"><a href="eg.InfiniteGrid.html#remove">remove</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.InfiniteGrid#event:append"><a href="eg.InfiniteGrid.html#event:append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:layoutComplete"><a href="eg.InfiniteGrid.html#event:layoutComplete">layoutComplete</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:prepend"><a href="eg.InfiniteGrid.html#event:prepend">prepend</a></li>
+    
+    </ul>
+
+    
+    <span class="title" style="margin-top:10px"><a href="index.html">readme</a></span>
+
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="src_eventHandler.js.html">Source: src/eventHandler.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {IS_IOS} from "./consts";
+import {utils} from "./utils";
+
+export default superclass => class extends superclass {
+	constructor(el, options) {
+		super();
+		this._onScroll = this._onScroll.bind(this);
+		this._onResize = this._onResize.bind(this);
+	}
+	_attachEvent() {
+		utils.addEvent(this.view, "scroll", this._onScroll);
+		utils.addEvent(this.view, "resize", this._onResize);
+	}
+	_onScroll() {
+		if (this.isProcessing()) {
+			return;
+		}
+		let scrollTop = utils.scrollTop();
+		const prevScrollTop = this._status.prevScrollTop;
+
+		if ((IS_IOS &amp;&amp; scrollTop === 0) || prevScrollTop === scrollTop) {
+			return;
+		}
+		let ele;
+		let rect;
+
+		if (prevScrollTop &lt; scrollTop) {
+			if (utils.isEmptyObject(this._status.bottomElement)) {
+				this._status.bottomElement = this.getBottomElement();
+				if (this._status.bottomElement == null) {
+					return;
+				}
+			}
+			ele = this._status.bottomElement;
+			rect = ele.getBoundingClientRect();
+			if (rect.top &lt;= this._status.clientHeight + this.options.threshold) {
+				/**
+				 * This event is fired when a card element must be added at the bottom of a grid layout because there is no card to be displayed on screen when a user scrolls near bottom.
+				 * @ko 카드 엘리먼트가 그리드 레이아웃의 아래에 추가돼야 할 때 발생하는 이벤트. 사용자가 아래로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다
+				 * @event eg.InfiniteGrid#append
+				 *
+				 * @param {Object} param The object of data to be sent to an event &lt;ko>이벤트에 전달되는 데이터 객체&lt;/ko>
+				 * @param {Number} param.scrollTop Current vertical position of the scroll bar&lt;ko>현재 스크롤의 y 좌표 값&lt;/ko>
+				 */
+				this.trigger("append", {
+					scrollTop,
+				});
+			}
+		} else {
+			if (utils.isEmptyObject(this._status.topElement)) {
+				this._status.topElement = this.getTopElement();
+				if (this._status.topElement == null) {
+					return;
+				}
+			}
+			ele = this._status.topElement;
+			rect = ele.getBoundingClientRect();
+			if (rect.bottom >= -this.options.threshold) {
+				/**
+				 * This event is fired when a card element must be added at the top of a grid layout because there is no card to be displayed on screen when a user scrolls near top. This event is available only if the isRecycling() method returns true.
+				 * @ko 카드가 그리드 레이아웃의 위에 추가돼야 할 때 발생하는 이벤트. 사용자가 위로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다. 이 이벤트는 isRecycling() 메서드의 반환값이 'true'일 때만 발생한다
+				 * @event eg.InfiniteGrid#prepend
+				 *
+				 * @param {Object} param The object of data to be sent to an event&lt;ko>이벤트에 전달되는 데이터 객체&lt;/ko>
+				 * @param {Number} param.scrollTop Current vertical position of the scroll bar&lt;ko>현재 스크롤의 y 좌표 값&lt;/ko>
+				 */
+				const croppedDistance = this._fitItems();
+
+				if (croppedDistance > 0) {
+					scrollTop -= croppedDistance;
+					this.view.scrollTo(0, scrollTop);
+				}
+				this.trigger("prepend", {
+					scrollTop,
+				});
+			}
+		}
+		this._status.prevScrollTop = scrollTop;
+	}
+
+	_onResize() {
+		if (this._timer.resize) {
+			clearTimeout(this._timer.resize);
+		}
+		this._timer.resize = setTimeout(() => {
+			if (this.layoutManager.isNeededResize()) {
+				this._resizeViewport();
+				this.layout(true);
+			}
+			this._timer.resize = null;
+			this._status.prevScrollTop = -1;
+		}, 100);
+	}
+
+	_detachEvent() {
+		utils.removeEvent(this.view, "scroll", this._onScroll);
+		utils.removeEvent(this.view, "resize", this._onResize);
+	}
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 29 2017 15:17:18 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

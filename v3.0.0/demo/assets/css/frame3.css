@@ -1,0 +1,41 @@
+body {
+	padding: 0;
+	margin: 0;
+	background: #EDEDF0;
+	font-size: 15px;
+}
+.container {
+	position: relative;
+	width: 80%;
+	margin: 20px auto;
+	min-width: 1000px;
+	height: 100%;
+
+}
+.item {
+	height: 100%;
+	width: 400px;
+	overflow: hidden;
+	text-align: center;
+	border-bottom: 10px solid #2F1A06;
+}
+.item img {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: -100%;
+	bottom: -100%;
+	width: 80%;
+	min-height: 100%;
+	margin: auto;
+}
+.item .info {
+	margin: 20px;
+}
+.item .info .title {
+	font-weight: bold;
+	font-size: 30px;
+}
+.item .info .description {
+	line-height: 1.4;
+}
