@@ -69,16 +69,14 @@ var items = getItems(30);
 ig.append(items, ++groupKey);
 
 
-window.addEventListener("resize", function (e) {
-	ig._infinite._items._data.forEach(function (group) {
-		parallax.resize(group.items);
-		parallax.refresh(group.items, document.body.scrollTop);
-	});
-})
-ig.on("change", function (e) {
-	var scrollPos = e.orgScrollPos;
+window.addEventListener("resize", e => {
+	const items = ig.getItems();
 
-	ig._infinite._items._data.forEach(function (group) {
-		parallax.refresh(group.items, scrollPos);
-	});
+	parallax.resize(items);
+	parallax.refresh(items, document.body.scrollTop);
+});
+ig.on("change", e => {
+	const scrollPos = e.orgScrollPos;
+
+	parallax.refresh(ig.getItems(), scrollPos);
 });

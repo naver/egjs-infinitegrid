@@ -1,10 +1,10 @@
-function getItem({type = "append", title = "egjs post", writer = "egjs", date = "10.30 16:28"}) {
-	return `<div class="post">
-		<span class="opts"></span>
-		<span class="type">${type}</span>
-		<span class="date">${date}</span>
-		<span class="writer">${writer}</span>
-		<span class="title">${title}</span>
+function getItem({ no = 0, title = "egjs post"}) {
+	return `<div class="item">
+		<img src="../image/${no % 60 + 1}.jpg">
+		<div class="info">
+			<div class="bg"></div>
+			<div class="title">${title + no}</div>
+		</div>
 	</div>`;
 }
 function getItems(no, length, isAppend) {
@@ -12,7 +12,7 @@ function getItems(no, length, isAppend) {
 
 	for (let i = 0; i < length; ++i) {
 		arr.push(getItem({
-			type: isAppend ? "append" : "prepend",
+			no: i,
 			title: `egjs post${no}`,
 		}));
 	}
@@ -29,13 +29,18 @@ const deltaPull = 10;
 const container = document.querySelector(".container");
 const contents = document.querySelector(".contents");
 const ig = new eg.InfiniteGrid(contents, {
-	isOverflowScroll: true,
 });
 let prevScrollPosition = 0;
 let pullScrollPosition = 0;
 let isRequestPull = REQUEST_PREPEND;
+let isLoading = false;
 
-ig.setLayout(eg.InfiniteGrid.GridLayout);
+ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
+	minSize: 100,
+	maxSize: 300,
+	margin: 10,
+});
+
 
 ig.on({
 	"change": e => {
@@ -86,7 +91,7 @@ ig.on({
 		}
 	},
 });
-groups[0] = getItems(0, 30, true);
+groups[0] = getItems(0, 60, true);
 ig.append(groups[0], 0);
 
 const axes = new eg.Axes({
@@ -99,12 +104,10 @@ const axes = new eg.Axes({
 container.insertAdjacentHTML("beforeend", `<div id="prepend"></div><div id="append"></div>`);
 const prepend = document.getElementById("prepend");
 const append = document.getElementById("append");
-const innerContents = contents.querySelector("._eg-infinitegrid-container_");
 
-let isLoading = false;
+
 
 function requestInsert(isAppend) {
-	container.classList.add("pull");
 	setTimeout(() => {
 		const groupKeys = ig.getGroupKeys(true);
 		const groupKey = isAppend ? (groupKeys[groupKeys.length - 1] || 0) + 1 :
@@ -114,7 +117,6 @@ function requestInsert(isAppend) {
 		ig[isAppend ? "append" : "prepend"](groups[groupKey], groupKey);
 		isLoading = false;
 		axes.setTo({scroll: 0}, 500);
-		container.classList.remove("pull");
 	}, 1000);
 }
 axes.on({
@@ -136,8 +138,8 @@ axes.on({
 			return;
 		}
 
-		innerContents.style.transition = "";
-		innerContents.style.transform = `translateY(${-scroll}px)`;
+		contents.style.transition = "";
+		contents.style.transform = `translateY(${-scroll}px)`;
 
 		const element = isAppend ? append : prepend;
 
@@ -182,4 +184,4 @@ axes.on({
 });
 
 
-axes.connect(["", "scroll"], new eg.Axes.PanInput(container, {scale: [0, -1]}));
+axes.connect(["", "scroll"], new eg.Axes.PanInput(container, { scale: [0, -1] }));

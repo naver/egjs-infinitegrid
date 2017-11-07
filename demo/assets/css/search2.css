@@ -1,0 +1,137 @@
+body {
+	margin: 0;
+	left: 0;
+}
+.header {
+	position: relative;
+	height: 60px;
+	padding: 20px 20px;
+	margin: 10px 0px 0px;
+	border-bottom: 1px solid #ddd;
+	background: #FAFAFA;
+	min-width: 700px;
+}
+.header .logo {
+	height: 100%;
+	vertical-align: middle;
+}
+.header .search {
+	display: inline-block;
+	top: 0;
+	left: 145px;
+	margin-left: 30px;
+	vertical-align: middle;
+}
+.header .search {
+	padding: 3px;
+	background: #8C532E;
+}
+.header .search input {
+	width: 400px;
+	height: 40px;
+	border: 0;
+	font-weight: bold;
+	text-indent: 10;
+	font-size: 16px;
+	appearance: none;
+	-webkit-appearance: none;
+	outline: none;
+}
+.header .search .submit {
+	position: relative;
+	display: inline-block;
+	background: transparent;
+	box-shadow: none;
+	border: 0;
+	margin: 0;
+	vertical-align: top;
+	width: 40px;
+	height: 40px;
+}
+.header .search .submit:before, .header .search .submit:after {
+	position: absolute;
+	content: "";
+}
+.header .search .submit:before {
+	width: 40%;
+	height: 40%;
+	border: 2px solid white;
+	border-radius: 50%;
+	-webkit-border-radius: 50%;
+	left: 20%;
+	top: 20%;
+}
+.header .search .submit:after {
+	width: 30%;
+	height: 2px;
+	left: 60%;
+	top: 60%;
+	background: #fff;
+	transform-origin: 0 50%;
+	-ms-transform-origin: 0 50%;
+	-webkit-transform-origin: 0 50%;
+
+	transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);	
+}
+.container {
+	position: relative;
+}
+.item {
+	position: absolute;
+	border: 1px solid #ddd;
+}
+.item img {
+	width: 100%;
+}
+.item .info {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 50px;
+	display: none;
+}
+.item:hover .info {
+	display: block;
+}
+.item .info .bg {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	background: #000;
+	opacity: 0.5;
+	filter: alpha(opacity=5);
+}
+.item .info .title {
+	position: relative;
+	height: 50px;
+	line-height: 50px;
+	color: #fff;
+	padding-left: 20px;
+}
+
+
+
+#prepend, #append {
+  position:absolute;
+  width:100%;
+  text-align:center;
+  left:0;
+  font-weight:bold;
+  font-size:1.7em;
+  color: #777;
+  background: #eee;
+  overflow: hidden;
+  height: 0;
+  line-height: 100px;
+}
+#prepend {
+	top: 0;
+}
+#append {
+	bottom: 0;
+}

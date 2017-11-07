@@ -7,33 +7,106 @@
 	a[href="#"] {
 		cursor: no-drop;
 	}
+	.layout {
+
+	}
+	.layout h1 {
+		
+	}
+	.layout a {
+		color: #333;
+		text-decoration: none;
+	}
+	.layout .tags span {
+		padding: 3px 8px;
+		margin: 10px;
+		background: #ddd;
+		border-radius: 5px;
+		font-weight: bold;
+	}
+
+	.layout.disabled a {
+		color: #ccc;
+	}
 </style>
-<h1>GridLayout</h1>
-<a href="#">(X) Default GridLayout</a>
-<a href="cards.html" target="_blank">Grid Gallery</a>
-<a href="card2.html" target="_blank">Grid Page</a>
-<a href="chat.html" target="_blank">Line Chat</a>
-<a href="table1.html" target="_blank">Table1</a>
-<a href="table2.html" target="_blank">Table2</a>
-<h1>JustifiedLayout</h1>
-<a href="search.html" target="_blank">Image Search</a>
-<h1>FrameLayout</h1>
-<a href="frame.html" target="_blank">FrameLayout 1</a>
-<a href="timeline.html" target="_blank">Timeline</a>
-<h1>SquareLayout</h1>
-<a href="square.html" target="_blank">SquareLayout 1</a>
-<a href="#" target="_blank">(X) SquareLayout 2</a>
-<a href="#" target="_blank">(X) SquareLayout 3</a>
-<h1>PackingLayout</h1>
-<a href="#" target="_blank">(X) PackingLayout 1</a>
-<h1>Parallax</h1>
-<a href="#" target="_blank">(X) GridLayout1</a>
-<a href="card2.html" target="_blank">Grid Page</a>
-<a href="frame.html" target="_blank">FrameLayout1</a>
-<h1>Animation</h1>
-<a href="#" target="_blank">(X) GridLayout1</a>
-<h1>Layout &amp; Status</h1>
-<a href="table1.html" target="_blank">Table1</a>
-<a href="table2.html" target="_blank">Table2</a>
-<h1>Layout &amp; Axes</h1>
-<a href="pulltorefresh.html">Pull to Refresh</a>
+<body>
+	
+</body>
+<script>
+	const layouts = {
+		"Default GridLayout": {
+			"tags": ["GridLayout", "gallery", "animation", "vertical"],
+			"href": "grid.html",
+		},
+		"Grid Gallery": {
+			"tags": ["GridLayout", "gallery", "horizontal"],
+			"href": "cards.html",
+		},
+		"Grid Page": {
+			"tags": ["GridLayout", "gallery", "page", "horizontal", "parallax"],
+			"href": "card2.html",
+		},
+		"Table 1Column": {
+			"tags": ["GridLayout", "table", "vertical", "status"],
+			"href": "table1.html",
+		},
+		"Table 2Column": {
+			"tags": ["GridLayout", "table", "vertical", "status"],
+			"href": "table1.html",
+		},
+		"Table (Pull to refresh)": {
+			"tags": ["GridLayout", "table", "vertical", "pull to refresh"],
+			"href": "pulltorefresh.html",
+		},
+		"Image Search1": {
+			"tags": ["JustifiedLayout", "gallery", "vertical"],
+			"href": "search.html",
+		},
+		"Image Search2": {
+			"tags": ["JustifiedLayout", "gallery", "vertical", "pull to refresh"],
+			"href": "search2.html",
+		},
+		"FrameLayout1": {
+			"tags": ["FrameLayout", "gallery", "post", "vertical", "parallax"],
+			"href": "frame.html",
+		},
+		"FrameLayout2": {
+			"tags": ["FrameLayout", "horizontal", "gallery"],
+			"href": "frame2.html",
+		},
+		"FrameLayout3": {
+			"tags": ["FrameLayout", "vertical", "gallery"],
+			"href": "frame3.html",
+		},
+		"Timeline": {
+			"tags": ["FrameLayout", "horizontal"],
+			"href": "timeline.html",
+		},
+		"PackingLayout": {
+			"tags": ["PackingLayout", "vertical", "gallery"],
+			"href": "pack.html",
+		},
+		"SquareLayout1": {
+			"tags": ["SquareLayout", "vertical", "gallery"],
+			"href": "square.html",
+		},
+	}
+
+	const htmls = [];
+	for (const name in layouts) {
+		const layout = layouts[name];
+		const tags = layout.tags.map(tag => `<span>${tag}</span>`).join("");
+		const enabled = layout.href && layout.href !== "#" ? "enabled" : "disabled";
+		const href = layout.href || "#";
+
+		htmls.push(`
+			<div class="layout ${enabled}">
+				<h1><a href="${href}">${name}</a></h1>
+				<div class="tags">
+					${tags}
+				</div>
+			</div>
+		`);
+	}
+	document.body.insertAdjacentHTML("afterbegin", htmls.join(""));
+</script>
