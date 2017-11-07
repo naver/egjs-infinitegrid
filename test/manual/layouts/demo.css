@@ -1,0 +1,12 @@
+[data-group] {
+	border-width: 3px!important;
+}
+[data-group="1"] {
+	border-color: #f55!important;
+}
+[data-group="2"] {
+	border-color: #55f!important;
+}
+[data-group="3"] {
+	border-color: #5f5!important;
+}

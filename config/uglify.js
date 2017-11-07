@@ -1,17 +1,18 @@
 module.exports = {
 	include: /\.min\.js$/,
-	beautify: false,
-	mangle: {
-		screw_ie8: false,
-		keep_fnames: true
+	uglifyOptions: {
+		ie8: true,
+		mangle: {
+			keep_fnames: true
+		},
+		compress: {
+			warnings: false
+		},
+		output: {
+			comments: false,
+			beautify: false
+		},
 	},
-	compress: {
-		screw_ie8: false,
-		warnings: false
-	},
-	output: {
-		screw_ie8: false
-	},
-	comments: false,
-	sourceMap: true
+	sourceMap: true,
 };
+

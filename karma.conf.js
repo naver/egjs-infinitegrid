@@ -5,7 +5,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       "./node_modules/lite-fixture/index.js",
-      "./test/unit/**/*.spec.js"
+      "./test/unit/**/*.spec.js",
     ],
 
     client: {

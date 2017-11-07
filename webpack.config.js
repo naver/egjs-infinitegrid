@@ -1,20 +1,25 @@
+var merge = require("webpack-merge");
 var webpack = require("webpack");
 var pkg = require("./package.json");
 var path = require("path");
 var StringReplacePlugin = require("string-replace-webpack-plugin");
 
+function getConfig(env) {
+  return {
+    entry: {
+      [env.name.toLowerCase()] : env.path
+    },
+    output: {
+      path: path.resolve(__dirname, "dist"),
+      filename: "[name].js",
+      library: [pkg.namespace.eg, env.name],
+      libraryTarget: "umd",
+    }
+  };
+}
+
 var config = {
-	entry: {
-		"infinitegrid": "./src/index.js"
-	},
-	output: {
-		path: path.resolve(__dirname, "dist"),
-		filename: "[name].js",
-		library: [pkg.namespace.eg, "InfiniteGrid"],
-		libraryTarget: "umd",
-		umdNamedDefine: true
-	},
-	externals: {
+  externals: {
 		"@egjs/component" : {
 			commonjs: "@egjs/component",
 			commonjs2: "@egjs/component",
@@ -28,8 +33,7 @@ var config = {
 			test: /\.js$/,
 			exclude: /node_modules/,
 			loader: "babel-loader"
-		},
-		{
+		}, {
 			test: /(\.js)$/,
 			loader: StringReplacePlugin.replace({
 				replacements: [{
@@ -47,7 +51,14 @@ var config = {
 	]
 };
 
-module.exports = function (env) {
-	env = env || "development";
-	return require("./config/webpack.config." + env + ".js")(config);
+module.exports = function(env) {
+  env = Object.assign({
+    type: "development",
+    name: "InfiniteGrid",
+    path: "./src/index.js",
+	}, env);
+	
+	const partConfig = require(path.resolve(__dirname, "config") + "/webpack.config." + env.type + ".js");
+
+  return partConfig(Object.assign(config, getConfig(env)), env.name.toLowerCase(), env.path);
 };
