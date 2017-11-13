@@ -22,6 +22,7 @@ import {
 	NO_TRUSTED,
 	IS_ANDROID2,
 } from "./consts";
+import {toArray, $} from "./utils";
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -131,7 +132,7 @@ class InfiniteGrid extends Component {
 	 * infinitegrid.append(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
 	 */
 	append(elements, groupKey) {
-		this._layout && this._insert(elements, groupKey, APPEND);
+		this._layout && this._insert(elements, APPEND, groupKey);
 		return this;
 	}
 	/**
@@ -148,7 +149,7 @@ class InfiniteGrid extends Component {
 	 * infinitegrid.prepend(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
 	 */
 	prepend(elements, groupKey) {
-		this._layout && this._insert(elements, groupKey, PREPEND);
+		this._layout && this._insert(elements, PREPEND, groupKey);
 		return this;
 	}
 	/**
@@ -263,40 +264,47 @@ class InfiniteGrid extends Component {
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	layout(isRelayout = true) {
-		if (!this._layout || this.isProcessing() || !this._items.size()) {
+		if (!this._layout || this.isProcessing()) {
 			return this;
 		}
-		this._status.isProcessing = true;
-		let data;
-		let outline;
+		// check childElement
+		if (!this._items.size()) {
+			this._insert(toArray(this._renderer.container.children), true);
+			return this;
+		} else {
+			this._status.isProcessing = true;
 
-		if (isRelayout) { // remove cache
-			data = this._items.get(this._status.startCursor, this._status.endCursor);
-			if (this._renderer.resize()) {
-				this._layout.setSize(this._renderer.getContainerSize());
-				data.forEach(v => {
-					data.items = this._renderer.updateSize(v.items);
-				});
+			let data;
+			let outline;
+
+			if (isRelayout) { // remove cache
+				data = this._items.get(this._status.startCursor, this._status.endCursor);
+				if (this._renderer.resize()) {
+					this._layout.setSize(this._renderer.getContainerSize());
+					data.forEach(v => {
+						data.items = this._renderer.updateSize(v.items);
+					});
+				}
+			} else {
+				data = this._items.get(this._status.startCursor, this._items.size());
+				outline = this._items.getOutline(this._status.startCursor, "start");
 			}
-		} else {
-			data = this._items.get(this._status.startCursor, this._items.size());
-			outline = this._items.getOutline(this._status.startCursor, "start");
-		}
-		if (!data.length) {
-			return this;
-		}
-		this._layout.layout(data, outline);
+			if (!data.length) {
+				return this;
+			}
+			this._layout.layout(data, outline);
 
-		if (isRelayout) {
-			this._items.set(data);
-			this._status.startCursor = 0;
-			this._status.endCursor = data.length - 1;
-		} else {
-			data.forEach(v => this._items.set(v, v.groupKey));
+			if (isRelayout) {
+				this._items.set(data);
+				this._status.startCursor = 0;
+				this._status.endCursor = data.length - 1;
+			} else {
+				data.forEach(v => this._items.set(v, v.groupKey));
+			}
+			this._onLayoutComplete(data, APPEND, NO_TRUSTED);
+			DOMRenderer.renderItems(this._getVisibleItems());
+			isRelayout && this._watcher.setScrollPos();
 		}
-		this._onLayoutComplete(data, APPEND, NO_TRUSTED);
-		DOMRenderer.renderItems(this._getVisibleItems());
-		isRelayout && this._watcher.setScrollPos();
 
 		return this;
 	}
@@ -400,7 +408,7 @@ class InfiniteGrid extends Component {
 	isProcessing() {
 		return this._status.isProcessing;
 	}
-	_insert(elements, groupKey, isAppend) {
+	_insert(elements, isAppend, groupKey) {
 		if (this.isProcessing() || elements.length === 0) {
 			return;
 		}
@@ -408,8 +416,7 @@ class InfiniteGrid extends Component {
 		const key = typeof groupKey === "undefined" ? (new Date().getTime() + Math
 			.floor(
 				Math.random() * 1000)) : groupKey;
-
-		const items = ItemManager.from(elements, this.options.itemSelector, {
+		const items = ItemManager.from($(elements, true), this.options.itemSelector, {
 			isAppend,
 			groupKey: key,
 		});
