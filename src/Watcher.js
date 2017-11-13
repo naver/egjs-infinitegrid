@@ -32,7 +32,7 @@ export default class Watcher {
 			scrollPos: this.getOrgScrollPos(),
 		};
 	}
-	setStatus(status, applyScrollPos) {
+	setStatus(status, applyScrollPos = true) {
 		this._prevPos = status._prevPos;
 		applyScrollPos && this.scrollTo(status.scrollPos);
 	}
@@ -70,10 +70,10 @@ export default class Watcher {
 			return;
 		}
 		this._callback.check && this._callback.check({
-			direction: prevPos < scrollPos ? "end" : "start",
+			isForward: prevPos < scrollPos,
 			scrollPos,
 			orgScrollPos,
-			isVertical: this._renderer.options.isVertical,
+			horizontal: !this._renderer.options.isVertical,
 		});
 	}
 	_onResize() {
