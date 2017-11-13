@@ -18,9 +18,9 @@ var count = 0;
 
 var infinite = new eg.InfiniteGrid("#infinite")
   .on({
-    // "layoutComplete": function(e) {
-    //   // cached.  
-    // },
+    "layoutComplete": function(e) {
+      console.log("layoutComplete", e);
+    },
     // "change": function(e) {
     //   console.log("change", e);
     // },
@@ -159,6 +159,7 @@ infinite.setLayout(eg.InfiniteGrid.GridLayout, {
   margin: guioption.margin,
   align: grid.align
 });
+infinite.layout(true);
 // frame: [
 //   // 		["C", "", "A", "A", "A"],
 //   // 		["C", "B", "B", "E", "E"],
