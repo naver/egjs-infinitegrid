@@ -261,13 +261,13 @@ pre code {
   position: relative;
   top: -5px;
 }
-/* ======= Docs Section ======= */
+/* ======= Docs Section ======= */e                                                                                                                                                                                                                                                                                                                                                                                                                   
 .docs {
-  padding: 50px 0;
+  padding: 30px 0;
   /*background: #f5f5f5;*/
   /* background: #eebf3f; */
 }
-.docs.demos {
+.docs.started, .section.navs, .layouts-view {
   background: #f5f5f5;
 }
 .docs .title {
@@ -279,8 +279,7 @@ pre code {
 }
 .docs .docs-inner {
   max-width: 800px;
-  background: #fff;
-  padding: 30px;
+  padding: 40px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
@@ -435,6 +434,153 @@ span.version:hover {
   background-image: url(./img/thumbnail_flicking.png);
   height: 347px;
 }
+
+/*======highlight, codepen=====*/
+.highlighter-rouge, .highlight {
+  position: relative;
+}
+.codepenform {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 2;
+}
+/*======layouts=====*/ 
+.layout-list {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.layout-item {
+  width: 100px;
+  margin: 15px;
+  display: inline-block;
+  list-style: none;
+  vertical-align: top;
+}
+.layout-item p {
+  text-align: center;
+}
+.layout-item.checked img {
+  -webkit-mask: #f55;
+}
+.layout-item.checked p {
+  font-weight: bold;
+}
+.layout-item img {
+  width: 80px;
+  height: 80px;
+  /* border-radius: 50%; */
+}
+.layout-view .title {
+  font-size: 40px;
+}
+.layout-view .desc {
+
+}
+.layout-view .logo-area {
+  position: relative;
+  display: inline-block;
+  float: right;
+  width: 200px;
+  height: 200px;
+  margin-left: 20px;
+  overflow: hidden;
+}
+@keyframes go {
+  10% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-200px);
+  }
+}
+@keyframes go2 {
+  10% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(-200px);
+    opacity: 1;
+  }
+}
+.layout-view svg rect {
+  fill:transparent;
+  stroke:#5A524F;
+  stroke-width:2;
+}
+.layout-view .logo-area .logo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 100%;
+  animation: go 3s ease-out 0s infinite forwards;
+}
+.layout-view .logo-area .logo1 {
+  bottom: 0%;
+}
+.layout-view .logo-area .logo2 {
+  opacity: 0;
+  bottom: -100%;
+  animation-name: go2;
+}
+.layout-view .demo-list {
+  display: block;
+  clear: both;
+  margin: 0px auto;
+  padding: 0;
+  text-align: center;
+  padding-top: 50px;
+  width: 520px;
+}
+.layout-view .demo-item {
+  display: inline-block;
+  width: 160px;
+  padding: 10px;
+  text-align: center;
+  vertical-align: top;
+}
+.layout-view .demo-item img {
+  width: 140px;
+  height: 100px;
+  border: 1px solid #ccc;
+  /* border-radius: 50%; */
+}
+.layout-view .demo-item p {
+  text-align: center;
+}
+.layout-view~.layout-view {
+  display: none;
+}
+
+/* ======= project ====== */
+.project-list {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+.project-item {
+  width: 100px;
+  margin: 5px;
+  display: inline-block;
+  list-style: none;
+  vertical-align: top;
+}
+.project-item img {
+  width: 100px;
+  height: 100px;
+  /* border-radius: 50%; */
+}
+.project-item p {
+  text-align: center;
+  font-weight: bold;
+}
+
+
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
   .hero-image {
@@ -496,7 +642,7 @@ span.version:hover {
   }
 
   .promo .intro {
-    1font-size: 25px;
+    font-size: 25px;
   }  
   .promo .meta {
     margin-top: 60px;
@@ -529,6 +675,23 @@ span.version:hover {
   .contact .social-icons a .fa:before {
     font-size: 18px;
   }
+  .layout-view {
+    text-align: center;
+  }
+  .layout-view .logo-area {
+    float: none;
+    margin: 10px;
+  }
+}
+@media (max-width: 570px) {
+  .layout-view .demo-list {
+    width: 330px;
+  }
+}
+@media (max-width: 350px) {
+  .layout-view .demo-list {
+    width: 170px;
+  }
 }
 /* Small devices (tablets, 768px and up) */
 /* Medium devices (desktops, 992px and up) */
@@ -555,12 +718,12 @@ pre code {
 }
 
 h3 {
-  margin-top: 50px;
-  margin-bottom: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 h4 {
-  margin-top: 30px;
+  margin-top: 20px;
   margin-bottom: 10px;
 }
 
@@ -576,64 +739,65 @@ h4 {
 
 
 footer {
-  
-      clear: both;
-      display: block;
-      /* margin-top: 50px; */
-      min-height: 114px;
-      text-align: center;
-      padding-top: 40px;
-      border-top: 1px solid #DFDFDF;
-  }
-  footer #footerContent ul li {
-  
-      display: inline-block;
-      position: relative;
-      list-style: none;
-      line-height: 30px;
-      vertical-align: middle;
-  }
-  footer #footerContent ul li:not(:first-child) {
-      margin-left: 28px;
-  }
-  footer #footerContent ul li:not(:first-child):before {
-      position: absolute;
-      left: -17px;
-      top: 8px;
-      height: 14px;
-      border-left: 1px solid #aaa;
-      content: "";
-  }footer #footerContent ul li a {
-      1color: #01ABF7;
-  }footer #footerContent a {
-      color: #888;
-  }a {
-      text-decoration: none;
-  }
-  .octicon-mark-github:hover {
-      fill: #444;
-  }
-  .octicon-mark-github {
-      /* position: absolute; */
-      top: 37px;
-      /* left: 50%; */
-      vertical-align: middle;
-      margin-left: 7px;
-      font-size: 24px;
-      color: #c6cbd1;
-      fill: #888;
-  }svg:not(:root) {
-      overflow: hidden;
-  }
-  footer #footerContent .right {
-      text-align: right;
-      padding-top: 10px;
-  }
-  
-  .naver_opensource {
-      height: 27px;
-      vertical-align: middle;
-  }
-  span.size {
-      opacity: .6;
-  }
+    clear: both;
+    display: block;
+    /* margin-top: 50px; */
+    min-height: 114px;
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid #DFDFDF;
+}
+footer #footerContent ul li {
+
+    display: inline-block;
+    position: relative;
+    list-style: none;
+    line-height: 30px;
+    vertical-align: middle;
+}
+footer #footerContent ul li:not(:first-child) {
+    margin-left: 28px;
+}
+footer #footerContent ul li:not(:first-child):before {
+    position: absolute;
+    left: -17px;
+    top: 8px;
+    height: 14px;
+    border-left: 1px solid #aaa;
+    content: "";
+}
+footer #footerContent ul li a {
+    /* color: #01ABF7; */
+}
+footer #footerContent a {
+    color: #888;
+}a {
+    text-decoration: none;
+}
+.octicon-mark-github:hover {
+    fill: #444;
+}
+.octicon-mark-github {
+    /* position: absolute; */
+    top: 37px;
+    /* left: 50%; */
+    vertical-align: middle;
+    margin-left: 7px;
+    font-size: 24px;
+    color: #c6cbd1;
+    fill: #888;
+}svg:not(:root) {
+    overflow: hidden;
+}
+footer #footerContent .right {
+    text-align: right;
+    padding-top: 10px;
+}
+
+.naver_opensource {
+    height: 27px;
+    vertical-align: middle;
+}
+span.size {
+    opacity: .6;
+}

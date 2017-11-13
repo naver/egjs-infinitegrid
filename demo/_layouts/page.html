@@ -20,28 +20,74 @@
 	};
 	window.HOMELINK = homeUrl;
 	window.LIBLINK = [];
+	// "https://naver.github.io/egjs-infinitegrid/v3.0.0/demo/"
 	{% for dist in site.data.egjs.dist %}
-	window.LIBLINK.push(window.HOMELINK + "{{ dist }}");
+	//window.HOMELINK + 
+	window.LIBLINK.push("{{ dist }}");
 	{% endfor %}
+
+	var demoTemplate = '<li class="demo-item"><a href="./assets/html/{target}.html" target="_blank"><p><img src="./assets/image/demos/{target}.gif" /></p><p>{name}</p></a></li>';
+	var layouts = [];
+	{% for layout in site.data.egjs.layouts %}
+	layouts["{{layout.name}}"] = {
+		image: "{{layout.image}}",
+		desc: "{{layout.desc}}",
+		demos: {}
+	};
+	{% for demo in layout.demos %}
+	layouts["{{layout.name}}"].demos["{{demo.name}}"] = {
+		name: "{{demo.name}}",
+		target: "{{demo.target}}"
+	};
+	{% endfor %}
+	{% endfor %}
+	function showLayout(name, self) {
+		layoutList.removeClass("checked");
+		$(self).addClass("checked");
+
+		var layout = layouts[name];
+		img.attr("src", layout.image);
+		title.text(name);
+		desc.text(layout.desc);
+
+		var demos = layout.demos;
+		var name;
+		var demosHTML = [];
+		for (name in demos) {
+			demosHTML.push(demoTemplate.replace(/\{(\S*)\}/g, function(_, replaceTarget) {
+				return demos[name][replaceTarget];
+			}));
+		}
+		demoList.html(demosHTML.join(""))
+	}
 </script>
 <body>
 {% include facebook.html %}
 {% include header.html %}
 {% include promo.html %}
 <div>
-	<section id="index" class="section">
-			<div class="container">
-				<div class="docs-inner">
-					<p class="text-center">
-						<a href="#getting-started">Getting Started </a>/ 
-						<a href="#demos"> Demos </a>/
-						<a target="_blank" href="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/release/latest/doc/"> Documentation </a>/ 
-						<a target="_blank" href="//github.com/{{ site.data.egjs.github.user }}/{{ site.data.egjs.github.repo }}"> Source </a>
-					</p>
-				</div>
+	<section id="demos" class="docs section demos">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title text-center">Showcase</h2>
+				{% capture demo %}{% include_relative demo.md %}{% endcapture %} {{ demo | markdownify }}
 			</div>
-		</section>
-	<section id="getting-started" class="docs section">
+		</div>
+	</section>
+	<section id="index" class="section navs">
+		<div class="container">
+			<div class="docs-inner">
+				<p class="text-center">
+					<a href="#getting-started">Getting Started </a>/
+					<a href="#demos"> Demos </a>/
+					<a target="_blank" href="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/release/latest/doc/">
+					Documentation </a>/
+					<a target="_blank" href="//github.com/{{ site.data.egjs.github.user }}/{{ site.data.egjs.github.repo }}"> Source </a>
+				</p>
+			</div>
+		</div>
+	</section>
+	<section id="getting-started" class="docs section started">
 		<div class="container">
 			<div class="docs-inner">
 				<h2 class="title text-center">Getting Started</h2>
@@ -50,12 +96,51 @@
 			</div>
 		</div>
 	</section>
-	<section id="demos" class="docs section demos">
+	<section id="layouts" class="docs section layouts">
 		<div class="container">
 			<div class="docs-inner">
-				<h2 class="title text-center">Demos</h2>
-				{% capture demo %}{% include_relative demo.md %}{% endcapture %}
-				{{ demo | markdownify }}
+				<h2 class="title text-center">Layouts</h2>
+				<ul class="layout-list">
+				 {% for layout in site.data.egjs.layouts %}
+					 <li class="layout-item {% if layout.name == "GridLayout" %}checked{% endif %}" onclick="showLayout('{{layout.name}}', this)">
+						<p><img src="{{layout.image}}"></p>
+						<p>{{layout.name}}</p>
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</section>
+	<section id="layouts_view" class="docs section layouts-view">
+		<div class="container">
+			<div class="docs-inner">
+				<div class="layout-view">
+					<div class="logo-area">
+						<img class="logo logo1" />
+						<img class="logo logo2" />
+					</div>
+					<h3 class="title"></h3>
+					<p class="desc"></p>
+					<ul class="demo-list">
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section id="projects" class="docs section projects">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title text-center">Projects</h2>
+				<ul class="project-list">
+					{% for project in site.data.egjs.projects %}
+					<li class="project-item">
+						<a target="blank" href="{{project.url}}"><p>
+							<img src="{{project.image}}">
+						</p>
+						<p>{{project.name}}</p></a>
+					</li>
+					{% endfor %}
+				</ul>
 			</div>
 		</div>
 	</section>
@@ -64,5 +149,15 @@
 {% for js in site.data.egjs.js %}
 	<script src="{{ js }}"></script>
 {% endfor %}
+<script>
+	var view = $("#layouts_view");
+	var title = view.find(".title");
+	var desc = view.find(".desc");
+	var layoutList = $(".layout-list li");
+	var demoList = view.find(".demo-list");
+	var img = view.find(".logo");
+
+	showLayout("GridLayout", layoutList[0]);
+</script>
 </body>
 </html>

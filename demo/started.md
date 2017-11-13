@@ -17,15 +17,7 @@ IE 8+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.1+ (ex
     <li class="card">
         <div>test3</div>
     </li>
-    <li class="card">
-        <div>test4</div>
-    </li>
-    <li class="card">
-        <div>test5</div>
-    </li>
-    <li class="card">
-        <div>test6</div>
-    </li>
+    ....
 </ul>
 ```
 
@@ -33,11 +25,9 @@ IE 8+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.1+ (ex
 
 
 ##### ES5
-``` html
-{% for dist in site.data.egjs.dist %}
+``` html {% for dist in site.data.egjs.dist %}
 <script src="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/{{ dist }}"></script>
-{% endfor %}
-```
+{% endfor %}```
 
 ##### ES6+
 ```js
@@ -55,3 +45,19 @@ new eg.InfiniteGrid("#grid",{
   itemSelector: ".item"
 });
 ```
+
+### Initialize Layout
+
+```javascript
+// create InfiniteGrid
+const ig = new eg.InfiniteGrid("#grid");
+
+// initialize layout
+// GridLayout(default), JustifiedLayout, FrameLayout, SquareLayout, PackingLayout
+ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
+    itemSize: 200,
+});
+```
+
+
+For more information about API, please visit the **[link](//naver.github.io/egjs-view360/release/latest/doc/eg.view360.PanoViewer.html)**.
