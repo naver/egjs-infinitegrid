@@ -19,7 +19,6 @@ function getItems(length) {
 
 var ig = new eg.InfiniteGrid(".container", {
 	horizontal: true,
-	direction: "horizontal"
 });
 
 ig.setLayout(eg.InfiniteGrid.FrameLayout, {
