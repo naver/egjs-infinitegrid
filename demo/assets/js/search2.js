@@ -56,12 +56,11 @@ ig.on({
 			isRequestPull = REQUEST_PREPEND;
 			pullScrollPosition = prevScrollPosition;
 			return;
-		}
 		ig.prepend(groups[groupKey], groupKey);
 	},
-	"append": function (e) {
+	"append": function(e) {
 		var groupKeys = ig.getGroupKeys(true);
-		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+		var groupKey = (groupKeys[0] || 0) - 1;
 
 		if (!(groupKey in groups)) {
 			isRequestPull = REQUEST_APPEND;

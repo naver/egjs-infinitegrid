@@ -1,25 +1,23 @@
+import $ from "jquery";
 import InfiniteGrid from "../../src/InfiniteGrid";
 import GridLayout from "../../src/layouts/GridLayout";
 import FrameLayout from "../../src/layouts/FrameLayout";
 import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
-import {insert, checkLayoutComplete} from "./helper/TestHelper";
+import {getItems, insert, checkLayoutComplete} from "./helper/TestHelper";
 import {APPEND, PREPEND} from "../../src/consts";
 
 describe("InfiniteGrid Test", function() {
-  describe("setStatus/getStatus Test", function() {
+  describe("initailization Test (onlayoutComplete)", function() {
     [true, false].forEach(isOverflowScroll => {
       beforeEach(() => {
-        // document.body.style.height = "10000px"; // for Scroll
-        // window.scrollTo(0, 0);
-        // this.el = sandbox();
-        // this.el.innerHTML = "<div id='infinite'></div>";
-        // this.inst = new InfiniteGrid("#infinite", {
-        //   useRecycle: true,
-        //   isOverflowScroll,
-        // });
-        // this.inst.setLayout(GridLayout);
+        this.el = sandbox();
+        this.el.innerHTML = "<div id='infinite'></div>";
+        this.inst = new InfiniteGrid("#infinite", {
+          isOverflowScroll,
+        });
+        this.inst.setLayout(GridLayout);
       });
       afterEach(() => {
         if (this.inst) {
@@ -27,6 +25,29 @@ describe("InfiniteGrid Test", function() {
           this.inst = null;
         }
         cleanup();
+      });
+      it(`should check a initialization (isOverflowScroll: ${isOverflowScroll})`, done => {
+        // Given
+        const count = 10;
+        const items = getItems(count);
+        const layoutCompleteHandler = sinon.spy(function(e) {
+          // Then
+          expect(e.target).to.have.lengthOf(count);
+          expect(this.getItems(true)).to.have.lengthOf(count);
+          expect(this.isProcessing()).to.be.false;
+          done();
+        });
+  
+        // When
+        this.inst.on("layoutComplete", layoutCompleteHandler);
+  
+        // Then
+        expect(this.inst.isProcessing()).to.be.false;
+        expect(layoutCompleteHandler.calledOnce).to.be.false;
+        
+        // When (layout)
+        this.inst._renderer.container.innerHTML = items.join("");
+        this.inst.layout();
       });
     });
   });
@@ -96,10 +117,11 @@ describe("InfiniteGrid Test", function() {
       }
       cleanup();
     });
-    ["vertical", "horizontal"].forEach(v => {
-      it(`should set '${v}' direction of options`, () => {
+    ["vertical", "horizontal"].forEach(direction => {
+      it(`should set '${direction}' direction of options`, () => {
         // Given
-        this.inst.options.direction = v;
+        this.inst.options.horizontal = direction === "horizontal";
+        this.inst._isVertical = direction === "vertical";
         
         // When
         [
@@ -111,9 +133,79 @@ describe("InfiniteGrid Test", function() {
         ].forEach(v => {
           // Then
           this.inst.setLayout(v);
-          expect(this.inst._layout.options.direction).to.be.equal(this.inst.options.direction);
+          if (this.inst.options.horizontal) {
+            expect(this.inst._layout.options.direction).to.be.equal("horizontal");
+          } else {
+            expect(this.inst._layout.options.direction).to.be.equal("vertical");
+          }
+          
           expect(this.inst._layout instanceof v).to.be.true;
         });
+      });
+    });
+  });
+  describe("data type Test", function() {
+    const makeData = function(isHTMLElement) {
+      const complicatedHTML = "<div class='item'><div class='thumbnail'><img class='img-rounded' src='#' /><div class='caption'><p><a href='http://www.naver.com'></a></p></div></div></div>";
+      const data = [];
+      
+      for (let i = 0; i < 100; i++) {
+        if (isHTMLElement) {
+          const dummy = document.createElement("div");
+
+          dummy.innerHTML = complicatedHTML;
+          data.push(dummy.firstChild);
+        } else {
+          data.push(complicatedHTML);
+        }
+      }
+      return data;
+    }
+
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = "<div id='infinite'></div>";
+      window.jQuery = $;
+      this.inst = new InfiniteGrid("#infinite");
+      this.inst.setLayout(GridLayout);      
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+
+    const testcase = {
+      "stringType": function() {
+        return makeData().join("");
+      },
+      "arrryStringType": function() {
+        return makeData();
+      },
+      "arrryHTMLElementType": function() {
+        return makeData(true);
+      },
+      "jQueryType": function() {
+        return $(makeData());
+      }
+    };
+    Object.keys(testcase).forEach(v => {
+      it(`should check type - '${v}'`, done => {
+        // Given
+        
+        const layoutCompleteHandler = sinon.spy(function(e) {
+          // Then
+          expect(e.target).to.have.lengthOf(100);
+          expect(this.getItems(true)).to.have.lengthOf(100);
+          expect(this.isProcessing()).to.be.false;
+          done();
+        });
+        
+        // When
+        this.inst.on("layoutComplete", layoutCompleteHandler);
+        this.inst.append(testcase[v]());
       });
     });
   });
