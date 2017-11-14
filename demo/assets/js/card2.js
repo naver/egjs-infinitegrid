@@ -13,69 +13,78 @@ var isSupportClipPath = (function() {
 	return false;
 })();
 
-function getItem(options) {
-	var no = options.no || 1;
-	var title = options.title || "egjs post";
-	var subtitle = options.subtitle || "egjs post";
-	var className = options.className || "";
-	
-	var item = `<div class="item ${className}">
-		<img src="../image/${no % 60 + 1}.jpg">
-		<div class="info">
-			<p class="title">${title + no}</p>
-			<p class="subtitle">${subtitle + no}</p>
-		</div>
-	</div>`;
-		
-	return item;
+var link = window.HOMELINK;
+function getItem(template, options) {
+	return template.replace(/\$\{([^\}]*)\}/g, function () {
+		var replaceTarget = arguments[1];
+
+		return options[replaceTarget];
+	});
 }
-var no = 1;
+var template = '<div class="item ${className}"><img src="${link}../image/${no}.jpg"><div class="info"><p class="title">${title}</p><p class="subtitle">${subtitle}</p></div></div>';
 var className = isSupportClipPath ? "item_clip" : "";
 function getItems(length) {
 	var arr = [];
-	for (let i = 0; i < length; ++i) {
-		arr.push(getItem({no: i + no, title: "egjs gallery item", subtitle: "egjs item", className}));
+	for (let i = 1; i <= length; ++i) {
+		arr.push(getItem(template, {
+			no: i % 60,
+			title: "egjs gallery item" + i,
+			subtitle: "egjs item" + i,
+			className: className,
+			link: link
+		}));
 	}
-	no += length;
-
 	return arr;
 }
-
-var ig = new eg.InfiniteGrid(document.querySelector(".container"), {
+var num = 21;
+var groups = {};
+var container = document.querySelector(".container");
+var ig = new eg.InfiniteGrid(container, {
 	direction: "horizontal",
 });
 var parallax = new eg.Parallax(window, {
-	container: document.querySelector(".container"),
+	container: container,
 	direction: "horizontal",
-	// strength: 0.5,
 	align: "center",
 });
 
 ig.setLayout(eg.InfiniteGrid.GridLayout, {
 	margin: isSupportClipPath ? -80 : 0,
 });
-let groupKey = 1;
-ig.on("append", e => {
-	const items = getItems(30);
+ig.on({
+	"prepend": function (e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[0] || 0) - 1;
 
-	ig.append(items, ++groupKey);
-	no += 30;
-});
-ig.on("layoutComplete", e => {
-	console.log(e);
-	parallax.refresh(e.target, document.body.scrollLeft);
-});
-ig.append(getItems(30), ++groupKey);
+		if (!(groupKey in groups)) {
+			return;
+		}
+		ig.prepend(groups[groupKey], groupKey);
+	},
+	"append": function (e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
 
-window.addEventListener("resize", e => {
-	const items = ig.getItems();
+		if (!(groupKey in groups)) {
+			// allow append
+			groups[groupKey] = getItems(num);
+		}
+		ig.append(groups[groupKey], groupKey);
+	},
+	"layoutComplete": function (e) {
+		parallax.refresh(e.target, e.orgScrollPos);
+	},
+	"change": function (e) {
+		parallax.refresh(ig.getItems(), e.orgScrollPos);
+	}
+});
+groups[0] = getItems(num * 2);
+ig.append(groups[0], 0);
+
+
+window.addEventListener("resize", function (e) {
+	var items = ig.getItems();
 
 	parallax.resize(items);
 	parallax.refresh(items, e.orgScrollPos);
 });
-ig.on("change", e => {
-	const scrollPos = e.orgScrollPos;
-
-	parallax.refresh(ig.getItems(), scrollPos);
-});
-

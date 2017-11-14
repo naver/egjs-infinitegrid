@@ -1,23 +1,29 @@
-function getImage({no}) {
-	return `<div class="item">
-		<img src="../image/${no % 60 + 1}.jpg">
-	</div>`;
+var link = window.HOMELINK;
+var template = '<div class="item"><img src="${link}../image/${no}.jpg"></div>';
+
+function getItem(template, options) {
+	return template.replace(/\$\{([^\}]*)\}/g, function () {
+		var replaceTarget = arguments[1];
+
+		return options[replaceTarget];
+	});
 }
 function getItems(length) {
 	const arr = [];
 
-	for (let i = 0; i < length; ++i) {
-		arr.push(getImage({no: i}));
+	for (var i = 0; i < length; ++i) {
+		arr.push(getItem(template, {no: (i % 60 + 1), link: link}));
 	}
 	return arr;
 }
 
-const ig = new eg.InfiniteGrid(document.querySelector(".container"), {
-	direction: "horizontal",
+var ig = new eg.InfiniteGrid(".container", {
+	horizontal: true,
+	direction: "horizontal"
 });
 
 ig.setLayout(eg.InfiniteGrid.FrameLayout, {
-	margin: 0,
+	margin: 10,
 	frame: [
 		[0, 0, 0, 0, 2, 2, 0, 0, 0],
 		[0, 1, 1, 1, 2, 2, 0, 0, 0],
@@ -27,31 +33,30 @@ ig.setLayout(eg.InfiniteGrid.FrameLayout, {
 		[5, 5, 4, 4, 7, 7, 8, 8, 0],
 		[5, 5, 6, 6, 7, 7, 8, 8, 0],
 		[0, 0, 6, 6, 7, 7, 0, 0, 0],
-	],
+	]
 });
-const groups = {};
+var groups = {};
 
 ig.on({
-	"prepend": e => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = (groupKeys[0] || 0) - 1;
+	"prepend": function(e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[0] || 0) - 1;
 
 		if (!(groupKey in groups)) {
 			return;
 		}
 		ig.prepend(groups[groupKey], groupKey);
 	},
-	"append": e => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+	"append": function(e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
 
 		if (!(groupKey in groups)) {
 			// allow append
 			groups[groupKey] = getItems(24);
-			return;
 		}
 		ig.append(groups[groupKey], groupKey);
-	},
+	}
 });
 
 groups[0] = getItems(24);

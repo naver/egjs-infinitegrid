@@ -46,7 +46,7 @@ body {
 }
 .item {
 	overflow: hidden;
-	transition: transform ease 0.5s;
+	/* transition: transform ease 0.5s; */
 }
 .item img {
 	position: relative;
@@ -56,7 +56,7 @@ body {
 	min-height: 100%;
 	max-width: 200%;
 	max-height: 200%;
-	transition: all ease 0.5s;
+	/* transition: all ease 0.5s; */
 }
 
 .item:hover {

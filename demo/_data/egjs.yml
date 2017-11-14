@@ -2,7 +2,7 @@ component: InfiniteGrid
 home: //naver.github.io/egjs
 desc: A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
 dist:
-- release/latest/dist/infinitegrid.pkgd.js
+- https://naver.github.io/egjs-infinitegrid/v3.0.0/dist/infinitegrid.pkgd.js
 hashtag: "#infinite-scroll #masonry #dom-recycle"
 GA: UA-70842526-18
 github:
@@ -13,3 +13,71 @@ js:
 - assets/js/demo.js
 css:
 - assets/css/demo.css
+layouts:
+- name: GridLayout
+  image: ./assets/image/GridLayout.svg
+  desc: GridLayout는 벽돌을 쌓아 올린 모양처럼 동일한 너비를 가진 이미지가 엇갈려 배열되는 레이아웃이다. 모든 이미지의 너비를 동일한 크기로 조정하고, 가장 높이가 낮은 열을 찾아 새로운 이미지를 삽입한다. 따라서 배치된 이미지 사이에 빈 공간이 생기지는 않지만 배치된 레이아웃의 아래쪽은 울퉁불퉁해진다.
+  demos:
+    - name: GridLayout1
+      target: grid
+    - name: Card Gallery
+      target: cards
+    - name: Grid Page
+      target: card2
+    - name: 1 Column Table
+      target: table1
+    - name: 2 Column Table
+      target: table2
+    - name: Table <br/>(Pull To Refresh)
+      target: pulltorefresh
+- name: JustifiedLayout
+  image: ./assets/image/JustifiedLayout.svg
+  desc: \'justified\'는 \'1행의 너비에 맞게 꼭 들어찬\'이라는 의미를 가진 인쇄 용어다. 용어의 의미대로 너비가 주어진 한 행을 기준으로 이미지가 가득 차도록 배치하는 레이아웃이다.
+  demos:
+  - name: Image Search 1
+    target: search
+  - name: Image Search<br/>(Pull To Refresh)
+    target: search2
+- name: FrameLayout
+  image: ./assets/image/FrameLayout.svg
+  desc: Frame 레이아웃은 정해진 틀에 아이템을 배치할 수 있는 레이아웃이다. 디자이너가 직접 이미지를 배치하는 것과 알고리즘을 사용한 배치의 중간 정도 수준에 해당하는 레이아웃이다.
+  demos:
+  - name: FrameLayout 1
+    target: frame
+  - name: FrameLayout 2
+    target: frame2
+  - name: FrameLayout 3
+    target: frame3
+  - name: Timeline
+    target: timeline
+- name: SquareLayout
+  image: ./assets/image/SquareLayout.svg
+  desc: SquareLayout은 그리드에 맞춰 바둑판처럼 모든 이미지를 정사각형으로 배치하고 중요한 이미지는 크기를 N배로 키워서 보여 준다. 주요 이미지를 크게 표시하고, 그다음에 작은 이미지를 배치해 자연스럽게 이미지의 관계를 나타낼 수 있다.
+  demos:
+  - name: SquareLayout 1
+    target: square
+- name: PackingLayout
+  desc:  Packing 레이아웃은 이미지의 본래 크기에 따른 비중을 해치지 않으면서 중요한 이미지는 더 크게 보여 준다. 행과 열이 구분돼 이미지를 정돈되게 배치하는 대신 가로세로 일정 공간 내에서 동적으로 이미지를 배치한다. 다른 라이브러리에 비해 확장성과 유연성은 떨어지지만 정적인 페이지에서 감각적인 이미지 배치를 보여 주고 싶다면 가장 적당한 레이아웃일 것이다.
+  image: ./assets/image/PackingLayout.svg
+  demos:
+  - name: PackingLayout 1
+    target: pack
+projects:
+- name: Naver Shopping
+  url: http://swindow.naver.com/department/home
+  image: ./assets/image/projects/nshopping.png
+- name: Naver Cafe
+  url: https://m.cafe.naver.com/PopularArticleList.nhn?cafeId=12048475
+  image: ./assets/image/projects/ncafe.png
+- name: Naver Modoo
+  url: https://markethub.modoo.at/
+  image: ./assets/image/projects/modoo.png
+- name: Grafolio
+  url: http://www.grafolio.com/works/list.grfl
+  image: ./assets/image/projects/grafolio.jpg
+- name: Plug
+  url: https://www.plug.game/penguinrun-en/photos
+  image: ./assets/image/projects/plug.png
+- name: Naver SmartLens
+  url: https://s.search.naver.com/p/h_cnd010/p_21811/sbi/search.naver?where=sbi&query=sbi&orgPath=http%3A%2F%2Fblogfiles1.naver.net%2F20110805_228%2Fsabell83_1312550810373Qod26_JPEG%2FIMG_6680.JPG
+  image: ./assets/image/projects/smartlens.png
