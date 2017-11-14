@@ -25,7 +25,7 @@ function createGrid(container, itemTemplate) {
 	var num = 21;
 	var groups = {};
 	var ig = new eg.InfiniteGrid(container, {
-		direction: "horizontal",
+		horizontal: true,
 		isOverflowScroll: true,	
 	});
 	ig.setLayout(eg.InfiniteGrid.GridLayout, {

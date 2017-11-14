@@ -40,11 +40,11 @@ var num = 21;
 var groups = {};
 var container = document.querySelector(".container");
 var ig = new eg.InfiniteGrid(container, {
-	direction: "horizontal",
+	horizontal: true,
 });
 var parallax = new eg.Parallax(window, {
 	container: container,
-	direction: "horizontal",
+	horizontal: true,
 	align: "center",
 });
 

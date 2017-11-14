@@ -19,10 +19,13 @@ function getItems(no, length) {
 }
 
 var groups = {};
-var num = 28;
+var num = 10;
 var ig = new eg.InfiniteGrid(".container");
 
-ig.setLayout(eg.InfiniteGrid.PackingLayout);
+ig.setLayout(eg.InfiniteGrid.PackingLayout, {
+	ratioWeight: 10000,
+	margin: 10,
+});
 ig.on({
 	"prepend": function (e) {
 		var groupKeys = ig.getGroupKeys(true);

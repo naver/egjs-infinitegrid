@@ -628,35 +628,15 @@ class InfiniteGrid extends Component {
 }
 
 InfiniteGrid.VERSION = "#__VERSION__#";
-/**
- * @name eg.InfiniteGrid.GridLayout
- * @constant
- * @type {Class}
- */
+
 InfiniteGrid.GridLayout = GridLayout;
-/**
- * @name eg.InfiniteGrid.FrameLayout
- * @constant
- * @type {Class}
- */
+
 InfiniteGrid.FrameLayout = FrameLayout;
-/**
- * @name eg.InfiniteGrid.SquareLayout
- * @constant
- * @type {Class}
- */
+
 InfiniteGrid.SquareLayout = SquareLayout;
-/**
- * @name eg.InfiniteGrid.PackingLayout
- * @constant
- * @type {Class}
- */
+
 InfiniteGrid.PackingLayout = PackingLayout;
-/**
- * @name eg.InfiniteGrid.JustifiedLayout
- * @constant
- * @type {Class}
- */
+
 InfiniteGrid.JustifiedLayout = JustifiedLayout;
 
 export default InfiniteGrid;
