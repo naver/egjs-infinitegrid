@@ -20,12 +20,12 @@ class Parallax {
 			center: 0,
 			range: [-1, 1],
 			align: START,
-			direction: "vertical",
+			horizontal: false,
 		}, options);
 		this._root = root;
 		this._rootSize = 0;
 		this._containerPosition = 0;
-		this._style = style[this.options.direction];
+		this._style = style[this.options.horizontal ? "horizontal" : "vertical"];
 		this.resize();
 	}
 	_checkParallaxItem(element) {

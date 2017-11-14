@@ -44,7 +44,7 @@ var ig = new eg.InfiniteGrid(container, {
 });
 var parallax = new eg.Parallax(window, {
 	container: container,
-	direction: "horizontal",
+	horizontal: true,
 	align: "center",
 });
 
