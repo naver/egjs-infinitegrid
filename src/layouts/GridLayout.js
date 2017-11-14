@@ -1,12 +1,42 @@
 import {APPEND, PREPEND, HORIZONTAL, ALIGN} from "../consts";
-import {getStyleNames, assignOptions} from "../utils";
+import {getStyleNames, assignOptions, fill} from "../utils";
 
 // ALIGN
 const {START, CENTER, END, JUSTIFY} = ALIGN;
 
-function fill(length, pos) {
-	return new Array(length).fill(pos);
-}
+
+/**
+ * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
+ * @ko GridLayout는 벽돌을 쌓아 올린 모양처럼 동일한 너비를 가진 이미지가 엇갈려 배열되는 레이아웃이다. 모든 이미지의 너비를 동일한 크기로 조정하고, 가장 높이가 낮은 열을 찾아 새로운 이미지를 삽입한다. 따라서 배치된 이미지 사이에 빈 공간이 생기지는 않지만 배치된 레이아웃의 아래쪽은 울퉁불퉁해진다.
+ * @class eg.InfiniteGrid.GridLayout
+ * @param {Object} [options] The option object of eg.InfiniteGrid.GridLayout module <ko>eg.InfiniteGrid.GridLayout 모듈의 옵션 객체</ko>
+ * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
+ * @param {Boolean} [options.horizontal="vertical"] Direction of the scroll movement (vertical, horizontal) <ko>스크롤 이동 방향 (vertical 세로방향, horizontal 가로방향)</ko>
+ * @param {Boolean} [options.align=START] Align of the position of the items (START, CENTER, END, JUSTIFY) <ko>아이템들의 위치의 정렬 (START, CENTER, END, JUSTIFY)</ko>
+ * @param {Boolean} [options.itemSize=0] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향</ko>
+ * @example
+```
+<script>
+var ig = new eg.InfiniteGrid("#grid");
+
+ig.setLayout(eg.InfiniteGrid.GridLayout, {
+	margin: 10,
+	align: "start",
+	itemSize: 200
+});
+
+// or
+
+var layout = new eg.InfiniteGrid.GridLayout({
+	margin: 10,
+	align: "center",
+	itemSize: 200,
+	direction: "horizontal"
+});
+
+</script>
+```
+ **/
 class GridLayout {
 	constructor(options = {}) {
 		this.options = assignOptions({
@@ -140,13 +170,43 @@ class GridLayout {
 			outlines: result,
 		};
 	}
+	/**
+	 * Adds items at the bottom of a outline.
+	 * @ko 아이템들을 아웃라인 아래에 추가한다.
+	 * @method eg.InfiniteGrid.GridLayout#append
+	 * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+	 * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+	 * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+	 * @example
+	 * layout.prepend(items, [100, 200, 300, 400]);
+	 */
 	append(items, outline) {
 		return this._insert(items, outline, APPEND);
 	}
+	/**
+	 * Adds items at the top of a outline.
+	 * @ko 아이템을 아웃라인 위에 추가한다.
+	 * @method eg.InfiniteGrid.GridLayout#prepend
+	 * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+	 * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+	 * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+	 * @example
+	 * layout.prepend(items, [100, 200, 300, 400]);
+	 */
 	prepend(items, outline) {
 		return this._insert(items, outline, PREPEND);
 	}
-	layout(groups = [], outline = [], isAppend) {
+	/**
+	 * Adds items of groups at the bottom of a outline.
+	 * @ko 그룹들의 아이템들을 아웃라인 아래에 추가한다.
+	 * @method eg.InfiniteGrid.GridLayout#layout
+	 * @param {Array} groups Array of groups to be layouted <ko>레이아웃할 그룹들의 배열</ko>
+	 * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+	 * @return {eg.InfiniteGrid.GridLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 * @example
+	 * layout.layout(groups, [100, 200, 300, 400]);
+	 */
+	layout(groups = [], outline = []) {
 		const firstItem = (groups.length && groups[0].items.length && groups[0].items[0]) || 0;
 
 		this.checkColumn(firstItem);
@@ -169,9 +229,21 @@ class GridLayout {
 			group.outlines = result;
 			startOutline = result.end;
 		});
+
+		return this;
 	}
+	/**
+	 * Set the viewport size of the layout.
+	 * @ko 레이아웃의 가시 사이즈를 설정한다.
+	 * @method eg.InfiniteGrid.GridLayout#setSize
+	 * @param {Number} size The viewport size of container area where items are added to a layout <ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</ko>
+	 * @return {eg.InfiniteGrid.GridLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 * @example
+	 * layout.layout(groups, [100, 200, 300, 400]);
+	 */
 	setSize(size) {
 		this._size = size;
+		return this;
 	}
 }
 

@@ -18,7 +18,15 @@ export function toArray(nodes) {
 	}
 	return array;
 }
+export function fill(length, value) {
+	let array = typeof length === "array" ? length :  new Array(length);
+	const len = array.length;
 
+	for (let i = length - 1; i >= 0; --i) {
+		array[i] = value;
+	}
+	return array;
+}
 /**
  * Select or create element
  * @param {String|HTMLElement|jQuery} param
