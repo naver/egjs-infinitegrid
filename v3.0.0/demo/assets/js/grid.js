@@ -1,64 +1,59 @@
-function getImage({ no, text }) {
-	return `<div class="item">
-		<div class="thumbnail">
-			<img src="../image/${no % 60 + 1}.jpg">
-		</div>
-		<div class="info">
-			${text}
-		</div>
-	</div>`;
+var template = '<div class="item"><div class="thumbnail"><img src="${link}../../assets/image/${no}.jpg"></div><div class="info">${text}</div></div>';
+var link = window.HOMELINK;
+function getItem(template, options) {
+	return template.replace(/\$\{([^\}]*)\}/g, function () {
+		var replaceTarget = arguments[1];
+
+		return options[replaceTarget];
+	});
 }
 function getItems(length) {
-	const arr = [];
+	var arr = [];
 
-	for (let i = 0; i < length; ++i) {
-		arr.push(getImage({ no: i , text: `egjs post ${i}`}));
+	for (var i = 0; i < length; ++i) {
+		arr.push(getItem(template, {no: i % 60 + 1, text: "egjs post " + (i + 1), link: link}));
 	}
 	return arr;
 }
-
-const ig = new eg.InfiniteGrid(document.querySelector(".container"), {
-	direction: "vertical",
-});
+var ig = new eg.InfiniteGrid(".container");
+var num = 21;
+var groups = {};
 
 ig.setLayout(eg.InfiniteGrid.GridLayout, {
 	margin: 30,
-	align: "center",
+	align: "center"
 });
-const num = 21;
-const groups = {};
 
 ig.on({
-	"prepend": e => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = (groupKeys[0] || 0) - 1;
+	"prepend": function(e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[0] || 0) - 1;
 
 		if (!(groupKey in groups)) {
 			return;
 		}
 		ig.prepend(groups[groupKey], groupKey);
 	},
-	"append": e => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+	"append": function(e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
 
 		if (!(groupKey in groups)) {
 			// allow append
 			groups[groupKey] = getItems(num);
-			return;
 		}
 		ig.append(groups[groupKey], groupKey);
 	},
-	"layoutComplete": e => {
-		e.target.forEach(item => {
+	"layoutComplete": function(e) {
+		e.target.forEach(function(item) {
 			if (!item.el) {
 				return;
 			}
-			item.el.classList.add("animate");
-		})
-	},
+			// add abunatuib
+			item.el.setAttribute("class", "item animate");
+		});
+	}
 });
 
 groups[0] = getItems(num * 2);
-
 ig.append(groups[0], 0);

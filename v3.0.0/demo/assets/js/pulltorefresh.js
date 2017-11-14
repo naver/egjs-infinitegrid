@@ -1,45 +1,49 @@
-function getItem({type = "append", title = "egjs post", writer = "egjs", date = "10.30 16:28"}) {
-	return `<div class="post">
-		<span class="opts"></span>
-		<span class="type">${type}</span>
-		<span class="date">${date}</span>
-		<span class="writer">${writer}</span>
-		<span class="title">${title}</span>
-	</div>`;
-}
-function getItems(no, length, isAppend) {
-	const arr = [];
 
-	for (let i = 0; i < length; ++i) {
-		arr.push(getItem({
+var template = '<div class="post"><span class="opts"></span><span class="type">${type}</span><span class="date">${date}</span><span class="writer">${writer}</span><span class="title">${title}</span></div>';
+var link = window.HOMELINK;
+function getItem(template, options) {
+	return template.replace(/\$\{([^\}]*)\}/g, function () {
+		var replaceTarget = arguments[1];
+
+		return options[replaceTarget];
+	});
+}
+
+function getItems(no, length, isAppend) {
+	var arr = [];
+
+	for (var i = 0; i < length; ++i) {
+		arr.push(getItem(template, {
 			type: isAppend ? "append" : "prepend",
-			title: `egjs post${no}`,
+			title: "egjs post" + (no + i + 1),
+			date: "10.30 16:28",
+			writer: "egjs"
 		}));
 	}
 	return arr;
 }
 
-const REQUEST_CHANGE = 0;
-const REQUEST_APPEND = 1;
-const REQUEST_PREPEND = 2;
-const REQUEST_APPEND_ANIMATE = 3;
-const REQUEST_PREPEND_ANIMATE = 4;
-const groups = {};
-const deltaPull = 10;
-const container = document.querySelector(".container");
-const contents = document.querySelector(".contents");
-const ig = new eg.InfiniteGrid(contents, {
-	isOverflowScroll: true,
+var REQUEST_CHANGE = 0;
+var REQUEST_APPEND = 1;
+var REQUEST_PREPEND = 2;
+var REQUEST_APPEND_ANIMATE = 3;
+var REQUEST_PREPEND_ANIMATE = 4;
+var groups = {};
+var deltaPull = 10;
+var container = document.querySelector(".container");
+var contents = document.querySelector(".contents");
+var ig = new eg.InfiniteGrid(contents, {
+	isOverflowScroll: true
 });
-let prevScrollPosition = 0;
-let pullScrollPosition = 0;
-let isRequestPull = REQUEST_PREPEND;
+var prevScrollPosition = 0;
+var pullScrollPosition = 0;
+var isRequestPull = REQUEST_PREPEND;
 
 ig.setLayout(eg.InfiniteGrid.GridLayout);
 
 ig.on({
-	"change": e => {
-		const scrollPosition = e.orgScrollPos;
+	"change": function(e) {
+		var scrollPosition = e.orgScrollPos;
 
 		prevScrollPosition = scrollPosition;
 
@@ -51,9 +55,9 @@ ig.on({
 
 		isRequestPull = REQUEST_CHANGE;
 	},
-	"prepend": e => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = (groupKeys[0] || 0) - 1;
+	"prepend": function (e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[0] || 0) - 1;
 
 		if (!(groupKey in groups)) {
 			isRequestPull = REQUEST_PREPEND;
@@ -62,9 +66,9 @@ ig.on({
 		}
 		ig.prepend(groups[groupKey], groupKey);
 	},
-	"append": e => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+	"append": function (e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
 
 		if (!(groupKey in groups)) {
 			isRequestPull = REQUEST_APPEND;
@@ -73,7 +77,7 @@ ig.on({
 		}
 		ig.append(groups[groupKey], groupKey);
 	},
-	"layoutComplete": e => {
+	"layoutComplete": function (e) {
 		if (ig.getGroupKeys().length === 1) {
 			return;
 		}
@@ -89,25 +93,25 @@ ig.on({
 groups[0] = getItems(0, 30, true);
 ig.append(groups[0], 0);
 
-const axes = new eg.Axes({
+var axes = new eg.Axes({
 	scroll: {
 		range: [0, 0],
-		bounce: 100,
-	},
+		bounce: 100
+	}
 });
 
 container.insertAdjacentHTML("beforeend", `<div id="prepend"></div><div id="append"></div>`);
-const prepend = document.getElementById("prepend");
-const append = document.getElementById("append");
-const innerContents = contents.querySelector("._eg-infinitegrid-container_");
+var prepend = document.getElementById("prepend");
+var append = document.getElementById("append");
+var innerContents = contents.querySelector("._eg-infinitegrid-container_");
 
-let isLoading = false;
+var isLoading = false;
 
 function requestInsert(isAppend) {
 	container.classList.add("pull");
-	setTimeout(() => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = isAppend ? (groupKeys[groupKeys.length - 1] || 0) + 1 :
+	setTimeout(function (e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = isAppend ? (groupKeys[groupKeys.length - 1] || 0) + 1 :
 			(groupKeys[0] || 0) - 1;
 
 		groups[groupKey] = getItems(groupKey, 30, isAppend);
@@ -118,13 +122,14 @@ function requestInsert(isAppend) {
 	}, 1000);
 }
 axes.on({
-	"change": ({pos}) => {
+	"change": function (e) {
+		var pos = e.pos;
 		if (!isRequestPull || isLoading || !axes.isBounceArea()) {
 			return;
 		}
-		const scroll = pos.scroll;
-		const height = Math.abs(scroll);
-		const isAppend = scroll > 0;
+		var scroll = pos.scroll;
+		var height = Math.abs(scroll);
+		var isAppend = scroll > 0;
 
 
 		if (isAppend &&
@@ -137,26 +142,26 @@ axes.on({
 		}
 
 		innerContents.style.transition = "";
-		innerContents.style.transform = `translateY(${-scroll}px)`;
+		innerContents.style.transform = "translateY(" + (-scroll) +"px)";
 
-		const element = isAppend ? append : prepend;
+		var element = isAppend ? append : prepend;
 
 		element.style.height = `${height}px`;
 		if (height < 80) {
-			element.innerHTML = `Pull to ${isAppend ? "append" : "prepend"}`;
+			element.innerHTML = "Pull to " + (isAppend ? "append" : "prepend");
 		} else {
-			element.innerHTML = `Release to ${isAppend ? "append" : "prepend"}`;
+			element.innerHTML = "Release to " + (isAppend ? "append" : "prepend");
 		}
 	},
-	"release": e => {
-		const depaPos = e.depaPos;
+	"release": function(e) {
+		var depaPos = e.depaPos;
 
 		if (!isRequestPull || isLoading || !axes.isBounceArea() || !depaPos) {
 			return;
 		}
-		const scroll = depaPos.scroll;
-		const height = Math.abs(scroll);
-		const isAppend = scroll > 0;
+		var scroll = depaPos.scroll;
+		var height = Math.abs(scroll);
+		var isAppend = scroll > 0;
 
 		if ((isRequestPull === REQUEST_PREPEND && isAppend) ||
 			(isRequestPull === REQUEST_APPEND && !isAppend)) {
@@ -169,16 +174,16 @@ axes.on({
 		(isAppend ? append : prepend).innerHTML = "Loading...";
 		requestInsert(isAppend);
 	},
-	"animationStart": e => {
+	"animationStart": function (e) {
 		if (isLoading) {
 			e.stop();
 		}
 	},
-	"animationEnd": e => {
+	"animationEnd": function (e) {
 		if (isRequestPull >= REQUEST_APPEND_ANIMATE) {
 			isRequestPull = REQUEST_CHANGE;
 		}
-	},
+	}
 });
 
 

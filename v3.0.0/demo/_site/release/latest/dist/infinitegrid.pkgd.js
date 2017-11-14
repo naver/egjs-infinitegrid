@@ -5,11 +5,1934 @@
  * @egjs/infinitegrid JavaScript library
  * https://github.com/naver/egjs-infinitegrid
  * 
- * @version 2.1.1-rc
+ * @version 2.1.1
  * 
  * All-in-one packaged file for ease use of '@egjs/infinitegrid' with below dependencies.
  * NOTE: This is not an official distribution file and is only for user convenience.
  * 
  */
-!function(t,e){"object"==typeof exports&&"object"==typeof module?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.InfiniteGrid=e():(t.eg=t.eg||{},t.eg.InfiniteGrid=e())}(this,function(){return function(t){function __webpack_require__(i){if(e[i])return e[i].exports;var n=e[i]={i:i,l:!1,exports:{}};return t[i].call(n.exports,n,n.exports,__webpack_require__),n.l=!0,n.exports}var e={};return __webpack_require__.m=t,__webpack_require__.c=e,__webpack_require__.d=function(t,e,i){__webpack_require__.o(t,e)||Object.defineProperty(t,e,{configurable:!1,enumerable:!0,get:i})},__webpack_require__.n=function(t){var e=t&&t.__esModule?function(){return t["default"]}:function(){return t};return __webpack_require__.d(e,"a",e),e},__webpack_require__.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},__webpack_require__.p="",__webpack_require__(__webpack_require__.s=5)}([function(t,e,i){"use strict";e.__esModule=!0,e.ALIGN=e.DEFAULT_OPTIONS=e.GROUPKEY_ATT=e.DUMMY_POSITION=e.SINGLE=e.MULTI=e.NO_TRUSTED=e.TRUSTED=e.NO_CACHE=e.CACHE=e.HORIZONTAL=e.VERTICAL=e.PREPEND=e.APPEND=e.CONTAINER_CLASSNAME=e.RETRY=e.IS_ANDROID2=e.IS_IOS=e.IS_IE=e.SUPPORT_PASSIVE=e.SUPPORT_ADDEVENTLISTENER=e.SUPPORT_COMPUTEDSTYLE=undefined;var n=i(2),r=n.window.navigator.userAgent,o=(e.SUPPORT_COMPUTEDSTYLE=!!("getComputedStyle"in n.window),e.SUPPORT_ADDEVENTLISTENER=!!("addEventListener"in document)),s=(e.SUPPORT_PASSIVE=function(){var t=!1;try{o&&Object.defineProperty&&document.addEventListener("test",null,Object.defineProperty({},"passive",{get:function(){t=!0}}))}catch(e){}return t}(),e.IS_IE=/MSIE|Trident|Windows Phone|Edge/.test(r),e.IS_IOS=/iPhone|iPad/.test(r),e.IS_ANDROID2=/Android 2\./.test(r),e.RETRY=3,e.CONTAINER_CLASSNAME="_eg-infinitegrid-container_",e.APPEND=!0,e.PREPEND=!1,e.VERTICAL="vertical");e.HORIZONTAL="horizontal",e.CACHE=!0,e.NO_CACHE=!1,e.TRUSTED=!0,e.NO_TRUSTED=!1,e.MULTI=!0,e.SINGLE=!1,e.DUMMY_POSITION=-1e5,e.GROUPKEY_ATT="data-groupkey",e.DEFAULT_OPTIONS={direction:s,margin:0},e.ALIGN={START:"start",CENTER:"center",END:"end",JUSTIFY:"justify"}},function(t,e,i){"use strict";function toArray(t){var e=[];if(t)for(var i=0,n=t.length;i<n;i++)e.push(t[i]);return e}function $(t){var e=arguments.length>1&&arguments[1]!==undefined&&arguments[1],i=void 0;if("string"==typeof t){if(t.match(/^<([a-z]+)\s*([^>]*)>/)){var n=o.document.createElement("div");n.innerHTML=t,i=toArray(n.childNodes)}else i=toArray(o.document.querySelectorAll(t));e||(i=i.length>=1?i[0]:undefined)}else t===o.window?i=t:!t.nodeName||1!==t.nodeType&&9!==t.nodeType?"jQuery"in o.window&&t instanceof jQuery||t.constructor.prototype.jquery?i=e?t.toArray():t.get(0):Array.isArray(t)&&(i=t.map(function(t){return $(t)}),e||(i=i.length>=1?i[0]:undefined)):i=t;return i}function _getSize(t,e){if(t===o.window)return t.document.documentElement["client"+e];if(9===t.nodeType){var i=t.documentElement;return Math.max(t.body["scroll"+e],i["scroll"+e],t.body["offset"+e],i["offset"+e],i["client"+e])}var n=s.SUPPORT_COMPUTEDSTYLE?o.window.getComputedStyle(t):t.currentStyle,r=n[e.toLowerCase()];return parseFloat(/auto|%/.test(r)?t["offset"+e]:n[e.toLowerCase()])}e.__esModule=!0,e.STYLE=undefined;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var i=arguments[e];for(var n in i)Object.prototype.hasOwnProperty.call(i,n)&&(t[n]=i[n])}return t},r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t};e.toArray=toArray,e.$=$,e.addEvent=function(t,e,i,n){if(s.SUPPORT_ADDEVENTLISTENER){var o=n||!1;"object"===(void 0===n?"undefined":r(n))&&(o=!!s.SUPPORT_PASSIVE&&n),t.addEventListener(e,i,o)}else t.attachEvent?t.attachEvent("on"+e,i):t["on"+e]=i},e.removeEvent=function(t,e,i){t.removeEventListener?t.removeEventListener(e,i,!1):t.detachEvent?t.detachEvent("on"+e,i):t["on"+e]=null},e.scroll=function(t,e){var i="scroll"+(e?"Top":"Left");return t===o.window?o.document.body[i]||o.document.documentElement[i]:t[i]},e.scrollTo=function(t,e,i){t===o.window?t.scroll(e,i):(t.scrollLeft=e,t.scrollTop=i)},e.scrollBy=function(t,e,i){t===o.window?t.scrollBy(e,i):(t.scrollLeft+=e,t.scrollTop+=i)},e.innerWidth=function(t){return _getSize(t,"Width")},e.innerHeight=function(t){return _getSize(t,"Height")},e.getStyleNames=function(t){return a[t in a?t:s.VERTICAL]},e.assignOptions=function(t,e){return n({},s.DEFAULT_OPTIONS,t,e)},e.toZeroArray=function(t){return t&&t.length?t:[0]};var o=i(2),s=i(0),a=e.STYLE={vertical:{pos1:"top",endPos1:"bottom",size1:"height",pos2:"left",endPos2:"right",size2:"width"},horizontal:{pos1:"left",endPos1:"right",size1:"width",pos2:"top",endPos2:"bottom",size2:"height"}}},function(t,e,i){"use strict";e.__esModule=!0;var n="undefined"!=typeof window&&window.Math===Math?window:"undefined"!=typeof self&&self.Math===Math?self:Function("return this")();e.window=n;e.document=n.document},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}e.__esModule=!0;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var i=arguments[e];for(var n in i)Object.prototype.hasOwnProperty.call(i,n)&&(t[n]=i[n])}return t},r=i(0),o=i(1),s=function(){function DOMRenderer(t,e){_classCallCheck(this,DOMRenderer),n(this.options={isOverflowScroll:!1,isEqualSize:!1,isVertical:!0},e),this._size={containerOffset:0,container:-1,view:-1,item:null},this._init(t),this.resize()}return DOMRenderer.renderItem=function(t,e){if(t.el){var i=t.el.style;t.el.setAttribute(r.GROUPKEY_ATT,t.groupKey),i.position="absolute",["left","top","width","height"].forEach(function(t){t in e&&(i[t]=e[t]+"px")})}},DOMRenderer.renderItems=function(t){t.forEach(function(t){DOMRenderer.renderItem(t,t.rect)})},DOMRenderer.removeItems=function(t){t.forEach(function(t){t.el&&(DOMRenderer.removeElement(t.el),t.el=null)})},DOMRenderer.removeElement=function(t){t.parentNode.removeChild(t)},DOMRenderer.createElements=function(t){var e=(0,o.$)(t.reduce(function(t,e){return t.concat(e.content)},[]).join(""),r.MULTI);return t.map(function(t,i){return t.el=e[i],t})},DOMRenderer.prototype.getStatus=function(){return{cssText:this.container.style.cssText,options:n({},this.options),_size:n({},this._size)}},DOMRenderer.prototype.setStatus=function(t,e){this.container.style.cssText=t.cssText,n(this.options,t.options),n(this._size,t._size),DOMRenderer.renderItems(e),this._insert(e,r.APPEND)},DOMRenderer.prototype.updateSize=function(t){var e=this;return t.map(function(t){return t.el&&(e.options.isEqualSize?e._size.item=e._size.item||{width:(0,o.innerWidth)(t.el),height:(0,o.innerHeight)(t.el)}:t.size={width:(0,o.innerWidth)(t.el),height:(0,o.innerHeight)(t.el)}),t})},DOMRenderer.prototype._init=function(t){var e=(0,o.$)(t);if(e.style.position="relative",this.options.isOverflowScroll){var i=e.querySelector("."+r.CONTAINER_CLASSNAME);if(!i){(i=document.createElement("div")).className=r.CONTAINER_CLASSNAME;for(var n=e.children,s=n.length,a=this.options.isVertical?["Y","X"]:["X","Y"],u=0;u<s;u++)i.appendChild(n[0]);e.style["overflow"+a[0]]="scroll",e.style["overflow"+a[1]]="hidden",e.appendChild(i)}this.view=e,this.container=i}else this.view=window,this.container=e},DOMRenderer.prototype.append=function(t){this._insert(t,r.APPEND,{top:r.DUMMY_POSITION})},DOMRenderer.prototype.prepend=function(t){this._insert(t,r.PREPEND,{top:r.DUMMY_POSITION})},DOMRenderer.prototype.clear=function(){this.container.innerHTML="",this.container.style[this.options.isVertical?"height":"width"]="",this._size={containerOffset:0,container:-1,view:-1}},DOMRenderer.prototype.createAndInsert=function(t,e){var i=DOMRenderer.createElements(t);DOMRenderer.renderItems(i),this._insert(i,e)},DOMRenderer.prototype._insert=function(t,e,i){var n=document.createDocumentFragment();t.forEach(function(t){i&&DOMRenderer.renderItem(t,i),e?n.appendChild(t.el):n.insertBefore(t.el,n.firstChild)}),e?this.container.appendChild(n):this.container.insertBefore(n,this.container.firstChild)},DOMRenderer.prototype._calcSize=function(){return this.options.isVertical?(0,o.innerWidth)(this.container):(0,o.innerHeight)(this.container)},DOMRenderer.prototype.getViewSize=function(){return this._size.view},DOMRenderer.prototype.scrollBy=function(t){var e=this.options.isVertical?[0,t]:[t,0];o.scrollBy.apply(undefined,[this.view].concat(e))},DOMRenderer.prototype.getContainerOffset=function(){return this._size.containerOffset},DOMRenderer.prototype.getContainerSize=function(){return this.resize(),this._size.container},DOMRenderer.prototype.setContainerSize=function(t){this.container.style[this.options.isVertical?"height":"width"]=t+"px"},DOMRenderer.prototype.resize=function(){if(this.isNeededResize()){var t=this.options.isVertical;return this._size={containerOffset:this.container["offset"+(t?"Top":"Left")],container:this._calcSize(),view:t?(0,o.innerHeight)(this.view):(0,o.innerWidth)(this.view),item:null},!0}return!1},DOMRenderer.prototype.isNeededResize=function(){return this._calcSize()!==this._size.container},DOMRenderer.prototype.destroy=function(){this._size={containerOffset:0,container:-1,view:-1,item:null}},DOMRenderer}();e["default"]=s,t.exports=e["default"]},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function disableFrame(t,e,i,n,r,o){for(var s=n;s<n+o;++s)for(var a=i;a<i+r;++a)e===t[s][a]&&(t[s][a]=0)}function searchShapeInFrame(t,e,i,n,r,o){for(var s={left:n,top:i,type:e,width:1,height:1},a=n;a<r&&t[i][a]===e;++a)s.width=a-n+1;for(var u=i;u<o&&t[u][n]===e;++u)s.height=u-i+1;return disableFrame(t,e,n,i,s.width,s.height),s}function getShapes(t){for(var e=t.length,i=e?t[0].length:0,n=[],r=0;r<e;++r)for(var o=0;o<i;++o){var s=t[r][o];s&&n.push(searchShapeInFrame(t,s,r,o,i,e))}return n.sort(function(t,e){return t.type<e.type?-1:1}),{shapes:n,width:i,height:e}}e.__esModule=!0;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var i=arguments[e];for(var n in i)Object.prototype.hasOwnProperty.call(i,n)&&(t[n]=i[n])}return t},r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},o=i(0),s=i(1),a=o.ALIGN.START,u=o.ALIGN.CENTER,h=o.ALIGN.END,c=function(){function FrameLayout(){var t=arguments.length>0&&arguments[0]!==undefined?arguments[0]:{};_classCallCheck(this,FrameLayout),this.options=(0,s.assignOptions)({itemSize:0,frame:[],fitSize:0,align:a,frameFill:!0},t);var e=getShapes(this.options.frame.map(function(t){return t.slice()}));this._itemSize=this.options.itemSize||0,this._shapes=e,this._size=0,this._style=(0,s.getStyleNames)(this.options.direction)}return FrameLayout.prototype._getItemSize=function(){return this._checkItemSize(),this._itemSize},FrameLayout.prototype._checkItemSize=function(){if(this.options.itemSize)this._itemSize=this.options.itemSize;else{var t=this._style.size2,e=this.options.margin;this._itemSize=(this._size+e)/this._shapes[t]-e}},FrameLayout.prototype._layout=function(t){var e=arguments.length>1&&arguments[1]!==undefined?arguments[1]:[],i=arguments[2],n=t.length,o=this._style,s=this.options,a=s.margin,c=s.align,l=s.frameFill,f=o.size1,p=o.size2,d=o.pos1,_=o.pos2,y=this._getItemSize(),g="object"===(void 0===y?"undefined":r(y)),m=g?y[p]:y,v=g?y[f]:y,w=this._shapes[p],S=this._shapes.shapes,I=S.length,E=new Array(w).fill(-1),C=new Array(w).fill(0),O=S.height*(v+a)-a,P=this.options.fitSize,M=0;P<O&&(P=0),P&&(c===u?M=(P-O)/2:c===h&&(M=P-O));var b=0,z=0,L=-1,T=-1,R=-1,k=-1;if(!I)return{start:e,end:e,startIndex:L,endIndex:T};for(var A=0;A<n;A+=I){for(var D=0;D<I&&A+D<n;++D){for(var N,x=t[A+D],G=S[D],q=G[d],j=G[_],H=G[f],V=G[p],F=z-b+q*(v+a)+M,U=j*(m+a),W=H*(v+a)-a,B=V*(m+a)-a,Y=j;Y<j+V&&Y<w;++Y)-1===E[Y]&&(E[Y]=F),-1===L&&(R=F,L=A+D,k=F+W+a,T=A+D),R>F&&(R=F,L=A+D),k<F+W+a&&(k=F+W+a,T=A+D),E[Y]=Math.min(E[Y],F),C[Y]=Math.max(C[Y],F+W+a);x.rect=(N={},N[d]=F,N[_]=U,N[f]=W,N[p]=B,N)}if(P)for(var J=0;J<w;++J)C[J]=z+P;if(z=Math.max.apply(Math,C),0===A)if(l){b=z;for(var K=0;K<w;++K)-1!==E[K]?b=Math.min(E[K]+z-C[K],b):(E[K]=Math.max.apply(Math,E),C[K]=E[K])}else b=0}var $=i?E:C,Z=0===e.length?0:Math[i?"max":"min"].apply(Math,e),Q=i?0:z;if(l&&e.length===w){Q=i?Math.abs(Z):0;for(var X=0;X<w;++X)E[X]!==C[X]&&(Q=Math[i?"min":"max"]($[X]+Z-e[X],Q))}for(var tt=0;tt<w;++tt)E[tt]+=Z-Q,C[tt]+=Z-Q;return t.forEach(function(t){t.rect[d]+=Z-Q}),{start:E,end:C,startIndex:L,endIndex:T}},FrameLayout.prototype._insert=function(t,e,i){var r=t.map(function(t){return n({},t)});return{items:r,outlines:this._layout(r,e,i)}},FrameLayout.prototype.layout=function(t,e){for(var i=t.length,n=e,r=0;r<i;++r){var s=t[r];n=this._layout(s.items,n,o.APPEND),s.outlines=n,n=n.end}},FrameLayout.prototype.append=function(t,e){return this._insert(t,e,o.APPEND)},FrameLayout.prototype.prepend=function(t,e){return this._insert(t,e,o.PREPEND)},FrameLayout.prototype.setSize=function(t){this._size=t},FrameLayout}();e["default"]=c,t.exports=e["default"]},function(t,e,i){"use strict";var n=function(t){return t&&t.__esModule?t:{"default":t}}(i(6));t.exports=n["default"]},function(t,e,i){"use strict";function _interopRequireDefault(t){return t&&t.__esModule?t:{"default":t}}function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function _inherits(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}e.__esModule=!0;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var i=arguments[e];for(var n in i)Object.prototype.hasOwnProperty.call(i,n)&&(t[n]=i[n])}return t},r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},o=_interopRequireDefault(i(7)),s=_interopRequireDefault(i(8)),a=_interopRequireDefault(i(3)),u=_interopRequireDefault(i(9)),h=_interopRequireDefault(i(10)),c=_interopRequireDefault(i(11)),l=_interopRequireDefault(i(4)),f=_interopRequireDefault(i(12)),p=_interopRequireDefault(i(13)),d=_interopRequireDefault(i(15)),_=i(0);"function"!=typeof Object.create&&(Object.create=function(t,e){function F(){}if("object"!==(void 0===t?"undefined":r(t))&&"function"!=typeof t)throw new TypeError("Object prototype may only be an Object: "+t);if(null===t)throw new Error("This browser's implementation of Object.create is a shim and doesn't support 'null' as the first argument.");return F.prototype=t,new F});var y=function(t){function InfiniteGrid(e,i){_classCallCheck(this,InfiniteGrid);var r=_possibleConstructorReturn(this,t.call(this));return n(r.options={itemSelector:"*",isOverflowScroll:!1,threshold:300,isEqualSize:!1,useRecycle:!0,direction:"vertical"},i),_.IS_ANDROID2&&(r.options.isOverflowScroll=!1),r._isVertical="vertical"===r.options.direction,r._reset(),r._items=new s["default"],r._renderer=new a["default"](e,{isOverflowScroll:r.options.isOverflowScroll,isEqualSize:r.options.isEqualSize,isVertical:"vertical"===r.options.direction}),r._watcher=new h["default"](r._renderer,{layout:function(){return r.layout()},check:function(t){return r._onCheck(t)}}),r}return _inherits(InfiniteGrid,t),InfiniteGrid.prototype.append=function(t,e){this._layout&&this._insert(t,e,_.APPEND)},InfiniteGrid.prototype.prepend=function(t,e){this._layout&&this._insert(t,e,_.PREPEND)},InfiniteGrid.prototype.setLayout=function(t,e){return this._layout=new t(n(e||{},{direction:this.options.direction})),this._layout.setSize(this._renderer.getContainerSize()),this},InfiniteGrid.prototype.getItems=function(){return this[arguments.length>0&&arguments[0]!==undefined&&arguments[0]?"_getItems":"_getVisibleItems"]()},InfiniteGrid.prototype._getItems=function(){return this._items.pluck("items",0,this._items.size())},InfiniteGrid.prototype._getVisibleItems=function(){return this._items.pluck("items",this._status.startCursor,this._status.endCursor)},InfiniteGrid.prototype._updateEdge=function(){this._status.start=this._items.getEdge("start",this._status.startCursor,this._status.endCursor),this._status.end=this._items.getEdge("end",this._status.startCursor,this._status.endCursor)},InfiniteGrid.prototype._getEdgeOffset=function(t){var e=null;if(!this._status[t]){var i=this._items.getEdge(t);this._status[t]=i}return this._status[t]&&(e=this._status[t].rect,"start"===t&&(e.bottom=e.top+this._status[t].size.height,e.right=e.left+this._status[t].size.width)),e},InfiniteGrid.prototype._fit=function(){var t=arguments.length>0&&arguments[0]!==undefined?arguments[0]:"after";if(this.options.useRecycle){if(this._layout){var e=this._getEdgeValue("start");0!==e&&("before"===t&&(this._renderer.scrollBy(-Math.abs(e)),this._watcher.setScrollPos()),this._items.fit(e,this._isVertical),a["default"].renderItems(this._getVisibleItems()),this._renderer.setContainerSize(this._getEdgeValue("end")),"after"===t&&(this._renderer.scrollBy(Math.abs(e)),this._watcher.setScrollPos()))}}else this._fit=function(){}},InfiniteGrid.prototype._getEdgeValue=function(t){return this._items.getEdgeValue(t,this._status.startCursor,this._status.endCursor)},InfiniteGrid.prototype.layout=function(){var t=this,e=!(arguments.length>0&&arguments[0]!==undefined)||arguments[0];if(!this._layout||this.isProcessing()||!this._items.size())return this;this._status.isProcessing=!0;var i=void 0,n=void 0;return e?(i=this._items.get(this._status.startCursor,this._status.endCursor),this._renderer.resize()&&(this._layout.setSize(this._renderer.getContainerSize()),i.forEach(function(e){i.items=t._renderer.updateSize(e.items)}))):(i=this._items.get(this._status.startCursor,this._items.size()),n=this._items.getOutline(this._status.startCursor,"start")),i.length?(this._layout.layout(i,n),e?(this._items.set(i),this._status.startCursor=0,this._status.endCursor=i.length-1):i.forEach(function(e){return t._items.set(e,e.groupKey)}),this._onLayoutComplete(i,_.APPEND,_.NO_TRUSTED),a["default"].renderItems(this._getVisibleItems()),e&&this._watcher.setScrollPos(),this):this},InfiniteGrid.prototype.remove=function(t){if(t){var e=this._items.remove(t,this._status.startCursor,this._status.endCursor);if(e)return a["default"].removeElement(t),e}return null},InfiniteGrid.prototype._getNextItems=function(t){var e=[],i=this._items.size();return i>0&&-1!==this._status.startCursor&&-1!==this._status.endCursor&&(t&&i>this._status.endCursor+1?e=this._items.pluck("items",this._status.endCursor+1):!t&&this._status.startCursor>0&&(e=this._items.pluck("items",this._status.startCursor-1))),e},InfiniteGrid.prototype.getGroupKeys=function(t){return(t?this._items.get():this._items.get(this._status.startCursor,this._status.endCursor)).map(function(t){return t.groupKey})},InfiniteGrid.prototype.getStatus=function(){return{options:n({},this.options),_status:n({},this._status),_items:this._items.getStatus(),_renderer:this._renderer.getStatus(),_watcher:this._watcher.getStatus()}},InfiniteGrid.prototype.setStatus=function(t,e){return t&&t.options&&t._status&&t._renderer&&t._items&&t._watcher?(this._watcher.detachEvent(),n(this.options,t.options),n(this._status,t._status),this._items.setStatus(t._items,this._status.startCursor,this._status.endCursor),this._renderer.setStatus(t._renderer,this._getVisibleItems()),this._watcher.setStatus(t._watcher,e),this._updateEdge(),this._watcher.attachEvent(),this):this},InfiniteGrid.prototype.clear=function(){return this._items.clear(),this._renderer.clear(),this._reset(),this},InfiniteGrid.prototype.isProcessing=function(){return this._status.isProcessing},InfiniteGrid.prototype._insert=function(t,e,i){if(!this.isProcessing()&&0!==t.length){this._status.isProcessing=!0;var n=void 0===e?(new Date).getTime()+Math.floor(1e3*Math.random()):e,r=s["default"].from(t,this.options.itemSelector,{isAppend:i,groupKey:n});r.length&&this._postLayout(_.NO_CACHE,r,i,_.NO_TRUSTED)}},InfiniteGrid.prototype._recycle=function(t){for(var e=[],i=this._status.startCursor;i<=this._status.endCursor;i++)e.push(this._isVisible(i));var n=e.indexOf(t?1:-1),r=e.lastIndexOf(t?1:-1);-1!==n&&-1!==r&&(r=(n=this._status.startCursor+n)+r,a["default"].removeItems(this._items.pluck("items",n,r)),t?this._status.startCursor=r+1:this._status.endCursor=n-1)},InfiniteGrid.prototype._postLayout=function(t,e,i,n){var r=this;if(t)this._renderer.createAndInsert(e,i),this._updateCursor(i),this.options.useRecycle&&this._recycle(i),this._onLayoutComplete(e,i,n);else{var o=i?"append":"prepend";this._renderer[o](e),u["default"].check(e.map(function(t){return t.el}),function(){var t=r._layout[o](r._renderer.updateSize(e),r._items.getOutline(i?r._status.endCursor:r._status.startCursor,i?"end":"start"));r._insertItems(t,i),r._updateCursor(i),r.options.useRecycle&&r._recycle(i),a["default"].renderItems(t.items),r._onLayoutComplete(t.items,i,n)})}},InfiniteGrid.prototype._isVisible=function(t){var e=Math.min.apply(Math,this._items.getOutline(t,"start")),i=Math.max.apply(Math,this._items.getOutline(t,"end")),n=this._watcher.getScrollPos();return n+this._renderer.getViewSize()+this.options.threshold<e?-1:n-this.options.threshold>i?1:0},InfiniteGrid.prototype._updateCursor=function(t){t?this._status.endCursor++:this._status.startCursor>0?this._status.startCursor--:this._status.endCursor++,this._status.startCursor<0&&(this._status.startCursor=0)},InfiniteGrid.prototype._insertItems=function(t,e){t.groupKey=t.items[0].groupKey,this._items[e?"append":"prepend"](t)},InfiniteGrid.prototype._requestAppend=function(){var t=this._getNextItems(_.APPEND);t.length?this._postLayout(_.CACHE,t,_.APPEND,_.TRUSTED):this.trigger("append")},InfiniteGrid.prototype._requestPrepend=function(){var t=this._getNextItems(_.PREPEND);t.length?this._postLayout(_.CACHE,t,_.PREPEND,_.TRUSTED):this.trigger("prepend")},InfiniteGrid.prototype._onCheck=function(t){var e=t.direction,i=t.scrollPos,n=t.isVertical,r=t.orgScrollPos;if(this.trigger("change",{direction:e,scrollPos:i,orgScrollPos:r,isVertical:n}),!this.isProcessing()){var o=this._getEdgeOffset(e),s="end"===e;if(o){var a=s?o[n?"top":"left"]-this._renderer.getViewSize():o[n?"bottom":"right"];s?i>=a&&this._requestAppend():i<=a&&(this._fit("before"),this._requestPrepend())}}},InfiniteGrid.prototype._onLayoutComplete=function(t,e){var i=arguments.length>2&&arguments[2]!==undefined&&arguments[2];this._updateEdge(),this._renderer.setContainerSize(this._getEdgeValue("end")),!e&&this._fit("after"),this._status.isProcessing=!1,this.trigger("layoutComplete",{target:t.concat(),isAppend:e,isTrusted:i,scrollPos:this._watcher.getScrollPos(),orgScrollPos:this._watcher.getOrgScrollPos()})},InfiniteGrid.prototype._reset=function(){this._status={isProcessing:!1,startCursor:-1,endCursor:-1,start:null,end:null}},InfiniteGrid.prototype.destroy=function(){this.off(),this._watcher.destroy(),this._reset(),this._items.clear(),this._renderer.destroy()},InfiniteGrid}(o["default"]);y.VERSION="2.1.1-rc",y.GridLayout=c["default"],y.FrameLayout=l["default"],y.SquareLayout=f["default"],y.PackingLayout=p["default"],y.JustifiedLayout=d["default"],e["default"]=y,t.exports=e["default"]},function(t,e,i){!function(e,i){t.exports=i()}(0,function(){return function(t){function __webpack_require__(i){if(e[i])return e[i].exports;var n=e[i]={i:i,l:!1,exports:{}};return t[i].call(n.exports,n,n.exports,__webpack_require__),n.l=!0,n.exports}var e={};return __webpack_require__.m=t,__webpack_require__.c=e,__webpack_require__.d=function(t,e,i){__webpack_require__.o(t,e)||Object.defineProperty(t,e,{configurable:!1,enumerable:!0,get:i})},__webpack_require__.n=function(t){var e=t&&t.__esModule?function(){return t["default"]}:function(){return t};return __webpack_require__.d(e,"a",e),e},__webpack_require__.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},__webpack_require__.p="",__webpack_require__(__webpack_require__.s=0)}([function(t,e,i){"use strict";var n=function(t){return t&&t.__esModule?t:{"default":t}}(i(1));n["default"].VERSION="2.1.0",t.exports=n["default"]},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}e.__esModule=!0;var n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},r=function(){function Component(){_classCallCheck(this,Component),this._eventHandler={},this.options={}}return Component.prototype.trigger=function(t){var e=arguments.length>1&&arguments[1]!==undefined?arguments[1]:{},i=this._eventHandler[t]||[];if(!(i.length>0))return!0;i=i.concat(),e.eventType=t;var n=!1,r=[e],o=0;e.stop=function(){n=!0},e.currentTarget=this;for(var s=arguments.length,a=Array(s>2?s-2:0),u=2;u<s;u++)a[u-2]=arguments[u];for(a.length>=1&&(r=r.concat(a)),o=0;i[o];o++)i[o].apply(this,r);return!n},Component.prototype.once=function(t,e){if("object"===(void 0===t?"undefined":n(t))&&void 0===e){var i=t,r=void 0;for(r in i)this.once(r,i[r]);return this}if("string"==typeof t&&"function"==typeof e){var o=this;this.on(t,function listener(){for(var i=arguments.length,n=Array(i),r=0;r<i;r++)n[r]=arguments[r];e.apply(o,n),o.off(t,listener)})}return this},Component.prototype.hasOn=function(t){return!!this._eventHandler[t]},Component.prototype.on=function(t,e){if("object"===(void 0===t?"undefined":n(t))&&void 0===e){var i=t,r=void 0;for(r in i)this.on(r,i[r]);return this}if("string"==typeof t&&"function"==typeof e){var o=this._eventHandler[t];void 0===o&&(this._eventHandler[t]=[],o=this._eventHandler[t]),o.push(e)}return this},Component.prototype.off=function(t,e){if(void 0===t)return this._eventHandler={},this;if(void 0===e){if("string"==typeof t)return this._eventHandler[t]=undefined,this;var i=t,n=void 0;for(n in i)this.off(n,i[n]);return this}var r=this._eventHandler[t];if(r){var o=void 0,s=void 0;for(o=0;(s=r[o])!==undefined;o++)if(s===e){r=r.splice(o,1);break}}return this},Component}();e["default"]=r,t.exports=e["default"]}])})},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}e.__esModule=!0;var n=i(0),r=function(t){return t&&t.__esModule?t:{"default":t}}(i(3)),o=i(1),s=function(){function ItemManager(){_classCallCheck(this,ItemManager),this.clear()}return ItemManager.from=function(t,e,i){var r=i.groupKey,s=(i.isAppend,ItemManager.selectItems((0,o.$)(t,n.MULTI),e));return(0,o.toArray)(s).map(function(t){return{el:t,groupKey:r,content:t.outerHTML}})},ItemManager.selectItems=function(t,e){return t.filter(function(t){return"*"===e?/DIV|SPAN|LI|IMG/.test(t.tagName):t.className.split(" ").some(function(t){return t===e})})},ItemManager.pluck=function(t,e){return t.reduce(function(t,i){return t.concat(i[e])},[])},ItemManager.prototype.getStatus=function(){return{_data:this._data.map(function(t){return t.items=t.items.map(function(t){return delete t.el,t}),t})}},ItemManager.prototype.setStatus=function(t,e,i){for(var n=t._data,o=e;o<=i;o++)n[o].items=r["default"].createElements(n[o].items);this.set(n)},ItemManager.prototype.size=function(){return this._data.length},ItemManager.prototype.fit=function(t,e){if(this._data.length){var i=e?"top":"left";0!==t&&(this._data=this._data.map(function(e){return e.items=e.items.map(function(e){return e.rect[i]-=t,e}),e.outlines.start=e.outlines.start.map(function(e){return e-t}),e.outlines.end=e.outlines.end.map(function(e){return e-t}),e}))}},ItemManager.prototype.pluck=function(t,e,i){return void 0!==e?void 0!==i?ItemManager.pluck(this._data.slice(e,i+1),t):ItemManager.pluck(this._data.slice(e,e+1),t):ItemManager.pluck(this._data,t)},ItemManager.prototype.getOutline=function(t,e){return this._data.length?this._data[t].outlines[e]:[]},ItemManager.prototype.getEdgeIndex=function(t,e,i){for(var n="start"===t?"min":"max",r=-1,o="start"===t?Infinity:-Infinity,s=e;s<=i;s++){var a=Math[n].apply(Math,this.getOutline(s,t));("start"===t&&o>a||"end"===t&&o<a)&&(o=a,r=s)}return r},ItemManager.prototype.getEdge=function(t,e,i){var n=this.getEdgeIndex(t,e,i),r=this.pluck("items",n);if(r.length){var o=this.getOutline(n,t+"Index");return r.length>o?r[o]:null}return null},ItemManager.prototype.getEdgeValue=function(t,e,i){return Math["start"===t?"min":"max"].apply(Math,this.pluck("outlines",this.getEdgeIndex(t,e,i)).reduce(function(e,i){return e.concat(i[t])},[]))},ItemManager.prototype.append=function(t){return this._data.push(t),t.items},ItemManager.prototype.prepend=function(t){return this._data.unshift(t),t.items},ItemManager.prototype.clear=function(){this._data=[]},ItemManager.prototype.remove=function(t,e,i){var r=null,o=t.getAttribute(n.GROUPKEY_ATT),s=this.get(e,i).filter(function(t){return String(t.groupKey)===o});if(!s.length)return r;for(var a=(s=s[0]).items.length,u=-1,h=0;h<a;h++)if(s.items[h].el===t){u=h;break}return~u&&(s.items.splice(u,1),this.set(s,o),r=s.items),r},ItemManager.prototype.get=function(t,e){return void 0!==t?void 0!==e?this._data.slice(t,e+1):this._data.slice(t,t+1):this._data.concat()},ItemManager.prototype.set=function(t,e){if(void 0===e||Array.isArray(t))this._data=t.concat();else{for(var i=this._data.length,n=-1,r=0;r<i;r++)if(this._data[r].groupKey===e){n=r;break}~n&&(this._data[n]=t)}},ItemManager}();e["default"]=s,t.exports=e["default"]},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}e.__esModule=!0;var n=i(0),r=i(1),o=function(){function ImageLoaded(){_classCallCheck(this,ImageLoaded)}return ImageLoaded.waitImageLoaded=function(t,e){var i=t.length,o=function(){--i<=0&&e&&e()},s=function onCheck(t){(0,r.removeEvent)(t.target||t.srcElement,"load",onCheck),(0,r.removeEvent)(t.target||t.srcElement,"error",onCheck),o()};n.IS_IE&&t.forEach(function(t){return t.setAttribute("src",t.getAttribute("src"))}),t.forEach(function(t){t.complete?o():((0,r.addEvent)(t,"load",s),(0,r.addEvent)(t,"error",s))})},ImageLoaded.checkImageLoaded=function(t){return"IMG"===t.tagName?t.complete?[]:[t]:(0,r.toArray)(t.querySelectorAll("img")).filter(function(t){return!(!t.nodeType||-1===[1,9,11].indexOf(t.nodeType))&&!t.complete})},ImageLoaded.check=function(t,e){var i=this,n=t.reduce(function(t,e){return t.concat(i.checkImageLoaded(e))},[]);n.length>0?ImageLoaded.waitImageLoaded(n,e):setTimeout(function(){e&&e()},0)},ImageLoaded}();e["default"]=o,t.exports=e["default"]},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}e.__esModule=!0;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var i=arguments[e];for(var n in i)Object.prototype.hasOwnProperty.call(i,n)&&(t[n]=i[n])}return t},r=i(0),o=i(1),s=function(){function Watcher(t,e){_classCallCheck(this,Watcher),n(this._callback={layout:null,check:null},e),this._timer={resize:null},this._prevPos=-1,this._renderer=t,this._onCheck=this._onCheck.bind(this),this._onResize=this._onResize.bind(this),this.attachEvent(),this.setScrollPos()}return Watcher.prototype.getStatus=function(){return{_prevPos:this._prevPos,scrollPos:this.getOrgScrollPos()}},Watcher.prototype.setStatus=function(t,e){this._prevPos=t._prevPos,e&&this.scrollTo(t.scrollPos)},Watcher.prototype.scrollTo=function(t){var e=this._renderer.options.isVertical?[0,t]:[t,0];o.scrollTo.apply(undefined,[this._renderer.view].concat(e))},Watcher.prototype.getScrollPos=function(){return this._prevPos},Watcher.prototype.setScrollPos=function(t){var e=t;void 0===t&&(e=this.getOrgScrollPos()),this._prevPos=e-this._renderer.getContainerOffset()},Watcher.prototype.attachEvent=function(){(0,o.addEvent)(this._renderer.view,"scroll",this._onCheck),(0,o.addEvent)(window,"resize",this._onResize)},Watcher.prototype.getOrgScrollPos=function(){return(0,o.scroll)(this._renderer.view,this._renderer.options.isVertical)},Watcher.prototype._onCheck=function(){var t=this.getOrgScrollPos(),e=this.getScrollPos();this.setScrollPos(t);var i=this.getScrollPos();r.IS_IOS&&0===t||e===i||this._callback.check&&this._callback.check({direction:e<i?"end":"start",scrollPos:i,orgScrollPos:t,isVertical:this._renderer.options.isVertical})},Watcher.prototype._onResize=function(){var t=this;this._timer.resize&&clearTimeout(this._timer.resize),this._timer.resize=setTimeout(function(){t._renderer.isNeededResize()&&t._callback.layout&&t._callback.layout(),t._timer.resize=null,t._prevPos=-1},100)},Watcher.prototype.detachEvent=function(){(0,o.removeEvent)(window,"resize",this._onResize)},Watcher.prototype.destroy=function(){this.detachEvent(),this._prevPos=-1},Watcher}();e["default"]=s,t.exports=e["default"]},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function fill(t,e){return new Array(t).fill(e)}e.__esModule=!0;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var i=arguments[e];for(var n in i)Object.prototype.hasOwnProperty.call(i,n)&&(t[n]=i[n])}return t},r=i(0),o=i(1),s=r.ALIGN.START,a=r.ALIGN.CENTER,u=r.ALIGN.END,h=r.ALIGN.JUSTIFY,c=function(){function GridLayout(){var t=arguments.length>0&&arguments[0]!==undefined?arguments[0]:{};_classCallCheck(this,GridLayout),this.options=(0,o.assignOptions)({align:s,itemSize:0},t),this._size=0,this._isHorizontal=this.options.direction===r.HORIZONTAL,this._columnSize=0,this._columnLength=0,this._style=(0,o.getStyleNames)(this.options.direction)}return GridLayout.prototype.getPoints=function(t){var e=this._isHorizontal?"left":"top";return t.map(function(t){return t[e]})},GridLayout.prototype.checkColumn=function(t){var e=this.options.margin,i=this._isHorizontal?"height":"width",n=this.options.itemSize||t&&t.size[i]||0;this._columnSize=n,this._columnLength=n?Math.max(parseInt((this._size+e)/(n+e),10),1):1},GridLayout.prototype._layout=function(t,e,i){for(var n=t.length,r=this.options.margin,o=this.options.align,s=this._style,c=s.size1,l=s.size2,f=s.pos1,p=s.pos2,d=this._columnSize,_=this._columnLength,y=this._size,g=y-(d+r)*_+r,m=i?"min":"max",v=e.slice(),w=e.slice(),S=-1,I=-1,E=0;E<n;++E){var C,O=Math[m].apply(Math,w)||0,P=w.indexOf(O),M=t[i?E:n-1-E],b=M.size[c],z=M.size[l],L=i?O:O-r-b,T=L+b+r;-1===P&&(P=0);var R=(d+r)*P;o===a?R+=g/2:o===u?R+=g+d-z:o===h&&(R=(y-d)/(_-1)*P),M.rect=(C={},C[f]=L,C[p]=R,C),M.column=P,w[P]=i?T:L,-1===S?(S=E,I=T):I<T&&(S=E,I=T)}return i||(t.sort(function(t,e){var i=t.rect[f],n=t.rect[p],r=e.rect[f],o=e.rect[p];return i-r?i-r:n-o}),S=n-1),{start:i?v:w,end:i?w:v,startIndex:0,endIndex:S}},GridLayout.prototype._insert=function(){var t=arguments.length>0&&arguments[0]!==undefined?arguments[0]:[],e=arguments.length>1&&arguments[1]!==undefined?arguments[1]:[],i=arguments[2],o=t.map(function(t){return n({},t)}),s=e;return this._columnLength||this.checkColumn(t[0]),e.length!==this._columnLength&&(s=fill(this._columnLength,0===e.length?0:Math[i===r.APPEND?"min":"max"].apply(Math,e)||0)),{items:o,outlines:this._layout(o,s,i)}},GridLayout.prototype.append=function(t,e){return this._insert(t,e,r.APPEND)},GridLayout.prototype.prepend=function(t,e){return this._insert(t,e,r.PREPEND)},GridLayout.prototype.layout=function(){var t=arguments.length>0&&arguments[0]!==undefined?arguments[0]:[],e=this,i=arguments.length>1&&arguments[1]!==undefined?arguments[1]:[],n=(arguments[2],t.length&&t[0].items.length&&t[0].items[0]||0);this.checkColumn(n);var o=void 0;if(i.length!==this._columnLength){var s=0===i.length?0:Math.min.apply(Math,i);o=fill(this._columnLength,s)}else o=i.slice();t.forEach(function(t){var i=t.items,n=e._layout(i,o,r.APPEND);t.outlines=n,o=n.end})},GridLayout.prototype.setSize=function(t){this._size=t},GridLayout}();e["default"]=c,t.exports=e["default"]},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function _inherits(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}function makeShapeOutline(t,e,i,n){var r=Math[n?"min":"max"].apply(Math,t)||0;return t.length!==i?new Array(i).fill(0):t.map(function(t){return parseInt((t-r)/e,10)})}function getColumn(t){if(t.column)return t.column;if(t.el){var e=t.el.dataset;return t.column=e?e.column||1:t.el.getAttribute("column")||1,t.column}return t.column=1,1}e.__esModule=!0;var n=function(t){function SquareLayout(){return _classCallCheck(this,SquareLayout),_possibleConstructorReturn(this,t.apply(this,arguments))}return _inherits(SquareLayout,t),SquareLayout.prototype._checkItemSize=function(){var e=this.options.column;if(e){var i=this.options.margin;this._itemSize=(this._size+i)/e-i}else t.prototype._checkItemSize.call(this)},SquareLayout.prototype._layout=function(e){for(var i,n=arguments.length>1&&arguments[1]!==undefined?arguments[1]:[],r=arguments[2],o=this._getItemSize(),s=this.options.margin,a=this.options.column||parseInt((this._size+s)/(o+s),10),u=e.length,h=makeShapeOutline(n,o,a,r),c=r?"min":"max",l=[],f=r?1:-1,p=0;p<u;++p){var d=Math[c].apply(Math,h),_=h.indexOf(d),y=getColumn(e[r?p:u-1-p]),g=1;if(y>1)for(var m=1;m<y&&_+m<a&&(r&&h[_+m]<=d||!r&&h[_+m]>=d);++m)++g;l.push({width:g,height:g,top:d-(r?0:g),left:_});for(var v=0;v<g;++v)h[_+v]=d+f*g}var w=this._style,S=w.pos1,I=w.pos2;this._shapes=(i={shapes:l},i[w.size2]=a,i);var E=t.prototype._layout.call(this,e,n,r);return l.sort(function(t,e){var i=t[S],n=t[I],r=e[S],o=e[I];return i-r?i-r:n-o}),e.sort(function(t,e){var i=t.rect[S],n=t.rect[I],r=e.rect[S],o=e.rect[I];return i-r?i-r:n-o}),E},SquareLayout}(function(t){return t&&t.__esModule?t:{"default":t}}(i(4))["default"]);e["default"]=n,t.exports=e["default"]},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function getCost(t,e){var i=t/e;return i<1&&(i=1/i),i-1}function fitArea(t,e,i,n,r){t.height=i.height,t.width=i.width,e.height=n.height,e.width=n.width,r?(t.top=e.top+e.height,t.left=e.left):(t.left=e.left+e.width,t.top=e.top)}e.__esModule=!0;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var i=arguments[e];for(var n in i)Object.prototype.hasOwnProperty.call(i,n)&&(t[n]=i[n])}return t},r=function(t){return t&&t.__esModule?t:{"default":t}}(i(14)),o=i(0),s=i(1),a=function(){function PackingLayout(){var t=arguments.length>0&&arguments[0]!==undefined?arguments[0]:{};_classCallCheck(this,PackingLayout),this.options=(0,s.assignOptions)({aspectRatio:1,sizeWeight:1,ratioWeight:1},t),this._size=0,this._style=(0,s.getStyleNames)(this.options.direction),this._isHorizontal=this.options.direction===o.HORIZONTAL}return PackingLayout.prototype._findBestFitArea=function(t,e){if(0===t.getRatio())return t.originWidth=e.width,t.originHeight=e.height,t.width=e.width,void(t.height=e.height);var i=null,n=1e7,r=!1,o={width:0,height:0},s={width:0,height:0},a=this.options,u=a.sizeWeight,h=a.ratioWeight;t.innerItem.forEach(function(t){for(var a=getCost(t.getOriginSize(),t.getSize())*u,c=getCost(t.getOriginRatio(),t.getRatio())*h,l=void 0,f=0;f<2;++f){var p=void 0,d=void 0,_=void 0,y=void 0;0===f?(p=t.width,d=t.height*(e.height/(t.originHeight+e.height)),_=t.width,y=t.height-d):(d=t.height,p=t.width*(e.width/(t.originWidth+e.width)),y=t.height,_=t.width-p);var g=p*d,m=p/d,v=_*y,w=y/y;l=getCost(e.getSize(),g)*u,l+=getCost(e.getRatio(),m)*h,l+=getCost(t.getOriginSize(),v)*u-a,(l+=getCost(t.getOriginRatio(),w)*h-c)===Math.min(l,n)&&(n=l,i=t,r=0===f,o.width=p,o.height=d,s.width=_,s.height=y)}}),fitArea(e,i,o,s,r)},PackingLayout.prototype._layout=function(t){var e=this,i=arguments.length>1&&arguments[1]!==undefined?arguments[1]:[],n=arguments[2],o=this._style,a=this._isHorizontal,u=this.options.aspectRatio,h=this.options.margin,c=o.pos1,l=o.size1,f=this._size*(a?u:1),p=this._size/(a?1:u),d=a?f:p,_=(0,s.toZeroArray)(i),y=n?Math.max.apply(Math,_):Math.min.apply(Math,_)-d-h,g=y+d+h,m=new r["default"]({}),v=-1,w=-1,S=-1,I=-1;return t.forEach(function(t){var i=new r["default"]({originWidth:t.size.width,originHeight:t.size.height,width:t.size.width,height:t.size.height});e._findBestFitArea(m,i),m.pushItem(i),m.scaleTo(f+h,p+h)}),t.forEach(function(t,e){var i=m.innerItem[e],n=i.left,r=i.top,o=i.width,s=i.height;t.rect={top:r,left:n,width:o-h,height:s-h},t.rect[c]+=y,-1===v&&(v=e,w=e,S=t.rect[c],I=S),S>t.rect[c]&&(S=t.rect[c],v=e),I<t.rect[c]+t.rect[l]+h&&(I=t.rect[c]+t.rect[l]+h,w=e)}),{start:[y],end:[g],startIndex:v,endIndex:w}},PackingLayout.prototype._insert=function(t,e,i){var r=t.map(function(t){return n({},t)});return{items:r,outlines:this._layout(r,e,i)}},PackingLayout.prototype.append=function(t,e){return this._insert(t,e,o.APPEND)},PackingLayout.prototype.prepend=function(t,e){return this._insert(t,e,o.PREPEND)},PackingLayout.prototype.layout=function(t){for(var e=arguments.length>1&&arguments[1]!==undefined?arguments[1]:[],i=t.length,n=e,r=0;r<i;++r){var s=t[r];n=this._layout(s.items,n,o.APPEND),s.outlines=n,n=n.end}},PackingLayout.prototype.setSize=function(t){this._size=t},PackingLayout}();e["default"]=a,t.exports=e["default"]},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}var n=function(){function defineProperties(t,e){for(var i=0;i<e.length;i++){var n=e[i];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(t,e,i){return e&&defineProperties(t.prototype,e),i&&defineProperties(t,i),t}}(),r=function(){function BoxModel(t){_classCallCheck(this,BoxModel),this._originWidth=t.originWidth||0,this._originHeight=t.originHeight||0,this._width=t.width||0,this._height=t.height||0,this._left=t.left||0,this._top=t.top||0,this._item=t.item,this._innerItem=t.innerItem||[]}return BoxModel.prototype.scaleTo=function(t,e){var i=0===this._width?0:t/this._width,n=0===this._height?0:e/this._height;this._innerItem.forEach(function(t){0!==i&&(t.left*=i,t.width*=i),0!==n&&(t.top*=n,t.height*=n)}),this.width=t,this.height=e},BoxModel.prototype.pushItem=function(t){this._innerItem.push(t)},BoxModel.prototype.getOriginSize=function(){return this.originWidth*this.originHeight},BoxModel.prototype.getSize=function(){return this.width*this.height},BoxModel.prototype.getOriginRatio=function(){return 0===this.originHeight?0:this.originWidth/this.originHeight},BoxModel.prototype.getRatio=function(){return 0===this.height?0:this.width/this.height},BoxModel.prototype.isSmallerThen=function(t){return this.width<=t.width&&this.height<=t.height},BoxModel.prototype.isEqual=function(t){return this.left===t.left&&this.top===t.top&&this.width===t.width&&this.height===t.height},n(BoxModel,[{key:"item",get:function(){return this._item}},{key:"originWidth",get:function(){return this._originWidth},set:function(t){this._originWidth=t}},{key:"originHeight",get:function(){return this._originHeight},set:function(t){this._originHeight=t}},{key:"width",get:function(){return this._width},set:function(t){this._width=t}},{key:"height",get:function(){return this._height},set:function(t){this._height=t}},{key:"left",get:function(){return this._left},set:function(t){this._left=t}},{key:"top",get:function(){return this._top},set:function(t){this._top=t}},{key:"innerItem",get:function(){return this._innerItem}}]),BoxModel}();t.exports=r},function(t,e,i){"use strict";function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}e.__esModule=!0;var n=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var i=arguments[e];for(var n in i)Object.prototype.hasOwnProperty.call(i,n)&&(t[n]=i[n])}return t},r=function(t){return t&&t.__esModule?t:{"default":t}}(i(16)),o=i(0),s=i(1),a=function(){function JustifiedLayout(){var t=arguments.length>0&&arguments[0]!==undefined?arguments[0]:{};_classCallCheck(this,JustifiedLayout),this.options=(0,s.assignOptions)({minSize:0,maxSize:0},t),this._style=(0,s.getStyleNames)(this.options.direction),this._size=0}return JustifiedLayout.prototype._layout=function(t,e,i){var n=this,o=this._style,s=o.size1,a=o.size2,u=t.length,h=r["default"].find_path(function(e){for(var i={},r=+e.replace(/[^0-9]/g,""),o=u+1,h=r+1;h<o&&!(h-r>8);++h){var c=n._getCost(t,r,h,s,a);c<0&&h===o-1&&(c=0),null!==c&&(i["node"+h]=Math.pow(c,2))}return i},"node0","node"+u);return this._setStyle(t,h,e,i)},JustifiedLayout.prototype._getSize=function(t,e,i){var n=this.options.margin,r=t.reduce(function(t,n){return t+n.size[i]/n.size[e]},0);return(this._size-n*(t.length-1))/r},JustifiedLayout.prototype._getCost=function(t,e,i,n,r){var o=this._getSize(t.slice(e,i),n,r),s=this.options.minSize||0,a=this.options.maxSize||Infinity;return isFinite(a)?o<s?Math.pow(o-s,2)+Math.pow(a,2):o>a?Math.pow(o-a,2)+Math.pow(a,2):Math.min(o-a,s-o):o<s?Math.max(Math.pow(s,2),Math.pow(o,2)):o-s},JustifiedLayout.prototype._setStyle=function(t,e){for(var i=arguments.length>2&&arguments[2]!==undefined?arguments[2]:[],n=arguments[3],r=this._style,o=r.pos1,s=r.size1,a=r.pos2,u=r.size2,h=e.length,c=this.options.margin,l=i[0]||0,f=l,p=0,d=0;d<h-1;++d){for(var _=parseInt(e[d].replace("node",""),10),y=parseInt(e[d+1].replace("node",""),10),g=t.slice(_,y),m=g.length,v=this._getSize(g,s,u),w=f,S=0;S<m;++S){var I,E=g[S],C=E.size[u]/E.size[s]*v,O=0===S?0:g[S-1].rect,P=O?O[a]+O[u]+c:0;E.rect=(I={},I[o]=w,I[a]=P,I[s]=v,I[u]=C,I)}f=l+(p+=c+v)}var M=t.length,b=M?0:-1,z=M?M-1:-1;if(n)return{start:[l],end:[f],startIndex:b,endIndex:z};for(var L=0;L<M;++L)t[L].rect[o]-=p;return{start:[l-p],end:[l],startIndex:b,endIndex:z}},JustifiedLayout.prototype._insert=function(t,e,i){var r=t.map(function(t){return n({},t)});return{items:r,outlines:this._layout(r,e,i)}},JustifiedLayout.prototype.setSize=function(t){this._size=t},JustifiedLayout.prototype.append=function(t,e){return this._insert(t,e,o.APPEND)},JustifiedLayout.prototype.prepend=function(t,e){return this._insert(t,e,o.PREPEND)},JustifiedLayout.prototype.layout=function(t,e){for(var i=t.length,n=e,r=0;r<i;++r){var s=t[r];n=this._layout(s.items,n,o.APPEND),s.outlines=n,n=n.end}},JustifiedLayout}();e["default"]=a,t.exports=e["default"]},function(t,e,i){"use strict";!function(){function BinaryHeap(t){this.content=[],this.scoreFunction=t}var e={single_source_shortest_paths:function(t,e,i){var n={},r={};r[e]=0;var o=new BinaryHeap(function(t){return t.cost});o.push({value:e,cost:0});for(var s,a,u,h,c,l;o.size();){a=(s=o.pop()).value,u=s.cost,h=t(a)||{};for(var f in h)c=u+h[f],l=r[f],("undefined"==typeof r[f]||l>c)&&(r[f]=c,o.push({value:f,cost:c}),n[f]=a)}if("undefined"==typeof r[i]){var p=["Could not find a path from ",e," to ",i,"."].join("");throw new Error(p)}return n},extract_shortest_path_from_predecessor_list:function(t,e){for(var i=[],n=e;n;)i.push(n),t[n],n=t[n];return i.reverse(),i},find_path:function(t,i,n){var r=e.single_source_shortest_paths(t,i,n);return e.extract_shortest_path_from_predecessor_list(r,n)}};BinaryHeap.prototype={push:function(t){this.content.push(t),this.bubbleUp(this.content.length-1)},pop:function(){var t=this.content[0],e=this.content.pop();return this.content.length>0&&(this.content[0]=e,this.sinkDown(0)),t},remove:function(t){for(var e=this.content.length,i=0;i<e;i++)if(this.content[i]===t){var n=this.content.pop();return void(i!==e-1&&(this.content[i]=n,this.scoreFunction(n)<this.scoreFunction(t)?this.bubbleUp(i):this.sinkDown(i)))}throw new Error("Node not found.")},size:function(){return this.content.length},bubbleUp:function(t){for(var e=this.content[t];t>0;){var i=Math.floor((t+1)/2)-1,n=this.content[i];if(!(this.scoreFunction(e)<this.scoreFunction(n)))break;this.content[i]=e,this.content[t]=n,t=i}},sinkDown:function(t){for(var e=this.content.length,i=this.content[t],n=this.scoreFunction(i);;){var r=2*(t+1),o=r-1,s=null;if(o<e){var a=this.content[o],u=this.scoreFunction(a);u<n&&(s=o)}if(r<e){var h=this.content[r];this.scoreFunction(h)<(null==s?n:u)&&(s=r)}if(null===s)break;this.content[t]=this.content[s],this.content[s]=i,t=s}}},void 0!==t&&t.exports?t.exports=e:window.dijkstra=e}()}])});
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("InfiniteGrid", [], factory);
+	else if(typeof exports === 'object')
+		exports["InfiniteGrid"] = factory();
+	else
+		root["eg"] = root["eg"] || {}, root["eg"]["InfiniteGrid"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.utils = exports.Mixin = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _browser = __webpack_require__(2);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in _browser.window);
+var SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in _browser.document);
+var SUPPORT_PASSIVE = function () {
+	var supportsPassiveOption = false;
+
+	try {
+		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
+			_browser.document.addEventListener("test", null, Object.defineProperty({}, "passive", {
+				get: function get() {
+					supportsPassiveOption = true;
+				}
+			}));
+		}
+	} catch (e) {}
+	return supportsPassiveOption;
+}();
+
+var utils = {
+	/**
+  * Select or create element
+  * @param {String|HTMLElement|jQuery} param
+  *  when string given is as HTML tag, then create element
+  *  otherwise it returns selected elements
+  * @param {Boolean} multi
+  * @returns {HTMLElement}
+  */
+	$: function $(param) {
+		var multi = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+		var el = void 0;
+
+		if (typeof param === "string") {
+			// String (HTML, Selector)
+			// check if string is HTML tag format
+			var match = param.match(/^<([a-z]+)\s*([^>]*)>/);
+
+			// creating element
+			if (match) {
+				// HTML
+				var dummy = _browser.document.createElement("div");
+
+				dummy.innerHTML = param;
+				el = this.toArray(dummy.childNodes);
+			} else {
+				// Selector
+				el = this.toArray(_browser.document.querySelectorAll(param));
+			}
+			if (!multi) {
+				el = el.length >= 1 ? el[0] : undefined;
+			}
+		} else if (param === _browser.window) {
+			// window
+			el = param;
+		} else if (param.nodeName && (param.nodeType === 1 || param.nodeType === 9)) {
+			// HTMLElement, Document
+			el = param;
+		} else if ("jQuery" in _browser.window && param instanceof jQuery || param.constructor.prototype.jquery) {
+			// jQuery
+			el = multi ? param.toArray() : param.get(0);
+		} else if (Array.isArray(param)) {
+			el = param.map(function (v) {
+				return utils.$(v);
+			});
+			if (!multi) {
+				el = el.length >= 1 ? el[0] : undefined;
+			}
+		}
+		return el;
+	},
+	addEvent: function addEvent(element, type, handler, eventListenerOptions) {
+		if (SUPPORT_ADDEVENTLISTENER) {
+			var options = eventListenerOptions || false;
+
+			if ((typeof eventListenerOptions === "undefined" ? "undefined" : _typeof(eventListenerOptions)) === "object") {
+				options = SUPPORT_PASSIVE ? eventListenerOptions : false;
+			}
+			element.addEventListener(type, handler, options);
+		} else if (element.attachEvent) {
+			element.attachEvent("on" + type, handler);
+		} else {
+			element["on" + type] = handler;
+		}
+	},
+	removeEvent: function removeEvent(element, type, handler) {
+		if (element.removeEventListener) {
+			element.removeEventListener(type, handler, false);
+		} else if (element.detachEvent) {
+			element.detachEvent("on" + type, handler);
+		} else {
+			element["on" + type] = null;
+		}
+	},
+	scrollTop: function scrollTop(el) {
+		if (el === _browser.window) {
+			return _browser.document.body.scrollTop || _browser.document.documentElement.scrollTop;
+		} else {
+			return el.scrollTop;
+		}
+	},
+	scrollTo: function scrollTo(el, x, y) {
+		if (el === _browser.window) {
+			el.scrollTo(x, y);
+		} else {
+			el.scrollLeft = x;
+			el.scrollTop = y;
+		}
+	},
+	getSize: function getSize(el, name) {
+		if (el === _browser.window) {
+			// WINDOW
+			return el.document.documentElement["client" + name];
+		} else if (el.nodeType === 9) {
+			// DOCUMENT_NODE
+			var doc = el.documentElement;
+
+			return Math.max(el.body["scroll" + name], doc["scroll" + name], el.body["offset" + name], doc["offset" + name], doc["client" + name]);
+		} else {
+			// NODE
+			var style = SUPPORT_COMPUTEDSTYLE ? _browser.window.getComputedStyle(el) : el.currentStyle;
+			var value = style[name.toLowerCase()];
+
+			return parseFloat(/auto|%/.test(value) ? el["offset" + name] : style[name.toLowerCase()]);
+		}
+	},
+	innerWidth: function innerWidth(el) {
+		return this.getSize(el, "Width");
+	},
+	innerHeight: function innerHeight(el) {
+		return this.getSize(el, "Height");
+	},
+	isEmptyObject: function isEmptyObject(obj) {
+		var name = void 0;
+
+		for (name in obj) {
+			return false;
+		}
+		return true;
+	},
+	toArray: function toArray(nodes) {
+		// SCRIPT5014 in IE8
+		var array = [];
+
+		if (nodes) {
+			for (var i = 0, len = nodes.length; i < len; i++) {
+				array.push(nodes[i]);
+			}
+		}
+		return array;
+	}
+};
+
+var MixinBuilder = function () {
+	function MixinBuilder(superclass) {
+		_classCallCheck(this, MixinBuilder);
+
+		this.superclass = superclass || function () {
+			function _class() {
+				_classCallCheck(this, _class);
+			}
+
+			return _class;
+		}();
+	}
+
+	MixinBuilder.prototype["with"] = function _with() {
+		for (var _len = arguments.length, mixins = Array(_len), _key = 0; _key < _len; _key++) {
+			mixins[_key] = arguments[_key];
+		}
+
+		return mixins.reduce(function (c, m) {
+			return m(c);
+		}, this.superclass);
+	};
+
+	return MixinBuilder;
+}();
+
+var Mixin = function Mixin(superclass) {
+	return new MixinBuilder(superclass);
+};
+
+exports.Mixin = Mixin;
+exports.utils = utils;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = undefined;
+
+var _browser = __webpack_require__(2);
+
+var ua = _browser.window.navigator.userAgent;
+
+var IS_IE = exports.IS_IE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
+var IS_IOS = exports.IS_IOS = /iPhone|iPad/.test(ua);
+var IS_ANDROID2 = exports.IS_ANDROID2 = /Android 2\./.test(ua);
+var RETRY = exports.RETRY = 3;
+var CONTAINER_CLASSNAME = exports.CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+/* eslint-disable no-new-func, no-nested-ternary */
+var win = typeof window !== "undefined" && window.Math === Math ? window : typeof self !== "undefined" && self.Math === Math ? self : Function("return this")();
+/* eslint-enable no-new-func, no-nested-ternary */
+
+exports.window = win;
+var document = exports.document = win.document;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _InfiniteGrid = __webpack_require__(4);
+
+var _InfiniteGrid2 = _interopRequireDefault(_InfiniteGrid);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+module.exports = _InfiniteGrid2["default"]; /**
+                                             * Copyright (c) NAVER Corp.
+                                             * egjs-infinitegrid projects are licensed under the MIT license
+                                             */
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; /**
+                                                                                                                                                                                                                                                                               * Copyright (c) 2017 NAVER Corp.
+                                                                                                                                                                                                                                                                               * egjs projects are licensed under the MIT license
+                                                                                                                                                                                                                                                                              */
+
+
+var _component = __webpack_require__(5);
+
+var _component2 = _interopRequireDefault(_component);
+
+var _eventHandler = __webpack_require__(6);
+
+var _eventHandler2 = _interopRequireDefault(_eventHandler);
+
+var _browser = __webpack_require__(2);
+
+var _consts = __webpack_require__(1);
+
+var _utils = __webpack_require__(0);
+
+var _ImageLoaded = __webpack_require__(7);
+
+var _ImageLoaded2 = _interopRequireDefault(_ImageLoaded);
+
+var _LayoutManager = __webpack_require__(8);
+
+var _LayoutManager2 = _interopRequireDefault(_LayoutManager);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// IE8
+// https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
+/* eslint-disable */
+if (typeof Object.create !== "function") {
+	Object.create = function (o, properties) {
+		if ((typeof o === "undefined" ? "undefined" : _typeof(o)) !== "object" && typeof o !== "function") {
+			throw new TypeError("Object prototype may only be an Object: " + o);
+		} else if (o === null) {
+			throw new Error("This browser's implementation of Object.create is a shim and doesn't support 'null' as the first argument.");
+		}
+		function F() {}
+		F.prototype = o;
+		return new F();
+	};
+}
+/* eslint-enable */
+
+/**
+ * A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
+ * @ko 콘텐츠가 있는 카드 엘리먼트를 그리드 레이아웃에 무한으로 배치하는 모듈. 다양한 크기의 카드 엘리먼트를 격자 모양으로 배치하는 UI를 만들 수 있다. 카드 엘리먼트의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
+ * @alias eg.InfiniteGrid
+ * @extends eg.Component
+ *
+ * @example
+```
+<ul id="grid">
+	<li class="card">
+		<div>test1</div>
+	</li>
+	<li class="card">
+		<div>test2</div>
+	</li>
+	<li class="card">
+		<div>test3</div>
+	</li>
+	<li class="card">
+		<div>test4</div>
+	</li>
+	<li class="card">
+		<div>test5</div>
+	</li>
+	<li class="card">
+		<div>test6</div>
+	</li>
+</ul>
+<script>
+var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
+	// ...
+});
+</script>
+```
+ *
+ * @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+ **/
+var InfiniteGrid = function (_Mixin$with) {
+	_inherits(InfiniteGrid, _Mixin$with);
+
+	/**
+  * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
+  * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
+  * @param {String} [options.itemSelector] A selector to select card elements that make up the layout<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)</ko>
+  * @param {Number} [options.count=30] The number of DOMs handled by module. If the count value is greater than zero, the number of DOMs is maintained. If the count value is zero or less than zero, the number of DOMs will increase as card elements are added. <ko>모듈이 유지할 실제 DOM의 개수. count 값이 0보다 크면 DOM 개수를 일정하게 유지한다. count 값이 0 이하면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
+  * @param {String} [options.defaultGroupKey=null] The default group key configured in a card element contained in the markup upon initialization of a module object <ko>모듈 객체를 초기화할 때 마크업에 있는 카드 엘리먼트에 설정할 그룹 키 </ko>
+  * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
+  * @param {Boolean} [options.isOverflowScroll=false] Indicates whether overflow:scroll is applied<ko>overflow:scroll 적용여부를 결정한다.</ko>
+  * @param {Number} [options.threshold=300] The threshold size of an event area where card elements are added to a layout.<br>- append event: If the current vertical position of the scroll bar is greater than "the bottom property value of the card element at the top of the layout" plus "the value of the threshold option", the append event will occur.<br>- prepend event: If the current vertical position of the scroll bar is less than "the bottom property value of the card element at the top of the layout" minus "the value of the threshold option", the prepend event will occur. <ko>−	레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.<br>- append 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 아래에 있는 카드 엘리먼트의 top 속성의 값 + threshold 옵션의 값'보다 크면 append 이벤트가 발생한다.<br>- prepend 이벤트: 현재 스크롤의 y 좌표 값이 '레이아웃의 맨 위에 있는 카드 엘리먼트의 bottom 속성의 값 - threshold 옵션의 값'보다 작으면 prepend 이벤트가 발생한다</ko>
+  *
+  */
+	function InfiniteGrid(el, options) {
+		_classCallCheck(this, InfiniteGrid);
+
+		var _this = _possibleConstructorReturn(this, _Mixin$with.call(this, el, options));
+
+		_extends(_this.options = {
+			isEqualSize: false,
+			defaultGroupKey: null,
+			count: 100,
+			isOverflowScroll: false,
+			itemSelector: "*",
+			threshold: 300
+		}, options);
+		_consts.IS_ANDROID2 && (_this.options.isOverflowScroll = false);
+
+		_this._initElements(el);
+		_this.layoutManager = new _LayoutManager2["default"](_this.el, _this.options);
+		_this._reset();
+		_this._resizeViewport();
+
+		// for IE8
+		var elements = [];
+
+		for (var i = 0, children = _this.el.children, len = children.length; i < len; i++) {
+			elements.push(children[i]);
+		}
+		elements = _this._selectItems(elements);
+		if (elements.length > 0) {
+			_this.layout(true, _LayoutManager2["default"].itemize(elements, _this.options.defaultGroupKey));
+		}
+		_this._attachEvent();
+		return _this;
+	}
+
+	InfiniteGrid.prototype._initElements = function _initElements(el) {
+		var base = _utils.utils.$(el);
+
+		if (this.options.isOverflowScroll) {
+			var container = base.querySelector("." + _consts.CONTAINER_CLASSNAME);
+
+			if (!container) {
+				container = _browser.document.createElement("div");
+				container.className = _consts.CONTAINER_CLASSNAME;
+
+				var children = base.children;
+				var length = children.length; // for IE8
+
+				for (var i = 0; i < length; i++) {
+					container.appendChild(children[0]);
+				}
+				base.style.overflowY = "scroll";
+				base.appendChild(container);
+			}
+			this.view = base;
+			this.el = container;
+		} else {
+			this.view = _browser.window;
+			this.el = base;
+		}
+	};
+
+	InfiniteGrid.prototype._resizeViewport = function _resizeViewport() {
+		this._status.clientHeight = _utils.utils.innerHeight(this.view);
+	};
+
+	/**
+  * Returns the current state of a module such as location information. You can use the setStatus() method to restore the information returned through a call to this method.
+  * @ko 카드의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
+  * @return {Object} State object of the eg.InfiniteGrid module<ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
+  */
+
+
+	InfiniteGrid.prototype.getStatus = function getStatus() {
+		var data = {};
+		var target = this.view === _browser.window ? this.el : this.view;
+
+		for (var p in this._status) {
+			if (this._status.hasOwnProperty.call(p) && !(this._status[p] instanceof Element)) {
+				data[p] = this._status[p];
+			}
+		}
+		return {
+			html: target.innerHTML,
+			cssText: target.style.cssText,
+			layoutManager: this.layoutManager.getStatus(),
+			options: _extends({}, this.options),
+			prop: data,
+			scrollPos: _utils.utils.scrollTop(this.view)
+		};
+	};
+
+	/**
+  * Sets the state of the eg.InfiniteGrid module with the information returned through a call to the getStatue() method.
+  * @ko getStatue() 메서드가 저장한 정보로 eg.InfiniteGrid 모듈의 상태를 설정한다.
+  * @param {Object} status State object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
+  * @param {boolean} applyScrollPos Checks whether to scroll<ko>스크롤의 위치를 복원할지 결정한다.</ko>
+  * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+  */
+
+
+	InfiniteGrid.prototype.setStatus = function setStatus(status, applyScrollPos) {
+		if (!status || !status.options || !status.prop || !status.layoutManager || !status.html || !status.cssText || !("scrollPos" in status)) {
+			return this;
+		}
+		var target = status.options.isOverflowScroll ? this.view : this.el;
+
+		this._detachEvent();
+		this._initElements(this.view === _browser.window ? this.el : this.view);
+		target.style.cssText = status.cssText;
+		target.innerHTML = status.html;
+		_extends(this.options, status.options);
+		_extends(this._status, status.prop);
+		this.layoutManager.setStatus(status.layoutManager);
+		this._status.topElement = this.getTopElement();
+		this._status.bottomElement = this.getBottomElement();
+		this._attachEvent();
+		applyScrollPos && _utils.utils.scrollTo(this.view, 0, status.scrollPos);
+		return this;
+	};
+
+	/**
+  * Checks whether a card element is being added.
+  * @ko 카드 엘리먼트 추가가 진행 중인지 확인한다
+  * @return {Boolean} Indicates whether a card element is being added <ko>카드 엘리먼트 추가 진행 중 여부</ko>
+  */
+
+
+	InfiniteGrid.prototype.isProcessing = function isProcessing() {
+		return this._status.isProcessing;
+	};
+
+	/**
+  * Checks whether the total number of added card elements is greater than the value of the count option. Note that the value of the count option is always greater than zero. If it returns true, the number of DOMs won't increase even though card elements are added; instead of adding a new DOM, existing DOMs are recycled to maintain the number of DOMs.
+  * @ko 추가된 카드 엘리먼트의 전체 개수가 count 옵션의 값보다 큰지 확인한다. 단, count 옵션의 값은 0보다 크다. 'true'가 반환되면 카드 엘리먼트가 더 추가돼도 DOM의 개수를 증가하지 않고 기존 DOM을 재활용(recycle)해 DOM의 개수를 일정하게 유지한다
+  * @return {Boolean} Indicates whether the total number of added card elements is greater than the value of the count option. <ko>추가된 카드 엘리먼트의 전체 개수가 count 옵션의 값보다 큰지 여부</ko>
+  */
+
+
+	InfiniteGrid.prototype.isRecycling = function isRecycling() {
+		return this.options.count > 0 && this._status.isRecycling;
+	};
+
+	/**
+  * Returns the list of group keys which belongs to card elements currently being maintained. You can use the append() or prepend() method to configure group keys so that multiple card elements can be managed at once. If you do not use these methods to configure group keys, it returns undefined as a group key.
+  * @ko 현재 유지하고 있는 카드 엘리먼트의 그룹 키 목록을 반환한다. 여러 개의 카드 엘리먼트를 묶어서 관리할 수 있도록 append() 메서드나 prepend() 메서드에서 그룹 키를 지정할 수 있다. append() 메서드나 prepend() 메서드에서 그룹 키를 지정하지 않았다면 'undefined'가 그룹 키로 반환된다
+  * @return {Array} List of group keys <ko>그룹 키의 목록</ko>
+  */
+
+
+	InfiniteGrid.prototype.getGroupKeys = function getGroupKeys() {
+		return this.layoutManager.getGroupKeys();
+	};
+
+	/**
+  * Rearranges a layout.
+  * @ko 레이아웃을 다시 배치한다.
+  * @param {Boolean} [isRelayout=true] Indicates whether a card element is being relayouted <ko>카드 엘리먼트 재배치 여부</ko>
+  * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+  *
+  */
+
+
+	InfiniteGrid.prototype.layout = function layout() {
+		var isRelayout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+		var _addItems = arguments[1];
+		var _options = arguments[2];
+
+		/**
+   * [private parameter]
+   * _addItems: added items
+   * _options: {
+   *	 isAppend: Checks whether the append() method is used to add a card element.
+   *	 removedCount: The number of deleted card elements to maintain the number of DOMs.
+   *   isTrusted: Returns true if an event was generated by the user action, or false if it was caused by a script or API call
+   * }
+   */
+		this._status.isProcessing = true;
+		var options = _extends({
+			isAppend: true,
+			removedCount: 0,
+			isTrusted: false
+		}, _options);
+
+		// for exception
+		if (!_addItems && !options.isAppend) {
+			options.isAppend = true;
+		}
+		this._waitResource(isRelayout, options.isAppend ? _addItems : _addItems.reverse(), options);
+		return this;
+	};
+
+	InfiniteGrid.prototype._onLayoutComplete = function _onLayoutComplete(isRelayout, addItems, options) {
+		this.layoutManager.layoutItems(isRelayout, addItems, options);
+		this._postLayout(isRelayout, addItems, options);
+	};
+
+	/**
+  * Adds a card element at the bottom of a grid layout. This method is available only if the isProcessing() method returns false.
+  * @ko 카드 엘리먼트를 그리드 레이아웃의 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
+  * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
+  * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
+  * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
+  * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
+  */
+
+
+	InfiniteGrid.prototype.append = function append(paramElements, groupKey) {
+		return this._insert(paramElements, groupKey, true);
+	};
+
+	/**
+  * Adds a card element at the top of a grid layout. This method is available only if the isProcessing() method returns false and the isRecycling() method returns true.
+  * @ko 카드 엘리먼트를 그리드 레이아웃의 위에 추가한다. isProcessing() 메서드의 반환값이 'false'이고, isRecycling() 메서드의 반환값이 'true'일 때만 이 메서드를 사용할 수 있다
+  * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
+  * @param {Number|String} [groupKey] The group key to be configured in a card element. It is set to "undefined" by default.<ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 'undefined'로 설정된다</ko>
+  * @return {Number} The number of added card elements <ko>추가된 카드 엘리먼트의 개수</ko>
+  */
+
+
+	InfiniteGrid.prototype.prepend = function prepend(paramElements, groupKey) {
+		return this._insert(paramElements, groupKey, false);
+	};
+
+	/**
+  * Clears added card elements and data.
+  * @ko 추가된 카드 엘리먼트와 데이터를 모두 지운다.
+  * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+  */
+
+
+	InfiniteGrid.prototype.clear = function clear() {
+		this.el.innerHTML = "";
+		this.el.style.height = "";
+		this._reset();
+		return this;
+	};
+
+	/**
+  * Returns a card element at the top of a layout.
+  * @ko 레이아웃의 맨 위에 있는 카드 엘리먼트를 반환한다.
+  *
+  * @return {HTMLElement} Card element at the top of a layout. (if the position of card elements are same, it returns the first left element) <ko>레이아웃의 맨 위에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 왼쪽 엘리먼트가 반환된다)</ko>
+  */
+
+
+	InfiniteGrid.prototype.getTopElement = function getTopElement() {
+		var item = this.layoutManager.getTopItem();
+
+		return item && item.el;
+	};
+
+	/**
+  * Returns a card element at the bottom of a layout.
+  * @ko 레이아웃의 맨 아래에 있는 카드 엘리먼트를 반환한다.
+  *
+  * @return {HTMLElement} Card element at the bottom of a layout (if the position of card elements are same, it returns the first right element)<ko>레이아웃의 맨 아래에 있는 카드 엘리먼트 (카드의 위치가 같은 경우, 오른쪽 엘리먼트가 반환된다)</ko>
+  */
+
+
+	InfiniteGrid.prototype.getBottomElement = function getBottomElement() {
+		var item = this.layoutManager.getBottomItem();
+
+		return item && item.el;
+	};
+
+	InfiniteGrid.prototype._resizeContainerHeight = function _resizeContainerHeight() {
+		this.el.style.height = this.layoutManager.getLogicalHeight() + "px";
+	};
+
+	InfiniteGrid.prototype._postLayout = function _postLayout(isRelayout) {
+		var addItems = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+		var options = arguments[2];
+
+		if (!this.isProcessing()) {
+			return;
+		}
+		this._resizeContainerHeight();
+		this._timer.doubleCheckCount = _consts.RETRY;
+
+		// refresh element
+		this._status.topElement = this.getTopElement();
+		this._status.bottomElement = this.getBottomElement();
+
+		var distance = 0;
+
+		if (!options.isAppend) {
+			distance = addItems.length >= this.layoutManager.items.length ? 0 : this.layoutManager.items[addItems.length].position.y;
+			if (distance > 0) {
+				this._status.prevScrollTop = _utils.utils.scrollTop(this.view) + distance;
+				_utils.utils.scrollTo(this.view, 0, this._status.prevScrollTop);
+			}
+		}
+
+		// reset flags
+		this._status.isProcessing = false;
+
+		/**
+   * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
+   * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
+   * @event eg.InfiniteGrid#layoutComplete
+   *
+   * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+   * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
+   * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
+   * @param {Number} param.distance Distance the card element at the top of a grid layout has moved after the layoutComplete event is fired. In other words, it is the same as an increased height with a new card element added using the prepend() method <ko>그리드 레이아웃의 맨 위에 있던 카드 엘리먼트가 layoutComplete 이벤트 발생 후 이동한 거리. 즉, prepend() 메서드로 카드 엘리먼트가 추가돼 늘어난 높이다.</ko>
+   * @param {Number} param.croppedCount The number of deleted card elements to maintain the number of DOMs<ko>일정한 DOM 개수를 유지하기 위해, 삭제한 카드 엘리먼트들의 개수</ko>
+   * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+   */
+		this.trigger("layoutComplete", {
+			target: addItems.concat(),
+			isAppend: options.isAppend,
+			distance: distance,
+			croppedCount: options.removedCount,
+			isTrusted: options.isTrusted
+		});
+
+		!options.isAppend && this._doubleCheckForPrepend();
+	};
+
+	InfiniteGrid.prototype._doubleCheckForPrepend = function _doubleCheckForPrepend() {
+		var _this2 = this;
+
+		// doublecheck!!! (workaround)
+		if (_utils.utils.scrollTop(this.view) === 0) {
+			clearInterval(this._timer.doubleCheck);
+			this._timer.doubleCheck = setInterval(function () {
+				if (_utils.utils.scrollTop(_this2.view) === 0) {
+					_this2.trigger("prepend", {
+						scrollTop: 0
+					});
+					--_this2._timer.doubleCheckCount <= 0 && clearInterval(_this2._timer.doubleCheck);
+				}
+			}, 500);
+		}
+	};
+
+	InfiniteGrid.prototype._selectItems = function _selectItems(elements) {
+		var _this3 = this;
+
+		return elements.filter(function (v) {
+			if (_this3.options.itemSelector === "*") {
+				return (/DIV|SPAN|LI/.test(v.tagName)
+				);
+			} else {
+				return v.className.split(" ").some(function (c) {
+					return c === _this3.options.itemSelector;
+				});
+			}
+		});
+	};
+
+	InfiniteGrid.prototype._prepareElement = function _prepareElement(paramElements) {
+		var elements = _utils.utils.$(paramElements, true);
+
+		elements = this._selectItems(elements);
+		this._status.isProcessing = true;
+		if (!this.isRecycling()) {
+			this._status.isRecycling = this.layoutManager.items.length + elements.length >= this.options.count;
+		}
+		return elements;
+	};
+
+	// elements => [HTMLElement, HTMLElement, ...]
+
+
+	InfiniteGrid.prototype._insert = function _insert(paramElements, groupKey, isAppend) {
+		if (this.isProcessing() || paramElements.length === 0) {
+			return 0;
+		}
+		var elements = this._prepareElement(paramElements);
+		var cloneElements = elements.concat();
+		var dummy = -this._status.clientHeight + "px";
+
+		elements.forEach(function (v) {
+			v.style.position = "absolute";
+			v.style.top = dummy;
+		});
+		var removedCount = this._adjustRange(isAppend, cloneElements);
+
+		// prepare HTML
+		var docFragment = _browser.document.createDocumentFragment();
+
+		cloneElements.forEach(function (v) {
+			return docFragment.appendChild(v);
+		});
+		isAppend ? this.el.appendChild(docFragment) : this.el.insertBefore(docFragment, this.el.firstChild);
+		this.layout(false, _LayoutManager2["default"].itemize(cloneElements, groupKey), {
+			isAppend: isAppend,
+			removedCount: removedCount
+		});
+		// console.info("remove count", removedCount, this.el.children.length, "+", elements.length, "||", cloneElements.length);
+
+		return cloneElements.length;
+	};
+
+	InfiniteGrid.prototype._waitResource = function _waitResource(isRelayout, addItems, options) {
+		var needCheck = _ImageLoaded2["default"].checkImageLoaded(this.el);
+		var callback = function () {
+			this._onLayoutComplete(isRelayout, addItems, options);
+		}.bind(this);
+
+		if (needCheck.length > 0) {
+			_ImageLoaded2["default"].waitImageLoaded(needCheck, callback);
+		} else {
+			// convert to async
+			setTimeout(function () {
+				callback && callback();
+			}, 0);
+		}
+	};
+
+	InfiniteGrid.prototype._adjustRange = function _adjustRange(isTop, elements) {
+		var removedCount = 0;
+
+		if (!this.isRecycling()) {
+			return removedCount;
+		}
+
+		// trim $elements
+		if (this.options.count <= elements.length) {
+			removedCount += isTop ? elements.splice(0, elements.length - this.options.count).length : elements.splice(this.options.count).length;
+		}
+
+		var diff = this.layoutManager.items.length + elements.length - this.options.count;
+		var idx = void 0;
+
+		if (diff <= 0 || (idx = this.layoutManager.getDelimiterIndex(isTop, diff)) < 0) {
+			return removedCount;
+		}
+
+		var targets = this.layoutManager.adjustItems(isTop, idx);
+
+		// @todo improve performance
+		targets.forEach(function (v) {
+			idx = elements.indexOf(v.el);
+			if (idx !== -1) {
+				elements.splice(idx, 1);
+			} else {
+				v.el.parentNode.removeChild(v.el);
+			}
+		});
+		removedCount += targets.length;
+		return removedCount;
+	};
+
+	/**
+ * Removes extra space caused by adding card elements.
+ * @private
+ */
+
+
+	InfiniteGrid.prototype._fitItems = function _fitItems() {
+		var y = this.layoutManager.fit();
+
+		y !== 0 && this._resizeContainerHeight();
+		return y;
+	};
+
+	InfiniteGrid.prototype._reset = function _reset() {
+		this._status = {
+			isProcessing: false,
+			isRecycling: false,
+			prevScrollTop: 0,
+			topElement: null,
+			bottomElement: null,
+			clientHeight: this._status && this._status.clientHeight
+		};
+		this._timer = {
+			resize: null,
+			doubleCheck: null,
+			doubleCheckCount: _consts.RETRY
+		};
+		this.layoutManager.resetCols();
+		this.layoutManager.clear();
+	};
+
+	/**
+  * Removes a item element on a grid layout.
+  * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
+  * @param {HTMLElement} item element to be removed <ko>삭제될 아이템 엘리먼트</ko>
+  * @return {Object}  Removed item element <ko>삭제된 아이템 엘리먼트 정보</ko>
+  */
+
+
+	InfiniteGrid.prototype.remove = function remove(element) {
+		return this.layoutManager.removeItem(element);
+	};
+
+	/**
+  * Destroys elements, properties, and events used on a grid layout.
+  * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
+  */
+
+
+	InfiniteGrid.prototype.destroy = function destroy() {
+		this.off();
+		this._detachEvent();
+		this._reset();
+	};
+
+	return InfiniteGrid;
+}((0, _utils.Mixin)(_component2["default"])["with"](_eventHandler2["default"]));
+
+InfiniteGrid.VERSION = "2.1.1";
+exports["default"] = InfiniteGrid;
+module.exports = exports["default"];
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*!
+ * Copyright (c) 2017 NAVER Corp.
+ * @egjs/component project is licensed under the MIT license
+ * 
+ * @egjs/component JavaScript library
+ * http://naver.github.io/egjs/component
+ * 
+ * @version 2.0.0
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["Component"] = factory();
+	else
+		root["eg"] = root["eg"] || {}, root["eg"]["Component"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Component = __webpack_require__(1);
+
+var _Component2 = _interopRequireDefault(_Component);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+_Component2["default"].VERSION = "2.0.0";
+module.exports = _Component2["default"];
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
+
+/**
+ * A class used to manage events and options in a component
+ * @ko 컴포넌트의 이벤트와 옵션을 관리할 수 있게 하는 클래스
+ * @alias eg.Component
+ */
+var Component = function () {
+	/**
+  * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+  */
+	function Component() {
+		_classCallCheck(this, Component);
+
+		this._eventHandler = {};
+		this.options = {};
+	}
+	/**
+  * Triggers a custom event.
+  * @ko 커스텀 이벤트를 발생시킨다
+  * @param {String} eventName The name of the custom event to be triggered <ko>발생할 커스텀 이벤트의 이름</ko>
+  * @param {Object} customEvent Event data to be sent when triggering a custom event <ko>커스텀 이벤트가 발생할 때 전달할 데이터</ko>
+  * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. <ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다.</ko>
+  * @example
+ class Some extends eg.Component {
+  some(){
+    this.trigger("hi");// fire hi event.
+  }
+ }
+  */
+
+
+	Component.prototype.trigger = function trigger(eventName) {
+		var customEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+		var handlerList = this._eventHandler[eventName] || [];
+		var hasHandlerList = handlerList.length > 0;
+
+		if (!hasHandlerList) {
+			return true;
+		}
+
+		// If detach method call in handler in first time then handeler list calls.
+		handlerList = handlerList.concat();
+
+		customEvent.eventType = eventName;
+
+		var isCanceled = false;
+		var arg = [customEvent];
+		var i = 0;
+
+		customEvent.stop = function () {
+			isCanceled = true;
+		};
+
+		for (var _len = arguments.length, restParam = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+			restParam[_key - 2] = arguments[_key];
+		}
+
+		if (restParam.length >= 1) {
+			arg = arg.concat(restParam);
+		}
+
+		for (i = 0; handlerList[i]; i++) {
+			handlerList[i].apply(this, arg);
+		}
+
+		return !isCanceled;
+	};
+	/**
+  * Executed event just one time.
+  * @ko 이벤트가 한번만 실행된다.
+  * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
+  * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
+  * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
+  * @example
+ class Some extends eg.Component {
+  hi() {
+    alert("hi");
+  }
+  thing() {
+    this.once("hi", this.hi);
+  }
+ }
+ var some = new Some();
+ some.thing();
+ some.trigger("hi");
+ // fire alert("hi");
+ some.trigger("hi");
+ // Nothing happens
+  */
+
+
+	Component.prototype.once = function once(eventName, handlerToAttach) {
+		if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
+			var eventHash = eventName;
+			var i = void 0;
+
+			for (i in eventHash) {
+				this.once(i, eventHash[i]);
+			}
+			return this;
+		} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
+			var self = this;
+
+			this.on(eventName, function listener() {
+				for (var _len2 = arguments.length, arg = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+					arg[_key2] = arguments[_key2];
+				}
+
+				handlerToAttach.apply(self, arg);
+				self.off(eventName, listener);
+			});
+		}
+
+		return this;
+	};
+
+	/**
+  * Checks whether an event has been attached to a component.
+  * @ko 컴포넌트에 이벤트가 등록됐는지 확인한다.
+  * @param {String} eventName The name of the event to be attached <ko>등록 여부를 확인할 이벤트의 이름</ko>
+  * @return {Boolean} Indicates whether the event is attached. <ko>이벤트 등록 여부</ko>
+  * @example
+ class Some extends eg.Component {
+  some() {
+    this.hasOn("hi");// check hi event.
+  }
+ }
+  */
+
+
+	Component.prototype.hasOn = function hasOn(eventName) {
+		return !!this._eventHandler[eventName];
+	};
+
+	/**
+  * Attaches an event to a component.
+  * @ko 컴포넌트에 이벤트를 등록한다.
+  * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
+  * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
+  * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
+  * @example
+ class Some extends eg.Component {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.on("hi",this.hi); //attach event
+  }
+ }
+ */
+
+
+	Component.prototype.on = function on(eventName, handlerToAttach) {
+		if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
+			var eventHash = eventName;
+			var name = void 0;
+
+			for (name in eventHash) {
+				this.on(name, eventHash[name]);
+			}
+			return this;
+		} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
+			var handlerList = this._eventHandler[eventName];
+
+			if (typeof handlerList === "undefined") {
+				this._eventHandler[eventName] = [];
+				handlerList = this._eventHandler[eventName];
+			}
+
+			handlerList.push(handlerToAttach);
+		}
+
+		return this;
+	};
+	/**
+  * Detaches an event from the component.
+  * @ko 컴포넌트에 등록된 이벤트를 해제한다
+  * @param {eventName} eventName The name of the event to be detached <ko>해제할 이벤트의 이름</ko>
+  * @param {Function} handlerToDetach The handler function of the event to be detached <ko>해제할 이벤트의 핸들러 함수</ko>
+  * @return {eg.Component} An instance of a component itself <ko>컴포넌트 자신의 인스턴스</ko>
+  * @example
+ class Some extends eg.Component {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.off("hi",this.hi); //detach event
+  }
+ }
+  */
+
+
+	Component.prototype.off = function off(eventName, handlerToDetach) {
+		// All event detach.
+		if (typeof eventName === "undefined") {
+			this._eventHandler = {};
+			return this;
+		}
+
+		// All handler of specific event detach.
+		if (typeof handlerToDetach === "undefined") {
+			if (typeof eventName === "string") {
+				this._eventHandler[eventName] = undefined;
+				return this;
+			} else {
+				var eventHash = eventName;
+				var name = void 0;
+
+				for (name in eventHash) {
+					this.off(name, eventHash[name]);
+				}
+				return this;
+			}
+		}
+
+		// The handler of specific event detach.
+		var handlerList = this._eventHandler[eventName];
+
+		if (handlerList) {
+			var k = void 0;
+			var handlerFunction = void 0;
+
+			for (k = 0; (handlerFunction = handlerList[k]) !== undefined; k++) {
+				if (handlerFunction === handlerToDetach) {
+					handlerList = handlerList.splice(k, 1);
+					break;
+				}
+			}
+		}
+
+		return this;
+	};
+
+	return Component;
+}();
+
+exports["default"] = Component;
+module.exports = exports["default"];
+
+/***/ })
+/******/ ]);
+});
+//# sourceMappingURL=component.js.map
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _consts = __webpack_require__(1);
+
+var _utils = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+exports["default"] = function (superclass) {
+	return function (_superclass) {
+		_inherits(_class, _superclass);
+
+		function _class(el, options) {
+			_classCallCheck(this, _class);
+
+			var _this = _possibleConstructorReturn(this, _superclass.call(this));
+
+			_this._onScroll = _this._onScroll.bind(_this);
+			_this._onResize = _this._onResize.bind(_this);
+			return _this;
+		}
+
+		_class.prototype._attachEvent = function _attachEvent() {
+			_utils.utils.addEvent(this.view, "scroll", this._onScroll);
+			_utils.utils.addEvent(window, "resize", this._onResize);
+		};
+
+		_class.prototype._onScroll = function _onScroll() {
+			if (this.isProcessing()) {
+				return;
+			}
+			var scrollTop = _utils.utils.scrollTop(this.view);
+			var prevScrollTop = this._status.prevScrollTop;
+
+			if (_consts.IS_IOS && scrollTop === 0 || prevScrollTop === scrollTop) {
+				return;
+			}
+			var ele = void 0;
+			var rect = void 0;
+
+			if (prevScrollTop < scrollTop) {
+				if (_utils.utils.isEmptyObject(this._status.bottomElement)) {
+					this._status.bottomElement = this.getBottomElement();
+					if (this._status.bottomElement == null) {
+						return;
+					}
+				}
+				ele = this._status.bottomElement;
+				rect = ele.getBoundingClientRect();
+				if (rect.top <= this._status.clientHeight + this.options.threshold) {
+					/**
+      * This event is fired when a card element must be added at the bottom of a grid layout because there is no card to be displayed on screen when a user scrolls near bottom.
+      * @ko 카드 엘리먼트가 그리드 레이아웃의 아래에 추가돼야 할 때 발생하는 이벤트. 사용자가 아래로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다
+      * @event eg.InfiniteGrid#append
+      *
+      * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+      * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
+      * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+      */
+					this.trigger("append", {
+						scrollTop: scrollTop,
+						isTrusted: true
+					});
+				}
+			} else {
+				if (_utils.utils.isEmptyObject(this._status.topElement)) {
+					this._status.topElement = this.getTopElement();
+					if (this._status.topElement == null) {
+						return;
+					}
+				}
+				ele = this._status.topElement;
+				rect = ele.getBoundingClientRect();
+				if (rect.bottom >= -this.options.threshold) {
+					/**
+      * This event is fired when a card element must be added at the top of a grid layout because there is no card to be displayed on screen when a user scrolls near top. This event is available only if the isRecycling() method returns true.
+      * @ko 카드가 그리드 레이아웃의 위에 추가돼야 할 때 발생하는 이벤트. 사용자가 위로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다. 이 이벤트는 isRecycling() 메서드의 반환값이 'true'일 때만 발생한다
+      * @event eg.InfiniteGrid#prepend
+      *
+      * @param {Object} param The object of data to be sent to an event<ko>이벤트에 전달되는 데이터 객체</ko>
+      * @param {Number} param.scrollTop Current vertical position of the scroll bar<ko>현재 스크롤의 y 좌표 값</ko>
+      * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+      */
+					var croppedDistance = this._fitItems();
+
+					if (croppedDistance > 0) {
+						scrollTop -= croppedDistance;
+						_utils.utils.scrollTo(this.view, 0, scrollTop);
+					}
+					this.trigger("prepend", {
+						scrollTop: scrollTop,
+						isTrusted: true
+					});
+				}
+			}
+			this._status.prevScrollTop = scrollTop;
+		};
+
+		_class.prototype._onResize = function _onResize() {
+			var _this2 = this;
+
+			if (this._timer.resize) {
+				clearTimeout(this._timer.resize);
+			}
+			this._timer.resize = setTimeout(function () {
+				if (_this2.layoutManager.isNeededResize()) {
+					_this2._resizeViewport();
+					_this2.layout(true, undefined, {
+						isAppend: true,
+						isTrusted: true
+					});
+				}
+				_this2._timer.resize = null;
+				_this2._status.prevScrollTop = -1;
+			}, 100);
+		};
+
+		_class.prototype._detachEvent = function _detachEvent() {
+			_utils.utils.removeEvent(this.view, "scroll", this._onScroll);
+			_utils.utils.removeEvent(window, "resize", this._onResize);
+		};
+
+		return _class;
+	}(superclass);
+};
+
+module.exports = exports["default"];
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _consts = __webpack_require__(1);
+
+var _utils = __webpack_require__(0);
+
+var ImageLoaded = {
+	checkImageLoaded: function checkImageLoaded(el) {
+		return _utils.utils.toArray(el.querySelectorAll("img")).filter(function (v) {
+			if (v.nodeType && [1, 9, 11].indexOf(v.nodeType) !== -1) {
+				return !v.complete;
+			} else {
+				return false;
+			}
+		});
+	},
+	waitImageLoaded: function waitImageLoaded(needCheck, callback) {
+		var checkCount = needCheck.length;
+		var checkImage = function checkImage() {
+			checkCount--;
+			checkCount <= 0 && callback && callback();
+		};
+		var onCheck = function onCheck(e) {
+			_utils.utils.removeEvent(e.target || e.srcElement, "load", onCheck);
+			_utils.utils.removeEvent(e.target || e.srcElement, "error", onCheck);
+			checkImage();
+		};
+
+		// workaround for IE
+		_consts.IS_IE && needCheck.forEach(function (v) {
+			return v.setAttribute("src", v.getAttribute("src"));
+		});
+		needCheck.forEach(function (v) {
+			if (v.complete) {
+				checkImage();
+			} else {
+				_utils.utils.addEvent(v, "load", onCheck);
+				_utils.utils.addEvent(v, "error", onCheck);
+			}
+		});
+	}
+};
+
+exports["default"] = ImageLoaded;
+module.exports = exports["default"];
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _utils = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LayoutManager = function () {
+	LayoutManager.itemize = function itemize(elements, groupKey, isAppend) {
+		return _utils.utils.toArray(elements).map(function (v) {
+			return {
+				el: v,
+				position: {
+					x: 0,
+					y: 0
+				},
+				groupKey: typeof groupKey === "undefined" ? null : groupKey
+			};
+		});
+	};
+
+	function LayoutManager(el, options) {
+		_classCallCheck(this, LayoutManager);
+
+		this.options = options;
+		this.size = {
+			columnWidth: null,
+			containerWidth: null,
+			equalItemSize: null
+		};
+		this.el = el;
+		this.el.style.position = "relative";
+		this.clear();
+		this.prependCols = [];
+		this.appendCols = [];
+	}
+
+	LayoutManager.prototype.appendItems = function appendItems(items) {
+		this.items = this.items.concat(items);
+	};
+
+	LayoutManager.prototype.prependItems = function prependItems(items) {
+		// insert items (when prepending)
+		this.items = items.concat(this.items);
+		var y = this.getTopPositonY();
+
+		if (y !== 0) {
+			this.items.forEach(function (v) {
+				v.position.y -= y;
+			});
+			this.syncCols(false); // for prepending
+			this.syncCols(true); // for appending
+			return this.items;
+		}
+		return items;
+	};
+
+	LayoutManager.prototype.removeItem = function removeItem(element) {
+		var item = null;
+		var idx = -1;
+
+		for (var i = 0, len = this.items.length; i < len; i++) {
+			if (this.items[i].el === element) {
+				idx = i;
+				break;
+			}
+		}
+		if (~idx) {
+			// remove item information
+			item = _extends({}, this.items[idx]);
+			this.items.splice(idx, 1);
+
+			// remove item element
+			item.el.parentNode.removeChild(item.el);
+		}
+		return item;
+	};
+
+	LayoutManager.prototype.prepareLayout = function prepareLayout(isRelayout, addItems, isAppend) {
+		var isInit = !this.items.length;
+
+		// insert items (when appending)
+		if (addItems && isAppend) {
+			this.appendItems(addItems);
+		}
+		if (isInit && addItems) {
+			addItems.forEach(function (v) {
+				v.el.style.position = "absolute";
+			});
+		}
+		if (isInit || isRelayout) {
+			this.resetCols(this.measureColumns());
+		} else if (!addItems) {
+			this.appendCols = [].concat(this.prependCols);
+		}
+	};
+
+	LayoutManager.prototype.layoutItems = function layoutItems(isRelayout, addItems, options) {
+		var _this = this;
+
+		this.prepareLayout(isRelayout, addItems, options.isAppend);
+		var items = addItems || this.items;
+
+		items.forEach(function (v) {
+			v.position = _this.getItemPosition(isRelayout, v, options.isAppend);
+		});
+		if (addItems && !options.isAppend) {
+			// insert items (when prepending)
+			items = this.prependItems(addItems.sort(function (p, c) {
+				return p.position.y - c.position.y;
+			}));
+		}
+
+		// for performance
+		var style = void 0;
+
+		items.forEach(function (v) {
+			if (v.el) {
+				style = v.el.style;
+				style.left = v.position.x + "px";
+				style.top = v.position.y + "px";
+			}
+		});
+	};
+
+	LayoutManager.prototype.resetCols = function resetCols(count) {
+		var arr = [];
+		var tmpCount = count || this.appendCols.length || 0;
+
+		while (tmpCount--) {
+			arr.push(0);
+		}
+		this.appendCols = arr.concat();
+		this.prependCols = arr.concat();
+	};
+
+	LayoutManager.prototype.clear = function clear() {
+		this.items = [];
+	};
+
+	LayoutManager.prototype.getItemPosition = function getItemPosition(isRelayout, item, isAppend) {
+		if (!item || !item.el) {
+			return {
+				x: 0,
+				y: 0
+			};
+		}
+
+		if (isRelayout || !item.size) {
+			item.size = this.getItemSize(item.el);
+		}
+		var cols = isAppend ? this.appendCols : this.prependCols;
+		var y = Math[isAppend ? "min" : "max"].apply(Math, cols);
+		var shortColIndex = void 0;
+
+		if (isAppend) {
+			shortColIndex = cols.indexOf(y);
+		} else {
+			var i = cols.length;
+
+			while (i-- >= 0) {
+				if (cols[i] === y) {
+					shortColIndex = i;
+					break;
+				}
+			}
+		}
+		cols[shortColIndex] = y + (isAppend ? item.size.height : -item.size.height);
+
+		return {
+			x: this.size.columnWidth * shortColIndex,
+			y: isAppend ? y : y - item.size.height
+		};
+	};
+
+	LayoutManager.prototype.getGroupKeys = function getGroupKeys() {
+		return this.items.map(function (v) {
+			return v.groupKey;
+		});
+	};
+
+	LayoutManager.prototype.syncCols = function syncCols(isBottom) {
+		if (!this.items.length) {
+			return;
+		}
+		var items = this.getColItems(isBottom);
+		var col = isBottom ? this.appendCols : this.prependCols;
+		var len = col.length;
+
+		for (var i = 0; i < len; i++) {
+			col[i] = items[i].position.y + (isBottom ? items[i].size.height : 0);
+		}
+	};
+
+	LayoutManager.prototype.getTopPositonY = function getTopPositonY() {
+		var item = this.getTopItem();
+
+		return item ? item.position.y : 0;
+	};
+
+	LayoutManager.prototype.getTopItem = function getTopItem() {
+		var item = null;
+		var min = Infinity;
+
+		this.getColItems(false).forEach(function (v) {
+			if (v && v.position.y < min) {
+				min = v.position.y;
+				item = v;
+			}
+		});
+		return item;
+	};
+
+	LayoutManager.prototype.getBottomItem = function getBottomItem() {
+		var max = -Infinity;
+		var item = null;
+		var pos = void 0;
+
+		this.getColItems(true).forEach(function (v) {
+			pos = v ? v.position.y + v.size.height : 0;
+			if (pos >= max) {
+				max = pos;
+				item = v;
+			}
+		});
+		return item;
+	};
+
+	LayoutManager.prototype.getColIdx = function getColIdx(item) {
+		return parseInt(item.position.x / parseInt(this.size.columnWidth, 10), 10);
+	};
+
+	LayoutManager.prototype.getColItems = function getColItems(isBottom) {
+		var len = this.appendCols.length;
+		var colItems = new Array(len);
+		var item = void 0;
+		var idx = void 0;
+		var count = 0;
+		var i = isBottom ? this.items.length - 1 : 0;
+
+		while (item = this.items[i]) {
+			idx = this.getColIdx(item);
+			if (!colItems[idx]) {
+				colItems[idx] = item;
+				if (++count === len) {
+					return colItems;
+				}
+			}
+			i += isBottom ? -1 : 1;
+		}
+		return colItems;
+	};
+	// fit size
+
+
+	LayoutManager.prototype.fit = function fit() {
+		// for caching
+		if (this.options.count <= 0) {
+			this.fit = function () {
+				return 0;
+			};
+			return false;
+		}
+
+		var y = this.getTopPositonY();
+
+		if (y !== 0) {
+			// need to fit
+			this.items.forEach(function (v) {
+				v.position.y -= y;
+				v.el.style.top = v.position.y + "px";
+			});
+			this.syncCols(false); // for prepending
+			this.syncCols(true); // for appending
+		}
+		return y;
+	};
+
+	LayoutManager.prototype.getLogicalHeight = function getLogicalHeight() {
+		return Math.max.apply(Math, this.appendCols);
+	};
+
+	LayoutManager.prototype.getDelimiterIndex = function getDelimiterIndex(isTop, removeCount) {
+		var len = this.items.length;
+
+		if (len === removeCount) {
+			return len;
+		}
+		var i = void 0;
+		var idx = 0;
+		var baseIdx = isTop ? removeCount - 1 : len - removeCount;
+		var targetIdx = baseIdx + (isTop ? 1 : -1);
+		var groupKey = this.items[baseIdx].groupKey;
+
+		if (groupKey != null && groupKey === this.items[targetIdx].groupKey) {
+			if (isTop) {
+				for (i = baseIdx; i > 0; i--) {
+					if (groupKey !== this.items[i].groupKey) {
+						break;
+					}
+				}
+				idx = i === 0 ? -1 : i + 1;
+			} else {
+				for (i = baseIdx; i < len; i++) {
+					if (groupKey !== this.items[i].groupKey) {
+						break;
+					}
+				}
+				idx = i === len ? -1 : i;
+			}
+		} else {
+			idx = isTop ? targetIdx : baseIdx;
+		}
+		return idx;
+	};
+
+	LayoutManager.prototype.adjustItems = function adjustItems(isTop, idx) {
+		var targets = void 0;
+
+		if (isTop) {
+			targets = this.items.splice(0, idx);
+			this.syncCols(false); // for prepending
+		} else {
+			targets = idx === this.items.length ? this.items.splice(0) : this.items.splice(idx, this.items.length - idx);
+			this.syncCols(true); // for appending;
+		}
+		return targets;
+	};
+
+	LayoutManager.prototype.measureColumns = function measureColumns() {
+		this.el.style.width = null;
+		this.size.containerWidth = _utils.utils.innerWidth(this.el);
+		this.size.columnWidth = this.getColumnWidth() || this.size.containerWidth;
+		var cols = this.size.containerWidth / this.size.columnWidth;
+		var excess = this.size.columnWidth - this.size.containerWidth % this.size.columnWidth;
+
+		// if overshoot is less than a pixel, round up, otherwise floor it
+		cols = Math.max(Math[excess && excess <= 1 ? "round" : "floor"](cols), 1);
+		return cols || 0;
+	};
+
+	LayoutManager.prototype.getItemSize = function getItemSize(el) {
+		return this.size.equalItemSize || {
+			width: _utils.utils.innerWidth(el),
+			height: _utils.utils.innerHeight(el)
+		};
+	};
+
+	LayoutManager.prototype.getColumnWidth = function getColumnWidth() {
+		var width = 0;
+		var el = this.items[0] && this.items[0].el;
+
+		if (el) {
+			width = _utils.utils.innerWidth(el);
+			if (this.options.isEqualSize) {
+				this.size.equalItemSize = {
+					width: width,
+					height: _utils.utils.innerHeight(el)
+				};
+			}
+		}
+		return width;
+	};
+
+	LayoutManager.prototype.isNeededResize = function isNeededResize() {
+		return _utils.utils.innerWidth(this.el) !== this.size.containerWidth;
+	};
+
+	LayoutManager.prototype.getStatus = function getStatus() {
+		var data = {};
+
+		for (var p in this) {
+			if (Object.prototype.hasOwnProperty.call(this, p) && typeof this[p] !== "function" && !(this[p] instanceof Element)) {
+				data[p] = this[p];
+			}
+		}
+		return {
+			prop: data,
+			items: this.items.map(function (v) {
+				var clone = _extends({}, v);
+
+				delete clone.el;
+				return clone;
+			})
+		};
+	};
+
+	LayoutManager.prototype.setStatus = function setStatus(status) {
+		if (!status || !status.prop || !status.items) {
+			return this;
+		}
+		_extends(this, status.prop);
+		this.items = _utils.utils.toArray(this.el.children).map(function (v, i) {
+			status.items[i].el = v;
+			return status.items[i];
+		});
+		return this;
+	};
+
+	return LayoutManager;
+}();
+
+exports["default"] = LayoutManager;
+module.exports = exports["default"];
+
+/***/ })
+/******/ ]);
+});
 //# sourceMappingURL=infinitegrid.pkgd.js.map

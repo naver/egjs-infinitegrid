@@ -1,35 +1,51 @@
-$(function () {
-	function imgSrc(v) {
-    return window.HOMELINK + "assets/image/" + (((v + 1) % 60) + 1) + ".jpg";
-  }
-  function getItems(groupNo) {
-    groupNo *= 30;
-    var items = [];
-    for (var i = 0; i < 30; i++) {
-      items.push('<div class="item"><div class="thumbnail"><img src="' + imgSrc(groupNo + i) + '" /><div class="caption"><p><a href="http://www.google.com/">Cras justo odio bla bla bla bla bla bla bla bla</a></p></div></div></div>');
-    }
-    return items;
-  }
+var template = '<div class="item"><div class="thumbnail"><img src="${link}../../assets/image/${no}.jpg"></div><div class="info">${text}</div></div>';
+var link = window.HOMELINK;
+function getItem(template, options) {
+	return template.replace(/\$\{([^\}]*)\}/g, function () {
+		var replaceTarget = arguments[1];
 
-	var ig = new eg.InfiniteGrid("#grid", {
-		count: 100,
-		defaultGroupKey: 0,
-		isOverflowScroll: true
-	})
-	.on({
-		"append": function (e) {
-			var gk = this.getGroupKeys();
-			var lastGk = gk[gk.length - 1];
-			lastGk++;
-			ig.append(getItems(lastGk), lastGk);
-		},
-		"prepend": function (e) {
-			var firstGk = this.getGroupKeys()[0];
-			firstGk--;
-			if (firstGk >= 0) {
-				ig.prepend(getItems(firstGk), firstGk);
-			}
-		}
+		return options[replaceTarget];
 	});
-	ig.append(getItems(0), 0);
+}
+function getItems(length) {
+	var arr = [];
+
+	for (var i = 0; i < length; ++i) {
+		arr.push(getItem(template, { no: i % 60 + 1, text: "egjs post " + (i + 1), link: link }));
+	}
+	return arr;
+}
+var ig = new eg.InfiniteGrid(".demobox", {
+	isOverflowScroll: true
 });
+var num = 21;
+var groups = {};
+
+ig.setLayout(eg.InfiniteGrid.GridLayout, {
+	margin: 30,
+	align: "center"
+});
+
+ig.on({
+	"prepend": function (e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[0] || 0) - 1;
+
+		if (!(groupKey in groups)) {
+			return;
+		}
+		ig.prepend(groups[groupKey], groupKey);
+	},
+	"append": function (e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+
+		if (!(groupKey in groups)) {
+			// allow append
+			groups[groupKey] = getItems(num);
+		}
+		ig.append(groups[groupKey], groupKey);
+	}
+});
+groups[0] = getItems(num * 2);
+ig.append(groups[0], 0);

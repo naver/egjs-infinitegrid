@@ -53,3 +53,7 @@ body {
 #table .post .date {
 	color: #999;
 }
+#table a {
+	text-decoration: none;
+	color: #333;
+}

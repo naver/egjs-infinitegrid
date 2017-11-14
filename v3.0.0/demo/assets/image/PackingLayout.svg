@@ -1,0 +1,33 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="202" height="201">
+	<style type="text/css">
+		<![CDATA[
+		rect {
+			fill:transparent;
+			stroke:#5A524F;
+			stroke-width:2;
+		}
+		]]>
+	</style>
+	<rect y="1" x="1" width="85" height="75" />
+	<rect y="1" x="91" width="35" height="45" />
+	<rect y="1" x="131" width="65" height="55" />
+
+	<rect y="51" x="91" width="35" height="25" />
+	<rect y="61" x="131" width="65" height="55" />
+
+	<rect y="81" x="1" width="75" height="35" />
+	<rect y="81" x="81" width="45" height="65" />
+	<rect y="121" x="131" width="25" height="25" />
+	<rect y="121" x="161" width="35" height="75" />
+
+	<rect y="121" x="1" width="75" height="35" />
+	<rect y="151" x="81" width="25" height="45" />
+	<rect y="151" x="111" width="45" height="45" />
+
+	<rect y="161" x="1" width="45" height="35" />
+	<rect y="161" x="51" width="25" height="35" />
+
+</svg>
