@@ -6,116 +6,148 @@
 <title>InfiniteGrid: basic</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
-<!--[if lt IE 9]>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
-<![endif]-->
 <style>
-html,body {
-  height:100%;
-}
-
-body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select {
-  margin:0;
-  padding:0;
-}
-
-body,input,textarea,select,button,table {
-  font-family:Helvetica Neue,AppleSDGothicNeo,sans-serif;
-  font-size:14px;
-  line-height:1.25em;
-}
-
-body {
-  position:relative;
-  width:100%;
-}
-
-img,fieldset {
-  border:0;
-}
-
-ul,ol {
-  list-style:none;
-}
-
-li {
-  width : 33%;
-  height : 100px;
-}
-
-li div {
-    margin:10px;
-    border:1px solid red;
-    background-color:#eee;
-    height: 85%
-}
-
-li.append {
-   background-color:#797;
-}
-li.prepend {
-   background-color:#333;
-}
-#controler {
-  position:fixed;
-  z-index:2000;
-  bottom:50px;
-  left :0px;
-  background-color: #333;
-  padding : 5px;
-  width: 100%;
-  opacity: 0.5;
-}
-#grid {
-  border : 1px solid blue;
-}
-button {
-  height: 30px;
-  width: 30%;
-  margin: 5px;
-  float:left;
-}
+	body {
+		margin: 0;
+		padding: 0;
+	}
+	#controller {
+		width: 100%;
+		position: fixed;
+		bottom: 0;
+		z-index: 2;
+		background: #fff;
+	}
+	#controller button {
+		appearance: none;
+		-webkit-appearance: none;
+		outline: none;
+		-webkit-outdivne: none;
+		float: left;
+		width: 25%;
+		border: 1px solid #ccc;
+		background: #fff;
+		height: 40px;
+	}
+	#controller button:active {
+		background: #ddd;
+	}
+	#controller .layouts button {
+		border-color: #f55;
+		width: 20%;
+	}
+	#grid {
+		margin: 0;
+		padding: 0;
+		bottom: 200px;
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+	}
+	#grid[data-direction="horizontal"] {
+	}
+	#grid .item {
+		display: block;
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+	}
+	#grid .item {
+		border: 3px solid black;
+		box-sizing: border-box;
+	}
+	#grid .item[data-group="0"] {
+		border-color: #f55;
+	}
+	#grid .item[data-group="1"] {
+		border-color: #5c5;
+	}
+	#grid .item[data-group="2"] {
+		border-color: #55c;
+	}
+	#grid .item[data-group="3"] {
+		border-color: #c5c;
+	}
+	#grid .item[data-group="4"] {
+		border-color: #5cc;
+	}
+	#grid[data-layout="GridLayout"][data-direction="vertical"] .item {
+		width: 200px;
+	}
+	#grid[data-layout="GridLayout"][data-direction="vertical"]  .item img {
+		width: 100%;
+	}
+	#grid[data-layout="GridLayout"][data-direction="horizontal"] .item {
+		height: 200px;
+	}
+	#grid[data-layout="GridLayout"][data-direction="horizontal"] .item img {
+		height: 100%;
+	}
+	#grid[data-layout="JustifiedLayout"] .item {
+	}
+	#grid[data-layout="JustifiedLayout"] .item img {
+		width: 100%;
+	}
+	#grid[data-layout="FrameLayout"] .item {
+	}
+	#grid[data-layout="FrameLayout"][data-direction="vertical"] .item img {
+		width: 100%;
+	}
+	#grid[data-layout="FrameLayout"][data-direction="horizontal"] .item img {
+		height: 100%;
+	}
+	#grid[data-layout="SquareLayout"] .item {
+	}
+	#grid[data-layout="SquareLayout"][data-direction="vertical"] .item img {
+		width: 100%;
+		min-height: 100%;
+	}
+	#grid[data-layout="SquareLayout"][data-direction="horizontal"] .item img {
+		height: 100%;
+		min-width: 120%;
+	}
+	#grid[data-layout="PackingLayout"] .item {
+	}
+	#grid[data-layout="PackingLayout"] .item img {
+		max-width: 200%;
+		max-height: 200%;
+		min-width: 100%;
+		min-height: 100%;
+	}
 </style>
 </head>
 <body>
-<div id="controler">
-  <button class="append">append</button>
-  <button class="prepend">prepend</button>
-  <button class="clear">clear</button>
-  <button class="layout">layout()</button>
-  <button class="layout_false">layout(false)</button>
-  <button class="getStatus">getStatus</button>
-  <button class="setStatus">setStatus</button>
-  <button class="getTopElement">getTopElement</button>
-  <button class="getBottomElement">getBottomElement</button>
+
+<div id="controller">
+	<div class="layouts">
+		<button class="GridLayout">GridLayout</button>
+		<button class="JustifiedLayout">JustifiedLayout</button>
+		<button class="FrameLayout">FrameLayout</button>
+		<button class="SquareLayout">SquareLayout</button>
+		<button class="PackingLayout">PackingLayout</button>
+	</div>
+	<button class="append">append</button>
+	<button class="prepend">prepend</button>
+	<button class="clear">clear</button>
+	<button class="layout">layout</button>
+	<button class="layout_false">layout(false)</button>
+	<button class="getStatus">getStatus</button>
+	<button class="setStatus">setStatus</button>
+	<button class="enableParallax">enable Parallax</button>
+	<button class="disableParallax">disable Parallax</button>
+	<button class="vertical">vertical</button>
+	<button class="horizontal">horizontal</button>
 </div>
-<ul id="grid">
-  <li class="item">
-    <div>테스트1</div>
-  </li>
-  <li class="item">
-    <div>테스트2</div>
-  </li>
-  <li class="item">
-    <div>테스트3</div>
-  </li>
-  <li class="item">
-    <div>테스트4</div>
-  </li>
-  <li class="item">
-    <div>테스트5</div>
-  </li>
-  <li class="item">
-    <div>테스트6</div>
-  </li>
-</ul>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-sham.js"></script>
+<div id="grid" data-direction="vertical">
+
+</div>
 <Script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.js"></script>
- <script src="../../dist/infinitegrid.pkgd.js"></script>   
- <!-- <script src="../../node_modules/jquery/dist/jquery.js"></script>  
+<script src="../../dist/infinitegrid.pkgd.js"></script>   
+<script src="../../dist/parallax.min.js"></script>
+<!-- <script src="../../node_modules/jquery/dist/jquery.js"></script>  
 <script src="../../node_modules/@egjs/component/dist/component.js"></script> 
- <script src="../../dist/infinitegrid.js"></script>    -->
+<script src="../../dist/infinitegrid.js"></script>    -->
 <script src="js/basic.js"></script>
 </body>
 </html>

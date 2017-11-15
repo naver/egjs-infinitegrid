@@ -9,7 +9,7 @@ function getItem(template, options) {
 	});
 }
 function getItems(length) {
-	const arr = [];
+	var arr = [];
 
 	for (var i = 0; i < length; ++i) {
 		arr.push(getItem(template, {no: (i % 60 + 1), link: link}));
