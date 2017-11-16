@@ -89,13 +89,16 @@
 	#grid[data-layout="JustifiedLayout"] .item img {
 		width: 100%;
 	}
-	#grid[data-layout="FrameLayout"] .item {
+	#grid[data-layout="FrameLayout"] .item img {
+		min-width: 100%;
+		min-height: 100%;
 	}
 	#grid[data-layout="FrameLayout"][data-direction="vertical"] .item img {
 		width: 100%;
 	}
 	#grid[data-layout="FrameLayout"][data-direction="horizontal"] .item img {
 		height: 100%;
+		min-width: 150%;
 	}
 	#grid[data-layout="SquareLayout"] .item {
 	}
@@ -105,7 +108,7 @@
 	}
 	#grid[data-layout="SquareLayout"][data-direction="horizontal"] .item img {
 		height: 100%;
-		min-width: 120%;
+		min-width: 150%;
 	}
 	#grid[data-layout="PackingLayout"] .item {
 	}

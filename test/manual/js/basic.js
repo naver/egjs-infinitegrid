@@ -9,8 +9,23 @@ var _status = 0;
 var _groups = {};
 var isParallax = false;
 var _layout;
+var grid = document.querySelector("#grid");
+$(grid).click(function (e) {
+	var target = e.target;
+
+	if ($(target).hasClass(".item")) {
+		ig.remove(target);
+	} else {
+		var parent = $(target).parent(".item");
+		if(parent.size() === 0) {
+			return;
+		}
+		ig.remove(parent[0]);
+		ig.layout(false);
+	}
+});
 function createGrid(horizontal) {
-	ig = new eg.InfiniteGrid("#grid", {
+	ig = new eg.InfiniteGrid(grid, {
 		horizontal: horizontal
 	});
 	ig.on({
@@ -46,7 +61,7 @@ function createGrid(horizontal) {
 		}
 	});
 	parallax = new eg.Parallax(window, {
-		container: document.querySelector("#grid"),
+		container: grid,
 		horizontal: horizontal
 	});
 	parallax.resize();
