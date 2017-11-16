@@ -60,4 +60,4 @@ ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
 ```
 
 
-For more information about API, please visit the **[link](//naver.github.io/egjs-view360/release/latest/doc/eg.view360.PanoViewer.html)**.
+For more information about API, please visit the **[link](//naver.github.io/egjs-infinitegrid/release/latest/doc/)**.
