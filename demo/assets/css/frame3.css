@@ -1,23 +1,72 @@
 body {
 	padding: 0;
 	margin: 0;
-	background: #EDEDF0;
 	font-size: 15px;
 }
 .container {
 	position: relative;
 	width: 80%;
-	margin: 20px auto;
-	min-width: 1000px;
+	margin: 0px auto;
+	min-width: 800px;
 	height: 100%;
 
 }
 .item {
-	height: 100%;
-	width: 400px;
 	overflow: hidden;
+	text-align: right;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	box-sizing: border-box;
+	font-weight: bold;
+}
+.item.day0 {
+	border-left: 1px solid #ccc;
+}
+.item.day0, .item.day6 {
+	background: #fafafa;
+	color: #999;
+}
+.item.prev, .item.next {
+	color: #bbb;
+} 
+.item span {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
 	text-align: center;
-	border-bottom: 10px solid #2F1A06;
+	line-height: 30px;
+	margin-right: 10px;
+	margin-top: 10px;
+}
+.item.header {
+	border: 0;
+	border-bottom: 1px solid #ccc;
+	font-weight: bold;
+	color: #f55;
+}
+.item.header span {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+.item.month {
+	border: 0;
+}
+.item.month span {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	text-align: center;
+	font-size: 40px;
+	margin: 0;
+	width: auto;
+
+}
+.item.now span{
+	background: #f55;
+	border-radius: 50%;
+	color: #fff;
 }
 .item img {
 	position: absolute;

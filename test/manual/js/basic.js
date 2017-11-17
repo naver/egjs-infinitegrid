@@ -125,7 +125,7 @@ function FrameLayout() {
 function SquareLayout() {
 	changeLayout("SquareLayout", {
 		margin: 10,
-		itemSize: 200,
+		itemSize: 150,
 	});
 }
 function PackingLayout() {

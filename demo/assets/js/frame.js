@@ -1,4 +1,4 @@
-var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor';
 var imageTemplate = '<div class="item"><img src="../image/${no}.jpg"></div>';
 var postTemplate = '<div class="item ${className}"><div class="info"><p class="title">${title}</p><p class="description">${lorem}</p></div></div>';
 var link = window.HOMELINK;
@@ -14,7 +14,7 @@ function getItems(no, length) {
 	var arr = [];
 	for (var i = 0; i < length; ++i) {
 		arr.push(getItem(imageTemplate, {no: (i + no) % 60 + 1, link: link}));
-		arr.push(getItem(postTemplate, { no: i + no, title: "egjs gallery item " + (i + no + 1), lorem: lorem }));
+		arr.push(getItem(postTemplate, { no: i + no, title: "egjs item " + (i + no + 1), lorem: lorem }));
 	}
 	return arr;
 }
@@ -25,12 +25,13 @@ var ig = new eg.InfiniteGrid(document.querySelector(".container"), {
 ig.setLayout(eg.InfiniteGrid.FrameLayout, {
 	margin: 0, 
 	frame: [
-		[1, 2],
-		[4, 3],
-	]
+		[1, 2, 3, 4, 5, 6],
+		[10, 9, 12, 11 , 14, 13],
+	],
+	itemSize: 200,
 });
 var groups = {};
-var num = 30;
+var num = 36;
 var parallax = new eg.Parallax(window, {
 	container: document.querySelector(".container"),
 	direction: "vertical",
