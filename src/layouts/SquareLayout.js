@@ -48,6 +48,9 @@ class SquareLayout extends FrameLayout {
 		const pointCaculateName = isAppend ? "min" : "max";
 		const shapes = [];
 		const sign = isAppend ? 1 : -1;
+		const style = this._style;
+		const pos1Name = style.pos1;
+		const pos2Name = style.pos2;
 
 		for (let i = 0; i < length; ++i) {
 			const point = Math[pointCaculateName](...endOutline);
@@ -69,16 +72,13 @@ class SquareLayout extends FrameLayout {
 			shapes.push({
 				width: columnCount,
 				height: columnCount,
-				top: point - (!isAppend ? columnCount : 0),
-				left: index,
+				[pos1Name]: point - (!isAppend ? columnCount : 0),
+				[pos2Name]: index,
 			});
 			for (let j = 0; j < columnCount; ++j) {
 				endOutline[index + j] = point + sign * columnCount;
 			}
 		}
-		const style = this._style;
-		const pos1Name = style.pos1;
-		const pos2Name = style.pos2;
 
 		this._shapes = {
 			shapes,

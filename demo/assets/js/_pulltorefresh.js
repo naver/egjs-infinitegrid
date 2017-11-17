@@ -1,4 +1,5 @@
-var template = '<div class="item"><img src="${link}../image/${no}.jpg"><div class="info"><div class="bg"></div><div class="title">${title}</div></div></div>';
+
+var template = '<div class="post"><span class="opts"></span><span class="type">${type}</span><span class="date">${date}</span><span class="writer">${writer}</span><span class="title">${title}</span></div>';
 var link = window.HOMELINK;
 function getItem(template, options) {
 	return template.replace(/\$\{([^\}]*)\}/g, function () {
@@ -7,10 +8,17 @@ function getItem(template, options) {
 		return options[replaceTarget];
 	});
 }
-function getItems(no, length) {
+
+function getItems(no, length, isAppend) {
 	var arr = [];
+
 	for (var i = 0; i < length; ++i) {
-		arr.push(getItem(template, { no: Math.abs(i + no) % 60 + 1, title: "egjs post" + (i + no), link: link }));
+		arr.push(getItem(template, {
+			type: isAppend ? "append" : "prepend",
+			title: "egjs post" + (no + i + 1),
+			date: "10.30 16:28",
+			writer: "egjs"
+		}));
 	}
 	return arr;
 }
@@ -24,19 +32,17 @@ var groups = {};
 var deltaPull = 10;
 var container = document.querySelector(".container");
 var contents = document.querySelector(".contents");
-var ig = new eg.InfiniteGrid(contents);
+var ig = new eg.InfiniteGrid(contents, {
+	isOverflowScroll: true
+});
 var prevScrollPosition = 0;
 var pullScrollPosition = 0;
 var isRequestPull = REQUEST_PREPEND;
-var isLoading = false;
 
-ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
-	minSize: 100,
-	maxSize: 300,
-	margin: 10,
-});
+ig.setLayout(eg.InfiniteGrid.GridLayout);
+
 ig.on({
-	"change": function (e) {
+	"change": function(e) {
 		var scrollPosition = e.orgScrollPos;
 
 		prevScrollPosition = scrollPosition;
@@ -44,6 +50,9 @@ ig.on({
 		if (isLoading || isRequestPull >= REQUEST_APPEND_ANIMATE ||
 			(isRequestPull >= REQUEST_APPEND_ANIMATE) ||
 			(isRequestPull > 0 && Math.abs(scrollPosition - pullScrollPosition) < deltaPull)) {
+			return;
+		}
+		if (axes.isBounceArea() && isRequestPull !==  REQUEST_CHANGE) {
 			return;
 		}
 		isRequestPull = REQUEST_CHANGE;
@@ -59,9 +68,9 @@ ig.on({
 		}
 		ig.prepend(groups[groupKey], groupKey);
 	},
-	"append": function(e) {
+	"append": function (e) {
 		var groupKeys = ig.getGroupKeys(true);
-		var groupKey = (groupKeys[0] || 0) - 1;
+		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
 
 		if (!(groupKey in groups)) {
 			isRequestPull = REQUEST_APPEND;
@@ -81,11 +90,10 @@ ig.on({
 			contents.scrollTop -= 20;
 			isRequestPull = REQUEST_PREPEND_ANIMATE;
 		}
-	}
+	},
 });
-groups[0] = getItems(0, 60, true);
+groups[0] = getItems(0, 30, true);
 ig.append(groups[0], 0);
-
 
 var axes = new eg.Axes({
 	scroll: {
@@ -97,6 +105,8 @@ var axes = new eg.Axes({
 container.insertAdjacentHTML("beforeend", `<div id="prepend"></div><div id="append"></div>`);
 var prepend = document.getElementById("prepend");
 var append = document.getElementById("append");
+var innerContents = contents.querySelector("._eg-infinitegrid-container_");
+
 var isLoading = false;
 
 function requestInsert(isAppend) {
@@ -109,13 +119,15 @@ function requestInsert(isAppend) {
 		groups[groupKey] = getItems(groupKey, 30, isAppend);
 		ig[isAppend ? "append" : "prepend"](groups[groupKey], groupKey);
 		isLoading = false;
-		axes.setTo({ scroll: 0 }, 500);
+		axes.setTo({scroll: 0}, 500);
 		container.classList.remove("pull");
 	}, 1000);
 }
 axes.on({
 	"change": function (e) {
+		console.log(e);
 		var pos = e.pos;
+		console.log(isRequestPull, isLoading, axes.isBounceArea());
 		if (!isRequestPull || isLoading || !axes.isBounceArea()) {
 			return;
 		}
@@ -133,8 +145,8 @@ axes.on({
 			return;
 		}
 
-		contents.style.transition = "";
-		contents.style.transform = "translateY(" + (-scroll) + "px)";
+		innerContents.style.transition = "";
+		innerContents.style.transform = "translateY(" + (-scroll) +"px)";
 
 		var element = isAppend ? append : prepend;
 
@@ -145,7 +157,7 @@ axes.on({
 			element.innerHTML = "Release to " + (isAppend ? "append" : "prepend");
 		}
 	},
-	"release": function (e) {
+	"release": function(e) {
 		var depaPos = e.depaPos;
 
 		if (!isRequestPull || isLoading || !axes.isBounceArea() || !depaPos) {
@@ -175,8 +187,8 @@ axes.on({
 		if (isRequestPull >= REQUEST_APPEND_ANIMATE) {
 			isRequestPull = REQUEST_CHANGE;
 		}
-	},
+	}
 });
 
 
-axes.connect(["", "scroll"], new eg.Axes.PanInput(container, { scale: [0, -1] }));
+axes.connect(["", "scroll"], new eg.Axes.PanInput(container, {scale: [0, -1]}));

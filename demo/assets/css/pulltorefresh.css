@@ -42,6 +42,7 @@ body {
 	height: 500px;
 }
 .contents {
+	transform: translateY(0px);
 	height: 100%;
 }
 #table .post {

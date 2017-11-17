@@ -108,6 +108,18 @@ pre code {
 .header .logo a:hover {
   text-decoration: none;
 }
+.header .pull-left {
+  position: relative;
+}
+.header .pull-right a {
+  font-family: 'Zilla Slab', serif;
+  font-size: 18px;
+  line-height: 40px;
+  letter-spacing: -0.8px;
+  text-decoration: none;
+  display: inline-block;
+  color: #2B2B2B;
+}
 
 .header .logo {
   background: url("../image/type_black.svg") no-repeat;
@@ -209,7 +221,7 @@ pre code {
   
 .promo .title {
   font-size: 100px;
-  margin-top: -104px;
+  /* margin-top: -104px; */
 }
 .promo .title .highlight {
   font-family: 'Zilla Slab', serif;
@@ -238,7 +250,89 @@ pre code {
 .promo .meta li {
   margin-right: 15px;
 }
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes go-grid {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+.promo .logo-infinitegrid {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: auto;
+  margin-top: 100px;
+}
+.promo .logo-infinite {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: url(../image/infinite.png) no-repeat;
+  background-size: cover;
+  animation: rotate 6s linear 0s infinite forwards;
+}
+.promo .logo-grid {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border:3px solid #231815;
+  background: #fff;
+  background-size: cover;
+  overflow: hidden;
 
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+.promo .logo-grid .line, .promo .logo-grid .grid-line {
+  position: absolute;
+  background: #231815;
+}
+.promo .logo-grid .grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: go-grid 3s linear 0s infinite forwards;
+}
+.promo .logo-grid .grid-line {
+  width: 50%;
+  height: 3px;
+}
+.promo .logo-grid .line1 {
+  top: 70%;
+  left: 0;
+}
+.promo .logo-grid .line2 {
+  top: 30%;
+  right: 0;
+}
+.promo .logo-grid .line.center {
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 3px;
+}
+.promo .logo-grid:hover .grid {
+  transform: translateY(-100%);
+}
+.promo .logo-infinite:hover {
+  transform: rotate(360deg);
+}
 .container.text-center {
   padding: 0px 30px;
 }
@@ -458,6 +552,7 @@ span.version:hover {
   display: inline-block;
   list-style: none;
   vertical-align: top;
+  cursor: pointer;
 }
 .layout-item p {
   text-align: center;

@@ -36,28 +36,32 @@ import InfiniteGrid from "@egjs/infinitegrid";
 
 ### Initialize
 
-```javascript
-// create InfiniteGrid ui without option
-new eg.InfiniteGrid("#grid");
-
-// create InfiniteGrid ui with options
-new eg.InfiniteGrid("#grid",{
-  itemSelector: ".item"
-});
-```
-
-### Initialize Layout
-
+##### ES5
 ```javascript
 // create InfiniteGrid
-const ig = new eg.InfiniteGrid("#grid");
+var ig = new eg.InfiniteGrid("#grid", {
+    horizontal: false
+});
 
 // initialize layout
 // GridLayout(default), JustifiedLayout, FrameLayout, SquareLayout, PackingLayout
 ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
+    itemSize: 200
+});
+```
+##### ES6+
+```javascript
+import InfiniteGrid from "@egjs/infinitegrid";
+import JustifiedLayout from "@egjs/infinitegrid/layouts/JustifiedLayout";
+
+const ig = new InfiniteGrid("#grid", {
+    horizontal: false,
+});
+
+// initialize layout
+// GridLayout(default), JustifiedLayout, FrameLayout, SquareLayout, PackingLayout
+ig.setLayout(JustifiedLayout, {
     itemSize: 200,
 });
 ```
-
-
-For more information about API, please visit the **[link](//naver.github.io/egjs-view360/release/latest/doc/eg.view360.PanoViewer.html)**.
+For more information about API, please visit the **[link](//naver.github.io/egjs-infinitegrid/release/latest/doc/)**.

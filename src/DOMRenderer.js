@@ -102,9 +102,9 @@ export default class DOMRenderer {
 	_init(el) {
 		const element = $(el);
 
-		element.style.position = "relative";
-		// base.style.width = "100%";
-		// base.style.height = "100%";
+		if (element.style.position === "static") {
+			element.style.position = "relative";
+		}
 
 		if (this.options.isOverflowScroll) {
 			let container = element.querySelector(`.${CONTAINER_CLASSNAME}`);
