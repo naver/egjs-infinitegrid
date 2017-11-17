@@ -105,11 +105,7 @@ export default class DOMRenderer {
 		const style = SUPPORT_COMPUTEDSTYLE ?
 			window.getComputedStyle(element) : element.currentStyle;
 
-<<<<<<< HEAD
 		if (style.position === "static") {
-=======
-		if (element.style.position === "static") {
->>>>>>> a294ca5bd3e3b836f0fea580fb2198f99897a2e4
 			element.style.position = "relative";
 		}
 

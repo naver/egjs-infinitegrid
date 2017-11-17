@@ -39,35 +39,10 @@ import JustifiedLayout from "@egjs/infinitegrid/JustifiedLayout";
 ```
 
 ### Initialize
-<<<<<<< HEAD
 ```javascript
 var ig = new InfiniteGrid("#grid", {
     horizontal: false,
 });
-=======
-
-##### ES5
-```javascript
-// create InfiniteGrid
-var ig = new eg.InfiniteGrid("#grid", {
-    horizontal: false
-});
-
-// initialize layout
-// GridLayout(default), JustifiedLayout, FrameLayout, SquareLayout, PackingLayout
-ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
-    itemSize: 200
-});
-```
-##### ES6+
-```javascript
-import InfiniteGrid from "@egjs/infinitegrid";
-import JustifiedLayout from "@egjs/infinitegrid/layouts/JustifiedLayout";
-
-const ig = new InfiniteGrid("#grid", {
-    horizontal: false,
-});
->>>>>>> a294ca5bd3e3b836f0fea580fb2198f99897a2e4
 
 // initialize layout
 // GridLayout(default), JustifiedLayout, FrameLayout, SquareLayout, PackingLayout
