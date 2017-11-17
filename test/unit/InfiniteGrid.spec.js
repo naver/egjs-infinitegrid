@@ -51,6 +51,51 @@ describe("InfiniteGrid Test", function() {
       });
     });
   });
+
+  describe("When scrolling append/prepend event Test", function() {
+    [true, false].forEach(isOverflowScroll => {
+      beforeEach(() => {
+        this.el = sandbox();
+        this.el.innerHTML = "<div id='infinite'></div>";
+        this.inst = new InfiniteGrid("#infinite", {
+          useRecycle: true,
+          isOverflowScroll
+        });
+        this.inst.setLayout(GridLayout);
+      });
+      afterEach(() => {
+        if (this.inst) {
+          this.inst.destroy();
+          this.inst = null;
+        }
+        cleanup();
+      });
+      
+      [APPEND, PREPEND].forEach(isAppend => {
+        const ITEMCOUNT = 30;
+        const RETRY = 7;
+        it(`should trigger ${isAppend ? "append" : "prepend"} event when scrolling (isOverflowScroll: ${isOverflowScroll})`, done => {
+          // Given
+          // When
+          this.inst.on(isAppend ? "append" : "prepend", param => {
+            expect(param.isTrusted).to.a.true;
+            expect(param.groupKey).to.be.equal(param.currentTarget.getGroupKeys()[isAppend ? "pop" : "shift"]());
+            done();
+          });
+          const handler = insert(this.inst, isAppend, () => {
+            const lastParam = handler.getCall(handler.callCount - 1).args[0];
+            if (isAppend) {
+              const spot = lastParam.size;
+              this.inst._watcher.scrollTo(spot);
+            } else {
+              this.inst._watcher.scrollTo(0);
+            }
+          }, ITEMCOUNT, RETRY);
+        });
+      });
+    });
+  });  
+  
   describe("append/prepend Test on layoutComplete", function() {
     [true, false].forEach(isOverflowScroll => {
       beforeEach(() => {
@@ -70,31 +115,35 @@ describe("InfiniteGrid Test", function() {
         cleanup();
       });
       
-      [APPEND, PREPEND].forEach(v => {
+      [APPEND, PREPEND].forEach(isAppend => {
         const ITEMCOUNT = 30;
         const RETRY = 7;
   
-        it(`should check a ${v ? "append" : "prepend"} with recycle method (isOverflowScroll: ${isOverflowScroll})`, done => {
+        it(`should check a ${isAppend ? "append" : "prepend"} with recycle method (isOverflowScroll: ${isOverflowScroll})`, done => {
           // Given
           // When
-          const handler = insert(this.inst, v, () => {
+          const handler = insert(this.inst, isAppend, () => {
             // Then
             expect(this.inst._status.startCursor).to.be.equal(0);
             expect(this.inst._status.endCursor).to.be.equal(RETRY - 1);
             expect(this.inst.getGroupKeys()).to.have.lengthOf(RETRY);
     
             // Then: check layout property
-            checkLayoutComplete(handler, v, ITEMCOUNT);
+            checkLayoutComplete(handler, {
+              isAppend, 
+              count: ITEMCOUNT,
+              isTrusted: false
+            });
     
             // Given
             const centerIdx = Number.parseInt(RETRY / 2);
             const centerEndValue = this.inst._items
-              .getEdgeValue(v ? "end" : "start", this.inst._status.startCursor, centerIdx);
+              .getEdgeValue(isAppend ? "end" : "start", this.inst._status.startCursor, centerIdx);
     
             // When
             this.inst._watcher.scrollTo(centerEndValue);
             setTimeout(() => {
-              this.inst._recycle(v);
+              this.inst._recycle(isAppend);
               // Then
               expect(this.inst.getGroupKeys()).to.have.lengthOf.below(RETRY);
               done();
