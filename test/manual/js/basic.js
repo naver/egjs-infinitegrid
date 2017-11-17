@@ -1,56 +1,208 @@
-var oinst = new eg.InfiniteGrid($("#grid"));
+/* eslint-disable */
 
-var HTML = '<li class="item"><div>test1</div></li><li class="item"><div>test2</div></li><li class="item"><div>test3</div></li><li class="item"><div>test4</div></li><li class="item"><div>test5</div></li><li class="item"><div>test6</div></li><li class="item"><div>test7</div></li>';
+var ig;
+var parallax;
 
-var tmpStatus = {};
+var template = '<div class="item" data-column="${column}" data-group=${group}><img src="../../demo/assets/image/${no}.jpg"></div >';
+var num = 27;
+var _status = 0;
+var _groups = {};
+var isParallax = false;
+var _layout;
+var grid = document.querySelector("#grid");
+$(grid).click(function (e) {
+	var target = e.target;
 
-$("#grid").click(function(e) {
-  var $el = $(e.target);
-  oinst.remove(e.target.parentNode);
+	if ($(target).hasClass(".item")) {
+		ig.remove(target);
+	} else {
+		var parent = $(target).parent(".item");
+		if(parent.size() === 0) {
+			return;
+		}
+		ig.remove(parent[0]);
+		ig.layout(false);
+	}
+});
+function createGrid(horizontal) {
+	ig = new eg.InfiniteGrid(grid, {
+		horizontal: horizontal
+	});
+	ig.on({
+		"prepend": function (e) {
+			var groupKeys = ig.getGroupKeys(true);
+			var groupKey = (groupKeys[0] || 0) - 1;
+
+			if (!(groupKey in groups)) {
+				return;
+			}
+			ig.prepend(groups[groupKey], groupKey);
+		},
+		"append": function (e) {
+			var groupKeys = ig.getGroupKeys(true);
+			var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+			if (!(groupKey in groups)) {
+				// allow append
+				groups[groupKey] = getItems(groupKey, num);
+			}
+			ig.append(groups[groupKey], groupKey);
+		},
+		"layoutComple": function (e) {
+			if (!isParallax) {
+				return;
+			}
+			parallax.refresh(e.target, e.scrollPos);
+		},
+		"change": function (e) {
+			if (!isParallax) {
+				return;
+			}
+			parallax.refresh(ig.getItems(), e.scrollPos);
+		}
+	});
+	parallax = new eg.Parallax(window, {
+		container: grid,
+		horizontal: horizontal
+	});
+	parallax.resize();
+}
+createGrid(false);
+window.addEventListener("resize", function (e) {
+	parallax.resize(ig.getItems());
+	if (!isParallax) {
+		return;
+	}
+	parallax.refresh(ig.getItems(), document.body.scrollTop);
+});
+var groups = {};
+function getItem(template, options) {
+	return template.replace(/\$\{([^\}]*)\}/g, function () {
+		var replaceTarget = arguments[1];
+
+		return options[replaceTarget];
+	});
+}
+function getItems(group, length) {
+	var arr = [];
+	for (var i = 0; i < length; ++i) {
+		arr.push(getItem(template, { no: Math.round(Math.random() * 59 + 1), column: i % 12 === 0 ? 2 : 1, group: Math.abs(group) % 5}));
+	}
+	return arr;
+}
+function clear() {
+	groups = {};
+	ig.clear();
+}
+function changeLayout(className, options) {
+	_layout = className;
+
+	clear()
+	$("#grid").attr("data-layout", className);
+	$("#grid").html("");
+	ig.setLayout(eg.InfiniteGrid[className], options);
+	append();
+}
+function GridLayout() {
+	changeLayout("GridLayout", {
+		margin: 10,
+		align: "justify"
+	});
+}
+function JustifiedLayout() {
+	changeLayout("JustifiedLayout", {
+		margin: 10
+	});
+}
+function FrameLayout() {
+	changeLayout("FrameLayout", {
+		frame: [
+			[1, 1, 2, 3, 4, 5],
+			[1, 1, 6, 7, 8, 9]
+		],
+		margin: 10,
+	});
+}
+function SquareLayout() {
+	changeLayout("SquareLayout", {
+		margin: 10,
+		itemSize: 200,
+	});
+}
+function PackingLayout() {
+	changeLayout("PackingLayout", {
+		aspectRatio: 1.5,
+		ratioWeight: 100,
+		margin: 10,
+	});
+}
+function append() {
+	var groupKeys = ig.getGroupKeys(true);
+	var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+
+	if (!(groupKey in groups)) {
+		// allow append
+		groups[groupKey] = getItems(groupKey, num);
+	}
+	ig.append(groups[groupKey], groupKey);
+}
+function prepend() {
+	var groupKeys = ig.getGroupKeys(true);
+	var groupKey = (groupKeys[0] || 0) - 1;
+
+	if (!(groupKey in groups)) {
+		// allow prepend
+		groups[groupKey] = getItems(groupKey, num);
+	}
+	ig.prepend(groups[groupKey], groupKey);
+}
+function layout() {
+	ig.layout();
+}
+function layout_false() {
+	ig.layout(false);
+}
+function setStatus() {
+	if (!_status) {
+		return;
+	}
+	groups = _groups;
+	ig.setStatus(_status);
+}
+function enableParallax() {
+	isParallax = true;
+	parallax.refresh(ig.getItems(), document.body.scrollTop);
+}
+function disableParallax() {
+	isParallax = false;
+}
+function getStatus() {
+	_status = ig.getStatus();
+	_groups = groups;
+}
+function vertical() {
+	createGrid(false);
+	$("#grid").attr("style", "").attr("data-direction", "vertical");
+	window[_layout]();
+}
+function horizontal() {
+	createGrid(true);
+	$("#grid").attr("style", "").attr("data-direction", "horizontal");
+	window[_layout]();
+
+}
+
+$("#controller").click(function(e) {
+	var target = e.target;
+	var tag = target.tagName;
+
+	if (tag !== "BUTTON") {
+		return;
+	}
+	var className = $(target).attr("class");
+
+	window[className]();
+
 });
 
-$("#controler").click(function(e) {
-  var $el = $(e.target),
-    $elements = null;
-  if ($el.hasClass("append")) {
-    $elements = $(HTML);
-    $elements.addClass("append").find("div").height(function() {
-      var val = parseInt(Math.random() * 100,10);
-      return val < 40 ? 40 : val;
-    });
-    oinst.append($elements );
-  } else if ($el.hasClass("prepend")) {
-    $elements = $(HTML);
-    $elements.addClass("prepend").find("div").height(function() {
-      var val = parseInt(Math.random() * 100,10);
-      return val < 40 ? 40 : val;
-    })
-    oinst.prepend($elements);
-  } else if ($el.hasClass("layout")) {
-    oinst.layout();
-  } else if ($el.hasClass("layout_false")) {
-    oinst.layout(false);
-  } else if ($el.hasClass("clear")) {
-    oinst.clear();
-  } else if ($el.hasClass("getStatus")) {
-    tmpStatus = oinst.getStatus();
-  } else if ($el.hasClass("setStatus")) {
-    oinst.setStatus(tmpStatus);
-  } else if ($el.hasClass("getTopElement")) {
-    var $el = $(oinst.getTopElement());
-    $el.animate({
-            "fontSize" : "3em"
-    }, 1000)
-        .animate({
-            "fontSize" : "1em"
-        });
-  } else if ($el.hasClass("getBottomElement")) {
-    var $el = $(oinst.getBottomElement());
-    $el.animate({
-            "fontSize" : "3em"
-    }, 1000)
-        .animate({
-            "fontSize" : "1em"
-        });
-  }
-});
+
+GridLayout();
