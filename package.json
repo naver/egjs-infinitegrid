@@ -1,7 +1,7 @@
 {
 	"name": "@egjs/infinitegrid",
-	"version": "2.1.1-snapshot",
-	"description": "A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
+	"version": "3.0.0-rc",
+	"description": "A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
 	"main": "dist/infinitegrid.js",
 	"es2015": "src/InfiniteGrid.js",
 	"types": "src/infinitegird.d.ts",
