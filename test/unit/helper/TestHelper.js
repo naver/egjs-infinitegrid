@@ -30,13 +30,13 @@ export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 }
 
 // check layout properties
-export function checkLayoutComplete(handler, isAppend, count) {
+export function checkLayoutComplete(handler, {count, isAppend, isTrusted}) {
 	for (let i = 0, len = handler.callCount; i < len; i++) {
 		const param = handler.getCall(i).args[0];
 
 		expect(param.target.length).to.be.equal(count);
 		expect(param.isAppend).to.be.equal(isAppend);
-		expect(param.isTrusted).to.be.false;
+		expect(param.isTrusted).to.be.equal(isTrusted);
 	}
 }
 

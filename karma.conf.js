@@ -34,14 +34,22 @@ module.exports = function(config) {
     },
 
     browsers: [],
-    
+
+    // you can define custom flags
+    customLaunchers: {
+      CustomChromeHeadless: {
+        base: 'ChromeHeadless',
+        flags: ['--window-size=400,300', '--no-sandbox', '--disable-setuid-sandbox']
+      }
+    },
+
     reporters: ["mocha"],
     webpackMiddleware: {
         noInfo: true
     }
   };
   
-  karmaConfig.browsers.push(config.chrome ? "Chrome" : "ChromeHeadless");
+  karmaConfig.browsers.push(config.chrome ? "Chrome" : "CustomChromeHeadless");
 
   if(config.coverage) {
     karmaConfig.reporters.push("coverage-istanbul");
