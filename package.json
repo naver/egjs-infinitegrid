@@ -6,7 +6,7 @@
 	"es2015": "src/InfiniteGrid.js",
 	"types": "src/infinitegird.d.ts",
 	"scripts": {
-		"start": "concurrently 'webpack-dev-server --env.name=InfiniteGrid --env.path=./src/index.js' 'webpack --watch --env.name=Parallax --env.path=./src/Parallax.js'",
+		"start": "concurrently 'webpack-dev-server --host=0.0.0.0 --env.name=InfiniteGrid --env.path=./src/index.js' 'webpack --watch --env.name=Parallax --env.path=./src/Parallax.js'",
 		"build": "rm -rf ./dist && concurrently 'npm run build:infinitegrid' 'npm run build:parallax'",
 		"build:infinitegrid": "webpack --env.type=production --env.name=InfiniteGrid --env.path=./src/index.js && webpack --env.type=packaged --env.name=InfiniteGrid --env.path=./src/index.js",
 		"build:parallax": "webpack --env.type=production --env.name=Parallax --env.path=./src/Parallax.js",

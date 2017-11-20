@@ -10,59 +10,55 @@ class BoxModel {
 		this._innerItem = option.innerItem || [];
 	}
 
-	get item() {
-		return this._item;
-	}
-
-	get originWidth() {
+	getOriginWidth() {
 		return this._originWidth;
 	}
 
-	set originWidth(width) {
+	setOriginWidth(width) {
 		this._originWidth = width;
 	}
 
-	get originHeight() {
+	getOriginHeight() {
 		return this._originHeight;
 	}
 
-	set originHeight(height) {
+	setOriginHeight(height) {
 		this._originHeight = height;
 	}
 
-	get width() {
+	getWidth() {
 		return this._width;
 	}
 
-	set width(width) {
+	setWidth(width) {
 		this._width = width;
 	}
 
-	get height() {
+	getHeight() {
 		return this._height;
 	}
 
-	set height(height) {
+	setHeight(height) {
 		this._height = height;
 	}
 
-	get left() {
+	getLeft() {
 		return this._left;
 	}
 
-	set left(left) {
+	setLeft(left) {
 		this._left = left;
 	}
 
-	get top() {
+	getTop() {
 		return this._top;
 	}
 
-	set top(top) {
+	setTop(top) {
 		this._top = top;
 	}
 
-	get innerItem() {
+	innerItem() {
 		return this._innerItem;
 	}
 
@@ -72,17 +68,17 @@ class BoxModel {
 
 		this._innerItem.forEach(v => {
 			if (scaleX !== 0) {
-				v.left *= scaleX;
-				v.width *= scaleX;
+				v._left *= scaleX;
+				v._width *= scaleX;
 			}
 			if (scaleY !== 0) {
-				v.top *= scaleY;
-				v.height *= scaleY;
+				v._top *= scaleY;
+				v._height *= scaleY;
 			}
 		});
 
-		this.width = width;
-		this.height = height;
+		this._width = width;
+		this._height = height;
 	}
 
 	pushItem(item) {
@@ -90,30 +86,30 @@ class BoxModel {
 	}
 
 	getOriginSize() {
-		return this.originWidth * this.originHeight;
+		return this._originWidth * this._originHeight;
 	}
 
 	getSize() {
-		return this.width * this.height;
+		return this._width * this._height;
 	}
 
 	getOriginRatio() {
-		return (this.originHeight === 0) ? 0 : this.originWidth / this.originHeight;
+		return (this._originHeight === 0) ? 0 : this._originWidth / this._originHeight;
 	}
 
 	getRatio() {
-		return (this.height === 0) ? 0 : this.width / this.height;
+		return (this._height === 0) ? 0 : this._width / this._height;
 	}
 
 	isSmallerThen(box) {
-		return (this.width <= box.width && this.height <= box.height);
+		return (this._width <= box._width && this._height <= box._height);
 	}
 
 	isEqual(box) {
-		return (this.left === box.left &&
-		this.top === box.top &&
-		this.width === box.width &&
-		this.height === box.height);
+		return (this._left === box._left &&
+		this._top === box._top &&
+		this._width === box._width &&
+		this._height === box._height);
 	}
 }
 

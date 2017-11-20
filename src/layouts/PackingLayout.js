@@ -13,18 +13,17 @@ function getCost(originLength, length) {
 	return cost - 1;
 }
 function fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertical) {
-	item.height = itemFitSize.height;
-	item.width = itemFitSize.width;
-
-	bestFitArea.height = containerFitSize.height;
-	bestFitArea.width = containerFitSize.width;
+	item.setHeight(itemFitSize.height);
+	item.setWidth(itemFitSize.width);
+	bestFitArea.setHeight(containerFitSize.height);
+	bestFitArea.setWidth(containerFitSize.width);
 
 	if (layoutVertical) {
-		item.top = bestFitArea.top + bestFitArea.height;
-		item.left = bestFitArea.left;
+		item.setTop(bestFitArea.getTop() + bestFitArea.getHeight());
+		item.setLeft(bestFitArea.getLeft());
 	} else {
-		item.left = bestFitArea.left + bestFitArea.width;
-		item.top = bestFitArea.top;
+		item.setLeft(bestFitArea.getLeft() + bestFitArea.getWidth());
+		item.setTop(bestFitArea.getTop());
 	}
 }
 class PackingLayout {
@@ -40,10 +39,10 @@ class PackingLayout {
 	}
 	_findBestFitArea(container, item) {
 		if (container.getRatio() === 0) { // 아이템 최초 삽입시 전체영역 지정
-			container.originWidth = item.width;
-			container.originHeight = item.height;
-			container.width = item.width;
-			container.height = item.height;
+			container.setOriginWidth(item.getWidth());
+			container.setOriginHeight(item.getHeight());
+			container.setWidth(item.getWidth());
+			container.setHeight(item.getHeight());
 			return;
 		}
 
@@ -60,7 +59,7 @@ class PackingLayout {
 		};
 		const {sizeWeight, ratioWeight} = this.options;
 
-		container.innerItem.forEach(v => {
+		container.innerItem().forEach(v => {
 			const containerSizeCost = getCost(v.getOriginSize(), v.getSize()) * sizeWeight;
 			const containerRatioCost = getCost(v.getOriginRatio(), v.getRatio()) * ratioWeight;
 			let cost;
@@ -73,16 +72,16 @@ class PackingLayout {
 
 				if (i === 0) {
 					// 상하에 아이템 추가
-					itemWidth = v.width;
-					itemHeight = v.height * (item.height / (v.originHeight + item.height));
-					containerWidth = v.width;
-					containerHeight = v.height - itemHeight;
+					itemWidth = v.getWidth();
+					itemHeight = v.getHeight() * (item.getHeight() / (v.getOriginHeight() + item.getHeight()));
+					containerWidth = v.getWidth();
+					containerHeight = v.getHeight() - itemHeight;
 				} else {
 					// 좌우에 아이템 추가
-					itemHeight = v.height;
-					itemWidth = v.width * (item.width / (v.originWidth + item.width));
-					containerHeight = v.height;
-					containerWidth = v.width - itemWidth;
+					itemHeight = v.getHeight();
+					itemWidth = v.getWidth() * (item.getWidth() / (v.getOriginWidth() + item.getWidth()));
+					containerHeight = v.getHeight();
+					containerWidth = v.getWidth() - itemWidth;
 				}
 
 				const itemSize = itemWidth * itemHeight;
@@ -143,7 +142,12 @@ class PackingLayout {
 			container.scaleTo(containerWidth + margin, containerHeight + margin);
 		});
 		items.forEach((item, i) => {
-			const {left, top, width, height} = container.innerItem[i];
+			const boxItem = container.innerItem()[i];
+			// console.log("boxItem", boxItem, boxItem instanceof BoxModel);
+			const width = boxItem.getWidth();
+			const height = boxItem.getHeight();
+			const top = boxItem.getTop();
+			const left = boxItem.getLeft();
 
 			item.rect = {top, left, width: width - margin, height: height - margin};
 			item.rect[pos1Name] += start;

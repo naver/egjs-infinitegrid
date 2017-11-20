@@ -7,7 +7,7 @@ var banner = require("./banner");
 var config = {
 	externals: [],
 	plugins: [
-		new UglifyJSPlugin(uglifyConfig),
+		// new UglifyJSPlugin(uglifyConfig),
 		new webpack.BannerPlugin([banner.common, "", banner.pkgd].join("\r\n"))
 	]
 };
