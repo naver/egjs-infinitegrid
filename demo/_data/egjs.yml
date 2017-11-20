@@ -16,7 +16,7 @@ css:
 layouts:
 - name: GridLayout
   image: ./assets/image/GridLayout.svg
-  desc: GridLayout는 벽돌을 쌓아 올린 모양처럼 동일한 너비를 가진 이미지가 엇갈려 배열되는 레이아웃이다. 모든 이미지의 너비를 동일한 크기로 조정하고, 가장 높이가 낮은 열을 찾아 새로운 이미지를 삽입한다. 따라서 배치된 이미지 사이에 빈 공간이 생기지는 않지만 배치된 레이아웃의 아래쪽은 울퉁불퉁해진다.
+  desc: GridLayout is a layout in which images with the same width are arranged in a staggered arrangement, like a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new image.
   demos:
     - name: GridLayout1
       target: grid
@@ -32,7 +32,7 @@ layouts:
       target: pulltorefresh
 - name: JustifiedLayout
   image: ./assets/image/JustifiedLayout.svg
-  desc: \'justified\'는 \'1행의 너비에 맞게 꼭 들어찬\'이라는 의미를 가진 인쇄 용어다. 용어의 의미대로 너비가 주어진 한 행을 기준으로 이미지가 가득 차도록 배치하는 레이아웃이다.
+  desc: \'justified\' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout in which the image is filled up on the basis of a line given a width in the meaning of the term.
   demos:
   - name: Image Search 1
     target: search
@@ -40,24 +40,24 @@ layouts:
     target: search2
 - name: FrameLayout
   image: ./assets/image/FrameLayout.svg
-  desc: Frame 레이아웃은 정해진 틀에 아이템을 배치할 수 있는 레이아웃이다. 디자이너가 직접 이미지를 배치하는 것과 알고리즘을 사용한 배치의 중간 정도 수준에 해당하는 레이아웃이다.
+  desc: FrameLayout is a layout that allows you to place items in a given frame. It is a layout that corresponds to a level intermediate between the placement of the image directly by the designer and the layout using the algorithm.
   demos:
   - name: FrameLayout 1
     target: frame
-  - name: FrameLayout 2
+  - name: Metro
     target: frame2
-  - name: FrameLayout 3
+  - name: Calendar
     target: frame3
   - name: Timeline
     target: timeline
 - name: SquareLayout
   image: ./assets/image/SquareLayout.svg
-  desc: SquareLayout은 그리드에 맞춰 바둑판처럼 모든 이미지를 정사각형으로 배치하고 중요한 이미지는 크기를 N배로 키워서 보여 준다. 주요 이미지를 크게 표시하고, 그다음에 작은 이미지를 배치해 자연스럽게 이미지의 관계를 나타낼 수 있다.
+  desc: SquareLayout aligns the grid with all the images in a square like a checkerboard, and the important image is displayed by enlarging the size N times. The main image can be enlarged, and then a small image can be placed to naturally show the relationship of the image.
   demos:
   - name: SquareLayout 1
     target: square
 - name: PackingLayout
-  desc:  Packing 레이아웃은 이미지의 본래 크기에 따른 비중을 해치지 않으면서 중요한 이미지는 더 크게 보여 준다. 행과 열이 구분돼 이미지를 정돈되게 배치하는 대신 가로세로 일정 공간 내에서 동적으로 이미지를 배치한다. 다른 라이브러리에 비해 확장성과 유연성은 떨어지지만 정적인 페이지에서 감각적인 이미지 배치를 보여 주고 싶다면 가장 적당한 레이아웃일 것이다.
+  desc:  PackingLayout show important images bigger without sacrificing the inherent size of the image. Rows and columns are separated so that images are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.
   image: ./assets/image/PackingLayout.svg
   demos:
   - name: PackingLayout 1

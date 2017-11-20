@@ -5,6 +5,7 @@ import {
 	MULTI,
 	GROUPKEY_ATT,
 	CONTAINER_CLASSNAME,
+	SUPPORT_COMPUTEDSTYLE,
 } from "./consts";
 import {
 	$,
@@ -101,8 +102,10 @@ export default class DOMRenderer {
 	}
 	_init(el) {
 		const element = $(el);
+		const style = SUPPORT_COMPUTEDSTYLE ?
+			window.getComputedStyle(element) : element.currentStyle;
 
-		if (element.style.position === "static") {
+		if (style.position === "static") {
 			element.style.position = "relative";
 		}
 

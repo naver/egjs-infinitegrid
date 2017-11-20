@@ -4,12 +4,19 @@ body {
 	background: #EDEDF0;
 	font-size: 15px;
 }
+.started {
+	position: fixed;
+	top: 50px;
+	font-size: 40px;
+	left: 100px;
+}
 .container {
-	position: relative;
+	position: absolute;
 	width: 80%;
 	margin: 0px auto;
 	min-width: 850px;
-	height: 100%;
+	top: 150px;
+	bottom: 100px;
 }
 .item {
 	height: 100%;
