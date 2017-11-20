@@ -44,8 +44,10 @@ export default class DOMRenderer {
 		element.parentNode.removeChild(element);
 	}
 	static createElements(items) {
-		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(
-			""), MULTI);
+		const elements = $(items.reduce((acc, v, i) => {
+			acc.push(v.content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, ""));
+			return acc;
+		}, []).join(""), MULTI);
 
 		return items.map((item, index) => {
 			item.el = elements[index];

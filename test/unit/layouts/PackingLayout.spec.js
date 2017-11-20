@@ -6,7 +6,7 @@ import Layout from "../../../src/layouts/PackingLayout";
 import { getStyleNames } from "../../../src/utils";
 
 
-describe.only("PackingLayout Test", function () {
+describe("PackingLayout Test", function () {
 	const items = makeItems(20);
 	const width = 100;
 

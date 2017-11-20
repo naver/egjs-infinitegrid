@@ -67,7 +67,7 @@ function createGrid(horizontal) {
 	parallax.resize();
 }
 createGrid(false);
-window.addEventListener("resize", function (e) {
+$(window).on("resize", function (e) {
 	parallax.resize(ig.getItems());
 	if (!isParallax) {
 		return;

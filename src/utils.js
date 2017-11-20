@@ -40,7 +40,7 @@ export function $(param, multi = false) {
 
 	if (typeof param === "string") { // String (HTML, Selector)
 		// check if string is HTML tag format
-		const match = param.match(/^<([a-z]+)\s*([^>]*)>/);
+		const match = param.match(/^<([A-z]+)\s*([^>]*)>/);
 
 		// creating element
 		if (match) { // HTML

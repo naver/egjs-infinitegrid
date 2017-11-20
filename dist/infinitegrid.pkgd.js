@@ -216,7 +216,7 @@ function $(param) {
 	if (typeof param === "string") {
 		// String (HTML, Selector)
 		// check if string is HTML tag format
-		var match = param.match(/^<([a-z]+)\s*([^>]*)>/);
+		var match = param.match(/^<([A-z]+)\s*([^>]*)>/);
 
 		// creating element
 		if (match) {
@@ -425,8 +425,9 @@ var DOMRenderer = function () {
 	};
 
 	DOMRenderer.createElements = function createElements(items) {
-		var elements = (0, _utils.$)(items.reduce(function (acc, v) {
-			return acc.concat(v.content);
+		var elements = (0, _utils.$)(items.reduce(function (acc, v, i) {
+			acc.push(v.content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, ""));
+			return acc;
 		}, []).join(""), _consts.MULTI);
 
 		return items.map(function (item, index) {
