@@ -25,8 +25,10 @@ $(grid).click(function (e) {
 	}
 });
 function createGrid(horizontal) {
+	ig && ig.destroy();
 	ig = new eg.InfiniteGrid(grid, {
-		horizontal: horizontal
+		horizontal: horizontal,
+		threshold: 50,
 	});
 	ig.on({
 		"prepend": function (e) {
@@ -96,9 +98,8 @@ function clear() {
 function changeLayout(className, options) {
 	_layout = className;
 
-	clear()
+	clear();
 	$("#grid").attr("data-layout", className);
-	$("#grid").html("");
 	ig.setLayout(eg.InfiniteGrid[className], options);
 	append();
 }
@@ -181,12 +182,12 @@ function getStatus() {
 }
 function vertical() {
 	createGrid(false);
-	$("#grid").attr("style", "").attr("data-direction", "vertical");
+	$("#grid").attr("data-direction", "vertical");
 	window[_layout]();
 }
 function horizontal() {
 	createGrid(true);
-	$("#grid").attr("style", "").attr("data-direction", "horizontal");
+	$("#grid").attr("data-direction", "horizontal");
 	window[_layout]();
 
 }

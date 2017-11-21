@@ -118,6 +118,10 @@ export function scrollBy(el, x, y) {
 		el.scrollTop += y;
 	}
 }
+export function getStyles(el) {
+	return SUPPORT_COMPUTEDSTYLE ?
+		window.getComputedStyle(el) : el.currentStyle;
+}
 function _getSize(el, name) {
 	if (el === window) { // WINDOW
 		return el.document.documentElement[`client${name}`];
@@ -130,8 +134,7 @@ function _getSize(el, name) {
 			doc[`client${name}`]
 		);
 	} else { // NODE
-		const style = SUPPORT_COMPUTEDSTYLE ?
-			window.getComputedStyle(el) : el.currentStyle;
+		const style = getStyles(el);
 		const value = style[name.toLowerCase()];
 
 		return parseFloat(/auto|%/.test(value) ? el[`offset${name}`] : style[name.toLowerCase()]);

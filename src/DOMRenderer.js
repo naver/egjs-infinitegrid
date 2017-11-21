@@ -5,13 +5,13 @@ import {
 	MULTI,
 	GROUPKEY_ATT,
 	CONTAINER_CLASSNAME,
-	SUPPORT_COMPUTEDSTYLE,
 } from "./consts";
 import {
 	$,
 	scrollBy,
 	innerHeight,
 	innerWidth,
+	getStyles,
 } from "./utils";
 
 export default class DOMRenderer {
@@ -104,10 +104,12 @@ export default class DOMRenderer {
 	}
 	_init(el) {
 		const element = $(el);
-		const style = SUPPORT_COMPUTEDSTYLE ?
-			window.getComputedStyle(element) : element.currentStyle;
+		const style = getStyles(element);
+
+		this._orgStyle = {};
 
 		if (style.position === "static") {
+			this._orgStyle.position = element.style.position;
 			element.style.position = "relative";
 		}
 
@@ -125,7 +127,8 @@ export default class DOMRenderer {
 				for (let i = 0; i < length; i++) {
 					container.appendChild(children[0]);
 				}
-
+				this._orgStyle.overflowX = element.style.overflowX;
+				this._orgStyle.overflowY = element.style.overflowY;
 				element.style[`overflow${target[0]}`] = "scroll";
 				element.style[`overflow${target[1]}`] = "hidden";
 				element.appendChild(container);
@@ -219,6 +222,10 @@ export default class DOMRenderer {
 			view: -1,
 			item: null,
 		};
+		this.container.style[this.options.isVertical ? "height" : "width"] = "";
+		for (const p in this._orgStyle) {
+			this[this.options.isOverflowScroll ? "view" : "container"].style[p] = this._orgStyle[p];
+		}
 	}
 }
 

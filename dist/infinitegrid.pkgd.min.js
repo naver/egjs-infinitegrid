@@ -170,6 +170,7 @@ exports.removeEvent = removeEvent;
 exports.scroll = scroll;
 exports.scrollTo = scrollTo;
 exports.scrollBy = scrollBy;
+exports.getStyles = getStyles;
 exports.innerWidth = innerWidth;
 exports.innerHeight = innerHeight;
 exports.getStyleNames = getStyleNames;
@@ -299,6 +300,9 @@ function scrollBy(el, x, y) {
 		el.scrollTop += y;
 	}
 }
+function getStyles(el) {
+	return _consts.SUPPORT_COMPUTEDSTYLE ? _browser.window.getComputedStyle(el) : el.currentStyle;
+}
 function _getSize(el, name) {
 	if (el === _browser.window) {
 		// WINDOW
@@ -310,7 +314,7 @@ function _getSize(el, name) {
 		return Math.max(el.body["scroll" + name], doc["scroll" + name], el.body["offset" + name], doc["offset" + name], doc["client" + name]);
 	} else {
 		// NODE
-		var style = _consts.SUPPORT_COMPUTEDSTYLE ? _browser.window.getComputedStyle(el) : el.currentStyle;
+		var style = getStyles(el);
 		var value = style[name.toLowerCase()];
 
 		return parseFloat(/auto|%/.test(value) ? el["offset" + name] : style[name.toLowerCase()]);
@@ -494,9 +498,12 @@ var DOMRenderer = function () {
 
 	DOMRenderer.prototype._init = function _init(el) {
 		var element = (0, _utils.$)(el);
-		var style = _consts.SUPPORT_COMPUTEDSTYLE ? window.getComputedStyle(element) : element.currentStyle;
+		var style = (0, _utils.getStyles)(element);
+
+		this._orgStyle = {};
 
 		if (style.position === "static") {
+			this._orgStyle.position = element.style.position;
 			element.style.position = "relative";
 		}
 
@@ -514,7 +521,8 @@ var DOMRenderer = function () {
 				for (var i = 0; i < length; i++) {
 					container.appendChild(children[0]);
 				}
-
+				this._orgStyle.overflowX = element.style.overflowX;
+				this._orgStyle.overflowY = element.style.overflowY;
 				element.style["overflow" + target[0]] = "scroll";
 				element.style["overflow" + target[1]] = "hidden";
 				element.appendChild(container);
@@ -619,6 +627,10 @@ var DOMRenderer = function () {
 			view: -1,
 			item: null
 		};
+		this.container.style[this.options.isVertical ? "height" : "width"] = "";
+		for (var p in this._orgStyle) {
+			this[this.options.isOverflowScroll ? "view" : "container"].style[p] = this._orgStyle[p];
+		}
 	};
 
 	return DOMRenderer;
