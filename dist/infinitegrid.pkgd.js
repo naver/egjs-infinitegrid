@@ -789,8 +789,8 @@ var FrameLayout = function () {
 		var shapesSize = this._shapes[size2Name];
 		var shapes = this._shapes.shapes;
 		var shapesLength = shapes.length;
-		var startOutline = new Array(shapesSize).fill(-1);
-		var endOutline = new Array(shapesSize).fill(0);
+		var startOutline = (0, _utils.fill)(shapesSize, -1);
+		var endOutline = (0, _utils.fill)(shapesSize, 0);
 		var shapesSize1 = shapes.height * (itemSize1 + margin) - margin;
 		var fitSize = this.options.fitSize;
 		var fitStartPos = 0;
@@ -2878,6 +2878,8 @@ var _FrameLayout2 = __webpack_require__(4);
 
 var _FrameLayout3 = _interopRequireDefault(_FrameLayout2);
 
+var _utils = __webpack_require__(1);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2890,7 +2892,7 @@ function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
 	var point = Math[isAppend ? "min" : "max"].apply(Math, outline) || 0;
 
 	if (outline.length !== columnLength) {
-		return new Array(columnLength).fill(0);
+		return (0, _utils.fill)(columnLength, 0);
 	}
 	return outline.map(function (l) {
 		return parseInt((l - point) / itemSize, 10);

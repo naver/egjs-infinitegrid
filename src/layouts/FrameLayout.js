@@ -1,5 +1,5 @@
 import {APPEND, PREPEND, ALIGN} from "../consts";
-import {getStyleNames, assignOptions} from "../utils";
+import {getStyleNames, assignOptions, fill} from "../utils";
 
 const {START, CENTER, END} = ALIGN;
 
@@ -122,8 +122,8 @@ class FrameLayout {
 		const shapesSize = this._shapes[size2Name];
 		const shapes = this._shapes.shapes;
 		const shapesLength = shapes.length;
-		const startOutline = new Array(shapesSize).fill(-1);
-		const endOutline = new Array(shapesSize).fill(0);
+		const startOutline = fill(shapesSize, -1);
+		const endOutline = fill(shapesSize, 0);
 		const shapesSize1 = shapes.height * (itemSize1 + margin) - margin;
 		let fitSize = this.options.fitSize;
 		let fitStartPos = 0;

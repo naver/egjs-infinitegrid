@@ -1,10 +1,11 @@
 import FrameLayout from "./FrameLayout";
+import {fill} from "../utils";
 
 function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
 	const point = Math[isAppend ? "min" : "max"](...outline) || 0;
 
 	if (outline.length !== columnLength) {
-		return new Array(columnLength).fill(0);
+		return fill(columnLength, 0);
 	}
 	return outline.map(l => parseInt((l - point) / itemSize, 10));
 }
