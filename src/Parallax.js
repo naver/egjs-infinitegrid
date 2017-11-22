@@ -10,6 +10,17 @@ const style = {
 };
 const START = "start";
 const CENTER = "center";
+const TRANSFORM = (function() {
+	const bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
+	const target = ["transform", "webkitTransform", "msTransform", "mozTransform"];
+
+	for (let i = 0, len = target.length; i < len; i++) {
+		if (target[i] in bodyStyle) {
+			return target[i];
+		}
+	}
+	return "";
+})();
 
 class Parallax {
 	constructor(root = window, options = {}) {
@@ -116,7 +127,7 @@ class Parallax {
 			// no parallax
 			if (boxSize >= imageSize) {
 				// remove transform style
-				imageElement.style.transform = "";
+				imageElement.style[TRANSFORM] = "";
 				return;
 			}
 
@@ -141,7 +152,7 @@ class Parallax {
 
 			imageElement.__TRANSLATE__ = translate;
 			imageElement.__RATIO__ = ratio;
-			imageElement.style.transform = `translate${coordinateName}(${translate}px)`;
+			imageElement.style[TRANSFORM] = `translate${coordinateName}(${translate}px)`;
 		});
 	}
 }
