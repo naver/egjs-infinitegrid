@@ -34,7 +34,6 @@ class PackingLayout {
 			ratioWeight: 1,
 		}, options);
 		this._size = 0;
-		this.options.horizontal = this.options.direction === "horizontal";
 		this._style = getStyleNames(this.options.horizontal);
 	}
 	_findBestFitArea(container, item) {
