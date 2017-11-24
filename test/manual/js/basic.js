@@ -85,7 +85,7 @@ function getItem(template, options) {
 function getItems(group, length) {
 	var arr = [];
 	for (var i = 0; i < length; ++i) {
-		arr.push(getItem(template, { no: Math.round(Math.random() * 59 + 1), column: i % 12 === 0 ? 2 : 1, group: Math.abs(group) % 5}));
+		arr.push(getItem(template, { no: Math.round(Math.random() * 59 + 1), column: i % 5 === 0 ? 2 : 1, group: Math.abs(group) % 5}));
 	}
 	return arr;
 }

@@ -2,13 +2,47 @@ import dijkstra from "./lib/dijkstra";
 import {APPEND, PREPEND} from "../consts";
 import {getStyleNames, assignOptions} from "../utils";
 
+/**
+ * 'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout in which the image is filled up on the basis of a line given a width in the meaning of the term.
+ * @ko 'justified'는 '1행의 너비에 맞게 꼭 들어찬'이라는 의미를 가진 인쇄 용어다. 용어의 의미대로 너비가 주어진 한 행을 기준으로 이미지가 가득 차도록 배치하는 레이아웃이다.
+ * @class eg.InfiniteGrid.JustifiedLayout
+ * @param {Object} [options] The option object of eg.InfiniteGrid.GridLayout module <ko>eg.InfiniteGrid.GridLayout 모듈의 옵션 객체</ko>
+ * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (vertical 세로방향, horizontal 가로방향)</ko>
+ * @param {Boolean} [options.minSize=0]
+ * @param {Boolean} [options.maxSize=0]
+ * @example
+```
+<script>
+var ig = new eg.InfiniteGrid("#grid". {
+	horizontal: true,
+});
+
+ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
+	margin: 10,
+	align: "start",
+	itemSize: 200
+});
+
+// or
+
+var layout = new eg.InfiniteGrid.GridLayout({
+	margin: 10,
+	align: "center",
+	itemSize: 200,
+	horizontal: true,
+});
+
+</script>
+```
+ **/
 class JustifiedLayout {
 	constructor(options = {}) {
 		this.options = assignOptions({
 			minSize: 0,
 			maxSize: 0,
 		}, options);
-		this._style = getStyleNames(this.options.direction);
+		this._style = getStyleNames(this.options.horizontal);
 		this._size = 0;
 	}
 	_layout(items, outline, isAppend) {

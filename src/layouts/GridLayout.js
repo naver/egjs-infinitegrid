@@ -1,4 +1,4 @@
-import {APPEND, PREPEND, HORIZONTAL, ALIGN} from "../consts";
+import {APPEND, PREPEND, ALIGN} from "../consts";
 import {getStyleNames, assignOptions, fill} from "../utils";
 
 // ALIGN
@@ -11,13 +11,15 @@ const {START, CENTER, END, JUSTIFY} = ALIGN;
  * @class eg.InfiniteGrid.GridLayout
  * @param {Object} [options] The option object of eg.InfiniteGrid.GridLayout module <ko>eg.InfiniteGrid.GridLayout 모듈의 옵션 객체</ko>
  * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
- * @param {Boolean} [options.horizontal="vertical"] Direction of the scroll movement (vertical, horizontal) <ko>스크롤 이동 방향 (vertical 세로방향, horizontal 가로방향)</ko>
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (vertical 세로방향, horizontal 가로방향)</ko>
  * @param {Boolean} [options.align=START] Align of the position of the items (START, CENTER, END, JUSTIFY) <ko>아이템들의 위치의 정렬 (START, CENTER, END, JUSTIFY)</ko>
- * @param {Boolean} [options.itemSize=0] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향</ko>
+ * @param {Boolean} [options.itemSize=0] The size of the items. If it is 0, it is calculated as the size of the first item in items. <ko> 아이템의 사이즈. 만약 아이템 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. </ko>
  * @example
 ```
 <script>
-var ig = new eg.InfiniteGrid("#grid");
+var ig = new eg.InfiniteGrid("#grid". {
+	horizontal: true,
+});
 
 ig.setLayout(eg.InfiniteGrid.GridLayout, {
 	margin: 10,
@@ -31,7 +33,7 @@ var layout = new eg.InfiniteGrid.GridLayout({
 	margin: 10,
 	align: "center",
 	itemSize: 200,
-	direction: "horizontal"
+	horizontal: true,
 });
 
 </script>
@@ -44,21 +46,18 @@ class GridLayout {
 			itemSize: 0,
 		}, options);
 		this._size = 0;
-		this._isHorizontal = this.options.direction === HORIZONTAL;
 		this._columnSize = 0;
 		this._columnLength = 0;
-		this._style = getStyleNames(this.options.direction);
+		this._style = getStyleNames(this.options.horizontal);
 	}
 	getPoints(outlines) {
-		const pos = this._isHorizontal ? "left" : "top";
+		const pos = this.options.horizontal ? "left" : "top";
 
 		return outlines.map(outline => outline[pos]);
 	}
 	checkColumn(item) {
 		const margin = this.options.margin;
-		// if direction is horizontal, fixed dimension is height
-		// if direction is vertical, fixed dimension is width
-		const sizeName = this._isHorizontal ? "height" : "width";
+		const sizeName = this.options.horizontal ? "height" : "width";
 		const columnSize = this.options.itemSize || (item && item.size[sizeName]) || 0;
 
 		this._columnSize = columnSize;
@@ -111,7 +110,11 @@ class GridLayout {
 			} else if (align === END) {
 				pos2 += viewDist + columnSize - size2;
 			} else if (align === JUSTIFY) {
-				pos2 = (size - columnSize) / (columnLength - 1) * index;
+				if (columnLength <= 1) {
+					pos2 += viewDist / 2;
+				} else {
+					pos2 = (size - columnSize) / (columnLength - 1) * index;
+				}
 			}
 			// tetris
 			item.rect = {

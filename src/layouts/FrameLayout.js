@@ -88,7 +88,7 @@ class FrameLayout {
 		this._itemSize = this.options.itemSize || 0;
 		this._shapes = shapes;
 		this._size = 0;
-		this._style = getStyleNames(this.options.direction);
+		this._style = getStyleNames(this.options.horizontal);
 	}
 	_getItemSize() {
 		this._checkItemSize();
@@ -122,8 +122,8 @@ class FrameLayout {
 		const shapesSize = this._shapes[size2Name];
 		const shapes = this._shapes.shapes;
 		const shapesLength = shapes.length;
-		const startOutline = new Array(shapesSize).fill(-1);
-		const endOutline = new Array(shapesSize).fill(0);
+		const startOutline = new Array(shapesSize).fill(-99999);
+		const endOutline = new Array(shapesSize).fill(-99999);
 		const shapesSize1 = shapes.height * (itemSize1 + margin) - margin;
 		let fitSize = this.options.fitSize;
 		let fitStartPos = 0;
@@ -162,7 +162,7 @@ class FrameLayout {
 				const size2 = shapeSize2 * (itemSize2 + margin) - margin;
 
 				for (let k = shapePos2; k < shapePos2 + shapeSize2 && k < shapesSize; ++k) {
-					if (startOutline[k] === -1) {
+					if (startOutline[k] === -99999) {
 						startOutline[k] = pos1;
 					}
 					if (startIndex === -1) {
@@ -205,8 +205,10 @@ class FrameLayout {
 				continue;
 			}
 			dist = end;
+
+			console.log(startOutline, endOutline);
 			for (let j = 0; j < shapesSize; ++j) {
-				if (startOutline[j] === -1) {
+				if (startOutline[j] === -99999) {
 					startOutline[j] = Math.max(...startOutline);
 					endOutline[j] = startOutline[j];
 					continue;
@@ -228,8 +230,11 @@ class FrameLayout {
 					continue;
 				}
 				// if appending type is PREPEND, subtract dist from appending group's height.
-				prevOutlineDist = Math[isAppend ? "min" : "max"](targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
+				prevOutlineDist = isAppend ?
+					Math.min(targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist) :
+					Math.min(targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
 			}
+			console.log(outline.length, shapesSize, targetOutline, outline, prevOutlineDist, prevOutlineEnd);
 		}
 		for (let i = 0; i < shapesSize; ++i) {
 			startOutline[i] += prevOutlineEnd - prevOutlineDist;

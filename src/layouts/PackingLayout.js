@@ -1,5 +1,5 @@
 import BoxModel from "./lib/BoxModel.js";
-import {HORIZONTAL, APPEND, PREPEND} from "../consts";
+import {APPEND, PREPEND} from "../consts";
 import {getStyleNames, assignOptions, toZeroArray} from "../utils";
 
 
@@ -35,8 +35,8 @@ class PackingLayout {
 			ratioWeight: 1,
 		}, options);
 		this._size = 0;
-		this._style = getStyleNames(this.options.direction);
-		this._isHorizontal = this.options.direction === HORIZONTAL;
+		this.options.horizontal = this.options.direction === "horizontal";
+		this._style = getStyleNames(this.options.horizontal);
 	}
 	_findBestFitArea(container, item) {
 		if (container.getRatio() === 0) { // 아이템 최초 삽입시 전체영역 지정
@@ -111,7 +111,7 @@ class PackingLayout {
 	}
 	_layout(items, outline = [], isAppend) {
 		const style = this._style;
-		const isHorizontal = this._isHorizontal;
+		const isHorizontal = this.options.horizontal;
 		const aspectRatio = this.options.aspectRatio;
 		const margin = this.options.margin;
 		const pos1Name = style.pos1;
@@ -132,10 +132,10 @@ class PackingLayout {
 
 		items.forEach(item => {
 			const model = new BoxModel({
-				originWidth: item.size.width,
-				originHeight: item.size.height,
-				width: item.size.width,
-				height: item.size.height,
+				originWidth: item.orgSize.width,
+				originHeight: item.orgSize.height,
+				width: item.orgSize.width,
+				height: item.orgSize.height,
 			});
 
 			this._findBestFitArea(container, model);

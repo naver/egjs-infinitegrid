@@ -40,7 +40,7 @@ export const DUMMY_POSITION = -100000;
 export const GROUPKEY_ATT = "data-groupkey";
 
 export const DEFAULT_OPTIONS = {
-	direction: VERTICAL,
+	horizontal: false,
 	margin: 0,
 };
 

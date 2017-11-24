@@ -4,6 +4,7 @@ import {
 	SUPPORT_ADDEVENTLISTENER,
 	SUPPORT_PASSIVE,
 	VERTICAL,
+	HORIZONTAL,
 	DEFAULT_OPTIONS,
 } from "./consts";
 
@@ -163,10 +164,8 @@ export const STYLE = {
 	},
 };
 
-export function getStyleNames(direction) {
-	const style = STYLE[direction in STYLE ? direction : VERTICAL];
-
-	return style;
+export function getStyleNames(isHorizontal) {
+	return STYLE[isHorizontal ? HORIZONTAL : VERTICAL];
 }
 
 export function assignOptions(defaultOptions, options) {
@@ -181,4 +180,20 @@ export function toZeroArray(outline) {
 		return [0];
 	}
 	return outline;
+}
+
+
+export function indexOf(arr, target, isRight = false) {
+	if (!isRight) {
+		return arr.indexOf(target);
+	}
+	const length = arr.length;
+
+	for (let i = length - 1; i >= 0; --i) {
+		if (arr[i] !== target) {
+			continue;
+		}
+		return i;
+	}
+	return -1;
 }
