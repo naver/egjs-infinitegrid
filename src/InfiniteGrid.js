@@ -568,9 +568,7 @@ class InfiniteGrid extends Component {
 		if (!rect) {
 			return;
 		}
-		const targetPos = isForward ?
-			rect[horizontal ? "left" : "top"] - this._renderer.getViewSize() :
-			rect[horizontal ? "left" : "top"];
+		const targetPos = rect[horizontal ? "left" : "top"] - isForward ? this._renderer.getViewSize() : 0;
 
 		if (isForward) {
 			if (scrollPos >= targetPos) {
