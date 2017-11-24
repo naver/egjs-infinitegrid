@@ -180,7 +180,7 @@ class InfiniteGrid extends Component {
 	 */
 	setLayout(LayoutKlass, options) {
 		this._layout = new LayoutKlass(Object.assign(options || {}, {
-			direction: this._isVertical ? "vertical" : "horizontal",
+			horizontal: !this._isVertical,
 		}));
 		this._layout.setSize(this._renderer.getContainerSize());
 		return this;
