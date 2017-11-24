@@ -1258,7 +1258,7 @@ var InfiniteGrid = function (_Component) {
 
 	InfiniteGrid.prototype.setLayout = function setLayout(LayoutKlass, options) {
 		this._layout = new LayoutKlass(_extends(options || {}, {
-			direction: this._isVertical ? "vertical" : "horizontal"
+			horizontal: !this._isVertical
 		}));
 		this._layout.setSize(this._renderer.getContainerSize());
 		return this;
