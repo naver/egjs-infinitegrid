@@ -131,8 +131,9 @@ function SquareLayout() {
 }
 function PackingLayout() {
 	changeLayout("PackingLayout", {
-		aspectRatio: 1,
-		ratioWeight: 2,
+		aspectRatio: 1.5,
+		ratioWeight: 1,
+		sizeWeight: 2,
 		margin: 10,
 	});
 }
