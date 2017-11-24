@@ -1692,7 +1692,7 @@ var InfiniteGrid = function (_Component) {
 		if (!rect) {
 			return;
 		}
-		var targetPos = isForward ? rect[horizontal ? "left" : "top"] - this._renderer.getViewSize() : rect[horizontal ? "right" : "bottom"];
+		var targetPos = isForward ? rect[horizontal ? "left" : "top"] - this._renderer.getViewSize() : rect[horizontal ? "left" : "top"];
 
 		if (isForward) {
 			if (scrollPos >= targetPos) {
