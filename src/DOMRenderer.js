@@ -5,13 +5,13 @@ import {
 	MULTI,
 	GROUPKEY_ATT,
 	CONTAINER_CLASSNAME,
-	SUPPORT_COMPUTEDSTYLE,
 } from "./consts";
 import {
 	$,
 	scrollBy,
 	innerHeight,
 	innerWidth,
+	getStyles,
 } from "./utils";
 
 export default class DOMRenderer {
@@ -44,8 +44,10 @@ export default class DOMRenderer {
 		element.parentNode.removeChild(element);
 	}
 	static createElements(items) {
-		const elements = $(items.reduce((acc, v) => acc.concat(v.content), []).join(
-			""), MULTI);
+		const elements = $(items.reduce((acc, v, i) => {
+			acc.push(v.content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, ""));
+			return acc;
+		}, []).join(""), MULTI);
 
 		return items.map((item, index) => {
 			item.el = elements[index];
@@ -90,11 +92,15 @@ export default class DOMRenderer {
 						width: innerWidth(item.el),
 						height: innerHeight(item.el),
 					};
+					item.size = Object.assign({}, this._size.item);
 				} else {
 					item.size = {
 						width: innerWidth(item.el),
 						height: innerHeight(item.el),
 					};
+				}
+				if (!item.orgSize) {
+					item.orgSize = Object.assign({}, item.size);
 				}
 			}
 			return item;
@@ -102,10 +108,12 @@ export default class DOMRenderer {
 	}
 	_init(el) {
 		const element = $(el);
-		const style = SUPPORT_COMPUTEDSTYLE ?
-			window.getComputedStyle(element) : element.currentStyle;
+		const style = getStyles(element);
+
+		this._orgStyle = {};
 
 		if (style.position === "static") {
+			this._orgStyle.position = element.style.position;
 			element.style.position = "relative";
 		}
 
@@ -123,7 +131,8 @@ export default class DOMRenderer {
 				for (let i = 0; i < length; i++) {
 					container.appendChild(children[0]);
 				}
-
+				this._orgStyle.overflowX = element.style.overflowX;
+				this._orgStyle.overflowY = element.style.overflowY;
 				element.style[`overflow${target[0]}`] = "scroll";
 				element.style[`overflow${target[1]}`] = "hidden";
 				element.appendChild(container);
@@ -217,6 +226,10 @@ export default class DOMRenderer {
 			view: -1,
 			item: null,
 		};
+		this.container.style[this.options.isVertical ? "height" : "width"] = "";
+		for (const p in this._orgStyle) {
+			this[this.options.isOverflowScroll ? "view" : "container"].style[p] = this._orgStyle[p];
+		}
 	}
 }
 

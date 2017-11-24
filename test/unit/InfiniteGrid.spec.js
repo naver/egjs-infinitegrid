@@ -9,6 +9,44 @@ import {getItems, insert, checkLayoutComplete} from "./helper/TestHelper";
 import {APPEND, PREPEND} from "../../src/consts";
 
 describe("InfiniteGrid Test", function() {
+  describe("destroy Test", function() {
+    [true, false].forEach(isOverflowScroll => {
+      beforeEach(() => {
+        this.el = sandbox();
+        this.el.innerHTML = "<div id='infinite'></div>";
+      });
+      afterEach(() => {
+        cleanup();
+      });
+      it(`should check a initialization (isOverflowScroll: ${isOverflowScroll})`, done => {
+        // Given
+        let target = document.getElementById("infinite");
+        const beforeStyle = {
+          position: target.style.position,
+          overflowX: target.style.overflowX,
+          overflowY: target.style.overflowY,
+          height: target.style.height,
+          weight: target.style.weight,
+        };
+        this.inst = new InfiniteGrid(target, {
+          isOverflowScroll,
+        });
+        this.inst.setLayout(GridLayout);
+        
+        insert(this.inst, true, () => {
+          // When
+          this.inst.destroy();
+
+          // Then
+          Object.keys(beforeStyle).forEach(v => {
+            expect(beforeStyle.position).to.be.eql(target.style.position);
+          });  
+          done();
+        }, 30, 1);
+      });
+    });
+  });
+
   describe("initailization Test (onlayoutComplete)", function() {
     [true, false].forEach(isOverflowScroll => {
       beforeEach(() => {

@@ -1,5 +1,5 @@
 import {APPEND, PREPEND, ALIGN} from "../consts";
-import {getStyleNames, assignOptions} from "../utils";
+import {getStyleNames, assignOptions, fill} from "../utils";
 
 const {START, CENTER, END} = ALIGN;
 
@@ -122,8 +122,8 @@ class FrameLayout {
 		const shapesSize = this._shapes[size2Name];
 		const shapes = this._shapes.shapes;
 		const shapesLength = shapes.length;
-		const startOutline = new Array(shapesSize).fill(-99999);
-		const endOutline = new Array(shapesSize).fill(-99999);
+		const startOutline = fill(shapesSize, -99999);
+		const endOutline = fill(shapesSize, -99999);
 		const shapesSize1 = shapes.height * (itemSize1 + margin) - margin;
 		let fitSize = this.options.fitSize;
 		let fitStartPos = 0;
@@ -230,9 +230,7 @@ class FrameLayout {
 					continue;
 				}
 				// if appending type is PREPEND, subtract dist from appending group's height.
-				prevOutlineDist = isAppend ?
-					Math.min(targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist) :
-					Math.min(targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
+				prevOutlineDist = Math.min(targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
 			}
 			console.log(outline.length, shapesSize, targetOutline, outline, prevOutlineDist, prevOutlineEnd);
 		}
