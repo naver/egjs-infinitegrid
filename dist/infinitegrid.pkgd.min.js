@@ -485,11 +485,15 @@ var DOMRenderer = function () {
 						width: (0, _utils.innerWidth)(item.el),
 						height: (0, _utils.innerHeight)(item.el)
 					};
+					item.size = _extends({}, _this._size.item);
 				} else {
 					item.size = {
 						width: (0, _utils.innerWidth)(item.el),
 						height: (0, _utils.innerHeight)(item.el)
 					};
+				}
+				if (!item.orgSize) {
+					item.orgSize = _extends({}, item.size);
 				}
 			}
 			return item;

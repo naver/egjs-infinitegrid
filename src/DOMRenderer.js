@@ -92,11 +92,15 @@ export default class DOMRenderer {
 						width: innerWidth(item.el),
 						height: innerHeight(item.el),
 					};
+					item.size = Object.assign({}, this._size.item);
 				} else {
 					item.size = {
 						width: innerWidth(item.el),
 						height: innerHeight(item.el),
 					};
+				}
+				if (!item.orgSize) {
+					item.orgSize = Object.assign({}, item.size);
 				}
 			}
 			return item;
