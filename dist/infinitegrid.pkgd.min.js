@@ -137,7 +137,7 @@ var DUMMY_POSITION = exports.DUMMY_POSITION = -100000;
 var GROUPKEY_ATT = exports.GROUPKEY_ATT = "data-groupkey";
 
 var DEFAULT_OPTIONS = exports.DEFAULT_OPTIONS = {
-	direction: VERTICAL,
+	horizontal: false,
 	margin: 0
 };
 
@@ -176,6 +176,7 @@ exports.innerHeight = innerHeight;
 exports.getStyleNames = getStyleNames;
 exports.assignOptions = assignOptions;
 exports.toZeroArray = toZeroArray;
+exports.indexOf = indexOf;
 
 var _browser = __webpack_require__(2);
 
@@ -346,10 +347,8 @@ var STYLE = exports.STYLE = {
 	}
 };
 
-function getStyleNames(direction) {
-	var style = STYLE[direction in STYLE ? direction : _consts.VERTICAL];
-
-	return style;
+function getStyleNames(isHorizontal) {
+	return STYLE[isHorizontal ? _consts.HORIZONTAL : _consts.VERTICAL];
 }
 
 function assignOptions(defaultOptions, options) {
@@ -361,6 +360,23 @@ function toZeroArray(outline) {
 		return [0];
 	}
 	return outline;
+}
+
+function indexOf(arr, target) {
+	var isRight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+	if (!isRight) {
+		return arr.indexOf(target);
+	}
+	var length = arr.length;
+
+	for (var i = length - 1; i >= 0; --i) {
+		if (arr[i] !== target) {
+			continue;
+		}
+		return i;
+	}
+	return -1;
 }
 
 /***/ }),
@@ -761,7 +777,7 @@ var FrameLayout = function () {
 		this._itemSize = this.options.itemSize || 0;
 		this._shapes = shapes;
 		this._size = 0;
-		this._style = (0, _utils.getStyleNames)(this.options.direction);
+		this._style = (0, _utils.getStyleNames)(this.options.horizontal);
 	}
 
 	FrameLayout.prototype._getItemSize = function _getItemSize() {
@@ -805,8 +821,8 @@ var FrameLayout = function () {
 		var shapesSize = this._shapes[size2Name];
 		var shapes = this._shapes.shapes;
 		var shapesLength = shapes.length;
-		var startOutline = (0, _utils.fill)(shapesSize, -1);
-		var endOutline = (0, _utils.fill)(shapesSize, 0);
+		var startOutline = (0, _utils.fill)(shapesSize, -99999);
+		var endOutline = (0, _utils.fill)(shapesSize, -99999);
 		var shapesSize1 = shapes.height * (itemSize1 + margin) - margin;
 		var fitSize = this.options.fitSize;
 		var fitStartPos = 0;
@@ -847,7 +863,7 @@ var FrameLayout = function () {
 				var size2 = shapeSize2 * (itemSize2 + margin) - margin;
 
 				for (var k = shapePos2; k < shapePos2 + shapeSize2 && k < shapesSize; ++k) {
-					if (startOutline[k] === -1) {
+					if (startOutline[k] === -99999) {
 						startOutline[k] = pos1;
 					}
 					if (startIndex === -1) {
@@ -885,8 +901,10 @@ var FrameLayout = function () {
 				continue;
 			}
 			dist = end;
+
+			console.log(startOutline, endOutline);
 			for (var _j = 0; _j < shapesSize; ++_j) {
-				if (startOutline[_j] === -1) {
+				if (startOutline[_j] === -99999) {
 					startOutline[_j] = Math.max.apply(Math, startOutline);
 					endOutline[_j] = startOutline[_j];
 					continue;
@@ -908,8 +926,9 @@ var FrameLayout = function () {
 					continue;
 				}
 				// if appending type is PREPEND, subtract dist from appending group's height.
-				prevOutlineDist = Math[isAppend ? "min" : "max"](targetOutline[_i2] + prevOutlineEnd - outline[_i2], prevOutlineDist);
+				prevOutlineDist = Math.min(targetOutline[_i2] + prevOutlineEnd - outline[_i2], prevOutlineDist);
 			}
+			console.log(outline.length, shapesSize, targetOutline, outline, prevOutlineDist, prevOutlineEnd);
 		}
 		for (var _i3 = 0; _i3 < shapesSize; ++_i3) {
 			startOutline[_i3] += prevOutlineEnd - prevOutlineDist;
@@ -2611,13 +2630,15 @@ var START = _consts.ALIGN.START,
  * @class eg.InfiniteGrid.GridLayout
  * @param {Object} [options] The option object of eg.InfiniteGrid.GridLayout module <ko>eg.InfiniteGrid.GridLayout 모듈의 옵션 객체</ko>
  * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
- * @param {Boolean} [options.horizontal="vertical"] Direction of the scroll movement (vertical, horizontal) <ko>스크롤 이동 방향 (vertical 세로방향, horizontal 가로방향)</ko>
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (vertical 세로방향, horizontal 가로방향)</ko>
  * @param {Boolean} [options.align=START] Align of the position of the items (START, CENTER, END, JUSTIFY) <ko>아이템들의 위치의 정렬 (START, CENTER, END, JUSTIFY)</ko>
- * @param {Boolean} [options.itemSize=0] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향</ko>
+ * @param {Boolean} [options.itemSize=0] The size of the items. If it is 0, it is calculated as the size of the first item in items. <ko> 아이템의 사이즈. 만약 아이템 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. </ko>
  * @example
 ```
 <script>
-var ig = new eg.InfiniteGrid("#grid");
+var ig = new eg.InfiniteGrid("#grid". {
+	horizontal: true,
+});
 
 ig.setLayout(eg.InfiniteGrid.GridLayout, {
 	margin: 10,
@@ -2631,7 +2652,7 @@ var layout = new eg.InfiniteGrid.GridLayout({
 	margin: 10,
 	align: "center",
 	itemSize: 200,
-	direction: "horizontal"
+	horizontal: true,
 });
 
 </script>
@@ -2649,14 +2670,13 @@ var GridLayout = function () {
 			itemSize: 0
 		}, options);
 		this._size = 0;
-		this._isHorizontal = this.options.direction === _consts.HORIZONTAL;
 		this._columnSize = 0;
 		this._columnLength = 0;
-		this._style = (0, _utils.getStyleNames)(this.options.direction);
+		this._style = (0, _utils.getStyleNames)(this.options.horizontal);
 	}
 
 	GridLayout.prototype.getPoints = function getPoints(outlines) {
-		var pos = this._isHorizontal ? "left" : "top";
+		var pos = this.options.horizontal ? "left" : "top";
 
 		return outlines.map(function (outline) {
 			return outline[pos];
@@ -2665,9 +2685,7 @@ var GridLayout = function () {
 
 	GridLayout.prototype.checkColumn = function checkColumn(item) {
 		var margin = this.options.margin;
-		// if direction is horizontal, fixed dimension is height
-		// if direction is vertical, fixed dimension is width
-		var sizeName = this._isHorizontal ? "height" : "width";
+		var sizeName = this.options.horizontal ? "height" : "width";
 		var columnSize = this.options.itemSize || item && item.size[sizeName] || 0;
 
 		this._columnSize = columnSize;
@@ -2723,7 +2741,11 @@ var GridLayout = function () {
 			} else if (align === END) {
 				pos2 += viewDist + columnSize - size2;
 			} else if (align === JUSTIFY) {
-				pos2 = (size - columnSize) / (columnLength - 1) * index;
+				if (columnLength <= 1) {
+					pos2 += viewDist / 2;
+				} else {
+					pos2 = (size - columnSize) / (columnLength - 1) * index;
+				}
 			}
 			// tetris
 			item.rect = (_item$rect = {}, _item$rect[pos1Name] = pos1, _item$rect[pos2Name] = pos2, _item$rect);
@@ -2918,18 +2940,21 @@ function getColumn(item) {
 	if (item.column) {
 		return item.column;
 	}
+	var column = 0;
+
 	if (item.el) {
 		var dataset = item.el.dataset;
 
 		if (dataset) {
-			item.column = dataset.column || 1;
+			column = dataset.column || 1;
 		} else {
-			item.column = item.el.getAttribute("column") || 1;
+			column = item.el.getAttribute("column") || 1;
 		}
-		return item.column;
+	} else {
+		column = 1;
 	}
-	item.column = 1;
-	return 1;
+	item.column = column;
+	return column;
 }
 
 var SquareLayout = function (_FrameLayout) {
@@ -2976,56 +3001,67 @@ var SquareLayout = function (_FrameLayout) {
 			var _shapes$push;
 
 			var point = Math[pointCaculateName].apply(Math, endOutline);
-			var index = endOutline.indexOf(point);
-			var item = items[isAppend ? i : length - 1 - i];
-			var column = getColumn(item);
+			var index = (0, _utils.indexOf)(endOutline, point, !isAppend);
+			var item = items[i];
+			var columnWidth = item.columnWidth;
+			var column = columnWidth && columnWidth[0] === columnLength && columnWidth[1] || getColumn(item);
 			var columnCount = 1;
 
 			if (column > 1) {
-				for (var j = 1; j < column && index + j < columnLength; ++j) {
-					if (isAppend && endOutline[index + j] <= point || !isAppend && endOutline[index + j] >= point) {
+				for (var j = 1; j < column && (isAppend && index + j < columnLength || !isAppend && index - j >= 0); ++j) {
+					if (isAppend && endOutline[index + sign * j] <= point || !isAppend && endOutline[index + sign * j] >= point) {
 						++columnCount;
 						continue;
 					}
 					break;
 				}
+				if (!isAppend) {
+					index -= columnCount - 1;
+				}
 			}
+			item.columnWidth = [columnLength, columnCount];
 			shapes.push((_shapes$push = {
 				width: columnCount,
 				height: columnCount
-			}, _shapes$push[pos1Name] = point - (!isAppend ? columnCount : 0), _shapes$push[pos2Name] = index, _shapes$push));
+			}, _shapes$push[pos1Name] = point - (!isAppend ? columnCount : 0), _shapes$push[pos2Name] = index, _shapes$push.index = i, _shapes$push));
 			for (var _j = 0; _j < columnCount; ++_j) {
 				endOutline[index + _j] = point + sign * columnCount;
 			}
 		}
-
 		this._shapes = (_shapes = {
 			shapes: shapes
 		}, _shapes[style.size2] = columnLength, _shapes);
+
 		var result = _FrameLayout.prototype._layout.call(this, items, outline, isAppend);
 
-		shapes.sort(function (shape1, shape2) {
-			var item1pos1 = shape1[pos1Name];
-			var item1pos2 = shape1[pos2Name];
-			var item2pos1 = shape2[pos1Name];
-			var item2pos2 = shape2[pos2Name];
+		if (!isAppend) {
+			var lastItem = items[items.length - 1];
 
-			if (item1pos1 - item2pos1) {
-				return item1pos1 - item2pos1;
-			}
-			return item1pos2 - item2pos2;
-		});
-		items.sort(function (a, b) {
-			var item1pos1 = a.rect[pos1Name];
-			var item1pos2 = a.rect[pos2Name];
-			var item2pos1 = b.rect[pos1Name];
-			var item2pos2 = b.rect[pos2Name];
+			shapes.sort(function (shape1, shape2) {
+				var item1pos1 = shape1[pos1Name];
+				var item1pos2 = shape1[pos2Name];
+				var item2pos1 = shape2[pos1Name];
+				var item2pos2 = shape2[pos2Name];
 
-			if (item1pos1 - item2pos1) {
-				return item1pos1 - item2pos1;
-			}
-			return item1pos2 - item2pos2;
-		});
+				if (item1pos1 - item2pos1) {
+					return item1pos1 - item2pos1;
+				}
+				return item1pos2 - item2pos2;
+			});
+			items.sort(function (a, b) {
+				var item1pos1 = a.rect[pos1Name];
+				var item1pos2 = a.rect[pos2Name];
+				var item2pos1 = b.rect[pos1Name];
+				var item2pos2 = b.rect[pos2Name];
+
+				if (item1pos1 - item2pos1) {
+					return item1pos1 - item2pos1;
+				}
+				return item1pos2 - item2pos2;
+			});
+			result.startIndex = 0;
+			result.endIndex = items.indexOf(lastItem);
+		}
 		return result;
 	};
 
@@ -3094,8 +3130,8 @@ var PackingLayout = function () {
 			ratioWeight: 1
 		}, options);
 		this._size = 0;
-		this._style = (0, _utils.getStyleNames)(this.options.direction);
-		this._isHorizontal = this.options.direction === _consts.HORIZONTAL;
+		this.options.horizontal = this.options.direction === "horizontal";
+		this._style = (0, _utils.getStyleNames)(this.options.horizontal);
 	}
 
 	PackingLayout.prototype._findBestFitArea = function _findBestFitArea(container, item) {
@@ -3181,7 +3217,7 @@ var PackingLayout = function () {
 		var isAppend = arguments[2];
 
 		var style = this._style;
-		var isHorizontal = this._isHorizontal;
+		var isHorizontal = this.options.horizontal;
 		var aspectRatio = this.options.aspectRatio;
 		var margin = this.options.margin;
 		var pos1Name = style.pos1;
@@ -3201,10 +3237,10 @@ var PackingLayout = function () {
 
 		items.forEach(function (item) {
 			var model = new _BoxModel2["default"]({
-				originWidth: item.size.width,
-				originHeight: item.size.height,
-				width: item.size.width,
-				height: item.size.height
+				originWidth: item.orgSize.width,
+				originHeight: item.orgSize.height,
+				width: item.orgSize.width,
+				height: item.orgSize.height
 			});
 
 			_this._findBestFitArea(container, model);
@@ -3441,6 +3477,40 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * 'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout in which the image is filled up on the basis of a line given a width in the meaning of the term.
+ * @ko 'justified'는 '1행의 너비에 맞게 꼭 들어찬'이라는 의미를 가진 인쇄 용어다. 용어의 의미대로 너비가 주어진 한 행을 기준으로 이미지가 가득 차도록 배치하는 레이아웃이다.
+ * @class eg.InfiniteGrid.JustifiedLayout
+ * @param {Object} [options] The option object of eg.InfiniteGrid.GridLayout module <ko>eg.InfiniteGrid.GridLayout 모듈의 옵션 객체</ko>
+ * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (vertical 세로방향, horizontal 가로방향)</ko>
+ * @param {Boolean} [options.minSize=0]
+ * @param {Boolean} [options.maxSize=0]
+ * @example
+```
+<script>
+var ig = new eg.InfiniteGrid("#grid". {
+	horizontal: true,
+});
+
+ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
+	margin: 10,
+	align: "start",
+	itemSize: 200
+});
+
+// or
+
+var layout = new eg.InfiniteGrid.GridLayout({
+	margin: 10,
+	align: "center",
+	itemSize: 200,
+	horizontal: true,
+});
+
+</script>
+```
+ **/
 var JustifiedLayout = function () {
 	function JustifiedLayout() {
 		var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -3451,7 +3521,7 @@ var JustifiedLayout = function () {
 			minSize: 0,
 			maxSize: 0
 		}, options);
-		this._style = (0, _utils.getStyleNames)(this.options.direction);
+		this._style = (0, _utils.getStyleNames)(this.options.horizontal);
 		this._size = 0;
 	}
 
