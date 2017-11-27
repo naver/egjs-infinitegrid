@@ -64,7 +64,7 @@ function createGrid(horizontal) {
 	});
 	parallax = new eg.Parallax(window, {
 		container: grid,
-		horizontal: horizontal
+		horizontal: horizontal,
 	});
 	parallax.resize();
 }
@@ -132,7 +132,8 @@ function SquareLayout() {
 function PackingLayout() {
 	changeLayout("PackingLayout", {
 		aspectRatio: 1.5,
-		ratioWeight: 100,
+		ratioWeight: 1,
+		sizeWeight: 2,
 		margin: 10,
 	});
 }

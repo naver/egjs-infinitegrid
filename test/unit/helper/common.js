@@ -13,8 +13,8 @@ export function checkMargin(margins, callback) {
 	margins.forEach(margin => callback(margin));
 }
 export function checkDirection(callback, callback2 = callback) {
-	callback("vertical");
-	callback2("horizontal");
+	callback(false);
+	callback2(true);
 }
 export function expectOutlineIndex(layout, group) {
 	const {start, end, startIndex, endIndex} = group.outlines;
@@ -64,8 +64,8 @@ export function expectNoOutline(layout, items) {
 	expect(group4.outlines.end).to.deep.equal(group5.outlines.end);
 	expect(group6.outlines.end).to.deep.equal(group6.outlines.end);
 }
-export function expectConnectItems({item1, item2, margin = 0, direction = "vertical"}) {
-	if (direction === "vertical") {
+export function expectConnectItems({item1, item2, margin = 0, horizontal = false}) {
+	if (horizontal === false) {
 		expect(item1.rect.top + (item1.rect.height || item1.size.height) + margin).to.be.equal(item2.rect.top);
 	} else {
 		expect(item1.rect.left + (item1.rect.width || item1.size.width) + margin).to.be.equal(item2.rect.left);
@@ -75,7 +75,7 @@ export function expectConnectGroupsOutline(group1, group2) {
 	expect(group1.outlines.end.length).to.be.equal(group2.outlines.start.length);
 	expect(group1.outlines.end).to.deep.equal(group2.outlines.start);
 }
-export function expectConnectGroups({group1, items1, group2, items2, margin = 0, isConnect = true, direction = "vertical"}) {
+export function expectConnectGroups({group1, items1, group2, items2, margin = 0, isConnect = true, horizontal = false}) {
 	const end = group1.outlines.end;
 	const start = group2.outlines.start;
 	const length = end.length;
@@ -85,7 +85,7 @@ export function expectConnectGroups({group1, items1, group2, items2, margin = 0,
 	for (let i = 0; i < length; ++i) {
 		const item = items1[i];
 
-		if (direction === "vertical") {
+		if (!horizontal) {
 			expect(item.rect.top + (item.rect.height || item.size.height) + margin).to.be.equal(end[i]);
 			expect(start[i]).to.be.equal(items2[i].rect.top);
 		} else {

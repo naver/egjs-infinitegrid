@@ -535,7 +535,6 @@ class InfiniteGrid extends Component {
 	}
 	// called by visible
 	_requestPrepend() {
-		console.log("requestPrepend", this._renderer.container.style.height);
 		const items = this._getNextItems(PREPEND);
 
 		if (items.length) {

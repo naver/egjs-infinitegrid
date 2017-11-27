@@ -6,11 +6,11 @@ import {getStyleNames, assignOptions} from "../utils";
  * 'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout in which the image is filled up on the basis of a line given a width in the meaning of the term.
  * @ko 'justified'는 '1행의 너비에 맞게 꼭 들어찬'이라는 의미를 가진 인쇄 용어다. 용어의 의미대로 너비가 주어진 한 행을 기준으로 이미지가 가득 차도록 배치하는 레이아웃이다.
  * @class eg.InfiniteGrid.JustifiedLayout
- * @param {Object} [options] The option object of eg.InfiniteGrid.GridLayout module <ko>eg.InfiniteGrid.GridLayout 모듈의 옵션 객체</ko>
+ * @param {Object} [options] The option object of eg.InfiniteGrid.JustifiedLayout module <ko>eg.InfiniteGrid.JustifiedLayout 모듈의 옵션 객체</ko>
  * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
- * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (vertical 세로방향, horizontal 가로방향)</ko>
- * @param {Boolean} [options.minSize=0]
- * @param {Boolean} [options.maxSize=0]
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</ko>
+ * @param {Boolean} [options.minSize=0] Minimum size of item to be resized <ko> 아이템이 조정되는 최소 크기 </ko>
+ * @param {Boolean} [options.maxSize=0] Maximum size of item to be resized <ko> 아이템이 조정되는 최대 크기 </ko>
  * @example
 ```
 <script>
@@ -20,16 +20,16 @@ var ig = new eg.InfiniteGrid("#grid". {
 
 ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
 	margin: 10,
-	align: "start",
-	itemSize: 200
+	minSize: 100,
+	maxSize: 300,
 });
 
 // or
 
-var layout = new eg.InfiniteGrid.GridLayout({
+var layout = new eg.InfiniteGrid.JustifiedLayout({
 	margin: 10,
-	align: "center",
-	itemSize: 200,
+	minSize: 100,
+	maxSize: 300,
 	horizontal: true,
 });
 
@@ -194,15 +194,55 @@ class JustifiedLayout {
 			outlines: this._layout(clone, outline, type),
 		};
 	}
+	/**
+	 * Set the viewport size of the layout.
+	 * @ko 레이아웃의 가시 사이즈를 설정한다.
+	 * @method eg.InfiniteGrid.JustifiedLayout#setSize
+	 * @param {Number} size The viewport size of container area where items are added to a layout <ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</ko>
+	 * @return {eg.InfiniteGrid.JustifiedLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 * @example
+	 * layout.setSize(800);
+	 */
 	setSize(size) {
 		this._size = size;
+		return this;
 	}
+	/**
+	 * Adds items at the bottom of a outline.
+	 * @ko 아이템들을 아웃라인 아래에 추가한다.
+	 * @method eg.InfiniteGrid.JustifiedLayout#append
+	 * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+	 * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+	 * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+	 * @example
+	 * layout.prepend(items, [100]);
+	 */
 	append(items, outline) {
 		return this._insert(items, outline, APPEND);
 	}
+	/**
+	 * Adds items at the top of a outline.
+	 * @ko 아이템을 아웃라인 위에 추가한다.
+	 * @method eg.InfiniteGrid.JustifiedLayout#prepend
+	 * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+	 * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+	 * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+	 * @example
+	 * layout.prepend(items, [100]);
+	 */
 	prepend(items, outline) {
 		return this._insert(items, outline, PREPEND);
 	}
+	/**
+	 * Adds items of groups at the bottom of a outline.
+	 * @ko 그룹들의 아이템들을 아웃라인 아래에 추가한다.
+	 * @method eg.InfiniteGrid.JustifiedLayout#layout
+	 * @param {Array} groups Array of groups to be layouted <ko>레이아웃할 그룹들의 배열</ko>
+	 * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+	 * @return {eg.InfiniteGrid.JustifiedLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 * @example
+	 * layout.layout(groups, [100]);
+	 */
 	layout(groups, outlines) {
 		const length = groups.length;
 		let point = outlines;
@@ -214,6 +254,7 @@ class JustifiedLayout {
 			group.outlines = point;
 			point = point.end;
 		}
+		return this;
 	}
 }
 

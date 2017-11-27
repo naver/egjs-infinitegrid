@@ -48,12 +48,14 @@ export function $(param, multi = false) {
 			const dummy = document.createElement("div");
 
 			dummy.innerHTML = param;
-			el = toArray(dummy.childNodes);
+			el = dummy.childNodes;
 		} else { // Selector
-			el = toArray(document.querySelectorAll(param));
+			el = document.querySelectorAll(param);
 		}
-		if (!multi) {
-			el = el.length >= 1 ? el[0] : undefined;
+		if (multi) {
+			el = toArray(el);
+		} else {
+			el = (el && el.length > 0 && el[0]) || undefined;
 		}
 	} else if (param === window) { // window
 		el = param;
@@ -185,6 +187,9 @@ export function toZeroArray(outline) {
 	return outline;
 }
 
+export function isWindow(el) {
+	return el === window;
+}
 
 export function indexOf(arr, target, isRight = false) {
 	if (!isRight) {

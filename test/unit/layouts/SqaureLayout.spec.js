@@ -69,13 +69,13 @@ describe("SquareLayout Test", function () {
 					item1: gitems[0],
 					item2: gitems[1],
 					margin,
-					direction: "horizontal",
+					horizontal: true,
 				});
 				expectConnectItems({
 					item1: gitems[1],
 					item2: gitems[2],
 					margin,
-					direction: "horizontal",
+					horizontal: true,
 				});
 				for (let i = 1; i < gitems.length; ++i) {
 					expect(gitems[i].rect.top).to.be.at.least(gitems[i - 1].rect.top);
@@ -100,14 +100,14 @@ describe("SquareLayout Test", function () {
 		const items1 = makeItems(25);
 		const items2 = makeItems(15);
 
-		checkDirection(direction => {
-			it(`compare group1 and group2 (direction = ${direction})`, () => {
+		checkDirection(horizontal => {
+			it(`compare group1 and group2 (horizontal = ${horizontal})`, () => {
 				// Given
 				const layout = new Layout({
-					direction,
+					horizontal,
 				});
 
-				layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
+				layout.setSize(!horizontal ? VIEWPORT.width : VIEWPORT.height);
 				// When
 				const group1 = layout.append(items1, [100]);
 				const group2 = layout.append(items2, group1.outlines.end);
@@ -118,22 +118,22 @@ describe("SquareLayout Test", function () {
 	});
 	describe("prepend test", function () {
 		checkMargin([0, 10, 20], margin => {
-			checkDirection(direction => {
-				it(`prepend items (margin = ${margin}, direction = ${direction})`, () => {
+			checkDirection(horizontal => {
+				it(`prepend items (margin = ${margin}, horizontal = ${horizontal})`, () => {
 					// Given
 					const layout = new Layout({
 						margin,
-						direction,
+						horizontal,
 						itemSize: 100,
 					});
-					layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
+					layout.setSize(!horizontal ? VIEWPORT.width : VIEWPORT.height);
 
 					// When
 					const group = layout.prepend(items, []);
 
 					// Then
 					const gitems = group.items;
-					const pos = direction === "vertical" ? "top" : "left";
+					const pos = !horizontal ? "top" : "left";
 					for (let i = 1; i < gitems.length; ++i) {
 						expect(gitems[i].rect[pos]).to.be.at.least(gitems[i - 1].rect[pos]);
 					}
