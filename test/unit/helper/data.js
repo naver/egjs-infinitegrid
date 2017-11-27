@@ -20,6 +20,10 @@ export const makeItem = i => ({
 		width: images[i][0],
 		height: images[i][1],
 	},
+	orgSize: {
+		width: images[i][0],
+		height: images[i][1],
+	},
 	rect: {},
 });
 export const makeItems = n => {

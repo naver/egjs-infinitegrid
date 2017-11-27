@@ -29,6 +29,43 @@ function getColumn(item) {
 	item.column = column;
 	return column;
 }
+
+/**
+ * FrameLayout is a layout that allows you to place items in a given frame. It is a layout that corresponds to a level intermediate between the placement of the image directly by the designer and the layout using the algorithm.
+ * @ko FrameLayout은 주어진 프레임에 맞춰 아이템을 배치하는 레이아웃입니다. 디자이너가 직접 이미지를 배치하는 것과 알고리즘을 사용한 배치의 중간 정도 수준에 해당하는 레이아웃이다.
+ * @class eg.InfiniteGrid.SquareLayout
+ * @extends eg.InfiniteGrid.FrameLayout
+ * @param {Object} [options] The option object of eg.InfiniteGrid.SquareLayout module <ko>eg.InfiniteGrid.SquareLayout 모듈의 옵션 객체</ko>
+ * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</ko>
+ * @param {Boolean} [options.itemSize=0] The size of the items. If it is 0, it is calculated as the size of the first item in items. <ko> 아이템의 사이즈. 만약 아이템 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. </ko>
+ * @example
+```
+<script>
+var ig = new eg.InfiniteGrid("#grid". {
+	horizontal: true,
+});
+
+ig.setLayout(eg.InfiniteGrid.SquareLayout, {
+	margin: 10,
+	itemSize: 200,
+});
+
+// or
+
+var layout = new eg.InfiniteGrid.SquareLayout({
+	margin: 10,
+	itemSize: 200,
+	horizontal: true,
+});
+
+
+var item1 = '<div data-column="2"></div>';
+var item2 = "<div></div>"
+layout.append([item1, item2]);
+</script>
+```
+ **/
 class SquareLayout extends FrameLayout {
 	_checkItemSize() {
 		const column = this.options.column;

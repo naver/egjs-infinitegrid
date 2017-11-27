@@ -32,7 +32,6 @@ class Parallax {
 			range: [-1, 1],
 			align: START,
 			horizontal: false,
-			threshold: 50,
 		}, options);
 		this._root = root;
 		this._rootSize = 0;
@@ -94,7 +93,7 @@ class Parallax {
 		const coordinateName = styleNames.coordinate;
 		const sizeName = styleNames.size;
 		const options = this.options;
-		const {strength, center, range, align, threshold} = options;
+		const {strength, center, range, align} = options;
 		const rootSize = this._rootSize;
 		const scrollPositionEnd = scrollPositionStart + rootSize;
 		const containerPosition = this._containerPosition;
@@ -107,8 +106,8 @@ class Parallax {
 			const itemSize = item.rect[sizeName] || item.size[sizeName];
 
 			// check item is in container.
-			if (scrollPositionStart > position + itemSize + threshold ||
-				scrollPositionEnd < position - threshold) {
+			if (scrollPositionStart > position + itemSize ||
+				scrollPositionEnd < position) {
 				return;
 			}
 			const el = item.el;

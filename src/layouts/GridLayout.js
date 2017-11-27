@@ -11,7 +11,7 @@ const {START, CENTER, END, JUSTIFY} = ALIGN;
  * @class eg.InfiniteGrid.GridLayout
  * @param {Object} [options] The option object of eg.InfiniteGrid.GridLayout module <ko>eg.InfiniteGrid.GridLayout 모듈의 옵션 객체</ko>
  * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
- * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (vertical 세로방향, horizontal 가로방향)</ko>
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</ko>
  * @param {Boolean} [options.align=START] Align of the position of the items (START, CENTER, END, JUSTIFY) <ko>아이템들의 위치의 정렬 (START, CENTER, END, JUSTIFY)</ko>
  * @param {Boolean} [options.itemSize=0] The size of the items. If it is 0, it is calculated as the size of the first item in items. <ko> 아이템의 사이즈. 만약 아이템 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. </ko>
  * @example
@@ -178,7 +178,7 @@ class GridLayout {
 	 * @ko 아이템들을 아웃라인 아래에 추가한다.
 	 * @method eg.InfiniteGrid.GridLayout#append
 	 * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
-	 * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+	 * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
 	 * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
 	 * @example
 	 * layout.prepend(items, [100, 200, 300, 400]);
@@ -191,7 +191,7 @@ class GridLayout {
 	 * @ko 아이템을 아웃라인 위에 추가한다.
 	 * @method eg.InfiniteGrid.GridLayout#prepend
 	 * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
-	 * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+	 * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
 	 * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
 	 * @example
 	 * layout.prepend(items, [100, 200, 300, 400]);
@@ -242,7 +242,7 @@ class GridLayout {
 	 * @param {Number} size The viewport size of container area where items are added to a layout <ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</ko>
 	 * @return {eg.InfiniteGrid.GridLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 * @example
-	 * layout.layout(groups, [100, 200, 300, 400]);
+	 * layout.setSize(800);
 	 */
 	setSize(size) {
 		this._size = size;

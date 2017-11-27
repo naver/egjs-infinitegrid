@@ -91,14 +91,14 @@ describe("PackingLayout Test", function () {
 				expectOutlineIndex(layout, group);
 				expectOutlineIndex(layout, group2);
 			});
-			checkDirection(direction => {
-				it(`test match items (margin = ${margin}, direction = ${direction})`, function() {
+			checkDirection(horizontal => {
+				it(`test match items (margin = ${margin}, horizontal = ${horizontal})`, function() {
 					// Given
 					const aspectRatio = 1.4;
 					const layout = new Layout({
 						margin,
 						aspectRatio,
-						direction,
+						horizontal,
 					});
 					layout.setSize(VIEWPORT.width);
 					
@@ -111,8 +111,8 @@ describe("PackingLayout Test", function () {
 					chaseItem(gitems, gitems[0], checks, margin);
 
 					expect(checks.every(chk => chk > 0)).to.be.true;
-					expect(Math.max(...gitems.map(item => item.rect.left + item.rect.width))).to.be.closeTo(VIEWPORT.width * (direction === "vertical" ? 1 : aspectRatio), 0.000001);
-					expect(Math.max(...gitems.map(item => item.rect.top + item.rect.height))).to.be.closeTo(VIEWPORT.width / (direction === "vertical" ? aspectRatio : 1), 0.000001);
+					expect(Math.max(...gitems.map(item => item.rect.left + item.rect.width))).to.be.closeTo(VIEWPORT.width * (!horizontal ? 1 : aspectRatio), 0.000001);
+					expect(Math.max(...gitems.map(item => item.rect.top + item.rect.height))).to.be.closeTo(VIEWPORT.width / (!horizontal ? aspectRatio : 1), 0.000001);
 				});
 			});
 		});
@@ -121,14 +121,14 @@ describe("PackingLayout Test", function () {
 		const items1 = makeItems(25);
 		const items2 = makeItems(15);
 
-		checkDirection(direction => {
-			it(`compare group1 and group2 (direction = ${direction})`, () => {
+		checkDirection(horizontal => {
+			it(`compare group1 and group2 (horizontal = ${horizontal})`, () => {
 				// Given
 				const layout = new Layout({
-					direction,
+					horizontal,
 				});
 
-				layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
+				layout.setSize(!horizontal ? VIEWPORT.width : VIEWPORT.height);
 				// When
 				const group1 = layout.append(items1, [100]);
 				const group2 = layout.append(items2, group1.outlines.end);

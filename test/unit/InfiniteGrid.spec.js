@@ -204,11 +204,11 @@ describe("InfiniteGrid Test", function() {
       }
       cleanup();
     });
-    ["vertical", "horizontal"].forEach(direction => {
-      it(`should set '${direction}' direction of options`, () => {
+    [true, false].forEach(horizontal => {
+      it(`should set '${horizontal}' horizontal of options`, () => {
         // Given
-        this.inst.options.horizontal = direction === "horizontal";
-        this.inst._isVertical = direction === "vertical";
+        this.inst.options.horizontal = horizontal;
+        this.inst._isVertical = !horizontal;
         
         // When
         [
@@ -221,9 +221,9 @@ describe("InfiniteGrid Test", function() {
           // Then
           this.inst.setLayout(v);
           if (this.inst.options.horizontal) {
-            expect(this.inst._layout.options.direction).to.be.equal("horizontal");
+            expect(this.inst._layout.options.horizontal).to.be.equal(true);
           } else {
-            expect(this.inst._layout.options.direction).to.be.equal("vertical");
+            expect(this.inst._layout.options.horizontal).to.be.equal(false);
           }
           
           expect(this.inst._layout instanceof v).to.be.true;

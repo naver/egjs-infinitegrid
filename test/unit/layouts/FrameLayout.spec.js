@@ -150,7 +150,7 @@ describe("FrameLayout Test", function () {
 					item1: gitems[0],
 					item2: gitems[1],
 					margin,
-					direction: "horizontal",
+					horizontal: true,
 				});
 				expectConnectItems({
 					item1: gitems[3],
@@ -178,15 +178,15 @@ describe("FrameLayout Test", function () {
 		const items1 = makeItems(25);
 		const items2 = makeItems(15);
 
-		checkDirection(direction => {
-			it(`compare group1 and group2 (direction = ${direction})`, () => {
+		checkDirection(horizontal => {
+			it(`compare group1 and group2 (horizontal = ${horizontal})`, () => {
 				// Given
 				const layout = new Layout({
 					frame,
-					direction,
+					horizontal,
 				});
 
-				layout.setSize(direction === "vertical" ? VIEWPORT.width: VIEWPORT.height);
+				layout.setSize(horizontal ? VIEWPORT.height : VIEWPORT.width);
 				// When
 				const group1 = layout.append(items1, [100]);
 				const group2 = layout.append(items2, group1.outlines.end);
@@ -196,7 +196,7 @@ describe("FrameLayout Test", function () {
 				let bottom;
 				let top;
 
-				if (direction === "vertical") {
+				if (!horizontal) {
 					bottom = [gitems1[20], gitems1[20], gitems1[21], gitems1[22]];
 					top = [gitems2[0], gitems2[0], gitems2[4], gitems2[3]];
 				} else {
@@ -211,7 +211,7 @@ describe("FrameLayout Test", function () {
 					items1: bottom,
 					group2,
 					items2: top,
-					direction,
+					horizontal,
 				});
 			});
 		});

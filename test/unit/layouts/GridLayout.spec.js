@@ -90,13 +90,13 @@ describe("GridLayout Test", function () {
 					item1: gitems[0],
 					item2: gitems[1],
 					margin,
-					direction: "horizontal",
+					horizontal: true,
 				});
 				expectConnectItems({
 					item1: gitems[1],
 					item2: gitems[2],
 					margin,
-					direction: "horizontal",
+					horizontal: true,
 				});
 				for (let i = 1; i < gitems.length; ++i) {
 					expect(gitems[i].rect.top).to.be.at.least(gitems[i - 1].rect.top);
@@ -106,21 +106,21 @@ describe("GridLayout Test", function () {
 	});
 	describe("prepend test", function () {
 		checkMargin([0, 10, 20], margin => {
-			checkDirection(direction => {
-				it(`prepend items (margin = ${margin}, direction = ${direction})`, () => {
+			checkDirection(horizontal => {
+				it(`prepend items (margin = ${margin}, horizontal = ${horizontal})`, () => {
 					// Given
 					const layout = new Layout({
 						margin,
-						direction,
+						horizontal,
 					});
-					layout.setSize(direction === "vertical" ?VIEWPORT.width : VIEWPORT.height);
+					layout.setSize(horizontal ? VIEWPORT.height : VIEWPORT.width);
 					// When
 					const group = layout.prepend(items, []);
 
 					// Then
 
 					const gitems = group.items;
-					const pos = direction === "vertical" ? "top" : "left";
+					const pos = horizontal ? "left" : "top";
 					for (let i = 1; i < gitems.length; ++i) {
 						expect(gitems[i].rect[pos]).to.be.at.least(gitems[i - 1].rect[pos]);
 					}
@@ -131,34 +131,34 @@ describe("GridLayout Test", function () {
 	describe("align test", function () {
 		checkMargin([0, 10, 20], margin => {
 			[CENTER, END, JUSTIFY].forEach(align => {
-				checkDirection(direction => {
-					it(`test align (margin = ${margin}, direction = ${direction}, align=${align})`, () => {
+				checkDirection(horizontal => {
+					it(`test align (margin = ${margin}, horizontal = ${horizontal}, align=${align})`, () => {
 						// Given
 						const layout = new Layout({
 							margin,
-							direction,
+							horizontal,
 							align,
 						});
-						layout.setSize(direction === "vertical" ? VIEWPORT.width : VIEWPORT.height);
+						layout.setSize(!horizontal ? VIEWPORT.width : VIEWPORT.height);
 						// When
-						const group = layout.append(direction === "vertical" ? items : items2, []);
+						const group = layout.append(!horizontal ? items : items2, []);
 
 						// Then
 
-						const gitems = group.items;
-						const pos = direction === "vertical" ? "top" : "left";
+						let gitems = group.items;
+						const pos = !horizontal ? "top" : "left";
 						for (let i = 1; i < gitems.length; ++i) {
 							expect(gitems[i].rect[pos]).to.be.at.least(gitems[i - 1].rect[pos]);
 						}
 						const itemLength = parseInt((layout._size + margin) / (100 + margin), 10);
-						const style = getStyleNames(direction);
-						const {size2, pos2} = style;
+						const style = getStyleNames(horizontal);
+						const {size1, size2, pos1, pos2} = style;
 						if (align === CENTER) {
 							expectConnectItems({
 								item1: gitems[0],
 								item2: gitems[1],
 								margin,
-								direction: direction === "vertical" ? "horizontal" : "vertical",
+								horizontal: !horizontal
 							});
 							
 							expect(gitems[0].rect[pos2]).to.be.equal(layout._size - (gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2]));
@@ -167,6 +167,17 @@ describe("GridLayout Test", function () {
 						} else if (align === JUSTIFY) {
 							expect(gitems[0].rect[pos2]).to.be.equal(0);
 							expect(gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2]).to.be.equal(layout._size);
+
+
+							layout.setSize(50);
+							layout.layout([group]);
+							gitems.forEach((item, i) => {
+								if (i === 0) {
+									return;
+								}
+								expect(item.rect[pos1]).to.be.closeTo(gitems[i - 1].rect[pos1] + gitems[i - 1].size[size1] + margin, 1);
+							});
+							
 						}
 					});
 				});

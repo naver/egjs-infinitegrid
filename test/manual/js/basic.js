@@ -64,7 +64,7 @@ function createGrid(horizontal) {
 	});
 	parallax = new eg.Parallax(window, {
 		container: grid,
-		horizontal: horizontal
+		horizontal: horizontal,
 	});
 	parallax.resize();
 }
