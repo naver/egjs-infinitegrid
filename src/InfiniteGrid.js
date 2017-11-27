@@ -198,7 +198,6 @@ class InfiniteGrid extends Component {
 		return this._items.pluck("items", 0, this._items.size());
 	}
 	_getVisibleItems() {
-		console.log("visible", this._status.startCursor, "~", this._status.endCursor);
 		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
 	}
 	_updateEdge() {
@@ -230,29 +229,28 @@ class InfiniteGrid extends Component {
 			this._fit = () => 0;
 			return 0;
 		}
-		
+
 		if (this._layout) {
 			const base = this._getEdgeValue("start");
-			
+
 			if (base !== 0) {
+				this._status.isProcessing = true;
 				if (scrollCycle === "before") {
-					console.trace("fit....before");
 					this._renderer.scrollBy(-Math.abs(base));
 					this._watcher.setScrollPos();
 				}
-				console.trace("fit....", base, JSON.stringify(this._items._data[this._status.endCursor].outlines));
 				this._items.fit(base, this._isVertical);
 				DOMRenderer.renderItems(this._getVisibleItems());
-				console.log("fit 이후",  JSON.stringify(this._items._data[this._status.endCursor].outlines));
-				const height = this._getEdgeValue("end");
-				this._renderer.setContainerSize(height);
-				console.log("height 조절", height);
+				this._renderer.setContainerSize(this._getEdgeValue("end"));
 				if (scrollCycle === "after") {
-					console.trace("fit....after");
 					this._renderer.scrollBy(Math.abs(base));
 					this._watcher.setScrollPos();
 				}
+				this._status.isProcessing = false;
 			}
+			return base;
+		} else {
+			return 0;
 		}
 	}
 	_getEdgeValue(cursor) {
@@ -431,8 +429,10 @@ class InfiniteGrid extends Component {
 	_recycle(isAppend) {
 		const remove = [];
 
-		for (let i = this._status.startCursor; i <= this._status.endCursor; i++) {
-			remove.push(this._isVisible(i));
+		if (this._status.startCursor !== this._status.endCursor) {
+			for (let i = this._status.startCursor; i <= this._status.endCursor; i++) {
+				remove.push(this._isVisible(i));
+			}
 		}
 		let start = remove.indexOf(isAppend ? 1 : -1);
 		let end = remove.lastIndexOf(isAppend ? 1 : -1);
@@ -451,7 +451,6 @@ class InfiniteGrid extends Component {
 
 	_postLayout(fromCache, items, isAppend, isTrusted) {
 		if (fromCache) {
-			console.log("캐시....");
 			this._renderer.createAndInsert(items, isAppend);
 			this._updateCursor(isAppend);
 			this.options.useRecycle && this._recycle(isAppend);
@@ -515,7 +514,6 @@ class InfiniteGrid extends Component {
 	}
 	// called by visible
 	_requestAppend() {
-		console.log("requestAppend");
 		const items = this._getNextItems(APPEND);
 
 		if (items.length) {
@@ -624,7 +622,8 @@ class InfiniteGrid extends Component {
 			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size,
 		});
-		console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
+		this._watcher.ignoreCheckOnce();
+		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
 	}
 	_reset() {
 		this._status = {

@@ -59,6 +59,10 @@ export default class Watcher {
 	getOrgScrollPos() {
 		return scroll(this._renderer.view, this._renderer.options.isVertical);
 	}
+	ignoreCheckOnce() {
+		// scroll position is not changed on iOS
+		this._prevPos = null;
+	}
 	_onCheck() {
 		const orgScrollPos = this.getOrgScrollPos();
 		const prevPos = this.getScrollPos();
@@ -66,7 +70,8 @@ export default class Watcher {
 		this.setScrollPos(orgScrollPos);
 		const scrollPos = this.getScrollPos();
 
-		if ((IS_IOS && orgScrollPos === 0) || prevPos === scrollPos) {
+		// ignore check event when ignoreCheckOnce method is called.
+		if ((IS_IOS && orgScrollPos === 0) || prevPos === scrollPos || prevPos === null) {
 			return;
 		}
 		this._callback.check && this._callback.check({
