@@ -54,6 +54,22 @@ var parallax = new eg.Parallax(".container", {
 	align: "center",
 	horizontal: true,
 });
+
+// item interface
+var item = {
+	// original size
+	size: {
+		width: 100,
+		height: 100,
+	},
+	// view size
+	rect: {
+		top: 100,
+		left: 100,
+		width: 100,
+		height: 100,
+	}
+};
 </script>
 ```
  **/
@@ -98,6 +114,19 @@ class Parallax {
 		element.__IMAGE__.__SIZE__ = element.__IMAGE__[`offset${sizeName}`];
 		element.__BOX__.__SIZE__ = element.__BOX__[`offset${sizeName}`];
 	}
+	/**
+	 * As the browser is resized, the gaps between the root and the container and the size of the items are updated.
+	 * @ko 브라우저의 크기가 변경됨으로 써 root와 container의 간격과 아이템들의 크기를 갱신한다.
+	 * @method eg.Parallax#resize
+	 * @param {Array} [items = []] Items to apply parallax. It does not apply if it is not in visible range. <ko>parallax를 적용할 아이템들. 가시거리에 존재하지 않으면 적용이 안된다.</ko>
+	 * @return {eg.Parallax} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 * @example
+```js
+window.addEventListener("resize", function (e) {
+	parallax.resize(items);
+});
+```
+	 */
 	resize(items = []) {
 		const root = this._root;
 		const container = this._container;
@@ -122,7 +151,23 @@ class Parallax {
 		items.forEach(item => {
 			this._checkParallaxItem(item.el);
 		});
+
+		return this;
 	}
+	/**
+	 * Scrolls the image in the item by a parallax.
+	 * @ko 스크롤하면 아이템안의 이미지를 시차적용시킨다.
+	 * @method eg.Parallax#resize
+	 * @param {Array} [items = []] Items to apply parallax. It does not apply if it is not in visible range. <ko>parallax를 적용할 아이템들. 가시거리에 존재하지 않으면 적용이 안된다.</ko>
+	 * @param {Number} [scrollPositionStart = 0] The scroll position.
+	 * @return {eg.Parallax} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 * @example
+```js
+document.body.addEventListener("scroll", function (e) {
+	parallax.refresh(items, e.scrollTop);
+});
+```
+	 */
 	refresh(items = [], scrollPositionStart = 0) {
 		const styleNames = this._style;
 		const positionName = styleNames.position;
@@ -189,6 +234,7 @@ class Parallax {
 			imageElement.__RATIO__ = ratio;
 			imageElement.style[TRANSFORM] = `translate${coordinateName}(${translate}px)`;
 		});
+		return this;
 	}
 }
 
