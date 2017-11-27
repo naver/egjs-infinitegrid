@@ -60,7 +60,7 @@ export default class Watcher {
 		return scroll(this._renderer.view, this._renderer.options.isVertical);
 	}
 	reset() {
-		this._prevPos = -1;
+		this._prevPos = null;
 	}
 	_onCheck() {
 		const orgScrollPos = this.getOrgScrollPos();
@@ -69,7 +69,7 @@ export default class Watcher {
 		this.setScrollPos(orgScrollPos);
 		const scrollPos = this.getScrollPos();
 
-		if ((IS_IOS && orgScrollPos === 0) || prevPos === -1 || prevPos === scrollPos) {
+		if ((IS_IOS && (orgScrollPos === 0 || prevPos === null)) || prevPos === scrollPos) {
 			return;
 		}
 
@@ -89,7 +89,6 @@ export default class Watcher {
 				this._callback.layout &&
 				this._callback.layout();
 			this._timer.resize = null;
-			this.reset();
 		}, 100);
 	}
 	detachEvent() {

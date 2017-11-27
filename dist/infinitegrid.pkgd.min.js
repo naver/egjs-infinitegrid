@@ -1391,24 +1391,23 @@ var InfiniteGrid = function (_Component) {
 		if (this._layout) {
 			var base = this._getEdgeValue("start");
 
-			if (scrollCycle === "before" && this._loadingStaus === _consts.LOADING_PREPEND) {
-				this._renderer.scrollBy(-Math.abs(base) + (0, _utils.innerHeight)(this._loadingBar.prepend.el));
-				this._watcher.setScrollPos();
-			}
-			if (base !== 0) {
+			if (base !== 0 || scrollCycle === "before" && this._loadingStatus === _consts.LOADING_PREPEND) {
+				var added = this._loadingStatus === _consts.LOADING_PREPEND ? (0, _utils.innerHeight)(this._loadingBar.prepend) : 0;
+
 				this._status.isProcessing = true;
 				if (scrollCycle === "before") {
-					if (this._loadingStaus !== _consts.LOADING_PREPEND) {
-						this._renderer.scrollBy(-Math.abs(base));
-						this._watcher.setScrollPos();
-					}
+					this._renderer.scrollBy(-Math.abs(base) + added);
+					this._watcher.setScrollPos();
 				}
-				this._items.fit(base, this._isVertical);
+				this._items.fit(base - added, this._isVertical);
 				_DOMRenderer2["default"].renderItems(this._getVisibleItems());
 				this._renderer.setContainerSize(this._getEdgeValue("end"));
 				if (scrollCycle === "after") {
-					this._renderer.scrollBy(Math.abs(base));
+					this._renderer.scrollBy(Math.abs(base) + added);
 					this._watcher.setScrollPos();
+				}
+				if (scrollCycle === "before" && this._loadingStatus === _consts.LOADING_PREPEND) {
+					return base;
 				}
 				this._status.isProcessing = false;
 			}
@@ -1588,25 +1587,20 @@ var InfiniteGrid = function (_Component) {
 	/**
   * Set loading bar for append, prepend.
   * @ko append와 prepend를 위한 로딩 바를 설정한다.
-  * @param {Element|String} loadingBar The loading bar HTML text or element <ko> 로딩 바 HTML 또는 element </ko>
+  * @param {String|Object} loadingBar The loading bar HTML text or element <ko> 로딩 바 HTML 또는 element </ko>
   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
   */
 
 
 	InfiniteGrid.prototype.setLoadingBar = function setLoadingBar(loadingBar) {
-		var loadingBarObj = {
-			"append": {
-				el: (0, _utils.$)(loadingBar),
-				size: 0
-			},
-			"prepend": {
-				el: (0, _utils.$)(loadingBar),
-				size: 0
-			}
+		var loadingBarObj = (typeof loadingBar === "undefined" ? "undefined" : _typeof(loadingBar)) === "object" ? loadingBar : {
+			"append": loadingBar,
+			"prepend": loadingBar
 		};
 
 		for (var type in loadingBarObj) {
-			loadingBarObj[type].el.style.display = "none";
+			loadingBarObj[type] = (0, _utils.$)(loadingBarObj[type]);
+			loadingBarObj[type].style.display = "none";
 		}
 		this._loadingBar = loadingBarObj;
 		this._appendLoadingBar();
@@ -1621,8 +1615,9 @@ var InfiniteGrid = function (_Component) {
 		}
 		var container = this._renderer.container;
 
-		container.appendChild(loadingBar.prepend.el);
-		container.appendChild(loadingBar.append.el);
+		for (var type in loadingBar) {
+			container.appendChild(loadingBar[type]);
+		}
 	};
 	/**
   * Checks whether a card element is being added.
@@ -1725,9 +1720,9 @@ var InfiniteGrid = function (_Component) {
 
 		var pos = isAppend ? Math.max.apply(Math, outline) : 0;
 
-		this._loadingBar[type].el.style.position = "absolute";
-		this._loadingBar[type].el.style.display = "block";
-		this._loadingBar[type].el.style.top = pos + "px";
+		this._loadingBar[type].style.position = "absolute";
+		this._loadingBar[type].style.display = "block";
+		this._loadingBar[type].style.top = pos + "px";
 		this._loadingStatus = isAppend ? _consts.LOADING_APPEND : _consts.LOADING_PREPEND;
 
 		if (!isAppend) {
@@ -1743,7 +1738,7 @@ var InfiniteGrid = function (_Component) {
 		if (!this._loadingBar[type]) {
 			return;
 		}
-		this._loadingBar[type].el.style.display = "none";
+		this._loadingBar[type].style.display = "none";
 	};
 
 	InfiniteGrid.prototype._postLayout = function _postLayout(fromCache, items, isAppend, isTrusted) {
@@ -1765,14 +1760,11 @@ var InfiniteGrid = function (_Component) {
 			}), function () {
 				var layouted = _this3._layout[method](_this3._renderer.updateSize(items), _this3._items.getOutline(isAppend ? _this3._status.endCursor : _this3._status.startCursor, isAppend ? "end" : "start"));
 
-				setTimeout(function () {
-					_this3._insertItems(layouted, isAppend);
-					_this3._updateCursor(isAppend);
-					_this3.options.useRecycle && _this3._recycle(isAppend);
-					_this3._loadingEnd(items, isAppend, isTrusted);
-					_DOMRenderer2["default"].renderItems(layouted.items);
-					_this3._onLayoutComplete(layouted.items, isAppend, isTrusted);
-				}, 1000);
+				_this3._insertItems(layouted, isAppend);
+				_this3._updateCursor(isAppend);
+				_this3.options.useRecycle && _this3._recycle(isAppend);
+				_DOMRenderer2["default"].renderItems(layouted.items);
+				_this3._onLayoutComplete(layouted.items, isAppend, isTrusted);
 			});
 		}
 	};
@@ -1911,6 +1903,9 @@ var InfiniteGrid = function (_Component) {
 
 		this._renderer.setContainerSize(size);
 		!isAppend && this._fit("after");
+		if (this._loadingStatus !== _consts.LOADING_END) {
+			this._loadingEnd(items, isAppend, isTrusted);
+		}
 		this._status.isProcessing = false;
 		/**
    * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
@@ -2756,7 +2751,7 @@ var Watcher = function () {
 	};
 
 	Watcher.prototype.reset = function reset() {
-		this._prevPos = -1;
+		this._prevPos = null;
 	};
 
 	Watcher.prototype._onCheck = function _onCheck() {
@@ -2766,7 +2761,7 @@ var Watcher = function () {
 		this.setScrollPos(orgScrollPos);
 		var scrollPos = this.getScrollPos();
 
-		if (_consts.IS_IOS && orgScrollPos === 0 || prevPos === -1 || prevPos === scrollPos) {
+		if (_consts.IS_IOS && (orgScrollPos === 0 || prevPos === null) || prevPos === scrollPos) {
 			return;
 		}
 
@@ -2787,7 +2782,6 @@ var Watcher = function () {
 		this._timer.resize = setTimeout(function () {
 			_this._renderer.isNeededResize() && _this._callback.layout && _this._callback.layout();
 			_this._timer.resize = null;
-			_this.reset();
 		}, 100);
 	};
 

@@ -238,7 +238,7 @@ class InfiniteGrid extends Component {
 
 			if (base !== 0 || (scrollCycle === "before" && this._loadingStatus === LOADING_PREPEND)) {
 				const added = this._loadingStatus === LOADING_PREPEND ?
-					innerHeight(this._loadingBar.prepend.el) : 0;
+					innerHeight(this._loadingBar.prepend) : 0;
 
 				this._status.isProcessing = true;
 				if (scrollCycle === "before") {
@@ -412,23 +412,18 @@ class InfiniteGrid extends Component {
 	/**
 	 * Set loading bar for append, prepend.
 	 * @ko append와 prepend를 위한 로딩 바를 설정한다.
-	 * @param {Element|String} loadingBar The loading bar HTML text or element <ko> 로딩 바 HTML 또는 element </ko>
+	 * @param {String|Object} loadingBar The loading bar HTML text or element <ko> 로딩 바 HTML 또는 element </ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	setLoadingBar(loadingBar) {
-		const loadingBarObj = {
-			"append": {
-				el: $(loadingBar),
-				size: 0,
-			},
-			"prepend": {
-				el: $(loadingBar),
-				size: 0,
-			},
+		const loadingBarObj = typeof loadingBar === "object" ? loadingBar : {
+			"append": loadingBar,
+			"prepend": loadingBar,
 		};
 
 		for (const type in loadingBarObj) {
-			loadingBarObj[type].el.style.display = "none";
+			loadingBarObj[type] = $(loadingBarObj[type]);
+			loadingBarObj[type].style.display = "none";
 		}
 		this._loadingBar = loadingBarObj;
 		this._appendLoadingBar();
@@ -442,8 +437,9 @@ class InfiniteGrid extends Component {
 		}
 		const container = this._renderer.container;
 
-		container.appendChild(loadingBar.prepend.el);
-		container.appendChild(loadingBar.append.el);
+		for (const type in loadingBar) {
+			container.appendChild(loadingBar[type]);
+		}
 	}
 	/**
 	 * Checks whether a card element is being added.
@@ -543,9 +539,9 @@ class InfiniteGrid extends Component {
 
 		const pos = isAppend ? Math.max(...outline) : 0;
 
-		this._loadingBar[type].el.style.position = "absolute";
-		this._loadingBar[type].el.style.display = "block";
-		this._loadingBar[type].el.style.top = `${pos}px`;
+		this._loadingBar[type].style.position = "absolute";
+		this._loadingBar[type].style.display = "block";
+		this._loadingBar[type].style.top = `${pos}px`;
 		this._loadingStatus = isAppend ? LOADING_APPEND : LOADING_PREPEND;
 
 		if (!isAppend) {
@@ -560,7 +556,7 @@ class InfiniteGrid extends Component {
 		if (!this._loadingBar[type]) {
 			return;
 		}
-		this._loadingBar[type].el.style.display = "none";
+		this._loadingBar[type].style.display = "none";
 	}
 	_postLayout(fromCache, items, isAppend, isTrusted) {
 		if (fromCache) {
@@ -569,7 +565,6 @@ class InfiniteGrid extends Component {
 			this.options.useRecycle && this._recycle(isAppend);
 			this._onLayoutComplete(items, isAppend, isTrusted);
 		} else {
-			console.log(this.isProcessing());
 			const method = isAppend ? "append" : "prepend";
 
 			this._loadingStart(items, isAppend, isTrusted);
@@ -584,13 +579,11 @@ class InfiniteGrid extends Component {
 							isAppend ? "end" : "start")
 					);
 
-					setTimeout(() => {
-						this._insertItems(layouted, isAppend);
-						this._updateCursor(isAppend);
-						this.options.useRecycle && this._recycle(isAppend);
-						DOMRenderer.renderItems(layouted.items);
-						this._onLayoutComplete(layouted.items, isAppend, isTrusted);
-					}, 1000);
+					this._insertItems(layouted, isAppend);
+					this._updateCursor(isAppend);
+					this.options.useRecycle && this._recycle(isAppend);
+					DOMRenderer.renderItems(layouted.items);
+					this._onLayoutComplete(layouted.items, isAppend, isTrusted);
 				}
 			);
 		}

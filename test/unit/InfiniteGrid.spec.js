@@ -123,6 +123,7 @@ describe("InfiniteGrid Test", function() {
           });
           const handler = insert(this.inst, isAppend, () => {
             const lastParam = handler.getCall(handler.callCount - 1).args[0];
+
             if (isAppend) {
               const spot = lastParam.size;
               this.inst._watcher.scrollTo(spot);
@@ -167,17 +168,9 @@ describe("InfiniteGrid Test", function() {
             expect(this.inst._status.endCursor).to.be.equal(RETRY - 1);
             expect(this.inst.getGroupKeys()).to.have.lengthOf(RETRY);
     
-            // Then: check layout property
-            checkLayoutComplete(handler, {
-              isAppend, 
-              count: ITEMCOUNT,
-              isTrusted: false
-            });
-    
             // Given
-            const centerIdx = Number.parseInt(RETRY / 2);
             const centerEndValue = this.inst._items
-              .getEdgeValue(isAppend ? "end" : "start", this.inst._status.startCursor, centerIdx);
+              .getEdgeValue(isAppend ? "end" : "start", this.inst._status.startCursor, 3);
     
             // When
             this.inst._watcher.scrollTo(centerEndValue);
