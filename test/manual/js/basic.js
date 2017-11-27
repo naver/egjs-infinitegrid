@@ -116,13 +116,13 @@ function changeLayout(className, options) {
 }
 function GridLayout() {
 	changeLayout("GridLayout", {
-		margin: 10,
+		margin: 5,
 		align: "justify"
 	});
 }
 function JustifiedLayout() {
 	changeLayout("JustifiedLayout", {
-		margin: 10
+		margin: 5
 	});
 }
 function FrameLayout() {
@@ -131,12 +131,12 @@ function FrameLayout() {
 			[1, 1, 2, 3, 4, 5],
 			[1, 1, 6, 7, 8, 9]
 		],
-		margin: 10,
+		margin: 5,
 	});
 }
 function SquareLayout() {
 	changeLayout("SquareLayout", {
-		margin: 10,
+		margin: 5,
 		itemSize: 150,
 	});
 }
@@ -145,7 +145,7 @@ function PackingLayout() {
 		aspectRatio: 1.5,
 		ratioWeight: 1,
 		sizeWeight: 2,
-		margin: 10,
+		margin: 5,
 	});
 }
 function append() {
