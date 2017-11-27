@@ -1,15 +1,11 @@
+import {ALIGN, isMobile} from "./consts";
+import {$, isWindow} from "./utils";
 
-const agent = navigator.userAgent;
-const isMobile = agent.indexOf("Mobi") !== -1 || /ios|android/.test(agent);
-const isWindow = function(el) {
-	return el === window;
-};
 const style = {
 	"vertical": {position: "top", size: "height", cammelSize: "Height", coordinate: "Y"},
 	"horizontal": {position: "left", size: "width", cammelSize: "Width", coordinate: "X"},
 };
-const START = "start";
-const CENTER = "center";
+const {START, CENTER} = ALIGN;
 const TRANSFORM = (function() {
 	const bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
 	const target = ["transform", "webkitTransform", "msTransform", "mozTransform"];
@@ -22,6 +18,45 @@ const TRANSFORM = (function() {
 	return "";
 })();
 
+/**
+ * Parallax is a displacement or difference in the apparent position of an object viewed along two different lines of sight. You can apply parallax by scrolling the image and speed of the item.
+ * @ko Parallax는 서로 다른 두 개의 시선에서 바라본 물체의 외관상 위치의 변위 또는 차이입니다. 스크롤에 따라 이미지와 아이템의 속도를 차이를 줌으로써 parallax을 적용할 수 있습니다.
+ * @class eg.Parallax
+ * @param {Element|String} [root=window] Scrolling target. If you scroll in the body, set window. 스크롤하는 대상. 만약 body에서 스크롤하면 window로 설정한다.
+ * @param {Object} [options] The option object of eg.Parallax module <ko>eg.Parallax 모듈의 옵션 객체</ko>
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</ko>
+ * @param {Element|String} [options.container=null] Container wrapping items. If root and container have no gaps, do not set option. <ko> 아이템들을 감싸고 있는 컨테이너. 만약 root와 container간의 차이가 없으면, 옵션을 설정하지 않아도 된다.</ko>
+ * @param {String} [options.selector="img"] The selector of the image to apply the parallax in the item <ko> 아이템안에 있는 parallax를 적용할 이미지의 selector </ko>
+ * @param {Boolean} [options.strength=1] Dimensions that indicate the sensitivity of parallax. The higher the strength, the faster.
+ * @param {Boolean} [options.center=0] The middle point of parallax. The top is 1 and the bottom is -1. <ko> parallax가 가운데로 오는 점. 상단이 1이고 하단이 -1이다. </ko>
+ * @param {Boolean} [options.range=[-1, 1]] Range to apply the parallax. The top is 1 and the bottom is -1. <ko> parallax가 적용되는 범위, 상단이 1이고 하단이 -1이다. </ko>
+ * @param {Boolean} [options.align="start"] The alignment of the image in the item. ("start" : top or left, "center": middle) <ko> 아이템안의 이미지의 정렬 </ko>
+ * @example
+```
+<script>
+// isOverflowScroll: false
+var parallax = new eg.Parallax(window, {
+	container: ".container",
+	selector: "img.parallax",
+	strength: 0.8,
+	center: 0,
+	range: [-1, 1],
+	align: "center",
+	horizontal: true,
+});
+
+// isOverflowScroll: ture
+var parallax = new eg.Parallax(".container", {
+	selector: "img.parallax",
+	strength: 0.8,
+	center: 0,
+	range: [-1, 1],
+	align: "center",
+	horizontal: true,
+});
+</script>
+```
+ **/
 class Parallax {
 	constructor(root = window, options = {}) {
 		this.options = Object.assign({
@@ -33,7 +68,8 @@ class Parallax {
 			align: START,
 			horizontal: false,
 		}, options);
-		this._root = root;
+		this._root = $(root);
+		this._container = this.options.container && $(this.options.container);
 		this._rootSize = 0;
 		this._containerPosition = 0;
 		this._style = style[this.options.horizontal ? "horizontal" : "vertical"];
@@ -64,7 +100,7 @@ class Parallax {
 	}
 	resize(items = []) {
 		const root = this._root;
-		const container = this.options.container;
+		const container = this._container;
 		const positionName = this._style.position;
 		const sizeName = this._style.cammelSize;
 

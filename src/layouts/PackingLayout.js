@@ -34,8 +34,9 @@ function fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertica
  * @param {Object} [options] The option object of eg.InfiniteGrid.PackingLayout module <ko>eg.InfiniteGrid.PackingLayout 모듈의 옵션 객체</ko>
  * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
  * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</ko>
- * @param {Boolean} [options.sizeWeight=1]
- * @param {Boolean} [options.ratioWeight=1]
+ * @param {Boolean} [options.aspectRatio=1] The aspect ratio of the group <ko> 그룹의 가로 세로 비 </ko>
+ * @param {Boolean} [options.sizeWeight=1] The size weight when placing an image <ko> 이미지를 배치할 때 사이즈 가중치 </ko>
+ * @param {Boolean} [options.ratioWeight=1] The ratio weight when placing an image <ko> 이미지를 배치할 때 비율 가중치 </ko>
  * @example
 ```
 <script>
@@ -211,7 +212,7 @@ class PackingLayout {
 			endIndex,
 		};
 	}
-	_insert(items=[], outline=[], type) {
+	_insert(items = [], outline = [], type) {
 		// this only needs the size of the item.
 		const clone = items.map(item => Object.assign({}, item));
 

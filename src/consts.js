@@ -44,6 +44,9 @@ export const DEFAULT_OPTIONS = {
 	margin: 0,
 };
 
+export const agent = navigator.userAgent;
+export const isMobile = agent.indexOf("Mobi") !== -1 || /ios|android/.test(agent);
+
 export const ALIGN = {
 	START: "start",
 	CENTER: "center",
