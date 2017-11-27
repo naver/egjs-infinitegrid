@@ -17,9 +17,20 @@ export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 	const method = isAppend ? "append" : "prepend";
 	const layoutHandler = sinon.spy(function(e) {
 		// oldHandler && oldHandler(e);
+		// Then: check layout property
+		checkLayoutComplete(layoutHandler, {
+			isAppend, 
+			count,
+			isTrusted: false
+		});
+		
 		if (idx <= retry) {
-			instance[method](getItems(count), idx++);
+			isAppend ? instance[method](getItems(count), idx++) : 
+				setTimeout(() => {
+					instance[method](getItems(count), idx++);
+				}, 10);
 		} else {
+			instance.off("layoutComplete");
 			// instance.callback.layoutComplete = oldHandler;
 			callback();
 		}

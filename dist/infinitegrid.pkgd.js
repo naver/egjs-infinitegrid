@@ -2643,7 +2643,7 @@ var Watcher = function () {
 	};
 
 	Watcher.prototype.reset = function reset() {
-		this._prevPos = -1;
+		this._prevPos = null;
 	};
 
 	Watcher.prototype._onCheck = function _onCheck() {
@@ -2653,7 +2653,7 @@ var Watcher = function () {
 		this.setScrollPos(orgScrollPos);
 		var scrollPos = this.getScrollPos();
 
-		if (_consts.IS_IOS && orgScrollPos === 0 || prevPos === -1 || prevPos === scrollPos) {
+		if (_consts.IS_IOS && (orgScrollPos === 0 || prevPos === null) || prevPos === scrollPos) {
 			return;
 		}
 
@@ -2674,7 +2674,6 @@ var Watcher = function () {
 		this._timer.resize = setTimeout(function () {
 			_this._renderer.isNeededResize() && _this._callback.layout && _this._callback.layout();
 			_this._timer.resize = null;
-			_this.reset();
 		}, 100);
 	};
 
