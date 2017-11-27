@@ -4,7 +4,6 @@ import {
 	DUMMY_POSITION,
 	MULTI,
 	GROUPKEY_ATT,
-	CONTAINER_CLASSNAME,
 } from "./consts";
 import {
 	$,
@@ -116,29 +115,15 @@ export default class DOMRenderer {
 			this._orgStyle.position = element.style.position;
 			element.style.position = "relative";
 		}
-
 		if (this.options.isOverflowScroll) {
-			let container = element.querySelector(`.${CONTAINER_CLASSNAME}`);
+			const target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
 
-			if (!container) {
-				container = document.createElement("div");
-				container.className = CONTAINER_CLASSNAME;
-
-				const children = element.children;
-				const length = children.length;	// for IE8
-				const target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
-
-				for (let i = 0; i < length; i++) {
-					container.appendChild(children[0]);
-				}
-				this._orgStyle.overflowX = element.style.overflowX;
-				this._orgStyle.overflowY = element.style.overflowY;
-				element.style[`overflow${target[0]}`] = "scroll";
-				element.style[`overflow${target[1]}`] = "hidden";
-				element.appendChild(container);
-			}
+			this._orgStyle.overflowX = element.style.overflowX;
+			this._orgStyle.overflowY = element.style.overflowY;
+			element.style[`overflow${target[0]}`] = "scroll";
+			element.style[`overflow${target[1]}`] = "hidden";
 			this.view = element;
-			this.container = container;
+			this.container = element;
 		} else {
 			this.view = window;
 			this.container = element;
@@ -156,7 +141,9 @@ export default class DOMRenderer {
 	}
 	clear() {
 		this.container.innerHTML = "";
-		this.container.style[this.options.isVertical ? "height" : "width"] = "";
+		if (!this.options.isOverflowScroll) {
+			this.container.style[this.options.isVertical ? "height" : "width"] = "";
+		}
 		this._size = {
 			containerOffset: 0,
 			container: -1,
@@ -200,7 +187,9 @@ export default class DOMRenderer {
 		return this._size.container;
 	}
 	setContainerSize(size) {
-		this.container.style[this.options.isVertical ? "height" : "width"] = `${size}px`;
+		if (!this.options.isOverflowScroll) {
+			this.container.style[this.options.isVertical ? "height" : "width"] = `${size}px`;
+		}
 	}
 	resize() {
 		if (this.isNeededResize()) {

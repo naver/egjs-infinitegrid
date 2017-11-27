@@ -90,7 +90,7 @@ describe("InfiniteGrid Test", function() {
     });
   });
 
-  describe("When scrolling append/prepend event Test", function() {
+  describe.only("When scrolling append/prepend event Test", function() {
     [true, false].forEach(isOverflowScroll => {
       beforeEach(() => {
         this.el = sandbox();
@@ -113,6 +113,7 @@ describe("InfiniteGrid Test", function() {
         const ITEMCOUNT = 30;
         const RETRY = 7;
         it(`should trigger ${isAppend ? "append" : "prepend"} event when scrolling (isOverflowScroll: ${isOverflowScroll})`, done => {
+          console.log("----");
           // Given
           // When
           this.inst.on(isAppend ? "append" : "prepend", param => {

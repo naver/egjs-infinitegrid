@@ -29,9 +29,12 @@ function createGrid(horizontal) {
 	ig = new eg.InfiniteGrid(grid, {
 		horizontal: horizontal,
 		threshold: 50,
+		isOverflowScroll: true
 	});
+	ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
 	ig.on({
 		"prepend": function (e) {
+			console.log("prepend");
 			var groupKeys = ig.getGroupKeys(true);
 			var groupKey = (groupKeys[0] || 0) - 1;
 
@@ -41,6 +44,7 @@ function createGrid(horizontal) {
 			ig.prepend(groups[groupKey], groupKey);
 		},
 		"append": function (e) {
+			console.log("append");
 			var groupKeys = ig.getGroupKeys(true);
 			var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
 			if (!(groupKey in groups)) {
@@ -49,7 +53,8 @@ function createGrid(horizontal) {
 			}
 			ig.append(groups[groupKey], groupKey);
 		},
-		"layoutComple": function (e) {
+		"layoutComplete": function (e) {
+			console.log("layoutComplete");
 			if (!isParallax) {
 				return;
 			}
@@ -60,6 +65,12 @@ function createGrid(horizontal) {
 				return;
 			}
 			parallax.refresh(ig.getItems(), e.scrollPos);
+		},
+		"loadingStart": function (e) {
+			console.log("loadingStart");
+		},
+		"loadingEnd": function (e) {
+			console.log("loadingEnd");
 		}
 	});
 	parallax = new eg.Parallax(window, {

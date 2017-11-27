@@ -53,3 +53,7 @@ export const ALIGN = {
 	END: "end",
 	JUSTIFY: "justify",
 };
+
+export const LOADING_END = 0;
+export const LOADING_APPEND = 1;
+export const LOADING_PREPEND = 2;

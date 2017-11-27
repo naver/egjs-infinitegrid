@@ -94,7 +94,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 exports.__esModule = true;
-exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
+exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.LOADING_END = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
 
 var _browser = __webpack_require__(2);
 
@@ -150,6 +150,10 @@ var ALIGN = exports.ALIGN = {
 	END: "end",
 	JUSTIFY: "justify"
 };
+
+var LOADING_END = exports.LOADING_END = 0;
+var LOADING_APPEND = exports.LOADING_APPEND = 1;
+var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
 
 /***/ }),
 /* 1 */
@@ -536,29 +540,15 @@ var DOMRenderer = function () {
 			this._orgStyle.position = element.style.position;
 			element.style.position = "relative";
 		}
-
 		if (this.options.isOverflowScroll) {
-			var container = element.querySelector("." + _consts.CONTAINER_CLASSNAME);
+			var target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
 
-			if (!container) {
-				container = document.createElement("div");
-				container.className = _consts.CONTAINER_CLASSNAME;
-
-				var children = element.children;
-				var length = children.length; // for IE8
-				var target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
-
-				for (var i = 0; i < length; i++) {
-					container.appendChild(children[0]);
-				}
-				this._orgStyle.overflowX = element.style.overflowX;
-				this._orgStyle.overflowY = element.style.overflowY;
-				element.style["overflow" + target[0]] = "scroll";
-				element.style["overflow" + target[1]] = "hidden";
-				element.appendChild(container);
-			}
+			this._orgStyle.overflowX = element.style.overflowX;
+			this._orgStyle.overflowY = element.style.overflowY;
+			element.style["overflow" + target[0]] = "scroll";
+			element.style["overflow" + target[1]] = "hidden";
 			this.view = element;
-			this.container = container;
+			this.container = element;
 		} else {
 			this.view = window;
 			this.container = element;
@@ -579,7 +569,9 @@ var DOMRenderer = function () {
 
 	DOMRenderer.prototype.clear = function clear() {
 		this.container.innerHTML = "";
-		this.container.style[this.options.isVertical ? "height" : "width"] = "";
+		if (!this.options.isOverflowScroll) {
+			this.container.style[this.options.isVertical ? "height" : "width"] = "";
+		}
 		this._size = {
 			containerOffset: 0,
 			container: -1,
@@ -628,7 +620,9 @@ var DOMRenderer = function () {
 	};
 
 	DOMRenderer.prototype.setContainerSize = function setContainerSize(size) {
-		this.container.style[this.options.isVertical ? "height" : "width"] = size + "px";
+		if (!this.options.isOverflowScroll) {
+			this.container.style[this.options.isVertical ? "height" : "width"] = size + "px";
+		}
 	};
 
 	DOMRenderer.prototype.resize = function resize() {
@@ -1397,11 +1391,17 @@ var InfiniteGrid = function (_Component) {
 		if (this._layout) {
 			var base = this._getEdgeValue("start");
 
+			if (scrollCycle === "before" && this._loadingStaus === _consts.LOADING_PREPEND) {
+				this._renderer.scrollBy(-Math.abs(base) + (0, _utils.innerHeight)(this._loadingBar.prepend.el));
+				this._watcher.setScrollPos();
+			}
 			if (base !== 0) {
 				this._status.isProcessing = true;
 				if (scrollCycle === "before") {
-					this._renderer.scrollBy(-Math.abs(base));
-					this._watcher.setScrollPos();
+					if (this._loadingStaus !== _consts.LOADING_PREPEND) {
+						this._renderer.scrollBy(-Math.abs(base));
+						this._watcher.setScrollPos();
+					}
 				}
 				this._items.fit(base, this._isVertical);
 				_DOMRenderer2["default"].renderItems(this._getVisibleItems());
@@ -1582,7 +1582,47 @@ var InfiniteGrid = function (_Component) {
 		this._items.clear();
 		this._renderer.clear();
 		this._reset();
+		this._appendLoadingBar();
 		return this;
+	};
+	/**
+  * Set loading bar for append, prepend.
+  * @ko append와 prepend를 위한 로딩 바를 설정한다.
+  * @param {Element|String} loadingBar The loading bar HTML text or element <ko> 로딩 바 HTML 또는 element </ko>
+  * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+  */
+
+
+	InfiniteGrid.prototype.setLoadingBar = function setLoadingBar(loadingBar) {
+		var loadingBarObj = {
+			"append": {
+				el: (0, _utils.$)(loadingBar),
+				size: 0
+			},
+			"prepend": {
+				el: (0, _utils.$)(loadingBar),
+				size: 0
+			}
+		};
+
+		for (var type in loadingBarObj) {
+			loadingBarObj[type].el.style.display = "none";
+		}
+		this._loadingBar = loadingBarObj;
+		this._appendLoadingBar();
+		return this;
+	};
+
+	InfiniteGrid.prototype._appendLoadingBar = function _appendLoadingBar() {
+		var loadingBar = this._loadingBar;
+
+		if (!loadingBar) {
+			return;
+		}
+		var container = this._renderer.container;
+
+		container.appendChild(loadingBar.prepend.el);
+		container.appendChild(loadingBar.append.el);
 	};
 	/**
   * Checks whether a card element is being added.
@@ -1599,6 +1639,7 @@ var InfiniteGrid = function (_Component) {
 		if (this.isProcessing() || elements.length === 0) {
 			return;
 		}
+
 		this._status.isProcessing = true;
 		var key = typeof groupKey === "undefined" ? new Date().getTime() + Math.floor(Math.random() * 1000) : groupKey;
 		var items = _ItemManager2["default"].from((0, _utils.$)(elements, true), this.options.itemSelector, {
@@ -1637,6 +1678,74 @@ var InfiniteGrid = function (_Component) {
 		}
 	};
 
+	InfiniteGrid.prototype._loadingLayout = function _loadingLayout(isComplete, items, isAppend, isTrusted) {
+		/**
+   * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
+   * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
+   * @event eg.InfiniteGrid#loadingStart
+   *
+   * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+   * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
+   * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
+   * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
+   * @param {Number} param.orgScrollPos Current position of the scroll <ko>현재 스크롤 위치값</ko>
+   * @param {Number} param.size The size of container element <ko>컨테이너 엘리먼트의 크기</ko>
+   * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+   */
+		/**
+   * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
+   * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
+   * @event eg.InfiniteGrid#loadingEnd
+   *
+   * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+   * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
+   * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
+   * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
+   * @param {Number} param.orgScrollPos Current position of the scroll <ko>현재 스크롤 위치값</ko>
+   * @param {Number} param.size The size of container element <ko>컨테이너 엘리먼트의 크기</ko>
+   * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+   */
+		this.trigger(isComplete ? "loadingEnd" : "loadingStart", {
+			target: items.concat(),
+			isAppend: isAppend,
+			isTrusted: isTrusted,
+			scrollPos: this._watcher.getScrollPos(),
+			orgScrollPos: this._watcher.getOrgScrollPos()
+		});
+	};
+
+	InfiniteGrid.prototype._loadingStart = function _loadingStart(items, isAppend, isTrusted) {
+		var type = isAppend ? "append" : "prepend";
+
+		this._loadingLayout(false, items, isAppend, isTrusted);
+		if (!this._loadingBar || !this._loadingBar[type]) {
+			return;
+		}
+		var outline = this._items.getOutline(isAppend ? this._status.endCursor : this._status.startCursor, isAppend ? "end" : "start");
+
+		var pos = isAppend ? Math.max.apply(Math, outline) : 0;
+
+		this._loadingBar[type].el.style.position = "absolute";
+		this._loadingBar[type].el.style.display = "block";
+		this._loadingBar[type].el.style.top = pos + "px";
+		this._loadingStatus = isAppend ? _consts.LOADING_APPEND : _consts.LOADING_PREPEND;
+
+		if (!isAppend) {
+			this._fit("before");
+		}
+	};
+
+	InfiniteGrid.prototype._loadingEnd = function _loadingEnd(items, isAppend, isTrusted) {
+		var type = isAppend ? "append" : "prepend";
+
+		this._loadingStatus = _consts.LOADING_END;
+		this._loadingLayout(true, items, isAppend, isTrusted);
+		if (!this._loadingBar[type]) {
+			return;
+		}
+		this._loadingBar[type].el.style.display = "none";
+	};
+
 	InfiniteGrid.prototype._postLayout = function _postLayout(fromCache, items, isAppend, isTrusted) {
 		var _this3 = this;
 
@@ -1648,6 +1757,7 @@ var InfiniteGrid = function (_Component) {
 		} else {
 			var method = isAppend ? "append" : "prepend";
 
+			this._loadingStart(items, isAppend, isTrusted);
 			this._renderer[method](items);
 			// check image sizes after elements are attated on DOM
 			_ImageLoaded2["default"].check(items.map(function (item) {
@@ -1655,11 +1765,14 @@ var InfiniteGrid = function (_Component) {
 			}), function () {
 				var layouted = _this3._layout[method](_this3._renderer.updateSize(items), _this3._items.getOutline(isAppend ? _this3._status.endCursor : _this3._status.startCursor, isAppend ? "end" : "start"));
 
-				_this3._insertItems(layouted, isAppend);
-				_this3._updateCursor(isAppend);
-				_this3.options.useRecycle && _this3._recycle(isAppend);
-				_DOMRenderer2["default"].renderItems(layouted.items);
-				_this3._onLayoutComplete(layouted.items, isAppend, isTrusted);
+				setTimeout(function () {
+					_this3._insertItems(layouted, isAppend);
+					_this3._updateCursor(isAppend);
+					_this3.options.useRecycle && _this3._recycle(isAppend);
+					_this3._loadingEnd(items, isAppend, isTrusted);
+					_DOMRenderer2["default"].renderItems(layouted.items);
+					_this3._onLayoutComplete(layouted.items, isAppend, isTrusted);
+				}, 1000);
 			});
 		}
 	};
