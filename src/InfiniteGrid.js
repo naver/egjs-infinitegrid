@@ -621,7 +621,7 @@ class InfiniteGrid extends Component {
 			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size,
 		});
-		this._watcher.ignoreCheckOnce();
+		this._watcher.reset();
 		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
 	}
 	_reset() {

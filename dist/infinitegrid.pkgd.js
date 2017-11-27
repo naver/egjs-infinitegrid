@@ -1820,7 +1820,7 @@ var InfiniteGrid = function (_Component) {
 			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size: size
 		});
-		this._watcher.ignoreCheckOnce();
+		this._watcher.reset();
 		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
 	};
 
@@ -2592,7 +2592,7 @@ var Watcher = function () {
 			// doubleCheck: null,
 			// doubleCheckCount: RETRY,
 		};
-		this._prevPos = -1;
+		this.reset();
 		this._renderer = renderer;
 		this._onCheck = this._onCheck.bind(this);
 		this._onResize = this._onResize.bind(this);
@@ -2642,9 +2642,8 @@ var Watcher = function () {
 		return (0, _utils.scroll)(this._renderer.view, this._renderer.options.isVertical);
 	};
 
-	Watcher.prototype.ignoreCheckOnce = function ignoreCheckOnce() {
-		// scroll position is not changed on iOS
-		this._prevPos = null;
+	Watcher.prototype.reset = function reset() {
+		this._prevPos = -1;
 	};
 
 	Watcher.prototype._onCheck = function _onCheck() {
@@ -2654,10 +2653,10 @@ var Watcher = function () {
 		this.setScrollPos(orgScrollPos);
 		var scrollPos = this.getScrollPos();
 
-		// ignore check event when ignoreCheckOnce method is called.
-		if (_consts.IS_IOS && orgScrollPos === 0 || prevPos === scrollPos || prevPos === null) {
+		if (_consts.IS_IOS && orgScrollPos === 0 || prevPos === -1 || prevPos === scrollPos) {
 			return;
 		}
+
 		this._callback.check && this._callback.check({
 			isForward: prevPos < scrollPos,
 			scrollPos: scrollPos,
@@ -2675,7 +2674,7 @@ var Watcher = function () {
 		this._timer.resize = setTimeout(function () {
 			_this._renderer.isNeededResize() && _this._callback.layout && _this._callback.layout();
 			_this._timer.resize = null;
-			_this._prevPos = -1;
+			_this.reset();
 		}, 100);
 	};
 
@@ -2685,7 +2684,7 @@ var Watcher = function () {
 
 	Watcher.prototype.destroy = function destroy() {
 		this.detachEvent();
-		this._prevPos = -1;
+		this.reset();
 	};
 
 	return Watcher;

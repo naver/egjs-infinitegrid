@@ -19,7 +19,7 @@ export default class Watcher {
 			// doubleCheck: null,
 			// doubleCheckCount: RETRY,
 		};
-		this._prevPos = -1;
+		this.reset();
 		this._renderer = renderer;
 		this._onCheck = this._onCheck.bind(this);
 		this._onResize = this._onResize.bind(this);
@@ -59,9 +59,8 @@ export default class Watcher {
 	getOrgScrollPos() {
 		return scroll(this._renderer.view, this._renderer.options.isVertical);
 	}
-	ignoreCheckOnce() {
-		// scroll position is not changed on iOS
-		this._prevPos = null;
+	reset() {
+		this._prevPos = -1;
 	}
 	_onCheck() {
 		const orgScrollPos = this.getOrgScrollPos();
@@ -70,10 +69,10 @@ export default class Watcher {
 		this.setScrollPos(orgScrollPos);
 		const scrollPos = this.getScrollPos();
 
-		// ignore check event when ignoreCheckOnce method is called.
-		if ((IS_IOS && orgScrollPos === 0) || prevPos === scrollPos || prevPos === null) {
+		if ((IS_IOS && orgScrollPos === 0) || prevPos === -1 || prevPos === scrollPos) {
 			return;
 		}
+
 		this._callback.check && this._callback.check({
 			isForward: prevPos < scrollPos,
 			scrollPos,
@@ -90,7 +89,7 @@ export default class Watcher {
 				this._callback.layout &&
 				this._callback.layout();
 			this._timer.resize = null;
-			this._prevPos = -1;
+			this.reset();
 		}, 100);
 	}
 	detachEvent() {
@@ -98,7 +97,7 @@ export default class Watcher {
 	}
 	destroy() {
 		this.detachEvent();
-		this._prevPos = -1;
+		this.reset();
 	}
 }
 
