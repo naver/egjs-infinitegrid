@@ -43,7 +43,7 @@ function createGrid(horizontal) {
 				return;
 			}
 			ig.startLoading(false);
-			setTimeout(() => {
+			setTimeout(function() {
 				ig.prepend(groups[groupKey], groupKey);
 			}, 1000);
 		},
@@ -56,7 +56,7 @@ function createGrid(horizontal) {
 				groups[groupKey] = getItems(groupKey, num);
 			}
 			ig.startLoading(true);
-			setTimeout(() => {
+			setTimeout(function () {
 				ig.append(groups[groupKey], groupKey);
 			}, 1000);
 		},
