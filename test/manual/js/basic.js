@@ -1,4 +1,5 @@
 /* eslint-disable */
+window.console = window.console || {};
 
 var ig;
 var parallax;
@@ -29,9 +30,9 @@ function createGrid(horizontal) {
 	ig = new eg.InfiniteGrid(grid, {
 		horizontal: horizontal,
 		threshold: 50,
-		isOverflowScroll: true
+		isOverflowScroll: true,
+		loadingBar: "<div class=\"loading_bar\">LOADING</div>",
 	});
-	ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
 	ig.on({
 		"prepend": function (e) {
 			console.log("prepend");
@@ -41,7 +42,10 @@ function createGrid(horizontal) {
 			if (!(groupKey in groups)) {
 				return;
 			}
-			ig.prepend(groups[groupKey], groupKey);
+			ig.startLoading(false);
+			setTimeout(() => {
+				ig.prepend(groups[groupKey], groupKey);
+			}, 1000);
 		},
 		"append": function (e) {
 			console.log("append");
@@ -51,9 +55,13 @@ function createGrid(horizontal) {
 				// allow append
 				groups[groupKey] = getItems(groupKey, num);
 			}
-			ig.append(groups[groupKey], groupKey);
+			ig.startLoading(true);
+			setTimeout(() => {
+				ig.append(groups[groupKey], groupKey);
+			}, 1000);
 		},
 		"layoutComplete": function (e) {
+			ig.endLoading(e.isAppend);
 			console.log("layoutComplete");
 			if (!isParallax) {
 				return;
@@ -65,12 +73,6 @@ function createGrid(horizontal) {
 				return;
 			}
 			parallax.refresh(ig.getItems(), e.scrollPos);
-		},
-		"loadingStart": function (e) {
-			console.log("loadingStart");
-		},
-		"loadingEnd": function (e) {
-			console.log("loadingEnd");
 		}
 	});
 	parallax = new eg.Parallax(window, {
@@ -156,6 +158,7 @@ function append() {
 		// allow append
 		groups[groupKey] = getItems(groupKey, num);
 	}
+	ig.startLoading(true);
 	ig.append(groups[groupKey], groupKey);
 }
 function prepend() {
@@ -166,6 +169,7 @@ function prepend() {
 		// allow prepend
 		groups[groupKey] = getItems(groupKey, num);
 	}
+	ig.startLoading(false);
 	ig.prepend(groups[groupKey], groupKey);
 }
 function layout() {

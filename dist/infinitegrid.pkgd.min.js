@@ -614,12 +614,18 @@ var DOMRenderer = function () {
 		return this._size.containerOffset;
 	};
 
-	DOMRenderer.prototype.getContainerSize = function getContainerSize() {
+	DOMRenderer.prototype.getViewportSize = function getViewportSize() {
 		this.resize();
+		return this._size.viewport;
+	};
+
+	DOMRenderer.prototype.getContainerSize = function getContainerSize() {
 		return this._size.container;
 	};
 
 	DOMRenderer.prototype.setContainerSize = function setContainerSize(size) {
+		this._size.container = size;
+
 		if (!this.options.isOverflowScroll) {
 			this.container.style[this.options.isVertical ? "height" : "width"] = size + "px";
 		}
@@ -631,7 +637,8 @@ var DOMRenderer = function () {
 
 			this._size = {
 				containerOffset: this.container["offset" + (isVertical ? "Top" : "Left")],
-				container: this._calcSize(),
+				container: -1,
+				viewport: this._calcSize(),
 				view: isVertical ? (0, _utils.innerHeight)(this.view) : (0, _utils.innerWidth)(this.view),
 				item: null
 			};
@@ -641,13 +648,14 @@ var DOMRenderer = function () {
 	};
 
 	DOMRenderer.prototype.isNeededResize = function isNeededResize() {
-		return this._calcSize() !== this._size.container;
+		return this._calcSize() !== this._size.viewport;
 	};
 
 	DOMRenderer.prototype.destroy = function destroy() {
 		this._size = {
 			containerOffset: 0,
 			container: -1,
+			viewport: -1,
 			view: -1,
 			item: null
 		};
@@ -1197,6 +1205,18 @@ if (typeof Object.create !== "function") {
 var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
 	// ...
 });
+
+
+// loading bar
+var some = new eg.InfiniteGrid("#grid", {
+	loadingBar: `<div class="loading">LOADING</div>`,
+});
+var some2 = new eg.InfiniteGrid("#grid", {
+	loadingBar: {
+		"append": appendElelement,
+		"prepend": prependElement,
+	},
+});
 </script>
 ```
  *
@@ -1215,6 +1235,7 @@ var InfiniteGrid = function (_Component) {
   * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향</ko>
   * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
   * @param {Number} [options.threshold=300] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
+  * @param {String|Object} [options.loadingBar={}] The loading bar HTML markup or element or element selector <ko> 로딩 바 HTML 또는 element 또는 selector </ko>
   *
   */
 	function InfiniteGrid(element, options) {
@@ -1228,11 +1249,10 @@ var InfiniteGrid = function (_Component) {
 			threshold: 300,
 			isEqualSize: false,
 			useRecycle: true,
-			horizontal: false
+			horizontal: false,
+			loadingBar: {}
 		}, options);
 		_consts.IS_ANDROID2 && (_this.options.isOverflowScroll = false);
-		_this._loadingBar = {};
-		_this._loadingSize = 0;
 		_this._isVertical = !_this.options.horizontal;
 		_this._reset();
 		_this._items = new _ItemManager2["default"]();
@@ -1249,6 +1269,7 @@ var InfiniteGrid = function (_Component) {
 				return _this._onCheck(param);
 			}
 		});
+		_this._initLoadingBar();
 		return _this;
 	}
 	/**
@@ -1328,7 +1349,7 @@ var InfiniteGrid = function (_Component) {
 		this._layout = new LayoutKlass(_extends(options || {}, {
 			horizontal: !this._isVertical
 		}));
-		this._layout.setSize(this._renderer.getContainerSize());
+		this._layout.setSize(this._renderer.getViewportSize());
 		return this;
 	};
 	/**
@@ -1389,28 +1410,28 @@ var InfiniteGrid = function (_Component) {
 			};
 			return 0;
 		}
-
 		if (this._layout) {
 			var base = this._getEdgeValue("start");
 			var margin = this._loadingSize;
 
 			if (base !== 0 || margin) {
-				this._status.isProcessing = true;
+				if (this._loadingStatus === _consts.LOADING_END) {
+					this._status.isProcessing = true;
+				}
 				if (scrollCycle === "before") {
 					this._renderer.scrollBy(-Math.abs(base) + margin);
 					this._watcher.setScrollPos();
 				}
 				this._items.fit(base - margin, this._isVertical);
 				_DOMRenderer2["default"].renderItems(this._getVisibleItems());
-				this._renderer.setContainerSize(this._getEdgeValue("end"));
+				this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
 				if (scrollCycle === "after") {
 					this._renderer.scrollBy(Math.abs(base) + margin);
 					this._watcher.setScrollPos();
 				}
-				if (margin) {
-					return base;
+				if (this._loadingStatus === _consts.LOADING_END) {
+					this._status.isProcessing = false;
 				}
-				this._status.isProcessing = false;
 			}
 			return base;
 		} else {
@@ -1451,7 +1472,7 @@ var InfiniteGrid = function (_Component) {
 				// remove cache
 				data = this._items.get(this._status.startCursor, this._status.endCursor);
 				if (this._renderer.resize()) {
-					this._layout.setSize(this._renderer.getContainerSize());
+					this._layout.setSize(this._renderer.getViewportSize());
 					data.forEach(function (v) {
 						data.items = _this2._renderer.updateSize(v.items);
 					});
@@ -1585,39 +1606,20 @@ var InfiniteGrid = function (_Component) {
 		this._appendLoadingBar();
 		return this;
 	};
-	/**
-  * Set loading bar for append, prepend.
-  * @ko append와 prepend를 위한 로딩 바를 설정한다.
-  * @param {String|Object} loadingBar The loading bar HTML text or element <ko> 로딩 바 HTML 또는 element </ko>
-  * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-  * @example
- ```js
- // append and prepend are applied simultaneously.
- ig.setLoadingBar(`<div class="loading-bar">LOADING</div>`);
- // append and prepend are applied respectively.
- ig.setLoadingBar({
- "append": `<div class="loading-bar">APPEND LOADING</div>`,
- "prepend": `<div class="loading-bar">PREPEND LOADING</div>`,
- });
- // only append or prepend
- ig.setLoadingBar({
- "append": `<div class="loading-bar">APPEND LOADING</div>`,
- });
- ```
-  */
 
-
-	InfiniteGrid.prototype.setLoadingBar = function setLoadingBar(loadingBar) {
+	InfiniteGrid.prototype._initLoadingBar = function _initLoadingBar() {
+		var loadingBar = this.options.loadingBar;
 		var loadingBarObj = (typeof loadingBar === "undefined" ? "undefined" : _typeof(loadingBar)) === "object" ? loadingBar : {
 			"append": loadingBar,
 			"prepend": loadingBar
 		};
 
+		this._loadingSize = 0;
+		this._loadingStatus = _consts.LOADING_END;
+		this._loadingBar = loadingBarObj;
 		for (var type in loadingBarObj) {
 			loadingBarObj[type] = (0, _utils.$)(loadingBarObj[type]);
-			loadingBarObj[type].style.display = "none";
 		}
-		this._loadingBar = loadingBarObj;
 		this._appendLoadingBar();
 		return this;
 	};
@@ -1683,91 +1685,90 @@ var InfiniteGrid = function (_Component) {
 			}
 		}
 	};
+	/**
+  * Returns the element of loading bar.
+  * @ko 로딩 바의 element를 반환한다.
+  * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
+  * @return {Element} The element of loading bar. <ko>로딩 바의 element</ko>
+  */
 
-	InfiniteGrid.prototype.getStartOffset = function getStartOffset() {
-		var outline = this._items.getOutline(this._status.startCursor, "start");
 
-		return outline.length ? Math.max.apply(Math, outline) : 0;
+	InfiniteGrid.prototype.getLoadingBar = function getLoadingBar() {
+		var isAppend = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+		return this._loadingBar[isAppend ? "append" : "prepend"];
 	};
+	/**
+  * Start loading for append/prepend during loading data.
+  * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 기다린다.
+  * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
+  * @param {Object} [userStyle = {display: "block"}] custom style to apply to this loading bar for start. <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
+  * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+  */
 
-	InfiniteGrid.prototype.getEndOffset = function getEndOffset() {
-		var outline = this._items.getOutline(this._status.endCursor, "end");
 
-		return outline.length ? Math.max.apply(Math, outline) : 0;
-	};
+	InfiniteGrid.prototype.startLoading = function startLoading(isAppend) {
+		var _extends2;
 
-	InfiniteGrid.prototype._loadingStart = function _loadingStart(items, isAppend, isTrusted) {
+		var userStyle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { display: "block" };
+
 		var type = isAppend ? "append" : "prepend";
 
-		if (this._loadingBar[type]) {
-			var pos = isAppend ? this.getEndOffset() : 0;
-			var el = this._loadingBar[type];
-
-			el.style.position = "absolute";
-			el.style.display = "block";
-			el.style[this._isVertical ? "top" : "left"] = pos + "px";
-			this._loadingStatus = isAppend ? _consts.LOADING_APPEND : _consts.LOADING_PREPEND;
-			this._loadingSize = this._isVertical ? (0, _utils.innerHeight)(el) : (0, _utils.innerWidth)(el);
-
-			if (!isAppend) {
-				this._fit("before");
-			}
+		this._loadingStatus = isAppend ? _consts.LOADING_APPEND : _consts.LOADING_PREPEND;
+		if (!this._loadingBar[type]) {
+			return this;
 		}
-		/**
-   * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
-   * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
-   * @event eg.InfiniteGrid#loadingStart
-   *
-   * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-   * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
-   * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
-   * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
-   * @param {Number} param.orgScrollPos Current position of the scroll <ko>현재 스크롤 위치값</ko>
-   * @param {Number} param.size The size of container element <ko>컨테이너 엘리먼트의 크기</ko>
-   * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
-   */
-		this.trigger("loadingStart", {
-			loadingBar: this._loadingBar[type],
-			target: items.concat(),
-			isAppend: isAppend,
-			isTrusted: isTrusted,
-			scrollPos: this._watcher.getScrollPos(),
-			orgScrollPos: this._watcher.getOrgScrollPos()
-		});
-	};
+		var pos = isAppend ? this._getEdgeValue("end") : 0;
+		var el = this._loadingBar[type];
+		var style = _extends((_extends2 = {
+			position: "absolute"
+		}, _extends2[this._isVertical ? "top" : "left"] = pos + "px", _extends2), userStyle);
 
-	InfiniteGrid.prototype._loadingEnd = function _loadingEnd(items, isAppend, isTrusted) {
+		for (var property in style) {
+			el.style[property] = style[property];
+		}
+		this._loadingSize = this._isVertical ? (0, _utils.innerHeight)(el) : (0, _utils.innerWidth)(el);
+		if (!isAppend) {
+			this._fit("before");
+		} else {
+			this._renderer.setContainerSize(this._getEdgeValue("end") + this._loadingSize);
+		}
+		return this;
+	};
+	/**
+  * End loading after startLoading() for append/prepend
+  * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 기다린다.
+  * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
+  * @param {Object} [userStyle = {display: "none"}] custom style to apply to this loading bar for end <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
+  * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+  */
+
+
+	InfiniteGrid.prototype.endLoading = function endLoading(isAppend) {
+		var _extends3;
+
+		var userStyle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { display: "none" };
+
 		var type = isAppend ? "append" : "prepend";
+		var el = this._loadingBar[type];
+		var size = this._loadingSize;
 
 		this._loadingStatus = _consts.LOADING_END;
 		this._loadingSize = 0;
 
-		/**
-   * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
-   * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
-   * @event eg.InfiniteGrid#loadingEnd
-   *
-   * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-   * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
-   * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
-   * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
-   * @param {Number} param.orgScrollPos Current position of the scroll <ko>현재 스크롤 위치값</ko>
-   * @param {Number} param.size The size of container element <ko>컨테이너 엘리먼트의 크기</ko>
-   * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
-   */
-		this.trigger("loadingEnd", {
-			loadingBar: this._loadingBar[type],
-			target: items.concat(),
-			isAppend: isAppend,
-			isTrusted: isTrusted,
-			scrollPos: this._watcher.getScrollPos(),
-			orgScrollPos: this._watcher.getOrgScrollPos()
-		});
-
-		if (!this._loadingBar[type]) {
-			return;
+		if (!el) {
+			return this;
 		}
-		this._loadingBar[type].style.display = "none";
+		var style = _extends((_extends3 = {}, _extends3[this._isVertical ? "top" : "left"] = -size + "px", _extends3), userStyle);
+
+		for (var property in style) {
+			el.style[property] = style[property];
+		}
+		if (!isAppend) {
+			this._fit("before");
+		}
+		this._renderer.setContainerSize(this._getEdgeValue("end"));
+		return this;
 	};
 
 	InfiniteGrid.prototype._postLayout = function _postLayout(fromCache, items, isAppend, isTrusted) {
@@ -1781,7 +1782,6 @@ var InfiniteGrid = function (_Component) {
 		} else {
 			var method = isAppend ? "append" : "prepend";
 
-			this._loadingStart(items, isAppend, isTrusted);
 			this._renderer[method](items);
 			// check image sizes after elements are attated on DOM
 			_ImageLoaded2["default"].check(items.map(function (item) {
@@ -1904,7 +1904,7 @@ var InfiniteGrid = function (_Component) {
 			scrollPos: scrollPos,
 			orgScrollPos: orgScrollPos
 		});
-		if (this.isProcessing()) {
+		if (this.isProcessing() || this._loadingStatus !== _consts.LOADING_END) {
 			return;
 		}
 		var rect = this._getEdgeOffset(isForward ? "end" : "start");
@@ -1930,11 +1930,8 @@ var InfiniteGrid = function (_Component) {
 		this._updateEdge();
 		var size = this._getEdgeValue("end");
 
-		this._renderer.setContainerSize(size);
+		this._renderer.setContainerSize(size + this._loadingSize);
 		!isAppend && this._fit("after");
-		if (this._loadingStatus !== _consts.LOADING_END) {
-			this._loadingEnd(items, isAppend, isTrusted);
-		}
 		this._status.isProcessing = false;
 		/**
    * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
@@ -2532,9 +2529,11 @@ var ItemManager = function () {
 	};
 
 	ItemManager.prototype.getEdgeValue = function getEdgeValue(cursor, start, end) {
-		return Math[cursor === "start" ? "min" : "max"].apply(Math, this.pluck("outlines", this.getEdgeIndex(cursor, start, end)).reduce(function (acc, v) {
+		var outlines = this.pluck("outlines", this.getEdgeIndex(cursor, start, end)).reduce(function (acc, v) {
 			return acc.concat(v[cursor]);
-		}, []));
+		}, []);
+
+		return outlines.length ? Math[cursor === "start" ? "min" : "max"].apply(Math, outlines) : 0;
 	};
 
 	ItemManager.prototype.append = function append(layouted) {

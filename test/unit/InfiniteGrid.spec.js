@@ -6,9 +6,10 @@ import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
 import {getItems, insert, checkLayoutComplete} from "./helper/TestHelper";
-import {APPEND, PREPEND} from "../../src/consts";
-import {innerHeight} from "../../src/utils";
+import {APPEND, PREPEND, LOADING_END, LOADING_PREPEND, LOADING_APPEND} from "../../src/consts";
+import {innerWidth, innerHeight} from "../../src/utils";
 
+/* eslint-disable */
 describe("InfiniteGrid Test", function() {
   describe("destroy Test", function() {
     [true, false].forEach(isOverflowScroll => {
@@ -143,11 +144,11 @@ describe("InfiniteGrid Test", function() {
         this.el.innerHTML = "<div id='infinite'></div>";
         this.inst = new InfiniteGrid("#infinite", {
           useRecycle: true,
-          isOverflowScroll
-        });
-        this.inst.setLoadingBar({
-          "prepend": `<div class="prepend" style="height: 100px;">PREPEND</div>`,
-          "append": `<div class="append" style="height: 75px;">APPEND</div>`,
+          isOverflowScroll,
+          loadingBar:{
+            "prepend": `<div class="prepend" style="width: 100px;height: 100px;display:none;">PREPEND</div>`,
+            "append": `<div class="append" style="height: 75px; height: 75px;display:none;">APPEND</div>`,
+          },
         });
         this.inst.setLayout(GridLayout);
       });
@@ -163,28 +164,53 @@ describe("InfiniteGrid Test", function() {
         const ITEMCOUNT = 30;
         const RETRY = 1;
         it(`should trigger loadingStrat and loadingEnd event when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll})`, done => {
-          console.log("----");
+          
           // Given
           // When
-          const loadingStartHandler = sinon.spy(e => {
-            const edge = this.inst.getEndOffset() || 0;
-            expect(e.isTrusted).to.a.false;
-            expect(e.isAppend).to.be.equal(isAppend);
-            expect(innerHeight(e.loadingBar)).to.be.equal(isAppend ? 75 : 100);
-            expect(parseInt(e.loadingBar.style.top || 0, 10)).to.be.equal(isAppend ? edge : 0);
-          });
-          const loadingEndHandler = sinon.spy(e => {
-            expect(e.isTrusted).to.a.false;
-            expect(e.isAppend).to.be.equal(isAppend);
-          });
+          expect(this.inst._loadingStatus).to.be.equal(LOADING_END);
+          this.inst.startLoading(isAppend);
+          expect(this.inst.getLoadingBar(isAppend).style.display).to.be.equal("block");
+          expect(this.inst._loadingStatus).to.be.equal(isAppend ? LOADING_APPEND : LOADING_PREPEND);
+          expect(this.inst._loadingSize).to.be.equal(isAppend ? 75 : 100);
+          expect(this.inst._renderer._size.container).to.be.equal(isAppend ? 75 : 100);
 
-          this.inst.on("loadingStart", loadingStartHandler);
-          this.inst.on("loadingEnd", loadingEndHandler);
 
-          const handler = insert(this.inst, isAppend, () => {
-            expect(loadingStartHandler.callCount).to.be.equal(2);
-            expect(loadingEndHandler.callCount).to.be.equal(2);
+          const layoutCompleteHandler = sinon.spy(e => {
+            const lastParam = layoutCompleteHandler.getCall(layoutCompleteHandler.callCount - 1).args[0];
+
+            expect(this.inst._renderer._size.container).to.be.equal(this.inst._getEdgeValue("end") - this.inst._getEdgeValue("start") + (isAppend ? 75 : 100));
+            // no request append / prepend
+            if (isAppend) {
+              const spot = lastParam.size;
+              this.inst._watcher.scrollTo(spot);
+            } else {
+              this.inst._watcher.scrollTo(0);
+            }
+          });
+          const insertHandler = sinon.spy(e => {
+            expect(this.inst._loadingStatus).to.be.equal(LOADING_END);
+            expect(this.inst._loadingSize).to.be.equal(0);
             done();
+          });
+          this.inst.on("layoutComplete", layoutCompleteHandler);
+          this.inst.on(isAppend ? "append" : "prepend", insertHandler);
+          const handler = insert(this.inst, isAppend, () => {
+            this.inst.endLoading(isAppend);
+            expect(this.inst._loadingStatus).to.be.equal(LOADING_END);
+            expect(this.inst._loadingSize).to.be.equal(0);            
+            expect(this.inst.getLoadingBar(isAppend).style.display).to.be.equal("none");
+
+            expect(layoutCompleteHandler.callCount).to.be.equal(2);
+            expect(insertHandler.callCount).to.be.equal(0);
+
+            const lastParam = handler.getCall(handler.callCount - 1).args[0];
+
+            if (isAppend) {
+              const spot = lastParam.size;
+              this.inst._watcher.scrollTo(spot);
+            } else {
+              this.inst._watcher.scrollTo(0);
+            }
           }, ITEMCOUNT, 2);
         });
       });
