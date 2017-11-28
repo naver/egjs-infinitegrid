@@ -182,11 +182,16 @@ export default class DOMRenderer {
 	getContainerOffset() {
 		return this._size.containerOffset;
 	}
-	getContainerSize() {
+	getViewportSize() {
 		this.resize();
+		return this._size.viewport;
+	}
+	getContainerSize() {
 		return this._size.container;
 	}
 	setContainerSize(size) {
+		this._size.container = size;
+
 		if (!this.options.isOverflowScroll) {
 			this.container.style[this.options.isVertical ? "height" : "width"] = `${size}px`;
 		}
@@ -197,7 +202,8 @@ export default class DOMRenderer {
 
 			this._size = {
 				containerOffset: this.container[`offset${isVertical ? "Top" : "Left"}`],
-				container: this._calcSize(),
+				container: -1,
+				viewport: this._calcSize(),
 				view: isVertical ? innerHeight(this.view) : innerWidth(this.view),
 				item: null,
 			};
@@ -206,12 +212,13 @@ export default class DOMRenderer {
 		return false;
 	}
 	isNeededResize() {
-		return this._calcSize() !== this._size.container;
+		return this._calcSize() !== this._size.viewport;
 	}
 	destroy() {
 		this._size = {
 			containerOffset: 0,
 			container: -1,
+			viewport: -1,
 			view: -1,
 			item: null,
 		};
