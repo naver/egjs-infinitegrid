@@ -126,9 +126,18 @@
 		max-width: 200%;
 		margin: 0px auto;
 	}
+	.loading_bar {
+		background: #eee;
+	}
 	#grid[data-direction="vertical"] .loading_bar {
 		width: 100%;
 		height: 80px;
+		line-height: 80px;
+		text-align: center;
+	}
+	#grid[data-direction="horizontal"] .loading_bar {
+		width: 80px;
+		height: 100%;
 		line-height: 80px;
 		text-align: center;
 	}
