@@ -115,9 +115,10 @@ export default class ItemManager {
 		return null;
 	}
 	getEdgeValue(cursor, start, end) {
-		return Math[cursor === "start" ? "min" : "max"](
-			...this.pluck("outlines", this.getEdgeIndex(cursor, start, end))
-				.reduce((acc, v) => acc.concat(v[cursor]), []));
+		const outlines = this.pluck("outlines", this.getEdgeIndex(cursor, start, end))
+			.reduce((acc, v) => acc.concat(v[cursor]), []);
+
+		return outlines.length ? Math[cursor === "start" ? "min" : "max"](...outlines) : 0;
 	}
 	append(layouted) {
 		this._data.push(layouted);
