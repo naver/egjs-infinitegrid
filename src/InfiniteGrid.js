@@ -248,7 +248,7 @@ class InfiniteGrid extends Component {
 		}
 		if (this._layout) {
 			const base = this._getEdgeValue("start");
-			const margin = this._loadingSize;
+			const margin = this._status.loadingSize;
 
 			if (base !== 0 || margin) {
 				if (!this.isLoading()) {
@@ -428,7 +428,8 @@ class InfiniteGrid extends Component {
 			"prepend": loadingBar,
 		};
 
-		this._loadingSize = 0;
+		this._status.loadingSize = 0;
+		this._status.loadingStyle = {};
 		this._loadingBar = loadingBarObj;
 		for (const type in loadingBarObj) {
 			loadingBarObj[type] = $(loadingBarObj[type]);
@@ -519,12 +520,15 @@ class InfiniteGrid extends Component {
 	}
 	/**
 	 * Start loading for append/prepend during loading data.
-	 * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 기다린다.
+	 * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 로딩을 시작한다.
 	 * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
 	 * @param {Object} [userStyle = {display: "block"}] custom style to apply to this loading bar for start. <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	startLoading(isAppend, userStyle = {display: "block"}) {
+		if (this.isLoading()) {
+			return this;
+		}
 		const type = isAppend ? "append" : "prepend";
 
 		this._process(LOADING);
@@ -534,15 +538,15 @@ class InfiniteGrid extends Component {
 		const pos = isAppend ? this._getEdgeValue("end") : 0;
 
 		this._renderLoading(isAppend, pos, userStyle);
-		this._loadingStyle = userStyle;
+		this._status.loadingStyle = userStyle;
 		if (!isAppend) {
 			this._fit("before");
 		} else {
-			this._renderer.setContainerSize(this._getEdgeValue("end") + this._loadingSize);
+			this._renderer.setContainerSize(this._getEdgeValue("end") + this._status.loadingSize);
 		}
 		return this;
 	}
-	_renderLoading(isAppend, pos, userStyle = this._loadingStyle) {
+	_renderLoading(isAppend, pos, userStyle = this._status.loadingStyle) {
 		const el = this._loadingBar[isAppend ? "append" : "prepend"];
 
 		if (!el) {
@@ -556,11 +560,11 @@ class InfiniteGrid extends Component {
 		for (const property in style) {
 			el.style[property] = style[property];
 		}
-		this._loadingSize = this._isVertical ? innerHeight(el) : innerWidth(el);
+		this._status.loadingSize = this._isVertical ? innerHeight(el) : innerWidth(el);
 	}
 	/**
 	 * End loading after startLoading() for append/prepend
-	 * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 기다린다.
+	 * @ko  append/prepend하길 위해 startLoading() 호출해선 걸었던 로딩을 끝낸다.
 	 * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
 	 * @param {Object} [userStyle = {display: "none"}] custom style to apply to this loading bar for end <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
@@ -571,8 +575,8 @@ class InfiniteGrid extends Component {
 		const size = this._loadingSize;
 
 		this._process(LOADING, false);
-		this._loadingSize = 0;
-		this._loadingStyle = {};
+		this._status.loadingSize = 0;
+		this._status.loadingStyle = {};
 		if (!el) {
 			return this;
 		}
@@ -737,9 +741,12 @@ class InfiniteGrid extends Component {
 		this._updateEdge();
 		const size = this._getEdgeValue("end");
 
-		this._renderer.setContainerSize(size + this._loadingSize);
-		!isAppend && this._fit("after");
-		isAppend && this.isLoading() && this._renderLoading(true, size);
+		this._renderer.setContainerSize(size + this._status.loadingSize);
+		if (isAppend) {
+			this.isLoading() && this._renderLoading(true, size);
+		} else {
+			this._fit("after");
+		}
 		this._process(PROCESSING, false);
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.

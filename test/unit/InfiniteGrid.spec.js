@@ -172,7 +172,7 @@ describe("InfiniteGrid Test", function() {
           this.inst.startLoading(isAppend);
           expect(this.inst.getLoadingBar(isAppend).style.display).to.be.equal("block");
           expect(this.inst.isLoading()).to.be.true;
-          expect(this.inst._loadingSize).to.be.equal(isAppend ? 75 : 100);
+          expect(this.inst._status.loadingSize).to.be.equal(isAppend ? 75 : 100);
           expect(innerHeight(this.inst._renderer.container)).to.be.equal(isAppend ? 75 : 100);
 
 
@@ -196,7 +196,7 @@ describe("InfiniteGrid Test", function() {
           });
           const insertHandler = sinon.spy(e => {
             expect(this.inst.isLoading()).to.be.false;
-            expect(this.inst._loadingSize).to.be.equal(0);
+            expect(this.inst._status.loadingSize).to.be.equal(0);
             done();
           });
           this.inst.on("layoutComplete", layoutCompleteHandler);
@@ -204,7 +204,7 @@ describe("InfiniteGrid Test", function() {
           const handler = insert(this.inst, isAppend, () => {
             this.inst.endLoading(isAppend);
             expect(this.inst.isLoading()).to.be.false;
-            expect(this.inst._loadingSize).to.be.equal(0);            
+            expect(this.inst._status.loadingSize).to.be.equal(0);            
             expect(this.inst.getLoadingBar(isAppend).style.display).to.be.equal("none");
 
             expect(layoutCompleteHandler.callCount).to.be.equal(2);
