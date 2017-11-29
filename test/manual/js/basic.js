@@ -61,7 +61,7 @@ function createGrid(horizontal) {
 			}, 1000);
 		},
 		"layoutComplete": function (e) {
-			ig.endLoading(e.isAppend);
+			ig.endLoading();
 			console.log("layoutComplete");
 			if (!isParallax) {
 				return;

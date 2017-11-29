@@ -94,7 +94,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 exports.__esModule = true;
-exports.PROCESSING = exports.LOADING = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
+exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
 
 var _browser = __webpack_require__(2);
 
@@ -151,8 +151,9 @@ var ALIGN = exports.ALIGN = {
 	JUSTIFY: "justify"
 };
 
-var LOADING = exports.LOADING = 1;
-var PROCESSING = exports.PROCESSING = 2;
+var LOADING_APPEND = exports.LOADING_APPEND = 1;
+var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
+var PROCESSING = exports.PROCESSING = 4;
 
 /***/ }),
 /* 1 */
@@ -1403,10 +1404,10 @@ var InfiniteGrid = function (_Component) {
 		}
 		if (this._layout) {
 			var base = this._getEdgeValue("start");
-			var margin = this._loadingSize;
+			var margin = this._status.loadingSize;
 
 			if (base !== 0 || margin) {
-				if (!this.isLoading()) {
+				if (!this._isLoading()) {
 					this._process(_consts.PROCESSING);
 				}
 				if (scrollCycle === "before") {
@@ -1420,7 +1421,7 @@ var InfiniteGrid = function (_Component) {
 					this._renderer.scrollBy(Math.abs(base) + margin);
 					this._watcher.setScrollPos();
 				}
-				if (!this.isLoading()) {
+				if (!this._isLoading()) {
 					this._process(_consts.PROCESSING, false);
 				}
 			}
@@ -1446,7 +1447,7 @@ var InfiniteGrid = function (_Component) {
 
 		var isRelayout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-		if (!this._layout || this.isProcessing()) {
+		if (!this._layout || this._isProcessing()) {
 			return this;
 		}
 		// check childElement
@@ -1605,7 +1606,8 @@ var InfiniteGrid = function (_Component) {
 			"prepend": loadingBar
 		};
 
-		this._loadingSize = 0;
+		this._status.loadingSize = 0;
+		this._status.loadingStyle = {};
 		this._loadingBar = loadingBarObj;
 		for (var type in loadingBarObj) {
 			loadingBarObj[type] = (0, _utils.$)(loadingBarObj[type]);
@@ -1623,24 +1625,26 @@ var InfiniteGrid = function (_Component) {
 		}
 	};
 	/**
-  * Checks whether a card element is being added.
-  * @ko 카드 엘리먼트 추가가 진행 중인지 확인한다
-  * @return {Boolean} Indicates whether a card element is being added <ko>카드 엘리먼트 추가 진행 중 여부</ko>
+  * Checks whether a card element or data is being added.
+  * @ko 카드 엘리먼트 추가 또는 데이터 로딩이 진행 중인지 확인한다
+  * @return {Boolean} Indicates whether a card element or data is being added <ko>카드 엘리먼트 추가 또는 데이터 로딩 진행 중 여부</ko>
   */
 
 
 	InfiniteGrid.prototype.isProcessing = function isProcessing() {
+		return this._isProcessing() || this._isLoading();
+	};
+
+	InfiniteGrid.prototype._isProcessing = function _isProcessing() {
 		return (this._status.procesingStatus & _consts.PROCESSING) > 0;
 	};
-	/**
-  * Checks whether data is being added.
-  * @ko 데이터 로딩이 진행 중인지 확인한다
-  * @return {Boolean} Indicates whether data is being added <ko>데이터 로딩 진행 중 여부</ko>
-  */
 
+	InfiniteGrid.prototype._isLoading = function _isLoading() {
+		return this._getLoadingStatus() > 0;
+	};
 
-	InfiniteGrid.prototype.isLoading = function isLoading() {
-		return (this._status.procesingStatus & _consts.LOADING) > 0;
+	InfiniteGrid.prototype._getLoadingStatus = function _getLoadingStatus() {
+		return this._status.procesingStatus & (_consts.LOADING_APPEND | _consts.LOADING_PREPEND);
 	};
 
 	InfiniteGrid.prototype._process = function _process(status) {
@@ -1654,7 +1658,7 @@ var InfiniteGrid = function (_Component) {
 	};
 
 	InfiniteGrid.prototype._insert = function _insert(elements, isAppend, groupKey) {
-		if (this.isProcessing() || elements.length === 0) {
+		if (this._isProcessing() || elements.length === 0) {
 			return;
 		}
 		this._process(_consts.PROCESSING);
@@ -1697,19 +1701,19 @@ var InfiniteGrid = function (_Component) {
 	/**
   * Returns the element of loading bar.
   * @ko 로딩 바의 element를 반환한다.
-  * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
+  * @param {Boolean} [isAppend=currentLoadingBar|true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
   * @return {Element} The element of loading bar. <ko>로딩 바의 element</ko>
   */
 
 
 	InfiniteGrid.prototype.getLoadingBar = function getLoadingBar() {
-		var isAppend = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+		var isAppend = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._getLoadingStatus() !== _consts.LOADING_PREPEND;
 
 		return this._loadingBar[isAppend ? "append" : "prepend"];
 	};
 	/**
   * Start loading for append/prepend during loading data.
-  * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 기다린다.
+  * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 로딩을 시작한다.
   * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
   * @param {Object} [userStyle = {display: "block"}] custom style to apply to this loading bar for start. <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
@@ -1719,20 +1723,23 @@ var InfiniteGrid = function (_Component) {
 	InfiniteGrid.prototype.startLoading = function startLoading(isAppend) {
 		var userStyle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { display: "block" };
 
+		if (this._isLoading()) {
+			return this;
+		}
 		var type = isAppend ? "append" : "prepend";
 
-		this._process(_consts.LOADING);
+		this._process(isAppend ? _consts.LOADING_APPEND : _consts.LOADING_PREPEND);
 		if (!this._loadingBar[type]) {
 			return this;
 		}
 		var pos = isAppend ? this._getEdgeValue("end") : 0;
 
 		this._renderLoading(isAppend, pos, userStyle);
-		this._loadingStyle = userStyle;
+		this._status.loadingStyle = userStyle;
 		if (!isAppend) {
 			this._fit("before");
 		} else {
-			this._renderer.setContainerSize(this._getEdgeValue("end") + this._loadingSize);
+			this._renderer.setContainerSize(this._getEdgeValue("end") + this._status.loadingSize);
 		}
 		return this;
 	};
@@ -1740,7 +1747,7 @@ var InfiniteGrid = function (_Component) {
 	InfiniteGrid.prototype._renderLoading = function _renderLoading(isAppend, pos) {
 		var _extends2;
 
-		var userStyle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this._loadingStyle;
+		var userStyle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this._status.loadingStyle;
 
 		var el = this._loadingBar[isAppend ? "append" : "prepend"];
 
@@ -1754,29 +1761,32 @@ var InfiniteGrid = function (_Component) {
 		for (var property in style) {
 			el.style[property] = style[property];
 		}
-		this._loadingSize = this._isVertical ? (0, _utils.innerHeight)(el) : (0, _utils.innerWidth)(el);
+		this._status.loadingSize = this._isVertical ? (0, _utils.innerHeight)(el) : (0, _utils.innerWidth)(el);
 	};
 	/**
   * End loading after startLoading() for append/prepend
-  * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 기다린다.
-  * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
+  * @ko  append/prepend하길 위해 startLoading() 호출해선 걸었던 로딩을 끝낸다.
   * @param {Object} [userStyle = {display: "none"}] custom style to apply to this loading bar for end <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
   */
 
 
-	InfiniteGrid.prototype.endLoading = function endLoading(isAppend) {
+	InfiniteGrid.prototype.endLoading = function endLoading() {
 		var _extends3;
 
-		var userStyle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { display: "none" };
+		var userStyle = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { display: "none" };
 
+		if (!this._isLoading()) {
+			return this;
+		}
+		var isAppend = this._getLoadingStatus() === _consts.LOADING_APPEND;
 		var type = isAppend ? "append" : "prepend";
 		var el = this._loadingBar[type];
 		var size = this._loadingSize;
 
-		this._process(_consts.LOADING, false);
-		this._loadingSize = 0;
-		this._loadingStyle = {};
+		this._process(_consts.LOADING_APPEND | _consts.LOADING_PREPEND, false);
+		this._status.loadingSize = 0;
+		this._status.loadingStyle = {};
 		if (!el) {
 			return this;
 		}
@@ -1925,7 +1935,7 @@ var InfiniteGrid = function (_Component) {
 			scrollPos: scrollPos,
 			orgScrollPos: orgScrollPos
 		});
-		if (this.isProcessing() || this.isLoading()) {
+		if (this.isProcessing()) {
 			return;
 		}
 		var rect = this._getEdgeOffset(isForward ? "end" : "start");
@@ -1951,9 +1961,12 @@ var InfiniteGrid = function (_Component) {
 		this._updateEdge();
 		var size = this._getEdgeValue("end");
 
-		this._renderer.setContainerSize(size + this._loadingSize);
-		!isAppend && this._fit("after");
-		isAppend && this.isLoading() && this._renderLoading(true, size);
+		this._renderer.setContainerSize(size + this._status.loadingSize);
+		if (isAppend) {
+			this._isLoading() && this._renderLoading(true, size);
+		} else {
+			this._fit("after");
+		}
 		this._process(_consts.PROCESSING, false);
 		/**
    * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.

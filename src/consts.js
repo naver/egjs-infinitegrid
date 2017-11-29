@@ -54,5 +54,6 @@ export const ALIGN = {
 	JUSTIFY: "justify",
 };
 
-export const LOADING = 1;
-export const PROCESSING = 2;
+export const LOADING_APPEND = 1;
+export const LOADING_PREPEND = 2;
+export const PROCESSING = 4;
