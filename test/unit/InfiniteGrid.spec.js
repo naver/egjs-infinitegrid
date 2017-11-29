@@ -170,6 +170,7 @@ describe("InfiniteGrid Test", function() {
           // When
           expect(this.inst._isLoading()).to.be.false;
           this.inst.startLoading(isAppend);
+          expect(this.inst.getLoadingBar()).to.be.equal(this.inst.getLoadingBar(isAppend));
           expect(this.inst.getLoadingBar(isAppend).style.display).to.be.equal("block");
           expect(this.inst._isLoading()).to.be.true;
           expect(this.inst._getLoadingStatus()).to.be.equal(isAppend ? LOADING_APPEND : LOADING_PREPEND);
@@ -207,7 +208,7 @@ describe("InfiniteGrid Test", function() {
             this.inst.endLoading();
             expect(this.inst._isLoading()).to.be.false;
             expect(this.inst._getLoadingStatus()).to.be.equal(0);
-            expect(this.inst._status.loadingSize).to.be.equal(0);            
+            expect(this.inst._status.loadingSize).to.be.equal(0);
             expect(this.inst.getLoadingBar(isAppend).style.display).to.be.equal("none");
 
             expect(layoutCompleteHandler.callCount).to.be.equal(2);
