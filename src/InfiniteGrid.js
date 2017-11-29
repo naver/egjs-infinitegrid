@@ -15,11 +15,13 @@ import {
 	TRUSTED,
 	NO_TRUSTED,
 	IS_ANDROID2,
-	LOADING_END,
-	LOADING_APPEND,
-	LOADING_PREPEND,
+	LOADING,
+	PROCESSING,
 } from "./consts";
 import {toArray, $, innerWidth, innerHeight} from "./utils";
+
+
+
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -252,8 +254,8 @@ class InfiniteGrid extends Component {
 			const margin = this._loadingSize;
 
 			if (base !== 0 || margin) {
-				if (this._loadingStatus === LOADING_END) {
-					this._status.isProcessing = true;
+				if (!this.isLoading()) {
+					this._process(PROCESSING);
 				}
 				if (scrollCycle === "before") {
 					this._renderer.scrollBy(-Math.abs(base) + margin);
@@ -266,8 +268,8 @@ class InfiniteGrid extends Component {
 					this._renderer.scrollBy(Math.abs(base) + margin);
 					this._watcher.setScrollPos();
 				}
-				if (this._loadingStatus === LOADING_END) {
-					this._status.isProcessing = false;
+				if (!this.isLoading()) {
+					this._process(PROCESSING, false);
 				}
 			}
 			return base;
@@ -293,7 +295,7 @@ class InfiniteGrid extends Component {
 			this._insert(toArray(this._renderer.container.children), true);
 			return this;
 		} else {
-			this._status.isProcessing = true;
+			this._process(PROCESSING);
 
 			let data;
 			let outline;
@@ -430,7 +432,6 @@ class InfiniteGrid extends Component {
 		};
 
 		this._loadingSize = 0;
-		this._loadingStatus = LOADING_END;
 		this._loadingBar = loadingBarObj;
 		for (const type in loadingBarObj) {
 			loadingBarObj[type] = $(loadingBarObj[type]);
@@ -452,14 +453,28 @@ class InfiniteGrid extends Component {
 	 * @return {Boolean} Indicates whether a card element is being added <ko>카드 엘리먼트 추가 진행 중 여부</ko>
 	 */
 	isProcessing() {
-		return this._status.isProcessing;
+		return (this._status.procesingStatus & PROCESSING) > 0;
+	}
+	/**
+	 * Checks whether data is being added.
+	 * @ko 데이터 로딩이 진행 중인지 확인한다
+	 * @return {Boolean} Indicates whether data is being added <ko>데이터 로딩 진행 중 여부</ko>
+	 */
+	isLoading() {
+		return (this._status.procesingStatus & LOADING) > 0;
+	}
+	_process(status, isAdd = true) {
+		if (isAdd) {
+			this._status.procesingStatus |= status;
+		} else {
+			this._status.procesingStatus -= this._status.procesingStatus & status;
+		}
 	}
 	_insert(elements, isAppend, groupKey) {
 		if (this.isProcessing() || elements.length === 0) {
 			return;
 		}
-
-		this._status.isProcessing = true;
+		this._process(PROCESSING);
 		const key = typeof groupKey === "undefined" ? (new Date().getTime() + Math
 			.floor(
 				Math.random() * 1000)) : groupKey;
@@ -515,12 +530,27 @@ class InfiniteGrid extends Component {
 	startLoading(isAppend, userStyle = {display: "block"}) {
 		const type = isAppend ? "append" : "prepend";
 
-		this._loadingStatus = isAppend ? LOADING_APPEND : LOADING_PREPEND;
+		this._process(LOADING);
 		if (!this._loadingBar[type]) {
 			return this;
 		}
 		const pos = isAppend ? this._getEdgeValue("end") : 0;
-		const el = this._loadingBar[type];
+
+		this._renderLoading(isAppend, pos, userStyle);
+		this._loadingStyle = userStyle;
+		if (!isAppend) {
+			this._fit("before");
+		} else {
+			this._renderer.setContainerSize(this._getEdgeValue("end") + this._loadingSize);
+		}
+		return this;
+	}
+	_renderLoading(isAppend, pos, userStyle = this._loadingStyle) {
+		const el = this._loadingBar[isAppend ? "append" : "prepend"];
+
+		if (!el) {
+			return;
+		}
 		const style = Object.assign({
 			position: "absolute",
 			[this._isVertical ? "top" : "left"]: `${pos}px`,
@@ -530,12 +560,6 @@ class InfiniteGrid extends Component {
 			el.style[property] = style[property];
 		}
 		this._loadingSize = this._isVertical ? innerHeight(el) : innerWidth(el);
-		if (!isAppend) {
-			this._fit("before");
-		} else {
-			this._renderer.setContainerSize(this._getEdgeValue("end") + this._loadingSize);
-		}
-		return this;
 	}
 	/**
 	 * End loading after startLoading() for append/prepend
@@ -549,9 +573,9 @@ class InfiniteGrid extends Component {
 		const el = this._loadingBar[type];
 		const size = this._loadingSize;
 
-		this._loadingStatus = LOADING_END;
+		this._process(LOADING, false);
 		this._loadingSize = 0;
-
+		this._loadingStyle = {};
 		if (!el) {
 			return this;
 		}
@@ -691,7 +715,7 @@ class InfiniteGrid extends Component {
 			scrollPos,
 			orgScrollPos,
 		});
-		if (this.isProcessing() || this._loadingStatus !== LOADING_END) {
+		if (this.isProcessing() || this.isLoading()) {
 			return;
 		}
 		const rect = this._getEdgeOffset(isForward ? "end" : "start");
@@ -718,7 +742,8 @@ class InfiniteGrid extends Component {
 
 		this._renderer.setContainerSize(size + this._loadingSize);
 		!isAppend && this._fit("after");
-		this._status.isProcessing = false;
+		isAppend && this.isLoading() && this._renderLoading(true, size);
+		this._process(PROCESSING, false);
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
 		 * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
@@ -745,7 +770,7 @@ class InfiniteGrid extends Component {
 	}
 	_reset() {
 		this._status = {
-			isProcessing: false,
+			procesingStatus: 0,
 			startCursor: -1,
 			endCursor: -1,
 			start: null,
