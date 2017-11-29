@@ -20,9 +20,6 @@ import {
 } from "./consts";
 import {toArray, $, innerWidth, innerHeight} from "./utils";
 
-
-
-
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
 /* eslint-disable */
