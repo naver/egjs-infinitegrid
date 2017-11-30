@@ -58,3 +58,8 @@ export const LOADING_APPEND = 1;
 export const LOADING_PREPEND = 2;
 export const PROCESSING = 4;
 export const DEFENSE_BROWSER = /android/.test(agent);
+
+alert(agent);
+/*
+"Mozilla/5.0 (Linux; Android 4.3; SHV-E250S Build/JSS15J) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36"
+*/

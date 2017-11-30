@@ -156,6 +156,11 @@ var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
 var PROCESSING = exports.PROCESSING = 4;
 var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = /android/.test(agent);
 
+alert(agent);
+/*
+"Mozilla/5.0 (Linux; Android 4.3; SHV-E250S Build/JSS15J) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36"
+*/
+
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
