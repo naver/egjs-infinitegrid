@@ -154,12 +154,11 @@ var ALIGN = exports.ALIGN = {
 var LOADING_APPEND = exports.LOADING_APPEND = 1;
 var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
 var PROCESSING = exports.PROCESSING = 4;
-var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = /android/.test(agent);
 
-alert(agent);
-/*
-"Mozilla/5.0 (Linux; Android 4.3; SHV-E250S Build/JSS15J) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36"
-*/
+var webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
+var webkitVersion = webkit && parseInt(webkit[1], 10) || 0;
+
+var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = webkitVersion < 537;
 
 /***/ }),
 /* 1 */
@@ -431,6 +430,23 @@ var _utils = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defense(element) {
+	var container = document.createElement("div");
+
+	container.className = _consts.CONTAINER_CLASSNAME;
+	container.style.height = "100%";
+
+	var children = element.children;
+	var length = children.length; // for IE8
+
+	for (var i = 0; i < length; i++) {
+		container.appendChild(children[0]);
+	}
+
+	element.appendChild(container);
+	return container;
+}
+
 var DOMRenderer = function () {
 	DOMRenderer.renderItem = function renderItem(item, styles) {
 		if (item.el) {
@@ -554,29 +570,12 @@ var DOMRenderer = function () {
 			element.style["overflow" + target[0]] = "scroll";
 			element.style["overflow" + target[1]] = "hidden";
 			this.view = element;
-			this.container = element; // DEFENSE_BROWSER ? this._defense(element) : element;
+			// defense code for android < 4.4 or webkit < 537
+			this.container = !this.options.isVertical && _consts.DEFENSE_BROWSER ? _defense(element) : element;
 		} else {
 			this.view = window;
 			this.container = element;
 		}
-	};
-
-	DOMRenderer.prototype._defense = function _defense(element) {
-		var container = document.createElement("div");
-
-		container.className = _consts.CONTAINER_CLASSNAME;
-
-		var children = element.children;
-		var length = children.length; // for IE8
-		var target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
-
-		for (var i = 0; i < length; i++) {
-			container.appendChild(children[0]);
-		}
-		element.style["overflow" + target[0]] = "scroll";
-		element.style["overflow" + target[1]] = "hidden";
-		element.appendChild(container);
-		return container;
 	};
 
 	DOMRenderer.prototype.append = function append(items) {
@@ -644,7 +643,7 @@ var DOMRenderer = function () {
 	};
 
 	DOMRenderer.prototype.setContainerSize = function setContainerSize(size) {
-		if (!this.options.isOverflowScroll) {
+		if (!this.options.isOverflowScroll || !this.options.isVertical && _consts.DEFENSE_BROWSER) {
 			this.container.style[this.options.isVertical ? "height" : "width"] = size + "px";
 		}
 	};
