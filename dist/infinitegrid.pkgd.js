@@ -94,7 +94,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 exports.__esModule = true;
-exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
+exports.DEFENSE_BROWSER = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
 
 var _browser = __webpack_require__(2);
 
@@ -141,8 +141,8 @@ var DEFAULT_OPTIONS = exports.DEFAULT_OPTIONS = {
 	margin: 0
 };
 
-var agent = exports.agent = navigator.userAgent;
-var isMobile = exports.isMobile = agent.indexOf("Mobi") !== -1 || /ios|android/.test(agent);
+var agent = exports.agent = navigator.userAgent.toLowerCase();
+var isMobile = exports.isMobile = /mobi|ios|android/.test(agent);
 
 var ALIGN = exports.ALIGN = {
 	START: "start",
@@ -154,6 +154,7 @@ var ALIGN = exports.ALIGN = {
 var LOADING_APPEND = exports.LOADING_APPEND = 1;
 var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
 var PROCESSING = exports.PROCESSING = 4;
+var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = /android/.test(agent);
 
 /***/ }),
 /* 1 */
@@ -548,11 +549,29 @@ var DOMRenderer = function () {
 			element.style["overflow" + target[0]] = "scroll";
 			element.style["overflow" + target[1]] = "hidden";
 			this.view = element;
-			this.container = element;
+			this.container = element; // DEFENSE_BROWSER ? this._defense(element) : element;
 		} else {
 			this.view = window;
 			this.container = element;
 		}
+	};
+
+	DOMRenderer.prototype._defense = function _defense(element) {
+		var container = document.createElement("div");
+
+		container.className = _consts.CONTAINER_CLASSNAME;
+
+		var children = element.children;
+		var length = children.length; // for IE8
+		var target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
+
+		for (var i = 0; i < length; i++) {
+			container.appendChild(children[0]);
+		}
+		element.style["overflow" + target[0]] = "scroll";
+		element.style["overflow" + target[1]] = "hidden";
+		element.appendChild(container);
+		return container;
 	};
 
 	DOMRenderer.prototype.append = function append(items) {

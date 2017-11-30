@@ -4,6 +4,8 @@ import {
 	DUMMY_POSITION,
 	MULTI,
 	GROUPKEY_ATT,
+	CONTAINER_CLASSNAME,
+	// DEFENSE_BROWSER,
 } from "./consts";
 import {
 	$,
@@ -123,11 +125,28 @@ export default class DOMRenderer {
 			element.style[`overflow${target[0]}`] = "scroll";
 			element.style[`overflow${target[1]}`] = "hidden";
 			this.view = element;
-			this.container = element;
+			this.container = element; // DEFENSE_BROWSER ? this._defense(element) : element;
 		} else {
 			this.view = window;
 			this.container = element;
 		}
+	}
+	_defense(element) {
+		const container = document.createElement("div");
+
+		container.className = CONTAINER_CLASSNAME;
+
+		const children = element.children;
+		const length = children.length;	// for IE8
+		const target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
+
+		for (let i = 0; i < length; i++) {
+			container.appendChild(children[0]);
+		}
+		element.style[`overflow${target[0]}`] = "scroll";
+		element.style[`overflow${target[1]}`] = "hidden";
+		element.appendChild(container);
+		return container;
 	}
 	append(items) {
 		this._insert(items, APPEND, {

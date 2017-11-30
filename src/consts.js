@@ -44,8 +44,8 @@ export const DEFAULT_OPTIONS = {
 	margin: 0,
 };
 
-export const agent = navigator.userAgent;
-export const isMobile = agent.indexOf("Mobi") !== -1 || /ios|android/.test(agent);
+export const agent = navigator.userAgent.toLowerCase();
+export const isMobile = /mobi|ios|android/.test(agent);
 
 export const ALIGN = {
 	START: "start",
@@ -57,3 +57,4 @@ export const ALIGN = {
 export const LOADING_APPEND = 1;
 export const LOADING_PREPEND = 2;
 export const PROCESSING = 4;
+export const DEFENSE_BROWSER = /android/.test(agent);
