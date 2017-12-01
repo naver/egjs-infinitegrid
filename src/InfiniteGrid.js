@@ -611,7 +611,11 @@ class InfiniteGrid extends Component {
 			el.style[property] = style[property];
 		}
 		if (!isAppend) {
-			this._fit("before");
+			this._renderer.scrollBy(size);
+			this._watcher.setScrollPos();
+			this._items.fit(size, this._isVertical);
+			DOMRenderer.renderItems(this._getVisibleItems());
+			this._renderer.setContainerSize(this._getEdgeValue("end"));
 		}
 		this._renderer.setContainerSize(this._getEdgeValue("end"));
 		return this;

@@ -8,6 +8,7 @@ import JustifiedLayout from "../../src/layouts/JustifiedLayout";
 import {getItems, insert, checkLayoutComplete} from "./helper/TestHelper";
 import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND} from "../../src/consts";
 import {innerWidth, innerHeight} from "../../src/utils";
+import {DEFENSE_BROWSER} from "../../src/consts";
 
 /* eslint-disable */
 describe("InfiniteGrid Test", function() {
@@ -164,7 +165,7 @@ describe("InfiniteGrid Test", function() {
       [APPEND, PREPEND].forEach(isAppend => {
         const ITEMCOUNT = 30;
         const RETRY = 1;
-        it(`should trigger startLoading/endLoading method when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll})`, done => {
+        it(`should trigger startLoading/endLoading method when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll}, defense:${DEFENSE_BROWSER})`, done => {
           // Given
           // When
           expect(this.inst._isLoading()).to.be.false;
@@ -185,7 +186,7 @@ describe("InfiniteGrid Test", function() {
             }
             expect(this.inst._isLoading()).to.be.true;
             if (isAppend) {
-              expect(parseInt(this.inst.getLoadingBar(isAppend).style.top, 10)).to.be.equal(this.inst._getEdgeValue("end"));
+              expect(parseInt(this.inst.getLoadingBar().style.top, 10)).to.be.equal(this.inst._getEdgeValue("end"));
             }
             // no request append / prepend
             if (isAppend) {
@@ -205,6 +206,9 @@ describe("InfiniteGrid Test", function() {
           this.inst.on(isAppend ? "append" : "prepend", insertHandler);
           const handler = insert(this.inst, isAppend, () => {
             this.inst.endLoading();
+            if (!isAppend) {
+              expect(this.inst._getEdgeValue("start")).to.be.equal(0);
+            }
             expect(this.inst._isLoading()).to.be.false;
             expect(this.inst._getLoadingStatus()).to.be.equal(0);
             expect(this.inst._status.loadingSize).to.be.equal(0);

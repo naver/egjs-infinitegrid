@@ -159,7 +159,7 @@ var PROCESSING = exports.PROCESSING = 4;
 var webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
 
 var WEBKIT_VERSION = exports.WEBKIT_VERSION = webkit && parseInt(webkit[1], 10) || 0;
-var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = !webkit || !WEBKIT_VERSION || WEBKIT_VERSION && WEBKIT_VERSION < 537;
+var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = WEBKIT_VERSION && WEBKIT_VERSION < 537;
 
 /***/ }),
 /* 1 */
@@ -1836,7 +1836,11 @@ var InfiniteGrid = function (_Component) {
 			el.style[property] = style[property];
 		}
 		if (!isAppend) {
-			this._fit("before");
+			this._renderer.scrollBy(size);
+			this._watcher.setScrollPos();
+			this._items.fit(size, this._isVertical);
+			_DOMRenderer2["default"].renderItems(this._getVisibleItems());
+			this._renderer.setContainerSize(this._getEdgeValue("end"));
 		}
 		this._renderer.setContainerSize(this._getEdgeValue("end"));
 		return this;
