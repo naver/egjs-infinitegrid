@@ -15,6 +15,7 @@ import {
 	TRUSTED,
 	NO_TRUSTED,
 	IS_ANDROID2,
+	IDLE,
 	LOADING_APPEND,
 	LOADING_PREPEND,
 	PROCESSING,
@@ -241,13 +242,6 @@ class InfiniteGrid extends Component {
 		}
 		return rect;
 	}
-	_onDefense(e) {
-		const event = e.event;
-
-		if (this.isProcessing()) {
-			event.preventDefault();
-		}
-	}
 	// called by visible
 	_fit(scrollCycle = "after") {
 		// for caching
@@ -333,10 +327,7 @@ class InfiniteGrid extends Component {
 			}
 			this._layout.layout(data, outline);
 
-			if (isRelayout) {
-				this._status.endCursor =
-					Math.max(this._status.endCursor, this._status.startCursor + data.length - 1);
-			} else {
+			if (!isRelayout) {
 				data.forEach(v => this._items.set(v, v.groupKey));
 			}
 			this._onLayoutComplete(data, APPEND, NO_TRUSTED);
@@ -472,19 +463,19 @@ class InfiniteGrid extends Component {
 		return this._isProcessing() || this._isLoading();
 	}
 	_isProcessing() {
-		return (this._status.procesingStatus & PROCESSING) > 0;
+		return (this._status.processingStatus & PROCESSING) > 0;
 	}
 	_isLoading() {
 		return this._getLoadingStatus() > 0;
 	}
 	_getLoadingStatus() {
-		return this._status.procesingStatus & (LOADING_APPEND | LOADING_PREPEND);
+		return this._status.processingStatus & (LOADING_APPEND | LOADING_PREPEND);
 	}
 	_process(status, isAdd = true) {
 		if (isAdd) {
-			this._status.procesingStatus |= status;
+			this._status.processingStatus |= status;
 		} else {
-			this._status.procesingStatus -= this._status.procesingStatus & status;
+			this._status.processingStatus -= this._status.processingStatus & status;
 		}
 	}
 	_insert(elements, isAppend, groupKey) {
@@ -830,7 +821,7 @@ class InfiniteGrid extends Component {
 	}
 	_reset() {
 		this._status = {
-			procesingStatus: 0,
+			processingStatus: IDLE,
 			loadingSize: 0,
 			startCursor: -1,
 			endCursor: -1,
