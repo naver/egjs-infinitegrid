@@ -44,7 +44,7 @@ export const DEFAULT_OPTIONS = {
 	margin: 0,
 };
 
-export const agent = navigator.userAgent.toLowerCase();
+export const agent = ua.toLowerCase();
 export const isMobile = /mobi|ios|android/.test(agent);
 
 export const ALIGN = {
@@ -54,6 +54,7 @@ export const ALIGN = {
 	JUSTIFY: "justify",
 };
 
+export const IDLE = 0;
 export const LOADING_APPEND = 1;
 export const LOADING_PREPEND = 2;
 export const PROCESSING = 4;

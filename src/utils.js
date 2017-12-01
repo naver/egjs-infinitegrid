@@ -100,7 +100,7 @@ export function scroll(el, isVertical) {
 	const prop = `scroll${isVertical ? "Top" : "Left"}`;
 
 	if (el === window) {
-		return document.body[prop] || document.documentElement[prop];
+		return window[isVertical ? "pageYOffset" : "pageXOffset"] || document.body[prop] || document.documentElement[prop];
 	} else {
 		return el[prop];
 	}

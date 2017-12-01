@@ -152,11 +152,13 @@ export default class DOMRenderer {
 	append(items) {
 		this._insert(items, APPEND, {
 			top: DUMMY_POSITION,
+			left: DUMMY_POSITION,
 		});
 	}
 	prepend(items) {
 		this._insert(items, PREPEND, {
 			top: DUMMY_POSITION,
+			left: DUMMY_POSITION,
 		});
 	}
 	clear() {
