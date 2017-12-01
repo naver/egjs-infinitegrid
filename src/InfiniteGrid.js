@@ -290,7 +290,6 @@ class InfiniteGrid extends Component {
 			}
 		}
 		return base;
-	
 	}
 	_getEdgeValue(cursor) {
 		return this._items.getEdgeValue(cursor, this._status.startCursor, this._status.endCursor);

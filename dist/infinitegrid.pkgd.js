@@ -94,7 +94,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 exports.__esModule = true;
-exports.DEFENSE_BROWSER = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.IDLE = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
+exports.DEFENSE_BROWSER = exports.WEBKIT_VERSION = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.IDLE = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
 
 var _browser = __webpack_require__(2);
 
@@ -157,9 +157,9 @@ var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
 var PROCESSING = exports.PROCESSING = 4;
 
 var webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
-var webkitVersion = webkit && parseInt(webkit[1], 10) || 0;
 
-var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = webkitVersion < 537;
+var WEBKIT_VERSION = exports.WEBKIT_VERSION = webkit && parseInt(webkit[1], 10) || 0;
+var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = !webkit || !WEBKIT_VERSION || WEBKIT_VERSION && WEBKIT_VERSION < 537;
 
 /***/ }),
 /* 1 */
@@ -1422,47 +1422,51 @@ var InfiniteGrid = function (_Component) {
 		var scrollCycle = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "after";
 
 		// for caching
-		if (!this.options.useRecycle || _consts.DEFENSE_BROWSER) {
-			var base = this._getEdgeValue("start");
+		if (!this._layout) {
+			return 0;
+		}
+		var base = this._getEdgeValue("start");
+		var margin = this._status.loadingSize;
 
-			if (scrollCycle === "after" && base < 0) {
-				this._items.fit(base, this._isVertical);
-				this._renderer.setContainerSize(this._getEdgeValue("end") || 0);
+		if (!this.options.useRecycle || _consts.DEFENSE_BROWSER) {
+			if (scrollCycle === "before" && margin && base < margin) {
+				this._renderer.scrollBy(-Math.abs(base) + margin);
+				this._watcher.setScrollPos();
+				this._items.fit(base - margin, this._isVertical);
+				_DOMRenderer2["default"].renderItems(this._getVisibleItems());
+				this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
+			} else if (scrollCycle === "after" && base < 0) {
+				this._items.fit(base - margin, this._isVertical);
+				this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
 				_DOMRenderer2["default"].renderItems(this._getVisibleItems());
 				this._renderer.scrollBy(Math.abs(base));
 				this._watcher.setScrollPos();
 			}
 			return 0;
 		}
-		if (this._layout) {
-			var _base = this._getEdgeValue("start");
-			var margin = this._status.loadingSize;
 
-			if (_base !== 0 || margin) {
-				var isProcessing = this._isProcessing();
+		if (base !== 0 || margin) {
+			var isProcessing = this._isProcessing();
 
-				if (!this._isLoading()) {
-					this._process(_consts.PROCESSING);
-				}
-				if (scrollCycle === "before") {
-					this._renderer.scrollBy(-Math.abs(_base) + margin);
-					this._watcher.setScrollPos();
-				}
-				this._items.fit(_base - margin, this._isVertical);
-				_DOMRenderer2["default"].renderItems(this._getVisibleItems());
-				this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
-				if (scrollCycle === "after") {
-					this._renderer.scrollBy(Math.abs(_base) + margin);
-					this._watcher.setScrollPos();
-				}
-				if (!isProcessing && !this._isLoading()) {
-					this._process(_consts.PROCESSING, false);
-				}
+			if (!this._isLoading()) {
+				this._process(_consts.PROCESSING);
 			}
-			return _base;
-		} else {
-			return 0;
+			if (scrollCycle === "before") {
+				this._renderer.scrollBy(-Math.abs(base) + margin);
+				this._watcher.setScrollPos();
+			}
+			this._items.fit(base - margin, this._isVertical);
+			_DOMRenderer2["default"].renderItems(this._getVisibleItems());
+			this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
+			if (scrollCycle === "after") {
+				this._renderer.scrollBy(Math.abs(base) + margin);
+				this._watcher.setScrollPos();
+			}
+			if (!isProcessing && !this._isLoading()) {
+				this._process(_consts.PROCESSING, false);
+			}
 		}
+		return base;
 	};
 
 	InfiniteGrid.prototype._getEdgeValue = function _getEdgeValue(cursor) {
