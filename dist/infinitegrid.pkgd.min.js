@@ -94,7 +94,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 exports.__esModule = true;
-exports.DEFENSE_BROWSER = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
+exports.DEFENSE_BROWSER = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.IDLE = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
 
 var _browser = __webpack_require__(2);
 
@@ -141,7 +141,7 @@ var DEFAULT_OPTIONS = exports.DEFAULT_OPTIONS = {
 	margin: 0
 };
 
-var agent = exports.agent = navigator.userAgent.toLowerCase();
+var agent = exports.agent = ua.toLowerCase();
 var isMobile = exports.isMobile = /mobi|ios|android/.test(agent);
 
 var ALIGN = exports.ALIGN = {
@@ -151,6 +151,7 @@ var ALIGN = exports.ALIGN = {
 	JUSTIFY: "justify"
 };
 
+var IDLE = exports.IDLE = 0;
 var LOADING_APPEND = exports.LOADING_APPEND = 1;
 var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
 var PROCESSING = exports.PROCESSING = 4;
@@ -1414,14 +1415,6 @@ var InfiniteGrid = function (_Component) {
 		}
 		return rect;
 	};
-
-	InfiniteGrid.prototype._onDefense = function _onDefense(e) {
-		var event = e.event;
-
-		if (this.isProcessing()) {
-			event.preventDefault();
-		}
-	};
 	// called by visible
 
 
@@ -1519,9 +1512,7 @@ var InfiniteGrid = function (_Component) {
 			}
 			this._layout.layout(data, outline);
 
-			if (isRelayout) {
-				this._status.endCursor = Math.max(this._status.endCursor, this._status.startCursor + data.length - 1);
-			} else {
+			if (!isRelayout) {
 				data.forEach(function (v) {
 					return _this2._items.set(v, v.groupKey);
 				});
@@ -1675,7 +1666,7 @@ var InfiniteGrid = function (_Component) {
 	};
 
 	InfiniteGrid.prototype._isProcessing = function _isProcessing() {
-		return (this._status.procesingStatus & _consts.PROCESSING) > 0;
+		return (this._status.processingStatus & _consts.PROCESSING) > 0;
 	};
 
 	InfiniteGrid.prototype._isLoading = function _isLoading() {
@@ -1683,16 +1674,16 @@ var InfiniteGrid = function (_Component) {
 	};
 
 	InfiniteGrid.prototype._getLoadingStatus = function _getLoadingStatus() {
-		return this._status.procesingStatus & (_consts.LOADING_APPEND | _consts.LOADING_PREPEND);
+		return this._status.processingStatus & (_consts.LOADING_APPEND | _consts.LOADING_PREPEND);
 	};
 
 	InfiniteGrid.prototype._process = function _process(status) {
 		var isAdd = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
 		if (isAdd) {
-			this._status.procesingStatus |= status;
+			this._status.processingStatus |= status;
 		} else {
-			this._status.procesingStatus -= this._status.procesingStatus & status;
+			this._status.processingStatus -= this._status.processingStatus & status;
 		}
 	};
 
@@ -2069,7 +2060,7 @@ var InfiniteGrid = function (_Component) {
 
 	InfiniteGrid.prototype._reset = function _reset() {
 		this._status = {
-			procesingStatus: 0,
+			processingStatus: _consts.IDLE,
 			loadingSize: 0,
 			startCursor: -1,
 			endCursor: -1,
