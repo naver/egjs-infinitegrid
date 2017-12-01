@@ -245,47 +245,52 @@ class InfiniteGrid extends Component {
 	// called by visible
 	_fit(scrollCycle = "after") {
 		// for caching
-		if (!this.options.useRecycle || DEFENSE_BROWSER) {
-			const base = this._getEdgeValue("start");
+		if (!this._layout) {
+			return 0;
+		}
+		const base = this._getEdgeValue("start");
+		const margin = this._status.loadingSize;
 
-			if (scrollCycle === "after" && base < 0) {
-				this._items.fit(base, this._isVertical);
-				this._renderer.setContainerSize(this._getEdgeValue("end") || 0);
+		if (!this.options.useRecycle || DEFENSE_BROWSER) {
+			if (scrollCycle === "before" && margin && base < margin) {
+				this._renderer.scrollBy(-Math.abs(base) + margin);
+				this._watcher.setScrollPos();
+				this._items.fit(base - margin, this._isVertical);
+				DOMRenderer.renderItems(this._getVisibleItems());
+				this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
+			} else if (scrollCycle === "after" && base < 0) {
+				this._items.fit(base - margin, this._isVertical);
+				this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
 				DOMRenderer.renderItems(this._getVisibleItems());
 				this._renderer.scrollBy(Math.abs(base));
 				this._watcher.setScrollPos();
 			}
 			return 0;
 		}
-		if (this._layout) {
-			const base = this._getEdgeValue("start");
-			const margin = this._status.loadingSize;
 
-			if (base !== 0 || margin) {
-				const isProcessing = this._isProcessing();
+		if (base !== 0 || margin) {
+			const isProcessing = this._isProcessing();
 
-				if (!this._isLoading()) {
-					this._process(PROCESSING);
-				}
-				if (scrollCycle === "before") {
-					this._renderer.scrollBy(-Math.abs(base) + margin);
-					this._watcher.setScrollPos();
-				}
-				this._items.fit(base - margin, this._isVertical);
-				DOMRenderer.renderItems(this._getVisibleItems());
-				this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
-				if (scrollCycle === "after") {
-					this._renderer.scrollBy(Math.abs(base) + margin);
-					this._watcher.setScrollPos();
-				}
-				if (!isProcessing && !this._isLoading()) {
-					this._process(PROCESSING, false);
-				}
+			if (!this._isLoading()) {
+				this._process(PROCESSING);
 			}
-			return base;
-		} else {
-			return 0;
+			if (scrollCycle === "before") {
+				this._renderer.scrollBy(-Math.abs(base) + margin);
+				this._watcher.setScrollPos();
+			}
+			this._items.fit(base - margin, this._isVertical);
+			DOMRenderer.renderItems(this._getVisibleItems());
+			this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
+			if (scrollCycle === "after") {
+				this._renderer.scrollBy(Math.abs(base) + margin);
+				this._watcher.setScrollPos();
+			}
+			if (!isProcessing && !this._isLoading()) {
+				this._process(PROCESSING, false);
+			}
 		}
+		return base;
+	
 	}
 	_getEdgeValue(cursor) {
 		return this._items.getEdgeValue(cursor, this._status.startCursor, this._status.endCursor);

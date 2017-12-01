@@ -61,6 +61,8 @@ export const PROCESSING = 4;
 
 
 const webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
-const webkitVersion = (webkit && parseInt(webkit[1], 10)) || 0;
 
-export const DEFENSE_BROWSER = webkitVersion < 537;
+export const WEBKIT_VERSION = (webkit && parseInt(webkit[1], 10)) || 0;
+export const DEFENSE_BROWSER = !webkit || !WEBKIT_VERSION ||
+	(WEBKIT_VERSION && WEBKIT_VERSION < 537);
+

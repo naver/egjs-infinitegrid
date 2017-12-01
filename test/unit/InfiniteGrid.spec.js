@@ -164,8 +164,7 @@ describe("InfiniteGrid Test", function() {
       [APPEND, PREPEND].forEach(isAppend => {
         const ITEMCOUNT = 30;
         const RETRY = 1;
-        it(`should trigger loadingStrat and loadingEnd event when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll})`, done => {
-          
+        it(`should trigger startLoading/endLoading method when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll})`, done => {
           // Given
           // When
           expect(this.inst._isLoading()).to.be.false;
