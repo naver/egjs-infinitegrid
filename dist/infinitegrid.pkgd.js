@@ -1818,7 +1818,7 @@ var InfiniteGrid = function (_Component) {
 		var isAppend = this._getLoadingStatus() === _consts.LOADING_APPEND;
 		var type = isAppend ? "append" : "prepend";
 		var el = this._loadingBar[type];
-		var size = this._loadingSize;
+		var size = this._status.loadingSize;
 
 		this._process(_consts.LOADING_APPEND | _consts.LOADING_PREPEND, false);
 		this._status.loadingSize = 0;

@@ -591,7 +591,7 @@ class InfiniteGrid extends Component {
 		const isAppend = this._getLoadingStatus() === LOADING_APPEND;
 		const type = isAppend ? "append" : "prepend";
 		const el = this._loadingBar[type];
-		const size = this._loadingSize;
+		const size = this._status.loadingSize;
 
 		this._process(LOADING_APPEND | LOADING_PREPEND, false);
 		this._status.loadingSize = 0;
