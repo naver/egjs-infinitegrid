@@ -182,6 +182,7 @@ describe("InfiniteGrid Test", function() {
             const lastParam = layoutCompleteHandler.getCall(layoutCompleteHandler.callCount - 1).args[0];
 
             if (!isOverflowScroll) {
+              console.log(innerHeight(this.inst._renderer.container));
               expect(innerHeight(this.inst._renderer.container)).to.be.equal(this.inst._getEdgeValue("end") - this.inst._getEdgeValue("start") + (isAppend ? 75 : 100));
             }
             expect(this.inst._isLoading()).to.be.true;

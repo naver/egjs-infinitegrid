@@ -18,6 +18,7 @@ import {
 	LOADING_APPEND,
 	LOADING_PREPEND,
 	PROCESSING,
+	DEFENSE_BROWSER,
 } from "./consts";
 import {toArray, $, innerWidth, innerHeight} from "./utils";
 
@@ -240,11 +241,26 @@ class InfiniteGrid extends Component {
 		}
 		return rect;
 	}
+	_onDefense(e) {
+		const event = e.event;
+
+		if (this.isProcessing()) {
+			event.preventDefault();
+		}
+	}
 	// called by visible
 	_fit(scrollCycle = "after") {
 		// for caching
-		if (!this.options.useRecycle) {
-			this._fit = () => 0;
+		if (!this.options.useRecycle || DEFENSE_BROWSER) {
+			const base = this._getEdgeValue("start");
+
+			if (scrollCycle === "after" && base < 0) {
+				this._items.fit(base, this._isVertical);
+				this._renderer.setContainerSize(this._getEdgeValue("end") || 0);
+				DOMRenderer.renderItems(this._getVisibleItems());
+				this._renderer.scrollBy(Math.abs(base));
+				this._watcher.setScrollPos();
+			}
 			return 0;
 		}
 		if (this._layout) {
@@ -252,6 +268,8 @@ class InfiniteGrid extends Component {
 			const margin = this._status.loadingSize;
 
 			if (base !== 0 || margin) {
+				const isProcessing = this._isProcessing();
+
 				if (!this._isLoading()) {
 					this._process(PROCESSING);
 				}
@@ -266,7 +284,7 @@ class InfiniteGrid extends Component {
 					this._renderer.scrollBy(Math.abs(base) + margin);
 					this._watcher.setScrollPos();
 				}
-				if (!this._isLoading()) {
+				if (!isProcessing && !this._isLoading()) {
 					this._process(PROCESSING, false);
 				}
 			}
@@ -316,9 +334,8 @@ class InfiniteGrid extends Component {
 			this._layout.layout(data, outline);
 
 			if (isRelayout) {
-				this._items.set(data);
-				this._status.startCursor = 0;
-				this._status.endCursor = data.length - 1;
+				this._status.endCursor =
+					Math.max(this._status.endCursor, this._status.startCursor + data.length - 1);
 			} else {
 				data.forEach(v => this._items.set(v, v.groupKey));
 			}
@@ -474,7 +491,6 @@ class InfiniteGrid extends Component {
 		if (this._isProcessing() || elements.length === 0) {
 			return;
 		}
-		this._process(PROCESSING);
 		const key = typeof groupKey === "undefined" ? (new Date().getTime() + Math
 			.floor(
 				Math.random() * 1000)) : groupKey;
@@ -499,7 +515,11 @@ class InfiniteGrid extends Component {
 		}
 		let start = remove.indexOf(isAppend ? 1 : -1);
 		let end = remove.lastIndexOf(isAppend ? 1 : -1);
+		const visible = remove.indexOf(0);
 
+		if (visible === -1) {
+			return;
+		}
 		if (start !== -1 && end !== -1) {
 			start = this._status.startCursor + start;
 			end = start + end;
@@ -537,9 +557,7 @@ class InfiniteGrid extends Component {
 		if (!this._loadingBar[type]) {
 			return this;
 		}
-		const pos = isAppend ? this._getEdgeValue("end") : 0;
-
-		this._renderLoading(isAppend, pos, userStyle);
+		this._renderLoading(userStyle);
 		this._status.loadingStyle = userStyle;
 		if (!isAppend) {
 			this._fit("before");
@@ -548,12 +566,18 @@ class InfiniteGrid extends Component {
 		}
 		return this;
 	}
-	_renderLoading(isAppend, pos, userStyle = this._status.loadingStyle) {
+	_renderLoading(userStyle = this._status.loadingStyle) {
+		if (!this._isLoading()) {
+			return;
+		}
+		const isAppend = this._getLoadingStatus() === LOADING_APPEND;
 		const el = this._loadingBar[isAppend ? "append" : "prepend"];
 
 		if (!el) {
 			return;
 		}
+		this._status.loadingSize = this._isVertical ? innerHeight(el) : innerWidth(el);
+		const pos = isAppend ? this._getEdgeValue("end") : this._getEdgeValue("start") - this._status.loadingSize;
 		const style = Object.assign({
 			position: "absolute",
 			[this._isVertical ? "top" : "left"]: `${pos}px`,
@@ -562,7 +586,6 @@ class InfiniteGrid extends Component {
 		for (const property in style) {
 			el.style[property] = style[property];
 		}
-		this._status.loadingSize = this._isVertical ? innerHeight(el) : innerWidth(el);
 	}
 	/**
 	 * End loading after startLoading() for append/prepend
@@ -599,33 +622,53 @@ class InfiniteGrid extends Component {
 		return this;
 	}
 	_postLayout(fromCache, items, isAppend, isTrusted) {
+		const outline = this._items.getOutline(
+			isAppend ? this._status.endCursor : this._status.startCursor,
+			isAppend ? "end" : "start");
+
+		let fromRelayout = false;
+
 		if (fromCache) {
-			this._renderer.createAndInsert(items, isAppend);
-			this._updateCursor(isAppend);
-			this.options.useRecycle && this._recycle(isAppend);
-			this._onLayoutComplete(items, isAppend, isTrusted);
-		} else {
-			const method = isAppend ? "append" : "prepend";
+			const cacheOutline = this._items.getOutline(
+				isAppend ? this._status.endCursor + 1 : this._status.startCursor - 1,
+				isAppend ? "start" : "end");
 
-			this._renderer[method](items);
-			// check image sizes after elements are attated on DOM
-			ImageLoaded.check(items.map(item => item.el),
-				() => {
-					const layouted = this._layout[method](
-						this._renderer.updateSize(items),
-						this._items.getOutline(
-							isAppend ? this._status.endCursor : this._status.startCursor,
-							isAppend ? "end" : "start")
-					);
+			fromRelayout = outline.length === cacheOutline.length ?
+				!outline.every((v, index) => v === cacheOutline[index]) : true;
 
-					this._insertItems(layouted, isAppend);
-					this._updateCursor(isAppend);
-					this.options.useRecycle && this._recycle(isAppend);
-					DOMRenderer.renderItems(layouted.items);
-					this._onLayoutComplete(layouted.items, isAppend, isTrusted);
-				}
-			);
+			if (!fromRelayout) {
+				this._renderer.createAndInsert(items, isAppend);
+				this._updateCursor(isAppend);
+				this.options.useRecycle && this._recycle(isAppend);
+				this._onLayoutComplete(items, isAppend, isTrusted);
+				return this;
+			}
 		}
+		this._process(PROCESSING);
+		const method = isAppend ? "append" : "prepend";
+
+		fromCache && DOMRenderer.createElements(items);
+		this._renderer[method](items);
+		// check image sizes after elements are attated on DOM
+		ImageLoaded.check(items.map(item => item.el),
+			() => {
+				const layouted = this._layout[method](
+					this._renderer.updateSize(items),
+					outline
+				);
+
+				if (fromCache) {
+					this._setItems(layouted);
+				} else {
+					this._insertItems(layouted, isAppend);
+				}
+				this._updateCursor(isAppend);
+				this.options.useRecycle && this._recycle(isAppend);
+				DOMRenderer.renderItems(layouted.items);
+				this._onLayoutComplete(layouted.items, isAppend, isTrusted);
+			}
+		);
+		return this;
 	}
 	_isVisible(index) {
 		const min = Math.min(...this._items.getOutline(index, "start"));
@@ -657,6 +700,11 @@ class InfiniteGrid extends Component {
 			this._status.endCursor = this._items.size() - 1;
 		}
 	}
+	_setItems(layouted,
+		groupKey = (layouted.items && layouted.items[0].groupKey) || 0) {
+		layouted.groupKey = groupKey;
+		this._items.set(layouted, groupKey);
+	}
 	_insertItems(layouted, isAppend) {
 		layouted.groupKey = layouted.items[0].groupKey;
 		this._items[isAppend ? "append" : "prepend"](layouted);
@@ -665,6 +713,9 @@ class InfiniteGrid extends Component {
 	_requestAppend() {
 		const items = this._getNextItems(APPEND);
 
+		if (this._isProcessing()) {
+			return;
+		}
 		if (items.length) {
 			this._postLayout(CACHE, items, APPEND, TRUSTED);
 		} else {
@@ -686,6 +737,9 @@ class InfiniteGrid extends Component {
 	_requestPrepend() {
 		const items = this._getNextItems(PREPEND);
 
+		if (this._isProcessing()) {
+			return;
+		}
 		if (items.length) {
 			this._postLayout(CACHE, items, PREPEND, TRUSTED);
 		} else {
@@ -746,12 +800,9 @@ class InfiniteGrid extends Component {
 		this._updateEdge();
 		const size = this._getEdgeValue("end");
 
-		this._renderer.setContainerSize(size + this._status.loadingSize);
-		if (isAppend) {
-			this._isLoading() && this._renderLoading(true, size);
-		} else {
-			this._fit("after");
-		}
+		this._renderer.setContainerSize(size + this._status.loadingSize || 0);
+		this._isLoading() && this._renderLoading();
+		!isAppend && this._fit("after");
 		this._process(PROCESSING, false);
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
@@ -780,6 +831,7 @@ class InfiniteGrid extends Component {
 	_reset() {
 		this._status = {
 			procesingStatus: 0,
+			loadingSize: 0,
 			startCursor: -1,
 			endCursor: -1,
 			start: null,

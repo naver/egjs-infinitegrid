@@ -4,12 +4,15 @@ window.console = window.console || {};
 var ig;
 var parallax;
 
-var template = '<div class="item" data-column="${column}" data-group=${group}><img src="../../demo/assets/image/${no}.jpg"></div >';
+var template = '<div class="item" data-column="${column}" data-group=${group} data-g=${rgroup}><img src="../../demo/assets/image/${no}.jpg"></div >';
 var num = 27;
 var _status = 0;
 var _groups = {};
 var isParallax = false;
+var _overflow = true;
 var _layout;
+var _horizontal;
+
 var grid = document.querySelector("#grid");
 $(grid).click(function (e) {
 	var target = e.target;
@@ -25,12 +28,12 @@ $(grid).click(function (e) {
 		ig.layout(false);
 	}
 });
-function createGrid(horizontal) {
+function createGrid() {
 	ig && ig.destroy();
 	ig = new eg.InfiniteGrid(grid, {
-		horizontal: horizontal,
+		horizontal: _horizontal,
 		threshold: 50,
-		isOverflowScroll: true,
+		isOverflowScroll: _overflow,
 		loadingBar: "<div class=\"loading_bar\">LOADING</div>",
 	});
 	ig.on({
@@ -63,6 +66,7 @@ function createGrid(horizontal) {
 		"layoutComplete": function (e) {
 			ig.endLoading();
 			console.log("layoutComplete");
+			console.log(e);
 			if (!isParallax) {
 				return;
 			}
@@ -77,7 +81,7 @@ function createGrid(horizontal) {
 	});
 	parallax = new eg.Parallax(window, {
 		container: grid,
-		horizontal: horizontal,
+		horizontal: _horizontal,
 	});
 	parallax.resize();
 }
@@ -100,7 +104,7 @@ function getItem(template, options) {
 function getItems(group, length) {
 	var arr = [];
 	for (var i = 0; i < length; ++i) {
-		arr.push(getItem(template, { no: Math.round(Math.random() * 59 + 1), column: i % 5 === 0 ? 2 : 1, group: Math.abs(group) % 5}));
+		arr.push(getItem(template, { no: Math.round(Math.random() * 59 + 1), column: i % 5 === 0 ? 2 : 1, group: Math.abs(group) % 5, rgroup: group}));
 	}
 	return arr;
 }
@@ -197,15 +201,28 @@ function getStatus() {
 	_groups = groups;
 }
 function vertical() {
-	createGrid(false);
+	_horizontal = false;
+	createGrid();
 	$("#grid").attr("data-direction", "vertical");
 	window[_layout]();
 }
 function horizontal() {
-	createGrid(true);
+	_horizontal = true;
+	createGrid();
 	$("#grid").attr("data-direction", "horizontal");
 	window[_layout]();
-
+}
+function overflow() {
+	_overflow = true;
+	createGrid();
+	$("#grid").attr("data-overflow", "true");
+	window[_layout]();
+}
+function overflow_false() {
+	_overflow = false;
+	createGrid();
+	$("#grid").attr("data-overflow", "false");
+	window[_layout]();
 }
 
 $("#controller").click(function(e) {
@@ -222,4 +239,3 @@ $("#controller").click(function(e) {
 });
 
 
-GridLayout();
