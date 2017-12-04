@@ -435,6 +435,7 @@ function _defense(element) {
 	var container = document.createElement("div");
 
 	container.className = _consts.CONTAINER_CLASSNAME;
+	container.style.position = "relative";
 	container.style.height = "100%";
 
 	var children = element.children;

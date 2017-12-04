@@ -20,6 +20,7 @@ function _defense(element) {
 	const container = document.createElement("div");
 
 	container.className = CONTAINER_CLASSNAME;
+	container.style.position = "relative";
 	container.style.height = "100%";
 
 	const children = element.children;
