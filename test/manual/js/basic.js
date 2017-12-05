@@ -1,5 +1,5 @@
 /* eslint-disable */
-window.console = window.console || {};
+// window.console = window.console || {log: function(){}};
 
 var ig;
 var parallax;
@@ -38,7 +38,7 @@ function createGrid() {
 	});
 	ig.on({
 		"prepend": function (e) {
-			console.log("prepend");
+			// console.log("prepend");
 			var groupKeys = ig.getGroupKeys(true);
 			var groupKey = (groupKeys[0] || 0) - 1;
 
@@ -51,7 +51,7 @@ function createGrid() {
 			}, 1000);
 		},
 		"append": function (e) {
-			console.log("append");
+			// console.log("append");
 			var groupKeys = ig.getGroupKeys(true);
 			var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
 			if (!(groupKey in groups)) {
@@ -65,8 +65,7 @@ function createGrid() {
 		},
 		"layoutComplete": function (e) {
 			ig.endLoading();
-			console.log("layoutComplete");
-			console.log(e);
+			// console.log("layoutComplete");
 			if (!isParallax) {
 				return;
 			}
