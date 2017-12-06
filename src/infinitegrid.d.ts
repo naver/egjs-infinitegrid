@@ -1,4 +1,4 @@
-// Type definitions for egjs-infinitegrid 2.0
+// Type definitions for egjs-infinitegrid 3.0
 // Project: https://github.com/naver/egjs-infinitegrid
 // Definitions by: Naver <https://github.com/naver>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -14,7 +14,68 @@ interface InfiniteGridOption {
   isOverflowScroll?: boolean;
   threshold?: number;
   useRecycle?: boolean;
-  horizontal?: boolean,
+  horizontal?: boolean;
+  loadingBar?: string | {
+    append?: string | HTMLElement;
+    prepend?: string | HTMLElement;
+  }
+}
+
+interface Item {
+  el?: HTMLElement;
+  content: string;
+  groupKey?: number|string;
+  orgSize?: {
+    width: number,
+    height: number;
+  },
+  rect?: {
+    top: number,
+    left: number;
+    width?: number;
+    height?: number;
+  } 
+  size?: {
+    width: number,
+    height: number;
+  },
+  column? : number
+}
+
+interface InfiniteGridStatus {
+  options: InfiniteGridOption;
+  _items: {
+    _data: Array<Item>;
+  }
+  _renderer: {
+    cssText: string;
+    options: {
+      isEqualSize: boolean;
+      isOverflowScroll: boolean;
+      isVertical: boolean;
+    }
+  }
+  _size: {
+    containerOffset: number;
+    item?: number;
+    view: number;
+    viewport: number;
+  },
+  _status: {
+    end: Item;
+    endCursor: number;
+    start: Item;
+    startCursor: number;
+    loadingBar?: string | {
+      append?: string | HTMLElement;
+      prepend?: string | HTMLElement;
+    },
+    processingStatus: number;
+  },
+  _watcher: {
+    scrollPos: number;
+    _prevPos: number;
+  }
 }
 
 declare class InfiniteGrid {
@@ -29,7 +90,7 @@ declare class InfiniteGrid {
   layout(isRelayout?: boolean): InfiniteGrid;
   remove(item: HTMLElement): (object|null);
   setLayout(LayoutKlass, options?): InfiniteGrid;
-  getItems(includeCached?: boolean): [];
+  getItems(includeCached?: boolean): Array<Item>;
   setStatus(status: InfiniteGridStatus, applyScrollPos: boolean): InfiniteGrid;
 }
 
@@ -44,6 +105,6 @@ declare namespace InfiniteGrid {
   function layout(isRelayout?: boolean): InfiniteGrid;
   function remove(item: HTMLElement): (object|null);
   function setLayout(LayoutKlass, options?): InfiniteGrid;
-  function getItems(includeCached?: boolean): [];
+  function getItems(includeCached?: boolean): Array<Item>;
   function setStatus(status: InfiniteGridStatus, applyScrollPos: boolean): InfiniteGrid;
 }
