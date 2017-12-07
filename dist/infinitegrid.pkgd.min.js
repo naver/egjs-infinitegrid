@@ -1517,7 +1517,15 @@ var InfiniteGrid = function (_Component) {
 			}
 			this._layout.layout(data, outline);
 
-			if (!isRelayout) {
+			if (isRelayout) {
+				this._items._data.forEach(function (group, cursor) {
+					if (_this2._status.startCursor <= cursor && cursor <= _this2._status.endCursor) {
+						return;
+					}
+					group.outlines.start = [];
+					group.outlines.end = [];
+				});
+			} else {
 				data.forEach(function (v) {
 					return _this2._items.set(v, v.groupKey);
 				});

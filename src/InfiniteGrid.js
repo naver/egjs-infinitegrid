@@ -331,7 +331,15 @@ class InfiniteGrid extends Component {
 			}
 			this._layout.layout(data, outline);
 
-			if (!isRelayout) {
+			if (isRelayout) {
+				this._items._data.forEach((group, cursor) => {
+					if (this._status.startCursor <= cursor && cursor <= this._status.endCursor) {
+						return;
+					}
+					group.outlines.start = [];
+					group.outlines.end = [];
+				});
+			} else {
 				data.forEach(v => this._items.set(v, v.groupKey));
 			}
 			this._onLayoutComplete(data, APPEND, NO_TRUSTED);
