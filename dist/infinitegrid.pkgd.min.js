@@ -657,7 +657,7 @@ var DOMRenderer = function () {
 			var isVertical = this.options.isVertical;
 
 			this._size = {
-				containerOffset: this.container["offset" + (isVertical ? "Top" : "Left")],
+				containerOffset: this.options.isOverflowScroll ? 0 : this.container["offset" + (isVertical ? "Top" : "Left")],
 				viewport: this._calcSize(),
 				view: isVertical ? (0, _utils.innerHeight)(this.view) : (0, _utils.innerWidth)(this.view),
 				item: null
