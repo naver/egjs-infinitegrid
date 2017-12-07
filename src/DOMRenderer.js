@@ -219,7 +219,7 @@ export default class DOMRenderer {
 			const isVertical = this.options.isVertical;
 
 			this._size = {
-				containerOffset: this.container[`offset${isVertical ? "Top" : "Left"}`],
+				containerOffset: this.options.isOverflowScroll ? 0 : this.container[`offset${isVertical ? "Top" : "Left"}`],
 				viewport: this._calcSize(),
 				view: isVertical ? innerHeight(this.view) : innerWidth(this.view),
 				item: null,
