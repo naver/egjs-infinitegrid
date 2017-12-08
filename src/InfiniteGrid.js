@@ -20,6 +20,7 @@ import {
 	LOADING_PREPEND,
 	PROCESSING,
 	DEFENSE_BROWSER,
+	IGNORE_CLASSNAME,
 } from "./consts";
 import {toArray, $, innerWidth, innerHeight} from "./utils";
 
@@ -271,9 +272,7 @@ class InfiniteGrid extends Component {
 		if (base !== 0 || margin) {
 			const isProcessing = this._isProcessing();
 
-			if (!this._isLoading()) {
-				this._process(PROCESSING);
-			}
+			this._process(PROCESSING);
 			if (scrollCycle === "before") {
 				this._renderer.scrollBy(-Math.abs(base) + margin);
 				this._watcher.setScrollPos();
@@ -285,7 +284,7 @@ class InfiniteGrid extends Component {
 				this._renderer.scrollBy(Math.abs(base) + margin);
 				this._watcher.setScrollPos();
 			}
-			if (!isProcessing && !this._isLoading()) {
+			if (!isProcessing) {
 				this._process(PROCESSING, false);
 			}
 		}
@@ -454,6 +453,7 @@ class InfiniteGrid extends Component {
 		this._loadingBar = loadingBarObj;
 		for (const type in loadingBarObj) {
 			loadingBarObj[type] = $(loadingBarObj[type]);
+			loadingBar[type].className += ` ${IGNORE_CLASSNAME}`;
 		}
 		this._appendLoadingBar();
 		return this;
@@ -646,7 +646,6 @@ class InfiniteGrid extends Component {
 			if (!fromRelayout) {
 				this._renderer.createAndInsert(items, isAppend);
 				this._updateCursor(isAppend);
-				this.options.useRecycle && this._recycle(isAppend);
 				this._onLayoutComplete(items, isAppend, isTrusted);
 				return this;
 			}
@@ -670,7 +669,6 @@ class InfiniteGrid extends Component {
 					this._insertItems(layouted, isAppend);
 				}
 				this._updateCursor(isAppend);
-				this.options.useRecycle && this._recycle(isAppend);
 				DOMRenderer.renderItems(layouted.items);
 				this._onLayoutComplete(layouted.items, isAppend, isTrusted);
 			}
@@ -782,10 +780,8 @@ class InfiniteGrid extends Component {
 			scrollPos,
 			orgScrollPos,
 		});
-		if (this.isProcessing()) {
-			return;
-		}
 		const rect = this._getEdgeOffset(isForward ? "end" : "start");
+		const isProcessing = this.isProcessing();
 
 		if (!rect) {
 			return;
@@ -794,22 +790,27 @@ class InfiniteGrid extends Component {
 			rect[horizontal ? "left" : "top"] - this._renderer.getViewSize() :
 			rect[horizontal ? "right" : "bottom"];
 
-		if (isForward) {
+		if (!isProcessing && isForward) {
 			if (scrollPos >= targetPos) {
 				this._requestAppend();
 			}
 		} else if (scrollPos <= targetPos) {
 			this._fit("before");
-			this._requestPrepend();
+			if (!isProcessing) {
+				this._requestPrepend();
+			}
 		}
 	}
 	_onLayoutComplete(items, isAppend, isTrusted = false) {
-		this._updateEdge();
-		const size = this._getEdgeValue("end");
-
-		this._renderer.setContainerSize(size + this._status.loadingSize || 0);
 		this._isLoading() && this._renderLoading();
 		!isAppend && this._fit("after");
+		const size = this._getEdgeValue("end");
+
+		// recycle after _fit beacause prepend and append are occured simultaneously by scroll.
+		this.options.useRecycle && this._recycle(isAppend);
+		this._updateEdge();
+
+		isAppend && this._renderer.setContainerSize(size + this._status.loadingSize || 0);
 		this._process(PROCESSING, false);
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
