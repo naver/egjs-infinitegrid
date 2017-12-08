@@ -69,7 +69,8 @@ export default class Watcher {
 		this.setScrollPos(orgScrollPos);
 		const scrollPos = this.getScrollPos();
 
-		if ((IS_IOS && (orgScrollPos === 0 || prevPos === null)) || prevPos === scrollPos) {
+		// fix that null < 1 is true
+		if (prevPos === null || (IS_IOS && orgScrollPos === 0) || prevPos === scrollPos) {
 			return;
 		}
 
