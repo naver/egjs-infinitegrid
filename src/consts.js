@@ -25,6 +25,7 @@ export const IS_IOS = /iPhone|iPad/.test(ua);
 export const IS_ANDROID2 = /Android 2\./.test(ua);
 export const RETRY = 3;
 export const CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
+export const IGNORE_CLASSNAME = "_eg-infinitegrid-ignore_";
 
 export const APPEND = true;
 export const PREPEND = false;
@@ -64,4 +65,3 @@ const webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
 
 export const WEBKIT_VERSION = (webkit && parseInt(webkit[1], 10)) || 0;
 export const DEFENSE_BROWSER = (WEBKIT_VERSION && WEBKIT_VERSION < 537);
-

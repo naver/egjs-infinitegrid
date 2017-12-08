@@ -1,4 +1,4 @@
-import {MULTI, GROUPKEY_ATT} from "./consts";
+import {MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME} from "./consts";
 import DOMRenderer from "./DOMRenderer";
 import {$, toArray} from "./utils";
 
@@ -15,11 +15,14 @@ export default class ItemManager {
 	}
 	static selectItems(elements, selector) {
 		return elements.filter(v => {
-			if (selector === "*") {
+			const classNames = v.className.split("");
+
+			if (classNames.some(c => c === IGNORE_CLASSNAME)) {
+				return false;
+			} else if (selector === "*") {
 				return v;
 			} else {
-				return v.className.split(" ")
-					.some(c => c === selector);
+				return classNames.some(c => c === selector);
 			}
 		});
 	}
