@@ -540,6 +540,10 @@ span.version:hover {
   z-index: 2;
 }
 /*======layouts=====*/ 
+
+.layouts .docs-inner {
+  padding: 20px; 
+}
 .layout-list {
   margin: 0;
   padding: 0;
@@ -547,14 +551,20 @@ span.version:hover {
 }
 
 .layout-item {
-  width: 100px;
-  margin: 15px;
+  padding: 20px;
+  width: 140px;
+  /* padding: 15px 25px; */
+  margin: 0px;
   display: inline-block;
   list-style: none;
   vertical-align: top;
   cursor: pointer;
 }
+.layout-item.checked {
+  background: #f5f5f5;
+}
 .layout-item p {
+  font-size: 15px;
   text-align: center;
 }
 .layout-item.checked img {
@@ -562,10 +572,12 @@ span.version:hover {
 }
 .layout-item.checked p {
   font-weight: bold;
+  /* color: #5a5;   */
 }
+
 .layout-item img {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   /* border-radius: 50%; */
 }
 .layout-view .title {
@@ -653,6 +665,7 @@ span.version:hover {
 }
 
 /* ======= project ====== */
+#projects {}
 .project-list {
   margin: 0;
   padding: 0;
