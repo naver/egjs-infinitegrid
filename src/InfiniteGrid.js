@@ -453,7 +453,7 @@ class InfiniteGrid extends Component {
 		this._loadingBar = loadingBarObj;
 		for (const type in loadingBarObj) {
 			loadingBarObj[type] = $(loadingBarObj[type]);
-			loadingBar[type].className += ` ${IGNORE_CLASSNAME}`;
+			loadingBarObj[type].className += ` ${IGNORE_CLASSNAME}`;
 		}
 		this._appendLoadingBar();
 		return this;
@@ -619,7 +619,7 @@ class InfiniteGrid extends Component {
 			el.style[property] = style[property];
 		}
 		if (!isAppend) {
-			this._renderer.scrollBy(size);
+			this._renderer.scrollBy(-size);
 			this._watcher.setScrollPos();
 			this._items.fit(size, this._isVertical);
 			DOMRenderer.renderItems(this._getVisibleItems());
@@ -812,6 +812,11 @@ class InfiniteGrid extends Component {
 
 		isAppend && this._renderer.setContainerSize(size + this._status.loadingSize || 0);
 		this._process(PROCESSING, false);
+
+		const scrollPos = this._watcher.getScrollPos();
+		const orgScrollPos = this._watcher.getOrgScrollPos();
+
+		this._watcher.reset();
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
 		 * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
@@ -829,11 +834,10 @@ class InfiniteGrid extends Component {
 			target: items.concat(),
 			isAppend,
 			isTrusted,
-			scrollPos: this._watcher.getScrollPos(),
-			orgScrollPos: this._watcher.getOrgScrollPos(),
+			scrollPos,
+			orgScrollPos,
 			size,
 		});
-		this._watcher.reset();
 		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
 	}
 	_reset() {

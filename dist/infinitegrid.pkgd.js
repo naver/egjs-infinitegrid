@@ -94,7 +94,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 exports.__esModule = true;
-exports.DEFENSE_BROWSER = exports.WEBKIT_VERSION = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.IDLE = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
+exports.DEFENSE_BROWSER = exports.WEBKIT_VERSION = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.IDLE = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.IGNORE_CLASSNAME = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
 
 var _browser = __webpack_require__(2);
 
@@ -122,6 +122,7 @@ var IS_IOS = exports.IS_IOS = /iPhone|iPad/.test(ua);
 var IS_ANDROID2 = exports.IS_ANDROID2 = /Android 2\./.test(ua);
 var RETRY = exports.RETRY = 3;
 var CONTAINER_CLASSNAME = exports.CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
+var IGNORE_CLASSNAME = exports.IGNORE_CLASSNAME = "_eg-infinitegrid-ignore_";
 
 var APPEND = exports.APPEND = true;
 var PREPEND = exports.PREPEND = false;
@@ -1449,9 +1450,7 @@ var InfiniteGrid = function (_Component) {
 		if (base !== 0 || margin) {
 			var isProcessing = this._isProcessing();
 
-			if (!this._isLoading()) {
-				this._process(_consts.PROCESSING);
-			}
+			this._process(_consts.PROCESSING);
 			if (scrollCycle === "before") {
 				this._renderer.scrollBy(-Math.abs(base) + margin);
 				this._watcher.setScrollPos();
@@ -1463,7 +1462,7 @@ var InfiniteGrid = function (_Component) {
 				this._renderer.scrollBy(Math.abs(base) + margin);
 				this._watcher.setScrollPos();
 			}
-			if (!isProcessing && !this._isLoading()) {
+			if (!isProcessing) {
 				this._process(_consts.PROCESSING, false);
 			}
 		}
@@ -1654,6 +1653,7 @@ var InfiniteGrid = function (_Component) {
 		this._loadingBar = loadingBarObj;
 		for (var type in loadingBarObj) {
 			loadingBarObj[type] = (0, _utils.$)(loadingBarObj[type]);
+			loadingBarObj[type].className += " " + _consts.IGNORE_CLASSNAME;
 		}
 		this._appendLoadingBar();
 		return this;
@@ -1845,7 +1845,7 @@ var InfiniteGrid = function (_Component) {
 			el.style[property] = style[property];
 		}
 		if (!isAppend) {
-			this._renderer.scrollBy(size);
+			this._renderer.scrollBy(-size);
 			this._watcher.setScrollPos();
 			this._items.fit(size, this._isVertical);
 			_DOMRenderer2["default"].renderItems(this._getVisibleItems());
@@ -1872,7 +1872,6 @@ var InfiniteGrid = function (_Component) {
 			if (!fromRelayout) {
 				this._renderer.createAndInsert(items, isAppend);
 				this._updateCursor(isAppend);
-				this.options.useRecycle && this._recycle(isAppend);
 				this._onLayoutComplete(items, isAppend, isTrusted);
 				return this;
 			}
@@ -1894,7 +1893,6 @@ var InfiniteGrid = function (_Component) {
 				_this3._insertItems(layouted, isAppend);
 			}
 			_this3._updateCursor(isAppend);
-			_this3.options.useRecycle && _this3._recycle(isAppend);
 			_DOMRenderer2["default"].renderItems(layouted.items);
 			_this3._onLayoutComplete(layouted.items, isAppend, isTrusted);
 		});
@@ -2020,36 +2018,44 @@ var InfiniteGrid = function (_Component) {
 			scrollPos: scrollPos,
 			orgScrollPos: orgScrollPos
 		});
-		if (this.isProcessing()) {
-			return;
-		}
 		var rect = this._getEdgeOffset(isForward ? "end" : "start");
+		var isProcessing = this.isProcessing();
 
 		if (!rect) {
 			return;
 		}
 		var targetPos = isForward ? rect[horizontal ? "left" : "top"] - this._renderer.getViewSize() : rect[horizontal ? "right" : "bottom"];
 
-		if (isForward) {
+		if (!isProcessing && isForward) {
 			if (scrollPos >= targetPos) {
 				this._requestAppend();
 			}
 		} else if (scrollPos <= targetPos) {
 			this._fit("before");
-			this._requestPrepend();
+			if (!isProcessing) {
+				this._requestPrepend();
+			}
 		}
 	};
 
 	InfiniteGrid.prototype._onLayoutComplete = function _onLayoutComplete(items, isAppend) {
 		var isTrusted = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-		this._updateEdge();
-		var size = this._getEdgeValue("end");
-
-		this._renderer.setContainerSize(size + this._status.loadingSize || 0);
 		this._isLoading() && this._renderLoading();
 		!isAppend && this._fit("after");
+		var size = this._getEdgeValue("end");
+
+		// recycle after _fit beacause prepend and append are occured simultaneously by scroll.
+		this.options.useRecycle && this._recycle(isAppend);
+		this._updateEdge();
+
+		isAppend && this._renderer.setContainerSize(size + this._status.loadingSize || 0);
 		this._process(_consts.PROCESSING, false);
+
+		var scrollPos = this._watcher.getScrollPos();
+		var orgScrollPos = this._watcher.getOrgScrollPos();
+
+		this._watcher.reset();
 		/**
    * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
    * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
@@ -2067,11 +2073,10 @@ var InfiniteGrid = function (_Component) {
 			target: items.concat(),
 			isAppend: isAppend,
 			isTrusted: isTrusted,
-			scrollPos: this._watcher.getScrollPos(),
-			orgScrollPos: this._watcher.getOrgScrollPos(),
+			scrollPos: scrollPos,
+			orgScrollPos: orgScrollPos,
 			size: size
 		});
-		this._watcher.reset();
 		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
 	};
 
@@ -2528,10 +2533,16 @@ var ItemManager = function () {
 
 	ItemManager.selectItems = function selectItems(elements, selector) {
 		return elements.filter(function (v) {
-			if (selector === "*") {
+			var classNames = v.className.split("");
+
+			if (classNames.some(function (c) {
+				return c === _consts.IGNORE_CLASSNAME;
+			})) {
+				return false;
+			} else if (selector === "*") {
 				return v;
 			} else {
-				return v.className.split(" ").some(function (c) {
+				return classNames.some(function (c) {
 					return c === selector;
 				});
 			}
@@ -2907,7 +2918,8 @@ var Watcher = function () {
 		this.setScrollPos(orgScrollPos);
 		var scrollPos = this.getScrollPos();
 
-		if (_consts.IS_IOS && (orgScrollPos === 0 || prevPos === null) || prevPos === scrollPos) {
+		// fix that null < 1 is true
+		if (prevPos === null || _consts.IS_IOS && orgScrollPos === 0 || prevPos === scrollPos) {
 			return;
 		}
 

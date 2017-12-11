@@ -127,11 +127,21 @@ describe("InfiniteGrid Test", function() {
           const handler = insert(this.inst, isAppend, () => {
             const lastParam = handler.getCall(handler.callCount - 1).args[0];
 
+            
             if (isAppend) {
               const spot = lastParam.size;
-              this.inst._watcher.scrollTo(spot);
+
+              this.inst._watcher.scrollTo(spot / 2);
+              setTimeout(() => {
+                this.inst._watcher.scrollTo(spot);
+              });
             } else {
-              this.inst._watcher.scrollTo(0);
+              this.inst._watcher.scrollTo(this.inst._getEdgeValue("end") / 2);
+              setTimeout(() => {
+                this.inst._watcher.scrollTo(0);  
+              });
+              
+              
             }
           }, ITEMCOUNT, RETRY);
         });
@@ -188,13 +198,6 @@ describe("InfiniteGrid Test", function() {
             if (isAppend) {
               expect(parseInt(this.inst.getLoadingBar().style.top, 10)).to.be.equal(this.inst._getEdgeValue("end"));
             }
-            // no request append / prepend
-            if (isAppend) {
-              const spot = lastParam.size;
-              this.inst._watcher.scrollTo(spot);
-            } else {
-              this.inst._watcher.scrollTo(0);
-            }
           });
           const insertHandler = sinon.spy(e => {
             expect(this.inst._isLoading()).to.be.false;
@@ -221,9 +224,15 @@ describe("InfiniteGrid Test", function() {
 
             if (isAppend) {
               const spot = lastParam.size;
-              this.inst._watcher.scrollTo(spot);
+              this.inst._watcher.scrollTo(spot / 2);
+              setTimeout(() => {
+                this.inst._watcher.scrollTo(spot);
+              }, 100);
             } else {
-              this.inst._watcher.scrollTo(0);
+              this.inst._watcher.scrollTo(this.inst._getEdgeValue("end") / 2);
+              setTimeout(() => {
+                this.inst._watcher.scrollTo(0);
+              }, 100);
             }
           }, ITEMCOUNT, 2);
         });
