@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: src/layouts/SquareLayout.js | egjs::infinitegrid - API</title>
+    
+    <meta name="description" content="A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs-infinitegrid/release/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.InfiniteGrid","disqus":"egjs","googleAnalytics":"UA-70842526-18","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::infinitegrid - API","description":"A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-infinitegrid/release/latest/doc/"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName">
+        <a href="//naver.github.io/egjs/"><img style="width:40px; height:20px;" src="img/type_white.svg"/></a>
+
+        <!-- Homepage link (prefer link.home than applicationName) -->
+        
+        <a href="//naver.github.io/egjs-infinitegrid/">InfiniteGrid</a>
+        
+    </h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+        <li class="item">
+            <span class="title">
+                <a href="index.html">README</a>
+            </span>
+        </li>
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid">
+    <span class="title">
+        <a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid#append"><a href="eg.InfiniteGrid.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#clear"><a href="eg.InfiniteGrid.html#clear">clear</a></li>
+    
+        <li data-name="eg.InfiniteGrid#destroy"><a href="eg.InfiniteGrid.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.InfiniteGrid#endLoading"><a href="eg.InfiniteGrid.html#endLoading">endLoading</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getGroupKeys"><a href="eg.InfiniteGrid.html#getGroupKeys">getGroupKeys</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getItems"><a href="eg.InfiniteGrid.html#getItems">getItems</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getLoadingBar"><a href="eg.InfiniteGrid.html#getLoadingBar">getLoadingBar</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getStatus"><a href="eg.InfiniteGrid.html#getStatus">getStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#isProcessing"><a href="eg.InfiniteGrid.html#isProcessing">isProcessing</a></li>
+    
+        <li data-name="eg.InfiniteGrid#layout"><a href="eg.InfiniteGrid.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid#remove"><a href="eg.InfiniteGrid.html#remove">remove</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setLayout"><a href="eg.InfiniteGrid.html#setLayout">setLayout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#startLoading"><a href="eg.InfiniteGrid.html#startLoading">startLoading</a></li>
+    
+        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.InfiniteGrid#event:append"><a href="eg.InfiniteGrid.html#event:append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:change"><a href="eg.InfiniteGrid.html#event:change">change</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:layoutComplete"><a href="eg.InfiniteGrid.html#event:layoutComplete">layoutComplete</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:prepend"><a href="eg.InfiniteGrid.html#event:prepend">prepend</a></li>
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.FrameLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#append"><a href="eg.InfiniteGrid.FrameLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#layout"><a href="eg.InfiniteGrid.FrameLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#prepend"><a href="eg.InfiniteGrid.FrameLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#setSize"><a href="eg.InfiniteGrid.FrameLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.GridLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.GridLayout.html">eg.InfiniteGrid.GridLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#append"><a href="eg.InfiniteGrid.GridLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#layout"><a href="eg.InfiniteGrid.GridLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#prepend"><a href="eg.InfiniteGrid.GridLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#setSize"><a href="eg.InfiniteGrid.GridLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.JustifiedLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.JustifiedLayout.html">eg.InfiniteGrid.JustifiedLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#append"><a href="eg.InfiniteGrid.JustifiedLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#layout"><a href="eg.InfiniteGrid.JustifiedLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#prepend"><a href="eg.InfiniteGrid.JustifiedLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#setSize"><a href="eg.InfiniteGrid.JustifiedLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.PackingLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.PackingLayout.html">eg.InfiniteGrid.PackingLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#append"><a href="eg.InfiniteGrid.PackingLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#layout"><a href="eg.InfiniteGrid.PackingLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#prepend"><a href="eg.InfiniteGrid.PackingLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#setSize"><a href="eg.InfiniteGrid.PackingLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.SquareLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.SquareLayout.html">eg.InfiniteGrid.SquareLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#append"><a href="eg.InfiniteGrid.SquareLayout.html#append">append</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#layout"><a href="eg.InfiniteGrid.SquareLayout.html#layout">layout</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#prepend"><a href="eg.InfiniteGrid.SquareLayout.html#prepend">prepend</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#setSize"><a href="eg.InfiniteGrid.SquareLayout.html#setSize">setSize</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.Parallax">
+    <span class="title">
+        <a href="eg.Parallax.html">eg.Parallax</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
+    
+        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="src_layouts_SquareLayout.js.html">Source: src/layouts/SquareLayout.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import FrameLayout from "./FrameLayout";
+import {indexOf, fill} from "../utils";
+
+function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
+	const point = Math[isAppend ? "min" : "max"](...outline) || 0;
+
+	if (outline.length !== columnLength) {
+		return fill(columnLength, 0);
+	}
+	return outline.map(l => parseInt((l - point) / itemSize, 10));
+}
+function getColumn(item) {
+	if (item.column) {
+		return item.column;
+	}
+	let column = 0;
+
+	if (item.el) {
+		const dataset = item.el.dataset;
+
+		if (dataset) {
+			column = dataset.column || 1;
+		} else {
+			column = item.el.getAttribute("column") || 1;
+		}
+	} else {
+		column = 1;
+	}
+	item.column = column;
+	return column;
+}
+
+/**
+ * FrameLayout is a layout that allows you to place items in a given frame. It is a layout that corresponds to a level intermediate between the placement of the image directly by the designer and the layout using the algorithm.
+ * @ko FrameLayout은 주어진 프레임에 맞춰 아이템을 배치하는 레이아웃입니다. 디자이너가 직접 이미지를 배치하는 것과 알고리즘을 사용한 배치의 중간 정도 수준에 해당하는 레이아웃이다.
+ * @class eg.InfiniteGrid.SquareLayout
+ * @extends eg.InfiniteGrid.FrameLayout
+ * @param {Object} [options] The option object of eg.InfiniteGrid.SquareLayout module &lt;ko>eg.InfiniteGrid.SquareLayout 모듈의 옵션 객체&lt;/ko>
+ * @param {String} [options.margin=0] Margin used to create space around items &lt;ko>아이템들 사이의 공간&lt;/ko>
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) &lt;ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)&lt;/ko>
+ * @param {Boolean} [options.itemSize=0] The size of the items. If it is 0, it is calculated as the size of the first item in items. &lt;ko> 아이템의 사이즈. 만약 아이템 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. &lt;/ko>
+ * @example
+```
+&lt;script>
+var ig = new eg.InfiniteGrid("#grid". {
+	horizontal: true,
+});
+
+ig.setLayout(eg.InfiniteGrid.SquareLayout, {
+	margin: 10,
+	itemSize: 200,
+});
+
+// or
+
+var layout = new eg.InfiniteGrid.SquareLayout({
+	margin: 10,
+	itemSize: 200,
+	horizontal: true,
+});
+
+
+var item1 = '&lt;div data-column="2">&lt;/div>';
+var item2 = "&lt;div>&lt;/div>"
+layout.append([item1, item2]);
+&lt;/script>
+```
+ **/
+class SquareLayout extends FrameLayout {
+	_checkItemSize() {
+		const column = this.options.column;
+
+		if (!column) {
+			super._checkItemSize();
+			return;
+		}
+		const margin = this.options.margin;
+
+		// if itemSize is not in options, caculate itemSize from size.
+		this._itemSize = (this._size + margin) / column - margin;
+	}
+	_layout(items, outline = [], isAppend) {
+		const itemSize = this._getItemSize();
+		const margin = this.options.margin;
+		const columnLength = this.options.column ||
+				parseInt((this._size + margin) / (itemSize + margin), 10) || 1;
+		const length = items.length;
+		const endOutline = makeShapeOutline(outline, itemSize, columnLength, isAppend);
+		const pointCaculateName = isAppend ? "min" : "max";
+		const shapes = [];
+		const sign = isAppend ? 1 : -1;
+		const style = this._style;
+		const pos1Name = style.pos1;
+		const pos2Name = style.pos2;
+
+		for (let i = 0; i &lt; length; ++i) {
+			const point = Math[pointCaculateName](...endOutline);
+			let index = indexOf(endOutline, point, !isAppend);
+			const item = items[i];
+			const columnWidth = item.columnWidth;
+			const column = (columnWidth &amp;&amp; columnWidth[0] === columnLength &amp;&amp;
+					columnWidth[1]) || getColumn(item);
+			let columnCount = 1;
+
+			if (column > 1) {
+				for (let j = 1; j &lt; column &amp;&amp;
+						((isAppend &amp;&amp; index + j &lt; columnLength) || (!isAppend &amp;&amp; index - j >= 0)); ++j) {
+					if ((isAppend &amp;&amp; endOutline[index + sign * j] &lt;= point) ||
+						(!isAppend &amp;&amp; endOutline[index + sign * j] >= point)) {
+						++columnCount;
+						continue;
+					}
+					break;
+				}
+				if (!isAppend) {
+					index -= columnCount - 1;
+				}
+			}
+			item.columnWidth = [columnLength, columnCount];
+			shapes.push({
+				width: columnCount,
+				height: columnCount,
+				[pos1Name]: point - (!isAppend ? columnCount : 0),
+				[pos2Name]: index,
+				index: i,
+			});
+			for (let j = 0; j &lt; columnCount; ++j) {
+				endOutline[index + j] = point + sign * columnCount;
+			}
+		}
+		this._shapes = {
+			shapes,
+			[style.size2]: columnLength,
+		};
+
+		const result = super._layout(items, outline, isAppend);
+
+		if (!isAppend) {
+			const lastItem = items[items.length - 1];
+
+			shapes.sort((shape1, shape2) => {
+				const item1pos1 = shape1[pos1Name];
+				const item1pos2 = shape1[pos2Name];
+				const item2pos1 = shape2[pos1Name];
+				const item2pos2 = shape2[pos2Name];
+
+				if (item1pos1 - item2pos1) {
+					return item1pos1 - item2pos1;
+				}
+				return item1pos2 - item2pos2;
+			});
+			items.sort((a, b) => {
+				const item1pos1 = a.rect[pos1Name];
+				const item1pos2 = a.rect[pos2Name];
+				const item2pos1 = b.rect[pos1Name];
+				const item2pos2 = b.rect[pos2Name];
+
+				if (item1pos1 - item2pos1) {
+					return item1pos1 - item2pos1;
+				}
+				return item1pos2 - item2pos2;
+			});
+			result.startIndex = 0;
+			result.endIndex = items.indexOf(lastItem);
+		}
+		return result;
+	}
+}
+
+export default SquareLayout;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Dec 12 2017 12:04:48 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

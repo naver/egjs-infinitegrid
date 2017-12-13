@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Class: Parallax | egjs::infinitegrid - API</title>
+    
+    <meta name="description" content="A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs-infinitegrid/release/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.InfiniteGrid","disqus":"egjs","googleAnalytics":"UA-70842526-18","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::infinitegrid - API","description":"A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-infinitegrid/release/latest/doc/"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName">
+        <a href="//naver.github.io/egjs/"><img style="width:40px; height:20px;" src="img/type_white.svg"/></a>
+
+        <!-- Homepage link (prefer link.home than applicationName) -->
+        
+        <a href="//naver.github.io/egjs-infinitegrid/">InfiniteGrid</a>
+        
+    </h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+        <li class="item">
+            <span class="title">
+                <a href="index.html">README</a>
+            </span>
+        </li>
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid">
+    <span class="title">
+        <a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid#append"><a href="eg.InfiniteGrid.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#clear"><a href="eg.InfiniteGrid.html#clear">clear</a></li>
+    
+        <li data-name="eg.InfiniteGrid#destroy"><a href="eg.InfiniteGrid.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.InfiniteGrid#endLoading"><a href="eg.InfiniteGrid.html#endLoading">endLoading</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getGroupKeys"><a href="eg.InfiniteGrid.html#getGroupKeys">getGroupKeys</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getItems"><a href="eg.InfiniteGrid.html#getItems">getItems</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getLoadingBar"><a href="eg.InfiniteGrid.html#getLoadingBar">getLoadingBar</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getStatus"><a href="eg.InfiniteGrid.html#getStatus">getStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#isProcessing"><a href="eg.InfiniteGrid.html#isProcessing">isProcessing</a></li>
+    
+        <li data-name="eg.InfiniteGrid#layout"><a href="eg.InfiniteGrid.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid#remove"><a href="eg.InfiniteGrid.html#remove">remove</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setLayout"><a href="eg.InfiniteGrid.html#setLayout">setLayout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#startLoading"><a href="eg.InfiniteGrid.html#startLoading">startLoading</a></li>
+    
+        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.InfiniteGrid#event:append"><a href="eg.InfiniteGrid.html#event:append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:change"><a href="eg.InfiniteGrid.html#event:change">change</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:layoutComplete"><a href="eg.InfiniteGrid.html#event:layoutComplete">layoutComplete</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:prepend"><a href="eg.InfiniteGrid.html#event:prepend">prepend</a></li>
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.FrameLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#append"><a href="eg.InfiniteGrid.FrameLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#layout"><a href="eg.InfiniteGrid.FrameLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#prepend"><a href="eg.InfiniteGrid.FrameLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#setSize"><a href="eg.InfiniteGrid.FrameLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.GridLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.GridLayout.html">eg.InfiniteGrid.GridLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#append"><a href="eg.InfiniteGrid.GridLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#layout"><a href="eg.InfiniteGrid.GridLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#prepend"><a href="eg.InfiniteGrid.GridLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#setSize"><a href="eg.InfiniteGrid.GridLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.JustifiedLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.JustifiedLayout.html">eg.InfiniteGrid.JustifiedLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#append"><a href="eg.InfiniteGrid.JustifiedLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#layout"><a href="eg.InfiniteGrid.JustifiedLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#prepend"><a href="eg.InfiniteGrid.JustifiedLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#setSize"><a href="eg.InfiniteGrid.JustifiedLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.PackingLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.PackingLayout.html">eg.InfiniteGrid.PackingLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#append"><a href="eg.InfiniteGrid.PackingLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#layout"><a href="eg.InfiniteGrid.PackingLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#prepend"><a href="eg.InfiniteGrid.PackingLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#setSize"><a href="eg.InfiniteGrid.PackingLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.SquareLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.SquareLayout.html">eg.InfiniteGrid.SquareLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#append"><a href="eg.InfiniteGrid.SquareLayout.html#append">append</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#layout"><a href="eg.InfiniteGrid.SquareLayout.html#layout">layout</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#prepend"><a href="eg.InfiniteGrid.SquareLayout.html#prepend">prepend</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#setSize"><a href="eg.InfiniteGrid.SquareLayout.html#setSize">setSize</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.Parallax">
+    <span class="title">
+        <a href="eg.Parallax.html">eg.Parallax</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
+    
+        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="eg.Parallax.html">Class: Parallax</h1>
+        
+
+
+
+<section>
+
+<header>
+    <h2>
+    
+        <span></span>
+        
+    </h2>
+    <button id="toggle">
+        
+            English
+        
+    </button>
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="Parallax">
+            
+            new eg.Parallax<span class="signature">(<span class="optional">root</span>, <span class="optional">options</span>)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="src_Parallax.js.html">Parallax.js</a>, <a href="src_Parallax.js.html#line21">line 21</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		
+	</div>
+	
+	
+	<div class="description ko">
+		<p>Parallax는 서로 다른 두 개의 시선에서 바라본 물체의 외관상 위치의 변위 또는 차이입니다. 스크롤에 따라 이미지와 아이템의 속도를 차이를 줌으로써 parallax을 적용할 수 있습니다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>root</strong>
+            
+                (default: <code>window</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Element</span>
+|
+
+<span class="param-type">String</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Scrolling target. If you scroll in the body, set window. 스크롤하는 대상. 만약 body에서 스크롤하면 window로 설정한다.</p></div>
+            <div class="description ko"><p>Scrolling target. If you scroll in the body, set window. 스크롤하는 대상. 만약 body에서 스크롤하면 window로 설정한다.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>options</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Object</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The option object of eg.Parallax module </p></div>
+            <div class="description ko"><p>eg.Parallax 모듈의 옵션 객체</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+            
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>horizontal</strong>
+            
+                (default: <code>false</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Direction of the scroll movement (false: vertical, true: horizontal) </p></div>
+            <div class="description ko"><p>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>container</strong>
+            
+                (default: <code>null</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Element</span>
+|
+
+<span class="param-type">String</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Container wrapping items. If root and container have no gaps, do not set option. </p></div>
+            <div class="description ko"><p> 아이템들을 감싸고 있는 컨테이너. 만약 root와 container간의 차이가 없으면, 옵션을 설정하지 않아도 된다.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>selector</strong>
+            
+                (default: <code>"img"</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">String</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The selector of the image to apply the parallax in the item </p></div>
+            <div class="description ko"><p> 아이템안에 있는 parallax를 적용할 이미지의 selector </p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>strength</strong>
+            
+                (default: <code>1</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Dimensions that indicate the sensitivity of parallax. The higher the strength, the faster.</p></div>
+            <div class="description ko"><p>Dimensions that indicate the sensitivity of parallax. The higher the strength, the faster.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>center</strong>
+            
+                (default: <code>0</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The middle point of parallax. The top is 1 and the bottom is -1. </p></div>
+            <div class="description ko"><p> parallax가 가운데로 오는 점. 상단이 1이고 하단이 -1이다. </p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>range</strong>
+            
+                (default: <code>[-1, 1]</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Range to apply the parallax. The top is 1 and the bottom is -1. </p></div>
+            <div class="description ko"><p> parallax가 적용되는 범위, 상단이 1이고 하단이 -1이다. </p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>align</strong>
+            
+                (default: <code>"start"</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The alignment of the image in the item. (&quot;start&quot; : top or left, &quot;center&quot;: middle) </p></div>
+            <div class="description ko"><p> 아이템안의 이미지의 정렬 </p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><pre class="prettyprint source"><code>&lt;script>
+// isOverflowScroll: false
+var parallax = new eg.Parallax(window, {
+    container: &quot;.container&quot;,
+    selector: &quot;img.parallax&quot;,
+    strength: 0.8,
+    center: 0,
+    range: [-1, 1],
+    align: &quot;center&quot;,
+    horizontal: true,
+});
+
+// isOverflowScroll: ture
+var parallax = new eg.Parallax(&quot;.container&quot;, {
+    selector: &quot;img.parallax&quot;,
+    strength: 0.8,
+    center: 0,
+    range: [-1, 1],
+    align: &quot;center&quot;,
+    horizontal: true,
+});
+
+// item interface
+var item = {
+    // original size
+    size: {
+        width: 100,
+        height: 100,
+    },
+    // view size
+    rect: {
+        top: 100,
+        left: 100,
+        width: 100,
+        height: 100,
+    }
+};
+&lt;/script></code></pre></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+
+
+        
+
+
+    
+    </div>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resize">
+            
+            resize<span class="signature">(<span class="optional">items</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Parallax.html">eg.Parallax</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="src_Parallax.js.html">Parallax.js</a>, <a href="src_Parallax.js.html#line117">line 117</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>As the browser is resized, the gaps between the root and the container and the size of the items are updated.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>브라우저의 크기가 변경됨으로 써 root와 container의 간격과 아이템들의 크기를 갱신한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>items</strong>
+            
+                (default: <code>[]</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Items to apply parallax. It does not apply if it is not in visible range. </p></div>
+            <div class="description ko"><p>parallax를 적용할 아이템들. 가시거리에 존재하지 않으면 적용이 안된다.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.Parallax.html">eg.Parallax</a>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance of a module itself</div>
+                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><pre class="prettyprint source lang-js"><code>window.addEventListener(&quot;resize&quot;, function (e) {
+    parallax.resize(items);
+});</code></pre></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resize">
+            
+            resize<span class="signature">(<span class="optional">items</span>, <span class="optional">scrollPositionStart</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Parallax.html">eg.Parallax</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="src_Parallax.js.html">Parallax.js</a>, <a href="src_Parallax.js.html#line157">line 157</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Scrolls the image in the item by a parallax.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>스크롤하면 아이템안의 이미지를 시차적용시킨다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>items</strong>
+            
+                (default: <code>[]</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Items to apply parallax. It does not apply if it is not in visible range. </p></div>
+            <div class="description ko"><p>parallax를 적용할 아이템들. 가시거리에 존재하지 않으면 적용이 안된다.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>scrollPositionStart</strong>
+            
+                (default: <code>0</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Number</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The scroll position.</p></div>
+            <div class="description ko"><p>The scroll position.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.Parallax.html">eg.Parallax</a>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance of a module itself</div>
+                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><pre class="prettyprint source lang-js"><code>document.body.addEventListener(&quot;scroll&quot;, function (e) {
+    parallax.refresh(items, e.scrollTop);
+});</code></pre></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Dec 12 2017 12:04:48 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

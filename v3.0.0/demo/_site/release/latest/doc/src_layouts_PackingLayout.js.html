@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: src/layouts/PackingLayout.js | egjs::infinitegrid - API</title>
+    
+    <meta name="description" content="A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs-infinitegrid/release/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.InfiniteGrid","disqus":"egjs","googleAnalytics":"UA-70842526-18","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::infinitegrid - API","description":"A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-infinitegrid/release/latest/doc/"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName">
+        <a href="//naver.github.io/egjs/"><img style="width:40px; height:20px;" src="img/type_white.svg"/></a>
+
+        <!-- Homepage link (prefer link.home than applicationName) -->
+        
+        <a href="//naver.github.io/egjs-infinitegrid/">InfiniteGrid</a>
+        
+    </h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+        <li class="item">
+            <span class="title">
+                <a href="index.html">README</a>
+            </span>
+        </li>
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid">
+    <span class="title">
+        <a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid#append"><a href="eg.InfiniteGrid.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#clear"><a href="eg.InfiniteGrid.html#clear">clear</a></li>
+    
+        <li data-name="eg.InfiniteGrid#destroy"><a href="eg.InfiniteGrid.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.InfiniteGrid#endLoading"><a href="eg.InfiniteGrid.html#endLoading">endLoading</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getGroupKeys"><a href="eg.InfiniteGrid.html#getGroupKeys">getGroupKeys</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getItems"><a href="eg.InfiniteGrid.html#getItems">getItems</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getLoadingBar"><a href="eg.InfiniteGrid.html#getLoadingBar">getLoadingBar</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getStatus"><a href="eg.InfiniteGrid.html#getStatus">getStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#isProcessing"><a href="eg.InfiniteGrid.html#isProcessing">isProcessing</a></li>
+    
+        <li data-name="eg.InfiniteGrid#layout"><a href="eg.InfiniteGrid.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid#remove"><a href="eg.InfiniteGrid.html#remove">remove</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setLayout"><a href="eg.InfiniteGrid.html#setLayout">setLayout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#startLoading"><a href="eg.InfiniteGrid.html#startLoading">startLoading</a></li>
+    
+        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.InfiniteGrid#event:append"><a href="eg.InfiniteGrid.html#event:append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:change"><a href="eg.InfiniteGrid.html#event:change">change</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:layoutComplete"><a href="eg.InfiniteGrid.html#event:layoutComplete">layoutComplete</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:prepend"><a href="eg.InfiniteGrid.html#event:prepend">prepend</a></li>
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.FrameLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#append"><a href="eg.InfiniteGrid.FrameLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#layout"><a href="eg.InfiniteGrid.FrameLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#prepend"><a href="eg.InfiniteGrid.FrameLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#setSize"><a href="eg.InfiniteGrid.FrameLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.GridLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.GridLayout.html">eg.InfiniteGrid.GridLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#append"><a href="eg.InfiniteGrid.GridLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#layout"><a href="eg.InfiniteGrid.GridLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#prepend"><a href="eg.InfiniteGrid.GridLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#setSize"><a href="eg.InfiniteGrid.GridLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.JustifiedLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.JustifiedLayout.html">eg.InfiniteGrid.JustifiedLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#append"><a href="eg.InfiniteGrid.JustifiedLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#layout"><a href="eg.InfiniteGrid.JustifiedLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#prepend"><a href="eg.InfiniteGrid.JustifiedLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#setSize"><a href="eg.InfiniteGrid.JustifiedLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.PackingLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.PackingLayout.html">eg.InfiniteGrid.PackingLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#append"><a href="eg.InfiniteGrid.PackingLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#layout"><a href="eg.InfiniteGrid.PackingLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#prepend"><a href="eg.InfiniteGrid.PackingLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#setSize"><a href="eg.InfiniteGrid.PackingLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.SquareLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.SquareLayout.html">eg.InfiniteGrid.SquareLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#append"><a href="eg.InfiniteGrid.SquareLayout.html#append">append</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#layout"><a href="eg.InfiniteGrid.SquareLayout.html#layout">layout</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#prepend"><a href="eg.InfiniteGrid.SquareLayout.html#prepend">prepend</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#setSize"><a href="eg.InfiniteGrid.SquareLayout.html#setSize">setSize</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.Parallax">
+    <span class="title">
+        <a href="eg.Parallax.html">eg.Parallax</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
+    
+        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="src_layouts_PackingLayout.js.html">Source: src/layouts/PackingLayout.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import BoxModel from "./lib/BoxModel.js";
+import {APPEND, PREPEND} from "../consts";
+import {getStyleNames, assignOptions, toZeroArray} from "../utils";
+
+
+function getCost(originLength, length) {
+	let cost = originLength / length;
+
+	if (cost &lt; 1) {
+		cost = 1 / cost;
+	}
+
+	return cost - 1;
+}
+function fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertical) {
+	item.setHeight(itemFitSize.height);
+	item.setWidth(itemFitSize.width);
+	bestFitArea.setHeight(containerFitSize.height);
+	bestFitArea.setWidth(containerFitSize.width);
+
+	if (layoutVertical) {
+		item.setTop(bestFitArea.getTop() + bestFitArea.getHeight());
+		item.setLeft(bestFitArea.getLeft());
+	} else {
+		item.setLeft(bestFitArea.getLeft() + bestFitArea.getWidth());
+		item.setTop(bestFitArea.getTop());
+	}
+}
+
+/**
+ * PackingLayout show important images bigger without sacrificing the inherent size of the image. Rows and columns are separated so that images are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.
+ * @ko PackingLayout은 이미지의 본래 크기에 따른 비중을 해치지 않으면서 중요한 이미지는 더 크게 보여 준다. 행과 열이 구분돼 이미지를 정돈되게 배치하는 대신 가로세로 일정 공간 내에서 동적으로 이미지를 배치한다.
+ * @class eg.InfiniteGrid.PackingLayout
+ * @param {Object} [options] The option object of eg.InfiniteGrid.PackingLayout module &lt;ko>eg.InfiniteGrid.PackingLayout 모듈의 옵션 객체&lt;/ko>
+ * @param {String} [options.margin=0] Margin used to create space around items &lt;ko>아이템들 사이의 공간&lt;/ko>
+ * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) &lt;ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)&lt;/ko>
+ * @param {Boolean} [options.aspectRatio=1] The aspect ratio of the group &lt;ko> 그룹의 가로 세로 비 &lt;/ko>
+ * @param {Boolean} [options.sizeWeight=1] The size weight when placing an image &lt;ko> 이미지를 배치할 때 사이즈 가중치 &lt;/ko>
+ * @param {Boolean} [options.ratioWeight=1] The ratio weight when placing an image &lt;ko> 이미지를 배치할 때 비율 가중치 &lt;/ko>
+ * @example
+```
+&lt;script>
+var ig = new eg.InfiniteGrid("#grid". {
+	horizontal: true,
+});
+
+ig.setLayout(eg.InfiniteGrid.PackingLayout, {
+	margin: 10,
+	aspectRatio: 1,
+	sizeWeight: 1,
+	ratioWeight: 2,
+});
+
+// or
+
+var layout = new eg.InfiniteGrid.PackingLayout({
+	horizontal: true,
+	margin: 10,
+	aspectRatio: 1,
+	sizeWeight: 1,
+	ratioWeight: 2,
+});
+
+&lt;/script>
+```
+ **/
+class PackingLayout {
+	constructor(options = {}) {
+		this.options = assignOptions({
+			aspectRatio: 1,
+			sizeWeight: 1,
+			ratioWeight: 1,
+		}, options);
+		this._size = 0;
+		this._style = getStyleNames(this.options.horizontal);
+	}
+	_findBestFitArea(container, item) {
+		if (container.getRatio() === 0) { // 아이템 최초 삽입시 전체영역 지정
+			container.setOriginWidth(item.getWidth());
+			container.setOriginHeight(item.getHeight());
+			container.setWidth(item.getWidth());
+			container.setHeight(item.getHeight());
+			return;
+		}
+
+		let bestFitArea = null;
+		let minCost = 10000000;
+		let layoutVertical = false;
+		const itemFitSize = {
+			width: 0,
+			height: 0,
+		};
+		const containerFitSize = {
+			width: 0,
+			height: 0,
+		};
+		const {sizeWeight, ratioWeight} = this.options;
+
+		container.innerItem().forEach(v => {
+			const containerSizeCost = getCost(v.getOriginSize(), v.getSize()) * sizeWeight;
+			const containerRatioCost = getCost(v.getOriginRatio(), v.getRatio()) * ratioWeight;
+			let cost;
+
+			for (let i = 0; i &lt; 2; ++i) {
+				let itemWidth;
+				let itemHeight;
+				let containerWidth;
+				let containerHeight;
+
+				if (i === 0) {
+					// 상하에 아이템 추가
+					itemWidth = v.getWidth();
+					itemHeight = v.getHeight() * (item.getHeight() / (v.getOriginHeight() + item.getHeight()));
+					containerWidth = v.getWidth();
+					containerHeight = v.getHeight() - itemHeight;
+				} else {
+					// 좌우에 아이템 추가
+					itemHeight = v.getHeight();
+					itemWidth = v.getWidth() * (item.getWidth() / (v.getOriginWidth() + item.getWidth()));
+					containerHeight = v.getHeight();
+					containerWidth = v.getWidth() - itemWidth;
+				}
+
+				const itemSize = itemWidth * itemHeight;
+				const itemRatio = itemWidth / itemHeight;
+				const containerSize = containerWidth * containerHeight;
+				const containerRatio = containerHeight / containerHeight;
+
+				cost = getCost(item.getSize(), itemSize) * sizeWeight;
+				cost += getCost(item.getRatio(), itemRatio) * ratioWeight;
+				cost += getCost(v.getOriginSize(), containerSize) * sizeWeight - containerSizeCost;
+				cost += getCost(v.getOriginRatio(), containerRatio) * ratioWeight - containerRatioCost;
+
+				if (cost === Math.min(cost, minCost)) {
+					minCost = cost;
+					bestFitArea = v;
+					layoutVertical = (i === 0);
+					itemFitSize.width = itemWidth;
+					itemFitSize.height = itemHeight;
+					containerFitSize.width = containerWidth;
+					containerFitSize.height = containerHeight;
+				}
+			}
+		});
+
+		fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertical);
+	}
+	_layout(items, outline = [], isAppend) {
+		const style = this._style;
+		const isHorizontal = this.options.horizontal;
+		const aspectRatio = this.options.aspectRatio;
+		const margin = this.options.margin;
+		const pos1Name = style.pos1;
+		const size1Name = style.size1;
+		const containerWidth = this._size * (isHorizontal ? aspectRatio : 1);
+		const containerHeight = this._size / (isHorizontal ? 1 : aspectRatio);
+		const containerSize1 = isHorizontal ? containerWidth : containerHeight;
+		const prevOutline = toZeroArray(outline);
+		const start = isAppend ? Math.max(...prevOutline) :
+			Math.min(...prevOutline) - containerSize1 - margin;
+		const end = start + containerSize1 + margin;
+		const container = new BoxModel({});
+
+		let startIndex = -1;
+		let endIndex = -1;
+		let startPos = -1;
+		let endPos = -1;
+
+		items.forEach(item => {
+			const model = new BoxModel({
+				originWidth: item.orgSize.width,
+				originHeight: item.orgSize.height,
+				width: item.orgSize.width,
+				height: item.orgSize.height,
+			});
+
+			this._findBestFitArea(container, model);
+			container.pushItem(model);
+			container.scaleTo(containerWidth + margin, containerHeight + margin);
+		});
+		items.forEach((item, i) => {
+			const boxItem = container.innerItem()[i];
+			// console.log("boxItem", boxItem, boxItem instanceof BoxModel);
+			const width = boxItem.getWidth();
+			const height = boxItem.getHeight();
+			const top = boxItem.getTop();
+			const left = boxItem.getLeft();
+
+			item.rect = {top, left, width: width - margin, height: height - margin};
+			item.rect[pos1Name] += start;
+
+			if (startIndex === -1) {
+				startIndex = i;
+				endIndex = i;
+				startPos = item.rect[pos1Name];
+				endPos = startPos;
+			}
+			if (startPos > item.rect[pos1Name]) {
+				startPos = item.rect[pos1Name];
+				startIndex = i;
+			}
+			if (endPos &lt; item.rect[pos1Name] + item.rect[size1Name] + margin) {
+				endPos = item.rect[pos1Name] + item.rect[size1Name] + margin;
+				endIndex = i;
+			}
+		});
+
+		return {
+			start: [start],
+			end: [end],
+			startIndex,
+			endIndex,
+		};
+	}
+	_insert(items = [], outline = [], type) {
+		// this only needs the size of the item.
+		const clone = items.map(item => Object.assign({}, item));
+
+		return {
+			items: clone,
+			outlines: this._layout(clone, outline, type),
+		};
+	}
+	/**
+	 * Adds items at the bottom of a outline.
+	 * @ko 아이템들을 아웃라인 아래에 추가한다.
+	 * @method eg.InfiniteGrid.PackingLayout#append
+	 * @param {Array} items Array of items to be layouted &lt;ko>레이아웃할 아이템들의 배열&lt;/ko>
+	 * @param {Array} [outline=[]] Array of outline points to be reference points &lt;ko>기준점이 되는 아웃라인 점들의 배열&lt;/ko>
+	 * @return {Object} Layouted items and outline of start and end &lt;ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보&lt;/ko>
+	 * @example
+	 * layout.prepend(items, [100]);
+	 */
+	append(items, outline) {
+		return this._insert(items, outline, APPEND);
+	}
+	/**
+	 * Adds items at the top of a outline.
+	 * @ko 아이템을 아웃라인 위에 추가한다.
+	 * @method eg.InfiniteGrid.PackingLayout#prepend
+	 * @param {Array} items Array of items to be layouted &lt;ko>레이아웃할 아이템들의 배열&lt;/ko>
+	 * @param {Array} [outline=[]] Array of outline points to be reference points &lt;ko>기준점이 되는 아웃라인 점들의 배열&lt;/ko>
+	 * @return {Object} Layouted items and outline of start and end &lt;ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보&lt;/ko>
+	 * @example
+	 * layout.prepend(items, [100]);
+	 */
+	prepend(items, outline) {
+		return this._insert(items, outline, PREPEND);
+	}
+	/**
+	 * Adds items of groups at the bottom of a outline.
+	 * @ko 그룹들의 아이템들을 아웃라인 아래에 추가한다.
+	 * @method eg.InfiniteGrid.PackingLayout#layout
+	 * @param {Array} groups Array of groups to be layouted &lt;ko>레이아웃할 그룹들의 배열&lt;/ko>
+	 * @param {Array} outline Array of outline points to be reference points &lt;ko>기준점이 되는 아웃라인 점들의 배열&lt;/ko>
+	 * @return {eg.InfiniteGrid.PackingLayout} An instance of a module itself&lt;ko>모듈 자신의 인스턴스&lt;/ko>
+	 * @example
+	 * layout.layout(groups, [100, 200, 300, 400]);
+	 */
+	layout(groups = [], outline = []) {
+		const length = groups.length;
+		let point = outline;
+
+		for (let i = 0; i &lt; length; ++i) {
+			const group = groups[i];
+
+			point = this._layout(group.items, point, APPEND);
+			group.outlines = point;
+			point = point.end;
+		}
+		return this;
+	}
+	/**
+	 * Set the viewport size of the layout.
+	 * @ko 레이아웃의 가시 사이즈를 설정한다.
+	 * @method eg.InfiniteGrid.PackingLayout#setSize
+	 * @param {Number} size The viewport size of container area where items are added to a layout &lt;ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈&lt;/ko>
+	 * @return {eg.InfiniteGrid.PackingLayout} An instance of a module itself&lt;ko>모듈 자신의 인스턴스&lt;/ko>
+	 * @example
+	 * layout.setSize(800);
+	 */
+	setSize(size) {
+		this._size = size;
+		return this;
+	}
+}
+
+export default PackingLayout;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Dec 12 2017 12:04:48 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

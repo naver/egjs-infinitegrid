@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Class: SquareLayout | egjs::infinitegrid - API</title>
+    
+    <meta name="description" content="A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs-infinitegrid/release/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.InfiniteGrid","disqus":"egjs","googleAnalytics":"UA-70842526-18","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::infinitegrid - API","description":"A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-infinitegrid/release/latest/doc/"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName">
+        <a href="//naver.github.io/egjs/"><img style="width:40px; height:20px;" src="img/type_white.svg"/></a>
+
+        <!-- Homepage link (prefer link.home than applicationName) -->
+        
+        <a href="//naver.github.io/egjs-infinitegrid/">InfiniteGrid</a>
+        
+    </h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+        <li class="item">
+            <span class="title">
+                <a href="index.html">README</a>
+            </span>
+        </li>
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid">
+    <span class="title">
+        <a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid#append"><a href="eg.InfiniteGrid.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#clear"><a href="eg.InfiniteGrid.html#clear">clear</a></li>
+    
+        <li data-name="eg.InfiniteGrid#destroy"><a href="eg.InfiniteGrid.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.InfiniteGrid#endLoading"><a href="eg.InfiniteGrid.html#endLoading">endLoading</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getGroupKeys"><a href="eg.InfiniteGrid.html#getGroupKeys">getGroupKeys</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getItems"><a href="eg.InfiniteGrid.html#getItems">getItems</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getLoadingBar"><a href="eg.InfiniteGrid.html#getLoadingBar">getLoadingBar</a></li>
+    
+        <li data-name="eg.InfiniteGrid#getStatus"><a href="eg.InfiniteGrid.html#getStatus">getStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#hasOn"><a href="eg.InfiniteGrid.html#hasOn">hasOn</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#isProcessing"><a href="eg.InfiniteGrid.html#isProcessing">isProcessing</a></li>
+    
+        <li data-name="eg.InfiniteGrid#layout"><a href="eg.InfiniteGrid.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#off"><a href="eg.InfiniteGrid.html#off">off</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#on"><a href="eg.InfiniteGrid.html#on">on</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#once"><a href="eg.InfiniteGrid.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid#prepend"><a href="eg.InfiniteGrid.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid#remove"><a href="eg.InfiniteGrid.html#remove">remove</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setLayout"><a href="eg.InfiniteGrid.html#setLayout">setLayout</a></li>
+    
+        <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
+    
+        <li data-name="eg.InfiniteGrid#startLoading"><a href="eg.InfiniteGrid.html#startLoading">startLoading</a></li>
+    
+        <li data-name="eg.InfiniteGrid#trigger"><a href="eg.InfiniteGrid.html#trigger">trigger</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.InfiniteGrid#event:append"><a href="eg.InfiniteGrid.html#event:append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:change"><a href="eg.InfiniteGrid.html#event:change">change</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:layoutComplete"><a href="eg.InfiniteGrid.html#event:layoutComplete">layoutComplete</a></li>
+    
+        <li data-name="eg.InfiniteGrid#event:prepend"><a href="eg.InfiniteGrid.html#event:prepend">prepend</a></li>
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.FrameLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#append"><a href="eg.InfiniteGrid.FrameLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#layout"><a href="eg.InfiniteGrid.FrameLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#prepend"><a href="eg.InfiniteGrid.FrameLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.FrameLayout#setSize"><a href="eg.InfiniteGrid.FrameLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.GridLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.GridLayout.html">eg.InfiniteGrid.GridLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#append"><a href="eg.InfiniteGrid.GridLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#layout"><a href="eg.InfiniteGrid.GridLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#prepend"><a href="eg.InfiniteGrid.GridLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.GridLayout#setSize"><a href="eg.InfiniteGrid.GridLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.JustifiedLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.JustifiedLayout.html">eg.InfiniteGrid.JustifiedLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#append"><a href="eg.InfiniteGrid.JustifiedLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#layout"><a href="eg.InfiniteGrid.JustifiedLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#prepend"><a href="eg.InfiniteGrid.JustifiedLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.JustifiedLayout#setSize"><a href="eg.InfiniteGrid.JustifiedLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.PackingLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.PackingLayout.html">eg.InfiniteGrid.PackingLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#append"><a href="eg.InfiniteGrid.PackingLayout.html#append">append</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#layout"><a href="eg.InfiniteGrid.PackingLayout.html#layout">layout</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#prepend"><a href="eg.InfiniteGrid.PackingLayout.html#prepend">prepend</a></li>
+    
+        <li data-name="eg.InfiniteGrid.PackingLayout#setSize"><a href="eg.InfiniteGrid.PackingLayout.html#setSize">setSize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.InfiniteGrid.SquareLayout">
+    <span class="title">
+        <a href="eg.InfiniteGrid.SquareLayout.html">eg.InfiniteGrid.SquareLayout</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#append"><a href="eg.InfiniteGrid.SquareLayout.html#append">append</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#layout"><a href="eg.InfiniteGrid.SquareLayout.html#layout">layout</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#prepend"><a href="eg.InfiniteGrid.SquareLayout.html#prepend">prepend</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.InfiniteGrid.SquareLayout#setSize"><a href="eg.InfiniteGrid.SquareLayout.html#setSize">setSize</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+            
+
+<li class="item" data-name="eg.Parallax">
+    <span class="title">
+        <a href="eg.Parallax.html">eg.Parallax</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
+    
+        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="eg.InfiniteGrid.SquareLayout.html">Class: SquareLayout</h1>
+        
+
+
+
+<section>
+
+<header>
+    <h2>
+        <span class="ancestors">eg<a href="eg.InfiniteGrid.html">.InfiniteGrid</a>.</span>
+    
+    
+        <span>SquareLayout</span>
+        
+    </h2>
+    <button id="toggle">
+        
+            English
+        
+    </button>
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="SquareLayout">
+            
+            new eg.InfiniteGrid.SquareLayout<span class="signature">(<span class="optional">options</span>)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="src_layouts_SquareLayout.js.html">SquareLayout.js</a>, <a href="src_layouts_SquareLayout.js.html#line33">line 33</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		
+	</div>
+	
+	
+	<div class="description ko">
+		<p>FrameLayout은 주어진 프레임에 맞춰 아이템을 배치하는 레이아웃입니다. 디자이너가 직접 이미지를 배치하는 것과 알고리즘을 사용한 배치의 중간 정도 수준에 해당하는 레이아웃이다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>options</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Object</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The option object of eg.InfiniteGrid.SquareLayout module </p></div>
+            <div class="description ko"><p>eg.InfiniteGrid.SquareLayout 모듈의 옵션 객체</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+            
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>margin</strong>
+            
+                (default: <code>0</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">String</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Margin used to create space around items </p></div>
+            <div class="description ko"><p>아이템들 사이의 공간</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>horizontal</strong>
+            
+                (default: <code>false</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Direction of the scroll movement (false: vertical, true: horizontal) </p></div>
+            <div class="description ko"><p>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>itemSize</strong>
+            
+                (default: <code>0</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The size of the items. If it is 0, it is calculated as the size of the first item in items. </p></div>
+            <div class="description ko"><p> 아이템의 사이즈. 만약 아이템 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. </p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><pre class="prettyprint source"><code>&lt;script>
+var ig = new eg.InfiniteGrid(&quot;#grid&quot;. {
+    horizontal: true,
+});
+
+ig.setLayout(eg.InfiniteGrid.SquareLayout, {
+    margin: 10,
+    itemSize: 200,
+});
+
+// or
+
+var layout = new eg.InfiniteGrid.SquareLayout({
+    margin: 10,
+    itemSize: 200,
+    horizontal: true,
+});
+
+
+var item1 = '&lt;div data-column=&quot;2&quot;>&lt;/div>';
+var item2 = &quot;&lt;div>&lt;/div>&quot;
+layout.append([item1, item2]);
+&lt;/script></code></pre></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+
+
+        
+
+
+    
+    </div>
+
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        <ul>
+            <li>
+            	
+            	<a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>
+            	
+            </li>
+        </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="append">
+            
+                <span class="inherited"><a href="eg.InfiniteGrid.FrameLayout.html#append">inherited</a></span>
+            
+            append<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="src_layouts_FrameLayout.js.html">FrameLayout.js</a>, <a href="src_layouts_FrameLayout.js.html#line318">line 318</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Adds items at the bottom of a outline.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>아이템들을 아웃라인 아래에 추가한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>items</strong>
+            
+
+            
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Array of items to be layouted </p></div>
+            <div class="description ko"><p>레이아웃할 아이템들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>outline</strong>
+            
+                (default: <code>[]</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Array of outline points to be reference points </p></div>
+            <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        Object
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">Layouted items and outline of start and end </div>
+                <div class="ko"><p> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>layout.prepend(items, [100]);</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="layout">
+            
+                <span class="inherited"><a href="eg.InfiniteGrid.FrameLayout.html#layout">inherited</a></span>
+            
+            layout<span class="signature">(groups, outline)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="src_layouts_FrameLayout.js.html">FrameLayout.js</a>, <a href="src_layouts_FrameLayout.js.html#line282">line 282</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Adds items of groups at the bottom of a outline.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>그룹들의 아이템들을 아웃라인 아래에 추가한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>groups</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Array of groups to be layouted </p></div>
+            <div class="description ko"><p>레이아웃할 그룹들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>outline</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Array of outline points to be reference points </p></div>
+            <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance of a module itself</div>
+                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>layout.layout(groups, [100, 200, 300, 400]);</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="prepend">
+            
+                <span class="inherited"><a href="eg.InfiniteGrid.FrameLayout.html#prepend">inherited</a></span>
+            
+            prepend<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="src_layouts_FrameLayout.js.html">FrameLayout.js</a>, <a href="src_layouts_FrameLayout.js.html#line331">line 331</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Adds items at the top of a outline.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>아이템을 아웃라인 위에 추가한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>items</strong>
+            
+
+            
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Array of items to be layouted </p></div>
+            <div class="description ko"><p>레이아웃할 아이템들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>outline</strong>
+            
+                (default: <code>[]</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Array of outline points to be reference points </p></div>
+            <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        Object
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">Layouted items and outline of start and end </div>
+                <div class="ko"><p> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>layout.prepend(items, [100]);</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="setSize">
+            
+                <span class="inherited"><a href="eg.InfiniteGrid.FrameLayout.html#setSize">inherited</a></span>
+            
+            setSize<span class="signature">(size)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="src_layouts_FrameLayout.js.html">FrameLayout.js</a>, <a href="src_layouts_FrameLayout.js.html#line305">line 305</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Set the viewport size of the layout.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>레이아웃의 가시 사이즈를 설정한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>size</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Number</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The viewport size of container area where items are added to a layout </p></div>
+            <div class="description ko"><p>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance of a module itself</div>
+                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>layout.setSize(800);</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Dec 12 2017 12:04:48 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
