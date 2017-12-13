@@ -1225,18 +1225,6 @@ if (typeof Object.create !== "function") {
 var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
 	// ...
 });
-
-
-// loading bar
-var some = new eg.InfiniteGrid("#grid", {
-	loadingBar: `<div class="loading">LOADING</div>`,
-});
-var some2 = new eg.InfiniteGrid("#grid", {
-	loadingBar: {
-		"append": appendElelement,
-		"prepend": prependElement,
-	},
-});
 </script>
 ```
  *
@@ -1255,8 +1243,6 @@ var InfiniteGrid = function (_Component) {
   * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향</ko>
   * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
   * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
-  * @param {String|Object} [options.loadingBar={}] The loading bar HTML markup or element or element selector <ko> 로딩 바 HTML 또는 element 또는 selector </ko>
-  *
   */
 	function InfiniteGrid(element, options) {
 		_classCallCheck(this, InfiniteGrid);
@@ -1269,8 +1255,7 @@ var InfiniteGrid = function (_Component) {
 			threshold: 100,
 			isEqualSize: false,
 			useRecycle: true,
-			horizontal: false,
-			loadingBar: {}
+			horizontal: false
 		}, options);
 		_consts.IS_ANDROID2 && (_this.options.isOverflowScroll = false);
 		_this._isVertical = !_this.options.horizontal;
@@ -1289,7 +1274,6 @@ var InfiniteGrid = function (_Component) {
 				return _this._onCheck(param);
 			}
 		});
-		_this._initLoadingBar();
 		return _this;
 	}
 	/**
@@ -1428,7 +1412,7 @@ var InfiniteGrid = function (_Component) {
 			return 0;
 		}
 		var base = this._getEdgeValue("start");
-		var margin = this._status.loadingSize;
+		var margin = this._getLoadingStatus() === _consts.LOADING_PREPEND && this._status.loadingSize || 0;
 
 		if (!this.options.useRecycle || _consts.DEFENSE_BROWSER) {
 			if (scrollCycle === "before" && margin && base < margin) {
@@ -1640,20 +1624,30 @@ var InfiniteGrid = function (_Component) {
 		this._appendLoadingBar();
 		return this;
 	};
+	/**
+  * Specifies the Loading Bar to use for append or prepend items.
+  * @ko 아이템을 append 또는 prepend 하기 위해 사용할 로딩 바를 지정한다.
+  * @param {String|Object} [userLoadingBar={}] The loading bar HTML markup or element or element selector <ko> 로딩 바 HTML 또는 element 또는 selector </ko>
+  * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+  */
 
-	InfiniteGrid.prototype._initLoadingBar = function _initLoadingBar() {
-		var loadingBar = this.options.loadingBar;
-		var loadingBarObj = (typeof loadingBar === "undefined" ? "undefined" : _typeof(loadingBar)) === "object" ? loadingBar : {
-			"append": loadingBar,
-			"prepend": loadingBar
+
+	InfiniteGrid.prototype.setLoadingBar = function setLoadingBar() {
+		var userLoadingBar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+		var loadingBarObj = (typeof userLoadingBar === "undefined" ? "undefined" : _typeof(userLoadingBar)) === "object" ? userLoadingBar : {
+			"append": userLoadingBar,
+			"prepend": userLoadingBar
 		};
 
 		this._status.loadingSize = 0;
 		this._status.loadingStyle = {};
-		this._loadingBar = loadingBarObj;
+		this._loadingBar = this._loadingBar || {};
+		var loadingBar = this._loadingBar;
+
 		for (var type in loadingBarObj) {
-			loadingBarObj[type] = (0, _utils.$)(loadingBarObj[type]);
-			loadingBarObj[type].className += " " + _consts.IGNORE_CLASSNAME;
+			loadingBar[type] = (0, _utils.$)(loadingBarObj[type]);
+			loadingBar[type].className += " " + _consts.IGNORE_CLASSNAME;
 		}
 		this._appendLoadingBar();
 		return this;

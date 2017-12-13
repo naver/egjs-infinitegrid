@@ -34,8 +34,8 @@ function createGrid() {
 		horizontal: _horizontal,
 		threshold: 50,
 		isOverflowScroll: _overflow,
-		loadingBar: "<div class=\"loading_bar\">LOADING</div>",
 	});
+	ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
 	ig.on({
 		"prepend": function (e) {
 			// console.log("prepend");

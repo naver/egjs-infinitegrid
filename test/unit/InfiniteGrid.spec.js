@@ -157,10 +157,10 @@ describe("InfiniteGrid Test", function() {
           useRecycle: true,
           isOverflowScroll,
           margin: 5,
-          loadingBar:{
-            "prepend": `<div class="prepend" style="width: 100px;height: 100px;display:none;">PREPEND</div>`,
-            "append": `<div class="append" style="height: 75px; height: 75px;display:none;">APPEND</div>`,
-          },
+        });
+        this.inst.setLoadingBar({
+          "prepend": `<div class="prepend" style="width: 100px;height: 100px;display:none;">PREPEND</div>`,
+          "append": `<div class="append" style="height: 75px; height: 75px;display:none;">APPEND</div>`,
         });
         this.inst.setLayout(GridLayout);
       });
