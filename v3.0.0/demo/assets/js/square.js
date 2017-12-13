@@ -22,7 +22,7 @@ var ig = new eg.InfiniteGrid(".gallery", {
 	count: 140,
 });
 ig.setLayout(eg.InfiniteGrid.SquareLayout, {
-	itemSize: 300,
+	column: 4,
 	margin: 10,
 });
 

@@ -1,4 +1,4 @@
-var template = '<div class="item"><div class="thumbnail"><img src="${link}../../assets/image/${no}.jpg"></div><div class="info">${text}</div></div>';
+var template = '<div class="item"><div class="thumbnail"><img src="${link}assets/image/${no}.jpg"></div><div class="info">${text}</div></div>';
 var link = window.HOMELINK;
 function getItem(template, options) {
 	return template.replace(/\$\{([^\}]*)\}/g, function () {
