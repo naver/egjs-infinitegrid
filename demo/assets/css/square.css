@@ -12,21 +12,17 @@ body {
 	background: #000;
 	z-index: 2;
 }
-.nav .logo {
-	padding: 20px 0px;
-	text-align: center;
-}
+
 .nav .logo img {
 	width: 70%;
 }
 
 .container {
-	/* width: 1560px; */
+	max-width: 1400px;
 	margin: 0px auto;	
 }
 .contents {
 	position: relative;
-	margin-left: 70px;
 	padding: 20px;
 	
 }
