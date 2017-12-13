@@ -169,6 +169,7 @@ export default class DOMRenderer {
 		}
 		this._size = {
 			containerOffset: 0,
+			viewport: -1,
 			container: -1,
 			view: -1,
 		};
@@ -215,9 +216,9 @@ export default class DOMRenderer {
 		}
 	}
 	resize() {
-		if (this.isNeededResize()) {
-			const isVertical = this.options.isVertical;
+		const isVertical = this.options.isVertical;
 
+		if (this.isNeededResize()) {
 			this._size = {
 				containerOffset: this.options.isOverflowScroll ? 0 : this.container[`offset${isVertical ? "Top" : "Left"}`],
 				viewport: this._calcSize(),
@@ -225,6 +226,8 @@ export default class DOMRenderer {
 				item: null,
 			};
 			return true;
+		} else {
+			this._size.view = isVertical ? innerHeight(this.view) : innerWidth(this.view);
 		}
 		return false;
 	}

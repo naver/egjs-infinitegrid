@@ -44,6 +44,17 @@ ig.on({
 			groups[groupKey] = getItems(groupKey * num, num);
 		}
 		ig.append(groups[groupKey], groupKey);
+	},
+	"layoutComplete": function (e) {
+		if (e.isAppend && !e.isScroll) {
+			var groupKeys = ig.getGroupKeys(true);
+			var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+			if (!(groupKey in groups)) {
+				// allow append
+				groups[groupKey] = getItems(groupKey * num, num);
+			}
+			ig.append(groups[groupKey], groupKey);
+		}
 	}
 });
 groups[0] = getItems(0, num);

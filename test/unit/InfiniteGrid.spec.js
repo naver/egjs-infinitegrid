@@ -12,8 +12,8 @@ import {DEFENSE_BROWSER} from "../../src/consts";
 
 /* eslint-disable */
 describe("InfiniteGrid Test", function() {
-  describe("destroy Test", function() {
-    [true, false].forEach(isOverflowScroll => {
+  [true, false].forEach(isOverflowScroll => {
+    describe("destroy Test", function() {
       beforeEach(() => {
         this.el = sandbox();
         this.el.innerHTML = "<div id='infinite'></div>";
@@ -49,9 +49,8 @@ describe("InfiniteGrid Test", function() {
       });
     });
   });
-
-  describe("initailization Test (onlayoutComplete)", function() {
-    [true, false].forEach(isOverflowScroll => {
+  [true, false].forEach(isOverflowScroll => {
+    describe(`initailization Test (onlayoutComplete)(isOverflowScroll: ${isOverflowScroll})`, function() {
       beforeEach(() => {
         this.el = sandbox();
         this.el.innerHTML = "<div id='infinite'></div>";
@@ -92,9 +91,8 @@ describe("InfiniteGrid Test", function() {
       });
     });
   });
-
-  describe("When scrolling append/prepend event Test", function() {
-    [true, false].forEach(isOverflowScroll => {
+  [true, false].forEach(isOverflowScroll => {
+    describe("When scrolling append/prepend event Test", function() {
       beforeEach(() => {
         this.el = sandbox();
         this.el.innerHTML = "<div id='infinite'></div>";
@@ -134,12 +132,12 @@ describe("InfiniteGrid Test", function() {
               this.inst._watcher.scrollTo(spot / 2);
               setTimeout(() => {
                 this.inst._watcher.scrollTo(spot);
-              });
+              }, 100);
             } else {
               this.inst._watcher.scrollTo(this.inst._getEdgeValue("end") / 2);
               setTimeout(() => {
                 this.inst._watcher.scrollTo(0);  
-              });
+              }, 100);
               
               
             }
@@ -148,8 +146,48 @@ describe("InfiniteGrid Test", function() {
       });
     });
   });  
-  describe("When appending/prepending loadingStart/loaingEnd event Test", function() {
-    [true, false].forEach(isOverflowScroll => {
+  [true, false].forEach(isOverflowScroll => {
+    describe(`When scrolling append event isScroll Test (isOverflowScroll: ${isOverflowScroll})`, function() {
+      beforeEach(() => {
+        this.el = sandbox();
+        this.el.innerHTML = "<div id='infinite' style='height: 250px;position:absolute;top:0;left:0;'></div>";
+        this.inst = new InfiniteGrid("#infinite", {
+          useRecycle: true,
+          isOverflowScroll,
+          margin: 5,
+        });
+        this.inst.setLayout(GridLayout);
+      });
+      afterEach(() => {
+        if (this.inst) {
+          this.inst.destroy();
+          this.inst = null;
+        }
+        cleanup();
+      });
+      it(`should trigger append method when appending (isOverflowScroll: ${isOverflowScroll}, defense:${DEFENSE_BROWSER})`, done => {
+        this.inst.on("layoutComplete", e => {
+          const isScroll = e.isScroll;
+          const size = isOverflowScroll ? 250 : innerHeight(window);
+
+          if (e.size <= size) {
+            expect(isScroll).to.be.false;
+          } else {
+            expect(isScroll).to.be.true;
+          }
+          if (!isScroll) {
+            
+            this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);    
+          } else {
+            done();
+          }
+        });
+        this.inst.append(`<div class="item" style="width: 100%; height: 100px;">Item</div>`);
+      });
+    });
+  });
+  [true, false].forEach(isOverflowScroll => {
+    describe(`When appending/prepending loadingStart/loaingEnd event Test (isOverflowScroll: ${isOverflowScroll})`, function() {
       beforeEach(() => {
         this.el = sandbox();
         this.el.innerHTML = "<div id='infinite'></div>";
@@ -185,8 +223,9 @@ describe("InfiniteGrid Test", function() {
           expect(this.inst._isLoading()).to.be.true;
           expect(this.inst._getLoadingStatus()).to.be.equal(isAppend ? LOADING_APPEND : LOADING_PREPEND);
           expect(this.inst._status.loadingSize).to.be.equal(isAppend ? 75 : 100);
-          expect(innerHeight(this.inst._renderer.container)).to.be.equal(isAppend ? 75 : 100);
-
+          if (!isOverflowScroll) {
+            expect(innerHeight(this.inst._renderer.container)).to.be.equal(isAppend ? 75 : 100);
+          }
 
           const layoutCompleteHandler = sinon.spy(e => {
             const lastParam = layoutCompleteHandler.getCall(layoutCompleteHandler.callCount - 1).args[0];

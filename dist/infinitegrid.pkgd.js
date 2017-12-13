@@ -602,6 +602,7 @@ var DOMRenderer = function () {
 		}
 		this._size = {
 			containerOffset: 0,
+			viewport: -1,
 			container: -1,
 			view: -1
 		};
@@ -2048,6 +2049,7 @@ var InfiniteGrid = function (_Component) {
 
 		var scrollPos = this._watcher.getScrollPos();
 		var orgScrollPos = this._watcher.getOrgScrollPos();
+		var isScroll = this._renderer.getViewSize() < this._renderer.getContainerOffset() + size;
 
 		this._watcher.reset();
 		/**
@@ -2058,6 +2060,7 @@ var InfiniteGrid = function (_Component) {
    * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
    * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
    * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
+   * @param {Boolean} param.isScroll Checks whether scrolling has occurred after the append(), prepend(), ..., etc method is called
    * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
    * @param {Number} param.orgScrollPos Current position of the scroll <ko>현재 스크롤 위치값</ko>
    * @param {Number} param.size The size of container element <ko>컨테이너 엘리먼트의 크기</ko>
@@ -2067,6 +2070,7 @@ var InfiniteGrid = function (_Component) {
 			target: items.concat(),
 			isAppend: isAppend,
 			isTrusted: isTrusted,
+			isScroll: isScroll,
 			scrollPos: scrollPos,
 			orgScrollPos: orgScrollPos,
 			size: size
