@@ -149,7 +149,6 @@ export function innerWidth(el) {
 export function innerHeight(el) {
 	return _getSize(el, "Height");
 }
-
 export const STYLE = {
 	vertical: {
 		pos1: "top",
