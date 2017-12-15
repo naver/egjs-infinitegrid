@@ -20,7 +20,7 @@
 		exports["InfiniteGrid"] = factory();
 	else
 		root["eg"] = root["eg"] || {}, root["eg"]["InfiniteGrid"] = factory();
-})(this, function() {
+})(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -655,9 +655,9 @@ var DOMRenderer = function () {
 	};
 
 	DOMRenderer.prototype.resize = function resize() {
-		if (this.isNeededResize()) {
-			var isVertical = this.options.isVertical;
+		var isVertical = this.options.isVertical;
 
+		if (this.isNeededResize()) {
 			this._size = {
 				containerOffset: this.options.isOverflowScroll ? 0 : this.container["offset" + (isVertical ? "Top" : "Left")],
 				viewport: this._calcSize(),
@@ -665,6 +665,8 @@ var DOMRenderer = function () {
 				item: null
 			};
 			return true;
+		} else {
+			this._size.view = isVertical ? (0, _utils.innerHeight)(this.view) : (0, _utils.innerWidth)(this.view);
 		}
 		return false;
 	};
@@ -2047,11 +2049,6 @@ var InfiniteGrid = function (_Component) {
 		isAppend && this._renderer.setContainerSize(size + this._status.loadingSize || 0);
 		this._process(_consts.PROCESSING, false);
 
-		var scrollPos = this._watcher.getScrollPos();
-		var orgScrollPos = this._watcher.getOrgScrollPos();
-		var isScroll = this._renderer.getViewSize() < this._renderer.getContainerOffset() + size;
-
-		this._watcher.reset();
 		/**
    * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
    * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
@@ -2070,11 +2067,12 @@ var InfiniteGrid = function (_Component) {
 			target: items.concat(),
 			isAppend: isAppend,
 			isTrusted: isTrusted,
-			isScroll: isScroll,
-			scrollPos: scrollPos,
-			orgScrollPos: orgScrollPos,
+			isScroll: this._renderer.getViewSize() < this._renderer.getContainerOffset() + size,
+			scrollPos: this._watcher.getScrollPos(),
+			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size: size
 		});
+		// this._watcher.reset();
 		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
 	};
 
@@ -2910,13 +2908,12 @@ var Watcher = function () {
 	};
 
 	Watcher.prototype._onCheck = function _onCheck() {
-		var orgScrollPos = this.getOrgScrollPos();
 		var prevPos = this.getScrollPos();
+		var orgScrollPos = this.getOrgScrollPos();
 
 		this.setScrollPos(orgScrollPos);
 		var scrollPos = this.getScrollPos();
 
-		// fix that null < 1 is true
 		if (prevPos === null || _consts.IS_IOS && orgScrollPos === 0 || prevPos === scrollPos) {
 			return;
 		}
@@ -2938,6 +2935,7 @@ var Watcher = function () {
 		this._timer.resize = setTimeout(function () {
 			_this._renderer.isNeededResize() && _this._callback.layout && _this._callback.layout();
 			_this._timer.resize = null;
+			_this.reset();
 		}, 100);
 	};
 
