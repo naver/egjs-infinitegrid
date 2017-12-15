@@ -1521,7 +1521,7 @@ var InfiniteGrid = function (_Component) {
 				return _this2._items.set(v, v.groupKey);
 			});
 		}
-		this._onLayoutComplete(data, _consts.APPEND, _consts.NO_TRUSTED);
+		this._onLayoutComplete(data, _consts.APPEND, _consts.NO_TRUSTED, false);
 		_DOMRenderer2["default"].renderItems(this._getVisibleItems());
 		isRelayout && this._watcher.setScrollPos();
 
@@ -1731,18 +1731,17 @@ var InfiniteGrid = function (_Component) {
 		var end = remove.lastIndexOf(isAppend ? 1 : -1);
 		var visible = remove.indexOf(0);
 
-		if (visible === -1 || start <= end) {
+		if (visible === -1 || start === -1 || end === -1) {
 			return;
 		}
-		if (start !== -1 && end !== -1) {
-			start = this._status.startCursor + start;
-			end = start + end;
-			_DOMRenderer2["default"].removeItems(this._items.pluck("items", start, end));
-			if (isAppend) {
-				this._status.startCursor = end + 1;
-			} else {
-				this._status.endCursor = start - 1;
-			}
+
+		start = this._status.startCursor + (isAppend ? 0 : start);
+		end = isAppend ? this._status.startCursor + end : this._status.endCursor;
+		_DOMRenderer2["default"].removeItems(this._items.pluck("items", start, end));
+		if (isAppend) {
+			this._status.startCursor = end + 1;
+		} else {
+			this._status.endCursor = start - 1;
 		}
 	};
 	/**
@@ -2033,31 +2032,28 @@ var InfiniteGrid = function (_Component) {
 			}
 		} else if (scrollPos <= targetPos) {
 			this._fit("before");
-			if (!isProcessing) {
-				this._requestPrepend();
-			}
+			this._requestPrepend();
 		}
 	};
 
 	InfiniteGrid.prototype._onLayoutComplete = function _onLayoutComplete(items, isAppend) {
 		var isTrusted = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+		var useRecycle = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.options.useRecycle;
 
 		this._isLoading() && this._renderLoading();
 		!isAppend && this._fit("after");
+		useRecycle && this._recycle(isAppend);
+
 		var size = this._getEdgeValue("end");
 
 		// recycle after _fit beacause prepend and append are occured simultaneously by scroll.
-		this.options.useRecycle && this._recycle(isAppend);
 		this._updateEdge();
 
 		isAppend && this._renderer.setContainerSize(size + this._status.loadingSize || 0);
 		this._process(_consts.PROCESSING, false);
 
 		var scrollPos = this._watcher.getScrollPos();
-		var orgScrollPos = this._watcher.getOrgScrollPos();
-		var isScroll = this._renderer.getViewSize() < this._renderer.getContainerOffset() + size;
 
-		this._watcher.reset();
 		/**
    * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
    * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
@@ -2076,12 +2072,18 @@ var InfiniteGrid = function (_Component) {
 			target: items.concat(),
 			isAppend: isAppend,
 			isTrusted: isTrusted,
-			isScroll: isScroll,
+			isScroll: this._renderer.getViewSize() < this._renderer.getContainerOffset() + size,
 			scrollPos: scrollPos,
-			orgScrollPos: orgScrollPos,
+			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size: size
 		});
-		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
+
+		if (isAppend && scrollPos >= size) {
+			this._requestAppend();
+		} else if (!isAppend && scrollPos <= this._getEdgeValue("start")) {
+			this._fit("before");
+			this._requestPrepend();
+		}
 	};
 
 	InfiniteGrid.prototype._reset = function _reset() {
@@ -2506,6 +2508,8 @@ module.exports = exports["default"];
 
 exports.__esModule = true;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _consts = __webpack_require__(0);
 
 var _DOMRenderer = __webpack_require__(3);
@@ -2568,11 +2572,16 @@ var ItemManager = function () {
 	ItemManager.prototype.getStatus = function getStatus() {
 		return {
 			_data: this._data.map(function (data) {
-				data.items = data.items.map(function (item) {
-					delete item.el;
-					return item;
+				var items = data.items.map(function (item) {
+					var item2 = _extends({}, item);
+
+					delete item2.el;
+					return item2;
 				});
-				return data;
+				var data2 = _extends({}, data);
+
+				data2.items = items;
+				return data2;
 			})
 		};
 	};
@@ -2916,13 +2925,12 @@ var Watcher = function () {
 	};
 
 	Watcher.prototype._onCheck = function _onCheck() {
-		var orgScrollPos = this.getOrgScrollPos();
 		var prevPos = this.getScrollPos();
+		var orgScrollPos = this.getOrgScrollPos();
 
 		this.setScrollPos(orgScrollPos);
 		var scrollPos = this.getScrollPos();
 
-		// fix that null < 1 is true
 		if (prevPos === null || _consts.IS_IOS && orgScrollPos === 0 || prevPos === scrollPos) {
 			return;
 		}
@@ -2944,6 +2952,7 @@ var Watcher = function () {
 		this._timer.resize = setTimeout(function () {
 			_this._renderer.isNeededResize() && _this._callback.layout && _this._callback.layout();
 			_this._timer.resize = null;
+			_this.reset();
 		}, 100);
 	};
 

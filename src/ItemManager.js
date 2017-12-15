@@ -35,13 +35,16 @@ export default class ItemManager {
 	getStatus() {
 		return {
 			_data: this._data.map(data => {
-				data.items = data.items.map(item => {
+				const items = data.items.map(item => {
 					const item2 = Object.assign({}, item);
 
 					delete item2.el;
 					return item2;
 				});
-				return data;
+				const data2 = Object.assign({}, data);
+
+				data2.items = items;
+				return data2;
 			}),
 		};
 	}

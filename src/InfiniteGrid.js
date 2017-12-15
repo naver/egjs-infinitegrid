@@ -325,7 +325,7 @@ class InfiniteGrid extends Component {
 		} else {
 			data.forEach(v => this._items.set(v, v.groupKey));
 		}
-		this._onLayoutComplete(data, APPEND, NO_TRUSTED, isRelayout);
+		this._onLayoutComplete(data, APPEND, NO_TRUSTED, false);
 		DOMRenderer.renderItems(this._getVisibleItems());
 		isRelayout && this._watcher.setScrollPos();
 
@@ -785,17 +785,16 @@ class InfiniteGrid extends Component {
 			}
 		} else if (scrollPos <= targetPos) {
 			this._fit("before");
-			if (!isProcessing) {
-				this._requestPrepend();
-			}
+			this._requestPrepend();
 		}
 	}
-	_onLayoutComplete(items, isAppend, isTrusted = false, isRelayout = false) {
+	_onLayoutComplete(items, isAppend, isTrusted = false, useRecycle = this.options.useRecycle) {
 		this._isLoading() && this._renderLoading();
 		!isAppend && this._fit("after");
-		!isRelayout && this.options.useRecycle && this._recycle(isAppend);
+		useRecycle && this._recycle(isAppend);
 
 		const size = this._getEdgeValue("end");
+
 		// recycle after _fit beacause prepend and append are occured simultaneously by scroll.
 		this._updateEdge();
 
@@ -803,10 +802,7 @@ class InfiniteGrid extends Component {
 		this._process(PROCESSING, false);
 
 		const scrollPos = this._watcher.getScrollPos();
-		const orgScrollPos = this._watcher.getOrgScrollPos();
-		const isScroll = this._renderer.getViewSize() < this._renderer.getContainerOffset() + size;
 
-		this._watcher.reset();
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
 		 * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
@@ -825,12 +821,18 @@ class InfiniteGrid extends Component {
 			target: items.concat(),
 			isAppend,
 			isTrusted,
-			isScroll,
+			isScroll: this._renderer.getViewSize() < this._renderer.getContainerOffset() + size,
 			scrollPos,
-			orgScrollPos,
+			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size,
 		});
-		// console.warn("_onLayoutComplete [", this._status.startCursor, this._status.endCursor, "]");
+
+		if (isAppend && scrollPos >= size) {
+			this._requestAppend();
+		} else if (!isAppend && scrollPos <= this._getEdgeValue("start")) {
+			this._fit("before");
+			this._requestPrepend();
+		}
 	}
 	_reset() {
 		this._status = {
