@@ -2,6 +2,7 @@
 import {makeItems, VIEWPORT} from "../helper/data";
 import {checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex} from "../helper/common";
 import Layout from "../../../src/layouts/FrameLayout";
+import { DUMMY_POSITION } from "../../../src/consts";
 
 
 describe("FrameLayout Test", function () {
@@ -213,6 +214,37 @@ describe("FrameLayout Test", function () {
 					items2: top,
 					horizontal,
 				});
+			});
+		});
+	});
+	[true, false].forEach(horizontal => {
+		[true, false].forEach(frameFill => {
+			describe(`hole frame test (horizontal: ${horizontal}, frameFill: ${frameFill})`, function () {
+				const frame = [
+					[1, 1, 0, 0],
+					[0, 0, 0, 0],
+					[0, 0, 2, 2],
+				];
+				const items1 = makeItems(6);
+				const items2 = makeItems(6);
+				beforeEach(() => {
+					this.layout = new Layout({
+						frame,
+						frameFill,
+						horizontal,
+						margin: 30,
+					});
+					this.layout.setSize(horizontal ? VIEWPORT.height : VIEWPORT.width);
+				});
+				afterEach(() => {
+					this.layout = null;
+				})
+				it(`hole frame's outline test  (horizontal: ${horizontal}, frameFill: ${frameFill})`, () => {
+					const group1 = this.layout.append(items1, []);
+					console.log(group1.outlines.start);
+					console.log(group1.outlines.end);
+					expect(group1.outlines.start).to.not.include(DUMMY_POSITION);
+				})
 			});
 		});
 	});

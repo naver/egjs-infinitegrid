@@ -1,4 +1,4 @@
-import {APPEND, PREPEND} from "../consts";
+import {APPEND, PREPEND, DUMMY_POSITION} from "../consts";
 import {getStyleNames, assignOptions, fill} from "../utils";
 
 
@@ -164,8 +164,8 @@ class FrameLayout {
 		const shapesSize = this._shapes[size2Name];
 		const shapes = this._shapes.shapes;
 		const shapesLength = shapes.length;
-		const startOutline = fill(shapesSize, -99999);
-		const endOutline = fill(shapesSize, -99999);
+		const startOutline = fill(shapesSize, DUMMY_POSITION);
+		const endOutline = fill(shapesSize, DUMMY_POSITION);
 		let dist = 0;
 		let end = 0;
 		let startIndex = -1;
@@ -190,7 +190,7 @@ class FrameLayout {
 				const size2 = shapeSize2 * (itemSize2 + margin) - margin;
 
 				for (let k = shapePos2; k < shapePos2 + shapeSize2 && k < shapesSize; ++k) {
-					if (startOutline[k] === -99999) {
+					if (startOutline[k] === DUMMY_POSITION) {
 						startOutline[k] = pos1;
 					}
 					if (startIndex === -1) {
@@ -230,9 +230,7 @@ class FrameLayout {
 			dist = end;
 
 			for (let j = 0; j < shapesSize; ++j) {
-				if (startOutline[j] === -99999) {
-					startOutline[j] = Math.max(...startOutline);
-					endOutline[j] = startOutline[j];
+				if (startOutline[j] === DUMMY_POSITION) {
 					continue;
 				}
 				// the dist between frame's end outline and next frame's start outline
@@ -240,13 +238,20 @@ class FrameLayout {
 				dist = Math.min(startOutline[j] + end - endOutline[j], dist);
 			}
 		}
+		for (let i = 0; i < shapesSize; ++i) {
+			if (startOutline[i] !== DUMMY_POSITION) {
+				continue;
+			}
+			startOutline[i] = Math.max(...startOutline);
+			endOutline[i] = startOutline[i];
+		}
 		// The target outline is start outline when type is APPENDING
 		const targetOutline = isAppend ? startOutline : endOutline;
 		const prevOutlineEnd = outline.length === 0 ? 0 : Math[isAppend ? "max" : "min"](...outline);
 		let prevOutlineDist = isAppend ? 0 : end;
 
 		if (frameFill && outline.length === shapesSize) {
-			prevOutlineDist = 99999999;
+			prevOutlineDist = -DUMMY_POSITION;
 			for (let i = 0; i < shapesSize; ++i) {
 				if (startOutline[i] === endOutline[i]) {
 					continue;

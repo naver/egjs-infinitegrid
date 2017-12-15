@@ -15,7 +15,7 @@ export default class ItemManager {
 	}
 	static selectItems(elements, selector) {
 		return elements.filter(v => {
-			const classNames = v.className.split("");
+			const classNames = v.className.split(" ");
 
 			if (classNames.some(c => c === IGNORE_CLASSNAME)) {
 				return false;
@@ -36,8 +36,10 @@ export default class ItemManager {
 		return {
 			_data: this._data.map(data => {
 				data.items = data.items.map(item => {
-					delete item.el;
-					return item;
+					const item2 = Object.assign({}, item);
+
+					delete item2.el;
+					return item2;
 				});
 				return data;
 			}),

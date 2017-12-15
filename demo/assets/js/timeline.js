@@ -36,16 +36,19 @@ ig.setLayout(eg.InfiniteGrid.FrameLayout, {
 		[0, 0, 2, 2],
 	]
 });
-var groupKey = 1;
+
 ig.on("append", function (e) {
-	var groupKeys = ig.getGroupKeys(true);
-	var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+	console.log("append");
+	var groupKey = e.groupKey + 1;
 
 	if (!(groupKey in groups)) {
 		// allow append
 		groups[groupKey] = getItems(groupKey * num, num);
 	}
 	ig.append(groups[groupKey], groupKey);
+});
+ig.on("layoutComplete", function (e) {
+	console.log("layoutComplete");
 });
 groups[0] = getItems(0, num);
 ig.append(groups[0], 0);

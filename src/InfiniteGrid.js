@@ -291,44 +291,43 @@ class InfiniteGrid extends Component {
 		if (!this._items.size()) {
 			this._insert(toArray(this._renderer.container.children), true);
 			return this;
-		} else {
-			this._process(PROCESSING);
-
-			let data;
-			let outline;
-
-			if (isRelayout) { // remove cache
-				data = this._items.get(this._status.startCursor, this._status.endCursor);
-				if (this._renderer.resize()) {
-					this._layout.setSize(this._renderer.getViewportSize());
-					data.forEach(v => {
-						data.items = this._renderer.updateSize(v.items);
-					});
-				}
-			} else {
-				data = this._items.get(this._status.startCursor, this._items.size());
-				outline = this._items.getOutline(this._status.startCursor, "start");
-			}
-			if (!data.length) {
-				return this;
-			}
-			this._layout.layout(data, outline);
-
-			if (isRelayout) {
-				this._items._data.forEach((group, cursor) => {
-					if (this._status.startCursor <= cursor && cursor <= this._status.endCursor) {
-						return;
-					}
-					group.outlines.start = [];
-					group.outlines.end = [];
-				});
-			} else {
-				data.forEach(v => this._items.set(v, v.groupKey));
-			}
-			this._onLayoutComplete(data, APPEND, NO_TRUSTED);
-			DOMRenderer.renderItems(this._getVisibleItems());
-			isRelayout && this._watcher.setScrollPos();
 		}
+		this._process(PROCESSING);
+
+		let data;
+		let outline;
+
+		if (isRelayout) { // remove cache
+			data = this._items.get(this._status.startCursor, this._status.endCursor);
+			if (this._renderer.resize()) {
+				this._layout.setSize(this._renderer.getViewportSize());
+				data.forEach(v => {
+					data.items = this._renderer.updateSize(v.items);
+				});
+			}
+		} else {
+			data = this._items.get(this._status.startCursor, this._items.size());
+			outline = this._items.getOutline(this._status.startCursor, "start");
+		}
+		if (!data.length) {
+			return this;
+		}
+		this._layout.layout(data, outline);
+
+		if (isRelayout) {
+			this._items._data.forEach((group, cursor) => {
+				if (this._status.startCursor <= cursor && cursor <= this._status.endCursor) {
+					return;
+				}
+				group.outlines.start = [];
+				group.outlines.end = [];
+			});
+		} else {
+			data.forEach(v => this._items.set(v, v.groupKey));
+		}
+		this._onLayoutComplete(data, APPEND, NO_TRUSTED, isRelayout);
+		DOMRenderer.renderItems(this._getVisibleItems());
+		isRelayout && this._watcher.setScrollPos();
 
 		return this;
 	}
@@ -511,18 +510,17 @@ class InfiniteGrid extends Component {
 		let end = remove.lastIndexOf(isAppend ? 1 : -1);
 		const visible = remove.indexOf(0);
 
-		if (visible === -1) {
+		if (visible === -1 || start === -1 || end === -1) {
 			return;
 		}
-		if (start !== -1 && end !== -1) {
-			start = this._status.startCursor + start;
-			end = start + end;
-			DOMRenderer.removeItems(this._items.pluck("items", start, end));
-			if (isAppend) {
-				this._status.startCursor = end + 1;
-			} else {
-				this._status.endCursor = start - 1;
-			}
+
+		start = this._status.startCursor + (isAppend ? 0 : start);
+		end = (isAppend ? this._status.startCursor + end : this._status.endCursor);
+		DOMRenderer.removeItems(this._items.pluck("items", start, end));
+		if (isAppend) {
+			this._status.startCursor = end + 1;
+		} else {
+			this._status.endCursor = start - 1;
 		}
 	}
 	/**
@@ -792,13 +790,13 @@ class InfiniteGrid extends Component {
 			}
 		}
 	}
-	_onLayoutComplete(items, isAppend, isTrusted = false) {
+	_onLayoutComplete(items, isAppend, isTrusted = false, isRelayout = false) {
 		this._isLoading() && this._renderLoading();
 		!isAppend && this._fit("after");
-		const size = this._getEdgeValue("end");
+		!isRelayout && this.options.useRecycle && this._recycle(isAppend);
 
+		const size = this._getEdgeValue("end");
 		// recycle after _fit beacause prepend and append are occured simultaneously by scroll.
-		this.options.useRecycle && this._recycle(isAppend);
 		this._updateEdge();
 
 		isAppend && this._renderer.setContainerSize(size + this._status.loadingSize || 0);

@@ -655,9 +655,9 @@ var DOMRenderer = function () {
 	};
 
 	DOMRenderer.prototype.resize = function resize() {
-		if (this.isNeededResize()) {
-			var isVertical = this.options.isVertical;
+		var isVertical = this.options.isVertical;
 
+		if (this.isNeededResize()) {
 			this._size = {
 				containerOffset: this.options.isOverflowScroll ? 0 : this.container["offset" + (isVertical ? "Top" : "Left")],
 				viewport: this._calcSize(),
@@ -665,6 +665,8 @@ var DOMRenderer = function () {
 				item: null
 			};
 			return true;
+		} else {
+			this._size.view = isVertical ? (0, _utils.innerHeight)(this.view) : (0, _utils.innerWidth)(this.view);
 		}
 		return false;
 	};
@@ -891,8 +893,8 @@ var FrameLayout = function () {
 		var shapesSize = this._shapes[size2Name];
 		var shapes = this._shapes.shapes;
 		var shapesLength = shapes.length;
-		var startOutline = (0, _utils.fill)(shapesSize, -99999);
-		var endOutline = (0, _utils.fill)(shapesSize, -99999);
+		var startOutline = (0, _utils.fill)(shapesSize, _consts.DUMMY_POSITION);
+		var endOutline = (0, _utils.fill)(shapesSize, _consts.DUMMY_POSITION);
 		var dist = 0;
 		var end = 0;
 		var startIndex = -1;
@@ -919,7 +921,7 @@ var FrameLayout = function () {
 				var size2 = shapeSize2 * (itemSize2 + margin) - margin;
 
 				for (var k = shapePos2; k < shapePos2 + shapeSize2 && k < shapesSize; ++k) {
-					if (startOutline[k] === -99999) {
+					if (startOutline[k] === _consts.DUMMY_POSITION) {
 						startOutline[k] = pos1;
 					}
 					if (startIndex === -1) {
@@ -954,9 +956,7 @@ var FrameLayout = function () {
 			dist = end;
 
 			for (var _j = 0; _j < shapesSize; ++_j) {
-				if (startOutline[_j] === -99999) {
-					startOutline[_j] = Math.max.apply(Math, startOutline);
-					endOutline[_j] = startOutline[_j];
+				if (startOutline[_j] === _consts.DUMMY_POSITION) {
 					continue;
 				}
 				// the dist between frame's end outline and next frame's start outline
@@ -964,25 +964,32 @@ var FrameLayout = function () {
 				dist = Math.min(startOutline[_j] + end - endOutline[_j], dist);
 			}
 		}
+		for (var _i2 = 0; _i2 < shapesSize; ++_i2) {
+			if (startOutline[_i2] !== _consts.DUMMY_POSITION) {
+				continue;
+			}
+			startOutline[_i2] = Math.max.apply(Math, startOutline);
+			endOutline[_i2] = startOutline[_i2];
+		}
 		// The target outline is start outline when type is APPENDING
 		var targetOutline = isAppend ? startOutline : endOutline;
 		var prevOutlineEnd = outline.length === 0 ? 0 : Math[isAppend ? "max" : "min"].apply(Math, outline);
 		var prevOutlineDist = isAppend ? 0 : end;
 
 		if (frameFill && outline.length === shapesSize) {
-			prevOutlineDist = 99999999;
-			for (var _i2 = 0; _i2 < shapesSize; ++_i2) {
-				if (startOutline[_i2] === endOutline[_i2]) {
+			prevOutlineDist = -_consts.DUMMY_POSITION;
+			for (var _i3 = 0; _i3 < shapesSize; ++_i3) {
+				if (startOutline[_i3] === endOutline[_i3]) {
 					continue;
 				}
 				// if appending type is PREPEND, subtract dist from appending group's height.
 
-				prevOutlineDist = Math.min(targetOutline[_i2] + prevOutlineEnd - outline[_i2], prevOutlineDist);
+				prevOutlineDist = Math.min(targetOutline[_i3] + prevOutlineEnd - outline[_i3], prevOutlineDist);
 			}
 		}
-		for (var _i3 = 0; _i3 < shapesSize; ++_i3) {
-			startOutline[_i3] += prevOutlineEnd - prevOutlineDist;
-			endOutline[_i3] += prevOutlineEnd - prevOutlineDist;
+		for (var _i4 = 0; _i4 < shapesSize; ++_i4) {
+			startOutline[_i4] += prevOutlineEnd - prevOutlineDist;
+			endOutline[_i4] += prevOutlineEnd - prevOutlineDist;
 		}
 		items.forEach(function (item) {
 			item.rect[pos1Name] += prevOutlineEnd - prevOutlineDist;
@@ -1477,47 +1484,46 @@ var InfiniteGrid = function (_Component) {
 		if (!this._items.size()) {
 			this._insert((0, _utils.toArray)(this._renderer.container.children), true);
 			return this;
-		} else {
-			this._process(_consts.PROCESSING);
-
-			var data = void 0;
-			var outline = void 0;
-
-			if (isRelayout) {
-				// remove cache
-				data = this._items.get(this._status.startCursor, this._status.endCursor);
-				if (this._renderer.resize()) {
-					this._layout.setSize(this._renderer.getViewportSize());
-					data.forEach(function (v) {
-						data.items = _this2._renderer.updateSize(v.items);
-					});
-				}
-			} else {
-				data = this._items.get(this._status.startCursor, this._items.size());
-				outline = this._items.getOutline(this._status.startCursor, "start");
-			}
-			if (!data.length) {
-				return this;
-			}
-			this._layout.layout(data, outline);
-
-			if (isRelayout) {
-				this._items._data.forEach(function (group, cursor) {
-					if (_this2._status.startCursor <= cursor && cursor <= _this2._status.endCursor) {
-						return;
-					}
-					group.outlines.start = [];
-					group.outlines.end = [];
-				});
-			} else {
-				data.forEach(function (v) {
-					return _this2._items.set(v, v.groupKey);
-				});
-			}
-			this._onLayoutComplete(data, _consts.APPEND, _consts.NO_TRUSTED);
-			_DOMRenderer2["default"].renderItems(this._getVisibleItems());
-			isRelayout && this._watcher.setScrollPos();
 		}
+		this._process(_consts.PROCESSING);
+
+		var data = void 0;
+		var outline = void 0;
+
+		if (isRelayout) {
+			// remove cache
+			data = this._items.get(this._status.startCursor, this._status.endCursor);
+			if (this._renderer.resize()) {
+				this._layout.setSize(this._renderer.getViewportSize());
+				data.forEach(function (v) {
+					data.items = _this2._renderer.updateSize(v.items);
+				});
+			}
+		} else {
+			data = this._items.get(this._status.startCursor, this._items.size());
+			outline = this._items.getOutline(this._status.startCursor, "start");
+		}
+		if (!data.length) {
+			return this;
+		}
+		this._layout.layout(data, outline);
+
+		if (isRelayout) {
+			this._items._data.forEach(function (group, cursor) {
+				if (_this2._status.startCursor <= cursor && cursor <= _this2._status.endCursor) {
+					return;
+				}
+				group.outlines.start = [];
+				group.outlines.end = [];
+			});
+		} else {
+			data.forEach(function (v) {
+				return _this2._items.set(v, v.groupKey);
+			});
+		}
+		this._onLayoutComplete(data, _consts.APPEND, _consts.NO_TRUSTED);
+		_DOMRenderer2["default"].renderItems(this._getVisibleItems());
+		isRelayout && this._watcher.setScrollPos();
 
 		return this;
 	};
@@ -1725,7 +1731,7 @@ var InfiniteGrid = function (_Component) {
 		var end = remove.lastIndexOf(isAppend ? 1 : -1);
 		var visible = remove.indexOf(0);
 
-		if (visible === -1) {
+		if (visible === -1 || start <= end) {
 			return;
 		}
 		if (start !== -1 && end !== -1) {
@@ -2531,7 +2537,7 @@ var ItemManager = function () {
 
 	ItemManager.selectItems = function selectItems(elements, selector) {
 		return elements.filter(function (v) {
-			var classNames = v.className.split("");
+			var classNames = v.className.split(" ");
 
 			if (classNames.some(function (c) {
 				return c === _consts.IGNORE_CLASSNAME;
