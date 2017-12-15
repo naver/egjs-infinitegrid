@@ -19,7 +19,7 @@ const TRANSFORM = (function() {
 })();
 
 /**
- * Parallax is a displacement or difference in the apparent position of an object viewed along two different lines of sight. You can apply parallax by scrolling the image and speed of the item.
+ * @classdesc Parallax is a displacement or difference in the apparent position of an object viewed along two different lines of sight. You can apply parallax by scrolling the image and speed of the item.
  * @ko Parallax는 서로 다른 두 개의 시선에서 바라본 물체의 외관상 위치의 변위 또는 차이입니다. 스크롤에 따라 이미지와 아이템의 속도를 차이를 줌으로써 parallax을 적용할 수 있습니다.
  * @class eg.Parallax
  * @param {Element|String} [root=window] Scrolling target. If you scroll in the body, set window. 스크롤하는 대상. 만약 body에서 스크롤하면 window로 설정한다.
@@ -157,7 +157,7 @@ window.addEventListener("resize", function (e) {
 	/**
 	 * Scrolls the image in the item by a parallax.
 	 * @ko 스크롤하면 아이템안의 이미지를 시차적용시킨다.
-	 * @method eg.Parallax#resize
+	 * @method eg.Parallax#refresh
 	 * @param {Array} [items = []] Items to apply parallax. It does not apply if it is not in visible range. <ko>parallax를 적용할 아이템들. 가시거리에 존재하지 않으면 적용이 안된다.</ko>
 	 * @param {Number} [scrollPositionStart = 0] The scroll position.
 	 * @return {eg.Parallax} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
