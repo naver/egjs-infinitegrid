@@ -38,7 +38,6 @@ ig.setLayout(eg.InfiniteGrid.FrameLayout, {
 });
 
 ig.on("append", function (e) {
-	console.log("append");
 	var groupKey = e.groupKey + 1;
 
 	if (!(groupKey in groups)) {
@@ -46,9 +45,6 @@ ig.on("append", function (e) {
 		groups[groupKey] = getItems(groupKey * num, num);
 	}
 	ig.append(groups[groupKey], groupKey);
-});
-ig.on("layoutComplete", function (e) {
-	console.log("layoutComplete");
 });
 groups[0] = getItems(0, num);
 ig.append(groups[0], 0);
