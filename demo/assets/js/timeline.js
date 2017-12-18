@@ -15,7 +15,7 @@ function getItem(template, options) {
 function getItems(no, length) {
 	var arr = [];
 
-	for (let i = 0; i < length; ++i) {
+	for (var i = 0; i < length; ++i) {
 		arr.push(getItem(template, {no: i + no, title: "egjs gallery item" + (i + no + 1), className: "b" + (no + i) % 4 + " " + ((no + i + 1) % 2 === 0 ? "even": "odd") }));
 	}
 	no += length;
