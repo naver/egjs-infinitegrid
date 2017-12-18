@@ -29,7 +29,7 @@ var ig = new eg.InfiniteGrid(contents, {
 	isOverflowScroll: true
 });
 ig.setLayout(eg.InfiniteGrid.GridLayout);
-container.insertAdjacentHTML("beforeend", `<div id="prepend"></div><div id="append"></div>`);
+container.insertAdjacentHTML("beforeend", '<div id="prepend"></div><div id="append"></div>');
 var prepend = document.getElementById("prepend");
 var append = document.getElementById("append");
 var axes = new eg.Axes({
