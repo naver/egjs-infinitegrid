@@ -61,7 +61,7 @@ if (tempStatus) {
 	ig.append(groups[0], 0);
 }
 
-container.addEventListener("click", e => {
+container.addEventListener("click", function(e) {
 	if (e.target.tagName !== "A") {
 		return;
 	}

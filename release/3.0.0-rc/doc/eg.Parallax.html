@@ -126,6 +126,8 @@
     
         <li data-name="eg.InfiniteGrid#setLayout"><a href="eg.InfiniteGrid.html#setLayout">setLayout</a></li>
     
+        <li data-name="eg.InfiniteGrid#setLoadingBar"><a href="eg.InfiniteGrid.html#setLoadingBar">setLoadingBar</a></li>
+    
         <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
     
         <li data-name="eg.InfiniteGrid#startLoading"><a href="eg.InfiniteGrid.html#startLoading">startLoading</a></li>
@@ -338,7 +340,7 @@
     
     <span class="subtitle">Methods</span>
     
-        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
+        <li data-name="eg.Parallax#refresh"><a href="eg.Parallax.html#refresh">refresh</a></li>
     
         <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
     
@@ -366,7 +368,7 @@
 <header>
     <h2>
     
-        <span></span>
+        <span>eg.Parallax</span>
         
     </h2>
     <button id="toggle">
@@ -402,7 +404,7 @@
     
     
 	<div class="description en">
-		
+		<p>Parallax is a displacement or difference in the apparent position of an object viewed along two different lines of sight. You can apply parallax by scrolling the image and speed of the item.</p>
 	</div>
 	
 	
@@ -881,179 +883,9 @@ var item = {
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="resize">
+        <h4 class="name" id="refresh">
             
-            resize<span class="signature">(<span class="optional">items</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Parallax.html">eg.Parallax</a>}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="src_Parallax.js.html">Parallax.js</a>, <a href="src_Parallax.js.html#line117">line 117</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-	<div class="description en">
-		<p>As the browser is resized, the gaps between the root and the container and the size of the items are updated.</p>
-	</div>
-	
-	
-	<div class="description ko">
-		<p>브라우저의 크기가 변경됨으로 써 root와 container의 간격과 아이템들의 크기를 갱신한다.</p>
-	</div>
-	
-
-    
-    
-    
-    
-    
-        
-
-<ul class="parameters">
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>items</strong>
-            
-                (default: <code>[]</code>)
-            
-
-            
-                
-                    <span class="optional">optional</span>
-                
-                
-                    
-                
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Array</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>Items to apply parallax. It does not apply if it is not in visible range. </p></div>
-            <div class="description ko"><p>parallax를 적용할 아이템들. 가시거리에 존재하지 않으면 적용이 안된다.</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-</ul>
-    
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                    	
-                        <a href="eg.Parallax.html">eg.Parallax</a>
-                        
-                        
-                    
-            </td>
-            <td class="description last">
-                
-                <div class="en">An instance of a module itself</div>
-                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
-                
-
-                
-            </td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-        <h5>Example</h5>
-        
-
-    
-    <pre class="prettyprint"><code><pre class="prettyprint source lang-js"><code>window.addEventListener(&quot;resize&quot;, function (e) {
-    parallax.resize(items);
-});</code></pre></code></pre>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-    <!-- if data.codepen -->
-</dl>
-
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="resize">
-            
-            resize<span class="signature">(<span class="optional">items</span>, <span class="optional">scrollPositionStart</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Parallax.html">eg.Parallax</a>}</span>
+            refresh<span class="signature">(<span class="optional">items</span>, <span class="optional">scrollPositionStart</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Parallax.html">eg.Parallax</a>}</span>
         </h4>
     
         
@@ -1254,6 +1086,176 @@ var item = {
 
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resize">
+            
+            resize<span class="signature">(<span class="optional">items</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Parallax.html">eg.Parallax</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="src_Parallax.js.html">Parallax.js</a>, <a href="src_Parallax.js.html#line117">line 117</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>As the browser is resized, the gaps between the root and the container and the size of the items are updated.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>브라우저의 크기가 변경됨으로 써 root와 container의 간격과 아이템들의 크기를 갱신한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>items</strong>
+            
+                (default: <code>[]</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Array</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Items to apply parallax. It does not apply if it is not in visible range. </p></div>
+            <div class="description ko"><p>parallax를 적용할 아이템들. 가시거리에 존재하지 않으면 적용이 안된다.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.Parallax.html">eg.Parallax</a>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance of a module itself</div>
+                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><pre class="prettyprint source lang-js"><code>window.addEventListener(&quot;resize&quot;, function (e) {
+    parallax.resize(items);
+});</code></pre></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
         </dl>
     
 
@@ -1279,7 +1281,7 @@ var item = {
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Dec 06 2017 18:36:03 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 18 2017 16:13:32 GMT+0900 (KST)
         </footer>
     </div>
 </div>
