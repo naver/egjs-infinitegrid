@@ -1,8 +1,19 @@
 # egjs-infinitegrid [![npm version](https://badge.fury.io/js/%40egjs%2Finfinitegrid.svg)](https://badge.fury.io/js/%40egjs%2Finfinitegrid) [![Build Status](https://travis-ci.org/naver/egjs-infinitegrid.svg?branch=master)](https://travis-ci.org/naver/egjs-infinitegrid) [![Coverage Status](https://coveralls.io/repos/github/naver/egjs-infinitegrid/badge.svg?branch=master)](https://coveralls.io/github/naver/egjs-infinitegrid?branch=master)
 
-A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
+A module used to arrange card elements including content **infinitely** according to layout type. With this module, you can implement **various layouts** composed of different card elements whose sizes vary. It guarantees **performance** by maintaining the number of DOMs the module is handling under any circumstance
 
 ![infinitegrid](https://github.com/naver/egjs-infinitegrid/raw/master/demo/assets/image/infinitegrid.gif)
+
+## Layouts
+The InfiniteGrid can use various layouts.
+
+![layout](https://github.com/naver/egjs-infinitegrid/raw/master/demo/assets/image/layout.gif)
+
+- GridLayout: The GridLayout is a layout that stacks cards with the same width as a stack of bricks.
+- JustifiedLayout: JustifiedLayout is a layout that the card is filled up on the basis of a line given a size.
+- FrameLayout: FrameLayout is a layout that allows you to place cards in a given frame.
+- SquareLayout: SquareLayout is a layout that places all cards like squares on a checkerboard, and important cards are n times larger.
+- PackingLayout: The PackingLayout is a layout that shows the important cards bigger without sacrificing the weight of the cards.
 
 ## Benchmark
 [![eg.infiniteGrid benchmark](https://img.youtube.com/vi/NyFtShC2yq8/0.jpg)](http://www.youtube.com/watch?v=NyFtShC2yq8)
@@ -10,10 +21,11 @@ A module used to arrange card elements including content infinitely on a grid la
 eg.infiniteGrid benchmark: append item performance with [masonry](https://masonry.desandro.com/)
 
 
-
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
 - [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
+- [Migrating from v2.0 to v3.0](https://github.com/naver/egjs-infinitegrid/wiki/Migrating-from-v2.0-to-v3.0)
+
 
 ## Download and Installation
 
