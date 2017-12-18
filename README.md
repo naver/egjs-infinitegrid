@@ -9,11 +9,11 @@ The InfiniteGrid can use various layouts.
 
 ![layout](https://github.com/naver/egjs-infinitegrid/raw/master/demo/assets/image/layout.gif)
 
-- [GridLayout](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.GridLayout.html): The GridLayout is a layout that stacks cards with the same width as a stack of bricks.
-- [JustifiedLayout](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.JustifiedLayout.html): JustifiedLayout is a layout that the card is filled up on the basis of a line given a size.
-- [FrameLayout](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.FrameLayout.html): FrameLayout is a layout that allows you to place cards in a given frame.
-- [SquareLayout](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.SquareLayout.html): SquareLayout is a layout that places all cards like squares on a checkerboard, and important cards are n times larger.
-- [PackingLayout](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html): The PackingLayout is a layout that shows the important cards bigger without sacrificing the weight of the cards.
+- [GridLayout](https://naver.github.io/egjs-infinitegrid/#GridLayout): The GridLayout is a layout that stacks cards with the same width as a stack of bricks.
+- [JustifiedLayout](https://naver.github.io/egjs-infinitegrid/#JustifiedLayout): JustifiedLayout is a layout that the card is filled up on the basis of a line given a size.
+- [FrameLayout](https://naver.github.io/egjs-infinitegrid/#FrameLayout): FrameLayout is a layout that allows you to place cards in a given frame.
+- [SquareLayout](https://naver.github.io/egjs-infinitegrid/#SquareLayout): SquareLayout is a layout that places all cards like squares on a checkerboard, and important cards are n times larger.
+- [PackingLayout](https://naver.github.io/egjs-infinitegrid/#PackingLayout): The PackingLayout is a layout that shows the important cards bigger without sacrificing the weight of the cards.
 
 ## Benchmark
 [![eg.infiniteGrid benchmark](https://img.youtube.com/vi/NyFtShC2yq8/0.jpg)](http://www.youtube.com/watch?v=NyFtShC2yq8)
