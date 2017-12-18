@@ -6,13 +6,12 @@ body {
 }
 .container {
 	position: relative;
-	width: 80%;
+	width: 1200px;
 	margin: 0px auto;
-	min-width: 850px;
 }
 .item {
 	height: 100%;
-	width: 400px;
+	width: 150px;
 	overflow: hidden;
 }
 .item img {
@@ -20,12 +19,12 @@ body {
 	/* height: 100%; */
 }
 .item .info {
-	margin: 20px;
+	margin: 10px;
 }
 .item .info .title {
 	font-weight: bold;
-	font-size: 30px;
+	font-size: 20px;
 }
-.item .info .description {
+.item .description {
 	line-height: 1.4;
 }

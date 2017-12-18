@@ -38,6 +38,7 @@ body {
 .container {
 	position: absolute;
 	top: 50px;
+	width: 100%;
 }
 #table .post {
 	border-bottom: 1px solid #ddd;
@@ -52,4 +53,8 @@ body {
 }
 #table .post .date {
 	color: #999;
+}
+#table a {
+	text-decoration: none;
+	color: #333;
 }

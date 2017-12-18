@@ -20,7 +20,7 @@ body {
 	font-size: 14px;
 	padding: 5px 10px;
 }
-#table span.no {
+#table span.type {
 	width: 100px;
 	margin-left: 20px;
 }
@@ -42,6 +42,7 @@ body {
 	height: 500px;
 }
 .contents {
+	transform: translateY(0px);
 	height: 100%;
 }
 #table .post {

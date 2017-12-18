@@ -1,168 +1,146 @@
-function getItem({no = 0, title = "egjs post", writer = "egjs", date = "10.30 16:28"}) {
-	return `<div class="post">
-		<span class="opts"></span>
-		<span class="no">${no + 1}</span>
-		<span class="date">${date}</span>
-		<span class="writer">${writer}</span>
-		<span class="title">${title + no}</span>
-	</div>`;
-}
-function getItems(no, length) {
-	const arr = [];
 
-	for (let i = 0; i < length; ++i) {
-		arr.push(getItem({
-			no: i + no,
-			title: "egjs post",
+var template = '<div class="post"><span class="opts"></span><span class="type">${type}</span><span class="date">${date}</span><span class="writer">${writer}</span><span class="title">${title}</span></div>';
+var link = window.HOMELINK;
+function getItem(template, options) {
+	return template.replace(/\$\{([^\}]*)\}/g, function () {
+		var replaceTarget = arguments[1];
+
+		return options[replaceTarget];
+	});
+}
+
+function getItems(no, length, isAppend) {
+	var arr = [];
+
+	for (var i = 0; i < length; ++i) {
+		arr.push(getItem(template, {
+			type: isAppend ? "append" : "prepend",
+			title: "egjs post" + (no + i + 1),
+			date: "10.30 16:28",
+			writer: "egjs"
 		}));
 	}
 	return arr;
 }
-
-const REQUEST_CHANGE = 0;
-const REQUEST_APPEND = 1;
-const REQUEST_PREPEND = 2;
-const REQUEST_ANIMATE = 3;
-const groups = {};
-const deltaPull = 10;
-const container = document.querySelector(".container");
-const contents = document.querySelector(".contents");
-const ig = new eg.InfiniteGrid(contents, {
-	isOverflowScroll: true,
+var groups = {};
+var container = document.querySelector(".container");
+var contents = document.querySelector(".contents");
+var ig = new eg.InfiniteGrid(contents, {
+	isOverflowScroll: true
 });
-let prevScrollPosition = 0;
-let pullScrollPosition = 0;
-let isRequestPull = REQUEST_PREPEND;
-
 ig.setLayout(eg.InfiniteGrid.GridLayout);
-
-
-ig.on({
-	"change": e => {
-		const scrollPosition = e.orgScrollPos;
-
-		prevScrollPosition = scrollPosition;
-
-		if ((isRequestPull === REQUEST_ANIMATE) ||
-			(isRequestPull > 0 && Math.abs(scrollPosition - pullScrollPosition) < deltaPull)) {
-			return;
-		}
-
-		isRequestPull = REQUEST_CHANGE;
-	},
-	"prepend": e => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = (groupKeys[0] || 0) - 1;
-
-		if (!(groupKey in groups)) {
-			isRequestPull = REQUEST_PREPEND;
-			pullScrollPosition = prevScrollPosition;
-			return;
-		}
-		ig.prepend(groups[groupKey], groupKey);
-	},
-	"append": e => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
-
-		if (!(groupKey in groups)) {
-			isRequestPull = REQUEST_APPEND;
-			pullScrollPosition = prevScrollPosition;
-			return;
-		}
-		ig.append(groups[groupKey], groupKey);
-	},
-	"layoutComplete": e => {
-		if (ig.getGroupKeys().length === 1) {
-			return;
-		}
-		isRequestPull = REQUEST_ANIMATE;
-	},
-});
-groups[0] = getItems(0, 30);
-ig.append(groups[0], 0);
-
-const axes = new eg.Axes({
+container.insertAdjacentHTML("beforeend", `<div id="prepend"></div><div id="append"></div>`);
+var prepend = document.getElementById("prepend");
+var append = document.getElementById("append");
+var axes = new eg.Axes({
 	scroll: {
 		range: [0, 0],
-		bounce: 100,
+		bounce: 100
+	}
+});
+var isTouch = false;
+
+ig.on({
+	"change": function (e) {
+		if (isLoading) {
+			return;
+		}
+		if (!isTouch) {
+			axes.setTo({scroll: e.scrollPos}, 0);
+		}
+	},
+	"layoutComplete": function (e) {
+		axes.axis.scroll.range[1] = contents.scrollHeight - contents.clientHeight;
+		axes.setTo({ scroll: e.scrollPos }, 0);
+		if (isLoading) {
+			isLoading = false;	
+			container.classList.remove("pull");
+		}
 	},
 });
+groups[0] = getItems(0, 30, true);
+ig.append(groups[0], 0);
 
-container.insertAdjacentHTML("beforeend", `<div id="prepend"></div><div id="append"></div>`);
-const prepend = document.getElementById("prepend");
-const append = document.getElementById("append");
-const innerContents = contents.querySelector("._eg-infinitegrid-container_");
-
-let isLoading = false;
+var isLoading = true;
 
 function requestInsert(isAppend) {
 	container.classList.add("pull");
-	setTimeout(() => {
-		const groupKeys = ig.getGroupKeys(true);
-		const groupKey = isAppend ? (groupKeys[groupKeys.length - 1] || 0) + 1 :
+	setTimeout(function (e) {
+		var groupKeys = ig.getGroupKeys(true);
+		var groupKey = isAppend ? (groupKeys[groupKeys.length - 1] || 0) + 1 :
 			(groupKeys[0] || 0) - 1;
 
-		groups[groupKey] = getItems(groupKey * 30, 30);
+		groups[groupKey] = getItems(groupKey, 30, isAppend);
 		ig[isAppend ? "append" : "prepend"](groups[groupKey], groupKey);
-		isLoading = false;
-		axes.am.axm._pos.scroll = isAppend ? 100 : -100;
-		axes.setTo({scroll: 0}, 500);
-		container.classList.remove("pull");
 	}, 1000);
 }
+
+var startBouncing = false;
+
 axes.on({
-	"change": ({pos}) => {
-		if (!isRequestPull || isLoading || !axes.isBounceArea()) {
+	"change": function (e) {
+		if (e.holding && isLoading) {
 			return;
 		}
-		const scroll = pos.scroll;
-		const height = Math.abs(scroll);
+		var pos = e.pos;
+		var scroll = pos.scroll;
+		var maxRange = axes.axis.scroll.range[1];
+		
+		isTouch = !!e.inputEvent;
 
-		innerContents.style.transition = "";
-		innerContents.style.transform = `translateY(${-scroll}px)`;
-
-		const isAppend = scroll > 0;
-
-
-		if ((isRequestPull === REQUEST_PREPEND && isAppend) ||
-			(isRequestPull === REQUEST_APPEND && !isAppend)) {
+		if (!axes.isBounceArea()) {
+			append.style.height = "0px";
+			prepend.style.height = "0px";
+			contents.style.transform = "";
+			if (isTouch) {
+				contents.scrollTop = scroll;
+			}
 			return;
 		}
-		const element = isAppend ? append : prepend;
+		var bounce = (scroll < 0 ? scroll : scroll - maxRange);
+		var weight = Math.abs(bounce);
+		var isAppend = scroll > 0;
+		var element = isAppend ? append : prepend;
 
-		element.style.height = `${height}px`;
-		if (height < 80) {
-			element.innerHTML = `Pull to ${isAppend ? "append" : "prepend"}`;
-		} else {
-			element.innerHTML = `Release to ${isAppend ? "append" : "prepend"}`;
+		contents.style.transform = "translateY(" + (-bounce) + "px)";
+		element.style.height = weight + "px";
+		element.innerHTML = (weight > 80 ? "Release to " : "Pull to ") + (isAppend ? "append" : "prepend");
+	},
+	"release": function(e) {
+		if (isLoading || !axes.isBounceArea()) {
+			return;
+		}
+		var scroll = e.depaPos.scroll;
+		var maxRange = axes.axis.scroll.range[1];
+		var isAppend = scroll > 0;
+		var weight = Math.abs(scroll < 0 ? scroll : maxRange - scroll);
+
+		if (weight > 80) {
+			isLoading = true;
+			(isAppend ? append : prepend).innerHTML = "Loading...";
+			requestInsert(isAppend);
 		}
 	},
-	"release": ({depaPos}) => {
-		if (!isRequestPull || isLoading || !axes.isBounceArea() || !depaPos) {
+	"animationStart": function (e) {
+		if (isLoading) {
+			e.stop();
 			return;
 		}
-		const scroll = depaPos.scroll;
-		const height = Math.abs(scroll);
-		const isAppend = scroll > 0;
+		isTouch = true;
 
-		if ((isRequestPull === REQUEST_PREPEND && isAppend) ||
-			(isRequestPull === REQUEST_APPEND && !isAppend)) {
-			return;
-		}
-		if (height < 80) {
-			return;
-		}
-		isLoading = true;
-		(isAppend ? append : prepend).innerHTML = "Loading...";
-		requestInsert(isAppend);
-	},
-	"animationEnd": e => {
-		if (isRequestPull === REQUEST_ANIMATE) {
-			isRequestPull = REQUEST_CHANGE;
+		if (!axes.isBounceArea()) {
+			var maxRange = axes.axis.scroll.range[1];
+
+			if (e.destPos.scroll < 0) {
+				e.setTo({scroll: 0}, e.duration);
+			} else if (e.destPos.scroll > maxRange) {
+				e.setTo({scroll: maxRange}, e.duration);
+			}
 		}
 	},
+	"animationEnd": function (e) {
+		isTouch = false;
+	}
 });
-
 
 axes.connect(["", "scroll"], new eg.Axes.PanInput(container, {scale: [0, -1]}));

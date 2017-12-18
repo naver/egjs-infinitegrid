@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="assets/css/demo.css">
 
 
-	<script src="release/latest/dist/infinitegrid.pkgd.js"></script>
+	<script src="https://naver.github.io/egjs-infinitegrid/v3.0.0/dist/infinitegrid.pkgd.js"></script>
 
 <script>
 	var homeUrl = window.location.href;
@@ -31,9 +31,139 @@
 	};
 	window.HOMELINK = homeUrl;
 	window.LIBLINK = [];
+	// "https://naver.github.io/egjs-infinitegrid/v3.0.0/demo/"
 	
-	window.LIBLINK.push(window.HOMELINK + "release/latest/dist/infinitegrid.pkgd.js");
+	//window.HOMELINK + 
+	window.LIBLINK.push("https://naver.github.io/egjs-infinitegrid/v3.0.0/dist/infinitegrid.pkgd.js");
 	
+
+	var demoTemplate = '<li class="demo-item"><a href="./assets/html/{target}.html" target="_blank"><p><img src="./assets/image/demos/{target}.gif" /></p><p>{name}</p></a></li>';
+	var layouts = [];
+	
+	layouts["GridLayout"] = {
+		image: "./assets/image/GridLayout.svg",
+		desc: "GridLayout is a layout in which images with the same width are arranged in a staggered arrangement, like a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new image.",
+		demos: {}
+	};
+	
+	layouts["GridLayout"].demos["GridLayout1"] = {
+		name: "GridLayout1",
+		target: "grid"
+	};
+	
+	layouts["GridLayout"].demos["Card Gallery"] = {
+		name: "Card Gallery",
+		target: "cards"
+	};
+	
+	layouts["GridLayout"].demos["Grid Page"] = {
+		name: "Grid Page",
+		target: "card2"
+	};
+	
+	layouts["GridLayout"].demos["1 Column Table"] = {
+		name: "1 Column Table",
+		target: "table1"
+	};
+	
+	layouts["GridLayout"].demos["2 Column Table"] = {
+		name: "2 Column Table",
+		target: "table2"
+	};
+	
+	layouts["GridLayout"].demos["Table <br/>(Pull To Refresh)"] = {
+		name: "Table <br/>(Pull To Refresh)",
+		target: "pulltorefresh"
+	};
+	
+	
+	layouts["JustifiedLayout"] = {
+		image: "./assets/image/JustifiedLayout.svg",
+		desc: "\'justified\' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout in which the image is filled up on the basis of a line given a width in the meaning of the term.",
+		demos: {}
+	};
+	
+	layouts["JustifiedLayout"].demos["Image Search 1"] = {
+		name: "Image Search 1",
+		target: "search"
+	};
+	
+	layouts["JustifiedLayout"].demos["Image Search<br/>(Pull To Refresh)"] = {
+		name: "Image Search<br/>(Pull To Refresh)",
+		target: "search2"
+	};
+	
+	
+	layouts["FrameLayout"] = {
+		image: "./assets/image/FrameLayout.svg",
+		desc: "FrameLayout is a layout that allows you to place items in a given frame. It is a layout that corresponds to a level intermediate between the placement of the image directly by the designer and the layout using the algorithm.",
+		demos: {}
+	};
+	
+	layouts["FrameLayout"].demos["FrameLayout 1"] = {
+		name: "FrameLayout 1",
+		target: "frame"
+	};
+	
+	layouts["FrameLayout"].demos["Metro"] = {
+		name: "Metro",
+		target: "frame2"
+	};
+	
+	layouts["FrameLayout"].demos["Calendar"] = {
+		name: "Calendar",
+		target: "frame3"
+	};
+	
+	layouts["FrameLayout"].demos["Timeline"] = {
+		name: "Timeline",
+		target: "timeline"
+	};
+	
+	
+	layouts["SquareLayout"] = {
+		image: "./assets/image/SquareLayout.svg",
+		desc: "SquareLayout aligns the grid with all the images in a square like a checkerboard, and the important image is displayed by enlarging the size N times. The main image can be enlarged, and then a small image can be placed to naturally show the relationship of the image.",
+		demos: {}
+	};
+	
+	layouts["SquareLayout"].demos["SquareLayout 1"] = {
+		name: "SquareLayout 1",
+		target: "square"
+	};
+	
+	
+	layouts["PackingLayout"] = {
+		image: "./assets/image/PackingLayout.svg",
+		desc: "PackingLayout show important images bigger without sacrificing the inherent size of the image. Rows and columns are separated so that images are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.",
+		demos: {}
+	};
+	
+	layouts["PackingLayout"].demos["PackingLayout 1"] = {
+		name: "PackingLayout 1",
+		target: "pack"
+	};
+	
+	
+	function showLayout(name, self) {
+		layoutList.removeClass("checked");
+		$(self).addClass("checked");
+
+		var layout = layouts[name];
+		img.attr("src", layout.image);
+		title.text(name);
+		desc.text(layout.desc);
+
+		var demos = layout.demos;
+		var name;
+		var demosHTML = [];
+		for (name in demos) {
+			demosHTML.push(demoTemplate.replace(/\{(\S*)\}/g, function(_, replaceTarget) {
+				return demos[name][replaceTarget];
+			}));
+		}
+		demoList.html(demosHTML.join(""))
+	}
 </script>
 <body>
 <div id="fb-root"></div>
@@ -46,41 +176,79 @@
 }(document, 'script', 'facebook-jssdk'));</script>
 
     <!-- ******HEADER****** -->
-    <header id="header" class="header">
+        <header id="header" class="header">
             <div class="container">
-                <a href="//naver.github.io/egjs">
-                    <h1 class="logo pull-left"></h1>
-                </a><!--//logo-->
+                <div class="pull-left home">
+                    <a href="//naver.github.io/egjs">
+                        <h1 class="logo"></h1>
+                    </a>
+                </div>
+                <div class="pull-right home">
+                    <a target="_blank" href="//naver.github.io/egjs-infinitegrid/release/latest/doc/">
+                    API </a>/
+                    <a target="_blank" href="//github.com/naver/egjs-infinitegrid"> Github </a>
+                </div>
+        
             </div>
-        </header><!--//header-->
-    
-    
+        </header>
+        <!--//header-->
 <section id="promo" class="promo section">
     <div class="container">
-        <div class="hero-image" style="background-image: url(//naver.github.io/egjs/img/InfiniteGrid.png)">
+        <div class="logo-infinitegrid">
+            <div class="logo-infinite"></div>
+            <div class="logo-grid">
+                <div class="grid grid1">
+                    <div class="grid-line line1"></div>
+                    <div class="grid-line line2"></div>
+                </div>
+                <div class="grid grid2">
+                    <div class="grid-line line1"></div>
+                    <div class="grid-line line2"></div>
+                </div>
+                <div class="line center"></div>
+            </div>
         </div>
+        <!-- <div class="hero-image" style="background-image: url(//naver.github.io/egjs/img/InfiniteGrid.png)">
+            
+        </div> -->
         <h2 class="title">
-            <span class="highlight">InfiniteGrid</span><a href="https://github.com/naver/egjs-infinitegrid/releases/tag/2.1.1"><span class="version">v2.1.1</span></a>
+            <span class="highlight">InfiniteGrid</span>
+            <a href="https://github.com/naver/egjs-infinitegrid/releases/tag/3.0.0">
+                <span class="version">v3.0.0</span>
+            </a>
         </h2>
-        <p class="intro">A module used to arrange card elements including content infinitely on a grid layout. With this module, you can implement a grid-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance<br/>
-            <span class="hashtag">#infinite-scroll #masonry #dom-recycle</span>
+        <p class="intro">A module used to arrange card elements including content infinitely on variable layouts. With this module, you can implement 5 layout-pattern user interface composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
+            <br/>
+            <span class="hashtag">#infinite-scroll #masonry #justified #frame #square #pack #dom-recycle</span>
         </p>
     </div>
 </section>
 <div>
-	<section id="index" class="section">
-			<div class="container">
-				<div class="docs-inner">
-					<p class="text-center">
-						<a href="#getting-started">Getting Started </a>/ 
-						<a href="#demos"> Demos </a>/
-						<a target="_blank" href="//naver.github.io/egjs-infinitegrid/release/latest/doc/"> Documentation </a>/ 
-						<a target="_blank" href="//github.com/naver/egjs-infinitegrid"> Source </a>
-					</p>
-				</div>
+	<section id="demos" class="docs section demos">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title text-center">Showcase</h2>
+				 <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+
+<div class="demobox" codepen="demo">
+
+</div>
+
 			</div>
-		</section>
-	<section id="getting-started" class="docs section">
+		</div>
+	</section>
+	<section id="index" class="section navs">
+		<div class="container">
+			<div class="docs-inner">
+				<p class="text-center">
+					<a href="#getting-started">Getting Started </a>/
+					<a href="#layouts"> Layouts </a>/
+					<a href="#layouts"> Projects </a>
+				</p>
+			</div>
+		</div>
+	</section>
+	<section id="getting-started" class="docs section started">
 		<div class="container">
 			<div class="docs-inner">
 				<h2 class="title text-center">Getting Started</h2>
@@ -102,15 +270,7 @@
     <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;div&gt;</span>test3<span class="nt">&lt;/div&gt;</span>
     <span class="nt">&lt;/li&gt;</span>
-    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;div&gt;</span>test4<span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;/li&gt;</span>
-    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;div&gt;</span>test5<span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;/li&gt;</span>
-    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;div&gt;</span>test6<span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;/li&gt;</span>
+    ....
 <span class="nt">&lt;/ul&gt;</span>
 </code></pre>
 </div>
@@ -118,69 +278,146 @@
 <h4 id="load-files-or-import-library">Load files or import library</h4>
 
 <h5 id="es5">ES5</h5>
-<div class="language-html highlighter-rouge"><pre class="highlight"><code>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/https://naver.github.io/egjs-infinitegrid/v3.0.0/dist/infinitegrid.pkgd.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre>
 </div>
-
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">InfiniteGrid</span> <span class="o">=</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">JustifiedLayout</span> <span class="o">=</span> <span class="nx">InfiniteGrid</span><span class="p">.</span><span class="nx">JustifiedLayout</span><span class="p">;</span>
+</code></pre>
+</div>
 <h5 id="es6">ES6+</h5>
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">InfiniteGrid</span> <span class="nx">from</span> <span class="s2">"@egjs/infinitegrid"</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">JustifiedLayout</span> <span class="nx">from</span> <span class="s2">"@egjs/infinitegrid/JustifiedLayout"</span><span class="p">;</span>
 </code></pre>
 </div>
 
 <h3 id="initialize">Initialize</h3>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">horizontal</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+<span class="p">});</span>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// create InfiniteGrid ui without option</span>
-<span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">);</span>
-
-<span class="c1">// create InfiniteGrid ui with options</span>
-<span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,{</span>
-  <span class="na">itemSelector</span><span class="p">:</span> <span class="s2">".item"</span>
+<span class="c1">// initialize layout</span>
+<span class="c1">// GridLayout(default), JustifiedLayout, FrameLayout, SquareLayout, PackingLayout</span>
+<span class="nx">ig</span><span class="p">.</span><span class="nx">setLayout</span><span class="p">(</span><span class="nx">JustifiedLayout</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">itemSize</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
 <span class="p">});</span>
 </code></pre>
 </div>
+<p>For more information about API, please visit the <strong><a href="//naver.github.io/egjs-infinitegrid/release/latest/doc/">link</a></strong>.</p>
 
 			</div>
 		</div>
 	</section>
-	<section id="demos" class="docs section demos">
+	<section id="layouts" class="docs section layouts">
 		<div class="container">
 			<div class="docs-inner">
-				<h2 class="title text-center">Demos</h2>
+				<h2 class="title text-center">Layouts</h2>
+				<ul class="layout-list">
+				 
+					 <li id="GridLayout" class="layout-item checked" onclick="showLayout('GridLayout', this)">
+						<a href="#GridLayout">
+							<p><img src="./assets/image/GridLayout.svg"></p>
+							<p>GridLayout</p>
+						</a>
+					</li>
 				
-				<h3 id="basic-overflow-scroll">Basic (overflow: scroll)</h3>
-
-<div class="demobox" codepen="demo">
-  <p>You can apply infinite scrolling in the oveflow:scroll area.</p>
-  <div id="grid" class="row"></div>
-</div>
-
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// creating instance</span>
-<span class="kd">var</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="na">count</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-  <span class="na">defaultGroupKey</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="na">isOverflowScroll</span><span class="p">:</span> <span class="kc">true</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">on</span><span class="p">({</span>
-  <span class="s2">"append"</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">gk</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGroupKeys</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">lastGk</span> <span class="o">=</span> <span class="nx">gk</span><span class="p">[</span><span class="nx">gk</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
-    <span class="nx">lastGk</span><span class="o">++</span><span class="p">;</span>
-    <span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">lastGk</span><span class="p">),</span> <span class="nx">lastGk</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="s2">"prepend"</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">firstGk</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGroupKeys</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
-    <span class="nx">firstGk</span><span class="o">--</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">firstGk</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">ig</span><span class="p">.</span><span class="nx">prepend</span><span class="p">(</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">firstGk</span><span class="p">),</span> <span class="nx">firstGk</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">});</span>
-<span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">getItems</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
-</code></pre>
-</div>
-
+					 <li id="JustifiedLayout" class="layout-item " onclick="showLayout('JustifiedLayout', this)">
+						<a href="#JustifiedLayout">
+							<p><img src="./assets/image/JustifiedLayout.svg"></p>
+							<p>JustifiedLayout</p>
+						</a>
+					</li>
+				
+					 <li id="FrameLayout" class="layout-item " onclick="showLayout('FrameLayout', this)">
+						<a href="#FrameLayout">
+							<p><img src="./assets/image/FrameLayout.svg"></p>
+							<p>FrameLayout</p>
+						</a>
+					</li>
+				
+					 <li id="SquareLayout" class="layout-item " onclick="showLayout('SquareLayout', this)">
+						<a href="#SquareLayout">
+							<p><img src="./assets/image/SquareLayout.svg"></p>
+							<p>SquareLayout</p>
+						</a>
+					</li>
+				
+					 <li id="PackingLayout" class="layout-item " onclick="showLayout('PackingLayout', this)">
+						<a href="#PackingLayout">
+							<p><img src="./assets/image/PackingLayout.svg"></p>
+							<p>PackingLayout</p>
+						</a>
+					</li>
+				
+				</ul>
+			</div>
+		</div>
+	</section>
+	<section id="layouts_view" class="docs section layouts-view">
+		<div class="container">
+			<div class="docs-inner">
+				<div class="layout-view">
+					<div class="logo-area">
+						<img class="logo logo1" />
+						<img class="logo logo2" />
+					</div>
+					<h3 class="title"></h3>
+					<p class="desc"></p>
+					<ul class="demo-list">
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section id="projects" class="docs section projects">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title text-center">Projects</h2>
+				<ul class="project-list">
+					
+					<li class="project-item">
+						<a target="blank" href="http://swindow.naver.com/department/home"><p>
+							<img src="./assets/image/projects/nshopping.png">
+						</p>
+						<p>Naver Shopping</p></a>
+					</li>
+					
+					<li class="project-item">
+						<a target="blank" href="https://m.cafe.naver.com/PopularArticleList.nhn?cafeId=12048475"><p>
+							<img src="./assets/image/projects/ncafe.png">
+						</p>
+						<p>Naver Cafe</p></a>
+					</li>
+					
+					<li class="project-item">
+						<a target="blank" href="https://markethub.modoo.at/"><p>
+							<img src="./assets/image/projects/modoo.png">
+						</p>
+						<p>Naver Modoo</p></a>
+					</li>
+					
+					<li class="project-item">
+						<a target="blank" href="http://www.grafolio.com/works/list.grfl"><p>
+							<img src="./assets/image/projects/grafolio.jpg">
+						</p>
+						<p>Grafolio</p></a>
+					</li>
+					
+					<li class="project-item">
+						<a target="blank" href="https://www.plug.game/penguinrun-en/photos"><p>
+							<img src="./assets/image/projects/plug.png">
+						</p>
+						<p>Plug</p></a>
+					</li>
+					
+					<li class="project-item">
+						<a target="blank" href="https://s.search.naver.com/p/h_cnd010/p_21811/sbi/search.naver?where=sbi&query=sbi&orgPath=http%3A%2F%2Fblogfiles1.naver.net%2F20110805_228%2Fsabell83_1312550810373Qod26_JPEG%2FIMG_6680.JPG"><p>
+							<img src="./assets/image/projects/smartlens.png">
+						</p>
+						<p>Naver SmartLens</p></a>
+					</li>
+					
+				</ul>
 			</div>
 		</div>
 	</section>
@@ -217,5 +454,19 @@
 
 	<script src="assets/js/demo.js"></script>
 
+<script>
+	var view = $("#layouts_view");
+	var title = view.find(".title");
+	var desc = view.find(".desc");
+	var layoutList = $(".layout-list li");
+	var demoList = view.find(".demo-list");
+	var img = view.find(".logo");
+	var hash = (location.hash || "#GridLayout").replace("#", "");
+	var selectedLayout = "GridLayout";
+	if (hash in layouts) {
+		selectedLayout = hash;
+	}
+	showLayout(selectedLayout, $("#" + selectedLayout));
+</script>
 </body>
 </html>

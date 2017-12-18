@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
 			$('.navbar-collapse').removeClass('in').addClass('collapse');
 		}
 	});
-
+    
     /* ======= codepen ======= */
     function getDomainUrl() {
         return window.HOMELINK;
@@ -35,14 +35,17 @@ jQuery(document).ready(function($) {
 
     $("#demos .highlight").each(function() {
         var $el = $(this);
-        var $htmlEl = $el.parent().prev();
+        var $parent = $el.parent().parent();
+        var $htmlEl = $parent.find("[codepen]");
+
+        console.log($htmlEl);
         if ($htmlEl.length && $htmlEl.attr("codepen")) {
             var codepen = $htmlEl.attr("codepen");
             var cssPath = "assets/css/" + codepen + ".css";
             var jsPath = "assets/js/" + codepen + ".js";
             var htmlPath = "assets/html/" + codepen + ".html";
+            var $title = $parent.find(".title");
 
-            var $title = $htmlEl.prev();
             if (/^H/.test($title.get(0).tagName)) {
                 $title.wrap(function() {
                     return "<a class='page-scroll' href='#" + this.id + "'></div>";
@@ -75,7 +78,7 @@ jQuery(document).ready(function($) {
                     });
 
                 var data = {
-                    title              : $htmlEl.prev().text(),
+                    title              : $title.text(),
                     private            : false,
                     header             : "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi'>",
                     html               : $html.get(0).outerHTML,

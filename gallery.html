@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="assets/css/demo.css">
 
 
-	<script src="release/latest/dist/infinitegrid.pkgd.js"></script>
+	<script src="https://naver.github.io/egjs-infinitegrid/v3.0.0/dist/infinitegrid.pkgd.js"></script>
 
 <script>
 	var homeUrl = window.location.href;
@@ -32,7 +32,7 @@
 	window.HOMELINK = homeUrl;
 	window.LIBLINK = [];
 	
-	window.LIBLINK.push(window.HOMELINK + "release/latest/dist/infinitegrid.pkgd.js");
+	window.LIBLINK.push(window.HOMELINK + "https://naver.github.io/egjs-infinitegrid/v3.0.0/dist/infinitegrid.pkgd.js");
 	
 </script>
 <body>
@@ -42,36 +42,10 @@
 		<div class="container">
 			<div class="docs-inner">
 				
-				<h3 id="basic-overflow-scroll">Basic (overflow: scroll)</h3>
+				<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 
 <div class="demobox" codepen="demo">
-  <p>You can apply infinite scrolling in the oveflow:scroll area.</p>
-  <div id="grid" class="row"></div>
-</div>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// creating instance</span>
-<span class="kd">var</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="na">count</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-  <span class="na">defaultGroupKey</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="na">isOverflowScroll</span><span class="p">:</span> <span class="kc">true</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">on</span><span class="p">({</span>
-  <span class="s2">"append"</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">gk</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGroupKeys</span><span class="p">();</span>
-    <span class="kd">var</span> <span class="nx">lastGk</span> <span class="o">=</span> <span class="nx">gk</span><span class="p">[</span><span class="nx">gk</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
-    <span class="nx">lastGk</span><span class="o">++</span><span class="p">;</span>
-    <span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">lastGk</span><span class="p">),</span> <span class="nx">lastGk</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="s2">"prepend"</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">firstGk</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getGroupKeys</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
-    <span class="nx">firstGk</span><span class="o">--</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">firstGk</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">ig</span><span class="p">.</span><span class="nx">prepend</span><span class="p">(</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">firstGk</span><span class="p">),</span> <span class="nx">firstGk</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">});</span>
-<span class="nx">ig</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">getItems</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
-</code></pre>
 </div>
 
 			</div>
