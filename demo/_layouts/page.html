@@ -100,9 +100,11 @@
 				<h2 class="title text-center">Layouts</h2>
 				<ul class="layout-list">
 				 {% for layout in site.data.egjs.layouts %}
-					 <li class="layout-item {% if layout.name == "GridLayout" %}checked{% endif %}" onclick="showLayout('{{layout.name}}', this)">
-						<p><img src="{{layout.image}}"></p>
-						<p>{{layout.name}}</p>
+					 <li id="{{layout.name}}" class="layout-item {% if layout.name == "GridLayout" %}checked{% endif %}" onclick="showLayout('{{layout.name}}', this)">
+						<a href="#{{layout.name}}">
+							<p><img src="{{layout.image}}"></p>
+							<p>{{layout.name}}</p>
+						</a>
 					</li>
 				{% endfor %}
 				</ul>
@@ -154,8 +156,12 @@
 	var layoutList = $(".layout-list li");
 	var demoList = view.find(".demo-list");
 	var img = view.find(".logo");
-
-	showLayout("GridLayout", layoutList[0]);
+	var hash = (location.hash || "#GridLayout").replace("#", "");
+	var selectedLayout = "GridLayout";
+	if (hash in layouts) {
+		selectedLayout = hash;
+	}
+	showLayout(selectedLayout, $("#" + selectedLayout));
 </script>
 </body>
 </html>

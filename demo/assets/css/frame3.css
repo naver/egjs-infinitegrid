@@ -19,6 +19,7 @@ body {
 	box-sizing: border-box;
 	font-weight: bold;
 }
+
 .item.day0 {
 	border-left: 1px solid #ccc;
 }
@@ -61,7 +62,11 @@ body {
 	font-size: 40px;
 	margin: 0;
 	width: auto;
-
+}
+@media (max-width: 600px) {
+	.item.month span{
+		font-size: 20px;
+	}
 }
 .item.now span{
 	background: #f55;

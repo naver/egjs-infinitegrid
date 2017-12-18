@@ -38,6 +38,7 @@ body {
 .container {
 	position: absolute;
 	top: 50px;
+	width: 100%;
 }
 #table .post {
 	border-bottom: 1px solid #ddd;

@@ -20,7 +20,7 @@
 		exports["InfiniteGrid"] = factory();
 	else
 		root["eg"] = root["eg"] || {}, root["eg"]["InfiniteGrid"] = factory();
-})(this, function() {
+})(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -344,7 +344,6 @@ function innerWidth(el) {
 function innerHeight(el) {
 	return _getSize(el, "Height");
 }
-
 var STYLE = exports.STYLE = {
 	vertical: {
 		pos1: "top",
@@ -785,7 +784,7 @@ function getShapes(frame) {
 	};
 }
 /**
- * FrameLayout is a layout that allows you to place items in a given frame. It is a layout that corresponds to a level intermediate between the placement of the image directly by the designer and the layout using the algorithm.
+ * @classdesc FrameLayout is a layout that allows you to place items in a given frame. It is a layout that corresponds to a level intermediate between the placement of the image directly by the designer and the layout using the algorithm.
  * @ko FrameLayout은 주어진 프레임에 맞춰 아이템을 배치하는 레이아웃입니다. 디자이너가 직접 이미지를 배치하는 것과 알고리즘을 사용한 배치의 중간 정도 수준에 해당하는 레이아웃이다.
  * @class eg.InfiniteGrid.FrameLayout
  * @param {Object} [options] The option object of eg.InfiniteGrid.FrameLayout module <ko>eg.InfiniteGrid.FrameLayout 모듈의 옵션 객체</ko>
@@ -2995,7 +2994,7 @@ var START = _consts.ALIGN.START,
     JUSTIFY = _consts.ALIGN.JUSTIFY;
 
 /**
- * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
+ * @classdesc GridLayout is a layout in which images with the same width are arranged in a staggered arrangement, like a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new image.
  * @ko GridLayout는 벽돌을 쌓아 올린 모양처럼 동일한 너비를 가진 이미지가 엇갈려 배열되는 레이아웃이다. 모든 이미지의 너비를 동일한 크기로 조정하고, 가장 높이가 낮은 열을 찾아 새로운 이미지를 삽입한다. 따라서 배치된 이미지 사이에 빈 공간이 생기지는 않지만 배치된 레이아웃의 아래쪽은 울퉁불퉁해진다.
  * @class eg.InfiniteGrid.GridLayout
  * @param {Object} [options] The option object of eg.InfiniteGrid.GridLayout module <ko>eg.InfiniteGrid.GridLayout 모듈의 옵션 객체</ko>
@@ -3328,7 +3327,7 @@ function getColumn(item) {
 }
 
 /**
- * FrameLayout is a layout that allows you to place items in a given frame. It is a layout that corresponds to a level intermediate between the placement of the image directly by the designer and the layout using the algorithm.
+ * @classdesc FrameLayout is a layout that allows you to place items in a given frame. It is a layout that corresponds to a level intermediate between the placement of the image directly by the designer and the layout using the algorithm.
  * @ko FrameLayout은 주어진 프레임에 맞춰 아이템을 배치하는 레이아웃입니다. 디자이너가 직접 이미지를 배치하는 것과 알고리즘을 사용한 배치의 중간 정도 수준에 해당하는 레이아웃이다.
  * @class eg.InfiniteGrid.SquareLayout
  * @extends eg.InfiniteGrid.FrameLayout
@@ -3526,7 +3525,7 @@ function fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertica
 }
 
 /**
- * PackingLayout show important images bigger without sacrificing the inherent size of the image. Rows and columns are separated so that images are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.
+ * @classdesc PackingLayout show important images bigger without sacrificing the inherent size of the image. Rows and columns are separated so that images are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.
  * @ko PackingLayout은 이미지의 본래 크기에 따른 비중을 해치지 않으면서 중요한 이미지는 더 크게 보여 준다. 행과 열이 구분돼 이미지를 정돈되게 배치하는 대신 가로세로 일정 공간 내에서 동적으로 이미지를 배치한다.
  * @class eg.InfiniteGrid.PackingLayout
  * @param {Object} [options] The option object of eg.InfiniteGrid.PackingLayout module <ko>eg.InfiniteGrid.PackingLayout 모듈의 옵션 객체</ko>
@@ -3972,7 +3971,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * 'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout in which the image is filled up on the basis of a line given a width in the meaning of the term.
+ * @classdesc 'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout in which the image is filled up on the basis of a line given a width in the meaning of the term.
  * @ko 'justified'는 '1행의 너비에 맞게 꼭 들어찬'이라는 의미를 가진 인쇄 용어다. 용어의 의미대로 너비가 주어진 한 행을 기준으로 이미지가 가득 차도록 배치하는 레이아웃이다.
  * @class eg.InfiniteGrid.JustifiedLayout
  * @param {Object} [options] The option object of eg.InfiniteGrid.JustifiedLayout module <ko>eg.InfiniteGrid.JustifiedLayout 모듈의 옵션 객체</ko>

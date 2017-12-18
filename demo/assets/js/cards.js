@@ -69,7 +69,7 @@ function refresh(pos) {
 		}
 		var center = item.rect.left + item.size.width / 2;
 
-		var scale = (csize - Math.pow(center - centerPos, 2)) / csize;
+		var scale = Math.max((csize - Math.pow(center - centerPos, 2)) / csize, 0);
 
 		if (!item.el.__INFO__) {
 			item.el.__INFO__ = item.el.querySelector(".info");
