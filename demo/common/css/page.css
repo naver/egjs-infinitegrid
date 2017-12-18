@@ -629,7 +629,7 @@ span.version:hover {
   position: absolute;
   left: 0;
   right: 0;
-  margin: auto;
+  margin: 0px auto;
   width: 100%;
   animation: go 3s ease-out 0s infinite forwards;
 }

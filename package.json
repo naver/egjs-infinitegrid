@@ -1,6 +1,6 @@
 {
 	"name": "@egjs/infinitegrid",
-	"version": "3.0.0-rc",
+	"version": "3.0.0",
 	"description": "A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
 	"main": "dist/infinitegrid.js",
 	"es2015": "src/InfiniteGrid.js",
@@ -15,7 +15,7 @@
 		"lint": "eslint src",
 		"jsdoc": "rm -rf ./doc && jsdoc -c jsdoc.json",
 		"coverage": "karma start --coverage",
-		"demo:start": "npm run demo:prebuild-latest && npm run demo:updateVersion && jekyll serve -s demo",
+		"demo:start": "npm run demo:prebuild-latest && npm run demo:updateVersion && jekyll serve -s demo --host 0.0.0.0",
 		"demo:build": "npm run demo:updateVersion && jekyll build -s demo",
 		"demo:prebuild-version": "cpx 'dist/**/*' demo/release/$npm_package_version/dist --clean && cpx 'doc/**/*' demo/release/$npm_package_version/doc --clean",
 		"demo:prebuild-latest": "cpx 'dist/**/*' demo/release/latest/dist --clean && cpx 'doc/**/*' demo/release/latest/doc --clean",

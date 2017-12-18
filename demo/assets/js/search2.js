@@ -94,7 +94,7 @@ var axes = new eg.Axes({
 	}
 });
 
-container.insertAdjacentHTML("beforeend", `<div id="prepend"></div><div id="append"></div>`);
+container.insertAdjacentHTML("beforeend", '<div id="prepend"></div><div id="append"></div>');
 var prepend = document.getElementById("prepend");
 var append = document.getElementById("append");
 var isLoading = false;
@@ -138,7 +138,7 @@ axes.on({
 
 		var element = isAppend ? append : prepend;
 
-		element.style.height = `${height}px`;
+		element.style.height = height + "px";
 		if (height < 80) {
 			element.innerHTML = "Pull to " + (isAppend ? "append" : "prepend");
 		} else {
