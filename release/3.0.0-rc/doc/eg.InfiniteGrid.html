@@ -126,8 +126,6 @@
     
         <li data-name="eg.InfiniteGrid#setLayout"><a href="eg.InfiniteGrid.html#setLayout">setLayout</a></li>
     
-        <li data-name="eg.InfiniteGrid#setLoadingBar"><a href="eg.InfiniteGrid.html#setLoadingBar">setLoadingBar</a></li>
-    
         <li data-name="eg.InfiniteGrid#setStatus"><a href="eg.InfiniteGrid.html#setStatus">setStatus</a></li>
     
         <li data-name="eg.InfiniteGrid#startLoading"><a href="eg.InfiniteGrid.html#startLoading">startLoading</a></li>
@@ -340,7 +338,7 @@
     
     <span class="subtitle">Methods</span>
     
-        <li data-name="eg.Parallax#refresh"><a href="eg.Parallax.html#refresh">refresh</a></li>
+        <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
     
         <li data-name="eg.Parallax#resize"><a href="eg.Parallax.html#resize">resize</a></li>
     
@@ -368,7 +366,7 @@
 <header>
     <h2>
     
-        <span>eg.InfiniteGrid</span>
+        <span></span>
         
     </h2>
     <button id="toggle">
@@ -393,7 +391,7 @@
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line82">line 82</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line93">line 93</a>
         </div>
         
     </div>
@@ -718,6 +716,46 @@
         
     </li>
     
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>loadingBar</strong>
+            
+                (default: <code>{}</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Object</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The loading bar HTML markup or element or element selector </p></div>
+            <div class="description ko"><p> 로딩 바 HTML 또는 element 또는 selector </p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
 </ul>
         
     </li>
@@ -763,6 +801,18 @@
 &lt;script>
 var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;, function(e) {
     // ...
+});
+
+
+// loading bar
+var some = new eg.InfiniteGrid(&quot;#grid&quot;, {
+    loadingBar: `&lt;div class=&quot;loading&quot;>LOADING&lt;/div>`,
+});
+var some2 = new eg.InfiniteGrid(&quot;#grid&quot;, {
+    loadingBar: {
+        &quot;append&quot;: appendElelement,
+        &quot;prepend&quot;: prependElement,
+    },
 });
 &lt;/script></code></pre></code></pre>
     
@@ -911,7 +961,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line133">line 133</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line148">line 148</a>
         </div>
         
     </div>
@@ -1117,7 +1167,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line420">line 420</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line430">line 430</a>
         </div>
         
     </div>
@@ -1234,7 +1284,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line851">line 851</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line844">line 844</a>
         </div>
         
     </div>
@@ -1313,7 +1363,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line588">line 588</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line591">line 591</a>
         </div>
         
     </div>
@@ -1473,7 +1523,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line373">line 373</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line383">line 383</a>
         </div>
         
     </div>
@@ -1624,7 +1674,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line199">line 199</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line214">line 214</a>
         </div>
         
     </div>
@@ -1777,7 +1827,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line532">line 532</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line535">line 535</a>
         </div>
         
     </div>
@@ -1937,7 +1987,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line384">line 384</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line394">line 394</a>
         </div>
         
     </div>
@@ -2215,7 +2265,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line464">line 464</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line466">line 466</a>
         </div>
         
     </div>
@@ -2332,7 +2382,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line286">line 286</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line303">line 303</a>
         </div>
         
     </div>
@@ -3060,7 +3110,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line150">line 150</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line165">line 165</a>
         </div>
         
     </div>
@@ -3266,7 +3316,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line340">line 340</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line350">line 350</a>
         </div>
         
     </div>
@@ -3417,7 +3467,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line186">line 186</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line201">line 201</a>
         </div>
         
     </div>
@@ -3597,169 +3647,6 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="setLoadingBar">
-            
-            setLoadingBar<span class="signature">(<span class="optional">userLoadingBar</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line433">line 433</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-	<div class="description en">
-		<p>Specifies the Loading Bar to use for append or prepend items.</p>
-	</div>
-	
-	
-	<div class="description ko">
-		<p>아이템을 append 또는 prepend 하기 위해 사용할 로딩 바를 지정한다.</p>
-	</div>
-	
-
-    
-    
-    
-    
-    
-        
-
-<ul class="parameters">
-    
-    <li>
-        <!-- parameter name -->
-        <div>
-            <strong>userLoadingBar</strong>
-            
-                (default: <code>{}</code>)
-            
-
-            
-                
-                    <span class="optional">optional</span>
-                
-                
-                    
-                
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">String</span>
-|
-
-<span class="param-type">Object</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>The loading bar HTML markup or element or element selector </p></div>
-            <div class="description ko"><p> 로딩 바 HTML 또는 element 또는 selector </p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-</ul>
-    
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                    	
-                        <a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>
-                        
-                        
-                    
-            </td>
-            <td class="description last">
-                
-                <div class="en">An instance of a module itself</div>
-                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
-                
-
-                
-            </td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-    <!-- if data.codepen -->
-</dl>
-
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
         <h4 class="name" id="setStatus">
             
             setStatus<span class="signature">(status, <span class="optional">applyScrollPos</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.html">eg.InfiniteGrid</a>}</span>
@@ -3767,7 +3654,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line400">line 400</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line410">line 410</a>
         </div>
         
     </div>
@@ -3960,7 +3847,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line542">line 542</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line545">line 545</a>
         </div>
         
     </div>
@@ -4355,7 +4242,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line716">line 716</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line721">line 721</a>
         </div>
         
     </div>
@@ -4527,7 +4414,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line755">line 755</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line760">line 760</a>
         </div>
         
     </div>
@@ -4904,34 +4791,6 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     <li>
         <!-- parameter name -->
         <div>
-            <strong>isScroll</strong>
-            
-
-            
-        </div>
-        <!-- parameter type -->
-        
-        <div>Type: 
-<span class="param-type">Boolean</span>
-
-</div>
-        
-    
-        <!-- Description -->
-        <div>
-            
-            <div class="description en"><p>Checks whether scrolling has occurred after the append(), prepend(), ..., etc method is called</p></div>
-            <div class="description ko"><p>Checks whether scrolling has occurred after the append(), prepend(), ..., etc method is called</p></div>
-            
-        </div>
-
-        <!-- Sub parameters -->
-        
-    </li>
-    
-    <li>
-        <!-- parameter name -->
-        <div>
             <strong>scrollPos</strong>
             
 
@@ -5101,7 +4960,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
     
         
         <div class="tag-source">
-            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line740">line 740</a>
+            <a href="src_InfiniteGrid.js.html">InfiniteGrid.js</a>, <a href="src_InfiniteGrid.js.html#line745">line 745</a>
         </div>
         
     </div>
@@ -5283,7 +5142,7 @@ var some = new eg.InfiniteGrid(&quot;#grid&quot;).on(&quot;layoutComplete&quot;,
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 18 2017 16:13:32 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Dec 06 2017 18:36:03 GMT+0900 (KST)
         </footer>
     </div>
 </div>
