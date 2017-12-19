@@ -25,7 +25,7 @@ var template = '<div class="item ${className}"><img src="${link}../image/${no}.j
 var className = isSupportClipPath ? "item_clip" : "";
 function getItems(length) {
 	var arr = [];
-	for (let i = 1; i <= length; ++i) {
+	for (var i = 1; i <= length; ++i) {
 		arr.push(getItem(template, {
 			no: i % 60,
 			title: "egjs gallery item" + i,

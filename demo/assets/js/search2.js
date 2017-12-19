@@ -100,7 +100,7 @@ var append = document.getElementById("append");
 var isLoading = false;
 
 function requestInsert(isAppend) {
-	container.classList.add("pull");
+	container.className = container.className + " pull";
 	setTimeout(function (e) {
 		var groupKeys = ig.getGroupKeys(true);
 		var groupKey = isAppend ? (groupKeys[groupKeys.length - 1] || 0) + 1 :
@@ -110,7 +110,7 @@ function requestInsert(isAppend) {
 		ig[isAppend ? "append" : "prepend"](groups[groupKey], groupKey);
 		isLoading = false;
 		axes.setTo({ scroll: 0 }, 500);
-		container.classList.remove("pull");
+		container.className = container.className.replace(/pull/g, "");
 	}, 1000);
 }
 axes.on({
