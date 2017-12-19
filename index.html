@@ -260,7 +260,7 @@
 
 <h4 id="set-up-your-html">Set up your HTML</h4>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">"grid"</span><span class="nt">&gt;</span>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">"grid"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"card"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;div&gt;</span>test1<span class="nt">&lt;/div&gt;</span>
     <span class="nt">&lt;/li&gt;</span>
@@ -272,27 +272,22 @@
     <span class="nt">&lt;/li&gt;</span>
     ....
 <span class="nt">&lt;/ul&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h4 id="load-files-or-import-library">Load files or import library</h4>
 
 <h5 id="es5">ES5</h5>
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/https://naver.github.io/egjs-infinitegrid/v3.0.0/dist/infinitegrid.pkgd.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-</code></pre>
-</div>
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">InfiniteGrid</span> <span class="o">=</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">;</span>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/https://naver.github.io/egjs-infinitegrid/v3.0.0/dist/infinitegrid.pkgd.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div></div>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">InfiniteGrid</span> <span class="o">=</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">JustifiedLayout</span> <span class="o">=</span> <span class="nx">InfiniteGrid</span><span class="p">.</span><span class="nx">JustifiedLayout</span><span class="p">;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <h5 id="es6">ES6+</h5>
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">InfiniteGrid</span> <span class="nx">from</span> <span class="s2">"@egjs/infinitegrid"</span><span class="p">;</span>
-<span class="kr">import</span> <span class="nx">JustifiedLayout</span> <span class="nx">from</span> <span class="s2">"@egjs/infinitegrid/JustifiedLayout"</span><span class="p">;</span>
-</code></pre>
-</div>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">InfiniteGrid</span><span class="p">,</span> <span class="p">{</span><span class="nx">JustifiedLayout</span><span class="p">}</span> <span class="k">from</span> <span class="s2">"@egjs/infinitegrid"</span><span class="p">;</span>
+</code></pre></div></div>
 
 <h3 id="initialize">Initialize</h3>
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,</span> <span class="p">{</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,</span> <span class="p">{</span>
     <span class="na">horizontal</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
 <span class="p">});</span>
 
@@ -301,8 +296,7 @@
 <span class="nx">ig</span><span class="p">.</span><span class="nx">setLayout</span><span class="p">(</span><span class="nx">JustifiedLayout</span><span class="p">,</span> <span class="p">{</span>
     <span class="na">itemSize</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
 <span class="p">});</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>For more information about API, please visit the <strong><a href="//naver.github.io/egjs-infinitegrid/release/latest/doc/">link</a></strong>.</p>
 
 			</div>
