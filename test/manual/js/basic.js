@@ -1,10 +1,72 @@
 /* eslint-disable */
 // window.console = window.console || {log: function(){}};
-
+var images = {
+	1: [518, 517],
+	2: [550, 825],
+	3: [640, 640],
+	4: [364, 520],
+	5: [710, 1020],
+	6: [600, 819],
+	7: [486, 729],
+	8: [544, 784],
+	9: [720, 720],
+	10: [381, 555],
+	11: [521, 775],
+	12: [425, 638],
+	13: [700, 1050],
+	14: [420, 637],
+	15: [364, 520],
+	16: [320, 480],
+	17: [640, 640],
+	18: [720, 720],
+	19: [640, 640],
+	20: [650, 981],
+	21: [500, 470],
+	22: [433, 650],
+	23: [497, 750],
+	24: [500, 703],
+	25: [610, 577],
+	26: [500, 750],
+	27: [600, 805],
+	28: [500, 723],
+	29: [640, 640],
+	30: [641, 800],
+	31: [444, 480],
+	32: [500, 650],
+	33: [427, 640],
+	34: [499, 700],
+	35: [420, 631],
+	36: [429, 640],
+	37: [612, 612],
+	38: [500, 750],
+	39: [500, 645],
+	40: [467, 700],
+	41: [410, 700],
+	42: [500, 750],
+	43: [500, 700],
+	44: [500, 750],
+	45: [377, 500],
+	46: [467, 700],
+	47: [393, 633],
+	48: [610, 915],
+	49: [554, 712],
+	50: [486, 700],
+	51: [327, 480],
+	52: [363, 480],
+	53: [400, 602],
+	54: [320, 480],
+	55: [375, 500],
+	56:[319, 480],
+	57: [320, 480],
+	58: [450, 609],
+	59: [427, 640],
+	
+	
+};
 var ig;
 var parallax;
 
-var template = '<div class="item" data-column="${column}" data-group=${group} data-g=${rgroup}><img src="../../demo/assets/image/${no}.jpg"></div >';
+var template = '<div class="item" data-column="${column}" data-group=${group} data-g=${rgroup}><img src="../../demo/assets/image/${no}.jpg" ${data}></div >';
 var num = 27;
 var _status = 0;
 var _groups = {};
@@ -103,7 +165,10 @@ function getItem(template, options) {
 function getItems(group, length) {
 	var arr = [];
 	for (var i = 0; i < length; ++i) {
-		arr.push(getItem(template, { no: Math.round(Math.random() * 59 + 1), column: i % 5 === 0 ? 2 : 1, group: Math.abs(group) % 5, rgroup: group}));
+		var no = Math.round(Math.random() * 59 + 1);
+		arr.push(getItem(template, { no: no, column: i % 5 === 0 ? 2 : 1, group: Math.abs(group) % 5, rgroup: group,
+		data: images[no] ? 'data-width="'+images[no][0]+'" data-height="'+images[no][1]+'"' : ""
+		}));
 	}
 	return arr;
 }

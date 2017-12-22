@@ -125,7 +125,6 @@ describe("InfiniteGrid Test", function() {
           const handler = insert(this.inst, isAppend, () => {
             const lastParam = handler.getCall(handler.callCount - 1).args[0];
 
-            
             if (isAppend) {
               const spot = lastParam.size;
 

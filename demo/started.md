@@ -34,8 +34,7 @@ var JustifiedLayout = InfiniteGrid.JustifiedLayout;
 ```
 ##### ES6+
 ```js
-import InfiniteGrid from "@egjs/infinitegrid";
-import JustifiedLayout from "@egjs/infinitegrid/JustifiedLayout";
+import InfiniteGrid, {JustifiedLayout} from "@egjs/infinitegrid";
 ```
 
 ### Initialize

@@ -6,8 +6,8 @@ module.exports = function(config) {
     files: [
       "./node_modules/lite-fixture/index.js",
       "./test/unit/**/*.spec.js",
+      'test/unit/image/*.jpg',
     ],
-
     client: {
       mocha: {
         opts: "./mocha.opts" 
