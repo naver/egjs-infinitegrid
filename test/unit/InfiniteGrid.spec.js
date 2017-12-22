@@ -130,9 +130,8 @@ describe("InfiniteGrid Test", function() {
 
               this.inst._watcher.scrollTo(spot / 2);
               setTimeout(() => {
-                console.log(document.body.scrollTop);
                 this.inst._watcher.scrollTo(spot);
-              }, 200);
+              }, 100);
             } else {
               this.inst._watcher.scrollTo(this.inst._getEdgeValue("end") / 2);
               setTimeout(() => {

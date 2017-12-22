@@ -48,7 +48,6 @@ class ImageLoaded {
 				addEvent(v, "error", onCheck);
 			}
 		});
-		console.log(checkCount);
 	}
 	static checkImageLoaded(el) {
 		if (el.tagName === "IMG") {
