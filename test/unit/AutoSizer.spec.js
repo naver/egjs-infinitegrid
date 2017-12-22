@@ -11,7 +11,6 @@ describe("AutoSizer Test", function() {
         this.container = document.body.querySelector(".container");
     });
     afterEach(() => {
-        AutoSizer.removeAll();
         document.body.innerHTML = ``;
     });
     ["", "width", "height"].forEach(fixed => {
@@ -27,6 +26,7 @@ describe("AutoSizer Test", function() {
                 expect (item1.__PREFIX__).to.be.equal(prefix === undefined ? "data-" : prefix);
                 expect (fixed === "height" ? innerHeight(item1) : innerWidth(item1)).to.be.equal(1000);
                 expect(parseInt(item1.style[fixed === "height" ? "width" : "height"], 10)).to.be.equal(fixed === "height" ? 800 : 1250);
+                AutoSizer.remove(item1);
             });
             it(`add zero size test(fixed: ${fixed}, prefix: ${prefix})`, () => {
                 const _prefix = prefix === undefined ? "data-" : prefix;
@@ -38,6 +38,7 @@ describe("AutoSizer Test", function() {
                 AutoSizer.add(item1, prefix);
                 expect (item1.__PREFIX__).to.be.equal(prefix === undefined ? "data-" : prefix);
                 expect(parseInt(item1.style[fixed === "height" ? "width" : "height"], 10)).to.be.equal(fixed === "height" ? 400 : 500);
+                AutoSizer.remove(item1);
             });
             it(`resize test(fixed: ${fixed}, prefix: ${prefix})`, () => {
                 const _prefix = prefix === undefined ? "data-" : prefix;
@@ -51,6 +52,7 @@ describe("AutoSizer Test", function() {
                 this.container.style.height = "800px";
                 AutoSizer.resize(item1);
                 expect(parseInt(item1.style[fixed === "height" ? "width" : "height"], 10)).to.be.equal(fixed === "height" ? 640 : 1000);
+                AutoSizer.remove(item1);
             });
             it(`resize event test(fixed: ${fixed}, prefix: ${prefix})`, done => {
                 const _prefix = prefix === undefined ? "data-" : prefix;
@@ -66,6 +68,7 @@ describe("AutoSizer Test", function() {
                 setTimeout(() => {
                     expect(parseInt(item1.style[fixed === "height" ? "width" : "height"], 10)).to.be.equal(fixed === "height" ? 640 : 1000);
                     done();
+                    AutoSizer.remove(item1);
                 }, 100);
             });
             it(`remove test(fixed: ${fixed}, prefix: ${prefix})`, done => {

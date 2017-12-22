@@ -1,5 +1,4 @@
 import ImageLoaded from "../../src/ImageLoaded";
-import AutoSizer from "../../src/AutoSizer";
 import {$, innerWidth, innerHeight} from "../../src/utils";
 /* eslint-disable */
 
@@ -12,7 +11,6 @@ describe("ImageLoaded Test", function() {
         this.container = document.body.querySelector(".container");
     });
     afterEach(() => {
-        AutoSizer.removeAll();
         document.body.innerHTML = ``;
     });
     it(`should check image fail`, done => {
@@ -23,9 +21,8 @@ describe("ImageLoaded Test", function() {
             expect(error.calledOnce).to.be.true;
             done();
         });
-        const error = sinon.spy(e => {
-            
-        })
+        const error = sinon.spy();
+
         ImageLoaded.check([img], "data-", complete, error);
     });
     it(`should check image sucess`, done => {
@@ -37,20 +34,17 @@ describe("ImageLoaded Test", function() {
             expect(img.complete).to.be.true;
             done();
         });
-        const error = sinon.spy(e => {
-            
-        })
+        const error = sinon.spy();
+
         ImageLoaded.check([img], "data-", complete, error);
     });
     it(`should check image included size sucess`, done => {
         const img = $(`<img src="/base/test/unit/image/3.jpg" data-width="400" data-height="500" />`);
         this.container.appendChild(img);
 
-        const complete = sinon.spy(e => {
-        });
-        const error = sinon.spy(e => {
-            
-        })
+        const complete = sinon.spy();
+        const error = sinon.spy();
+
         ImageLoaded.check([img], "data-", complete, error);
         setTimeout(() => {
             expect(error.calledOnce).to.be.false;
@@ -62,11 +56,9 @@ describe("ImageLoaded Test", function() {
         const img = $(`<img src="/base/test/unit/image/3.jpg" width="400" height="500" />`);
         this.container.appendChild(img);
 
-        const complete = sinon.spy(e => {
-        });
-        const error = sinon.spy(e => {
-            
-        })
+        const complete = sinon.spy();
+        const error = sinon.spy();
+
         ImageLoaded.check([img], "", complete, error);
         setTimeout(() => {
             expect(error.calledOnce).to.be.false;
@@ -86,9 +78,8 @@ describe("ImageLoaded Test", function() {
             expect(complete.calledOnce).to.be.true;
             done();
         });
-        const error = sinon.spy(e => {
-            
-        })
+        const error = sinon.spy();
+
         ImageLoaded.check([div], "data-", complete, error);
     });
 });

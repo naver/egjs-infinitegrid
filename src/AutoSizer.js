@@ -50,7 +50,4 @@ export default class AutoSizer {
 	static resizeAll() {
 		elements.forEach(element => AutoSizer.resize(element));
 	}
-	static removeAll() {
-		elements.length = 0;
-	}
 }
