@@ -99,6 +99,7 @@ class InfiniteGrid extends Component {
 			isEqualSize: false,
 			useRecycle: true,
 			horizontal: false,
+			attributePrefix: "data-",
 		}, options);
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);
 		this._isVertical = !this.options.horizontal;
@@ -646,6 +647,7 @@ class InfiniteGrid extends Component {
 		this._renderer[method](items);
 		// check image sizes after elements are attated on DOM
 		ImageLoaded.check(items.map(item => item.el),
+			this.options.attributePrefix,
 			() => {
 				const layouted = this._layout[method](
 					this._renderer.updateSize(items),
@@ -660,6 +662,9 @@ class InfiniteGrid extends Component {
 				this._updateCursor(isAppend);
 				DOMRenderer.renderItems(layouted.items);
 				this._onLayoutComplete(layouted.items, isAppend, isTrusted);
+			},
+			error => {
+				this.trigger("imageError", {});
 			}
 		);
 		return this;

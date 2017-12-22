@@ -1,16 +1,35 @@
 import {IS_IE} from "./consts";
 import {addEvent, removeEvent, toArray} from "./utils";
+import AutoSizer from "./AutoSizer";
 
 class ImageLoaded {
-	static waitImageLoaded(needCheck, callback) {
+	static waitImageLoaded(needCheck, prefix, complete, error) {
 		let checkCount = needCheck.length;
 		const checkImage = function() {
 			checkCount--;
-			checkCount <= 0 && callback && callback();
+			if (checkCount > 0) {
+				return;
+			}
+			complete && complete();
+		};
+		const onReiszeCheck = function(e) {
+			if (e.type === "error") {
+				error && error(e);
+			}
+			const target = e.target || e.srcElement;
+
+			removeEvent(target, "load", onReiszeCheck);
+			removeEvent(target, "error", onReiszeCheck);
+			AutoSizer.remove(target);
 		};
 		const onCheck = function(e) {
-			removeEvent(e.target || e.srcElement, "load", onCheck);
-			removeEvent(e.target || e.srcElement, "error", onCheck);
+			if (e.type === "error") {
+				error && error(e);
+			}
+			const target = e.target || e.srcElement;
+
+			removeEvent(target, "load", onCheck);
+			removeEvent(target, "error", onCheck);
 			checkImage();
 		};
 
@@ -19,11 +38,17 @@ class ImageLoaded {
 		needCheck.forEach(v => {
 			if (v.complete) {
 				checkImage();
+			} else if (v.getAttribute(`${prefix}width`)) {
+				AutoSizer.add(v, prefix);
+				checkImage();
+				addEvent(v, "load", onReiszeCheck);
+				addEvent(v, "error", onReiszeCheck);
 			} else {
 				addEvent(v, "load", onCheck);
 				addEvent(v, "error", onCheck);
 			}
 		});
+		console.log(checkCount);
 	}
 	static checkImageLoaded(el) {
 		if (el.tagName === "IMG") {
@@ -38,16 +63,16 @@ class ImageLoaded {
 			});
 		}
 	}
-	static check(elements, callback) {
+	static check(elements, prefix, complete, error) {
 		const needCheck = elements
 			.reduce((acc, v) => acc.concat(this.checkImageLoaded(v)), []);
 
 		if (needCheck.length > 0) {
-			ImageLoaded.waitImageLoaded(needCheck, callback);
+			ImageLoaded.waitImageLoaded(needCheck, prefix, complete, error);
 		} else {
 			// convert to async
 			setTimeout(() => {
-				callback && callback();
+				complete && complete();
 			}, 0);
 		}
 	}

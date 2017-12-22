@@ -125,14 +125,14 @@ describe("InfiniteGrid Test", function() {
           const handler = insert(this.inst, isAppend, () => {
             const lastParam = handler.getCall(handler.callCount - 1).args[0];
 
-            
             if (isAppend) {
               const spot = lastParam.size;
 
               this.inst._watcher.scrollTo(spot / 2);
               setTimeout(() => {
+                console.log(document.body.scrollTop);
                 this.inst._watcher.scrollTo(spot);
-              }, 100);
+              }, 200);
             } else {
               this.inst._watcher.scrollTo(this.inst._getEdgeValue("end") / 2);
               setTimeout(() => {

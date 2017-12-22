@@ -1,0 +1,28 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.js"></script>
+<script src="../../dist/infinitegrid.pkgd.js"></script>
+<!-- <script src="../../node_modules/@egjs/component/dist/component.js"></script> 
+<script src="../../dist/infinitegrid.js"></script> -->
+<style>
+    img {
+        width: 50%;
+    }
+</style>
+<div id="auto1" data-width="769" data-height="501" style="background: #f55;">
+    
+</div>
+<script>
+ 
+    setTimeout(e => {
+        auto1.innerHTML = `<img id="img1" src="https://naver.github.io/egjs-infinitegrid/common/image/InfiniteGrid.png"  data-width="769" data-height="501" />`;
+
+        eg.InfiniteGrid.ImageLoaded.check([img1], {
+            "complete": function() {
+                console.log("LOADED");
+            },
+            "error": function (e) {
+                console.log("ERR", e);
+            },
+        });
+    }, 100);
+    // eg.InfiniteGrid.AutoSizer.add(auto1);
+</script>
