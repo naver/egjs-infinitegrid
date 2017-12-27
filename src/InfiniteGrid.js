@@ -5,7 +5,7 @@
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
-import ImageLoaded, {CHECK_ALL, CHECK_ERROR, CHECK_ONE} from "./ImageLoaded";
+import ImageLoaded, {CHECK_ALL, CHECK_ONLY_ERROR} from "./ImageLoaded";
 import Watcher from "./Watcher";
 import {
 	APPEND,
@@ -609,7 +609,7 @@ class InfiniteGrid extends Component {
 		for (const property in style) {
 			el.style[property] = style[property];
 		}
-		if (!isAppend) {
+		if (!isAppend && !DEFENSE_BROWSER) {
 			this._renderer.scrollBy(-size);
 			this._watcher.setScrollPos();
 			this._items.fit(size, this._isVertical);
@@ -647,16 +647,8 @@ class InfiniteGrid extends Component {
 		fromCache && DOMRenderer.createElements(items);
 		this._renderer[method](items);
 		// check image sizes after elements are attated on DOM
-		const isEqualSize = this.options.isEqualSize;
-		let type = CHECK_ALL;
+		const type = this.options.isEqualSize && this._renderer._size.item ? CHECK_ONLY_ERROR : CHECK_ALL;
 
-		if (isEqualSize) {
-			if (this._renderer._size.item) {
-				type = CHECK_ERROR;
-			} else {
-				type = CHECK_ONE;
-			}
-		}
 		ImageLoaded.check(items.map(item => item.el), {
 			prefix: this.options.attributePrefix,
 			type,
