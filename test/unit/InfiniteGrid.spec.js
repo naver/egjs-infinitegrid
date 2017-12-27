@@ -186,74 +186,81 @@ describe("InfiniteGrid Test", function() {
       });
     });
   });
-  describe(`When prepending fit test(DEFENSE_BROWSER: ${DEFENSE_BROWSER})`, function() {
-    beforeEach(() => {
-      this.el = sandbox();
-      this.el.innerHTML = "<div id='infinite'></div>";
-      this.inst = new InfiniteGrid("#infinite", {
-        useRecycle: true,
-        margin: 5,
+  [true, false].forEach(useRecycle => {
+    describe(`When prepending fit test(DEFENSE_BROWSER: ${DEFENSE_BROWSER})`, function() {
+      beforeEach(() => {
+        this.el = sandbox();
+        this.el.innerHTML = "<div id='infinite'></div>";
+        this.inst = new InfiniteGrid("#infinite", {
+          useRecycle,
+          margin: 5,
+        });
+        this.inst.setLayout(GridLayout);
       });
-      this.inst.setLayout(GridLayout);
-    });
-    afterEach(() => {
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
-      }
-      cleanup();
-    });
-    it("should trigger fit method", done => {
-      this.inst.on("layoutComplete", e => {
-        expect(e.target[0].rect.top).to.be.equals(0);
-        this.inst._items.fit(-100, true);
-        expect(e.target[0].rect.top).to.be.equals(100);
-        expect(this.inst._getEdgeValue("start")).to.be.equals(100);
-        // Then
-        if (DEFENSE_BROWSER) {
-          expect(this.inst._fit("before")).to.be.equals(0);
-          expect(e.target[0].rect.top).to.be.equals(100);
-          expect(this.inst._fit("after")).to.be.equals(0);
-        } else {
-          expect(this.inst._fit("before")).to.be.equals(100);
-          expect(e.target[0].rect.top).to.be.equals(0);
-          expect(this.inst._fit("after")).to.be.equals(0);
+      afterEach(() => {
+        if (this.inst) {
+          this.inst.destroy();
+          this.inst = null;
         }
-        done();
+        cleanup();
       });
-      this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
-    });
-    it("should trigger fit method with loadingBar", done => {
-      this.inst.setLoadingBar({
-        "prepend": `<div class="prepend" style="width: 100px;height: 100px;display:none;">PREPEND</div>`,
-        "append": `<div class="append" style="height: 75px; height: 75px;display:none;">APPEND</div>`,
-      });
+      it("should trigger fit method", done => {
+        // Then
+        this.inst.on("layoutComplete", e => {
+          expect(e.target[0].rect.top).to.be.equals(0);
+          this.inst._items.fit(-100, true);
+          expect(e.target[0].rect.top).to.be.equals(100);
+          expect(this.inst._getEdgeValue("start")).to.be.equals(100);
 
-      this.inst.on("layoutComplete", e => {
-        this.inst._items.fit(-50, true);
-        this.inst.startLoading(false);
-        expect(e.target[0].rect.top).to.be.equals(100);
-        expect(this.inst._getEdgeValue("start")).to.be.equals(100);
-        // Then
-        if (DEFENSE_BROWSER) {
-          expect(this.inst._fit("before")).to.be.equals(0);
-          expect(e.target[0].rect.top).to.be.equals(100);
-          expect(this.inst._fit("after")).to.be.equals(0);
-        } else {
-          expect(this.inst._fit("before")).to.be.equals(100);
-          expect(e.target[0].rect.top).to.be.equals(100);
-          expect(this.inst._fit("after")).to.be.equals(100);
-        }
-        this.inst.endLoading();
-        if (DEFENSE_BROWSER) {
-          expect(e.target[0].rect.top).to.be.equals(100);
-        } else {
-          expect(e.target[0].rect.top).to.be.equals(0);
-        }
-        done();
+          if (DEFENSE_BROWSER || !useRecycle) {
+            expect(this.inst._fit("before")).to.be.equals(0);
+            expect(e.target[0].rect.top).to.be.equals(100);
+            expect(this.inst._fit("after")).to.be.equals(0);
+          } else {
+            expect(this.inst._fit("before")).to.be.equals(100);
+            expect(e.target[0].rect.top).to.be.equals(0);
+            expect(this.inst._fit("after")).to.be.equals(0);
+          }
+          done();
+        });
+        // Given
+        this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
       });
-      
-      this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
+      it("should trigger fit method with loadingBar", done => {
+        // Given
+        this.inst.setLoadingBar({
+          "prepend": `<div class="prepend" style="width: 100px;height: 100px;display:none;">PREPEND</div>`,
+          "append": `<div class="append" style="height: 75px; height: 75px;display:none;">APPEND</div>`,
+        });
+
+        // Then
+        this.inst.on("layoutComplete", e => {
+          this.inst._items.fit(-50, true);
+          this.inst.startLoading(false);
+          expect(e.target[0].rect.top).to.be.equals(100);
+          expect(this.inst._getEdgeValue("start")).to.be.equals(100);
+
+          if (DEFENSE_BROWSER || !useRecycle) {
+            expect(this.inst._fit("before")).to.be.equals(0);
+            expect(e.target[0].rect.top).to.be.equals(100);
+            expect(this.inst._fit("after")).to.be.equals(0);
+          } else {
+            expect(this.inst._fit("before")).to.be.equals(100);
+            expect(e.target[0].rect.top).to.be.equals(100);
+            expect(this.inst._fit("after")).to.be.equals(100);
+          }
+          this.inst.endLoading();
+          if (DEFENSE_BROWSER || !useRecycle) {
+            expect(e.target[0].rect.top).to.be.equals(100);
+          } else {
+            expect(e.target[0].rect.top).to.be.equals(0);
+          }
+          done();
+        });
+        
+        // When
+        this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
+      });
     });
   });
   [true, false].forEach(isOverflowScroll => {

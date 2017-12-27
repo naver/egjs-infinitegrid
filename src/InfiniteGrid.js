@@ -609,7 +609,7 @@ class InfiniteGrid extends Component {
 		for (const property in style) {
 			el.style[property] = style[property];
 		}
-		if (!isAppend && !DEFENSE_BROWSER) {
+		if (!isAppend && this.options.useRecycle && !DEFENSE_BROWSER) {
 			this._renderer.scrollBy(-size);
 			this._watcher.setScrollPos();
 			this._items.fit(size, this._isVertical);

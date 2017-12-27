@@ -12,11 +12,11 @@ function isDataAttribute(target, prefix) {
 }
 
 class ImageLoaded {
-	static waitImageLoaded(needCheck, {prefix, type, complete, error}) {
+	static waitImageLoaded(needCheck, {prefix, length, type, complete, error}) {
 		let checkCount = 0;
 
 		if (type !== CHECK_ONLY_ERROR) {
-			checkCount = needCheck.reduce((sum, element) => sum + element.length, 0);
+			checkCount = length || needCheck.reduce((sum, element) => sum + element.length, 0);
 		}
 		const checkImage = function() {
 			checkCount--;
@@ -31,6 +31,7 @@ class ImageLoaded {
 			}
 			const target = e.target || e.srcElement;
 
+			delete target.__ITEM_INDEX__;
 			removeEvent(target, "error", onCheck);
 			removeEvent(target, "load", onCheck);
 
@@ -45,11 +46,11 @@ class ImageLoaded {
 		IS_IE && needCheck.forEach(v => v.setAttribute("src", v.getAttribute("src")));
 		needCheck.forEach((images, i) => {
 			images.forEach(v => {
-				v.__ITEM_INDEX__ = i;
 				if (v.complete) {
 					checkImage();
 					return;
 				}
+				v.__ITEM_INDEX__ = i;
 				if (type === CHECK_ALL && isDataAttribute(v, prefix)) {
 					AutoSizer.add(v, prefix);
 					checkImage();
