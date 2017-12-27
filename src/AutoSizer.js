@@ -31,11 +31,11 @@ export default class AutoSizer {
 			removeEvent(window, "reisze", onResize);
 		}
 	}
-	static resize(element) {
-		const prefix = element.__PREFIX__;
-		const dataWidth = element.getAttribute(`${prefix}width`);
-		const dataHeight = element.getAttribute(`${prefix}height`);
-		const fixed = element.getAttribute(`${prefix}fixed`) || "width";
+	static resize(element, prefix = "data-") {
+		const elementPrefix = typeof element.__PREFIX__ === "string" ? element.__PREFIX__ : prefix;
+		const dataWidth = element.getAttribute(`${elementPrefix}width`);
+		const dataHeight = element.getAttribute(`${elementPrefix}height`);
+		const fixed = element.getAttribute(`${elementPrefix}fixed`) || "width";
 
 		if (fixed === "width") {
 			const size = innerWidth(element) || dataWidth;

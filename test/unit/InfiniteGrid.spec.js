@@ -74,6 +74,7 @@ describe("InfiniteGrid Test", function() {
           // Then
           expect(e.target).to.have.lengthOf(count);
           expect(this.getItems(true)).to.have.lengthOf(count);
+          expect(this.getItems(false)).to.have.lengthOf(count);
           expect(this.isProcessing()).to.be.false;
           done();
         });
@@ -185,6 +186,83 @@ describe("InfiniteGrid Test", function() {
       });
     });
   });
+  [true, false].forEach(useRecycle => {
+    describe(`When prepending fit test(DEFENSE_BROWSER: ${DEFENSE_BROWSER})`, function() {
+      beforeEach(() => {
+        this.el = sandbox();
+        this.el.innerHTML = "<div id='infinite'></div>";
+        this.inst = new InfiniteGrid("#infinite", {
+          useRecycle,
+          margin: 5,
+        });
+        this.inst.setLayout(GridLayout);
+      });
+      afterEach(() => {
+        if (this.inst) {
+          this.inst.destroy();
+          this.inst = null;
+        }
+        cleanup();
+      });
+      it("should trigger fit method", done => {
+        // Then
+        this.inst.on("layoutComplete", e => {
+          expect(e.target[0].rect.top).to.be.equals(0);
+          this.inst._items.fit(-100, true);
+          expect(e.target[0].rect.top).to.be.equals(100);
+          expect(this.inst._getEdgeValue("start")).to.be.equals(100);
+
+          if (DEFENSE_BROWSER || !useRecycle) {
+            expect(this.inst._fit("before")).to.be.equals(0);
+            expect(e.target[0].rect.top).to.be.equals(100);
+            expect(this.inst._fit("after")).to.be.equals(0);
+          } else {
+            expect(this.inst._fit("before")).to.be.equals(100);
+            expect(e.target[0].rect.top).to.be.equals(0);
+            expect(this.inst._fit("after")).to.be.equals(0);
+          }
+          done();
+        });
+        // Given
+        this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
+      });
+      it("should trigger fit method with loadingBar", done => {
+        // Given
+        this.inst.setLoadingBar({
+          "prepend": `<div class="prepend" style="width: 100px;height: 100px;display:none;">PREPEND</div>`,
+          "append": `<div class="append" style="height: 75px; height: 75px;display:none;">APPEND</div>`,
+        });
+
+        // Then
+        this.inst.on("layoutComplete", e => {
+          this.inst._items.fit(-50, true);
+          this.inst.startLoading(false);
+          expect(e.target[0].rect.top).to.be.equals(100);
+          expect(this.inst._getEdgeValue("start")).to.be.equals(100);
+
+          if (DEFENSE_BROWSER || !useRecycle) {
+            expect(this.inst._fit("before")).to.be.equals(0);
+            expect(e.target[0].rect.top).to.be.equals(100);
+            expect(this.inst._fit("after")).to.be.equals(0);
+          } else {
+            expect(this.inst._fit("before")).to.be.equals(100);
+            expect(e.target[0].rect.top).to.be.equals(100);
+            expect(this.inst._fit("after")).to.be.equals(100);
+          }
+          this.inst.endLoading();
+          if (DEFENSE_BROWSER || !useRecycle) {
+            expect(e.target[0].rect.top).to.be.equals(100);
+          } else {
+            expect(e.target[0].rect.top).to.be.equals(0);
+          }
+          done();
+        });
+        
+        // When
+        this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
+      });
+    });
+  });
   [true, false].forEach(isOverflowScroll => {
     describe(`When appending/prepending loadingStart/loaingEnd event Test (isOverflowScroll: ${isOverflowScroll})`, function() {
       beforeEach(() => {
@@ -246,9 +324,15 @@ describe("InfiniteGrid Test", function() {
           this.inst.on("layoutComplete", layoutCompleteHandler);
           this.inst.on(isAppend ? "append" : "prepend", insertHandler);
           const handler = insert(this.inst, isAppend, () => {
+            const base = this.inst._getEdgeValue("start");
+
             this.inst.endLoading();
             if (!isAppend) {
-              expect(this.inst._getEdgeValue("start")).to.be.equal(0);
+              if (DEFENSE_BROWSER) {
+                expect(this.inst._getEdgeValue("start")).to.be.equal(base);  
+              } else {
+                expect(this.inst._getEdgeValue("start")).to.be.equal(0);
+              }
             }
             expect(this.inst._isLoading()).to.be.false;
             expect(this.inst._getLoadingStatus()).to.be.equal(0);
@@ -276,7 +360,7 @@ describe("InfiniteGrid Test", function() {
         });
       });
     });
-  });  
+  }); 
   describe("append/prepend Test on layoutComplete", function() {
     [true, false].forEach(isOverflowScroll => {
       beforeEach(() => {
@@ -326,6 +410,38 @@ describe("InfiniteGrid Test", function() {
       });
     });
   });  
+  describe("isEqualSize option Test", function() {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = "<div id='infinite'></div>";
+      this.inst = new InfiniteGrid("#infinite", {
+        isEqualSize: true,
+      });
+      this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it(`should check isEqualSize option`, done => {
+      // Given
+      // When
+      insert(this.inst, true, () => {
+        const datas = this.inst._items._data;
+
+        const standardSize = datas[0].items[0].size;
+        datas.forEach(({items}) => {
+          items.forEach(({size}) => {
+            expect(size).to.deep.equals(standardSize);
+          });
+        })
+        done();
+      }, 5, 4);
+    });
+  });
   describe("setLayout method Test", function() {
     beforeEach(() => {
       this.el = sandbox();
