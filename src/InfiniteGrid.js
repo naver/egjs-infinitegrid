@@ -5,7 +5,7 @@
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
-import ImageLoaded from "./ImageLoaded";
+import ImageLoaded, {CHECK_ALL, CHECK_ONLY_ERROR} from "./ImageLoaded";
 import Watcher from "./Watcher";
 import {
 	APPEND,
@@ -609,7 +609,7 @@ class InfiniteGrid extends Component {
 		for (const property in style) {
 			el.style[property] = style[property];
 		}
-		if (!isAppend) {
+		if (!isAppend && this.options.useRecycle && !DEFENSE_BROWSER) {
 			this._renderer.scrollBy(-size);
 			this._watcher.setScrollPos();
 			this._items.fit(size, this._isVertical);
@@ -647,9 +647,12 @@ class InfiniteGrid extends Component {
 		fromCache && DOMRenderer.createElements(items);
 		this._renderer[method](items);
 		// check image sizes after elements are attated on DOM
-		ImageLoaded.check(items.map(item => item.el),
-			this.options.attributePrefix,
-			() => {
+		const type = this.options.isEqualSize && this._renderer._size.item ? CHECK_ONLY_ERROR : CHECK_ALL;
+
+		ImageLoaded.check(items.map(item => item.el), {
+			prefix: this.options.attributePrefix,
+			type,
+			complete: () => {
 				const layouted = this._layout[method](
 					this._renderer.updateSize(items),
 					outline
@@ -664,10 +667,10 @@ class InfiniteGrid extends Component {
 				DOMRenderer.renderItems(layouted.items);
 				this._onLayoutComplete(layouted.items, isAppend, isTrusted);
 			},
-			error => {
+			error: error => {
 				this.trigger("imageError", {});
-			}
-		);
+			},
+		});
 		return this;
 	}
 	_isVisible(index) {

@@ -13,13 +13,13 @@ export default class ItemManager {
 			content: el.outerHTML,
 		}));
 	}
-	static selectItems(elements, selector) {
+	static selectItems(elements, selector = "*") {
 		return elements.filter(v => {
 			const classNames = v.className.split(" ");
 
 			if (classNames.some(c => c === IGNORE_CLASSNAME)) {
 				return false;
-			} else if (selector === "*") {
+			} else if (!selector || selector === "*") {
 				return v;
 			} else {
 				return classNames.some(c => c === selector);
