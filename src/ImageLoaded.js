@@ -4,8 +4,7 @@ import AutoSizer from "./AutoSizer";
 
 
 export const CHECK_ALL = 1;
-export const CHECK_EQUAL_SIZE = 2;
-export const CHECK_ONLY_ERROR = 3;
+export const CHECK_ONLY_ERROR = 2;
 
 
 function isDataAttribute(target, prefix) {
@@ -16,10 +15,8 @@ class ImageLoaded {
 	static waitImageLoaded(needCheck, {prefix, type, complete, error}) {
 		let checkCount = 0;
 
-		if (type === CHECK_ALL) {
-			checkCount = needCheck.length;
-		} else if (type === CHECK_EQUAL_SIZE) {
-			checkCount = 1;
+		if (type !== CHECK_ONLY_ERROR) {
+			checkCount = needCheck.reduce((sum, element) => sum + element.length, 0);
 		}
 		const checkImage = function() {
 			checkCount--;
@@ -37,8 +34,8 @@ class ImageLoaded {
 			removeEvent(target, "error", onCheck);
 			removeEvent(target, "load", onCheck);
 
-			if (type !== CHECK_ONLY_ERROR && isDataAttribute(target, prefix)) {
-				type === CHECK_ALL && AutoSizer.remove(target);
+			if (type === CHECK_ALL && isDataAttribute(target, prefix)) {
+				AutoSizer.remove(target);
 			} else {
 				checkImage();
 			}
@@ -46,18 +43,15 @@ class ImageLoaded {
 
 		// workaround for IE
 		IS_IE && needCheck.forEach(v => v.setAttribute("src", v.getAttribute("src")));
-		needCheck.forEach(images => {
+		needCheck.forEach((images, i) => {
 			images.forEach(v => {
+				v.__ITEM_INDEX__ = i;
 				if (v.complete) {
 					checkImage();
 					return;
 				}
-				if (type !== CHECK_ONLY_ERROR && isDataAttribute(v, prefix)) {
-					if (type === CHECK_ALL) {
-						AutoSizer.add(v, prefix);
-					} else {
-						AutoSizer.resize(v, prefix);
-					}
+				if (type === CHECK_ALL && isDataAttribute(v, prefix)) {
+					AutoSizer.add(v, prefix);
 					checkImage();
 				}
 				addEvent(v, "load", onCheck);
@@ -79,9 +73,6 @@ class ImageLoaded {
 		}
 	}
 	static check(elements, {prefix, type = CHECK_ALL, complete, error}) {
-		if (!elements.length) {
-			return;
-		}
 		const images = elements.map(element => this.checkImageLoaded(element));
 		const length = images.reduce((sum, element) => sum + element.length, 0);
 
@@ -92,7 +83,7 @@ class ImageLoaded {
 			}, 0);
 		}
 		if (length > 0) {
-			this.waitImageLoaded(images, {prefix, type, complete, error});
+			this.waitImageLoaded(images, {prefix, length, type, complete, error});
 		}
 	}
 }
