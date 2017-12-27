@@ -1,7 +1,12 @@
 import ItemManager from "../../src/ItemManager";
+import {IGNORE_CLASSNAME} from "../../src/consts";
 
+/* eslint-disable */
 function initItems() {
-  return [
+  return {
+    groupKey: 1,
+    outlines: {start:[], end: []},
+    items:[
     {
       size: {
         width: 100,
@@ -67,10 +72,43 @@ function initItems() {
         height: 100
       }
     }
-  ];
+  ]};
 }
 
 describe("ItemManager Test", function() {
+  describe("from Test", function() {
+    beforeEach(() => {
+      this.inst = new ItemManager({
+      });
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst = null;
+      }
+    });
+    it("sholud have IGNORE CLASS ITEM", () => {
+      // Given
+      const elements = `<div></div><div class="${IGNORE_CLASSNAME}"></div><div></div>`;
+
+      // When
+      const items = ItemManager.from(elements, "*", {groupKey: 10, isAppend: true});
+
+      // Then
+      expect(items).to.have.lengthOf(2);
+      expect(items[0].groupKey).to.be.equals(10);
+    });
+    it("sholud have item selector", () => {
+      // Given
+      const elements = `<div class="item"></div><div class="item item2"></div><div class="item2"></div><div class="${IGNORE_CLASSNAME}"></div><div></div>`;
+
+      // When
+      const items = ItemManager.from(elements, "item", {groupKey: 10, isAppend: true});
+
+      // Then
+      expect(items).to.have.lengthOf(2);
+      expect(items[0].groupKey).to.be.equals(10);
+    });
+  });
   describe("append/prepend Test", function() {
     beforeEach(() => {
       this.inst = new ItemManager({
@@ -90,6 +128,31 @@ describe("ItemManager Test", function() {
       const items = this.inst.get(true);
       items.forEach(v => {
         expect(v.groupKey).to.be.exist;
+      });
+    });
+  });
+  [true, false].forEach(isVertical => {
+    describe(`fit Test(isVertical: ${isVertical})`, function() {
+      beforeEach(() => {
+        this.inst = new ItemManager({
+        });
+      });
+      afterEach(() => {
+        if (this.inst) {
+          this.inst = null;
+        }
+      });
+      it("should check position.", () => {
+        // Given
+        const vertical = [0, 0, 100, 100, 200];
+        const horizontal = [0, 200, 0, 200, 0];
+        // When
+        this.inst.append(initItems());
+        this.inst.fit(100, isVertical);
+        // Then
+        this.inst._data[0].items.forEach((item, i) => {
+          expect(item.rect[isVertical ? "top" : "left"]).to.be.equals((isVertical ? vertical[i] : horizontal[i]) - 100);
+        });
       });
     });
   });
