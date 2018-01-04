@@ -17,15 +17,17 @@ export default class AutoSizer {
 		elements.push(element);
 		AutoSizer.resize(element);
 	}
-	static remove(element) {
+	static remove(element, isFixed = false) {
+		const fixed = element.getAttribute(`${element.__PREFIX__}fixed`) || "width";
+
+		if (!isFixed) {
+			element.style[fixed === "width" ? "height" : "width"] = "";
+		}
 		const index = elements.indexOf(element);
 
 		if (!~index) {
 			return;
 		}
-		const fixed = element.getAttribute(`${element.__PREFIX__}fixed`) || "width";
-
-		element.style[fixed === "width" ? "height" : "width"] = "";
 		elements.splice(index, 1);
 		if (!elements.length) {
 			removeEvent(window, "reisze", onResize);
