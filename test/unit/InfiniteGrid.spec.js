@@ -11,7 +11,7 @@ import {innerWidth, innerHeight} from "../../src/utils";
 import {DEFENSE_BROWSER} from "../../src/consts";
 
 /* eslint-disable */
-describe.only("InfiniteGrid Test", function() {
+describe("InfiniteGrid Test", function() {
   [true, false].forEach(isOverflowScroll => {
     describe("destroy Test", function() {
       beforeEach(() => {
@@ -75,7 +75,7 @@ describe.only("InfiniteGrid Test", function() {
           expect(e.target).to.have.lengthOf(count);
           expect(this.getItems(true)).to.have.lengthOf(count);
           expect(this.getItems(false)).to.have.lengthOf(count);
-          expect(this.isProcessing()).to.be.false;
+          expect(this._isProcessing()).to.be.false;
           done();
         });
   
@@ -263,7 +263,7 @@ describe.only("InfiniteGrid Test", function() {
       });
     });
   });
-  describe.only(`When appending, image test`, function() {
+  describe(`When appending, image test`, function() {
     beforeEach(() => {
       this.el = sandbox();
       this.el.innerHTML = "<div id='infinite'></div>";
@@ -303,6 +303,62 @@ describe.only("InfiniteGrid Test", function() {
 
       // When
       this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg"><img src="/1.jpg"><img src="/2.jpg">`);
+    });
+    it(`should check append error image and test error event remove method`, done => {
+      const error = sinon.spy(e => {
+        e.remove();
+      });
+      const complete2 = e => {
+        expect(error.calledOnce).to.be.true;
+        expect(this.inst._items._data[0].items).to.be.lengthOf(1);
+        done();
+      };
+      const complete1 = e => {
+        this.inst.on("layoutComplete", complete2);
+        this.inst.off("layoutComplete", complete1);
+      };
+      this.inst.on("layoutComplete", complete1);
+      this.inst.on("imageError", error);
+
+      this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg">`);
+    });
+    it(`should check append error image and test error event replace method`, done => {
+      const error = sinon.spy(e => {
+        e.replace("/base/test/unit/images/error.png");
+      });
+      const complete2 = e => {
+        expect(error.calledOnce).to.be.true;
+        expect(this.inst._items._data[0].items[1].content).to.have.string("error.png");
+        expect(this.inst._items._data[0].items[1].el.src).to.have.string("error.png");
+        done();
+      };
+      const complete1 = e => {
+        this.inst.on("layoutComplete", complete2);
+        this.inst.off("layoutComplete", complete1);
+      };
+      this.inst.on("layoutComplete", complete1);
+      this.inst.on("imageError", error);
+
+      this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg">`);
+    });
+    it(`should check append error image and test error event replaceItem method`, done => {
+      const error = sinon.spy(e => {
+        e.replaceItem("<p>it's error</p>");
+      });
+      const complete2 = e => {
+        expect(error.calledOnce).to.be.true;
+        expect(this.inst._items._data[0].items[1].content).to.have.string("it's error");
+        expect(this.inst._items._data[0].items[1].el.innerHTML).to.have.string("it's error");
+        done();
+      };
+      const complete1 = e => {
+        this.inst.on("layoutComplete", complete2);
+        this.inst.off("layoutComplete", complete1);
+      };
+      this.inst.on("layoutComplete", complete1);
+      this.inst.on("imageError", error);
+
+      this.inst.append(`<div><img src="/base/test/unit/image/3.jpg" /></div><div><img src="/1.jpg"></div>`);
     });
   });
   [true, false].forEach(isOverflowScroll => {
@@ -579,7 +635,7 @@ describe.only("InfiniteGrid Test", function() {
           // Then
           expect(e.target).to.have.lengthOf(100);
           expect(this.getItems(true)).to.have.lengthOf(100);
-          expect(this.isProcessing()).to.be.false;
+          expect(this._isProcessing()).to.be.false;
           done();
         });
         
