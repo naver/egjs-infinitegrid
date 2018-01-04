@@ -28,6 +28,7 @@ function getItems(group, length) {
 
 var ig = new eg.InfiniteGrid(grid, {
     threshold: 50,
+    isEqualSize: true,
 });
 ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
 ig.on({
@@ -54,8 +55,8 @@ ig.on({
         console.log("imageERR");
         console.log(e);
         // e.remove();
-        // e.replace("../unit/image/error.png");
-        e.replaceItem("에러를 받아라!!!!");
+        e.replace("../unit/image/error.png");
+        // e.replaceItem("에러를 받아라!!!!");
     }
 });
 ig.setLayout(eg.InfiniteGrid.GridLayout, {margin: 5});

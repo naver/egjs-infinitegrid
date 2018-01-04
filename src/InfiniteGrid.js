@@ -302,12 +302,20 @@ class InfiniteGrid extends Component {
 		let outline;
 
 		if (isRelayout) { // remove cache
-			data = this._items.get(this._status.startCursor, this._status.endCursor);
-			if (this._renderer.resize()) {
-				this._layout.setSize(this._renderer.getViewportSize());
-				data.forEach(v => {
-					data.items = this._renderer.updateSize(v.items);
-				});
+			if (this.options.isEqualSize) {
+				data = this._items.get(0, this._status.endCursor);
+				if (this._renderer.resize()) {
+					this._layout.setSize(this._renderer.getViewportSize());
+				}
+				outline = this._items.getOutline(0, "start");
+			} else {
+				data = this._items.get(this._status.startCursor, this._status.endCursor);
+				if (this._renderer.resize()) {
+					this._layout.setSize(this._renderer.getViewportSize());
+					data.forEach(v => {
+						data.items = this._renderer.updateSize(v.items);
+					});
+				}
 			}
 		} else {
 			data = this._items.get(this._status.startCursor, this._items.size());
@@ -319,13 +327,17 @@ class InfiniteGrid extends Component {
 		this._layout.layout(data, outline);
 
 		if (isRelayout) {
-			this._items._data.forEach((group, cursor) => {
-				if (this._status.startCursor <= cursor && cursor <= this._status.endCursor) {
-					return;
-				}
-				group.outlines.start = [];
-				group.outlines.end = [];
-			});
+			if (!this.options.isEqualSize) {
+				this._items._data.forEach((group, cursor) => {
+					if (this._status.startCursor <= cursor && cursor <= this._status.endCursor) {
+						return;
+					}
+					group.outlines.start = [];
+					group.outlines.end = [];
+				});
+			} else {
+				this._fit("after");
+			}
 		} else {
 			data.forEach(v => this._items.set(v, v.groupKey));
 		}
@@ -474,7 +486,7 @@ class InfiniteGrid extends Component {
 		return this._getLoadingStatus() > 0;
 	}
 	_isImageProcessing() {
-		return this._status.processingStatus & IMAGE_PROCESSING > 0;
+		return (this._status.processingStatus & IMAGE_PROCESSING) > 0;
 	}
 	_getLoadingStatus() {
 		return this._status.processingStatus & (LOADING_APPEND | LOADING_PREPEND);
@@ -879,7 +891,9 @@ class InfiniteGrid extends Component {
 		useRecycle = this.options.useRecycle, isLayout = false) {
 		this._isLoading() && this._renderLoading();
 		!isAppend && this._fit("after");
-		useRecycle && this._recycle(isAppend);
+		if (!this._isImageProcessing() && useRecycle) {
+			this._recycle(isAppend);
+		}
 
 		const size = this._getEdgeValue("end");
 
