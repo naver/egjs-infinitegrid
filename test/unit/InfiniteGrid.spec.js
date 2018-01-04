@@ -11,7 +11,7 @@ import {innerWidth, innerHeight} from "../../src/utils";
 import {DEFENSE_BROWSER} from "../../src/consts";
 
 /* eslint-disable */
-describe("InfiniteGrid Test", function() {
+describe.only("InfiniteGrid Test", function() {
   [true, false].forEach(isOverflowScroll => {
     describe("destroy Test", function() {
       beforeEach(() => {
@@ -261,6 +261,48 @@ describe("InfiniteGrid Test", function() {
         // When
         this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
       });
+    });
+  });
+  describe.only(`When appending, image test`, function() {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = "<div id='infinite'></div>";
+      this.inst = new InfiniteGrid("#infinite", {
+        margin: 5,
+      });
+      this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it(`should check append error images`, done => {
+      this.inst.on("imageError", e => {
+        expect(e.target.src).to.have.string("1.jpg");
+        expect(e.itemIndex).to.be.equals(1);
+        done();
+      });
+      this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg">`);
+    });
+    it(`should check append multiple error images`, done => {
+      // Given
+      let count = 0;
+
+      // Then
+      this.inst.on("imageError", e => {
+        ++count;
+
+        expect(e.itemIndex).to.be.not.equals(0);
+        if (count === 3) {
+          done();
+        }
+      });
+
+      // When
+      this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg"><img src="/1.jpg"><img src="/2.jpg">`);
     });
   });
   [true, false].forEach(isOverflowScroll => {
