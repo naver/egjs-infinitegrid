@@ -8,7 +8,7 @@ body {
     bottom: 0;
     z-index: 2;
     background: #fff;
-    opacity: 0.5;
+    opacity: 0.8;
 }
 #controller button {
     appearance: none;
@@ -20,6 +20,7 @@ body {
     border: 1px solid #ccc;
     background: #fff;
     height: 40px;
+    font-weight: bold;
 }
 #controller button:active {
     background: #ddd;

@@ -2,7 +2,7 @@
 // window.console = window.console || {log: function(){}};
 
 
-var template = '<div class="item" data-column="${column}" data-i=${i} data-group=${group} data-g=${rgroup}><img src="../../demo/assets/image/${no}.jpg" ${data}></div >';
+var template = '<div class="item" data-column="${column}" data-i=${i} data-group=${group} data-g=${rgroup}>HEADER<img src="../../demo/assets/image/${no}.jpg" ${data}>FOOTER</div >';
 var num = 10;
 var groups = {};
 
@@ -27,13 +27,12 @@ function getItems(group, length) {
 }
 
 var ig = new eg.InfiniteGrid(grid, {
-    threshold: 50,
-    isEqualSize: true,
+    threshold: 50
 });
 ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
 ig.on({
     "append": function (e) {
-        console.log("append");
+        // console.log("append");
         var groupKey = e.groupKey + 1;
         if (!(groupKey in groups)) {
             // allow append
@@ -45,15 +44,14 @@ ig.on({
         // }, 1000);
     },
     "layoutComplete": function (e) {
-        console.log("layoutComplete");
+        // console.log("layoutComplete");
         ig.endLoading();
         if (e.isAppend && !e.isScroll) {
             append();
         }
     },
     "imageError": function(e) {
-        console.log("imageERR");
-        console.log(e);
+        // console.log("imageERR");
         // e.remove();
         e.replace("../unit/image/error.png");
         // e.replaceItem("에러를 받아라!!!!");
@@ -70,4 +68,38 @@ function append() {
     }
 	ig.startLoading(true);
 	ig.append(groups[groupKey], groupKey);
+}
+
+function none() {
+    ig.off("imageError");
+}
+function remove() {
+    ig.off("imageError");
+    ig.on("imageError", function (e) {
+        e.remove();
+    });
+}
+function removeItem() {
+    ig.off("imageError");
+    ig.on("imageError", function (e) {
+        e.removeItem();
+    });
+}
+function replace() {
+    ig.off("imageError");
+    ig.on("imageError", function (e) {
+        e.replace("../unit/image/error.png");
+    });
+}
+function replaceElement() {
+    ig.off("imageError");
+    ig.on("imageError", function (e) {
+        e.replaceElement("<div class=\"replaceElement\">REPLACE ELEMENT</div>");
+    });
+}
+function replaceItem() {
+    ig.off("imageError");
+    ig.on("imageError", function (e) {
+        e.replaceItem("<div class=\"replaceItem\">REPLACE Item</div>");
+    });
 }

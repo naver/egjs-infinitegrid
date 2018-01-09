@@ -51,7 +51,7 @@ function createGrid() {
 			}, 1000);
 		},
 		"append": function (e) {
-			// console.log("append");
+			console.log("append");
 			var groupKeys = ig.getGroupKeys(true);
 			var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
 			if (!(groupKey in groups)) {
@@ -226,18 +226,5 @@ function overflow_false() {
 	$("#grid").attr("data-overflow", "false");
 	window[_layout]();
 }
-
-$("#controller").click(function(e) {
-	var target = e.target;
-	var tag = target.tagName;
-
-	if (tag !== "BUTTON") {
-		return;
-	}
-	var className = $(target).attr("class");
-
-	window[className]();
-
-});
 
 
