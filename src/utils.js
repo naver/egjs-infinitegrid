@@ -19,15 +19,6 @@ export function toArray(nodes) {
 	}
 	return array;
 }
-export function fill(length, value) {
-	const array = typeof length === "object" ? length : new Array(length);
-	const len = array.length;
-
-	for (let i = len - 1; i >= 0; --i) {
-		array[i] = value;
-	}
-	return array;
-}
 /**
  * Select or create element
  * @param {String|HTMLElement|jQuery} param
@@ -188,19 +179,4 @@ export function toZeroArray(outline) {
 
 export function isWindow(el) {
 	return el === window;
-}
-
-export function indexOf(arr, target, isRight = false) {
-	if (!isRight) {
-		return arr.indexOf(target);
-	}
-	const length = arr.length;
-
-	for (let i = length - 1; i >= 0; --i) {
-		if (arr[i] !== target) {
-			continue;
-		}
-		return i;
-	}
-	return -1;
 }

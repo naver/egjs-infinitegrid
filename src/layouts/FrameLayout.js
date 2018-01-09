@@ -1,5 +1,5 @@
 import {APPEND, PREPEND, DUMMY_POSITION} from "../consts";
-import {getStyleNames, assignOptions, fill} from "../utils";
+import {getStyleNames, assignOptions} from "../utils";
 
 
 /*
@@ -164,8 +164,8 @@ class FrameLayout {
 		const shapesSize = this._shapes[size2Name];
 		const shapes = this._shapes.shapes;
 		const shapesLength = shapes.length;
-		const startOutline = fill(shapesSize, DUMMY_POSITION);
-		const endOutline = fill(shapesSize, DUMMY_POSITION);
+		const startOutline = new Array(shapesSize).fill(DUMMY_POSITION);
+		const endOutline = new Array(shapesSize).fill(DUMMY_POSITION);
 		let dist = 0;
 		let end = 0;
 		let startIndex = -1;
