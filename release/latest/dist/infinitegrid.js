@@ -7,7 +7,398 @@
  * 
  * @version 3.0.0
  */
-(function webpackUniversalModuleDefinition(root, factory) {
+// Production steps of ECMA-262, Edition 5, 15.4.4.18
+// Reference: http://es5.github.io/#x15.4.4.18
+if (!Array.prototype.forEach) {
+
+    Array.prototype.forEach = function(callback/*, thisArg*/) {
+  
+      var T, k;
+  
+      if (this == null) {
+        throw new TypeError('this is null or not defined');
+      }
+  
+      // 1. Let O be the result of calling toObject() passing the
+      // |this| value as the argument.
+      var O = Object(this);
+  
+      // 2. Let lenValue be the result of calling the Get() internal
+      // method of O with the argument "length".
+      // 3. Let len be toUint32(lenValue).
+      var len = O.length >>> 0;
+  
+      // 4. If isCallable(callback) is false, throw a TypeError exception. 
+      // See: http://es5.github.com/#x9.11
+      if (typeof callback !== 'function') {
+        throw new TypeError(callback + ' is not a function');
+      }
+  
+      // 5. If thisArg was supplied, let T be thisArg; else let
+      // T be undefined.
+      if (arguments.length > 1) {
+        T = arguments[1];
+      }
+  
+      // 6. Let k be 0.
+      k = 0;
+  
+      // 7. Repeat while k < len.
+      while (k < len) {
+  
+        var kValue;
+  
+        // a. Let Pk be ToString(k).
+        //    This is implicit for LHS operands of the in operator.
+        // b. Let kPresent be the result of calling the HasProperty
+        //    internal method of O with argument Pk.
+        //    This step can be combined with c.
+        // c. If kPresent is true, then
+        if (k in O) {
+  
+          // i. Let kValue be the result of calling the Get internal
+          // method of O with argument Pk.
+          kValue = O[k];
+  
+          // ii. Call the Call internal method of callback with T as
+          // the this value and argument list containing kValue, k, and O.
+          callback.call(T, kValue, k, O);
+        }
+        // d. Increase k by 1.
+        k++;
+      }
+      // 8. return undefined.
+    };
+  }// Production steps of ECMA-262, Edition 5, 15.4.4.19
+// Reference: http://es5.github.io/#x15.4.4.19
+if (!Array.prototype.map) {
+
+    Array.prototype.map = function(callback, thisArg) {
+  
+      var T, A, k;
+  
+      if (this == null) {
+        throw new TypeError(' this is null or not defined');
+      }
+  
+      // 1. Let O be the result of calling ToObject passing the |this| 
+      //    value as the argument.
+      var O = Object(this);
+  
+      // 2. Let lenValue be the result of calling the Get internal 
+      //    method of O with the argument "length".
+      // 3. Let len be ToUint32(lenValue).
+      var len = O.length >>> 0;
+  
+      // 4. If IsCallable(callback) is false, throw a TypeError exception.
+      // See: http://es5.github.com/#x9.11
+      if (typeof callback !== 'function') {
+        throw new TypeError(callback + ' is not a function');
+      }
+  
+      // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+      if (arguments.length > 1) {
+        T = thisArg;
+      }
+  
+      // 6. Let A be a new array created as if by the expression new Array(len) 
+      //    where Array is the standard built-in constructor with that name and 
+      //    len is the value of len.
+      A = new Array(len);
+  
+      // 7. Let k be 0
+      k = 0;
+  
+      // 8. Repeat, while k < len
+      while (k < len) {
+  
+        var kValue, mappedValue;
+  
+        // a. Let Pk be ToString(k).
+        //   This is implicit for LHS operands of the in operator
+        // b. Let kPresent be the result of calling the HasProperty internal 
+        //    method of O with argument Pk.
+        //   This step can be combined with c
+        // c. If kPresent is true, then
+        if (k in O) {
+  
+          // i. Let kValue be the result of calling the Get internal 
+          //    method of O with argument Pk.
+          kValue = O[k];
+  
+          // ii. Let mappedValue be the result of calling the Call internal 
+          //     method of callback with T as the this value and argument 
+          //     list containing kValue, k, and O.
+          mappedValue = callback.call(T, kValue, k, O);
+  
+          // iii. Call the DefineOwnProperty internal method of A with arguments
+          // Pk, Property Descriptor
+          // { Value: mappedValue,
+          //   Writable: true,
+          //   Enumerable: true,
+          //   Configurable: true },
+          // and false.
+  
+          // In browsers that support Object.defineProperty, use the following:
+          // Object.defineProperty(A, k, {
+          //   value: mappedValue,
+          //   writable: true,
+          //   enumerable: true,
+          //   configurable: true
+          // });
+  
+          // For best browser support, use the following:
+          A[k] = mappedValue;
+        }
+        // d. Increase k by 1.
+        k++;
+      }
+  
+      // 9. return A
+      return A;
+    };
+  }// Reference: https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
+if (!Array.prototype.fill) {
+    Array.prototype.fill = function(value) {
+  
+      // Steps 1-2.
+      if (this == null) {
+        throw new TypeError('this is null or not defined');
+      }
+  
+      var O = Object(this);
+  
+      // Steps 3-5.
+      var len = O.length >>> 0;
+  
+      // Steps 6-7.
+      var start = arguments[1];
+      var relativeStart = start >> 0;
+  
+      // Step 8.
+      var k = relativeStart < 0 ?
+        Math.max(len + relativeStart, 0) :
+        Math.min(relativeStart, len);
+  
+      // Steps 9-10.
+      var end = arguments[2];
+      var relativeEnd = end === undefined ?
+        len : end >> 0;
+  
+      // Step 11.
+      var final = relativeEnd < 0 ?
+        Math.max(len + relativeEnd, 0) :
+        Math.min(relativeEnd, len);
+  
+      // Step 12.
+      while (k < final) {
+        O[k] = value;
+        k++;
+      }
+  
+      // Step 13.
+      return O;
+    };
+  }if (!Array.prototype.every) {
+    Array.prototype.every = function(callbackfn, thisArg) {
+      'use strict';
+      var T, k;
+  
+      if (this == null) {
+        throw new TypeError('this is null or not defined');
+      }
+  
+      // 1. Let O be the result of calling ToObject passing the this 
+      //    value as the argument.
+      var O = Object(this);
+  
+      // 2. Let lenValue be the result of calling the Get internal method
+      //    of O with the argument "length".
+      // 3. Let len be ToUint32(lenValue).
+      var len = O.length >>> 0;
+  
+      // 4. If IsCallable(callbackfn) is false, throw a TypeError exception.
+      if (typeof callbackfn !== 'function') {
+        throw new TypeError();
+      }
+  
+      // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+      if (arguments.length > 1) {
+        T = thisArg;
+      }
+  
+      // 6. Let k be 0.
+      k = 0;
+  
+      // 7. Repeat, while k < len
+      while (k < len) {
+  
+        var kValue;
+  
+        // a. Let Pk be ToString(k).
+        //   This is implicit for LHS operands of the in operator
+        // b. Let kPresent be the result of calling the HasProperty internal 
+        //    method of O with argument Pk.
+        //   This step can be combined with c
+        // c. If kPresent is true, then
+        if (k in O) {
+  
+          // i. Let kValue be the result of calling the Get internal method
+          //    of O with argument Pk.
+          kValue = O[k];
+  
+          // ii. Let testResult be the result of calling the Call internal method
+          //     of callbackfn with T as the this value and argument list 
+          //     containing kValue, k, and O.
+          var testResult = callbackfn.call(T, kValue, k, O);
+  
+          // iii. If ToBoolean(testResult) is false, return false.
+          if (!testResult) {
+            return false;
+          }
+        }
+        k++;
+      }
+      return true;
+    };
+  }// Production steps of ECMA-262, Edition 5, 15.4.4.14
+// Reference: http://es5.github.io/#x15.4.4.14
+if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(searchElement, fromIndex) {
+  
+      var k;
+  
+      // 1. Let o be the result of calling ToObject passing
+      //    the this value as the argument.
+      if (this == null) {
+        throw new TypeError('"this" is null or not defined');
+      }
+  
+      var o = Object(this);
+  
+      // 2. Let lenValue be the result of calling the Get
+      //    internal method of o with the argument "length".
+      // 3. Let len be ToUint32(lenValue).
+      var len = o.length >>> 0;
+  
+      // 4. If len is 0, return -1.
+      if (len === 0) {
+        return -1;
+      }
+  
+      // 5. If argument fromIndex was passed let n be
+      //    ToInteger(fromIndex); else let n be 0.
+      var n = fromIndex | 0;
+  
+      // 6. If n >= len, return -1.
+      if (n >= len) {
+        return -1;
+      }
+  
+      // 7. If n >= 0, then Let k be n.
+      // 8. Else, n<0, Let k be len - abs(n).
+      //    If k is less than 0, then let k be 0.
+      k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+  
+      // 9. Repeat, while k < len
+      while (k < len) {
+        // a. Let Pk be ToString(k).
+        //   This is implicit for LHS operands of the in operator
+        // b. Let kPresent be the result of calling the
+        //    HasProperty internal method of o with argument Pk.
+        //   This step can be combined with c
+        // c. If kPresent is true, then
+        //    i.  Let elementK be the result of calling the Get
+        //        internal method of o with the argument ToString(k).
+        //   ii.  Let same be the result of applying the
+        //        Strict Equality Comparison Algorithm to
+        //        searchElement and elementK.
+        //  iii.  If same is true, return k.
+        if (k in o && o[k] === searchElement) {
+          return k;
+        }
+        k++;
+      }
+      return -1;
+    };
+  }// ECMA-262, 5 판, 15.4.4.15의 제작 단계
+// 참조 : http://es5.github.io/#x15.4.4.15
+if (!Array.prototype.lastIndexOf) {
+    Array.prototype.lastIndexOf = function(searchElement /*, fromIndex*/) {
+      'use strict';
+  
+      if (this === void 0 || this === null) {
+        throw new TypeError();
+      }
+  
+      var n, k,
+        t = Object(this),
+        len = t.length >>> 0;
+      if (len === 0) {
+        return -1;
+      }
+  
+      n = len - 1;
+      if (arguments.length > 1) {
+        n = Number(arguments[1]);
+        if (n != n) {
+          n = 0;
+        }
+        else if (n != 0 && n != (1 / 0) && n != -(1 / 0)) {
+          n = (n > 0 || -1) * Math.floor(Math.abs(n));
+        }
+      }
+  
+      for (k = n >= 0 ? Math.min(n, len - 1) : len - Math.abs(n); k >= 0; k--) {
+        if (k in t && t[k] === searchElement) {
+          return k;
+        }
+      }
+      return -1;
+    };
+  }// reference : https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
+if (!Array.prototype.fill) {
+    Array.prototype.fill = function(value) {
+  
+      // Steps 1-2.
+      if (this == null) {
+        throw new TypeError('this is null or not defined');
+      }
+  
+      var O = Object(this);
+  
+      // Steps 3-5.
+      var len = O.length >>> 0;
+  
+      // Steps 6-7.
+      var start = arguments[1];
+      var relativeStart = start >> 0;
+  
+      // Step 8.
+      var k = relativeStart < 0 ?
+        Math.max(len + relativeStart, 0) :
+        Math.min(relativeStart, len);
+  
+      // Steps 9-10.
+      var end = arguments[2];
+      var relativeEnd = end === undefined ?
+        len : end >> 0;
+  
+      // Step 11.
+      var final = relativeEnd < 0 ?
+        Math.max(len + relativeEnd, 0) :
+        Math.min(relativeEnd, len);
+  
+      // Step 12.
+      while (k < final) {
+        O[k] = value;
+        k++;
+      }
+  
+      // Step 13.
+      return O;
+    };
+  }(function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("@egjs/component"));
 	else if(typeof define === 'function' && define.amd)
@@ -16,7 +407,7 @@
 		exports["InfiniteGrid"] = factory(require("@egjs/component"));
 	else
 		root["eg"] = root["eg"] || {}, root["eg"]["InfiniteGrid"] = factory(root["eg"]["Component"]);
-})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_7__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_9__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -79,7 +470,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -90,7 +481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 exports.__esModule = true;
-exports.DEFENSE_BROWSER = exports.WEBKIT_VERSION = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.IDLE = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.IGNORE_CLASSNAME = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
+exports.DEFENSE_BROWSER = exports.WEBKIT_VERSION = exports.IMAGE_PROCESSING = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.IDLE = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.IGNORE_CLASSNAME = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
 
 var _browser = __webpack_require__(2);
 
@@ -152,6 +543,7 @@ var IDLE = exports.IDLE = 0;
 var LOADING_APPEND = exports.LOADING_APPEND = 1;
 var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
 var PROCESSING = exports.PROCESSING = 4;
+var IMAGE_PROCESSING = exports.IMAGE_PROCESSING = 8;
 
 var webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
 
@@ -173,7 +565,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 exports.toArray = toArray;
-exports.fill = fill;
 exports.$ = $;
 exports.addEvent = addEvent;
 exports.removeEvent = removeEvent;
@@ -187,7 +578,6 @@ exports.getStyleNames = getStyleNames;
 exports.assignOptions = assignOptions;
 exports.toZeroArray = toZeroArray;
 exports.isWindow = isWindow;
-exports.indexOf = indexOf;
 
 var _browser = __webpack_require__(2);
 
@@ -201,15 +591,6 @@ function toArray(nodes) {
 		for (var i = 0, len = nodes.length; i < len; i++) {
 			array.push(nodes[i]);
 		}
-	}
-	return array;
-}
-function fill(length, value) {
-	var array = (typeof length === "undefined" ? "undefined" : _typeof(length)) === "object" ? length : new Array(length);
-	var len = array.length;
-
-	for (var i = len - 1; i >= 0; --i) {
-		array[i] = value;
 	}
 	return array;
 }
@@ -378,23 +759,6 @@ function isWindow(el) {
 	return el === _browser.window;
 }
 
-function indexOf(arr, target) {
-	var isRight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-	if (!isRight) {
-		return arr.indexOf(target);
-	}
-	var length = arr.length;
-
-	for (var i = length - 1; i >= 0; --i) {
-		if (arr[i] !== target) {
-			continue;
-		}
-		return i;
-	}
-	return -1;
-}
-
 /***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -412,6 +776,94 @@ var document = exports.document = win.document;
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _browser = __webpack_require__(2);
+
+var _utils = __webpack_require__(1);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var elements = [];
+/* eslint-disable */
+function onResize(e) {
+	AutoSizer.resizeAll();
+}
+/* eslint-enable */
+
+var AutoSizer = function () {
+	function AutoSizer() {
+		_classCallCheck(this, AutoSizer);
+	}
+
+	AutoSizer.add = function add(element) {
+		var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "data-";
+
+		if (!element.length) {
+			(0, _utils.addEvent)(_browser.window, "resize", onResize);
+		}
+		element.__PREFIX__ = prefix;
+		elements.push(element);
+		AutoSizer.resize(element);
+	};
+
+	AutoSizer.remove = function remove(element) {
+		var isFixed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+		var fixed = element.getAttribute(element.__PREFIX__ + "fixed") || "width";
+
+		if (!isFixed) {
+			element.style[fixed === "width" ? "height" : "width"] = "";
+		}
+		var index = elements.indexOf(element);
+
+		if (!~index) {
+			return;
+		}
+		elements.splice(index, 1);
+		if (!elements.length) {
+			(0, _utils.removeEvent)(_browser.window, "reisze", onResize);
+		}
+	};
+
+	AutoSizer.resize = function resize(element) {
+		var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "data-";
+
+		var elementPrefix = typeof element.__PREFIX__ === "string" ? element.__PREFIX__ : prefix;
+		var dataWidth = element.getAttribute(elementPrefix + "width");
+		var dataHeight = element.getAttribute(elementPrefix + "height");
+		var fixed = element.getAttribute(elementPrefix + "fixed") || "width";
+
+		if (fixed === "width") {
+			var size = (0, _utils.innerWidth)(element) || dataWidth;
+
+			element.style.height = dataHeight / dataWidth * size + "px";
+		} else if (fixed === "height") {
+			var _size = (0, _utils.innerHeight)(element) || dataHeight;
+
+			element.style.width = dataWidth / dataHeight * _size + "px";
+		}
+	};
+
+	AutoSizer.resizeAll = function resizeAll() {
+		elements.forEach(function (element) {
+			return AutoSizer.resize(element);
+		});
+	};
+
+	return AutoSizer;
+}();
+
+exports["default"] = AutoSizer;
+module.exports = exports["default"];
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -596,6 +1048,7 @@ var DOMRenderer = function () {
 			this.container.style[this.options.isVertical ? "height" : "width"] = "";
 		}
 		this._size = {
+			item: this._size.item,
 			containerOffset: 0,
 			viewport: -1,
 			container: -1,
@@ -690,7 +1143,165 @@ exports["default"] = DOMRenderer;
 module.exports = exports["default"];
 
 /***/ }),
-/* 4 */
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.CHECK_ONLY_ERROR = exports.CHECK_ALL = undefined;
+
+var _consts = __webpack_require__(0);
+
+var _utils = __webpack_require__(1);
+
+var _AutoSizer = __webpack_require__(3);
+
+var _AutoSizer2 = _interopRequireDefault(_AutoSizer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CHECK_ALL = exports.CHECK_ALL = 1;
+var CHECK_ONLY_ERROR = exports.CHECK_ONLY_ERROR = 2;
+
+var errorImages = [];
+
+function isDataAttribute(target, prefix) {
+	return !!target.getAttribute(prefix + "width");
+}
+
+var ImageLoaded = function () {
+	function ImageLoaded() {
+		_classCallCheck(this, ImageLoaded);
+	}
+
+	ImageLoaded.waitImageLoaded = function waitImageLoaded(needCheck, _ref) {
+		var prefix = _ref.prefix,
+		    length = _ref.length,
+		    type = _ref.type,
+		    complete = _ref.complete,
+		    error = _ref.error,
+		    end = _ref.end;
+
+		var checkCount = 0;
+		var endCount = length || needCheck.reduce(function (sum, element) {
+			return sum + element.length;
+		}, 0);
+
+		if (type !== CHECK_ONLY_ERROR) {
+			checkCount = endCount;
+		}
+		var checkEnd = function checkEnd() {
+			if (--endCount !== 0) {
+				return;
+			}
+			end && end();
+		};
+		var checkImage = function checkImage() {
+			checkCount--;
+			if (checkCount !== 0) {
+				return;
+			}
+			complete && complete();
+		};
+		var onError = function onError(target) {
+			error && error({
+				target: target,
+				itemIndex: target.__ITEM_INDEX__
+			});
+		};
+		var onCheck = function onCheck(e) {
+			var target = e.target || e.srcElement;
+
+			(0, _utils.removeEvent)(target, "error", onCheck);
+			(0, _utils.removeEvent)(target, "load", onCheck);
+
+			if (type === CHECK_ALL && isDataAttribute(target, prefix)) {
+				_AutoSizer2["default"].remove(target, e.type === "error");
+			} else {
+				checkImage();
+			}
+			if (e.type === "error") {
+				errorImages.push(target.src);
+				onError(target);
+			}
+			delete target.__ITEM_INDEX__;
+			checkEnd();
+		};
+
+		needCheck.forEach(function (images, i) {
+			images.forEach(function (v) {
+				// workaround for IE
+				if (v.complete) {
+					if (errorImages.indexOf(v.src) !== -1) {
+						onError(v);
+					}
+					checkImage();
+					checkEnd();
+					return;
+				}
+				v.__ITEM_INDEX__ = i;
+				if (type === CHECK_ALL && isDataAttribute(v, prefix)) {
+					_AutoSizer2["default"].add(v, prefix);
+					checkImage();
+				}
+				(0, _utils.addEvent)(v, "load", onCheck);
+				(0, _utils.addEvent)(v, "error", onCheck);
+
+				_consts.IS_IE && v.setAttribute("src", v.getAttribute("src"));
+			});
+		});
+	};
+
+	ImageLoaded.checkImageLoaded = function checkImageLoaded(el) {
+		if (el.tagName === "IMG") {
+			return !el.complete ? [el] : [];
+		} else {
+			return (0, _utils.toArray)(el.querySelectorAll("img"));
+		}
+	};
+
+	ImageLoaded.check = function check(elements, _ref2) {
+		var _this = this;
+
+		var prefix = _ref2.prefix,
+		    _ref2$type = _ref2.type,
+		    type = _ref2$type === undefined ? CHECK_ALL : _ref2$type,
+		    complete = _ref2.complete,
+		    error = _ref2.error,
+		    end = _ref2.end;
+
+		var images = elements.map(function (element) {
+			return _this.checkImageLoaded(element);
+		});
+		var length = images.reduce(function (sum, element) {
+			return sum + element.length;
+		}, 0);
+
+		if (type === CHECK_ONLY_ERROR || length === 0) {
+			// convert to async
+			setTimeout(function () {
+				complete && complete();
+				if (length === 0) {
+					end && end();
+				}
+			}, 0);
+		}
+		if (length > 0) {
+			this.waitImageLoaded(images, { prefix: prefix, length: length, type: type, complete: complete, error: error, end: end });
+		}
+	};
+
+	return ImageLoaded;
+}();
+
+exports["default"] = ImageLoaded;
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -888,8 +1499,8 @@ var FrameLayout = function () {
 		var shapesSize = this._shapes[size2Name];
 		var shapes = this._shapes.shapes;
 		var shapesLength = shapes.length;
-		var startOutline = (0, _utils.fill)(shapesSize, _consts.DUMMY_POSITION);
-		var endOutline = (0, _utils.fill)(shapesSize, _consts.DUMMY_POSITION);
+		var startOutline = new Array(shapesSize).fill(_consts.DUMMY_POSITION);
+		var endOutline = new Array(shapesSize).fill(_consts.DUMMY_POSITION);
 		var dist = 0;
 		var end = 0;
 		var startIndex = -1;
@@ -1086,35 +1697,43 @@ exports["default"] = FrameLayout;
 module.exports = exports["default"];
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _InfiniteGrid = __webpack_require__(6);
+var _InfiniteGrid = __webpack_require__(8);
 
 var _InfiniteGrid2 = _interopRequireDefault(_InfiniteGrid);
 
-var _GridLayout = __webpack_require__(11);
+var _GridLayout = __webpack_require__(12);
 
 var _GridLayout2 = _interopRequireDefault(_GridLayout);
 
-var _FrameLayout = __webpack_require__(4);
+var _FrameLayout = __webpack_require__(6);
 
 var _FrameLayout2 = _interopRequireDefault(_FrameLayout);
 
-var _SquareLayout = __webpack_require__(12);
+var _SquareLayout = __webpack_require__(13);
 
 var _SquareLayout2 = _interopRequireDefault(_SquareLayout);
 
-var _PackingLayout = __webpack_require__(13);
+var _PackingLayout = __webpack_require__(14);
 
 var _PackingLayout2 = _interopRequireDefault(_PackingLayout);
 
-var _JustifiedLayout = __webpack_require__(15);
+var _JustifiedLayout = __webpack_require__(16);
 
 var _JustifiedLayout2 = _interopRequireDefault(_JustifiedLayout);
+
+var _ImageLoaded = __webpack_require__(5);
+
+var _ImageLoaded2 = _interopRequireDefault(_ImageLoaded);
+
+var _AutoSizer = __webpack_require__(3);
+
+var _AutoSizer2 = _interopRequireDefault(_AutoSizer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -1127,11 +1746,13 @@ _InfiniteGrid2["default"].FrameLayout = _FrameLayout2["default"];
 _InfiniteGrid2["default"].SquareLayout = _SquareLayout2["default"];
 _InfiniteGrid2["default"].PackingLayout = _PackingLayout2["default"];
 _InfiniteGrid2["default"].JustifiedLayout = _JustifiedLayout2["default"];
+_InfiniteGrid2["default"].ImageLoaded = _ImageLoaded2["default"];
+_InfiniteGrid2["default"].AutoSizer = _AutoSizer2["default"];
 
 module.exports = _InfiniteGrid2["default"];
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1147,25 +1768,29 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                                                                                                                                                                                                                                                                               */
 
 
-var _component = __webpack_require__(7);
+var _component = __webpack_require__(9);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _ItemManager = __webpack_require__(8);
+var _ItemManager = __webpack_require__(10);
 
 var _ItemManager2 = _interopRequireDefault(_ItemManager);
 
-var _DOMRenderer = __webpack_require__(3);
+var _DOMRenderer = __webpack_require__(4);
 
 var _DOMRenderer2 = _interopRequireDefault(_DOMRenderer);
 
-var _ImageLoaded = __webpack_require__(9);
+var _ImageLoaded = __webpack_require__(5);
 
 var _ImageLoaded2 = _interopRequireDefault(_ImageLoaded);
 
-var _Watcher = __webpack_require__(10);
+var _Watcher = __webpack_require__(11);
 
 var _Watcher2 = _interopRequireDefault(_Watcher);
+
+var _AutoSizer = __webpack_require__(3);
+
+var _AutoSizer2 = _interopRequireDefault(_AutoSizer);
 
 var _consts = __webpack_require__(0);
 
@@ -1195,6 +1820,16 @@ if (typeof Object.create !== "function") {
 	};
 }
 /* eslint-enable */
+
+function hasTarget() {
+	for (var _len = arguments.length, targets = Array(_len), _key = 0; _key < _len; _key++) {
+		targets[_key] = arguments[_key];
+	}
+
+	return targets.every(function (target) {
+		return ~target[0].indexOf(target[1]);
+	});
+}
 
 /**
  * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -1246,6 +1881,7 @@ var InfiniteGrid = function (_Component) {
   * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향)</ko>
   * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
   * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
+  * @param {String} [options.attributePrefix="data-"] The prefix to use element's data attribute.<ko>엘리먼트의 데이타 속성에 사용할 접두사.</ko>
   */
 	function InfiniteGrid(element, options) {
 		_classCallCheck(this, InfiniteGrid);
@@ -1258,7 +1894,8 @@ var InfiniteGrid = function (_Component) {
 			threshold: 100,
 			isEqualSize: false,
 			useRecycle: true,
-			horizontal: false
+			horizontal: false,
+			attributePrefix: "data-"
 		}, options);
 		_consts.IS_ANDROID2 && (_this.options.isOverflowScroll = false);
 		_this._isVertical = !_this.options.horizontal;
@@ -1269,6 +1906,7 @@ var InfiniteGrid = function (_Component) {
 			isEqualSize: _this.options.isEqualSize,
 			isVertical: _this._isVertical
 		});
+		_this._loadingBar = {};
 		_this._watcher = new _Watcher2["default"](_this._renderer, {
 			layout: function layout() {
 				return _this.layout();
@@ -1472,7 +2110,7 @@ var InfiniteGrid = function (_Component) {
 
 		var isRelayout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-		if (!this._layout || this._isProcessing()) {
+		if (!this._layout) {
 			return this;
 		}
 		// check childElement
@@ -1480,19 +2118,26 @@ var InfiniteGrid = function (_Component) {
 			this._insert((0, _utils.toArray)(this._renderer.container.children), true);
 			return this;
 		}
-		this._process(_consts.PROCESSING);
 
 		var data = void 0;
 		var outline = void 0;
 
 		if (isRelayout) {
 			// remove cache
-			data = this._items.get(this._status.startCursor, this._status.endCursor);
-			if (this._renderer.resize()) {
-				this._layout.setSize(this._renderer.getViewportSize());
-				data.forEach(function (v) {
-					data.items = _this2._renderer.updateSize(v.items);
-				});
+			if (this.options.isEqualSize) {
+				data = this._items.get(0, this._status.endCursor);
+				if (this._renderer.resize()) {
+					this._layout.setSize(this._renderer.getViewportSize());
+				}
+				outline = this._items.getOutline(0, "start");
+			} else {
+				data = this._items.get(this._status.startCursor, this._status.endCursor);
+				if (this._renderer.resize()) {
+					this._layout.setSize(this._renderer.getViewportSize());
+					data.forEach(function (v) {
+						data.items = _this2._renderer.updateSize(v.items);
+					});
+				}
 			}
 		} else {
 			data = this._items.get(this._status.startCursor, this._items.size());
@@ -1504,19 +2149,23 @@ var InfiniteGrid = function (_Component) {
 		this._layout.layout(data, outline);
 
 		if (isRelayout) {
-			this._items._data.forEach(function (group, cursor) {
-				if (_this2._status.startCursor <= cursor && cursor <= _this2._status.endCursor) {
-					return;
-				}
-				group.outlines.start = [];
-				group.outlines.end = [];
-			});
+			if (!this.options.isEqualSize) {
+				this._items._data.forEach(function (group, cursor) {
+					if (_this2._status.startCursor <= cursor && cursor <= _this2._status.endCursor) {
+						return;
+					}
+					group.outlines.start = [];
+					group.outlines.end = [];
+				});
+			} else {
+				this._fit("after");
+			}
 		} else {
 			data.forEach(function (v) {
 				return _this2._items.set(v, v.groupKey);
 			});
 		}
-		this._onLayoutComplete(data, _consts.APPEND, _consts.NO_TRUSTED, false);
+		this._onLayoutComplete(data, _consts.APPEND, _consts.NO_TRUSTED, false, true);
 		_DOMRenderer2["default"].renderItems(this._getVisibleItems());
 		isRelayout && this._watcher.setScrollPos();
 
@@ -1644,7 +2293,6 @@ var InfiniteGrid = function (_Component) {
 
 		this._status.loadingSize = 0;
 		this._status.loadingStyle = {};
-		this._loadingBar = this._loadingBar || {};
 		var loadingBar = this._loadingBar;
 
 		for (var type in loadingBarObj) {
@@ -1680,6 +2328,10 @@ var InfiniteGrid = function (_Component) {
 
 	InfiniteGrid.prototype._isLoading = function _isLoading() {
 		return this._getLoadingStatus() > 0;
+	};
+
+	InfiniteGrid.prototype._isImageProcessing = function _isImageProcessing() {
+		return (this._status.processingStatus & _consts.IMAGE_PROCESSING) > 0;
 	};
 
 	InfiniteGrid.prototype._getLoadingStatus = function _getLoadingStatus() {
@@ -1839,7 +2491,7 @@ var InfiniteGrid = function (_Component) {
 		for (var property in style) {
 			el.style[property] = style[property];
 		}
-		if (!isAppend) {
+		if (!isAppend && this.options.useRecycle && !_consts.DEFENSE_BROWSER) {
 			this._renderer.scrollBy(-size);
 			this._watcher.setScrollPos();
 			this._items.fit(size, this._isVertical);
@@ -1850,8 +2502,161 @@ var InfiniteGrid = function (_Component) {
 		return this;
 	};
 
-	InfiniteGrid.prototype._postLayout = function _postLayout(fromCache, items, isAppend, isTrusted) {
+	InfiniteGrid.prototype._postImageLoaded = function _postImageLoaded(fromCache, layouted, isAppend, isTrusted) {
+		if (fromCache) {
+			this._setItems(layouted);
+		} else {
+			this._insertItems(layouted, isAppend);
+		}
+		this._updateCursor(isAppend);
+		_DOMRenderer2["default"].renderItems(layouted.items);
+		this._onLayoutComplete(layouted.items, isAppend, isTrusted);
+	};
+
+	InfiniteGrid.prototype._onImageError = function _onImageError(target, item, itemIndex, removeTarget, replaceTarget) {
+		var element = item.el;
+		var prefix = this.options.attributePrefix;
+
+		item.content = element.outerHTML;
+
+		var removeItem = function removeItem() {
+			if (hasTarget([removeTarget, element])) {
+				return;
+			}
+			removeTarget.push(element);
+			var index = replaceTarget.indexOf(itemIndex);
+
+			if (index !== -1) {
+				replaceTarget.splice(index, 1);
+			}
+		};
+
+		/**
+   * This event is fired when an error occurs in the image.
+   * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
+   * @event eg.InfiniteGrid#imageError
+   * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+   * @param {Element} param.target Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
+   * @param {Element} param.elememt The item's element with error images.<ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트</ko>
+   * @param {Object} param.item The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
+   * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
+   * @param {Function} param.remove In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
+   * @param {Function} param.removeItem In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
+   * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 교체한다.</ko>
+   * @param {Function} param.replaceElement In the imageError event, this method expects to replace the error image element<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지 엘리먼트를 교체한다.</ko>
+   * @param {Function} param.replaceItem In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
+   * @example
+  ig.on("imageError", e => {
+  e.remove();
+  e.removeItem();
+  e.replace("http://...jpg");
+  e.replaceElement("image element..");
+  e.replaceItem("item html");
+  });
+   */
+		this.trigger("imageError", {
+			target: target,
+			element: element,
+			item: item,
+			itemIndex: itemIndex,
+			// remove item
+			removeItem: removeItem,
+			// remove image
+			remove: function remove() {
+				if (target === element) {
+					removeItem();
+					return;
+				}
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				target.parentNode.removeChild(target);
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace image
+			replace: function replace(src) {
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				if (src) {
+					target.src = src;
+					if (target.getAttribute(prefix + "width")) {
+						_AutoSizer2["default"].remove(target);
+						target.removeAttribute(prefix + "width");
+						target.removeAttribute(prefix + "height");
+					}
+				}
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace element
+			replaceElement: function replaceElement(imageElement) {
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				var parentNode = target.parentNode;
+
+				parentNode.insertBefore((0, _utils.$)(imageElement), target);
+				parentNode.removeChild(target);
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace item
+			replaceItem: function replaceItem(content) {
+				if (hasTarget([removeTarget, element], [replaceTarget, itemIndex])) {
+					return;
+				}
+				element.innerHTML = content;
+				item.content = element.outerHTML;
+				replaceTarget.push(itemIndex);
+			}
+		});
+	};
+
+	InfiniteGrid.prototype._postImageLoadedEnd = function _postImageLoadedEnd(layouted, removeTarget, replaceTarget) {
 		var _this3 = this;
+
+		if (!removeTarget.length && !replaceTarget.length) {
+			return;
+		}
+		var prefix = this.options.attributePrefix;
+		var layoutedItems = replaceTarget.map(function (itemIndex) {
+			return layouted.items[itemIndex];
+		});
+
+		removeTarget.forEach(function (element) {
+			_this3.remove(element);
+		});
+		if (this.options.isEqualSize) {
+			if (removeTarget.length > 0) {
+				this.layout(false);
+			}
+		} else {
+			// wait layoutComplete beacause of error event.
+			_ImageLoaded2["default"].check(layoutedItems.map(function (v) {
+				return v.el;
+			}), {
+				prefix: prefix,
+				complete: function complete() {
+					_this3._renderer.updateSize(layoutedItems);
+					_this3.layout(false);
+				}
+			});
+		}
+	};
+
+	InfiniteGrid.prototype._postLayout = function _postLayout(fromCache, items, isAppend, isTrusted) {
+		var _this4 = this;
 
 		var outline = this._items.getOutline(isAppend ? this._status.endCursor : this._status.startCursor, isAppend ? "end" : "start");
 
@@ -1876,20 +2681,36 @@ var InfiniteGrid = function (_Component) {
 
 		fromCache && _DOMRenderer2["default"].createElements(items);
 		this._renderer[method](items);
+
 		// check image sizes after elements are attated on DOM
+		var type = this.options.isEqualSize && this._renderer._size.item ? _ImageLoaded.CHECK_ONLY_ERROR : _ImageLoaded.CHECK_ALL;
+		var prefix = this.options.attributePrefix;
+		var replaceTarget = [];
+		var removeTarget = [];
+		var layouted = void 0;
+
+		this._process(_consts.IMAGE_PROCESSING);
 		_ImageLoaded2["default"].check(items.map(function (item) {
 			return item.el;
-		}), function () {
-			var layouted = _this3._layout[method](_this3._renderer.updateSize(items), outline);
+		}), {
+			prefix: prefix,
+			type: type,
+			complete: function complete() {
+				layouted = _this4._layout[method](_this4._renderer.updateSize(items), outline);
+				_this4._postImageLoaded(fromCache, layouted, isAppend, isTrusted);
+			},
+			error: function error(_ref) {
+				var target = _ref.target,
+				    itemIndex = _ref.itemIndex;
 
-			if (fromCache) {
-				_this3._setItems(layouted);
-			} else {
-				_this3._insertItems(layouted, isAppend);
+				var item = (layouted && layouted.items || items)[itemIndex];
+
+				_this4._onImageError(target, item, itemIndex, removeTarget, replaceTarget);
+			},
+			end: function end() {
+				_this4._process(_consts.IMAGE_PROCESSING, false);
+				_this4._postImageLoadedEnd(layouted, removeTarget, replaceTarget);
 			}
-			_this3._updateCursor(isAppend);
-			_DOMRenderer2["default"].renderItems(layouted.items);
-			_this3._onLayoutComplete(layouted.items, isAppend, isTrusted);
 		});
 		return this;
 	};
@@ -1990,11 +2811,11 @@ var InfiniteGrid = function (_Component) {
 		}
 	};
 
-	InfiniteGrid.prototype._onCheck = function _onCheck(_ref) {
-		var isForward = _ref.isForward,
-		    scrollPos = _ref.scrollPos,
-		    horizontal = _ref.horizontal,
-		    orgScrollPos = _ref.orgScrollPos;
+	InfiniteGrid.prototype._onCheck = function _onCheck(_ref2) {
+		var isForward = _ref2.isForward,
+		    scrollPos = _ref2.scrollPos,
+		    horizontal = _ref2.horizontal,
+		    orgScrollPos = _ref2.orgScrollPos;
 
 		/**
    * This event is fired when the user scrolls.
@@ -2019,13 +2840,14 @@ var InfiniteGrid = function (_Component) {
 		if (!rect) {
 			return;
 		}
+		var threshold = this.options.threshold;
 		var targetPos = isForward ? rect[horizontal ? "left" : "top"] - this._renderer.getViewSize() : rect[horizontal ? "right" : "bottom"];
 
 		if (!isProcessing && isForward) {
-			if (scrollPos >= targetPos) {
+			if (scrollPos + threshold >= targetPos) {
 				this._requestAppend();
 			}
-		} else if (scrollPos <= targetPos) {
+		} else if (scrollPos <= targetPos + threshold) {
 			this._fit("before");
 			this._requestPrepend();
 		}
@@ -2034,10 +2856,13 @@ var InfiniteGrid = function (_Component) {
 	InfiniteGrid.prototype._onLayoutComplete = function _onLayoutComplete(items, isAppend) {
 		var isTrusted = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 		var useRecycle = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.options.useRecycle;
+		var isLayout = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
 
 		this._isLoading() && this._renderLoading();
 		!isAppend && this._fit("after");
-		useRecycle && this._recycle(isAppend);
+		if (!this._isImageProcessing() && useRecycle) {
+			this._recycle(isAppend);
+		}
 
 		var size = this._getEdgeValue("end");
 
@@ -2045,9 +2870,10 @@ var InfiniteGrid = function (_Component) {
 		this._updateEdge();
 
 		isAppend && this._renderer.setContainerSize(size + this._status.loadingSize || 0);
-		this._process(_consts.PROCESSING, false);
+		!isLayout && this._process(_consts.PROCESSING, false);
 
 		var scrollPos = this._watcher.getScrollPos();
+		var viewSize = this._renderer.getViewSize();
 
 		/**
    * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
@@ -2067,15 +2893,19 @@ var InfiniteGrid = function (_Component) {
 			target: items.concat(),
 			isAppend: isAppend,
 			isTrusted: isTrusted,
-			isScroll: this._renderer.getViewSize() < this._renderer.getContainerOffset() + size,
+			isScroll: viewSize < this._renderer.getContainerOffset() + size,
 			scrollPos: scrollPos,
 			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size: size
 		});
+		if (isLayout) {
+			return;
+		}
+		var threshold = this.options.threshold;
 
-		if (isAppend && scrollPos >= size) {
+		if (isAppend && Math.abs(size - viewSize - scrollPos) <= threshold) {
 			this._requestAppend();
-		} else if (!isAppend && scrollPos <= this._getEdgeValue("start")) {
+		} else if (!isAppend && scrollPos <= this._getEdgeValue("start") + threshold) {
 			this._fit("before");
 			this._requestPrepend();
 		}
@@ -2114,13 +2944,13 @@ exports["default"] = InfiniteGrid;
 module.exports = exports["default"];
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_7__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2132,7 +2962,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _consts = __webpack_require__(0);
 
-var _DOMRenderer = __webpack_require__(3);
+var _DOMRenderer = __webpack_require__(4);
 
 var _DOMRenderer2 = _interopRequireDefault(_DOMRenderer);
 
@@ -2159,7 +2989,9 @@ var ItemManager = function () {
 		});
 	};
 
-	ItemManager.selectItems = function selectItems(elements, selector) {
+	ItemManager.selectItems = function selectItems(elements) {
+		var selector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "*";
+
 		return elements.filter(function (v) {
 			var classNames = v.className.split(" ");
 
@@ -2167,7 +2999,7 @@ var ItemManager = function () {
 				return c === _consts.IGNORE_CLASSNAME;
 			})) {
 				return false;
-			} else if (selector === "*") {
+			} else if (!selector || selector === "*") {
 				return v;
 			} else {
 				return classNames.some(function (c) {
@@ -2378,90 +3210,7 @@ exports["default"] = ItemManager;
 module.exports = exports["default"];
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _consts = __webpack_require__(0);
-
-var _utils = __webpack_require__(1);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ImageLoaded = function () {
-	function ImageLoaded() {
-		_classCallCheck(this, ImageLoaded);
-	}
-
-	ImageLoaded.waitImageLoaded = function waitImageLoaded(needCheck, callback) {
-		var checkCount = needCheck.length;
-		var checkImage = function checkImage() {
-			checkCount--;
-			checkCount <= 0 && callback && callback();
-		};
-		var onCheck = function onCheck(e) {
-			(0, _utils.removeEvent)(e.target || e.srcElement, "load", onCheck);
-			(0, _utils.removeEvent)(e.target || e.srcElement, "error", onCheck);
-			checkImage();
-		};
-
-		// workaround for IE
-		_consts.IS_IE && needCheck.forEach(function (v) {
-			return v.setAttribute("src", v.getAttribute("src"));
-		});
-		needCheck.forEach(function (v) {
-			if (v.complete) {
-				checkImage();
-			} else {
-				(0, _utils.addEvent)(v, "load", onCheck);
-				(0, _utils.addEvent)(v, "error", onCheck);
-			}
-		});
-	};
-
-	ImageLoaded.checkImageLoaded = function checkImageLoaded(el) {
-		if (el.tagName === "IMG") {
-			return !el.complete ? [el] : [];
-		} else {
-			return (0, _utils.toArray)(el.querySelectorAll("img")).filter(function (v) {
-				if (v.nodeType && [1, 9, 11].indexOf(v.nodeType) !== -1) {
-					return !v.complete;
-				} else {
-					return false;
-				}
-			});
-		}
-	};
-
-	ImageLoaded.check = function check(elements, callback) {
-		var _this = this;
-
-		var needCheck = elements.reduce(function (acc, v) {
-			return acc.concat(_this.checkImageLoaded(v));
-		}, []);
-
-		if (needCheck.length > 0) {
-			ImageLoaded.waitImageLoaded(needCheck, callback);
-		} else {
-			// convert to async
-			setTimeout(function () {
-				callback && callback();
-			}, 0);
-		}
-	};
-
-	return ImageLoaded;
-}();
-
-exports["default"] = ImageLoaded;
-module.exports = exports["default"];
-
-/***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2592,7 +3341,7 @@ exports["default"] = Watcher;
 module.exports = exports["default"];
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2788,7 +3537,7 @@ var GridLayout = function () {
 			this.checkColumn(items[0]);
 		}
 		if (outline.length !== this._columnLength) {
-			startOutline = (0, _utils.fill)(this._columnLength, outline.length === 0 ? 0 : Math[type === _consts.APPEND ? "min" : "max"].apply(Math, outline) || 0);
+			startOutline = new Array(this._columnLength).fill(outline.length === 0 ? 0 : Math[type === _consts.APPEND ? "min" : "max"].apply(Math, outline) || 0);
 		}
 
 		var result = this._layout(clone, startOutline, type);
@@ -2857,7 +3606,7 @@ var GridLayout = function () {
 			var pos = outline.length === 0 ? 0 : Math.min.apply(Math, outline);
 
 			// re-layout items.
-			startOutline = (0, _utils.fill)(this._columnLength, pos);
+			startOutline = new Array(this._columnLength).fill(pos);
 		} else {
 			startOutline = outline.slice();
 		}
@@ -2894,7 +3643,7 @@ exports["default"] = GridLayout;
 module.exports = exports["default"];
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2902,11 +3651,9 @@ module.exports = exports["default"];
 
 exports.__esModule = true;
 
-var _FrameLayout2 = __webpack_require__(4);
+var _FrameLayout2 = __webpack_require__(6);
 
 var _FrameLayout3 = _interopRequireDefault(_FrameLayout2);
-
-var _utils = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -2920,7 +3667,7 @@ function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
 	var point = Math[isAppend ? "min" : "max"].apply(Math, outline) || 0;
 
 	if (outline.length !== columnLength) {
-		return (0, _utils.fill)(columnLength, 0);
+		return new Array(columnLength).fill(0);
 	}
 	return outline.map(function (l) {
 		return parseInt((l - point) / itemSize, 10);
@@ -3028,7 +3775,7 @@ var SquareLayout = function (_FrameLayout) {
 			var _shapes$push;
 
 			var point = Math[pointCaculateName].apply(Math, endOutline);
-			var index = (0, _utils.indexOf)(endOutline, point, !isAppend);
+			var index = endOutline[isAppend ? "indexOf" : "lastIndexOf"](point);
 			var item = items[i];
 			var columnWidth = item.columnWidth;
 			var column = columnWidth && columnWidth[0] === columnLength && columnWidth[1] || getColumn(item);
@@ -3099,7 +3846,7 @@ exports["default"] = SquareLayout;
 module.exports = exports["default"];
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3109,7 +3856,7 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _BoxModel = __webpack_require__(14);
+var _BoxModel = __webpack_require__(15);
 
 var _BoxModel2 = _interopRequireDefault(_BoxModel);
 
@@ -3442,7 +4189,7 @@ exports["default"] = PackingLayout;
 module.exports = exports["default"];
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3569,7 +4316,7 @@ var BoxModel = function () {
 module.exports = BoxModel;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3579,7 +4326,7 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _dijkstra = __webpack_require__(16);
+var _dijkstra = __webpack_require__(17);
 
 var _dijkstra2 = _interopRequireDefault(_dijkstra);
 
@@ -3875,7 +4622,7 @@ exports["default"] = JustifiedLayout;
 module.exports = exports["default"];
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

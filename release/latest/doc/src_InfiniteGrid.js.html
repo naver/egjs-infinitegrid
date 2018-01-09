@@ -143,6 +143,8 @@
     
         <li data-name="eg.InfiniteGrid#event:change"><a href="eg.InfiniteGrid.html#event:change">change</a></li>
     
+        <li data-name="eg.InfiniteGrid#event:imageError"><a href="eg.InfiniteGrid.html#event:imageError">imageError</a></li>
+    
         <li data-name="eg.InfiniteGrid#event:layoutComplete"><a href="eg.InfiniteGrid.html#event:layoutComplete">layoutComplete</a></li>
     
         <li data-name="eg.InfiniteGrid#event:prepend"><a href="eg.InfiniteGrid.html#event:prepend">prepend</a></li>
@@ -372,8 +374,9 @@
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
-import ImageLoaded from "./ImageLoaded";
+import ImageLoaded, {CHECK_ALL, CHECK_ONLY_ERROR} from "./ImageLoaded";
 import Watcher from "./Watcher";
+import AutoSizer from "./AutoSizer";
 import {
 	APPEND,
 	PREPEND,
@@ -388,6 +391,7 @@ import {
 	PROCESSING,
 	DEFENSE_BROWSER,
 	IGNORE_CLASSNAME,
+	IMAGE_PROCESSING,
 } from "./consts";
 import {toArray, $, innerWidth, innerHeight} from "./utils";
 
@@ -408,6 +412,9 @@ if (typeof Object.create !== "function") {
 }
 /* eslint-enable */
 
+function hasTarget(...targets) {
+	return targets.every(target => ~target[0].indexOf(target[1]));
+}
 
 /**
  * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -456,6 +463,7 @@ class InfiniteGrid extends Component {
 	 * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) &lt;ko>스크롤 이동 방향 (true 가로방향, false 세로방향)&lt;/ko>
 	 * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. &lt;ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다&lt;/ko>
 	 * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.&lt;ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.&lt;/ko>
+	 * @param {String} [options.attributePrefix="data-"] The prefix to use element's data attribute.&lt;ko>엘리먼트의 데이타 속성에 사용할 접두사.&lt;/ko>
 	 */
 	constructor(element, options) {
 		super();
@@ -466,6 +474,7 @@ class InfiniteGrid extends Component {
 			isEqualSize: false,
 			useRecycle: true,
 			horizontal: false,
+			attributePrefix: "data-",
 		}, options);
 		IS_ANDROID2 &amp;&amp; (this.options.isOverflowScroll = false);
 		this._isVertical = !this.options.horizontal;
@@ -476,6 +485,7 @@ class InfiniteGrid extends Component {
 			isEqualSize: this.options.isEqualSize,
 			isVertical: this._isVertical,
 		});
+		this._loadingBar = {};
 		this._watcher = new Watcher(
 			this._renderer,
 			{
@@ -651,7 +661,7 @@ class InfiniteGrid extends Component {
 	 * @return {eg.InfiniteGrid} An instance of a module itself&lt;ko>모듈 자신의 인스턴스&lt;/ko>
 	 */
 	layout(isRelayout = true) {
-		if (!this._layout || this._isProcessing()) {
+		if (!this._layout) {
 			return this;
 		}
 		// check childElement
@@ -659,18 +669,25 @@ class InfiniteGrid extends Component {
 			this._insert(toArray(this._renderer.container.children), true);
 			return this;
 		}
-		this._process(PROCESSING);
 
 		let data;
 		let outline;
 
 		if (isRelayout) { // remove cache
-			data = this._items.get(this._status.startCursor, this._status.endCursor);
-			if (this._renderer.resize()) {
-				this._layout.setSize(this._renderer.getViewportSize());
-				data.forEach(v => {
-					data.items = this._renderer.updateSize(v.items);
-				});
+			if (this.options.isEqualSize) {
+				data = this._items.get(0, this._status.endCursor);
+				if (this._renderer.resize()) {
+					this._layout.setSize(this._renderer.getViewportSize());
+				}
+				outline = this._items.getOutline(0, "start");
+			} else {
+				data = this._items.get(this._status.startCursor, this._status.endCursor);
+				if (this._renderer.resize()) {
+					this._layout.setSize(this._renderer.getViewportSize());
+					data.forEach(v => {
+						data.items = this._renderer.updateSize(v.items);
+					});
+				}
 			}
 		} else {
 			data = this._items.get(this._status.startCursor, this._items.size());
@@ -682,17 +699,21 @@ class InfiniteGrid extends Component {
 		this._layout.layout(data, outline);
 
 		if (isRelayout) {
-			this._items._data.forEach((group, cursor) => {
-				if (this._status.startCursor &lt;= cursor &amp;&amp; cursor &lt;= this._status.endCursor) {
-					return;
-				}
-				group.outlines.start = [];
-				group.outlines.end = [];
-			});
+			if (!this.options.isEqualSize) {
+				this._items._data.forEach((group, cursor) => {
+					if (this._status.startCursor &lt;= cursor &amp;&amp; cursor &lt;= this._status.endCursor) {
+						return;
+					}
+					group.outlines.start = [];
+					group.outlines.end = [];
+				});
+			} else {
+				this._fit("after");
+			}
 		} else {
 			data.forEach(v => this._items.set(v, v.groupKey));
 		}
-		this._onLayoutComplete(data, APPEND, NO_TRUSTED, false);
+		this._onLayoutComplete(data, APPEND, NO_TRUSTED, false, true);
 		DOMRenderer.renderItems(this._getVisibleItems());
 		isRelayout &amp;&amp; this._watcher.setScrollPos();
 
@@ -805,7 +826,6 @@ class InfiniteGrid extends Component {
 
 		this._status.loadingSize = 0;
 		this._status.loadingStyle = {};
-		this._loadingBar = this._loadingBar || {};
 		const loadingBar = this._loadingBar;
 
 		for (const type in loadingBarObj) {
@@ -836,6 +856,9 @@ class InfiniteGrid extends Component {
 	}
 	_isLoading() {
 		return this._getLoadingStatus() > 0;
+	}
+	_isImageProcessing() {
+		return (this._status.processingStatus &amp; IMAGE_PROCESSING) > 0;
 	}
 	_getLoadingStatus() {
 		return this._status.processingStatus &amp; (LOADING_APPEND | LOADING_PREPEND);
@@ -974,7 +997,7 @@ class InfiniteGrid extends Component {
 		for (const property in style) {
 			el.style[property] = style[property];
 		}
-		if (!isAppend) {
+		if (!isAppend &amp;&amp; this.options.useRecycle &amp;&amp; !DEFENSE_BROWSER) {
 			this._renderer.scrollBy(-size);
 			this._watcher.setScrollPos();
 			this._items.fit(size, this._isVertical);
@@ -983,6 +1006,150 @@ class InfiniteGrid extends Component {
 		}
 		this._renderer.setContainerSize(this._getEdgeValue("end"));
 		return this;
+	}
+	_postImageLoaded(fromCache, layouted, isAppend, isTrusted) {
+		if (fromCache) {
+			this._setItems(layouted);
+		} else {
+			this._insertItems(layouted, isAppend);
+		}
+		this._updateCursor(isAppend);
+		DOMRenderer.renderItems(layouted.items);
+		this._onLayoutComplete(layouted.items, isAppend, isTrusted);
+	}
+	_onImageError(target, item, itemIndex, removeTarget, replaceTarget) {
+		const element = item.el;
+		const prefix = this.options.attributePrefix;
+
+		item.content = element.outerHTML;
+
+		const removeItem = () => {
+			if (hasTarget([removeTarget, element])) {
+				return;
+			}
+			removeTarget.push(element);
+			const index = replaceTarget.indexOf(itemIndex);
+
+			if (index !== -1) {
+				replaceTarget.splice(index, 1);
+			}
+		};
+
+		/**
+		 * This event is fired when an error occurs in the image.
+		 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
+		 * @event eg.InfiniteGrid#imageError
+		 * @param {Object} param The object of data to be sent to an event &lt;ko>이벤트에 전달되는 데이터 객체&lt;/ko>
+		 * @param {Element} param.target Appending card's image element.&lt;ko>추가 되는 카드의 이미지 엘리먼트&lt;/ko>
+		 * @param {Element} param.elememt The item's element with error images.&lt;ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트&lt;/ko>
+		 * @param {Object} param.item The item with error images.&lt;ko>에러난 이미지를 가지고 있는 아이템&lt;/ko>
+		 * @param {Number} param.itemIndex The item's index with error images.&lt;ko>에러난 이미지를 가지고 있는 아이템의 인덱스&lt;/ko>
+		 * @param {Function} param.remove In the imageError event, this method expects to remove the error image.&lt;ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.&lt;/ko>
+		 * @param {Function} param.removeItem In the imageError event, this method expects to remove the item with the error image.&lt;ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.&lt;/ko>
+		 * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source.&lt;ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 교체한다.&lt;/ko>
+		 * @param {Function} param.replaceElement In the imageError event, this method expects to replace the error image element&lt;ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지 엘리먼트를 교체한다.&lt;/ko>
+		 * @param {Function} param.replaceItem In the imageError event, this method expects to replace the item's contents with the error image.&lt;ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.&lt;/ko>
+		 * @example
+ig.on("imageError", e => {
+	e.remove();
+	e.removeItem();
+	e.replace("http://...jpg");
+	e.replaceElement("image element..");
+	e.replaceItem("item html");
+});
+		 */
+		this.trigger("imageError", {
+			target,
+			element,
+			item,
+			itemIndex,
+			// remove item
+			removeItem,
+			// remove image
+			remove: () => {
+				if (target === element) {
+					removeItem();
+					return;
+				}
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				target.parentNode.removeChild(target);
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace image
+			replace: src => {
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				if (src) {
+					target.src = src;
+					if (target.getAttribute(`${prefix}width`)) {
+						AutoSizer.remove(target);
+						target.removeAttribute(`${prefix}width`);
+						target.removeAttribute(`${prefix}height`);
+					}
+				}
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace element
+			replaceElement: imageElement => {
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				const parentNode = target.parentNode;
+
+				parentNode.insertBefore($(imageElement), target);
+				parentNode.removeChild(target);
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace item
+			replaceItem: content => {
+				if (hasTarget([removeTarget, element], [replaceTarget, itemIndex])) {
+					return;
+				}
+				element.innerHTML = content;
+				item.content = element.outerHTML;
+				replaceTarget.push(itemIndex);
+			},
+		});
+	}
+	_postImageLoadedEnd(layouted, removeTarget, replaceTarget) {
+		if (!removeTarget.length &amp;&amp; !replaceTarget.length) {
+			return;
+		}
+		const prefix = this.options.attributePrefix;
+		const layoutedItems = replaceTarget.map(itemIndex => layouted.items[itemIndex]);
+
+		removeTarget.forEach(element => {
+			this.remove(element);
+		});
+		if (this.options.isEqualSize) {
+			if (removeTarget.length > 0) {
+				this.layout(false);
+			}
+		} else {
+			// wait layoutComplete beacause of error event.
+			ImageLoaded.check(layoutedItems.map(v => v.el), {
+				prefix,
+				complete: () => {
+					this._renderer.updateSize(layoutedItems);
+					this.layout(false);
+				},
+			});
+		}
 	}
 	_postLayout(fromCache, items, isAppend, isTrusted) {
 		const outline = this._items.getOutline(
@@ -1011,24 +1178,35 @@ class InfiniteGrid extends Component {
 
 		fromCache &amp;&amp; DOMRenderer.createElements(items);
 		this._renderer[method](items);
+
 		// check image sizes after elements are attated on DOM
-		ImageLoaded.check(items.map(item => item.el),
-			() => {
-				const layouted = this._layout[method](
+		const type = this.options.isEqualSize &amp;&amp; this._renderer._size.item ? CHECK_ONLY_ERROR : CHECK_ALL;
+		const prefix = this.options.attributePrefix;
+		const replaceTarget = [];
+		const removeTarget = [];
+		let layouted;
+
+		this._process(IMAGE_PROCESSING);
+		ImageLoaded.check(items.map(item => item.el), {
+			prefix,
+			type,
+			complete: () => {
+				layouted = this._layout[method](
 					this._renderer.updateSize(items),
 					outline
 				);
+				this._postImageLoaded(fromCache, layouted, isAppend, isTrusted);
+			},
+			error: ({target, itemIndex}) => {
+				const item = ((layouted &amp;&amp; layouted.items) || items)[itemIndex];
 
-				if (fromCache) {
-					this._setItems(layouted);
-				} else {
-					this._insertItems(layouted, isAppend);
-				}
-				this._updateCursor(isAppend);
-				DOMRenderer.renderItems(layouted.items);
-				this._onLayoutComplete(layouted.items, isAppend, isTrusted);
-			}
-		);
+				this._onImageError(target, item, itemIndex, removeTarget, replaceTarget);
+			},
+			end: () => {
+				this._process(IMAGE_PROCESSING, false);
+				this._postImageLoadedEnd(layouted, removeTarget, replaceTarget);
+			},
+		});
 		return this;
 	}
 	_isVisible(index) {
@@ -1142,23 +1320,27 @@ class InfiniteGrid extends Component {
 		if (!rect) {
 			return;
 		}
+		const threshold = this.options.threshold;
 		const targetPos = isForward ?
 			rect[horizontal ? "left" : "top"] - this._renderer.getViewSize() :
 			rect[horizontal ? "right" : "bottom"];
 
 		if (!isProcessing &amp;&amp; isForward) {
-			if (scrollPos >= targetPos) {
+			if (scrollPos + threshold >= targetPos) {
 				this._requestAppend();
 			}
-		} else if (scrollPos &lt;= targetPos) {
+		} else if (scrollPos &lt;= targetPos + threshold) {
 			this._fit("before");
 			this._requestPrepend();
 		}
 	}
-	_onLayoutComplete(items, isAppend, isTrusted = false, useRecycle = this.options.useRecycle) {
+	_onLayoutComplete(items, isAppend, isTrusted = false,
+		useRecycle = this.options.useRecycle, isLayout = false) {
 		this._isLoading() &amp;&amp; this._renderLoading();
 		!isAppend &amp;&amp; this._fit("after");
-		useRecycle &amp;&amp; this._recycle(isAppend);
+		if (!this._isImageProcessing() &amp;&amp; useRecycle) {
+			this._recycle(isAppend);
+		}
 
 		const size = this._getEdgeValue("end");
 
@@ -1166,9 +1348,10 @@ class InfiniteGrid extends Component {
 		this._updateEdge();
 
 		isAppend &amp;&amp; this._renderer.setContainerSize(size + this._status.loadingSize || 0);
-		this._process(PROCESSING, false);
+		!isLayout &amp;&amp; this._process(PROCESSING, false);
 
 		const scrollPos = this._watcher.getScrollPos();
+		const viewSize = this._renderer.getViewSize();
 
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
@@ -1188,15 +1371,19 @@ class InfiniteGrid extends Component {
 			target: items.concat(),
 			isAppend,
 			isTrusted,
-			isScroll: this._renderer.getViewSize() &lt; this._renderer.getContainerOffset() + size,
+			isScroll: viewSize &lt; this._renderer.getContainerOffset() + size,
 			scrollPos,
 			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size,
 		});
+		if (isLayout) {
+			return;
+		}
+		const threshold = this.options.threshold;
 
-		if (isAppend &amp;&amp; scrollPos >= size) {
+		if (isAppend &amp;&amp; Math.abs(size - viewSize - scrollPos) &lt;= threshold) {
 			this._requestAppend();
-		} else if (!isAppend &amp;&amp; scrollPos &lt;= this._getEdgeValue("start")) {
+		} else if (!isAppend &amp;&amp; scrollPos &lt;= this._getEdgeValue("start") + threshold) {
 			this._fit("before");
 			this._requestPrepend();
 		}
@@ -1245,7 +1432,7 @@ export default InfiniteGrid;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Dec 19 2017 11:32:45 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jan 09 2018 15:22:11 GMT+0900 (KST)
         </footer>
     </div>
 </div>

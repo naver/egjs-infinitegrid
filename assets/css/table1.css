@@ -58,3 +58,14 @@ body {
 	text-decoration: none;
 	color: #333;
 }
+
+@media (max-width: 600px) {
+	#table span.date {
+		display: none;
+	}	
+}
+@media (max-width: 380px) {
+	#table span.writer {
+		display: none;
+	}	
+}
