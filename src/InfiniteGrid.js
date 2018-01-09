@@ -300,25 +300,22 @@ class InfiniteGrid extends Component {
 			this._insert(toArray(this._renderer.container.children), true);
 			return this;
 		}
-
 		let data;
 		let outline;
 
 		if (isRelayout) { // remove cache
 			if (this.options.isEqualSize) {
+				this._renderer.updateSize([this._status.start]);
 				data = this._items.get(0, this._status.endCursor);
-				if (this._renderer.resize()) {
-					this._layout.setSize(this._renderer.getViewportSize());
-				}
 				outline = this._items.getOutline(0, "start");
 			} else {
 				data = this._items.get(this._status.startCursor, this._status.endCursor);
-				if (this._renderer.resize()) {
-					this._layout.setSize(this._renderer.getViewportSize());
-					data.forEach(v => {
-						data.items = this._renderer.updateSize(v.items);
-					});
-				}
+			}
+			if (this._renderer.resize()) {
+				this._layout.setSize(this._renderer.getViewportSize());
+				data.forEach(v => {
+					data.items = this._renderer.updateSize(v.items);
+				});
 			}
 		} else {
 			data = this._items.get(this._status.startCursor, this._items.size());
@@ -757,8 +754,11 @@ ig.on("imageError", e => {
 			},
 		});
 	}
-	_postImageLoadedEnd(layouted, removeTarget, replaceTarget) {
+	_postImageLoadedEnd(layouted, isAppend, removeTarget, replaceTarget) {
 		if (!removeTarget.length && !replaceTarget.length) {
+			if (!this.isProcessing() && this.options.useRecycle) {
+				this._recycle(isAppend);
+			}
 			return;
 		}
 		const prefix = this.options.attributePrefix;
@@ -770,17 +770,19 @@ ig.on("imageError", e => {
 		if (this.options.isEqualSize) {
 			if (removeTarget.length > 0) {
 				this.layout(false);
+			} else if (!this.isProcessing() && this.options.useRecycle) {
+				this._recycle(isAppend);
 			}
-		} else {
-			// wait layoutComplete beacause of error event.
-			ImageLoaded.check(layoutedItems.map(v => v.el), {
-				prefix,
-				complete: () => {
-					this._renderer.updateSize(layoutedItems);
-					this.layout(false);
-				},
-			});
+			return;
 		}
+		// wait layoutComplete beacause of error event.
+		ImageLoaded.check(layoutedItems.map(v => v.el), {
+			prefix,
+			complete: () => {
+				this._renderer.updateSize(layoutedItems);
+				this.layout(false);
+			},
+		});
 	}
 	_postLayout(fromCache, items, isAppend, isTrusted) {
 		const outline = this._items.getOutline(
@@ -835,7 +837,7 @@ ig.on("imageError", e => {
 			},
 			end: () => {
 				this._process(IMAGE_PROCESSING, false);
-				this._postImageLoadedEnd(layouted, removeTarget, replaceTarget);
+				this._postImageLoadedEnd(layouted, isAppend, removeTarget, replaceTarget);
 			},
 		});
 		return this;
