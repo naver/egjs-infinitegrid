@@ -59,10 +59,9 @@ class ImageLoaded {
 			checkEnd();
 		};
 
-		// workaround for IE
-		IS_IE && needCheck.forEach(v => v.setAttribute("src", v.getAttribute("src")));
 		needCheck.forEach((images, i) => {
 			images.forEach(v => {
+				// workaround for IE
 				if (v.complete) {
 					if (errorImages.indexOf(v.src) !== -1) {
 						onError(v);
@@ -78,6 +77,8 @@ class ImageLoaded {
 				}
 				addEvent(v, "load", onCheck);
 				addEvent(v, "error", onCheck);
+
+				IS_IE && v.setAttribute("src", v.getAttribute("src"));
 			});
 		});
 	}
@@ -86,13 +87,6 @@ class ImageLoaded {
 			return !el.complete ? [el] : [];
 		} else {
 			return toArray(el.querySelectorAll("img"));
-			// .filter(v => {
-			// 	if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
-			// 		return !v.complete;
-			// 	} else {
-			// 		return false;
-			// 	}
-			// });
 		}
 	}
 	static check(elements, {prefix, type = CHECK_ALL, complete, error, end}) {
