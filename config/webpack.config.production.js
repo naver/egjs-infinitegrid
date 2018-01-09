@@ -4,6 +4,7 @@ var path = require("path");
 var UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 var uglifyConfig = require("./uglify");
 var banner = require("./banner");
+var mergePlugin = require("./merge.production");
 var config = {
 	module: {
 		rules: [{
@@ -15,6 +16,7 @@ var config = {
 		}]
 	},
 	plugins: [
+		mergePlugin,
 		new UglifyJSPlugin(uglifyConfig),
 		new webpack.BannerPlugin(banner.common)
 	]
