@@ -672,21 +672,21 @@ class InfiniteGrid extends Component {
 		 * @event eg.InfiniteGrid#imageError
 		 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
 		 * @param {Element} param.target Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
-		 * @param {Element} param.elememt The element with error images.<ko>에러난 이미지를 가지고 있는 엘리먼트</ko>
+		 * @param {Element} param.elememt The item's element with error images.<ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트</ko>
 		 * @param {Object} param.item The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
 		 * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
-		 * @param {Function} param.remove remove the error images.<ko>에러난 이미지를 삭제한다.</ko>
-		 * @param {Function} param.removeItem remove item with error images.<ko>에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
-		 * @param {Function} param.replace replace the errored image's source.<ko>에러난 이미지의 주소 교체한다.</ko>
-		 * @param {Function} param.replaceElement replace the error image element.<ko>에러난 이미지 엘리먼트를 교체한다.</ko>
-		 * @param {Function} param.replaceItem replace the element's contents with error images.<ko>에러난 이미지를 가지고 있는 엘리먼트를 교체한다.</ko>
+		 * @param {Function} param.remove In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
+		 * @param {Function} param.removeItem In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
+		 * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 교체한다.</ko>
+		 * @param {Function} param.replaceElement In the imageError event, this method expects to replace the error image element<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지 엘리먼트를 교체한다.</ko>
+		 * @param {Function} param.replaceItem In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
 		 * @example
 ig.on("imageError", e => {
 	e.remove();
 	e.removeItem();
 	e.replace("http://...jpg");
-	e.replaceElement("<div class=\"image\">image info</div>");
-	e.replaceItem("<div class=\"container\">item info</div>");
+	e.replaceElement("image element..");
+	e.replaceItem("item html");
 });
 		 */
 		this.trigger("imageError", {
