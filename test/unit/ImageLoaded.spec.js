@@ -16,18 +16,22 @@ describe("ImageLoaded Test", function() {
         });
         it(`should check image fail`, done => {
             // Given
-            const img = $(`<img src="http://12345"/>`);
+            const img = $(`<div><img src="http://${Math.random()}.jpg"/></div>`);
             this.container.appendChild(img);
 
             // Then
-            const complete = sinon.spy(e => {
+            // complete => error => end
+            const complete = sinon.spy();
+            const error = sinon.spy(e => {
+                expect(complete.calledOnce).to.be.true;
+            });
+            const end = sinon.spy(e => {
                 expect(error.calledOnce).to.be.true;
                 done();
             });
-            const error = sinon.spy();
 
             // When
-            ImageLoaded.check([img], {complete, error});
+            ImageLoaded.check([img], {complete, error, end});
         });
         it(`should check image sucess`, done => {
             // Given
@@ -35,15 +39,19 @@ describe("ImageLoaded Test", function() {
             this.container.appendChild(img);
 
             // Then
+            // error(x) /// complete => end 
             const complete = sinon.spy(e => {
                 expect(error.calledOnce).to.be.false;
                 expect(img.complete).to.be.true;
-                done();
             });
+            const end = sinon.spy(e => {
+                expect(error.calledOnce).to.be.false;
+                done();
+            })
             const error = sinon.spy();
 
             // When
-            ImageLoaded.check([img], {complete, error});
+            ImageLoaded.check([img], {complete, error, end});
         });
         it(`should check image included size sucess`, done => {
             // Given
@@ -52,15 +60,19 @@ describe("ImageLoaded Test", function() {
 
             const complete = sinon.spy();
             const error = sinon.spy();
-
+            const end = sinon.spy(e => {
+                expect(error.calledOnce).to.be.false;
+                expect(complete.calledOnce).to.be.true;
+                done();
+            });
             // When
-            ImageLoaded.check([img], {complete, error});
+            ImageLoaded.check([img], {complete, error, end});
 
             // Then
             setTimeout(() => {
                 expect(error.calledOnce).to.be.false;
                 expect(complete.calledOnce).to.be.true;
-                done();
+                
             }, 5);
         });
         it(`should check image included other prefix size sucess`, done => {
@@ -70,15 +82,19 @@ describe("ImageLoaded Test", function() {
 
             const complete = sinon.spy();
             const error = sinon.spy();
+            const end = sinon.spy(e => {
+                expect(error.calledOnce).to.be.false;
+                expect(complete.calledOnce).to.be.true;
+                done();
+            })
 
             // When
-            ImageLoaded.check([img], {type:"", complete, error});
+            ImageLoaded.check([img], {type:"", complete, error, end});
 
             // Then
             setTimeout(() => {
                 expect(error.calledOnce).to.be.false;
                 expect(complete.calledOnce).to.be.true;
-                done();
             }, 5);
         });
         it(`should check item included image`, done => {
@@ -92,26 +108,52 @@ describe("ImageLoaded Test", function() {
                     expect(element.complete).to.be.true;
                 });
                 expect(error.calledOnce).to.be.false;
-                expect(complete.calledOnce).to.be.true;
-                done();
             });
-            const error = sinon.spy();
-
-            // When
-            ImageLoaded.check([div], {complete, error});
-        });
-        it("should check blank items", done => {
-            // Then
-            const complete = sinon.spy(e => {
+            const end = sinon.spy(e => {
                 expect(error.calledOnce).to.be.false;
                 expect(complete.calledOnce).to.be.true;
                 done();
             });
             const error = sinon.spy();
 
+            // When
+            ImageLoaded.check([div], {complete, error, end});
+        });
+        it(`should check multi error image fail`, done => {
+            // Given
+            const div = $(`<div><img src="http://${Math.random()}.jpg"/><img src="1"/><img src="1"/><img src="1"/></div>`);
+            this.container.appendChild(div);
+            let count = 0;
+
+            // Then
+            const complete = sinon.spy(e => {});
+            const error = sinon.spy(e => {
+                expect(e.itemIndex).to.be.equals(0);
+            });
+            const end = sinon.spy(e => {
+                expect(error.callCount).to.be.equals(4);
+                expect(complete.calledOnce).to.be.true;
+                done();
+            })
+
+            // When
+            ImageLoaded.check([div], {complete, error, end});
+        });
+        it("should check blank items", done => {
+            // Then
+            const complete = sinon.spy(e => {
+                expect(error.calledOnce).to.be.false;
+            });
+            const end = sinon.spy(e => {
+                expect(error.calledOnce).to.be.false;
+                expect(complete.calledOnce).to.be.true;
+                done();
+            })
+            const error = sinon.spy();
+
             // Given
             // When
-            ImageLoaded.check([], {complete, error});
+            ImageLoaded.check([], {complete, error, end});
         });
     });
     describe("ImageLoaded Test(type = CHECK_ONLY_ERROR)", function() {
@@ -138,10 +180,14 @@ describe("ImageLoaded Test", function() {
             const complete = sinon.spy(e => {
                 // expect(children.map(e => e.complete)).to.not.include(true);
                 expect(error.calledOnce).to.be.false;
+            });
+            const end = sinon.spy(e => {
+                expect(complete.calledOnce).to.be.true;
+                expect(error.calledOnce).to.be.false;
                 done();
             });
             
-            ImageLoaded.check([div], {type: CHECK_ONLY_ERROR, complete, error});
+            ImageLoaded.check([div], {type: CHECK_ONLY_ERROR, complete, error, end});
         });
         it(`should check image fail`, done => {
             // Given
@@ -158,17 +204,41 @@ describe("ImageLoaded Test", function() {
             // When
             ImageLoaded.check([div], {type: CHECK_ONLY_ERROR, complete, error});
         });
+        it(`should check multi error image fail`, done => {
+            // Given
+            const div = $(`<div><img src="http://${Math.random()}.jpg"/><img src="1"/><img src="1"/><img src="1"/></div>`);
+            this.container.appendChild(div);
+
+
+            // Then
+            const complete = sinon.spy(e => {});
+            const error = sinon.spy(e => {
+                expect(e.itemIndex).to.be.equals(0);
+            });
+            const end = sinon.spy(e => {
+                expect(error.callCount).to.be.equals(4);
+                expect(complete.calledOnce).to.be.true;
+                done();
+            });
+
+            // When
+            ImageLoaded.check([div], {type: CHECK_ONLY_ERROR, complete, error, end});
+        });
         it("should check blank items", done => {
             // Then
             const complete = sinon.spy(e => {
                 expect(error.calledOnce).to.be.false;
-                expect(complete.calledOnce).to.be.true;
-                done();
+
             });
             const error = sinon.spy();
+            const end = sinon.spy(e => {
+                expect(error.calledOnce).to.be.false;
+                expect(complete.calledOnce).to.be.true;
+                done();
+            })
 
             // Given, When
-            ImageLoaded.check([], {type: CHECK_ONLY_ERROR, complete, error});
+            ImageLoaded.check([], {type: CHECK_ONLY_ERROR, complete, error, end});
         });
     });
 });
