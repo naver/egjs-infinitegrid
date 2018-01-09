@@ -480,7 +480,7 @@ class InfiniteGrid extends Component {
 	 * @return {Boolean} Indicates whether a card element or data is being added <ko>카드 엘리먼트 추가 또는 데이터 로딩 진행 중 여부</ko>
 	 */
 	isProcessing() {
-		return this._isProcessing() || this._isLoading() || this._isImageProcessing();
+		return this._isProcessing() || this._isLoading();
 	}
 	_isProcessing() {
 		return (this._status.processingStatus & PROCESSING) > 0;
@@ -638,6 +638,150 @@ class InfiniteGrid extends Component {
 		this._renderer.setContainerSize(this._getEdgeValue("end"));
 		return this;
 	}
+	_postImageLoaded(fromCache, layouted, isAppend, isTrusted) {
+		if (fromCache) {
+			this._setItems(layouted);
+		} else {
+			this._insertItems(layouted, isAppend);
+		}
+		this._updateCursor(isAppend);
+		DOMRenderer.renderItems(layouted.items);
+		this._onLayoutComplete(layouted.items, isAppend, isTrusted);
+	}
+	_onImageError(target, item, itemIndex, removeTarget, replaceTarget) {
+		const element = item.el;
+		const prefix = this.options.attributePrefix;
+
+		item.content = element.outerHTML;
+
+		const removeItem = () => {
+			if (hasTarget([removeTarget, element])) {
+				return;
+			}
+			removeTarget.push(element);
+			const index = replaceTarget.indexOf(itemIndex);
+
+			if (index !== -1) {
+				replaceTarget.splice(index, 1);
+			}
+		};
+
+		/**
+		 * This event is fired when an error occurs in the image.
+		 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
+		 * @event eg.InfiniteGrid#imageError
+		 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+		 * @param {Element} param.target Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
+		 * @param {Element} param.elememt The element with error images.<ko>에러난 이미지를 가지고 있는 엘리먼트</ko>
+		 * @param {Object} param.item The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
+		 * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
+		 * @param {Function} param.remove remove the error images.<ko>에러난 이미지를 삭제한다.</ko>
+		 * @param {Function} param.removeItem remove item with error images.<ko>에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
+		 * @param {Function} param.replace replace the errored image's source.<ko>에러난 이미지의 주소 교체한다.</ko>
+		 * @param {Function} param.replaceElement replace the error image element.<ko>에러난 이미지 엘리먼트를 교체한다.</ko>
+		 * @param {Function} param.replaceItem replace the element's contents with error images.<ko>에러난 이미지를 가지고 있는 엘리먼트를 교체한다.</ko>
+		 * @example
+ig.on("imageError", e => {
+	e.remove();
+	e.removeItem();
+	e.replace("http://...jpg");
+	e.replaceElement("<div class=\"image\">image info</div>");
+	e.replaceItem("<div class=\"container\">item info</div>");
+});
+		 */
+		this.trigger("imageError", {
+			target,
+			element,
+			item,
+			itemIndex,
+			// remove item
+			removeItem,
+			// remove image
+			remove: () => {
+				if (target === element) {
+					removeItem();
+					return;
+				}
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				target.parentNode.removeChild(target);
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace image
+			replace: src => {
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				if (src) {
+					target.src = src;
+					if (target.getAttribute(`${prefix}width`)) {
+						AutoSizer.remove(target);
+						target.removeAttribute(`${prefix}width`);
+						target.removeAttribute(`${prefix}height`);
+					}
+				}
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace element
+			replaceElement: imageElement => {
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				const parentNode = target.parentNode;
+
+				parentNode.insertBefore($(imageElement), target);
+				parentNode.removeChild(target);
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace item
+			replaceItem: content => {
+				if (hasTarget([removeTarget, element], [replaceTarget, itemIndex])) {
+					return;
+				}
+				element.innerHTML = content;
+				item.content = element.outerHTML;
+				replaceTarget.push(itemIndex);
+			},
+		});
+	}
+	_postImageLoadedEnd(layouted, removeTarget, replaceTarget) {
+		if (!removeTarget.length && !replaceTarget.length) {
+			return;
+		}
+		const prefix = this.options.attributePrefix;
+		const layoutedItems = replaceTarget.map(itemIndex => layouted.items[itemIndex]);
+
+		removeTarget.forEach(element => {
+			this.remove(element);
+		});
+		if (this.options.isEqualSize) {
+			if (removeTarget.length > 0) {
+				this.layout(false);
+			}
+		} else {
+			// wait layoutComplete beacause of error event.
+			ImageLoaded.check(layoutedItems.map(v => v.el), {
+				prefix,
+				complete: () => {
+					this._renderer.updateSize(layoutedItems);
+					this.layout(false);
+				},
+			});
+		}
+	}
 	_postLayout(fromCache, items, isAppend, isTrusted) {
 		const outline = this._items.getOutline(
 			isAppend ? this._status.endCursor : this._status.startCursor,
@@ -682,100 +826,16 @@ class InfiniteGrid extends Component {
 					this._renderer.updateSize(items),
 					outline
 				);
-
-				if (fromCache) {
-					this._setItems(layouted);
-				} else {
-					this._insertItems(layouted, isAppend);
-				}
-				this._updateCursor(isAppend);
-				DOMRenderer.renderItems(layouted.items);
-				this._onLayoutComplete(layouted.items, isAppend, isTrusted);
+				this._postImageLoaded(fromCache, layouted, isAppend, isTrusted);
 			},
 			error: ({target, itemIndex}) => {
 				const item = ((layouted && layouted.items) || items)[itemIndex];
-				const element = item.el;
 
-				item.content = element.outerHTML;
-				/**
-				 * This event is fired when an error occurs in the image.
-				 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
-				 * @event eg.InfiniteGrid#imageError
-				 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-				 * @param {Element} param.target Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
-				 * @param {Element} param.elememt The element with error images.<ko>에러난 이미지를 가지고 있는 엘리먼트</ko>
-				 * @param {Object} param.item The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
-				 * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
-				 * @param {Function} param.remove remove item with error images.<ko>에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
-				 * @param {Function} param.replace replace the errored image.<ko>에러난 이미지를 교체한다.</ko>
-				 * @param {Function} param.replaceItem replace the element with error images.<ko>에러난 이미지를 가지고 있는 엘리먼트를 교체한다.</ko>
-				 */
-				this.trigger("imageError", {
-					target,
-					element,
-					item,
-					itemIndex,
-					remove: () => {
-						if (hasTarget([removeTarget, element], [replaceTarget, itemIndex])) {
-							return;
-						}
-						removeTarget.push(element);
-					},
-					replaceItem: content => {
-						if (hasTarget([removeTarget, element], [replaceTarget, itemIndex])) {
-							return;
-						}
-						element.innerHTML = content;
-						item.content = element.outerHTML;
-						replaceTarget.push(itemIndex);
-					},
-					replace: src => {
-						if (hasTarget([removeTarget, element], [replaceTarget, itemIndex])) {
-							return;
-						}
-						if (src) {
-							target.src = src;
-							if (target.getAttribute(`${prefix}width`)) {
-								AutoSizer.remove(target);
-								target.removeAttribute(`${prefix}width`);
-								target.removeAttribute(`${prefix}height`);
-							}
-						} else {
-							target.parentNode.remove(target);
-						}
-						item.content = element.outerHTML;
-						replaceTarget.push(itemIndex);
-					},
-				});
+				this._onImageError(target, item, itemIndex, removeTarget, replaceTarget);
 			},
 			end: () => {
 				this._process(IMAGE_PROCESSING, false);
-				if (!removeTarget.length && !replaceTarget.length) {
-					return;
-				}
-				const layoutedItems = replaceTarget.map(itemIndex => layouted.items[itemIndex]);
-
-
-				if (this.options.isEqualSize) {
-					if (removeTarget.length > 0) {
-						removeTarget.forEach(element => {
-							this.remove(element);
-						});
-						this.layout(false);
-					}
-				} else {
-					// wait layoutComplete beacause of error event.
-					removeTarget.forEach(element => {
-						this.remove(element);
-					});
-					ImageLoaded.check(layoutedItems.map(v => v.el), {
-						prefix,
-						complete: () => {
-							this._renderer.updateSize(layoutedItems);
-							this.layout(false);
-						},
-					});
-				}
+				this._postImageLoadedEnd(layouted, removeTarget, replaceTarget);
 			},
 		});
 		return this;
@@ -891,15 +951,16 @@ class InfiniteGrid extends Component {
 		if (!rect) {
 			return;
 		}
+		const threshold = this.options.threshold;
 		const targetPos = isForward ?
 			rect[horizontal ? "left" : "top"] - this._renderer.getViewSize() :
 			rect[horizontal ? "right" : "bottom"];
 
 		if (!isProcessing && isForward) {
-			if (scrollPos >= targetPos) {
+			if (scrollPos + threshold >= targetPos) {
 				this._requestAppend();
 			}
-		} else if (scrollPos <= targetPos) {
+		} else if (scrollPos <= targetPos + threshold) {
 			this._fit("before");
 			this._requestPrepend();
 		}
@@ -921,6 +982,7 @@ class InfiniteGrid extends Component {
 		!isLayout && this._process(PROCESSING, false);
 
 		const scrollPos = this._watcher.getScrollPos();
+		const viewSize = this._renderer.getViewSize();
 
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
@@ -940,18 +1002,19 @@ class InfiniteGrid extends Component {
 			target: items.concat(),
 			isAppend,
 			isTrusted,
-			isScroll: this._renderer.getViewSize() < this._renderer.getContainerOffset() + size,
+			isScroll: viewSize < this._renderer.getContainerOffset() + size,
 			scrollPos,
 			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size,
 		});
-
-		if (isLayout || this._isImageProcessing()) {
+		if (isLayout) {
 			return;
 		}
-		if (isAppend && scrollPos >= size) {
+		const threshold = this.options.threshold;
+
+		if (isAppend && Math.abs(size - viewSize - scrollPos) <= threshold) {
 			this._requestAppend();
-		} else if (!isAppend && scrollPos <= this._getEdgeValue("start")) {
+		} else if (!isAppend && scrollPos <= this._getEdgeValue("start") + threshold) {
 			this._fit("before");
 			this._requestPrepend();
 		}
