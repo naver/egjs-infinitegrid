@@ -90,7 +90,7 @@ body {
 .container {
 	overflow: hidden;
 	position: fixed;
-	top: 106px;
+	top: 120px;
 	bottom: 0;
 	width: 100%;
 }
