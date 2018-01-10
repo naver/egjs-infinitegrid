@@ -9,6 +9,7 @@ import {getItems, insert, checkLayoutComplete} from "./helper/TestHelper";
 import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND} from "../../src/consts";
 import {innerWidth, innerHeight} from "../../src/utils";
 import {DEFENSE_BROWSER} from "../../src/consts";
+import {expectConnectGroupsOutline} from "./helper/common";
 
 /* eslint-disable */
 describe("InfiniteGrid Test", function() {
@@ -400,6 +401,53 @@ describe("InfiniteGrid Test", function() {
       this.inst.on("imageError", error);
 
       this.inst.append(`<div>HEADER<img src="/base/test/unit/image/3.jpg" />FOOTER</div><div>HEADER<img src="/1.jpg">FOOTER</div>`);
+    });
+  });
+  describe(`When image processing, fit test`, function() {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = "<div id='infinite'></div>";
+      this.inst = new InfiniteGrid("#infinite", {
+        margin: 5,
+        isOverflowScroll: true,
+      });
+      this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it(`should check outline when image processing and fit occur at the same time`, done => {
+      const item1 = `<div style="height:100px">HEADER<img src="/base/test/unit/image/3.jpg" />FOOTER</div><div>HEADER<img src="/1.jpg">FOOTER</div>`;
+      const layoutComplete2 = sinon.spy(e => {
+        const length = this.inst._items._data.length;
+
+        const group1 = this.inst._items._data[length - 2];
+        const group2 = this.inst._items._data[length - 1];
+        expectConnectGroupsOutline(group1, group2);
+        done();
+      });
+      insert(this.inst, true, () => {
+        expect(this.inst._isImageProcessing()).to.be.false;
+        const container = this.el.querySelector("#infinite");
+
+        container.scrollTop = 50000;
+
+        const pos = this.inst._watcher.getScrollPos();
+
+        setTimeout(() => {
+          this.inst._recycle(true);
+          this.inst.on("layoutComplete", layoutComplete2);
+          this.inst.append(item1);
+          expect(this.inst._isImageProcessing()).to.be.true;
+          this.inst._fit("before");
+        }, 10);
+
+      }, 10, 20);
+      
     });
   });
   [true, false].forEach(isOverflowScroll => {

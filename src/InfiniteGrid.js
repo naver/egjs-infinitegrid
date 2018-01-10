@@ -777,15 +777,16 @@ ig.on("imageError", e => {
 		});
 	}
 	_postLayout(fromCache, items, isAppend, isTrusted) {
+		const {startCursor, endCursor} = this._status;
 		const outline = this._items.getOutline(
-			isAppend ? this._status.endCursor : this._status.startCursor,
+			isAppend ? endCursor : startCursor,
 			isAppend ? "end" : "start");
 
 		let fromRelayout = false;
 
 		if (fromCache) {
 			const cacheOutline = this._items.getOutline(
-				isAppend ? this._status.endCursor + 1 : this._status.startCursor - 1,
+				isAppend ? endCursor + 1 : startCursor - 1,
 				isAppend ? "start" : "end");
 
 			fromRelayout = outline.length === cacheOutline.length ?
@@ -818,7 +819,9 @@ ig.on("imageError", e => {
 			complete: () => {
 				layouted = this._layout[method](
 					this._renderer.updateSize(items),
-					outline
+					this._items.getOutline(
+						isAppend ? endCursor : startCursor,
+						isAppend ? "end" : "start")
 				);
 				this._postImageLoaded(fromCache, layouted, isAppend, isTrusted);
 			},
