@@ -45,6 +45,7 @@ You can download the compressed files for production
 - Latest : https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js
 - Specific version : https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/infinitegrid.min.js
 
+
 ### Packaged version (with Dependencies)
 > Packaged version is not an official distribution.
 > Is just to provide for ease use of 'egjs-infinitegrid' with dependency.
@@ -72,6 +73,8 @@ The following are the supported browsers.
 |Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
 |---|---|---|---|---|---|
 |8+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
+
+* If you want to use in IE8, please use polyfill.
 
 ## Dependency
 
