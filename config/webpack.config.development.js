@@ -1,6 +1,5 @@
 var merge = require("webpack-merge");
 var WriteFilePlugin = require("write-file-webpack-plugin");
-
 var config = {
 	devtool: "inline-source-map",
 	devServer: {

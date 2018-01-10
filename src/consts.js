@@ -59,6 +59,7 @@ export const IDLE = 0;
 export const LOADING_APPEND = 1;
 export const LOADING_PREPEND = 2;
 export const PROCESSING = 4;
+export const IMAGE_PROCESSING = 8;
 
 
 const webkit = /applewebkit\/([\d|.]*)/g.exec(agent);

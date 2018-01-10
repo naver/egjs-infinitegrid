@@ -1,11 +1,11 @@
 import FrameLayout from "./FrameLayout";
-import {indexOf, fill} from "../utils";
+import {fill} from "../utils";
 
 function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
 	const point = Math[isAppend ? "min" : "max"](...outline) || 0;
 
 	if (outline.length !== columnLength) {
-		return fill(columnLength, 0);
+		return fill(new Array(columnLength), 0);
 	}
 	return outline.map(l => parseInt((l - point) / itemSize, 10));
 }
@@ -95,7 +95,7 @@ class SquareLayout extends FrameLayout {
 
 		for (let i = 0; i < length; ++i) {
 			const point = Math[pointCaculateName](...endOutline);
-			let index = indexOf(endOutline, point, !isAppend);
+			let index = endOutline[isAppend ? "indexOf" : "lastIndexOf"](point);
 			const item = items[i];
 			const columnWidth = item.columnWidth;
 			const column = (columnWidth && columnWidth[0] === columnLength &&

@@ -7,17 +7,26 @@ export const CHECK_ALL = 1;
 export const CHECK_ONLY_ERROR = 2;
 
 
+const errorImages = [];
+
 function isDataAttribute(target, prefix) {
 	return !!target.getAttribute(`${prefix}width`);
 }
 
 class ImageLoaded {
-	static waitImageLoaded(needCheck, {prefix, length, type, complete, error}) {
+	static waitImageLoaded(needCheck, {prefix, length, type, complete, error, end}) {
 		let checkCount = 0;
+		let endCount = length || needCheck.reduce((sum, element) => sum + element.length, 0);
 
 		if (type !== CHECK_ONLY_ERROR) {
-			checkCount = length || needCheck.reduce((sum, element) => sum + element.length, 0);
+			checkCount = endCount;
 		}
+		const checkEnd = function() {
+			if (--endCount !== 0) {
+				return;
+			}
+			end && end();
+		};
 		const checkImage = function() {
 			checkCount--;
 			if (checkCount !== 0) {
@@ -25,29 +34,40 @@ class ImageLoaded {
 			}
 			complete && complete();
 		};
+		const onError = function(target) {
+			error && error({
+				target,
+				itemIndex: target.__ITEM_INDEX__,
+			});
+		};
 		const onCheck = function(e) {
-			if (e.type === "error") {
-				error && error(e);
-			}
 			const target = e.target || e.srcElement;
 
-			delete target.__ITEM_INDEX__;
 			removeEvent(target, "error", onCheck);
 			removeEvent(target, "load", onCheck);
 
 			if (type === CHECK_ALL && isDataAttribute(target, prefix)) {
-				AutoSizer.remove(target);
+				AutoSizer.remove(target, e.type === "error");
 			} else {
 				checkImage();
 			}
+			if (e.type === "error") {
+				errorImages.push(target.src);
+				onError(target);
+			}
+			delete target.__ITEM_INDEX__;
+			checkEnd();
 		};
 
-		// workaround for IE
-		IS_IE && needCheck.forEach(v => v.setAttribute("src", v.getAttribute("src")));
 		needCheck.forEach((images, i) => {
 			images.forEach(v => {
+				// workaround for IE
 				if (v.complete) {
+					if (errorImages.indexOf(v.src) !== -1) {
+						onError(v);
+					}
 					checkImage();
+					checkEnd();
 					return;
 				}
 				v.__ITEM_INDEX__ = i;
@@ -57,6 +77,8 @@ class ImageLoaded {
 				}
 				addEvent(v, "load", onCheck);
 				addEvent(v, "error", onCheck);
+
+				IS_IE && v.setAttribute("src", v.getAttribute("src"));
 			});
 		});
 	}
@@ -64,16 +86,10 @@ class ImageLoaded {
 		if (el.tagName === "IMG") {
 			return !el.complete ? [el] : [];
 		} else {
-			return toArray(el.querySelectorAll("img")).filter(v => {
-				if (v.nodeType && ([1, 9, 11].indexOf(v.nodeType) !== -1)) {
-					return !v.complete;
-				} else {
-					return false;
-				}
-			});
+			return toArray(el.querySelectorAll("img"));
 		}
 	}
-	static check(elements, {prefix, type = CHECK_ALL, complete, error}) {
+	static check(elements, {prefix, type = CHECK_ALL, complete, error, end}) {
 		const images = elements.map(element => this.checkImageLoaded(element));
 		const length = images.reduce((sum, element) => sum + element.length, 0);
 
@@ -81,10 +97,13 @@ class ImageLoaded {
 			// convert to async
 			setTimeout(() => {
 				complete && complete();
+				if (length === 0) {
+					end && end();
+				}
 			}, 0);
 		}
 		if (length > 0) {
-			this.waitImageLoaded(images, {prefix, length, type, complete, error});
+			this.waitImageLoaded(images, {prefix, length, type, complete, error, end});
 		}
 	}
 }

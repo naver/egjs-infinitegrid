@@ -93,3 +93,14 @@ body {
 	background: rgba(0, 0, 0, 0);
 	z-index: 100;
 }
+
+@media (max-width: 600px) {
+	#table span.date {
+		display: none;
+	}	
+}
+@media (max-width: 380px) {
+	#table span.writer {
+		display: none;
+	}	
+}

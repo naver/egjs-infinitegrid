@@ -1,5 +1,5 @@
 import {APPEND, PREPEND, ALIGN} from "../consts";
-import {getStyleNames, assignOptions, fill} from "../utils";
+import {getStyleNames, assignOptions} from "../utils";
 
 // ALIGN
 const {START, CENTER, END, JUSTIFY} = ALIGN;
@@ -163,7 +163,7 @@ class GridLayout {
 			this.checkColumn(items[0]);
 		}
 		if (outline.length !== this._columnLength) {
-			startOutline = fill(this._columnLength, outline.length === 0 ? 0 : (Math[type === APPEND ? "min" : "max"](...outline) || 0));
+			startOutline = new Array(this._columnLength).fill(outline.length === 0 ? 0 : (Math[type === APPEND ? "min" : "max"](...outline) || 0));
 		}
 
 		const result = this._layout(clone, startOutline, type);
@@ -221,7 +221,7 @@ class GridLayout {
 			const pos = outline.length === 0 ? 0 : Math.min(...outline);
 
 			// re-layout items.
-			startOutline = fill(this._columnLength, pos);
+			startOutline = new Array(this._columnLength).fill(pos);
 		} else {
 			startOutline = outline.slice();
 		}

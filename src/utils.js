@@ -19,14 +19,8 @@ export function toArray(nodes) {
 	}
 	return array;
 }
-export function fill(length, value) {
-	const array = typeof length === "object" ? length : new Array(length);
-	const len = array.length;
-
-	for (let i = len - 1; i >= 0; --i) {
-		array[i] = value;
-	}
-	return array;
+export function matchHTML(html) {
+	return html.match(/^<([A-z]+)\s*([^>]*)>/);
 }
 /**
  * Select or create element
@@ -41,7 +35,7 @@ export function $(param, multi = false) {
 
 	if (typeof param === "string") { // String (HTML, Selector)
 		// check if string is HTML tag format
-		const match = param.match(/^<([A-z]+)\s*([^>]*)>/);
+		const match = matchHTML(param);
 
 		// creating element
 		if (match) { // HTML
@@ -190,17 +184,12 @@ export function isWindow(el) {
 	return el === window;
 }
 
-export function indexOf(arr, target, isRight = false) {
-	if (!isRight) {
-		return arr.indexOf(target);
-	}
+export function fill(arr, value) {
 	const length = arr.length;
 
 	for (let i = length - 1; i >= 0; --i) {
-		if (arr[i] !== target) {
-			continue;
-		}
-		return i;
+		arr[i] = value;
 	}
-	return -1;
+
+	return arr;
 }

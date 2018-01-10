@@ -7,6 +7,7 @@ import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
 import ImageLoaded, {CHECK_ALL, CHECK_ONLY_ERROR} from "./ImageLoaded";
 import Watcher from "./Watcher";
+import AutoSizer from "./AutoSizer";
 import {
 	APPEND,
 	PREPEND,
@@ -21,8 +22,9 @@ import {
 	PROCESSING,
 	DEFENSE_BROWSER,
 	IGNORE_CLASSNAME,
+	IMAGE_PROCESSING,
 } from "./consts";
-import {toArray, $, innerWidth, innerHeight} from "./utils";
+import {toArray, $, innerWidth, innerHeight, matchHTML} from "./utils";
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -41,6 +43,9 @@ if (typeof Object.create !== "function") {
 }
 /* eslint-enable */
 
+function hasTarget(...targets) {
+	return targets.every(target => ~target[0].indexOf(target[1]));
+}
 
 /**
  * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -111,6 +116,7 @@ class InfiniteGrid extends Component {
 			isEqualSize: this.options.isEqualSize,
 			isVertical: this._isVertical,
 		});
+		this._loadingBar = {};
 		this._watcher = new Watcher(
 			this._renderer,
 			{
@@ -286,7 +292,7 @@ class InfiniteGrid extends Component {
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	layout(isRelayout = true) {
-		if (!this._layout || this._isProcessing()) {
+		if (!this._layout) {
 			return this;
 		}
 		// check childElement
@@ -294,13 +300,17 @@ class InfiniteGrid extends Component {
 			this._insert(toArray(this._renderer.container.children), true);
 			return this;
 		}
-		this._process(PROCESSING);
-
 		let data;
 		let outline;
 
 		if (isRelayout) { // remove cache
-			data = this._items.get(this._status.startCursor, this._status.endCursor);
+			if (this.options.isEqualSize) {
+				this._renderer.updateSize([this._status.start]);
+				data = this._items.get(0, this._status.endCursor);
+				outline = this._items.getOutline(0, "start");
+			} else {
+				data = this._items.get(this._status.startCursor, this._status.endCursor);
+			}
 			if (this._renderer.resize()) {
 				this._layout.setSize(this._renderer.getViewportSize());
 				data.forEach(v => {
@@ -317,17 +327,21 @@ class InfiniteGrid extends Component {
 		this._layout.layout(data, outline);
 
 		if (isRelayout) {
-			this._items._data.forEach((group, cursor) => {
-				if (this._status.startCursor <= cursor && cursor <= this._status.endCursor) {
-					return;
-				}
-				group.outlines.start = [];
-				group.outlines.end = [];
-			});
+			if (!this.options.isEqualSize) {
+				this._items._data.forEach((group, cursor) => {
+					if (this._status.startCursor <= cursor && cursor <= this._status.endCursor) {
+						return;
+					}
+					group.outlines.start = [];
+					group.outlines.end = [];
+				});
+			} else {
+				this._fit("after");
+			}
 		} else {
 			data.forEach(v => this._items.set(v, v.groupKey));
 		}
-		this._onLayoutComplete(data, APPEND, NO_TRUSTED, false);
+		this._onLayoutComplete(data, APPEND, NO_TRUSTED, false, true);
 		DOMRenderer.renderItems(this._getVisibleItems());
 		isRelayout && this._watcher.setScrollPos();
 
@@ -440,7 +454,6 @@ class InfiniteGrid extends Component {
 
 		this._status.loadingSize = 0;
 		this._status.loadingStyle = {};
-		this._loadingBar = this._loadingBar || {};
 		const loadingBar = this._loadingBar;
 
 		for (const type in loadingBarObj) {
@@ -471,6 +484,9 @@ class InfiniteGrid extends Component {
 	}
 	_isLoading() {
 		return this._getLoadingStatus() > 0;
+	}
+	_isImageProcessing() {
+		return (this._status.processingStatus & IMAGE_PROCESSING) > 0;
 	}
 	_getLoadingStatus() {
 		return this._status.processingStatus & (LOADING_APPEND | LOADING_PREPEND);
@@ -619,6 +635,147 @@ class InfiniteGrid extends Component {
 		this._renderer.setContainerSize(this._getEdgeValue("end"));
 		return this;
 	}
+	_postImageLoaded(fromCache, layouted, isAppend, isTrusted) {
+		if (fromCache) {
+			this._setItems(layouted);
+		} else {
+			this._insertItems(layouted, isAppend);
+		}
+		this._updateCursor(isAppend);
+		DOMRenderer.renderItems(layouted.items);
+		this._onLayoutComplete(layouted.items, isAppend, isTrusted);
+	}
+	_onImageError(target, item, itemIndex, removeTarget, replaceTarget) {
+		const element = item.el;
+		const prefix = this.options.attributePrefix;
+
+		item.content = element.outerHTML;
+
+		const removeItem = () => {
+			if (hasTarget([removeTarget, element])) {
+				return;
+			}
+			removeTarget.push(element);
+			const index = replaceTarget.indexOf(itemIndex);
+
+			if (index !== -1) {
+				replaceTarget.splice(index, 1);
+			}
+		};
+
+		/**
+		 * This event is fired when an error occurs in the image.
+		 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
+		 * @event eg.InfiniteGrid#imageError
+		 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+		 * @param {Element} param.target Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
+		 * @param {Element} param.elememt The item's element with error images.<ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트</ko>
+		 * @param {Object} param.item The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
+		 * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
+		 * @param {Function} param.remove In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
+		 * @param {Function} param.removeItem In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
+		 * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
+		 * @param {Function} param.replaceItem In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
+		 * @example
+ig.on("imageError", e => {
+	e.remove();
+	e.removeItem();
+	e.replace("http://...jpg");
+	e.replace(imageElement);
+	e.replaceItem("item html");
+});
+		 */
+		this.trigger("imageError", {
+			target,
+			element,
+			item,
+			itemIndex,
+			// remove item
+			removeItem,
+			// remove image
+			remove: () => {
+				if (target === element) {
+					removeItem();
+					return;
+				}
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				target.parentNode.removeChild(target);
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace image
+			replace: src => {
+				if (hasTarget([removeTarget, element])) {
+					return;
+				}
+				if (src) {
+					if (matchHTML(src) || typeof src === "object") {
+						const parentNode = target.parentNode;
+
+						parentNode.insertBefore($(src), target);
+						parentNode.removeChild(target);
+						item.content = element.outerHTML;
+					} else {
+						target.src = src;
+						if (target.getAttribute(`${prefix}width`)) {
+							AutoSizer.remove(target);
+							target.removeAttribute(`${prefix}width`);
+							target.removeAttribute(`${prefix}height`);
+						}
+					}
+				}
+				item.content = element.outerHTML;
+				if (hasTarget([replaceTarget, itemIndex])) {
+					return;
+				}
+				replaceTarget.push(itemIndex);
+			},
+			// replace item
+			replaceItem: content => {
+				if (hasTarget([removeTarget, element], [replaceTarget, itemIndex])) {
+					return;
+				}
+				element.innerHTML = content;
+				item.content = element.outerHTML;
+				replaceTarget.push(itemIndex);
+			},
+		});
+	}
+	_postImageLoadedEnd(layouted, isAppend, removeTarget, replaceTarget) {
+		if (!removeTarget.length && !replaceTarget.length) {
+			if (!this.isProcessing() && this.options.useRecycle) {
+				this._recycle(isAppend);
+			}
+			return;
+		}
+		const prefix = this.options.attributePrefix;
+		const layoutedItems = replaceTarget.map(itemIndex => layouted.items[itemIndex]);
+
+		removeTarget.forEach(element => {
+			this.remove(element);
+		});
+		if (this.options.isEqualSize) {
+			if (removeTarget.length > 0) {
+				this.layout(false);
+			} else if (!this.isProcessing() && this.options.useRecycle) {
+				this._recycle(isAppend);
+			}
+			return;
+		}
+		// wait layoutComplete beacause of error event.
+		ImageLoaded.check(layoutedItems.map(v => v.el), {
+			prefix,
+			complete: () => {
+				this._renderer.updateSize(layoutedItems);
+				this.layout(false);
+			},
+		});
+	}
 	_postLayout(fromCache, items, isAppend, isTrusted) {
 		const outline = this._items.getOutline(
 			isAppend ? this._status.endCursor : this._status.startCursor,
@@ -646,29 +803,33 @@ class InfiniteGrid extends Component {
 
 		fromCache && DOMRenderer.createElements(items);
 		this._renderer[method](items);
+
 		// check image sizes after elements are attated on DOM
 		const type = this.options.isEqualSize && this._renderer._size.item ? CHECK_ONLY_ERROR : CHECK_ALL;
+		const prefix = this.options.attributePrefix;
+		const replaceTarget = [];
+		const removeTarget = [];
+		let layouted;
 
+		this._process(IMAGE_PROCESSING);
 		ImageLoaded.check(items.map(item => item.el), {
-			prefix: this.options.attributePrefix,
+			prefix,
 			type,
 			complete: () => {
-				const layouted = this._layout[method](
+				layouted = this._layout[method](
 					this._renderer.updateSize(items),
 					outline
 				);
-
-				if (fromCache) {
-					this._setItems(layouted);
-				} else {
-					this._insertItems(layouted, isAppend);
-				}
-				this._updateCursor(isAppend);
-				DOMRenderer.renderItems(layouted.items);
-				this._onLayoutComplete(layouted.items, isAppend, isTrusted);
+				this._postImageLoaded(fromCache, layouted, isAppend, isTrusted);
 			},
-			error: error => {
-				this.trigger("imageError", {});
+			error: ({target, itemIndex}) => {
+				const item = ((layouted && layouted.items) || items)[itemIndex];
+
+				this._onImageError(target, item, itemIndex, removeTarget, replaceTarget);
+			},
+			end: () => {
+				this._process(IMAGE_PROCESSING, false);
+				this._postImageLoadedEnd(layouted, isAppend, removeTarget, replaceTarget);
 			},
 		});
 		return this;
@@ -784,23 +945,27 @@ class InfiniteGrid extends Component {
 		if (!rect) {
 			return;
 		}
+		const threshold = this.options.threshold;
 		const targetPos = isForward ?
 			rect[horizontal ? "left" : "top"] - this._renderer.getViewSize() :
 			rect[horizontal ? "right" : "bottom"];
 
 		if (!isProcessing && isForward) {
-			if (scrollPos >= targetPos) {
+			if (scrollPos + threshold >= targetPos) {
 				this._requestAppend();
 			}
-		} else if (scrollPos <= targetPos) {
+		} else if (scrollPos <= targetPos + threshold) {
 			this._fit("before");
 			this._requestPrepend();
 		}
 	}
-	_onLayoutComplete(items, isAppend, isTrusted = false, useRecycle = this.options.useRecycle) {
+	_onLayoutComplete(items, isAppend, isTrusted = false,
+		useRecycle = this.options.useRecycle, isLayout = false) {
 		this._isLoading() && this._renderLoading();
 		!isAppend && this._fit("after");
-		useRecycle && this._recycle(isAppend);
+		if (!this._isImageProcessing() && useRecycle) {
+			this._recycle(isAppend);
+		}
 
 		const size = this._getEdgeValue("end");
 
@@ -808,9 +973,10 @@ class InfiniteGrid extends Component {
 		this._updateEdge();
 
 		isAppend && this._renderer.setContainerSize(size + this._status.loadingSize || 0);
-		this._process(PROCESSING, false);
+		!isLayout && this._process(PROCESSING, false);
 
 		const scrollPos = this._watcher.getScrollPos();
+		const viewSize = this._renderer.getViewSize();
 
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
@@ -830,15 +996,19 @@ class InfiniteGrid extends Component {
 			target: items.concat(),
 			isAppend,
 			isTrusted,
-			isScroll: this._renderer.getViewSize() < this._renderer.getContainerOffset() + size,
+			isScroll: viewSize < this._renderer.getContainerOffset() + size,
 			scrollPos,
 			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size,
 		});
+		if (isLayout) {
+			return;
+		}
+		const threshold = this.options.threshold;
 
-		if (isAppend && scrollPos >= size) {
+		if (isAppend && Math.abs(size - viewSize - scrollPos) <= threshold) {
 			this._requestAppend();
-		} else if (!isAppend && scrollPos <= this._getEdgeValue("start")) {
+		} else if (!isAppend && scrollPos <= this._getEdgeValue("start") + threshold) {
 			this._fit("before");
 			this._requestPrepend();
 		}

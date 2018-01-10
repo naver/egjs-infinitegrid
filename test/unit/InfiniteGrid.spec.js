@@ -75,7 +75,7 @@ describe("InfiniteGrid Test", function() {
           expect(e.target).to.have.lengthOf(count);
           expect(this.getItems(true)).to.have.lengthOf(count);
           expect(this.getItems(false)).to.have.lengthOf(count);
-          expect(this.isProcessing()).to.be.false;
+          expect(this._isProcessing()).to.be.false;
           done();
         });
   
@@ -115,7 +115,6 @@ describe("InfiniteGrid Test", function() {
         const ITEMCOUNT = 30;
         const RETRY = 7;
         it(`should trigger ${isAppend ? "append" : "prepend"} event when scrolling (isOverflowScroll: ${isOverflowScroll})`, done => {
-          console.log("----");
           // Given
           // When
           this.inst.on(isAppend ? "append" : "prepend", param => {
@@ -261,6 +260,146 @@ describe("InfiniteGrid Test", function() {
         // When
         this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
       });
+    });
+  });
+  describe(`When appending, image test`, function() {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = "<div id='infinite'></div>";
+      this.inst = new InfiniteGrid("#infinite", {
+        margin: 5,
+      });
+      this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it(`should check append error images`, done => {
+      this.inst.on("imageError", e => {
+        expect(e.target.src).to.have.string("1.jpg");
+        expect(e.itemIndex).to.be.equals(1);
+        done();
+      });
+      this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg">`);
+    });
+    it(`should check append multiple error images`, done => {
+      // Given
+      let count = 0;
+
+      // Then
+      this.inst.on("imageError", e => {
+        ++count;
+
+        expect(e.itemIndex).to.be.not.equals(0);
+        if (count === 3) {
+          done();
+        }
+      });
+
+      // When
+      this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg"><img src="/1.jpg"><img src="/2.jpg">`);
+    });
+    it(`should check append error image and test error event remove method`, done => {
+      const error = sinon.spy(e => {
+        e.remove();
+      });
+      const complete2 = e => {
+        expect(error.callCount).to.be.equals(2);
+        expect(this.inst._items._data[0].items[1].content).to.not.have.string("img");
+        expect(this.inst._items._data[0].items).to.be.lengthOf(2);
+        done();
+      };
+      const complete1 = e => {
+        this.inst.on("layoutComplete", complete2);
+        this.inst.off("layoutComplete", complete1);
+      };
+      this.inst.on("layoutComplete", complete1);
+      this.inst.on("imageError", error);
+
+      this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><div><img src="/1.jpg"></div><img src="/2.jpg">`);
+    });
+    it(`should check append error image and test error event removeItem method`, done => {
+      const error = sinon.spy(e => {
+        e.removeItem();
+      });
+      const complete2 = e => {
+        expect(error.callCount).to.be.equals(2);
+        expect(this.inst._items._data[0].items).to.be.lengthOf(1);
+        done();
+      };
+      const complete1 = e => {
+        this.inst.on("layoutComplete", complete2);
+        this.inst.off("layoutComplete", complete1);
+      };
+      this.inst.on("layoutComplete", complete1);
+      this.inst.on("imageError", error);
+
+      this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><div><img src="/1.jpg"></div><img src="/2.jpg">`);
+    });
+    it(`should check append error image and test error event replace method`, done => {
+      const error = sinon.spy(e => {
+        e.replace("/base/test/unit/images/error.png");
+      });
+      const complete2 = e => {
+        expect(error.calledOnce).to.be.true;
+        expect(this.inst._items._data[0].items[1].content).to.have.string("error.png");
+        expect(this.inst._items._data[0].items[1].el.src).to.have.string("error.png");
+        done();
+      };
+      const complete1 = e => {
+        this.inst.on("layoutComplete", complete2);
+        this.inst.off("layoutComplete", complete1);
+      };
+      this.inst.on("layoutComplete", complete1);
+      this.inst.on("imageError", error);
+
+      this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg">`);
+    });
+    it(`should check append error image and test error event replace method(element)`, done => {
+      const error = sinon.spy(e => {
+        e.replace("<p>it's error</p>");
+      });
+      const complete2 = e => {
+        expect(error.calledOnce).to.be.true;
+        expect(this.inst._items._data[0].items[1].content).to.have.string("it's error");
+        expect(this.inst._items._data[0].items[1].content).to.have.string("HEADER");
+        expect(this.inst._items._data[0].items[1].content).to.have.string("FOOTER");
+        expect(this.inst._items._data[0].items[1].el.innerHTML).to.have.string("it's error");
+        done();
+      };
+      const complete1 = e => {
+        this.inst.on("layoutComplete", complete2);
+        this.inst.off("layoutComplete", complete1);
+      };
+      this.inst.on("layoutComplete", complete1);
+      this.inst.on("imageError", error);
+
+      this.inst.append(`<div>HEADER<img src="/base/test/unit/image/3.jpg" />FOOTER</div><div>HEADER<img src="/1.jpg">FOOTER</div>`);
+    });
+    it(`should check append error image and test error event replaceItem method`, done => {
+      const error = sinon.spy(e => {
+        e.replaceItem("<p>it's error</p>");
+      });
+      const complete2 = e => {
+        expect(error.calledOnce).to.be.true;
+        expect(this.inst._items._data[0].items[1].content).to.have.string("it's error");
+        expect(this.inst._items._data[0].items[1].content).to.not.have.string("HEADER");
+        expect(this.inst._items._data[0].items[1].content).to.not.have.string("FOOTER");
+        expect(this.inst._items._data[0].items[1].el.innerHTML).to.have.string("it's error");
+        done();
+      };
+      const complete1 = e => {
+        this.inst.on("layoutComplete", complete2);
+        this.inst.off("layoutComplete", complete1);
+      };
+      this.inst.on("layoutComplete", complete1);
+      this.inst.on("imageError", error);
+
+      this.inst.append(`<div>HEADER<img src="/base/test/unit/image/3.jpg" />FOOTER</div><div>HEADER<img src="/1.jpg">FOOTER</div>`);
     });
   });
   [true, false].forEach(isOverflowScroll => {
@@ -537,7 +676,7 @@ describe("InfiniteGrid Test", function() {
           // Then
           expect(e.target).to.have.lengthOf(100);
           expect(this.getItems(true)).to.have.lengthOf(100);
-          expect(this.isProcessing()).to.be.false;
+          expect(this._isProcessing()).to.be.false;
           done();
         });
         

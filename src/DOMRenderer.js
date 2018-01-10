@@ -168,6 +168,7 @@ export default class DOMRenderer {
 			this.container.style[this.options.isVertical ? "height" : "width"] = "";
 		}
 		this._size = {
+			item: null,
 			containerOffset: 0,
 			viewport: -1,
 			container: -1,
