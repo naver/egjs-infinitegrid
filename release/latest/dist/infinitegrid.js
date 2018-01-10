@@ -2276,12 +2276,16 @@ var InfiniteGrid = function (_Component) {
 	InfiniteGrid.prototype._postLayout = function _postLayout(fromCache, items, isAppend, isTrusted) {
 		var _this4 = this;
 
-		var outline = this._items.getOutline(isAppend ? this._status.endCursor : this._status.startCursor, isAppend ? "end" : "start");
+		var _status = this._status,
+		    startCursor = _status.startCursor,
+		    endCursor = _status.endCursor;
+
+		var outline = this._items.getOutline(isAppend ? endCursor : startCursor, isAppend ? "end" : "start");
 
 		var fromRelayout = false;
 
 		if (fromCache) {
-			var cacheOutline = this._items.getOutline(isAppend ? this._status.endCursor + 1 : this._status.startCursor - 1, isAppend ? "start" : "end");
+			var cacheOutline = this._items.getOutline(isAppend ? endCursor + 1 : startCursor - 1, isAppend ? "start" : "end");
 
 			fromRelayout = outline.length === cacheOutline.length ? !outline.every(function (v, index) {
 				return v === cacheOutline[index];
@@ -2314,7 +2318,7 @@ var InfiniteGrid = function (_Component) {
 			prefix: prefix,
 			type: type,
 			complete: function complete() {
-				layouted = _this4._layout[method](_this4._renderer.updateSize(items), outline);
+				layouted = _this4._layout[method](_this4._renderer.updateSize(items), _this4._items.getOutline(isAppend ? endCursor : startCursor, isAppend ? "end" : "start"));
 				_this4._postImageLoaded(fromCache, layouted, isAppend, isTrusted);
 			},
 			error: function error(_ref) {
