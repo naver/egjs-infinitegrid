@@ -94,7 +94,7 @@ function replace() {
 function replaceElement() {
     ig.off("imageError");
     ig.on("imageError", function (e) {
-        e.replaceElement("<div class=\"replaceElement\">REPLACE ELEMENT</div>");
+        e.replace("<div class=\"replaceElement\">REPLACE ELEMENT</div>");
     });
 }
 function replaceItem() {

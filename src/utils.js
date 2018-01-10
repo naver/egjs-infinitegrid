@@ -19,6 +19,9 @@ export function toArray(nodes) {
 	}
 	return array;
 }
+export function matchHTML(html) {
+	return html.match(/^<([A-z]+)\s*([^>]*)>/);
+}
 /**
  * Select or create element
  * @param {String|HTMLElement|jQuery} param
@@ -32,7 +35,7 @@ export function $(param, multi = false) {
 
 	if (typeof param === "string") { // String (HTML, Selector)
 		// check if string is HTML tag format
-		const match = param.match(/^<([A-z]+)\s*([^>]*)>/);
+		const match = matchHTML(param);
 
 		// creating element
 		if (match) { // HTML
@@ -179,4 +182,14 @@ export function toZeroArray(outline) {
 
 export function isWindow(el) {
 	return el === window;
+}
+
+export function fill(arr, value) {
+	const length = arr.length;
+
+	for (let i = length - 1; i >= 0; --i) {
+		arr[i] = value;
+	}
+
+	return arr;
 }

@@ -24,7 +24,7 @@ import {
 	IGNORE_CLASSNAME,
 	IMAGE_PROCESSING,
 } from "./consts";
-import {toArray, $, innerWidth, innerHeight} from "./utils";
+import {toArray, $, innerWidth, innerHeight, matchHTML} from "./utils";
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -674,15 +674,14 @@ class InfiniteGrid extends Component {
 		 * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
 		 * @param {Function} param.remove In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
 		 * @param {Function} param.removeItem In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
-		 * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 교체한다.</ko>
-		 * @param {Function} param.replaceElement In the imageError event, this method expects to replace the error image element<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지 엘리먼트를 교체한다.</ko>
+		 * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
 		 * @param {Function} param.replaceItem In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
 		 * @example
 ig.on("imageError", e => {
 	e.remove();
 	e.removeItem();
 	e.replace("http://...jpg");
-	e.replaceElement("image element..");
+	e.replace(imageElement);
 	e.replaceItem("item html");
 });
 		 */
@@ -715,28 +714,21 @@ ig.on("imageError", e => {
 					return;
 				}
 				if (src) {
-					target.src = src;
-					if (target.getAttribute(`${prefix}width`)) {
-						AutoSizer.remove(target);
-						target.removeAttribute(`${prefix}width`);
-						target.removeAttribute(`${prefix}height`);
+					if (matchHTML(src) || typeof src === "object") {
+						const parentNode = target.parentNode;
+
+						parentNode.insertBefore($(src), target);
+						parentNode.removeChild(target);
+						item.content = element.outerHTML;
+					} else {
+						target.src = src;
+						if (target.getAttribute(`${prefix}width`)) {
+							AutoSizer.remove(target);
+							target.removeAttribute(`${prefix}width`);
+							target.removeAttribute(`${prefix}height`);
+						}
 					}
 				}
-				item.content = element.outerHTML;
-				if (hasTarget([replaceTarget, itemIndex])) {
-					return;
-				}
-				replaceTarget.push(itemIndex);
-			},
-			// replace element
-			replaceElement: imageElement => {
-				if (hasTarget([removeTarget, element])) {
-					return;
-				}
-				const parentNode = target.parentNode;
-
-				parentNode.insertBefore($(imageElement), target);
-				parentNode.removeChild(target);
 				item.content = element.outerHTML;
 				if (hasTarget([replaceTarget, itemIndex])) {
 					return;

@@ -359,9 +359,9 @@ describe("InfiniteGrid Test", function() {
 
       this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg">`);
     });
-    it(`should check append error image and test error event replaceElement method`, done => {
+    it(`should check append error image and test error event replace method(element)`, done => {
       const error = sinon.spy(e => {
-        e.replaceElement("<p>it's error</p>");
+        e.replace("<p>it's error</p>");
       });
       const complete2 = e => {
         expect(error.calledOnce).to.be.true;
