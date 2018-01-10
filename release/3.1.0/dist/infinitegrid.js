@@ -7,398 +7,7 @@
  * 
  * @version 3.1.0
  */
-// Production steps of ECMA-262, Edition 5, 15.4.4.18
-// Reference: http://es5.github.io/#x15.4.4.18
-if (!Array.prototype.forEach) {
-
-    Array.prototype.forEach = function(callback/*, thisArg*/) {
-  
-      var T, k;
-  
-      if (this == null) {
-        throw new TypeError('this is null or not defined');
-      }
-  
-      // 1. Let O be the result of calling toObject() passing the
-      // |this| value as the argument.
-      var O = Object(this);
-  
-      // 2. Let lenValue be the result of calling the Get() internal
-      // method of O with the argument "length".
-      // 3. Let len be toUint32(lenValue).
-      var len = O.length >>> 0;
-  
-      // 4. If isCallable(callback) is false, throw a TypeError exception. 
-      // See: http://es5.github.com/#x9.11
-      if (typeof callback !== 'function') {
-        throw new TypeError(callback + ' is not a function');
-      }
-  
-      // 5. If thisArg was supplied, let T be thisArg; else let
-      // T be undefined.
-      if (arguments.length > 1) {
-        T = arguments[1];
-      }
-  
-      // 6. Let k be 0.
-      k = 0;
-  
-      // 7. Repeat while k < len.
-      while (k < len) {
-  
-        var kValue;
-  
-        // a. Let Pk be ToString(k).
-        //    This is implicit for LHS operands of the in operator.
-        // b. Let kPresent be the result of calling the HasProperty
-        //    internal method of O with argument Pk.
-        //    This step can be combined with c.
-        // c. If kPresent is true, then
-        if (k in O) {
-  
-          // i. Let kValue be the result of calling the Get internal
-          // method of O with argument Pk.
-          kValue = O[k];
-  
-          // ii. Call the Call internal method of callback with T as
-          // the this value and argument list containing kValue, k, and O.
-          callback.call(T, kValue, k, O);
-        }
-        // d. Increase k by 1.
-        k++;
-      }
-      // 8. return undefined.
-    };
-  }// Production steps of ECMA-262, Edition 5, 15.4.4.19
-// Reference: http://es5.github.io/#x15.4.4.19
-if (!Array.prototype.map) {
-
-    Array.prototype.map = function(callback, thisArg) {
-  
-      var T, A, k;
-  
-      if (this == null) {
-        throw new TypeError(' this is null or not defined');
-      }
-  
-      // 1. Let O be the result of calling ToObject passing the |this| 
-      //    value as the argument.
-      var O = Object(this);
-  
-      // 2. Let lenValue be the result of calling the Get internal 
-      //    method of O with the argument "length".
-      // 3. Let len be ToUint32(lenValue).
-      var len = O.length >>> 0;
-  
-      // 4. If IsCallable(callback) is false, throw a TypeError exception.
-      // See: http://es5.github.com/#x9.11
-      if (typeof callback !== 'function') {
-        throw new TypeError(callback + ' is not a function');
-      }
-  
-      // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
-      if (arguments.length > 1) {
-        T = thisArg;
-      }
-  
-      // 6. Let A be a new array created as if by the expression new Array(len) 
-      //    where Array is the standard built-in constructor with that name and 
-      //    len is the value of len.
-      A = new Array(len);
-  
-      // 7. Let k be 0
-      k = 0;
-  
-      // 8. Repeat, while k < len
-      while (k < len) {
-  
-        var kValue, mappedValue;
-  
-        // a. Let Pk be ToString(k).
-        //   This is implicit for LHS operands of the in operator
-        // b. Let kPresent be the result of calling the HasProperty internal 
-        //    method of O with argument Pk.
-        //   This step can be combined with c
-        // c. If kPresent is true, then
-        if (k in O) {
-  
-          // i. Let kValue be the result of calling the Get internal 
-          //    method of O with argument Pk.
-          kValue = O[k];
-  
-          // ii. Let mappedValue be the result of calling the Call internal 
-          //     method of callback with T as the this value and argument 
-          //     list containing kValue, k, and O.
-          mappedValue = callback.call(T, kValue, k, O);
-  
-          // iii. Call the DefineOwnProperty internal method of A with arguments
-          // Pk, Property Descriptor
-          // { Value: mappedValue,
-          //   Writable: true,
-          //   Enumerable: true,
-          //   Configurable: true },
-          // and false.
-  
-          // In browsers that support Object.defineProperty, use the following:
-          // Object.defineProperty(A, k, {
-          //   value: mappedValue,
-          //   writable: true,
-          //   enumerable: true,
-          //   configurable: true
-          // });
-  
-          // For best browser support, use the following:
-          A[k] = mappedValue;
-        }
-        // d. Increase k by 1.
-        k++;
-      }
-  
-      // 9. return A
-      return A;
-    };
-  }// Reference: https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
-if (!Array.prototype.fill) {
-    Array.prototype.fill = function(value) {
-  
-      // Steps 1-2.
-      if (this == null) {
-        throw new TypeError('this is null or not defined');
-      }
-  
-      var O = Object(this);
-  
-      // Steps 3-5.
-      var len = O.length >>> 0;
-  
-      // Steps 6-7.
-      var start = arguments[1];
-      var relativeStart = start >> 0;
-  
-      // Step 8.
-      var k = relativeStart < 0 ?
-        Math.max(len + relativeStart, 0) :
-        Math.min(relativeStart, len);
-  
-      // Steps 9-10.
-      var end = arguments[2];
-      var relativeEnd = end === undefined ?
-        len : end >> 0;
-  
-      // Step 11.
-      var final = relativeEnd < 0 ?
-        Math.max(len + relativeEnd, 0) :
-        Math.min(relativeEnd, len);
-  
-      // Step 12.
-      while (k < final) {
-        O[k] = value;
-        k++;
-      }
-  
-      // Step 13.
-      return O;
-    };
-  }if (!Array.prototype.every) {
-    Array.prototype.every = function(callbackfn, thisArg) {
-      'use strict';
-      var T, k;
-  
-      if (this == null) {
-        throw new TypeError('this is null or not defined');
-      }
-  
-      // 1. Let O be the result of calling ToObject passing the this 
-      //    value as the argument.
-      var O = Object(this);
-  
-      // 2. Let lenValue be the result of calling the Get internal method
-      //    of O with the argument "length".
-      // 3. Let len be ToUint32(lenValue).
-      var len = O.length >>> 0;
-  
-      // 4. If IsCallable(callbackfn) is false, throw a TypeError exception.
-      if (typeof callbackfn !== 'function') {
-        throw new TypeError();
-      }
-  
-      // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
-      if (arguments.length > 1) {
-        T = thisArg;
-      }
-  
-      // 6. Let k be 0.
-      k = 0;
-  
-      // 7. Repeat, while k < len
-      while (k < len) {
-  
-        var kValue;
-  
-        // a. Let Pk be ToString(k).
-        //   This is implicit for LHS operands of the in operator
-        // b. Let kPresent be the result of calling the HasProperty internal 
-        //    method of O with argument Pk.
-        //   This step can be combined with c
-        // c. If kPresent is true, then
-        if (k in O) {
-  
-          // i. Let kValue be the result of calling the Get internal method
-          //    of O with argument Pk.
-          kValue = O[k];
-  
-          // ii. Let testResult be the result of calling the Call internal method
-          //     of callbackfn with T as the this value and argument list 
-          //     containing kValue, k, and O.
-          var testResult = callbackfn.call(T, kValue, k, O);
-  
-          // iii. If ToBoolean(testResult) is false, return false.
-          if (!testResult) {
-            return false;
-          }
-        }
-        k++;
-      }
-      return true;
-    };
-  }// Production steps of ECMA-262, Edition 5, 15.4.4.14
-// Reference: http://es5.github.io/#x15.4.4.14
-if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function(searchElement, fromIndex) {
-  
-      var k;
-  
-      // 1. Let o be the result of calling ToObject passing
-      //    the this value as the argument.
-      if (this == null) {
-        throw new TypeError('"this" is null or not defined');
-      }
-  
-      var o = Object(this);
-  
-      // 2. Let lenValue be the result of calling the Get
-      //    internal method of o with the argument "length".
-      // 3. Let len be ToUint32(lenValue).
-      var len = o.length >>> 0;
-  
-      // 4. If len is 0, return -1.
-      if (len === 0) {
-        return -1;
-      }
-  
-      // 5. If argument fromIndex was passed let n be
-      //    ToInteger(fromIndex); else let n be 0.
-      var n = fromIndex | 0;
-  
-      // 6. If n >= len, return -1.
-      if (n >= len) {
-        return -1;
-      }
-  
-      // 7. If n >= 0, then Let k be n.
-      // 8. Else, n<0, Let k be len - abs(n).
-      //    If k is less than 0, then let k be 0.
-      k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
-  
-      // 9. Repeat, while k < len
-      while (k < len) {
-        // a. Let Pk be ToString(k).
-        //   This is implicit for LHS operands of the in operator
-        // b. Let kPresent be the result of calling the
-        //    HasProperty internal method of o with argument Pk.
-        //   This step can be combined with c
-        // c. If kPresent is true, then
-        //    i.  Let elementK be the result of calling the Get
-        //        internal method of o with the argument ToString(k).
-        //   ii.  Let same be the result of applying the
-        //        Strict Equality Comparison Algorithm to
-        //        searchElement and elementK.
-        //  iii.  If same is true, return k.
-        if (k in o && o[k] === searchElement) {
-          return k;
-        }
-        k++;
-      }
-      return -1;
-    };
-  }// ECMA-262, 5 판, 15.4.4.15의 제작 단계
-// 참조 : http://es5.github.io/#x15.4.4.15
-if (!Array.prototype.lastIndexOf) {
-    Array.prototype.lastIndexOf = function(searchElement /*, fromIndex*/) {
-      'use strict';
-  
-      if (this === void 0 || this === null) {
-        throw new TypeError();
-      }
-  
-      var n, k,
-        t = Object(this),
-        len = t.length >>> 0;
-      if (len === 0) {
-        return -1;
-      }
-  
-      n = len - 1;
-      if (arguments.length > 1) {
-        n = Number(arguments[1]);
-        if (n != n) {
-          n = 0;
-        }
-        else if (n != 0 && n != (1 / 0) && n != -(1 / 0)) {
-          n = (n > 0 || -1) * Math.floor(Math.abs(n));
-        }
-      }
-  
-      for (k = n >= 0 ? Math.min(n, len - 1) : len - Math.abs(n); k >= 0; k--) {
-        if (k in t && t[k] === searchElement) {
-          return k;
-        }
-      }
-      return -1;
-    };
-  }// reference : https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
-if (!Array.prototype.fill) {
-    Array.prototype.fill = function(value) {
-  
-      // Steps 1-2.
-      if (this == null) {
-        throw new TypeError('this is null or not defined');
-      }
-  
-      var O = Object(this);
-  
-      // Steps 3-5.
-      var len = O.length >>> 0;
-  
-      // Steps 6-7.
-      var start = arguments[1];
-      var relativeStart = start >> 0;
-  
-      // Step 8.
-      var k = relativeStart < 0 ?
-        Math.max(len + relativeStart, 0) :
-        Math.min(relativeStart, len);
-  
-      // Steps 9-10.
-      var end = arguments[2];
-      var relativeEnd = end === undefined ?
-        len : end >> 0;
-  
-      // Step 11.
-      var final = relativeEnd < 0 ?
-        Math.max(len + relativeEnd, 0) :
-        Math.min(relativeEnd, len);
-  
-      // Step 12.
-      while (k < final) {
-        O[k] = value;
-        k++;
-      }
-  
-      // Step 13.
-      return O;
-    };
-  }(function webpackUniversalModuleDefinition(root, factory) {
+(function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("@egjs/component"));
 	else if(typeof define === 'function' && define.amd)
@@ -481,83 +90,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 exports.__esModule = true;
-exports.DEFENSE_BROWSER = exports.WEBKIT_VERSION = exports.IMAGE_PROCESSING = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.IDLE = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.IGNORE_CLASSNAME = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
-
-var _browser = __webpack_require__(2);
-
-var ua = _browser.window.navigator.userAgent;
-
-var SUPPORT_COMPUTEDSTYLE = exports.SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in _browser.window);
-var SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
-var SUPPORT_PASSIVE = exports.SUPPORT_PASSIVE = function () {
-	var supportsPassiveOption = false;
-
-	try {
-		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
-			document.addEventListener("test", null, Object.defineProperty({}, "passive", {
-				get: function get() {
-					supportsPassiveOption = true;
-				}
-			}));
-		}
-	} catch (e) {}
-	return supportsPassiveOption;
-}();
-
-var IS_IE = exports.IS_IE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
-var IS_IOS = exports.IS_IOS = /iPhone|iPad/.test(ua);
-var IS_ANDROID2 = exports.IS_ANDROID2 = /Android 2\./.test(ua);
-var RETRY = exports.RETRY = 3;
-var CONTAINER_CLASSNAME = exports.CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
-var IGNORE_CLASSNAME = exports.IGNORE_CLASSNAME = "_eg-infinitegrid-ignore_";
-
-var APPEND = exports.APPEND = true;
-var PREPEND = exports.PREPEND = false;
-var VERTICAL = exports.VERTICAL = "vertical";
-var HORIZONTAL = exports.HORIZONTAL = "horizontal";
-var CACHE = exports.CACHE = true;
-var NO_CACHE = exports.NO_CACHE = false;
-var TRUSTED = exports.TRUSTED = true;
-var NO_TRUSTED = exports.NO_TRUSTED = false;
-var MULTI = exports.MULTI = true;
-var SINGLE = exports.SINGLE = false;
-var DUMMY_POSITION = exports.DUMMY_POSITION = -100000;
-var GROUPKEY_ATT = exports.GROUPKEY_ATT = "data-groupkey";
-
-var DEFAULT_OPTIONS = exports.DEFAULT_OPTIONS = {
-	horizontal: false,
-	margin: 0
-};
-
-var agent = exports.agent = ua.toLowerCase();
-var isMobile = exports.isMobile = /mobi|ios|android/.test(agent);
-
-var ALIGN = exports.ALIGN = {
-	START: "start",
-	CENTER: "center",
-	END: "end",
-	JUSTIFY: "justify"
-};
-
-var IDLE = exports.IDLE = 0;
-var LOADING_APPEND = exports.LOADING_APPEND = 1;
-var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
-var PROCESSING = exports.PROCESSING = 4;
-var IMAGE_PROCESSING = exports.IMAGE_PROCESSING = 8;
-
-var webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
-
-var WEBKIT_VERSION = exports.WEBKIT_VERSION = webkit && parseInt(webkit[1], 10) || 0;
-var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = WEBKIT_VERSION && WEBKIT_VERSION < 537;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
 exports.STYLE = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -565,6 +97,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 exports.toArray = toArray;
+exports.matchHTML = matchHTML;
 exports.$ = $;
 exports.addEvent = addEvent;
 exports.removeEvent = removeEvent;
@@ -578,10 +111,11 @@ exports.getStyleNames = getStyleNames;
 exports.assignOptions = assignOptions;
 exports.toZeroArray = toZeroArray;
 exports.isWindow = isWindow;
+exports.fill = fill;
 
 var _browser = __webpack_require__(2);
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
 function toArray(nodes) {
 	// SCRIPT5014 in IE8
@@ -593,6 +127,9 @@ function toArray(nodes) {
 		}
 	}
 	return array;
+}
+function matchHTML(html) {
+	return html.match(/^<([A-z]+)\s*([^>]*)>/);
 }
 /**
  * Select or create element
@@ -610,7 +147,7 @@ function $(param) {
 	if (typeof param === "string") {
 		// String (HTML, Selector)
 		// check if string is HTML tag format
-		var match = param.match(/^<([A-z]+)\s*([^>]*)>/);
+		var match = matchHTML(param);
 
 		// creating element
 		if (match) {
@@ -759,6 +296,93 @@ function isWindow(el) {
 	return el === _browser.window;
 }
 
+function fill(arr, value) {
+	var length = arr.length;
+
+	for (var i = length - 1; i >= 0; --i) {
+		arr[i] = value;
+	}
+
+	return arr;
+}
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.DEFENSE_BROWSER = exports.WEBKIT_VERSION = exports.IMAGE_PROCESSING = exports.PROCESSING = exports.LOADING_PREPEND = exports.LOADING_APPEND = exports.IDLE = exports.ALIGN = exports.isMobile = exports.agent = exports.DEFAULT_OPTIONS = exports.GROUPKEY_ATT = exports.DUMMY_POSITION = exports.SINGLE = exports.MULTI = exports.NO_TRUSTED = exports.TRUSTED = exports.NO_CACHE = exports.CACHE = exports.HORIZONTAL = exports.VERTICAL = exports.PREPEND = exports.APPEND = exports.IGNORE_CLASSNAME = exports.CONTAINER_CLASSNAME = exports.RETRY = exports.IS_ANDROID2 = exports.IS_IOS = exports.IS_IE = exports.SUPPORT_PASSIVE = exports.SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_COMPUTEDSTYLE = undefined;
+
+var _browser = __webpack_require__(2);
+
+var ua = _browser.window.navigator.userAgent;
+
+var SUPPORT_COMPUTEDSTYLE = exports.SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in _browser.window);
+var SUPPORT_ADDEVENTLISTENER = exports.SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
+var SUPPORT_PASSIVE = exports.SUPPORT_PASSIVE = function () {
+	var supportsPassiveOption = false;
+
+	try {
+		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
+			document.addEventListener("test", null, Object.defineProperty({}, "passive", {
+				get: function get() {
+					supportsPassiveOption = true;
+				}
+			}));
+		}
+	} catch (e) {}
+	return supportsPassiveOption;
+}();
+
+var IS_IE = exports.IS_IE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
+var IS_IOS = exports.IS_IOS = /iPhone|iPad/.test(ua);
+var IS_ANDROID2 = exports.IS_ANDROID2 = /Android 2\./.test(ua);
+var RETRY = exports.RETRY = 3;
+var CONTAINER_CLASSNAME = exports.CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
+var IGNORE_CLASSNAME = exports.IGNORE_CLASSNAME = "_eg-infinitegrid-ignore_";
+
+var APPEND = exports.APPEND = true;
+var PREPEND = exports.PREPEND = false;
+var VERTICAL = exports.VERTICAL = "vertical";
+var HORIZONTAL = exports.HORIZONTAL = "horizontal";
+var CACHE = exports.CACHE = true;
+var NO_CACHE = exports.NO_CACHE = false;
+var TRUSTED = exports.TRUSTED = true;
+var NO_TRUSTED = exports.NO_TRUSTED = false;
+var MULTI = exports.MULTI = true;
+var SINGLE = exports.SINGLE = false;
+var DUMMY_POSITION = exports.DUMMY_POSITION = -100000;
+var GROUPKEY_ATT = exports.GROUPKEY_ATT = "data-groupkey";
+
+var DEFAULT_OPTIONS = exports.DEFAULT_OPTIONS = {
+	horizontal: false,
+	margin: 0
+};
+
+var agent = exports.agent = ua.toLowerCase();
+var isMobile = exports.isMobile = /mobi|ios|android/.test(agent);
+
+var ALIGN = exports.ALIGN = {
+	START: "start",
+	CENTER: "center",
+	END: "end",
+	JUSTIFY: "justify"
+};
+
+var IDLE = exports.IDLE = 0;
+var LOADING_APPEND = exports.LOADING_APPEND = 1;
+var LOADING_PREPEND = exports.LOADING_PREPEND = 2;
+var PROCESSING = exports.PROCESSING = 4;
+var IMAGE_PROCESSING = exports.IMAGE_PROCESSING = 8;
+
+var webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
+
+var WEBKIT_VERSION = exports.WEBKIT_VERSION = webkit && parseInt(webkit[1], 10) || 0;
+var DEFENSE_BROWSER = exports.DEFENSE_BROWSER = WEBKIT_VERSION && WEBKIT_VERSION < 537;
+
 /***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -785,7 +409,7 @@ exports.__esModule = true;
 
 var _browser = __webpack_require__(2);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -873,9 +497,9 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1152,9 +776,9 @@ module.exports = exports["default"];
 exports.__esModule = true;
 exports.CHECK_ONLY_ERROR = exports.CHECK_ALL = undefined;
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 var _AutoSizer = __webpack_require__(3);
 
@@ -1313,9 +937,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1499,8 +1123,8 @@ var FrameLayout = function () {
 		var shapesSize = this._shapes[size2Name];
 		var shapes = this._shapes.shapes;
 		var shapesLength = shapes.length;
-		var startOutline = new Array(shapesSize).fill(_consts.DUMMY_POSITION);
-		var endOutline = new Array(shapesSize).fill(_consts.DUMMY_POSITION);
+		var startOutline = (0, _utils.fill)(new Array(shapesSize), _consts.DUMMY_POSITION);
+		var endOutline = (0, _utils.fill)(new Array(shapesSize), _consts.DUMMY_POSITION);
 		var dist = 0;
 		var end = 0;
 		var startIndex = -1;
@@ -1792,9 +1416,9 @@ var _AutoSizer = __webpack_require__(3);
 
 var _AutoSizer2 = _interopRequireDefault(_AutoSizer);
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -2539,15 +2163,14 @@ var InfiniteGrid = function (_Component) {
    * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
    * @param {Function} param.remove In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
    * @param {Function} param.removeItem In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
-   * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 교체한다.</ko>
-   * @param {Function} param.replaceElement In the imageError event, this method expects to replace the error image element<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지 엘리먼트를 교체한다.</ko>
+   * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
    * @param {Function} param.replaceItem In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
    * @example
   ig.on("imageError", e => {
   e.remove();
   e.removeItem();
   e.replace("http://...jpg");
-  e.replaceElement("image element..");
+  e.replace(imageElement);
   e.replaceItem("item html");
   });
    */
@@ -2580,28 +2203,21 @@ var InfiniteGrid = function (_Component) {
 					return;
 				}
 				if (src) {
-					target.src = src;
-					if (target.getAttribute(prefix + "width")) {
-						_AutoSizer2["default"].remove(target);
-						target.removeAttribute(prefix + "width");
-						target.removeAttribute(prefix + "height");
+					if ((0, _utils.matchHTML)(src) || (typeof src === "undefined" ? "undefined" : _typeof(src)) === "object") {
+						var parentNode = target.parentNode;
+
+						parentNode.insertBefore((0, _utils.$)(src), target);
+						parentNode.removeChild(target);
+						item.content = element.outerHTML;
+					} else {
+						target.src = src;
+						if (target.getAttribute(prefix + "width")) {
+							_AutoSizer2["default"].remove(target);
+							target.removeAttribute(prefix + "width");
+							target.removeAttribute(prefix + "height");
+						}
 					}
 				}
-				item.content = element.outerHTML;
-				if (hasTarget([replaceTarget, itemIndex])) {
-					return;
-				}
-				replaceTarget.push(itemIndex);
-			},
-			// replace element
-			replaceElement: function replaceElement(imageElement) {
-				if (hasTarget([removeTarget, element])) {
-					return;
-				}
-				var parentNode = target.parentNode;
-
-				parentNode.insertBefore((0, _utils.$)(imageElement), target);
-				parentNode.removeChild(target);
 				item.content = element.outerHTML;
 				if (hasTarget([replaceTarget, itemIndex])) {
 					return;
@@ -2962,13 +2578,13 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
 var _DOMRenderer = __webpack_require__(4);
 
 var _DOMRenderer2 = _interopRequireDefault(_DOMRenderer);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -3222,9 +2838,9 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3353,9 +2969,9 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3657,6 +3273,8 @@ var _FrameLayout2 = __webpack_require__(6);
 
 var _FrameLayout3 = _interopRequireDefault(_FrameLayout2);
 
+var _utils = __webpack_require__(0);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3669,7 +3287,7 @@ function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
 	var point = Math[isAppend ? "min" : "max"].apply(Math, outline) || 0;
 
 	if (outline.length !== columnLength) {
-		return new Array(columnLength).fill(0);
+		return (0, _utils.fill)(new Array(columnLength), 0);
 	}
 	return outline.map(function (l) {
 		return parseInt((l - point) / itemSize, 10);
@@ -3862,9 +3480,9 @@ var _BoxModel = __webpack_require__(15);
 
 var _BoxModel2 = _interopRequireDefault(_BoxModel);
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -4332,9 +3950,9 @@ var _dijkstra = __webpack_require__(17);
 
 var _dijkstra2 = _interopRequireDefault(_dijkstra);
 
-var _consts = __webpack_require__(0);
+var _consts = __webpack_require__(1);
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
