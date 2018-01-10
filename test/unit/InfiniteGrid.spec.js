@@ -420,7 +420,7 @@ describe("InfiniteGrid Test", function() {
       }
       cleanup();
     });
-    it.only(`should check outline when image processing and fit occur at the same time`, done => {
+    it(`should check outline when image processing and fit occur at the same time`, done => {
       const item1 = `<div style="height:100px">HEADER<img src="/base/test/unit/image/3.jpg" />FOOTER</div><div>HEADER<img src="/1.jpg">FOOTER</div>`;
       const layoutComplete2 = sinon.spy(e => {
         const length = this.inst._items._data.length;
