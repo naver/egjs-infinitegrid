@@ -5,7 +5,7 @@
  * @egjs/infinitegrid JavaScript library
  * https://github.com/naver/egjs-infinitegrid
  * 
- * @version 3.1.0
+ * @version 3.1.0-snapshot
  * 
  * All-in-one packaged file for ease use of '@egjs/infinitegrid' with below dependencies.
  * NOTE: This is not an official distribution file and is only for user convenience.
@@ -2280,12 +2280,16 @@ var InfiniteGrid = function (_Component) {
 	InfiniteGrid.prototype._postLayout = function _postLayout(fromCache, items, isAppend, isTrusted) {
 		var _this4 = this;
 
-		var outline = this._items.getOutline(isAppend ? this._status.endCursor : this._status.startCursor, isAppend ? "end" : "start");
+		var _status = this._status,
+		    startCursor = _status.startCursor,
+		    endCursor = _status.endCursor;
+
+		var outline = this._items.getOutline(isAppend ? endCursor : startCursor, isAppend ? "end" : "start");
 
 		var fromRelayout = false;
 
 		if (fromCache) {
-			var cacheOutline = this._items.getOutline(isAppend ? this._status.endCursor + 1 : this._status.startCursor - 1, isAppend ? "start" : "end");
+			var cacheOutline = this._items.getOutline(isAppend ? endCursor + 1 : startCursor - 1, isAppend ? "start" : "end");
 
 			fromRelayout = outline.length === cacheOutline.length ? !outline.every(function (v, index) {
 				return v === cacheOutline[index];
@@ -2318,7 +2322,7 @@ var InfiniteGrid = function (_Component) {
 			prefix: prefix,
 			type: type,
 			complete: function complete() {
-				layouted = _this4._layout[method](_this4._renderer.updateSize(items), outline);
+				layouted = _this4._layout[method](_this4._renderer.updateSize(items), _this4._items.getOutline(isAppend ? endCursor : startCursor, isAppend ? "end" : "start"));
 				_this4._postImageLoaded(fromCache, layouted, isAppend, isTrusted);
 			},
 			error: function error(_ref) {
@@ -2560,7 +2564,7 @@ var InfiniteGrid = function (_Component) {
 	return InfiniteGrid;
 }(_component2["default"]);
 
-InfiniteGrid.VERSION = "3.1.0";
+InfiniteGrid.VERSION = "3.1.0-snapshot";
 
 exports["default"] = InfiniteGrid;
 module.exports = exports["default"];
