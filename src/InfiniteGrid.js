@@ -22,7 +22,6 @@ import {
 	PROCESSING,
 	DEFENSE_BROWSER,
 	IGNORE_CLASSNAME,
-	IMAGE_PROCESSING,
 } from "./consts";
 import {toArray, $, innerWidth, innerHeight, matchHTML} from "./utils";
 
@@ -485,9 +484,6 @@ class InfiniteGrid extends Component {
 	_isLoading() {
 		return this._getLoadingStatus() > 0;
 	}
-	_isImageProcessing() {
-		return (this._status.processingStatus & IMAGE_PROCESSING) > 0;
-	}
 	_getLoadingStatus() {
 		return this._status.processingStatus & (LOADING_APPEND | LOADING_PREPEND);
 	}
@@ -643,7 +639,7 @@ class InfiniteGrid extends Component {
 		}
 		this._updateCursor(isAppend);
 		DOMRenderer.renderItems(layouted.items);
-		this._onLayoutComplete(layouted.items, isAppend, isTrusted);
+		this._onLayoutComplete(layouted.items, isAppend, isTrusted, false);
 	}
 	_onImageError(target, item, itemIndex, removeTarget, replaceTarget) {
 		const element = item.el;
@@ -812,7 +808,6 @@ ig.on("imageError", e => {
 		const removeTarget = [];
 		let layouted;
 
-		this._process(IMAGE_PROCESSING);
 		ImageLoaded.check(items.map(item => item.el), {
 			prefix,
 			type,
@@ -831,7 +826,6 @@ ig.on("imageError", e => {
 				this._onImageError(target, item, itemIndex, removeTarget, replaceTarget);
 			},
 			end: () => {
-				this._process(IMAGE_PROCESSING, false);
 				this._postImageLoadedEnd(layouted, isAppend, removeTarget, replaceTarget);
 			},
 		});
@@ -966,7 +960,7 @@ ig.on("imageError", e => {
 		useRecycle = this.options.useRecycle, isLayout = false) {
 		this._isLoading() && this._renderLoading();
 		!isAppend && this._fit("after");
-		if (!this._isImageProcessing() && useRecycle) {
+		if (useRecycle) {
 			this._recycle(isAppend);
 		}
 

@@ -431,7 +431,6 @@ describe("InfiniteGrid Test", function() {
         done();
       });
       insert(this.inst, true, () => {
-        expect(this.inst._isImageProcessing()).to.be.false;
         const container = this.el.querySelector("#infinite");
 
         container.scrollTop = 50000;
@@ -442,7 +441,6 @@ describe("InfiniteGrid Test", function() {
           this.inst._recycle(true);
           this.inst.on("layoutComplete", layoutComplete2);
           this.inst.append(item1);
-          expect(this.inst._isImageProcessing()).to.be.true;
           this.inst._fit("before");
         }, 10);
 
