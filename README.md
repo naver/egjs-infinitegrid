@@ -25,6 +25,10 @@ eg.infiniteGrid benchmark: append item performance with [masonry](https://masonr
 - [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
 - [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
 - [Migrating from v2.0 to v3.0](https://github.com/naver/egjs-infinitegrid/wiki/Migrating-from-v2.0-to-v3.0)
+- Articles
+  - [Introducing eg.InfiniteGrid, a new library for implementing a card layout](https://github.com/naver/egjs-infinitegrid/wiki/Introducing-eg.InfiniteGrid,-a-new-library-for-implementing-a-card-layout) [[Korean](http://d2.naver.com/helloworld/4874130)]
+  - [Card-based design and eg.InfiniteGrid 3.0](https://medium.com/@sculove/card-based-design-and-eg-infinitegrid-3-0-a84616496671) [[Korean](http://d2.naver.com/helloworld/0637045)]
+
 
 
 ## Download and Installation
