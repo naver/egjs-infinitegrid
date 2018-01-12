@@ -16,7 +16,7 @@ The InfiniteGrid can use various layouts.
 - [PackingLayout](https://naver.github.io/egjs-infinitegrid/#PackingLayout): The PackingLayout is a layout that shows the important cards bigger without sacrificing the weight of the cards.
 
 ## Benchmark
-[![eg.infiniteGrid benchmark](https://img.youtube.com/vi/NyFtShC2yq8/0.jpg)](http://www.youtube.com/watch?v=NyFtShC2yq8)
+[![eg.infiniteGrid benchmark](https://img.youtube.com/vi/6Kv-NV0dZXw/0.jpg)](http://www.youtube.com/watch?v=6Kv-NV0dZXw)
 
 eg.infiniteGrid benchmark: append item performance with [masonry](https://masonry.desandro.com/)
 
@@ -80,7 +80,7 @@ The following are the supported browsers.
 
 egjs-infinitegrid has the dependencies for the following libraries:
 
-|[egjs-component](http://github.com/naver/egjs/egjs-component)|
+|[egjs-component](https://github.com/naver/egjs-component)|
 |----|
 |2.0.0+|
 
@@ -153,7 +153,7 @@ If you find a bug, please report it to us using the [Issues](https://github.com/
 
 
 ## License
-egjs-infinitegrid is released under the [MIT license](http://naver.github.io/egjs/license.txt).
+egjs-infinitegrid is released under the [MIT license](https://raw.githubusercontent.com/naver/egjs/master/LICENSE.txt).
 
 
 ```
