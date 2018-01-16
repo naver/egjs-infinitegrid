@@ -2,5 +2,5 @@
 const win = window;
 /* eslint-enable no-new-func, no-nested-ternary */
 
-export {window};
+export {win as window};
 export const document = win.document;
