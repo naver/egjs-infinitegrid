@@ -11,13 +11,12 @@ import JustifiedLayout from "./layouts/JustifiedLayout";
 import ImageLoaded from "./ImageLoaded";
 import AutoSizer from "./AutoSizer";
 
-export {
-	GridLayout,
-	FrameLayout,
-	SquareLayout,
-	PackingLayout,
-	JustifiedLayout,
-	ImageLoaded,
-	AutoSizer,
-};
-export default InfiniteGrid;
+InfiniteGrid.GridLayout = GridLayout;
+InfiniteGrid.FrameLayout = FrameLayout;
+InfiniteGrid.SquareLayout = SquareLayout;
+InfiniteGrid.PackingLayout = PackingLayout;
+InfiniteGrid.JustifiedLayout = JustifiedLayout;
+InfiniteGrid.ImageLoaded = ImageLoaded;
+InfiniteGrid.AutoSizer = AutoSizer;
+
+module.exports = InfiniteGrid;

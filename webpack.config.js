@@ -55,7 +55,7 @@ module.exports = function(env) {
   env = Object.assign({
     type: "development",
     name: "InfiniteGrid",
-    path: "./src/index.js",
+    path: "./src/index.umd.js",
 	}, env);
 	
 	const partConfig = require(path.resolve(__dirname, "config") + "/webpack.config." + env.type + ".js");
