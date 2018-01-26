@@ -5,7 +5,7 @@
  * @egjs/infinitegrid JavaScript library
  * https://github.com/naver/egjs-infinitegrid
  * 
- * @version 3.1.3
+ * @version 3.1.4
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -1326,9 +1326,6 @@ module.exports = exports["default"];
 "use strict";
 
 
-exports.__esModule = true;
-exports.AutoSizer = exports.ImageLoaded = exports.JustifiedLayout = exports.PackingLayout = exports.SquareLayout = exports.FrameLayout = exports.GridLayout = undefined;
-
 var _InfiniteGrid = __webpack_require__(8);
 
 var _InfiniteGrid2 = _interopRequireDefault(_InfiniteGrid);
@@ -1367,14 +1364,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
  * Copyright (c) NAVER Corp.
  * egjs-infinitegrid projects are licensed under the MIT license
  */
-exports.GridLayout = _GridLayout2["default"];
-exports.FrameLayout = _FrameLayout2["default"];
-exports.SquareLayout = _SquareLayout2["default"];
-exports.PackingLayout = _PackingLayout2["default"];
-exports.JustifiedLayout = _JustifiedLayout2["default"];
-exports.ImageLoaded = _ImageLoaded2["default"];
-exports.AutoSizer = _AutoSizer2["default"];
-exports["default"] = _InfiniteGrid2["default"];
+_InfiniteGrid2["default"].GridLayout = _GridLayout2["default"];
+_InfiniteGrid2["default"].FrameLayout = _FrameLayout2["default"];
+_InfiniteGrid2["default"].SquareLayout = _SquareLayout2["default"];
+_InfiniteGrid2["default"].PackingLayout = _PackingLayout2["default"];
+_InfiniteGrid2["default"].JustifiedLayout = _JustifiedLayout2["default"];
+_InfiniteGrid2["default"].ImageLoaded = _ImageLoaded2["default"];
+_InfiniteGrid2["default"].AutoSizer = _AutoSizer2["default"];
+
+module.exports = _InfiniteGrid2["default"];
 
 /***/ }),
 /* 8 */
@@ -2555,7 +2553,7 @@ var InfiniteGrid = function (_Component) {
 	return InfiniteGrid;
 }(_component2["default"]);
 
-InfiniteGrid.VERSION = "3.1.3";
+InfiniteGrid.VERSION = "3.1.4";
 
 exports["default"] = InfiniteGrid;
 module.exports = exports["default"];
