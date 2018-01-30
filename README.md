@@ -114,7 +114,7 @@ $ npm install
 
 #### 3. Build
 
-Use npm script to build billboard.js
+Use npm script to build egjs-infinitegrid
 
 ```bash
 # Run webpack-dev-server for development
