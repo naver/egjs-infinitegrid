@@ -18,16 +18,17 @@ export default class Item extends Component {
     }
     resetSize() {
         this.state.size = {};
+        this.state.loaded = NOT_LOADED;
     }
     reset() {
         this.state.orgSize = {};
-        this.state.loaded = NOT_LOADED;
+        this.resetSize();
     }
-    updateSize() {
+    updateSize(size) {
         const state = this.state;
         const element = state.el;
 
-        state.size = {
+        state.size = size || {
             width: innerWidth(element),
             height: innerHeight(element),
         };

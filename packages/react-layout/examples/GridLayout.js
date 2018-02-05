@@ -21,7 +21,7 @@ class App extends Component {
   }
   render() {
     return (
-		<GridLayout size={1000} margin={10}>
+		<GridLayout size={1000} margin={10} isEqualSize={true}>
 			<Item/>
 			<Item/>
 			<Item/>

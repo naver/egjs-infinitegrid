@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {GridLayout, ImageLoaded} from "@egjs/infinitegrid";
+import {CHECK_ONLY_ERROR, CHECK_ALL} from "@egjs/infinitegrid/src/consts";
 import ReactDOM from 'react-dom';
 import Item from "./Item";
 import {NOT_LOADED, LOADING, LOADED} from "./consts";
@@ -13,6 +14,7 @@ export default class Layout extends Component {
 		outline: PropTypes.array,
 		options: PropTypes.object,
 		horizontal: PropTypes.bool,
+		isEqualSize: PropTypes.bool,
 	};
 	static defaultProps = {
 		tag: "div",
@@ -22,6 +24,7 @@ export default class Layout extends Component {
 		size: 0,
 		horizontal: false,
 		outline: [],
+		isEqualSize: false,
 	};
     constructor(props) {
 		super(props);
@@ -38,6 +41,13 @@ export default class Layout extends Component {
 		});
 		this.updateLayout();
 		this.updateChildren(children);
+	}
+	resetSize() {
+		const items = this.state.items;
+
+		items.forEach(item => {
+			item.resetSize();
+		});
 	}
 	updateLayout() {
 		const options = this._layout.options;
@@ -57,7 +67,6 @@ export default class Layout extends Component {
 	}
 	updateGroup(item) {
 		const groupKey = item.props.groupKey;
-
 		const groups = this.state.groups;
 		const length = groups.length;
 		let groupIndex = -1;
@@ -71,7 +80,7 @@ export default class Layout extends Component {
 		if (groupIndex === -1) {
 			groups.push({
 				groupKey,
-				items: [item]
+				items: [item],
 			});
 		} else {
 			groups[groupIndex].items.push(item);
@@ -89,7 +98,7 @@ export default class Layout extends Component {
 				} else {
 					randomGroupKey = 0;
 				}
-				return (<Item groupKey={groupKey} key={i} ref={item=>{this.state.items[i] = item}}>{element}</Item>);
+				return (<Item groupKey={groupKey} key={i} ref={item => {this.state.items[i] = item}}>{element}</Item>);
 			});
 
         this.state.children = itemChildren;
@@ -103,7 +112,7 @@ export default class Layout extends Component {
 			};
 		});
 
-		this._layout.layout(groups, []);
+		this._layout.layout(groups, this.props.outline);
 		this.state.groups.forEach(group => {
 			group.items.forEach(item => {
 				item.renderElement();
@@ -123,14 +132,22 @@ export default class Layout extends Component {
 		const items = groups.reduce((a, b) => {
 			return a.concat(b.items.filter(item => item.state.loaded === NOT_LOADED))
 		}, []);
+		if (!items.length) {
+			return;
+		}
 		const elements = items.map(item => item.state.el);
 
 		items.forEach(item => item.state.loaded = LOADING);
         ImageLoaded.check(elements, {
+			type: this.props.isEqualSize && this.state.items[0].state.size.width ? CHECK_ONLY_ERROR : CHECK_ALL,
             complete: () => {
+				let size;
                 items.forEach(item => {
 					item.state.loaded = LOADED;
-					item.updateSize();
+					item.updateSize(size);
+					if (this.props.isEqualSize && !size) {
+						size = {...this.state.items[0].state.size};
+					}
 				});
 				this.layout();
             }
@@ -139,7 +156,6 @@ export default class Layout extends Component {
     shouldComponentUpdate(props, state) {
 		const size = parseFloat(props.size);
 
-		this.state.margin = parseFloat(props.margin);
 		if (this.state.size !== props.size && props.size !== state.size) {
 			clearTimeout(this._timer);
 			this._timer = setTimeout(() => {
@@ -148,6 +164,8 @@ export default class Layout extends Component {
 			return false;
 		} else if (this.state.size === state.size && this.props.children.length === props.children.length) {
 			return false;
+		} else if (this.state.size !== state.size) {
+			this.resetSize();
 		}
 		this.updateChildren(props.children);
         return true;
