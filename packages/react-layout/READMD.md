@@ -2,7 +2,6 @@
 
 A react component that can easily use [egjs-infinitegrid's layouts](https://github.com/naver/egjs-infinitegrid)
 
-- [API Documents for React](#)
 - [Demo](https://naver.github.io/egjs-infinitegrid/)
 
 
@@ -44,7 +43,6 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 > * [SquareLayout's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.SquareLayout.html)
 > * [PackingLayout's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html)
 
-For more information, see the [API Documents for React](https://github.com/naver/egjs-infinitegrid/wiki/Axes-API-for-react-(react-axes))
 
 
 ## Development
