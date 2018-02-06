@@ -162,8 +162,6 @@ export default class Layout extends Component {
 				this.setState({size: props.size});
 			}, 100);
 			return false;
-		} else if (this.state.size === state.size && this.props.children.length === props.children.length) {
-			return false;
 		} else if (this.state.size !== state.size) {
 			this.resetSize();
 		}

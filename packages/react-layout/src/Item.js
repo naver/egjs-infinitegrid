@@ -12,15 +12,21 @@ export default class Item extends Component {
             size: {},
             rect: 0,
             cssText: "",
+            contents: "",
             loaded: NOT_LOADED,
         };
-        console.log("create");
     }
     resetSize() {
         this.state.size = {};
         this.state.loaded = NOT_LOADED;
     }
     reset() {
+        const el = this.state.el;
+
+        if (el) {
+            el.style.width = "";
+            el.style.height = "";
+        }
         this.state.orgSize = {};
         this.resetSize();
     }
@@ -60,13 +66,15 @@ export default class Item extends Component {
     }
     componentDidUpdate() {
         const el = ReactDOM.findDOMNode(this);
+        const prevEl = this.state.el;
+        const contents = this.state.contents;
 
-        if (el !== this.state.el) {
+        this.state.el = el;
+        this.state.contents = el.innerHTML;
+
+        if (el !== prevEl || contents !== this.state.contents) {
             this.reset();
         }
-        this.state.el = el;
-        this.updateSize();
-        this.renderElement();
     }
     componentDidMount() {
         this.state.el = ReactDOM.findDOMNode(this);
