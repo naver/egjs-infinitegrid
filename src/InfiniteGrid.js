@@ -191,9 +191,14 @@ class InfiniteGrid extends Component {
 	 * });
 	 */
 	setLayout(LayoutKlass, options) {
-		this._layout = new LayoutKlass(Object.assign(options || {}, {
-			horizontal: !this._isVertical,
-		}));
+		if (typeof LayoutKlass === "function") {
+			this._layout = new LayoutKlass(Object.assign(options || {}, {
+				horizontal: !this._isVertical,
+			}));
+		} else {
+			this._layout = LayoutKlass;
+			this._layout.options.horizontal = !this._isVertical;
+		}
 		this._layout.setSize(this._renderer.getViewportSize());
 		return this;
 	}
