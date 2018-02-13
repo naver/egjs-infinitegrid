@@ -88,8 +88,8 @@ export default class Layout extends Component {
 	}
     updateChildren(children = this.props.children) {
 		let randomGroupKey = 0;
-        const itemChildren = (Array.isArray(children) ? children : [children])
-            .map((element, i) => {
+        const itemChildren = React.Children.map(children, 
+            (element, i) => {
 				let groupKey = element.props["data-groupkey"] || element.props["groupkey"];
 
 				if (typeof groupKey === "undefined") {
