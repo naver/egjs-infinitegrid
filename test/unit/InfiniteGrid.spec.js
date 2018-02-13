@@ -57,6 +57,7 @@ describe("InfiniteGrid Test", function() {
         this.el.innerHTML = "<div id='infinite'></div>";
         this.inst = new InfiniteGrid("#infinite", {
           isOverflowScroll,
+          horizontal: true,
         });
         this.inst.setLayout(GridLayout);
       });
@@ -66,6 +67,59 @@ describe("InfiniteGrid Test", function() {
           this.inst = null;
         }
         cleanup();
+      });
+      it(`should check a initialization (setLayout(instance))(isOverflowScroll: ${isOverflowScroll})`, done => {
+        const count = 10;
+        const items = getItems(count);
+        // When (layout)
+
+        const el = sandbox();
+        el.innerHTML = "<div id='infinite'></div>";
+
+        const inst = new InfiniteGrid("#infinite", {
+          isOverflowScroll,
+          horizontal: true,
+        });
+
+        const layout = new GridLayout();
+        inst.setLayout(layout);
+
+        const layoutCompleteHandler2 = sinon.spy(e => {
+          const item1 = inst._items.getStatus()._data[0].items;
+          const item2 = this.inst._items.getStatus()._data[0].items;
+
+          expect(item1.map(e1 => e1.rect))
+            .to.be.deep.equals(item2.map(e1 => e1.rect));
+          done();
+        });
+        inst.on("layoutComplete", layoutCompleteHandler2);
+        // Given
+        
+        const layoutCompleteHandler = sinon.spy(function(e) {
+          // Then
+          expect(e.target).to.have.lengthOf(count);
+          expect(this.getItems(true)).to.have.lengthOf(count);
+          expect(this.getItems(false)).to.have.lengthOf(count);
+          expect(this._isProcessing()).to.be.false;
+
+          inst._renderer.container.innerHTML = items.join("");
+          inst.layout();
+        });
+  
+
+        cleanup();
+        // When
+        this.inst.on("layoutComplete", layoutCompleteHandler);
+        this.el = sandbox();
+        this.el.innerHTML = "<div id='infinite'></div>";
+        // Then
+        expect(this.inst.isProcessing()).to.be.false;
+        expect(layoutCompleteHandler.calledOnce).to.be.false;
+
+        this.inst._renderer.container.innerHTML = items.join("");
+        this.inst.layout();
+        
+
       });
       it(`should check a initialization (isOverflowScroll: ${isOverflowScroll})`, done => {
         // Given

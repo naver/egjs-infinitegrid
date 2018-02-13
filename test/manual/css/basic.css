@@ -88,6 +88,7 @@ body {
     height: 100%;
 }
 #grid[data-layout="JustifiedLayout"] .item {
+    width: 200px;
 }
 #grid[data-layout="JustifiedLayout"] .item img {
     width: 100%;

@@ -29,7 +29,8 @@ eg.infiniteGrid benchmark: append item performance with [masonry](https://masonr
   - [Introducing eg.InfiniteGrid, a new library for implementing a card layout](https://github.com/naver/egjs-infinitegrid/wiki/Introducing-eg.InfiniteGrid,-a-new-library-for-implementing-a-card-layout) [[Korean](http://d2.naver.com/helloworld/4874130)]
   - [Card-based design and eg.InfiniteGrid 3.0](https://medium.com/@sculove/card-based-design-and-eg-infinitegrid-3-0-a84616496671) [[Korean](http://d2.naver.com/helloworld/0637045)]
 
-
+## Third party applications
+[@egjs/react-layout](https://github.com/naver/egjs-infinitegrid/tree/master/packages/react-layout): A react component that can easily use egjs-infinitegrid's layouts
 
 ## Download and Installation
 
