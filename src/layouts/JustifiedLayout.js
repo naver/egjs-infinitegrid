@@ -45,11 +45,7 @@ class JustifiedLayout {
 			maxSize: 0,
 			column: [1, 8],
 		}, options);
-		const column = this.options.column;
 
-		if (typeof column !== "object") {
-			this.options.column = [column, column];
-		}
 		this._style = getStyleNames(this.options.horizontal);
 		this._size = 0;
 	}
@@ -59,17 +55,22 @@ class JustifiedLayout {
 		const size2Name = style.size2;
 		const startIndex = 0;
 		const endIndex = items.length;
-		const {column} = this.options;
+		let column = this.options.column;
+
+		if (typeof column !== "object") {
+			column = [column, column];
+		}
+
 		const graph = _start => {
 			const results = {};
 			const start = +_start.replace(/[^0-9]/g, "");
 			const length = endIndex + 1;
 
 			for (let i = Math.min(start + column[0], length - 1); i < length; ++i) {
+				
 				if (i - start > column[1]) {
 					break;
 				}
-
 				let cost = this._getCost(items, start, i, size1Name, size2Name);
 
 				if (cost < 0 && i === length - 1) {

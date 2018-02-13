@@ -84,6 +84,47 @@ describe("JustifiedLayout Test", function () {
 					horizontal: true,
 				});
 			});
+			it(`column test (margin = ${margin})`, () => {
+				// Given
+				const layout = new Layout({
+					margin,
+					column: 3,
+				});
+				layout.setSize(VIEWPORT.width);
+				// When
+				const group = layout.append(items, []);
+
+				// Then
+				for (let i = 0; i < 20 / 3; ++i) {
+					expect(group.items[i * 3 + 0].rect.top).to.be.equal(group.items[i * 3 + 1].rect.top);
+					if (i === 6) {
+						continue;
+					}
+					expect(group.items[i * 3 ].rect.top).to.be.not.equal(group.items[(i + 1) * 3].rect.top);
+					expect(group.items[i * 3 + 1].rect.top).to.be.equal(group.items[i * 3 + 2].rect.top);
+				}
+			});
+			it(`column range test (margin = ${margin})`, () => {
+				// Given
+				const layout = new Layout({
+					margin,
+					column: [2, 5],
+				});
+				layout.setSize(VIEWPORT.width);
+				// When
+				const group = layout.append(items, []);
+
+				// Then
+				let start = 0;
+				for (let i = 1; i < 20; ++i) {
+					if (group.items[i - 1].rect.top !== group.items[i].rect.top) {
+						expect(i - start).to.be.at.least(2);
+						expect(i - start).to.be.at.most(5);
+
+						start = i;
+					}
+				}
+			});
 			it(`test items' size (margin = ${margin})`, () => {
 				// Given
 				const layout = new Layout({
