@@ -41,6 +41,8 @@ class JustifiedLayout {
 		this.options = assignOptions({
 			minSize: 0,
 			maxSize: 0,
+			maxColumn: 8,
+			column: 0,
 		}, options);
 		this._style = getStyleNames(this.options.horizontal);
 		this._size = 0;
@@ -51,15 +53,29 @@ class JustifiedLayout {
 		const size2Name = style.size2;
 		const startIndex = 0;
 		const endIndex = items.length;
+		const {maxColumn, column} = this.options;
 		const graph = _start => {
 			const results = {};
 			const start = +_start.replace(/[^0-9]/g, "");
 			const length = endIndex + 1;
 
+			if (column) {
+				const end = Math.min(start + column, length - 1);
+				let cost = this._getCost(items, start, end, size1Name, size2Name);
+
+				if (cost < 0) {
+					cost = 0;
+				}
+				if (cost !== null) {
+					results[`node${end}`] = Math.pow(cost, 2);
+				}
+				return results;
+			}
 			for (let i = start + 1; i < length; ++i) {
-				if (i - start > 8) {
+				if (i - start > maxColumn) {
 					break;
 				}
+
 				let cost = this._getCost(items, start, i, size1Name, size2Name);
 
 				if (cost < 0 && i === length - 1) {

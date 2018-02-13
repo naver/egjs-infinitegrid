@@ -130,7 +130,8 @@ function GridLayout() {
 }
 function JustifiedLayout() {
 	changeLayout("JustifiedLayout", {
-		margin: 5
+		margin: 5,
+		column: 3
 	});
 }
 function FrameLayout() {
