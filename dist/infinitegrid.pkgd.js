@@ -5,7 +5,7 @@
  * @egjs/infinitegrid JavaScript library
  * https://github.com/naver/egjs-infinitegrid
  * 
- * @version 3.2.3-rc
+ * @version 3.2.3
  * 
  * All-in-one packaged file for ease use of '@egjs/infinitegrid' with below dependencies.
  * NOTE: This is not an official distribution file and is only for user convenience.
@@ -2567,7 +2567,7 @@ var InfiniteGrid = function (_Component) {
 	return InfiniteGrid;
 }(_component2["default"]);
 
-InfiniteGrid.VERSION = "3.2.3-rc";
+InfiniteGrid.VERSION = "3.2.3";
 
 exports["default"] = InfiniteGrid;
 module.exports = exports["default"];
