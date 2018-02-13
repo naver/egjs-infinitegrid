@@ -11,6 +11,8 @@ import {getStyleNames, assignOptions} from "../utils";
  * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</ko>
  * @param {Boolean} [options.minSize=0] Minimum size of item to be resized <ko> 아이템이 조정되는 최소 크기 </ko>
  * @param {Boolean} [options.maxSize=0] Maximum size of item to be resized <ko> 아이템이 조정되는 최대 크기 </ko>
+ * @param {Boolean} [options.column=0] The number of items in a line <ko> 한 줄에 들어갈 수 있는 아이템의 개수 </ko>
+ * @param {Boolean} [options.maxColumn=8] The Maximum number of items in a line <ko> 한 줄에 들어갈 수 있는 최대 아이템의 개수 </ko>
  * @example
 ```
 <script>
@@ -30,6 +32,7 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
 	margin: 10,
 	minSize: 100,
 	maxSize: 300,
+	column: 5,
 	horizontal: true,
 });
 
