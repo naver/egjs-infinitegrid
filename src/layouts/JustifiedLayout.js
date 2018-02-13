@@ -9,10 +9,9 @@ import {getStyleNames, assignOptions} from "../utils";
  * @param {Object} [options] The option object of eg.InfiniteGrid.JustifiedLayout module <ko>eg.InfiniteGrid.JustifiedLayout 모듈의 옵션 객체</ko>
  * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
  * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</ko>
- * @param {Boolean} [options.minSize=0] Minimum size of item to be resized <ko> 아이템이 조정되는 최소 크기 </ko>
- * @param {Boolean} [options.maxSize=0] Maximum size of item to be resized <ko> 아이템이 조정되는 최대 크기 </ko>
- * @param {Boolean} [options.column=0] The number of items in a line <ko> 한 줄에 들어갈 수 있는 아이템의 개수 </ko>
- * @param {Boolean} [options.maxColumn=8] The Maximum number of items in a line <ko> 한 줄에 들어갈 수 있는 최대 아이템의 개수 </ko>
+ * @param {Number} [options.minSize=0] Minimum size of item to be resized <ko> 아이템이 조정되는 최소 크기 </ko>
+ * @param {Number} [options.maxSize=0] Maximum size of item to be resized <ko> 아이템이 조정되는 최대 크기 </ko>
+ * @param {Array|Number} [options.column=[1, 8]] The number of items in a line <ko> 한 줄에 들어가는 아이템의 개수 </ko>
  * @example
 ```
 <script>
@@ -44,9 +43,13 @@ class JustifiedLayout {
 		this.options = assignOptions({
 			minSize: 0,
 			maxSize: 0,
-			maxColumn: 8,
-			column: 0,
+			column: [1, 8],
 		}, options);
+		const column = this.options.column;
+
+		if (typeof column !== "object") {
+			this.options.column = [column, column];
+		}
 		this._style = getStyleNames(this.options.horizontal);
 		this._size = 0;
 	}
@@ -56,26 +59,14 @@ class JustifiedLayout {
 		const size2Name = style.size2;
 		const startIndex = 0;
 		const endIndex = items.length;
-		const {maxColumn, column} = this.options;
+		const {column} = this.options;
 		const graph = _start => {
 			const results = {};
 			const start = +_start.replace(/[^0-9]/g, "");
 			const length = endIndex + 1;
 
-			if (column) {
-				const end = Math.min(start + column, length - 1);
-				let cost = this._getCost(items, start, end, size1Name, size2Name);
-
-				if (cost < 0) {
-					cost = 0;
-				}
-				if (cost !== null) {
-					results[`node${end}`] = Math.pow(cost, 2);
-				}
-				return results;
-			}
-			for (let i = start + 1; i < length; ++i) {
-				if (i - start > maxColumn) {
+			for (let i = start + column[0]; i < length; ++i) {
+				if (i - start > column[1]) {
 					break;
 				}
 

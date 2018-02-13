@@ -144,7 +144,6 @@ describe("InfiniteGrid Test", function() {
         // When (layout)
         this.inst._renderer.container.innerHTML = items.join("");
         this.inst.layout();
-        
       });
     });
   });
