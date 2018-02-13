@@ -1,0 +1,29 @@
+{
+  "name": "@egjs/react-layout",
+  "version": "0.0.1",
+  "description": "A react component that can easily use egjs-infinitegrid's layouts.",
+  "main": "index.js",
+  "author": {
+    "name": "NAVER Corp."
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/naver/egjs-infinitegrid",
+  "dependencies": {
+    "@egjs/infinitegrid": "^3.1.4",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-scripts": "1.0.17"
+  },
+  "devDependencies": {
+    "rc-tools": "^7.0.7"
+  },
+  "scripts": {
+    "start": "rc-tools run server",
+    "build": "rc-tools run build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "gh-pages": "rc-tools run gh-pages",
+    "pub": "rc-tools run update-self && rc-tools run pub",
+    "lint": "rc-tools run lint"
+  }
+}
