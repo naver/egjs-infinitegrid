@@ -161,7 +161,7 @@ class InfiniteGrid extends Component {
 	/**
 	 * Specifies the Layout class to use.
 	 * @ko 사용할 Layout 클래스를 지정한다.
-	 * @param {Class} LayoutKlass The Layout class to use <ko>사용할 Layout 클래스</ko>
+	 * @param {Class|Object} LayoutKlass The Layout class to use or an instance of a layout moudle<ko>사용할 Layout 클래스 또는 레이아웃 모듈의 인스턴스</ko>
 	 * @param {Object} options Options to apply to the Layout.<ko>Layout에 적용할 옵션</ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 * @example
@@ -189,11 +189,21 @@ class InfiniteGrid extends Component {
 	 *  margin: 10,
 	 *  aspectRatio: 1.5
 	 * });
+	 * var layout = new eg.InfiniteGrid.GridLayout({
+	 * 	margin: 10,
+	 *	align: "start"
+	 * });
+	 * infinitegrid.setLayout(layout);
 	 */
 	setLayout(LayoutKlass, options) {
-		this._layout = new LayoutKlass(Object.assign(options || {}, {
-			horizontal: !this._isVertical,
-		}));
+		if (typeof LayoutKlass === "function") {
+			this._layout = new LayoutKlass(Object.assign(options || {}, {
+				horizontal: !this._isVertical,
+			}));
+		} else {
+			this._layout = LayoutKlass;
+			this._layout.options.horizontal = !this._isVertical;
+		}
 		this._layout.setSize(this._renderer.getViewportSize());
 		return this;
 	}
