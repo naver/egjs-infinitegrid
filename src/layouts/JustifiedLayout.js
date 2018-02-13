@@ -65,7 +65,7 @@ class JustifiedLayout {
 			const start = +_start.replace(/[^0-9]/g, "");
 			const length = endIndex + 1;
 
-			for (let i = start + column[0]; i < length; ++i) {
+			for (let i = Math.max(start + column[0], length - 1); i < length; ++i) {
 				if (i - start > column[1]) {
 					break;
 				}
