@@ -29,14 +29,15 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 ### props
 |name|type|description|
 |---|---------------|---|
-|size|number|The viewport size of container area where items are added to a layout
+|tag|string|The tag name of container|
+|size|number|The viewport size of container area where items are added to a layout|
 |horizontal|boolean|Direction of the scroll movement|
 |margin|number|Margin used to create space around items|
 |isEqualSize|boolean|Indicates whether sizes of all card elements are equal to one another. If true, the performance of layout arrangement can be improved.|
 |outline|array|Array of outline points to be reference points
-|other props||LayoutOptions|
+|other props||Check out! the options of Layouts|
 
-> #### LayoutOptions
+> #### The options of Layouts
 > * [GridLayout's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.GridLayout.html)
 > * [JustifiedLayout's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.JustifiedLayout.html)
 > * [FrameLayout's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.FrameLayout.html)
