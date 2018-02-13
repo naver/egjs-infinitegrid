@@ -67,7 +67,6 @@ class JustifiedLayout {
 			const length = endIndex + 1;
 
 			for (let i = Math.min(start + column[0], length - 1); i < length; ++i) {
-				
 				if (i - start > column[1]) {
 					break;
 				}
@@ -80,7 +79,6 @@ class JustifiedLayout {
 					results[`node${i}`] = Math.pow(cost, 2);
 				}
 			}
-
 			return results;
 		};
 		// shortest path for items' total height.
