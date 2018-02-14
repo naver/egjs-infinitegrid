@@ -18,6 +18,7 @@ body {
 }
 .header-container {
 	position: relative;
+	height: 100%;
 }
 .header .logo {
 	height: 100%;
