@@ -2,7 +2,7 @@
 
 A react component that can easily use [egjs-infinitegrid's layouts](https://github.com/naver/egjs-infinitegrid)
 
-- [Demo](https://naver.github.io/egjs-infinitegrid/)
+- [Demo](https://naver.github.io/egjs-infinitegrid/assets/html/drag.html)
 
 
 ## Install
@@ -15,7 +15,7 @@ $ npm install @egjs/react-layout
 ```jsx
 import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} from "@egjs/react-layout";
 
-<GridLayout size="1000" horizontal={true} margin="10" isEqualSize={} outline={[]}>
+<GridLayout tag="div" size="1000" horizontal={true} margin="10" isEqualSize={} outline={[]}>
     <div></div>
     <div></div>
     <div></div>
