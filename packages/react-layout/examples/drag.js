@@ -6,7 +6,7 @@ class Item extends Component {
 	constructor(props) {
 		super(props);
 
-		this.image = this.props.index * 2 + 1;
+		this.image = parseInt(Math.random() * 50) + 1;
 	}
 	render() {
 		const {onDragStart, onDrop} = this.props;
@@ -31,12 +31,13 @@ class App extends Component {
 		window.a = this;
 		this.state = {
 			items: [],
+			width: window.innerWidth
 		}
 		this.onDragStart = this.onDragStart.bind(this);
 		this.onDrop = this.onDrop.bind(this);
 
 		for (let i = 0; i < 5; ++i) {
-			this.state.items.push(<Item key={i} index={i} onDragStart={this.onDragStart} onDrop={this.onDrop}/>);
+			this.state.items.push(<Item key={i} onDragStart={this.onDragStart} onDrop={this.onDrop}/>);
 		}
 	}
 	indexOfTarget(target) {
@@ -80,13 +81,17 @@ class App extends Component {
 	}
   render() {
     return (
-		<JustifiedLayout size={1000} margin={10} ref={l => this.layout = l} minSize={300}>
+		<JustifiedLayout size={this.state.width} margin={10} ref={l => this.layout = l} minSize={300} column={[3,4]}>
 		{this.state.items}
 		</JustifiedLayout>
     );
 	}
 	componentDidMount() {
 		this._children = ReactDOM.findDOMNode(this.layout).children;
+
+		window.addEventListener("resize", e => {
+			this.setState({width: window.innerWidth});
+		});
 	}
 }
 
