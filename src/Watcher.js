@@ -6,6 +6,7 @@ import {
 	removeEvent,
 	scroll,
 	scrollTo,
+	scrollBy,
 } from "./utils";
 
 export default class Watcher {
@@ -35,6 +36,12 @@ export default class Watcher {
 	setStatus(status, applyScrollPos = true) {
 		this._prevPos = status._prevPos;
 		applyScrollPos && this.scrollTo(status.scrollPos);
+	}
+	scrollBy(pos) {
+		const arrPos = this._renderer.options.isVertical ? [0, pos] : [pos, 0];
+
+		scrollBy(this._renderer.view, ...arrPos);
+		this.setScrollPos();
 	}
 	scrollTo(pos) {
 		const arrPos = this._renderer.options.isVertical ? [0, pos] : [pos, 0];
