@@ -48,12 +48,9 @@ export default class ItemManager {
 			}),
 		};
 	}
-	setStatus(status, start, end) {
+	setStatus(status) {
 		const data = status._data;
 
-		for (let i = start; i <= end; i++) {
-			data[i].items = DOMRenderer.createElements(data[i].items);
-		}
 		this.set(data);
 	}
 	size() {

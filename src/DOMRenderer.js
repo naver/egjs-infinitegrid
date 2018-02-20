@@ -95,13 +95,10 @@ export default class DOMRenderer {
 			_size: Object.assign({}, this._size),
 		};
 	}
-	setStatus(status, items) {
+	setStatus(status) {
 		this.container.style.cssText = status.cssText;
 		Object.assign(this.options, status.options);
 		Object.assign(this._size, status._size);
-
-		DOMRenderer.renderItems(items);
-		this._insert(items, APPEND);
 	}
 	updateSize(items) {
 		return items.map(item => {
