@@ -196,11 +196,6 @@ export default class DOMRenderer {
 	getViewSize() {
 		return this._size.view;
 	}
-	scrollBy(point) {
-		const pos = this.options.isVertical ? [0, point] : [point, 0];
-
-		scrollBy(this.view, ...pos);
-	}
 	getContainerOffset() {
 		return this._size.containerOffset;
 	}
