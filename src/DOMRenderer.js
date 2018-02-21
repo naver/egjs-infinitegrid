@@ -9,7 +9,6 @@ import {
 } from "./consts";
 import {
 	$,
-	scrollBy,
 	innerHeight,
 	innerWidth,
 	getStyles,
@@ -80,7 +79,6 @@ export default class DOMRenderer {
 			isVertical: true,
 		}, options);
 		this._size = {
-			containerOffset: 0,
 			container: -1,
 			view: -1,
 			item: null,
@@ -166,7 +164,6 @@ export default class DOMRenderer {
 		}
 		this._size = {
 			item: null,
-			containerOffset: 0,
 			viewport: -1,
 			container: -1,
 			view: -1,
@@ -196,9 +193,6 @@ export default class DOMRenderer {
 	getViewSize() {
 		return this._size.view;
 	}
-	getContainerOffset() {
-		return this._size.containerOffset;
-	}
 	getViewportSize() {
 		this.resize();
 		return this._size.viewport;
@@ -213,7 +207,6 @@ export default class DOMRenderer {
 
 		if (this.isNeededResize()) {
 			this._size = {
-				containerOffset: this.options.isOverflowScroll ? 0 : this.container[`offset${isVertical ? "Top" : "Left"}`],
 				viewport: this._calcSize(),
 				view: isVertical ? innerHeight(this.view) : innerWidth(this.view),
 				item: null,
@@ -229,7 +222,6 @@ export default class DOMRenderer {
 	}
 	destroy() {
 		this._size = {
-			containerOffset: 0,
 			viewport: -1,
 			view: -1,
 			item: null,
