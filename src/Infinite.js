@@ -12,59 +12,68 @@ function isVisible(group, {threshold, scrollPos, endScrollPos}) {
 }
 
 class Infinite {
-	constructor(options) {
-		this.options = options;
-		this._items = {};
-		this._status = {
-			startCursor: 0,
-			endCursor: 0,
-			size: 0,
-		};
+	constructor(itemManger, options) {
+		this.options = Object.assign({
+			useRecycle: true,
+			threshold: 100,
+		}, options);
+		this._items = itemManger;
+		this.clear();
 	}
-	updateSize(size) {
+	setSize(size) {
 		this._status.size = size;
 	}
-	recycle({scrollPos, isForward}) {
+	recycle(scrollPos, isForward) {
+		if (!this.options.useRecycle) {
+			return;
+		}
 		const {startCursor, endCursor, size} = this._status;
+
+		if (startCursor === -1 || endCursor === -1) {
+			return;
+		}
 		const endScrollPos = scrollPos + size;
-		const data = this._items._data;
-		const length = data.length;
 		const {threshold, recycle} = this.options;
 		const visibleOptions = {threshold, scrollPos, endScrollPos};
-		const visibles = data.slice(startCursor, endCursor)
+		const visibles = this._items.get(startCursor, endCursor)
 			.map(group => isVisible(group, visibleOptions));
+		const length = visibles.length;
 		let start = isForward ? 0 : visibles.indexOf(1);
 		let end = isForward ? visibles.lastIndexOf(-1) : visibles.length - 1;
 
-		if (start === -1 || end === -1 || start > end || end - start + 1 >= length) {
+		if (start < 0 || end < 0 || start > end || end - start + 1 >= length) {
 			return;
 		}
 		start = startCursor + start;
-		end = endCursor + end;
-		recycle && recycle(start, end);
+		end = startCursor + end;
+		recycle && recycle({start, end});
 		if (isForward) {
 			this._status.startCursor = end + 1;
 		} else {
 			this._status.endCursor = start - 1;
 		}
 	}
-	scroll({scrollPos, isForward}) {
+	scroll(scrollPos, isForward) {
 		const {startCursor, endCursor, size} = this._status;
+
+		if (startCursor === -1 || endCursor === -1) {
+			return;
+		}
 		const {append, prepend} = this.options;
-		const data = this._items._data;
-		const length = data.length;
+		const items = this._items;
+		const length = items.size();
 		const threshold = this.options.threshold;
 		const endScrollPos = scrollPos + size;
-		const targetItem = data[isForward ? endCursor : startCursor];
+		const targetItem = items.getData(isForward ? endCursor : startCursor);
 		const outlines = targetItem.outlines[isForward ? "end" : "start"];
 		const targetPos = Math[isForward ? "min" : "max"](...outlines);
 
 		if (isForward) {
 			if (endScrollPos >= targetPos - threshold) {
-				append && append({cache: length > endCursor + 1 && data[endCursor + 1]});
+				append && append({cache: length > endCursor + 1 && items.getData(endCursor + 1)});
 			}
 		} else if (scrollPos <= targetPos + threshold) {
-			prepend && prepend({cache: (startCursor > 0) && data[startCursor - 1]});
+			prepend && prepend({cache: (startCursor > 0) && items.getData(startCursor - 1)});
 		}
 	}
 	updateCursor(isAppend) {
@@ -81,12 +90,11 @@ class Infinite {
 			}
 		} else {
 			this._status.startCursor = 0;
-			this._status.endCursor = this._items._data.length - 1;
+			this._status.endCursor = this._items.size() - 1;
 		}
 	}
-
 	setStatus(status) {
-		this._status = status;
+		this._status = Object.assign(this._status, status);
 	}
 	getStatus() {
 		const {startCursor, endCursor, size} = this._status;
@@ -95,6 +103,54 @@ class Infinite {
 			startCursor,
 			endCursor,
 			size,
+		};
+	}
+	getEdgeOutline(cursor) {
+		const {startCursor, endCursor} = this._status;
+
+		if (startCursor === -1 || endCursor === -1) {
+			return [];
+		}
+		return this._items.getOutline(cursor === "start" ? startCursor : endCursor, cursor);
+	}
+	getEdgeValue(cursor) {
+		const outlines = this.getEdgeOutline(cursor);
+
+		return outlines.length ? Math[cursor === "start" ? "min" : "max"](...outlines) : 0;
+	}
+	getEdgeItem(cursor) {
+		const {startCursor, endCursor} = this._status;
+
+		if (startCursor === -1 || endCursor === -1) {
+			return null;
+		}
+		const data = this._items.getData(cursor === "start" ? startCursor : endCursor);
+		const index = data.outlines[cursor === "start" ? "startIndex" : "endIndex"];
+
+		return data.items[index];
+	}
+	getVisibleItems() {
+		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
+	}
+	getVisibleData() {
+		return this._items.get(this._status.startCursor, this._status.endCursor);
+	}
+	getInvisibleData() {
+		const {startCursor, endCursor} = this._status;
+		const data = this._items._data.concat();
+
+		data.splice(startCursor, endCursor - startCursor + 1);
+
+		return data;
+	}
+	remove(element) {
+		return this._items.remove(element, this._status.startCursor, this._status.endCursor);
+	}
+	clear() {
+		this._status = {
+			startCursor: -1,
+			endCursor: -1,
+			size: -1,
 		};
 	}
 }
