@@ -103,7 +103,9 @@ class ImageLoaded {
 			}, 0);
 		}
 		if (length > 0) {
-			this.waitImageLoaded(images, {prefix, length, type, complete, error, end});
+			setTimeout(() => {
+				this.waitImageLoaded(images, {prefix, length, type, complete, error, end});
+			}, 0);
 		}
 	}
 }
