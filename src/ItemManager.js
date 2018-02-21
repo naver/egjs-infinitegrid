@@ -1,5 +1,4 @@
 import {MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME} from "./consts";
-import DOMRenderer from "./DOMRenderer";
 import {$, toArray} from "./utils";
 
 export default class ItemManager {
@@ -190,5 +189,8 @@ export default class ItemManager {
 		} else {
 			this._data = data.concat();
 		}
+	}
+	getData(index) {
+		return this._data[index];
 	}
 }
