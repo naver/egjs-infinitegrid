@@ -222,7 +222,7 @@ class InfiniteGrid extends Component {
 		return this;
 	}
 	_setSize(size) {
-		this._infinite.setSize(size);
+		this._infinite.setSize(this._renderer.getViewSize());
 		this._layout.setSize(size);
 	}
 	/**
@@ -268,7 +268,6 @@ class InfiniteGrid extends Component {
 		const margin = (this._getLoadingStatus() === LOADING_PREPEND && this._status.loadingSize) || 0;
 
 		if (!this.options.useRecycle || !this.options.useFit) {
-			console.log(scrollCycle, base, margin);
 			if (scrollCycle === "before" && margin && base < margin) {
 				this._watcher.scrollBy(-Math.abs(base) + margin);
 				this._items.fit(base - margin, this._isVertical);
@@ -515,7 +514,12 @@ class InfiniteGrid extends Component {
 		if (!items.length) {
 			return;
 		}
-		this._postLayout(NO_CACHE, items, isAppend, NO_TRUSTED);
+		this._postLayout({
+			fromCache: NO_CACHE,
+			items,
+			isAppend,
+			isTrusted: NO_TRUSTED,
+		});
 	}
 	// add items, and remove items for recycling
 	_recycle({start, end}) {
@@ -618,22 +622,82 @@ class InfiniteGrid extends Component {
 		}
 		return this;
 	}
+	moveTo(index, itemIndex = -1) {
+		const data = this._items.getData(index);
+
+		if (!data) {
+			return;
+		}
+		const item = data.items[itemIndex];
+		const isResize = data.outlines.start && (data.outlines.start.length === 0);
+		const startCursor = this._infinite.getCursor("start");
+		const endCursor = this._infinite.getCursor("end");
+		const isInCursor = startCursor <= index && index <= endCursor;
+		const {useRecycle, isEqualSize, isFixedSize} = this.options;
+		const size = this._renderer.getViewSize();
+
+		if (isInCursor || !useRecycle || isEqualSize || isFixedSize || !isResize) {
+			let pos = item && item.rect[this._isVertical ? "top" : "left"];
+
+			if (typeof pos === "undefined") {
+				pos = startCursor > index ? Math.min(...data.outlines.end) - size :
+					Math.max(...data.outlines.start);
+			}
+			if (pos < 0) {
+				this._watcher.scrollBy(-pos);
+				this._items.fit(pos, this._isVertical);
+				DOMRenderer.renderItems(this._getVisibleItems());
+				this._renderer.setContainerSize(this._getEdgeValue("end"));
+				pos = 0;
+			}
+			if (!isInCursor) {
+				if (startCursor > index && index + 2 < startCursor) {
+					this._infinite.setCursor("start", index + 2);
+				} else if (endCursor < index && index > endCursor + 2) {
+					this._infinite.setCursor("end", index - 2);
+				}
+			}
+			this._watcher.scrollTo(pos);
+		} else if (isResize) {
+			const isAppend = index > endCursor;
+			const threshold = this.options.threshold;
+			let outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start");
+
+			outline = isAppend ? outline.map(point => point + threshold) :
+				outline.map(point => point - threshold * 2);
+
+			this._postLayout({
+				outline,
+				isAppend,
+				fromCache: true,
+				items: data.items,
+				isTrusted: true,
+				isMove: true,
+			});
+		}
+	}
 	_setData(layouted, isAppend = true) {
 		const groupKey = (layouted.items && layouted.items[0].groupKey) || 0;
 
 		layouted.groupKey = groupKey;
 		this._items.set(layouted, groupKey);
-		this._infinite.updateCursor(isAppend);
+		this._infinite.setCursor(isAppend ? "end" : "start", this._items.indexOf(layouted));
 	}
 	_insertData(layouted, isAppend = true) {
 		layouted.groupKey = layouted.items[0].groupKey;
 		this._items[isAppend ? "append" : "prepend"](layouted);
-		this._infinite.updateCursor(isAppend);
+		this._infinite.updateCursor(isAppend ? "end" : "start");
 	}
-	_postImageLoaded(fromCache, layouted, isAppend, isTrusted) {
+	_postImageLoaded({fromCache, layouted, isAppend, isTrusted, isMove}) {
 		this[fromCache ? "_setData" : "_insertData"](layouted, isAppend);
 		DOMRenderer.renderItems(layouted.items);
+		// no recycle
 		this._onLayoutComplete(layouted.items, isAppend, isTrusted, false);
+		if (isMove) {
+			const pos = Math[isAppend ? "max" : "min"](...layouted.outlines[isAppend ? "start" : "end"]) - ((!isAppend && this._renderer.getViewSize()) || 0);
+
+			this._watcher.scrollTo(pos);
+		}
 	}
 	_onImageError(target, item, itemIndex, removeTarget, replaceTarget) {
 		const element = item.el;
@@ -768,25 +832,30 @@ ig.on("imageError", e => {
 			},
 		});
 	}
-	_postCache(group, isAppend, isTrusted) {
+	_postCache({cache, isAppend, isTrusted}) {
 		const outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start");
-		const cacheOutline = group.outlines[isAppend ? "start" : "end"];
+		const cacheOutline = cache.outlines[isAppend ? "start" : "end"];
 
 		const fromRelayout = outline.length === cacheOutline.length ?
 			!outline.every((v, index) => v === cacheOutline[index]) : true;
 
 		if (!fromRelayout) {
-			this._infinite.updateCursor(isAppend);
-			this._renderer.createAndInsert(group.items, isAppend);
-			this._onLayoutComplete(group.items, isAppend, isTrusted);
+			this._infinite.updateCursor(isAppend ? "end" : "start");
+			this._renderer.createAndInsert(cache.items, isAppend);
+			this._onLayoutComplete(cache.items, isAppend, isTrusted);
 			return this;
 		}
-		this._postLayout(CACHE, group.items, isAppend, isTrusted);
+		this._postLayout({
+			fromCache: CACHE,
+			items: cache.items,
+			outline,
+			isAppend,
+			isTrusted,
+		});
 		return this;
 	}
-	_postLayout(fromCache, items, isAppend, isTrusted) {
-		const outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start");
-
+	_postLayout({fromCache, items, isAppend,
+		outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start"), isTrusted, isMove = false}) {
 		this._process(PROCESSING);
 		const method = isAppend ? "append" : "prepend";
 
@@ -808,7 +877,8 @@ ig.on("imageError", e => {
 					this._renderer.updateSize(items),
 					outline
 				);
-				this._postImageLoaded(fromCache, layouted, isAppend, isTrusted);
+				// no recycle
+				this._postImageLoaded({fromCache, layouted, isAppend, isTrusted, isMove});
 			},
 			error: ({target, itemIndex}) => {
 				const item = ((layouted && layouted.items) || items)[itemIndex];
@@ -816,6 +886,7 @@ ig.on("imageError", e => {
 				this._onImageError(target, item, itemIndex, removeTarget, replaceTarget);
 			},
 			end: () => {
+				// recycle
 				this._postImageLoadedEnd(layouted, isAppend, removeTarget, replaceTarget);
 			},
 		});
@@ -827,7 +898,7 @@ ig.on("imageError", e => {
 			return;
 		}
 		if (cache) {
-			this._postCache(cache, APPEND, TRUSTED);
+			this._postCache({cache, isAppend: APPEND, isTrusted: TRUSTED});
 		} else {
 			/**
 			 * This event is fired when a card element must be added at the bottom or right of a layout because there is no card to be displayed on screen when a user scrolls near bottom or right.
@@ -852,7 +923,7 @@ ig.on("imageError", e => {
 			this._fit("before");
 		}
 		if (cache) {
-			this._postCache(cache, PREPEND, TRUSTED);
+			this._postCache({cache, isAppend: PREPEND, isTrusted: TRUSTED});
 		} else {
 			/**
 			 * This event is fired when a card element must be added at the top or left of a layout because there is no card to be displayed on screen when a user scrolls near top or left.
@@ -889,7 +960,7 @@ ig.on("imageError", e => {
 			scrollPos,
 			orgScrollPos,
 		});
-		this._infinite.scroll(scrollPos, isForward);
+		this._infinite.scroll(scrollPos, isForward, this._isProcessing());
 	}
 	_onLayoutComplete(items, isAppend, isTrusted = false,
 		useRecycle = this.options.useRecycle, isLayout = false) {
@@ -900,7 +971,7 @@ ig.on("imageError", e => {
 
 		const scrollPos = this._watcher.getScrollPos();
 
-		if (useRecycle && !this._isLoading()) {
+		if (!isLayout && useRecycle && !this._isLoading()) {
 			this._infinite.recycle(scrollPos, isAppend);
 		}
 
@@ -936,9 +1007,6 @@ ig.on("imageError", e => {
 			orgScrollPos: this._watcher.getOrgScrollPos(),
 			size,
 		});
-		if (isLayout) {
-			return;
-		}
 		this._infinite.scroll(scrollPos, isAppend);
 	}
 	_reset() {
