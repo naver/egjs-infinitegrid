@@ -26,7 +26,6 @@ $(grid).click(function (e) {
 		}
 		ig.remove(parent[0]);
 	}
-	ig.layout(false);
 });
 function createGrid() {
 	ig && ig.destroy();
@@ -51,6 +50,9 @@ function createGrid() {
 			}, 1000);
 		},
 		"append": function (e) {
+			if (ig.isProcessing()) {
+				return;
+			}
 			console.log("append");
 			var groupKeys = ig.getGroupKeys(true);
 			var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
@@ -61,7 +63,7 @@ function createGrid() {
 			ig.startLoading(true);
 			setTimeout(function () {
 				ig.append(groups[groupKey], groupKey);
-			}, 1000);
+			}, 200);
 		},
 		"layoutComplete": function (e) {
 			ig.endLoading();

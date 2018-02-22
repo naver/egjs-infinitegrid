@@ -492,7 +492,7 @@ describe("InfiniteGrid Test", function() {
         const pos = this.inst._watcher.getScrollPos();
 
         setTimeout(() => {
-          this.inst._recycle(true);
+          this.inst._infinite.recycle(pos, true);
           this.inst.on("layoutComplete", layoutComplete2);
           this.inst.append(item1);
           this.inst._fit("before");
@@ -628,18 +628,18 @@ describe("InfiniteGrid Test", function() {
           // When
           const handler = insert(this.inst, isAppend, () => {
             // Then
-            expect(this.inst._status.startCursor).to.be.equal(0);
-            expect(this.inst._status.endCursor).to.be.equal(RETRY - 1);
+            expect(this.inst._infinite._status.startCursor).to.be.equal(0);
+            expect(this.inst._infinite._status.endCursor).to.be.equal(RETRY - 1);
             expect(this.inst.getGroupKeys()).to.have.lengthOf(RETRY);
     
             // Given
             const centerEndValue = this.inst._items
-              .getEdgeValue(isAppend ? "end" : "start", this.inst._status.startCursor, 3);
+              .getEdgeValue(isAppend ? "end" : "start", this.inst._infinite._status.startCursor, 3);
     
             // When
             this.inst._watcher.scrollTo(centerEndValue);
             setTimeout(() => {
-              this.inst._recycle(isAppend);
+              this.inst._infinite.recycle(centerEndValue, isAppend);
               // Then
               expect(this.inst.getGroupKeys()).to.have.lengthOf.below(RETRY);
               done();
