@@ -132,6 +132,9 @@ class Infinite {
 	getVisibleItems() {
 		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
 	}
+	getCursor(cursor) {
+		return this._status[cursor === "start" ? "startCursor" : "endCursor"];
+	}
 	getVisibleData() {
 		return this._items.get(this._status.startCursor, this._status.endCursor);
 	}
