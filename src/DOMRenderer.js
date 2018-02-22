@@ -59,7 +59,12 @@ export default class DOMRenderer {
 		});
 	}
 	static removeElement(element) {
-		element.parentNode.removeChild(element);
+		const parentNode = element && element.parentNode;
+
+		if (!parentNode) {
+			return;
+		}
+		parentNode.removeChild(element);
 	}
 	static createElements(items) {
 		const elements = $(items.reduce((acc, v, i) => {
