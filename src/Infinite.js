@@ -1,7 +1,13 @@
 
 function isVisible(group, {threshold, scrollPos, endScrollPos}) {
-	const min = Math.min(...group.outlines.start);
-	const max = Math.max(...group.outlines.end);
+	const start = group.outlines.start;
+	const end = group.outlines.end;
+
+	if (start.legnth === 0 || end.length === 0 || !group.items.length || !group.items[0].el) {
+		return 2;
+	}
+	const min = Math.min(...start);
+	const max = Math.max(...end);
 
 	if ((endScrollPos + threshold < min)) {
 		return +1;
@@ -41,6 +47,24 @@ class Infinite {
 		let start = isForward ? 0 : visibles.indexOf(1);
 		let end = isForward ? visibles.lastIndexOf(-1) : visibles.length - 1;
 
+		const unknown = isForward ? visibles.indexOf(2) : visibles.lastIndexOf(2);
+
+		if (isForward && unknown === 0) {
+			for (let i = 1; i < length; ++i) {
+				if (visibles[i] === 2) {
+					end = Math.max(i, end);
+				}
+			}
+		} else if (!isForward && unknown === end) {
+			if (start === -1) {
+				start = unknown;
+			}
+			for (let i = length - 1; i >= 0; --i) {
+				if (visibles[i] === 2) {
+					start = Math.min(i, start);
+				}
+			}
+		}
 		if (start < 0 || end < 0 || start > end || end - start + 1 >= length) {
 			return;
 		}
@@ -48,12 +72,12 @@ class Infinite {
 		end = startCursor + end;
 		recycle && recycle({start, end});
 		if (isForward) {
-			this._status.startCursor = end + 1;
+			this.setCursor("start", end + 1);
 		} else {
-			this._status.endCursor = start - 1;
+			this.setCursor("end", start - 1);
 		}
 	}
-	scroll(scrollPos, isForward) {
+	scroll(scrollPos, isForward, isProcessing = true) {
 		const {startCursor, endCursor, size} = this._status;
 
 		if (startCursor === -1 || endCursor === -1) {
@@ -75,23 +99,27 @@ class Infinite {
 		} else if (scrollPos <= targetPos + threshold) {
 			prepend && prepend({cache: (startCursor > 0) && items.getData(startCursor - 1)});
 		}
+		if (!isProcessing) {
+			this.recycle(scrollPos, isForward);
+		}
 	}
-	updateCursor(isAppend) {
-		if (this.options.useRecycle) {
-			if (isAppend) {
-				this._status.endCursor++;
-			} else if (this._status.startCursor > 0) {
-				this._status.startCursor--;
-			} else {
-				this._status.endCursor++; // outside prepend
-			}
-			if (this._status.startCursor < 0) {
-				this._status.startCursor = 0;
-			}
-		} else {
+	setCursor(cursor, index) {
+		if (!this.options.useRecycle) {
 			this._status.startCursor = 0;
 			this._status.endCursor = this._items.size() - 1;
+			return;
 		}
+		if (cursor === "start") {
+			this._status.startCursor = index;
+		} else {
+			const lastIndex = this._items.size() - 1;
+
+			this._status.endCursor = Math.min(lastIndex, index);
+		}
+		this._status.startCursor = Math.max(0, this._status.startCursor);
+	}
+	updateCursor(cursor) {
+		this.setCursor(cursor, cursor === "start" ? this._status.startCursor - 1 : this._status.endCursor + 1);
 	}
 	setStatus(status) {
 		this._status = Object.assign(this._status, status);
