@@ -163,6 +163,18 @@ export default class ItemManager {
 		}
 		return items;
 	}
+	indexOf(data) {
+		const groupKey = typeof data === "object" ? data.groupKey : data;
+		const datas = this._data;
+		const length = datas.length;
+
+		for (let i = 0; i < length; ++i) {
+			if (groupKey === datas[i].groupKey) {
+				return i;
+			}
+		}
+		return -1;
+	}
 	get(start, end) {
 		if (typeof start !== "undefined") {
 			if (typeof end !== "undefined") {
