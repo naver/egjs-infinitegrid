@@ -15,7 +15,7 @@ $ npm install @egjs/react-layout
 ```jsx
 import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} from "@egjs/react-layout";
 
-<GridLayout tag="div" size="1000" horizontal={true} margin="10" isEqualSize={} outline={[]}>
+<GridLayout tag="div" size="1000" horizontal={true} margin="10" isEqualSize={false} outline={[]}>
     <div></div>
     <div></div>
     <div></div>
@@ -35,6 +35,7 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 |margin|number|Margin used to create space around items|
 |isEqualSize|boolean|Indicates whether sizes of all card elements are equal to one another. If true, the performance of layout arrangement can be improved.|
 |outline|array|Array of outline points to be reference points
+|onLayoutComplete|function|This event is fired when layout is successfully arranged.
 |other props||Check out! the options of Layouts|
 
 > #### The options of Layouts
@@ -44,6 +45,10 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 > * [SquareLayout's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.SquareLayout.html)
 > * [PackingLayout's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html)
 
+### methods
+|name|description|
+|---|---------|
+|getItems()|Returns the layouted items|
 
 
 ## Development

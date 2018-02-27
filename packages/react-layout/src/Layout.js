@@ -3,7 +3,7 @@ import {GridLayout, ImageLoaded} from "@egjs/infinitegrid";
 import {CHECK_ONLY_ERROR, CHECK_ALL} from "@egjs/infinitegrid/src/consts";
 import ReactDOM from 'react-dom';
 import Item from "./Item";
-import {NOT_LOADED, LOADING, LOADED} from "./consts";
+import {NOT_LOADED, LOADING, LOADED, LAYOUT_ID} from "./consts";
 import PropTypes from 'prop-types';
 
 export default class Layout extends Component {
@@ -15,6 +15,7 @@ export default class Layout extends Component {
 		options: PropTypes.object,
 		horizontal: PropTypes.bool,
 		isEqualSize: PropTypes.bool,
+		onLayoutComplete: PropTypes.func,
 	};
 	static defaultProps = {
 		tag: "div",
@@ -26,30 +27,42 @@ export default class Layout extends Component {
 		outline: [],
 		isEqualSize: false,
 	};
+	static layoutProps = {};
     constructor(props) {
 		super(props);
 		const {margin, size, type, children} = this.props;
 
         this.state = {
-			children: [],
+			datas: {},
 			items: [],
 			size: parseFloat(size),
+			loaded: NOT_LOADED,
 		};
+		const options = {};
+		const layoutProps = this.constructor.layoutProps;
+
+		for (const name in layoutProps) {
+			if (name in props) {
+				options[name] = props[name];
+			}
+		}
 		this._layout = new type({
-			...this.props.options,
+			...options,
 			horizontal: this.props.horizontal,
 		});
-		this.updateLayout();
-		this.updateChildren(children);
+		this._updateLayout();
 	}
-	resetSize() {
+	getItems() {
+		return this.state.items;
+	}
+	_resetSize() {
 		const items = this.state.items;
 
 		items.forEach(item => {
 			item.resetSize();
 		});
 	}
-	updateLayout() {
+	_updateLayout() {
 		const options = this._layout.options;
 		const props = this.props;
 
@@ -61,80 +74,70 @@ export default class Layout extends Component {
 			}
 		}
 	}
-	updateGroups() {
-		this.state.groups = [];
-		this.state.items.forEach(item => this.updateGroup(item));
+	_newItem(element) {
+		const id = (new Date().getTime() + Math.floor(Math.random() * 1000));
+
+		element[LAYOUT_ID] = id;
+
+		const item = new Item(element);
+
+		item.renderElement();
+		return item;
 	}
-	updateGroup(item) {
-		const groupKey = item.props.groupKey;
-		const groups = this.state.groups;
-		const length = groups.length;
-		let groupIndex = -1;
+	_searchItem(element) {
+		const datas = this.state.datas;
+		const id = element[LAYOUT_ID];
 
-		for (let i = 0; i < length; ++i) {
-			if (groups[i].groupKey === groupKey) {
-				groupIndex = i;
-				break;
-			}
+		if (id && id in datas) {
+			return datas[id];
 		}
-		if (groupIndex === -1) {
-			groups.push({
-				groupKey,
-				items: [item],
-			});
-		} else {
-			groups[groupIndex].items.push(item);
-		}
+		return this._newItem(element);
 	}
-    updateChildren(children = this.props.children) {
-		let randomGroupKey = 0;
-        const itemChildren = React.Children.map(children, 
-            (element, i) => {
-				let groupKey = element.props["data-groupkey"] || element.props["groupkey"];
+	_updateItems() {
+		this.state.items = [];
 
-				if (typeof groupKey === "undefined") {
-					!randomGroupKey && (randomGroupKey = (new Date().getTime() + Math.floor(Math.random() * 1000)));
-					groupKey = randomGroupKey;
-				} else {
-					randomGroupKey = 0;
-				}
-				return (<Item groupKey={groupKey} key={i} ref={item => {this.state.items[i] = item}}>{element}</Item>);
-			});
+		const datas = {};
+		const items = this.state.items;
+		const elements = Array.prototype.slice.call(this._container.children, 0);
+		
+		elements.forEach(element => {
+			const item = this._searchItem(element);
 
-        this.state.children = itemChildren;
+			item.update();
+			items.push(item);
+			datas[item.state.id]  = item;
+		});
+		this.state.datas = datas;
 	}
 	layout() {
-		this.updateLayout();
-
-		const groups = this.state.groups.map(group => {
-			return {
-				items: group.items.map(item => item.state),
-			};
+		this._updateLayout();
+		const items = this.state.items;
+		const group = {
+			items: items.map(item => item.state),
+			outlines: {
+				start: [],
+				end: [],
+			},
+		};
+		this._layout.layout([group], this.props.outline);
+		this.state.items.forEach((item, index) => {
+			item.renderElement();
 		});
-
-		this._layout.layout(groups, this.props.outline);
-		this.state.groups.forEach(group => {
-			group.items.forEach(item => {
-				item.renderElement();
-			});
+		this.props.onLayoutComplete && this.props.onLayoutComplete({
+			target: items,
 		});
 	}
-	loadImage() {
-		let groupIndex = -1;
-		const groups = this.state.groups.filter((group, i) => {
-			const loaded = group.items.every(item => item.state.loaded !== NOT_LOADED);
+	_loadImage() {
+		const items = this.state.items.filter(item => {
+			const loaded = item.state.loaded !== NOT_LOADED;
 
-			if (!loaded && groupIndex === -1) {
-				groupIndex = i;
-			}
 			return !loaded;
 		});
-		const items = groups.reduce((a, b) => {
-			return a.concat(b.items.filter(item => item.state.loaded === NOT_LOADED))
-		}, []);
 		if (!items.length) {
+			this.layout();
 			return;
 		}
+		this.state.loaded = NOT_LOADED;		
 		const elements = items.map(item => item.state.el);
 
 		items.forEach(item => item.state.loaded = LOADING);
@@ -149,6 +152,7 @@ export default class Layout extends Component {
 						size = {...this.state.items[0].state.size};
 					}
 				});
+				this.state.loaded = LOADED;
 				this.layout();
             }
         });
@@ -163,9 +167,8 @@ export default class Layout extends Component {
 			}, 100);
 			return false;
 		} else if (this.state.size !== state.size) {
-			this.resetSize();
+			this._resetSize();
 		}
-		this.updateChildren(props.children);
         return true;
     }
     render () {
@@ -181,16 +184,16 @@ export default class Layout extends Component {
 			attributes[name] = props[name];
 		}
         return (<Tag {...attributes}>
-            {this.state.children}
+            {this.props.children}
         </Tag>);
     }
     componentDidUpdate() {
-		this.updateGroups();
-		this.loadImage();
+		this._updateItems();
+		this._loadImage();
     }
     componentDidMount() {
-		this.updateGroups();
-		this.loadImage();
 		this._container = ReactDOM.findDOMNode(this);
+		this._updateItems();
+		this._loadImage();
     }
 }
