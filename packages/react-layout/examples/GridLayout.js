@@ -18,10 +18,15 @@ class Item extends Component {
 class App extends Component {
   constructor(prop) {
 		super(prop);
-  }
+
+		this.onLayoutComplete = this.onLayoutComplete.bind(this);
+	}
+	onLayoutComplete(e) {
+		console.log(e.target);
+	}
   render() {
     return (
-		<GridLayout size={1000} margin={10}>
+		<GridLayout size={1000} margin={10} onLayoutComplete={this.onLayoutComplete}>
 			<Item/>
 			<Item/>
 			<Item/>

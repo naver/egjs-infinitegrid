@@ -3,7 +3,7 @@ import {GridLayout, ImageLoaded} from "@egjs/infinitegrid";
 import {CHECK_ONLY_ERROR, CHECK_ALL} from "@egjs/infinitegrid/src/consts";
 import ReactDOM from 'react-dom';
 import Item from "./Item";
-import {NOT_LOADED, LOADING, LOADED, LAYOUT_ID} from "./consts";
+import {NOT_LOADED, LOADING, LOADED, LAYOUT_ID, NOT_RENDER, REQUEST_RENDER, RENDERED} from "./consts";
 import PropTypes from 'prop-types';
 
 export default class Layout extends Component {
@@ -35,8 +35,13 @@ export default class Layout extends Component {
         this.state = {
 			datas: {},
 			items: [],
+			outline: this.props.outline,
 			size: parseFloat(size),
-			loaded: NOT_LOADED,
+			render: NOT_RENDER,
+			outlines: {
+				start: [],
+				end: [],
+			},
 		};
 		const options = {};
 		const layoutProps = this.constructor.layoutProps;
@@ -54,6 +59,9 @@ export default class Layout extends Component {
 	}
 	getItems() {
 		return this.state.items;
+	}
+	getOutline(cursor) {
+		return this.state.outlines[cursor];
 	}
 	_resetSize() {
 		const items = this.state.items;
@@ -82,6 +90,7 @@ export default class Layout extends Component {
 		const item = new Item(element);
 
 		item.renderElement();
+		this.state.render = NOT_RENDER;		
 		return item;
 	}
 	_searchItem(element) {
@@ -94,6 +103,8 @@ export default class Layout extends Component {
 		return this._newItem(element);
 	}
 	_updateItems() {
+		const ids = this.state.items.map(item => item.state.id);
+
 		this.state.items = [];
 
 		const datas = {};
@@ -105,27 +116,31 @@ export default class Layout extends Component {
 
 			item.update();
 			items.push(item);
-			datas[item.state.id]  = item;
+			datas[item.state.id] = item;
 		});
+		if (!ids.every((id, index) => id === items[index].state.id)) {
+			this.state.render = NOT_RENDER;
+		}
 		this.state.datas = datas;
 	}
-	layout() {
+	layout(outline) {
 		this._updateLayout();
 		const items = this.state.items;
 		const group = {
 			items: items.map(item => item.state),
-			outlines: {
-				start: [],
-				end: [],
-			},
+			outlines: this.state.outlines,
 		};
-		this._layout.layout([group], this.props.outline);
+		if (outline) {
+			this.state.outline = outline.slice();
+		}
+		this._layout.layout([group], outline || this.state.outline);
 		this.state.items.forEach((item, index) => {
 			item.renderElement();
 		});
 		this.props.onLayoutComplete && this.props.onLayoutComplete({
 			target: items,
 		});
+		this.state.render = RENDERED;
 	}
 	_loadImage() {
 		const items = this.state.items.filter(item => {
@@ -134,10 +149,11 @@ export default class Layout extends Component {
 			return !loaded;
 		});
 		if (!items.length) {
-			this.layout();
+			if (this.state.render !== RENDERED) {
+				this.setState({render: REQUEST_RENDER});
+			}
 			return;
 		}
-		this.state.loaded = NOT_LOADED;		
 		const elements = items.map(item => item.state.el);
 
 		items.forEach(item => item.state.loaded = LOADING);
@@ -152,18 +168,22 @@ export default class Layout extends Component {
 						size = {...this.state.items[0].state.size};
 					}
 				});
-				this.state.loaded = LOADED;
-				this.layout();
+				this.setState({render: REQUEST_RENDER});
             }
         });
 	}
     shouldComponentUpdate(props, state) {
 		const size = parseFloat(props.size);
 
-		if (this.state.size !== props.size && props.size !== state.size) {
+		if (this.props.outline.length !== props.outline.length ||
+			!this.props.outline.every((v, index) => v === props.outline[index])) {
+			this.state.render = REQUEST_RENDER;
+			this.state.outline = props.outline;
+		}
+		if (this.state.size !== size && size !== state.size) {
 			clearTimeout(this._timer);
 			this._timer = setTimeout(() => {
-				this.setState({size: props.size});
+				this.setState({size, render: NOT_RENDER});
 			}, 100);
 			return false;
 		} else if (this.state.size !== state.size) {
@@ -187,13 +207,24 @@ export default class Layout extends Component {
             {this.props.children}
         </Tag>);
     }
-    componentDidUpdate() {
-		this._updateItems();
-		this._loadImage();
+    componentDidUpdate(prevProps) {
+		if (this.state.render === REQUEST_RENDER) {
+			this.layout();	
+		} else {
+			this._updateItems();
+			this._loadImage();
+		}
     }
     componentDidMount() {
 		this._container = ReactDOM.findDOMNode(this);
 		this._updateItems();
 		this._loadImage();
-    }
+	}
+	componentWillUnmount() {
+		const datas = this.state.datas;
+
+		for (const item in datas) {
+			item.state.el = null;
+		}
+	}
 }

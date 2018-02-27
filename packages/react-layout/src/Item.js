@@ -33,11 +33,12 @@ class Item {
 		this.resetSize();
 	}
 	update() {
-		if (this.state.loaded === NOT_LOADED) {
+		const el = this.state.el;
+
+		if (!el || this.state.loaded === NOT_LOADED) {
 			return;
 		}
 		const contents = this.state.contents;
-		const el = this.state.el;
 
 		this.state.contents = el.innerHTML;
 		if (contents !== this.state.contents) {
@@ -61,6 +62,10 @@ class Item {
 	}
 	renderElement() {
 		const element = this.state.el;
+
+		if (!element) {
+			return;
+		}
 		const rect = this.state.rect || {left: DUMMY_POSITION, top: DUMMY_POSITION};
 		const style = ["position:absolute;"];
 
