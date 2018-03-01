@@ -60,9 +60,6 @@ export default class Layout extends Component {
 	getItems() {
 		return this.state.items;
 	}
-	getOutline(cursor) {
-		return this.state.outlines[cursor];
-	}
 	_resetSize() {
 		const items = this.state.items;
 

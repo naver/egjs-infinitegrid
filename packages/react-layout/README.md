@@ -50,8 +50,6 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 |name|description|
 |---|---------|
 |getItems()|Returns the layouted items|
-|getOutline("start" or "end")|Returns the layout's outline|
-
 
 ## Development
 
