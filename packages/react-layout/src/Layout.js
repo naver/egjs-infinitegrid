@@ -72,7 +72,6 @@ export default class Layout extends Component {
 		const props = this.props;
 
 		this._layout.setSize(this.state.size);
-	
 		for (const name in options) {
 			if (name in props) {
 				options[name] = props[name];
@@ -107,7 +106,7 @@ export default class Layout extends Component {
 		const datas = {};
 		const items = this.state.items;
 		const elements = Array.prototype.slice.call(this._container.children, 0);
-		
+
 		elements.forEach(element => {
 			const item = this._searchItem(element);
 
@@ -146,9 +145,7 @@ export default class Layout extends Component {
 			return !loaded;
 		});
 		if (!items.length) {
-			if (this.state.render !== RENDERED) {
-				this.setState({render: REQUEST_RENDER});
-			}
+			this.setState({render: REQUEST_RENDER});
 			return;
 		}
 		const elements = items.map(item => item.state.el);
@@ -206,7 +203,7 @@ export default class Layout extends Component {
     }
     componentDidUpdate(prevProps) {
 		if (this.state.render === REQUEST_RENDER) {
-			this.layout();	
+			this.layout();
 		} else {
 			this._updateItems();
 			this._loadImage();

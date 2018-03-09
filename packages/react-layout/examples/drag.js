@@ -28,10 +28,12 @@ class Item extends Component {
 class App extends Component {
   constructor(prop) {
 		super(prop);
-		window.a = this;
+		window.app = this;
 		this.state = {
 			items: [],
-			width: window.innerWidth
+			width: window.innerWidth,
+			margin: 10,
+			column: [2, 3],
 		}
 		this.onDragStart = this.onDragStart.bind(this);
 		this.onDrop = this.onDrop.bind(this);
@@ -81,8 +83,8 @@ class App extends Component {
 	}
   render() {
     return (
-		<JustifiedLayout size={this.state.width} margin={10} ref={l => this.layout = l} minSize={300} column={[3,4]}>
-		{this.state.items}
+		<JustifiedLayout size={this.state.width} margin={this.state.margin} ref={l => this.layout = l} minSize={300} column={this.state.column}>
+			{this.state.items}
 		</JustifiedLayout>
     );
 	}

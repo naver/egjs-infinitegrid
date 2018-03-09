@@ -37,7 +37,10 @@ class App extends Component {
 			groups: [],
 			width: window.innerWidth - 20,
 			targetIndex: -1,
+			column: [2, 3],
+			margin: 10,
 		}
+		window.app = this;
 		this.onDragStart = this.onDragStart.bind(this);
 		this.onDrop = this.onDrop.bind(this);
 		this.onDrag = this.onDrag.bind(this);
@@ -95,9 +98,9 @@ class App extends Component {
 			const rect = state.rect;
 
 			if (rect.top <= y && y <= rect.top + rect.height) {
-				if (rect.left - 10 <= x && x <= rect.left + rect.width / 3) {
+				if (rect.left - this.state.margin <= x && x <= rect.left + rect.width / 3) {
 					return true;
-				} else if (rect.left + rect.width * 2 / 3 <= x && x <= rect.left + rect.width + 10) {
+				} else if (rect.left + rect.width * 2 / 3 <= x && x <= rect.left + rect.width + this.state.margin) {
 					return true;
 				}
 			}
@@ -112,14 +115,15 @@ class App extends Component {
 		}
 		indicator.className = "indicator is_show";
 		const {left, top, width, height} =  indicators[0].state.rect;
+		const margin = this.state.margin;
 
 		indicator.style.height = `${height}px`;
 		indicator.style.top = `${top}px`;
 
-		if (left - 10 <= x && x <= left + width / 3) {
-			indicator.style.left = `${left - 10}px`;
+		if (left - margin <= x && x <= left + width / 3) {
+			indicator.style.left = `${left - margin}px`;
 			this.state.toIndex = items.indexOf(indicators[0]);
-		} else if (left + width * 2 / 3 <= x && x <= left + width + 10) {
+		} else if (left + width * 2 / 3 <= x && x <= left + width + margin) {
 			indicator.style.left = `${left + width}px`;
 			this.state.toIndex = items.indexOf(indicators[0]) + 1;
 		}
@@ -156,12 +160,13 @@ class App extends Component {
   render() {
     return (
 		<div className="wrapper" ref={l => this.wrapper = l}>
-			<JustifiedLayout size={this.state.width} margin={10} ref={l => this.layout = l} minSize={300} column={[3,4]}>
-			{this.state.items}
+			<JustifiedLayout size={this.state.width} margin={this.state.margin} ref={l => this.layout = l} minSize={300} column={this.state.column}>
+				{this.state.items}
 			</JustifiedLayout>
 			<div className="indicator" draggable="true" ref={indicator => this.indicator = indicator}
 			 onDragOver={e=>e.preventDefault()}
 			 onDrop={e => this.onDrop(e)}
+			 style={{width: `${this.state.margin}px`}}
 			></div>
 		</div>
     );
