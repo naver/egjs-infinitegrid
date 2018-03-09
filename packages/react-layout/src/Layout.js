@@ -122,6 +122,10 @@ export default class Layout extends Component {
 	layout(outline) {
 		this._updateLayout();
 		const items = this.state.items;
+
+		if (!items.length) {
+			return;
+		}
 		const group = {
 			items: items.map(item => item.state),
 			outlines: this.state.outlines,
@@ -135,6 +139,7 @@ export default class Layout extends Component {
 		});
 		this.props.onLayoutComplete && this.props.onLayoutComplete({
 			target: items,
+			size: Math.max(...group.outlines.end) - Math.min(...group.outlines.start)
 		});
 		this.state.render = RENDERED;
 	}
