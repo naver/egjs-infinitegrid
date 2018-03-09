@@ -96,7 +96,7 @@ export default class Watcher {
 		return this._containerOffset;
 	}
 	_setContainerOffset() {
-		this._containerOffset = this.options.isOverflowScroll ? 0 : this.container[`offset${this.options.isVertical ? "Top" : "Left"}`];
+		this._containerOffset = this.options.isOverflowScroll ? 0 : this.options.container[`offset${this.options.isVertical ? "Top" : "Left"}`];
 	}
 	_onResize() {
 		if (this._timer.resize) {

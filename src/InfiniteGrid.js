@@ -23,8 +23,8 @@ import {
 	DEFENSE_BROWSER,
 	IGNORE_CLASSNAME,
 } from "./consts";
-import {toArray, $, innerWidth, innerHeight, matchHTML} from "./utils";
 import Infinite from "./Infinite";
+import {toArray, $, innerWidth, innerHeight, matchHTML} from "./utils";
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -130,6 +130,7 @@ class InfiniteGrid extends Component {
 			});
 
 		this._infinite = new Infinite(this._items, {
+			horizontal: this.options.horizontal,
 			useRecycle: this.options.useRecycle,
 			threshold: this.options.threshold,
 			append: param => this._requestAppend(param),

@@ -22,6 +22,7 @@ class Infinite {
 		this.options = Object.assign({
 			useRecycle: true,
 			threshold: 100,
+			horizontal: false,
 		}, options);
 		this._items = itemManger;
 		this.clear();
@@ -89,18 +90,21 @@ class Infinite {
 		const threshold = this.options.threshold;
 		const endScrollPos = scrollPos + size;
 		const targetItem = items.getData(isForward ? endCursor : startCursor);
-		const outlines = targetItem.outlines[isForward ? "end" : "start"];
-		const targetPos = Math[isForward ? "min" : "max"](...outlines);
+		// const outlines = targetItem.outlines[isForward ? "end" : "start"];
+		const edgeItem = targetItem.items[targetItem.outlines[isForward ? "endIndex" : "startIndex"]];
+		const sizeName = this.options.horizontal ? "width" : "height";
+		const posName = this.options.horizontal ? "left" : "top";
+		const edgeItemSize = edgeItem.rect[sizeName] || edgeItem.size[sizeName];
+		const edgePos = isForward ? edgeItem.rect[posName] : edgeItem.rect[posName] + edgeItemSize;
+
+		// Math[isForward ? "min" : "max"](...outlines);
 
 		if (isForward) {
-			if (endScrollPos >= targetPos - threshold) {
+			if (endScrollPos >= edgePos - threshold) {
 				append && append({cache: length > endCursor + 1 && items.getData(endCursor + 1)});
 			}
-		} else if (scrollPos <= targetPos + threshold) {
+		} else if (scrollPos <= edgePos + threshold) {
 			prepend && prepend({cache: (startCursor > 0) && items.getData(startCursor - 1)});
-		}
-		if (!isProcessing) {
-			this.recycle(scrollPos, isForward);
 		}
 	}
 	setCursor(cursor, index) {
