@@ -103,6 +103,13 @@ body {
 	position: absolute;
 	border: 1px solid #ddd;
 }
+.item:before {
+	content: "";
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: transparent;
+}
 .item img {
 	width: 100%;
 }

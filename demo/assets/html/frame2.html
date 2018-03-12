@@ -18,3 +18,18 @@
 <script src="../../common/js/codepen.js"></script>
 
 <script src="../js/frame2.js"></script>
+
+<link rel="stylesheet" href="../css/dat.gui.css" type="text/css"/>
+<script src="../js/dat.gui.js"></script>
+<script src="../js/dat.gui.load.js"></script>
+<script type="text/javascript">
+loadGUI({
+	itemSize: 0,
+	margin: 10,
+	change: function (text) {
+		ig._layout.options.margin = text.margin;
+		ig._layout.options.itemSize = text.itemSize;
+		ig.layout();
+	}
+});     
+</script>

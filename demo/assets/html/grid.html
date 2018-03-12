@@ -15,3 +15,21 @@
 <script src="../../common/js/jquery-2.2.4.js"></script>
 <script src="../../common/js/codepen.js"></script>
 <script src="../js/grid.js"></script>
+
+
+<link rel="stylesheet" href="../css/dat.gui.css" type="text/css"/>
+<script src="../js/dat.gui.js"></script>
+<script src="../js/dat.gui.load.js"></script>
+<script type="text/javascript">
+loadGUI({
+	align: ["center", ["start", "center", "end", "justify"]],
+	margin: 30,
+	itemSize: 0,
+	change: function (text) {
+		ig._layout.options.align = text.align;
+		ig._layout.options.margin = text.margin;
+		ig._layout.options.itemSize = text.itemSize;
+		ig.layout();
+	}
+});     
+</script>

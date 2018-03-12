@@ -27,24 +27,10 @@ ig.setLayout(eg.InfiniteGrid.SquareLayout, {
 });
 
 ig.on({
-	"prepend": function (e) {
-		var groupKeys = ig.getGroupKeys(true);
-		var groupKey = (groupKeys[0] || 0) - 1;
-
-		if (!(groupKey in groups)) {
-			return;
-		}
-		ig.prepend(groups[groupKey], groupKey);
-	},
 	"append": function (e) {
-		var groupKeys = ig.getGroupKeys(true);
-		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
-		if (!(groupKey in groups)) {
-			// allow append
-			groups[groupKey] = getItems(groupKey * num, num);
-		}
-		ig.append(groups[groupKey], groupKey);
+		var groupKey = e.groupKey + 1;
+
+		ig.append(getItems(groupKey * num, num), groupKey);
 	}
 });
-groups[0] = getItems(0, num);
-ig.append(groups[0], 0);
+ig.append(getItems(0, num), 0);
