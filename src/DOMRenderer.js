@@ -67,6 +67,11 @@ export default class DOMRenderer {
 		parentNode.removeChild(element);
 	}
 	static createElements(items) {
+		if (!items.length) {
+			return items;
+		} else if (items[0].el) {
+			return items;
+		}
 		const elements = $(items.reduce((acc, v, i) => {
 			acc.push(v.content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, ""));
 			return acc;
