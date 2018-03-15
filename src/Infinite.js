@@ -45,32 +45,18 @@ class Infinite {
 		const visibles = this._items.get(startCursor, endCursor)
 			.map(group => isVisible(group, visibleOptions));
 		const length = visibles.length;
-		let start = isForward ? 0 : visibles.indexOf(1);
-		let end = isForward ? visibles.lastIndexOf(-1) : visibles.length - 1;
+		let start = isForward ? 0 : visibles.lastIndexOf(0);
+		let end = isForward ? visibles.indexOf(0) - 1 : visibles.length - 1;
 
-		const unknown = isForward ? visibles.indexOf(2) : visibles.lastIndexOf(2);
-
-		if (isForward && unknown === 0) {
-			for (let i = 1; i < length; ++i) {
-				if (visibles[i] === 2) {
-					end = Math.max(i, end);
-				}
-			}
-		} else if (!isForward && unknown === end) {
-			if (start === -1) {
-				start = unknown;
-			}
-			for (let i = length - 1; i >= 0; --i) {
-				if (visibles[i] === 2) {
-					start = Math.min(i, start);
-				}
-			}
+		if (!isForward && start !== -1) {
+			start += 1;
 		}
 		if (start < 0 || end < 0 || start > end || end - start + 1 >= length) {
 			return;
 		}
 		start = startCursor + start;
 		end = startCursor + end;
+
 		recycle && recycle({start, end});
 		if (isForward) {
 			this.setCursor("start", end + 1);
@@ -123,7 +109,18 @@ class Infinite {
 		this._status.startCursor = Math.max(0, this._status.startCursor);
 	}
 	updateCursor(cursor) {
-		this.setCursor(cursor, cursor === "start" ? this._status.startCursor - 1 : this._status.endCursor + 1);
+		const {startCursor, endCursor} = this._status;
+
+		if (cursor === "start") {
+			if (startCursor <= 0) {
+				this.setCursor("start", 0);
+				this.setCursor("end", endCursor + 1);
+			} else {
+				this.setCursor(cursor, startCursor - 1);
+			}
+		} else {
+			this.setCursor(cursor, endCursor + 1);
+		}
 	}
 	setStatus(status) {
 		this._status = Object.assign(this._status, status);
