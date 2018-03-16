@@ -110,13 +110,12 @@ class InfiniteGrid extends Component {
 		}, options);
 		DEFENSE_BROWSER && (this.options.useFit = false);
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);
-		this._isVertical = !this.options.horizontal;
 		this._reset();
 		this._items = new ItemManager();
 		this._renderer = new DOMRenderer(element, {
 			isOverflowScroll: this.options.isOverflowScroll,
 			isEqualSize: this.options.isEqualSize,
-			isVertical: this._isVertical,
+			horizontal: this.options.horizontal,
 		});
 		this._loadingBar = {};
 		this._watcher = new Watcher(
@@ -124,7 +123,7 @@ class InfiniteGrid extends Component {
 			{
 				container: this._renderer.container,
 				isOverflowScroll: this.options.isOverflowScroll,
-				isVertical: this._isVertical,
+				horizontal: this.options.horizontal,
 				resize: () => this._onResize(),
 				check: param => this._onCheck(param),
 			});
@@ -213,11 +212,11 @@ class InfiniteGrid extends Component {
 	setLayout(LayoutKlass, options) {
 		if (typeof LayoutKlass === "function") {
 			this._layout = new LayoutKlass(Object.assign(options || {}, {
-				horizontal: !this._isVertical,
+				horizontal: this.options.horizontal,
 			}));
 		} else {
 			this._layout = LayoutKlass;
-			this._layout.options.horizontal = !this._isVertical;
+			this._layout.options.horizontal = this.options.horizontal;
 		}
 		this._setSize(this._renderer.getViewportSize());
 		return this;
@@ -263,7 +262,7 @@ class InfiniteGrid extends Component {
 		if (base > 0) {
 			this._watcher.scrollBy(-base);
 		}
-		this._items.fit(base, this._isVertical);
+		this._items.fit(base, this.options.horizontal);
 		DOMRenderer.renderItems(this._getVisibleItems());
 		this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
 		if (base < 0) {
@@ -283,14 +282,14 @@ class InfiniteGrid extends Component {
 			if (base < margin) {
 				this._fitItems(base - margin, margin);
 			}
-			base -= margin;
+			base = 0;
 		} else if (base !== 0 || margin) {
 			const isProcessing = this._isProcessing();
 
 			this._process(PROCESSING);
 			// "before" is base > 0
 			// "after" is base < 0
-			this._fitItems(base, margin);
+			this._fitItems(base - margin, margin);
 			if (!isProcessing) {
 				this._process(PROCESSING, false);
 			}
@@ -368,14 +367,14 @@ class InfiniteGrid extends Component {
 	 * @param {HTMLElement} item element to be removed <ko>삭제될 아이템 엘리먼트</ko>
 	 * @return {Object}  Removed item element <ko>삭제된 아이템 엘리먼트 정보</ko>
 	 */
-	remove(element) {
+	remove(element, isLayout = true) {
 		if (element) {
 			const items = this._infinite.remove(element);
 
 			if (items) {
 				DOMRenderer.removeElement(element);
 			}
-			this.layout(false);
+			isLayout && this.layout(false);
 			return items;
 		}
 		return null;
@@ -505,7 +504,7 @@ class InfiniteGrid extends Component {
 		const key = typeof groupKey === "undefined" ? (new Date().getTime() + Math
 			.floor(
 				Math.random() * 1000)) : groupKey;
-		const items = ItemManager.from($(elements, true), this.options.itemSelector, {
+		const items = ItemManager.from(elements, this.options.itemSelector, {
 			isAppend,
 			groupKey: key,
 		});
@@ -569,11 +568,11 @@ class InfiniteGrid extends Component {
 		if (!el) {
 			return;
 		}
-		this._status.loadingSize = this._isVertical ? innerHeight(el) : innerWidth(el);
+		this._status.loadingSize = this.options.horizontal ? innerWidth(el) : innerHeight(el);
 		const pos = isAppend ? this._getEdgeValue("end") : this._getEdgeValue("start") - this._status.loadingSize;
 		const style = Object.assign({
 			position: "absolute",
-			[this._isVertical ? "top" : "left"]: `${pos}px`,
+			[this.options.horizontal ? "left" : "top"]: `${pos}px`,
 		}, userStyle);
 
 		for (const property in style) {
@@ -600,7 +599,7 @@ class InfiniteGrid extends Component {
 		this._status.loadingStyle = {};
 		if (el) {
 			const style = Object.assign({
-				[this._isVertical ? "top" : "left"]: `${-size}px`,
+				[this.options.horizontal ? "left" : "top"]: `${-size}px`,
 			}, userStyle);
 
 			for (const property in style) {
@@ -634,7 +633,7 @@ class InfiniteGrid extends Component {
 		const {useRecycle, isEqualSize, isFixedSize} = this.options;
 
 		if (isInCursor || !useRecycle || isEqualSize || isFixedSize || !isResize) {
-			let pos = item && item.rect[this._isVertical ? "top" : "left"];
+			let pos = item && item.rect[this.options.horizontal ? "left" : "top"];
 
 			if (typeof pos === "undefined") {
 				pos = Math.max(...data.outlines.start);
@@ -662,19 +661,19 @@ class InfiniteGrid extends Component {
 						this._infinite.setCursor("start", index + 1);
 						this._infinite.setCursor("end", index);
 					}
-					this._watcher.setScrollPos(pos);
-					this._watcher.scrollTo(pos);
+					this._setScrollPos(pos);
+					this._scrollTo(pos);
 				}
 				this._postCache({
 					isAppend,
 					outline: data.outlines[isAppend ? "start" : "end"],
 					cache: data,
 					isTrusted: true,
-					movePos: pos,
+					moveItem: itemIndex,
 				});
 				return;
 			}
-			this._watcher.scrollTo(pos);
+			this._scrollTo(pos);
 		} else if (isResize) {
 			const isAppend = index > endCursor;
 			const threshold = this.options.threshold;
@@ -693,14 +692,19 @@ class InfiniteGrid extends Component {
 				fromCache: true,
 				items: data.items,
 				isTrusted: true,
-				movePos: outline[0],
+				moveItem: itemIndex,
 			});
 		}
+	}
+	_setScrollPos(pos) {
+		this._watcher.setScrollPos(this._watcher.getContainerOffset() + pos);
+	}
+	_scrollTo(pos) {
+		this._watcher.scrollTo(this._watcher.getContainerOffset() + pos);
 	}
 	_setData(layouted, isAppend = true) {
 		const groupKey = (layouted.items && layouted.items[0].groupKey) || 0;
 
-		console.log(groupKey);
 		layouted.groupKey = groupKey;
 		this._items.set(layouted, groupKey);
 		this._infinite.setCursor(isAppend ? "end" : "start", this._items.indexOf(layouted));
@@ -711,28 +715,34 @@ class InfiniteGrid extends Component {
 		this._infinite.updateCursor(isAppend ? "end" : "start");
 	}
 	_postLayoutComplete({layouted, isAppend, isTrusted,
-		movePos = -1, useRecycle = this.options.useRecycle}) {
-		if (~movePos && isAppend) {
-			this._watcher.setScrollPos(movePos - 0.5);
+		moveItem = -2, useRecycle = this.options.useRecycle}) {
+		const pos = Math.max(...layouted.outlines.start);
+		let movePos = pos;
+
+		if (moveItem > -2) {
+			if (layouted.items[moveItem]) {
+				movePos = layouted.items[moveItem].rect[this.options.horizotnal ? "left" : "top"];
+			}
+			if (isAppend) {
+				this._setScrollPos(pos - 0.1);
+			}
 		}
 		this._onLayoutComplete(layouted.items, isAppend, isTrusted, useRecycle);
-		if (~movePos) {
+		if (moveItem > -2) {
 			if (isAppend) {
-				this._watcher.scrollTo(movePos);
+				this._scrollTo(movePos);
 			} else {
-				const pos = Math.max(...layouted.outlines.start);
-
-				this._watcher.setScrollPos(pos);
-				this._watcher.scrollTo(pos);
+				this._setScrollPos(pos);
+				this._scrollTo(movePos);
 				this.layout(false);
 				this._recycle({start: this._infinite.getCursor("end") + 1, end: this._items.size() - 1});
 			}
 		}
 	}
-	_postImageLoaded({fromCache, layouted, items, isAppend, isTrusted, movePos}) {
+	_postImageLoaded({fromCache, layouted, items, isAppend, isTrusted, moveItem = -2}) {
 		this[fromCache ? "_setData" : "_insertData"](layouted, isAppend);
 		DOMRenderer.renderItems(layouted.items);
-		this._postLayoutComplete({layouted, isAppend, isTrusted, movePos, useRecycle: false});
+		this._postLayoutComplete({layouted, isAppend, isTrusted, moveItem, useRecycle: false});
 	}
 	_onImageError(target, item, itemIndex, removeTarget, replaceTarget) {
 		const element = item.el;
@@ -744,6 +754,7 @@ class InfiniteGrid extends Component {
 			if (hasTarget([removeTarget, element])) {
 				return;
 			}
+			console.log("RM", element);
 			removeTarget.push(element);
 			const index = replaceTarget.indexOf(itemIndex);
 
@@ -848,7 +859,7 @@ ig.on("imageError", e => {
 		const layoutedItems = replaceTarget.map(itemIndex => items[itemIndex]);
 
 		removeTarget.forEach(element => {
-			this.remove(element);
+			this.remove(element, false);
 		});
 		if (this.options.isEqualSize) {
 			if (removeTarget.length > 0) {
@@ -868,7 +879,7 @@ ig.on("imageError", e => {
 		});
 	}
 	_postCache({cache, isAppend, isTrusted,
-		outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start"), movePos = -1}) {
+		outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start"), moveItem = -2}) {
 		const cacheOutline = cache.outlines[isAppend ? "start" : "end"];
 
 		const fromRelayout = outline.length === cacheOutline.length ?
@@ -877,7 +888,7 @@ ig.on("imageError", e => {
 		if (!fromRelayout) {
 			this._infinite.updateCursor(isAppend ? "end" : "start");
 			this._renderer.createAndInsert(cache.items, isAppend);
-			this._postLayoutComplete({layouted: cache, isAppend, isTrusted, movePos});
+			this._postLayoutComplete({layouted: cache, isAppend, isTrusted, moveItem});
 			return;
 		}
 		this._postLayout({
@@ -886,12 +897,12 @@ ig.on("imageError", e => {
 			outline,
 			isAppend,
 			isTrusted,
-			movePos,
+			moveItem,
 		});
 	}
 	_postLayout({fromCache, items, isAppend,
 		outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start"),
-		isTrusted, movePos = -1}) {
+		isTrusted, moveItem = -2}) {
 		this._process(PROCESSING);
 		const method = isAppend ? "append" : "prepend";
 
@@ -914,7 +925,7 @@ ig.on("imageError", e => {
 					outline
 				);
 				// no recycle
-				this._postImageLoaded({fromCache, layouted, items, isAppend, isTrusted, movePos});
+				this._postImageLoaded({fromCache, layouted, items, isAppend, isTrusted, moveItem});
 			},
 			error: ({target, itemIndex}) => {
 				const item = (layouted && layouted.items[itemIndex]) || items[itemIndex];
