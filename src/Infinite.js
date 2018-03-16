@@ -22,7 +22,6 @@ class Infinite {
 		this.options = Object.assign({
 			useRecycle: true,
 			threshold: 100,
-			horizontal: false,
 		}, options);
 		this._items = itemManger;
 		this.clear();
@@ -76,14 +75,8 @@ class Infinite {
 		const threshold = this.options.threshold;
 		const endScrollPos = scrollPos + size;
 		const targetItem = items.getData(isForward ? endCursor : startCursor);
-		// const outlines = targetItem.outlines[isForward ? "end" : "start"];
-		const edgeItem = targetItem.items[targetItem.outlines[isForward ? "endIndex" : "startIndex"]];
-		const sizeName = this.options.horizontal ? "width" : "height";
-		const posName = this.options.horizontal ? "left" : "top";
-		const edgeItemSize = edgeItem.rect[sizeName] || edgeItem.size[sizeName];
-		const edgePos = isForward ? edgeItem.rect[posName] : edgeItem.rect[posName] + edgeItemSize;
-
-		// Math[isForward ? "min" : "max"](...outlines);
+		const outlines = targetItem.outlines[isForward ? "end" : "start"];
+		const edgePos = Math[isForward ? "min" : "max"](...outlines);
 
 		if (isForward) {
 			if (endScrollPos >= edgePos - threshold) {
