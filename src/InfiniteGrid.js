@@ -529,6 +529,9 @@ class InfiniteGrid extends Component {
 	}
 	// add items, and remove items for recycling
 	_recycle({start, end}) {
+		if (!this.options.useRecycle) {
+			return;
+		}
 		DOMRenderer.removeItems(this._items.pluck("items", start, end));
 	}
 	/**
@@ -672,16 +675,10 @@ class InfiniteGrid extends Component {
 					}
 					// recycle previous items
 					this._recycle({start: 0, end: index - 1});
-				} else {
-					// prepend
-					if (index + 1 < startCursor) {
-						// prepare prepend
-						this._infinite.setCursor("start", index + 1);
-						this._infinite.setCursor("end", index);
-					}
-					// prevent scroll event
-					this._setScrollPos(pos);
-					this._scrollTo(pos);
+				} else if (index + 1 < startCursor) {
+					// prepare prepend
+					this._infinite.setCursor("start", index + 1);
+					this._infinite.setCursor("end", index);
 				}
 				this._postCache({
 					isAppend,
@@ -704,6 +701,9 @@ class InfiniteGrid extends Component {
 				this._infinite.setCursor("start", index);
 				this._infinite.setCursor("end", index - 1);
 				this._recycle({start: 0, end: index - 1});
+			} else {
+				this._infinite.setCursor("start", index + 1);
+				this._infinite.setCursor("end", index);
 			}
 			this._postLayout({
 				outline,
@@ -739,6 +739,9 @@ class InfiniteGrid extends Component {
 		if (moveItem > -2) {
 			if (isAppend) {
 				this._setScrollPos(pos - 0.1);
+			} else {
+				this._setScrollPos(pos + 0.1);
+				this._scrollTo(pos + 0.1);
 			}
 		}
 		this._onLayoutComplete(layouted.items, isAppend, isTrusted, useRecycle);
@@ -752,9 +755,8 @@ class InfiniteGrid extends Component {
 			if (isAppend) {
 				this._scrollTo(movePos);
 			} else {
-				this._setScrollPos(pos);
-				this._scrollTo(movePos);
 				this._infinite.scroll(movePos, true);
+				this._scrollTo(movePos);
 				this._recycle({start: this._infinite.getCursor("end") + 1, end: this._items.size() - 1});
 			}
 		}

@@ -14,7 +14,7 @@ import ItemManager from "../../src/ItemManager";
 			afterEach(() => {
 				this.infinite = null;
 			});
-			it (`test infinite append`, (done) => {
+			it (`should check infinite append`, (done) => {
 				const spy = sinon.spy();
 				this.infinite.options.append = spy;
 				// Given
@@ -38,7 +38,7 @@ import ItemManager from "../../src/ItemManager";
 					done();
 				}, 50);
 			});
-			it (`test infinite append(cache)`, (done) => {
+			it (`should check infinite append(cache)`, (done) => {
 				const spy = sinon.spy(({cache}) => {
 					if (useRecycle) {
 						expect(cache).to.be.ok;
@@ -81,7 +81,7 @@ import ItemManager from "../../src/ItemManager";
 					done();
 				}, 50);
 			});
-			it (`test infinite prepend`, (done) => {
+			it (`should check infinite prepend`, (done) => {
 				const spy = sinon.spy();
 				this.infinite.options.prepend = spy;
 				// Given
@@ -120,7 +120,7 @@ import ItemManager from "../../src/ItemManager";
 					done();
 				}, 50);
 			});
-			it(`test infinite prepend(cache)`, (done) => {
+			it(`should check infinite prepend(cache)`, (done) => {
 				this.infinite.options.append = sinon.spy();
 				this.infinite.options.prepend = sinon.spy(({cache}) => {
 					if (useRecycle) {
@@ -165,7 +165,7 @@ import ItemManager from "../../src/ItemManager";
 					done();
 				}, 50);
 			});
-			it(`test recycle method (append)`, () => {
+			it(`should check recycle method (append)`, () => {
 				this.infinite.options.recycle = sinon.spy(({start, end}) => {
 					expect(start).to.be.equal(0);
 					expect(end).to.be.equal(0);
@@ -207,7 +207,7 @@ import ItemManager from "../../src/ItemManager";
 				expect(this.infinite.getCursor("end")).to.be.equal(2);
 				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
 			});
-			it(`test recycle method (multiple/append)`, () => {
+			it(`should check recycle method (multiple/append)`, () => {
 				this.infinite.options.recycle = sinon.spy(({start, end}) => {
 					expect(start).to.be.equal(0);
 					expect(end).to.be.equal(1);
@@ -243,7 +243,7 @@ import ItemManager from "../../src/ItemManager";
 				expect(this.infinite.getCursor("end")).to.be.equal(2);
 				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
 			});
-			it(`test recycle method (prepend)`, () => {
+			it(`should check recycle method (prepend)`, () => {
 				this.infinite.options.recycle = sinon.spy(({start, end}) => {
 					expect(start).to.be.equal(2);
 					expect(end).to.be.equal(2);
@@ -292,7 +292,7 @@ import ItemManager from "../../src/ItemManager";
 				expect(this.infinite.getCursor("end")).to.be.equal(useRecycle ? 1 : 2);
 				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
 			});
-			it(`test recycle method (multiple/prepend)`, () => {
+			it(`should check recycle method (multiple/prepend)`, () => {
 				this.infinite.options.recycle = sinon.spy(({start, end}) => {
 					expect(start).to.be.equal(1);
 					expect(end).to.be.equal(2);
@@ -328,7 +328,7 @@ import ItemManager from "../../src/ItemManager";
 				expect(this.infinite.getCursor("end")).to.be.equal(useRecycle ? 0 : 2);
 				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
 			});
-			it(`test getEdgeOutline method`, () => {
+			it(`should check getEdgeOutline method`, () => {
 
 				expect(this.infinite.getEdgeOutline("start")).to.be.deep.equal([]);
 				expect(this.infinite.getEdgeOutline("end")).to.be.deep.equal([]);
@@ -351,7 +351,7 @@ import ItemManager from "../../src/ItemManager";
 				expect(this.infinite.getEdgeOutline("start")).to.be.deep.equal([0, 0]);
 				expect(this.infinite.getEdgeOutline("end")).to.be.deep.equal([3000, 3100]);
 			});
-			it(`test getEdgeValue method`, () => {
+			it(`should check getEdgeValue method`, () => {
 	
 				expect(this.infinite.getEdgeValue("start")).to.be.equal(0);
 				expect(this.infinite.getEdgeValue("end")).to.be.equal(0);
@@ -374,7 +374,7 @@ import ItemManager from "../../src/ItemManager";
 				expect(this.infinite.getEdgeValue("start")).to.be.equal(0);
 				expect(this.infinite.getEdgeValue("end")).to.be.equal(3100);
 			});
-			it(`test visible method`, () => {
+			it(`should check visible method`, () => {
 	
 				expect(this.infinite.getVisibleItems()).to.have.lengthOf(0);
 				expect(this.infinite.getVisibleData()).to.have.lengthOf(0);

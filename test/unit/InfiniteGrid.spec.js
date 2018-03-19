@@ -832,9 +832,13 @@ describe("InfiniteGrid Test", function() {
             setTimeout(() => {
             this.inst.moveTo(3, itemIndex);
               setTimeout(() => {
-                const moveTo = itemIndex > -1 ? this.inst._items._data[3].items[itemIndex].rect.top :
+                let moveTo = itemIndex > -1 ? this.inst._items._data[3].items[itemIndex].rect.top :
                   Math.max(...this.inst._items._data[3].outlines.start);
+                const end = Math.max(...this.inst._items._data[3].outlines.end);
 
+                if (useRecycle && moveTo + this.inst._renderer.getViewSize() > end) {
+                  moveTo = end - this.inst._renderer.getViewSize();
+                }                
                 expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
                 done();
               }, 30);
