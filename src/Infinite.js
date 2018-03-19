@@ -1,3 +1,4 @@
+import {APPEND, PREPEND} from "./consts";
 
 function isVisible(group, {threshold, scrollPos, endScrollPos}) {
 	const start = group.outlines.start;
@@ -63,7 +64,7 @@ class Infinite {
 			this.setCursor("end", start - 1);
 		}
 	}
-	scroll(scrollPos, isForward, isProcessing = true) {
+	scroll(scrollPos, isForward) {
 		const {startCursor, endCursor, size} = this._status;
 
 		if (startCursor === -1 || endCursor === -1) {
@@ -115,6 +116,20 @@ class Infinite {
 			this.setCursor(cursor, endCursor + 1);
 		}
 	}
+	setData(item, isAppend = true) {
+		this._items.set(item, item.groupKey);
+		this.setCursor(isAppend ? "end" : "start", this._items.indexOf(item));
+	}
+	_insertData(item, isAppend) {
+		item && this._items[isAppend ? "append" : "prepend"](item);
+		this.updateCursor(isAppend ? "end" : "start");
+	}
+	append(item) {
+		this._insertData(item, APPEND);
+	}
+	prepend(item) {
+		this._insertData(item, PREPEND);
+	}
 	setStatus(status) {
 		this._status = Object.assign(this._status, status);
 	}
@@ -140,17 +155,6 @@ class Infinite {
 
 		return outlines.length ? Math[cursor === "start" ? "min" : "max"](...outlines) : 0;
 	}
-	getEdgeItem(cursor) {
-		const {startCursor, endCursor} = this._status;
-
-		if (startCursor === -1 || endCursor === -1) {
-			return null;
-		}
-		const data = this._items.getData(cursor === "start" ? startCursor : endCursor);
-		const index = data.outlines[cursor === "start" ? "startIndex" : "endIndex"];
-
-		return data.items[index];
-	}
 	getVisibleItems() {
 		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
 	}
@@ -159,14 +163,6 @@ class Infinite {
 	}
 	getVisibleData() {
 		return this._items.get(this._status.startCursor, this._status.endCursor);
-	}
-	getInvisibleData() {
-		const {startCursor, endCursor} = this._status;
-		const data = this._items._data.concat();
-
-		data.splice(startCursor, endCursor - startCursor + 1);
-
-		return data;
 	}
 	remove(element) {
 		return this._items.remove(element, this._status.startCursor, this._status.endCursor);

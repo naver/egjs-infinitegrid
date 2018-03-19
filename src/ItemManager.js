@@ -55,11 +55,11 @@ export default class ItemManager {
 	size() {
 		return this._data.length;
 	}
-	fit(base, isVertical) {
+	fit(base, horizontal) {
 		if (!this._data.length) {
 			return;
 		}
-		const property = isVertical ? "top" : "left";
+		const property = horizontal ? "left" : "top";
 
 		if (base !== 0) {
 			this._data = this._data.map(v => {

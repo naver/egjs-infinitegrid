@@ -104,11 +104,10 @@ class InfiniteGrid extends Component {
 			threshold: 100,
 			isEqualSize: false,
 			useRecycle: true,
-			useFit: true,
 			horizontal: false,
 			attributePrefix: "data-",
 		}, options);
-		DEFENSE_BROWSER && (this.options.useFit = false);
+		this.options.useFit = !DEFENSE_BROWSER;
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);
 		this._reset();
 		this._items = new ItemManager();
@@ -320,9 +319,14 @@ class InfiniteGrid extends Component {
 		let data;
 		let outline;
 
+		const items = this._getVisibleItems();
+
+		if (!items.length) {
+			return this;
+		}
 		if (isRelayout) { // remove cache
 			if (this.options.isEqualSize) {
-				this._renderer.updateSize([this._infinite.getEdgeItem("start")]);
+				this._renderer.updateSize([items[0]]);
 				data = this._items.get();
 				outline = this._items.getOutline(0, "start");
 			} else {
@@ -347,14 +351,18 @@ class InfiniteGrid extends Component {
 			if (this.options.isEqualSize) {
 				this._fit();
 			} else {
-				this._infinite.getInvisibleData().forEach((group, cursor) => {
+				const startCursor = this._infinite.getCursor("start");
+				const endCursor = this._infinite.getCursor("end");
+
+				this._items._data.forEach((group, cursor) => {
+					if (startCursor <= cursor && cursor <= endCursor) {
+						return;
+					}
 					group.outlines.start = [];
 					group.outlines.end = [];
 				});
 			}
 		}
-		const items = this._getVisibleItems();
-
 		this._onLayoutComplete(items, APPEND, NO_TRUSTED, false, true);
 		DOMRenderer.renderItems(items);
 		isRelayout && this._watcher.setScrollPos();
@@ -616,23 +624,30 @@ class InfiniteGrid extends Component {
 		}
 		return this;
 	}
+	/**
+	 * Move to some group or item position.
+	 * @ko 해당하는 그룹 또는 아이템의 위치로 이동한다.
+	 * @param {Number} [index] group's index <ko> 그룹의 index</ko>
+	 * @param {Number} [itemIndex=-1] item's index <ko> 그룹의 index</ko>
+	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 */
 	moveTo(index, itemIndex = -1) {
 		if (this.isProcessing()) {
-			return;
+			return this;
 		}
 		const data = this._items.getData(index);
 
 		if (!data) {
-			return;
+			return this;
 		}
 		const item = data.items[itemIndex];
 		const isResize = data.outlines.start && (data.outlines.start.length === 0);
 		const startCursor = this._infinite.getCursor("start");
 		const endCursor = this._infinite.getCursor("end");
 		const isInCursor = startCursor <= index && index <= endCursor;
-		const {useRecycle, isEqualSize, isFixedSize} = this.options;
+		const {useRecycle, isEqualSize} = this.options;
 
-		if (isInCursor || !useRecycle || isEqualSize || isFixedSize || !isResize) {
+		if (isInCursor || !useRecycle || isEqualSize || !isResize) {
 			let pos = item && item.rect[this.options.horizontal ? "left" : "top"];
 
 			if (typeof pos === "undefined") {
@@ -652,15 +667,19 @@ class InfiniteGrid extends Component {
 					// append
 					if (endCursor + 1 < index) {
 						this._infinite.setCursor("start", index);
+						// prepare append
 						this._infinite.setCursor("end", index - 1);
 					}
+					// recycle previous items
 					this._recycle({start: 0, end: index - 1});
 				} else {
 					// prepend
 					if (index + 1 < startCursor) {
+						// prepare prepend
 						this._infinite.setCursor("start", index + 1);
 						this._infinite.setCursor("end", index);
 					}
+					// prevent scroll event
 					this._setScrollPos(pos);
 					this._scrollTo(pos);
 				}
@@ -671,7 +690,7 @@ class InfiniteGrid extends Component {
 					isTrusted: true,
 					moveItem: itemIndex,
 				});
-				return;
+				return this;
 			}
 			this._scrollTo(pos);
 		} else if (isResize) {
@@ -695,6 +714,7 @@ class InfiniteGrid extends Component {
 				moveItem: itemIndex,
 			});
 		}
+		return this;
 	}
 	_setScrollPos(pos) {
 		this._watcher.setScrollPos(this._watcher.getContainerOffset() + pos);
@@ -706,35 +726,35 @@ class InfiniteGrid extends Component {
 		const groupKey = (layouted.items && layouted.items[0].groupKey) || 0;
 
 		layouted.groupKey = groupKey;
-		this._items.set(layouted, groupKey);
-		this._infinite.setCursor(isAppend ? "end" : "start", this._items.indexOf(layouted));
+		this._infinite.setData(layouted, isAppend);
 	}
 	_insertData(layouted, isAppend = true) {
 		layouted.groupKey = layouted.items[0].groupKey;
-		this._items[isAppend ? "append" : "prepend"](layouted);
-		this._infinite.updateCursor(isAppend ? "end" : "start");
+		this._infinite[isAppend ? "append" : "prepend"](layouted);
 	}
 	_postLayoutComplete({layouted, isAppend, isTrusted,
 		moveItem = -2, useRecycle = this.options.useRecycle}) {
-		const pos = Math.max(...layouted.outlines.start);
-		let movePos = pos;
+		let pos = Math.max(...layouted.outlines.start);
 
 		if (moveItem > -2) {
-			if (layouted.items[moveItem]) {
-				movePos = layouted.items[moveItem].rect[this.options.horizotnal ? "left" : "top"];
-			}
 			if (isAppend) {
 				this._setScrollPos(pos - 0.1);
 			}
 		}
 		this._onLayoutComplete(layouted.items, isAppend, isTrusted, useRecycle);
 		if (moveItem > -2) {
+			(!isAppend) && (pos = Math.max(...layouted.outlines.start));
+			let movePos = pos;
+
+			if (layouted.items[moveItem]) {
+				movePos = layouted.items[moveItem].rect[this.options.horizotnal ? "left" : "top"];
+			}
 			if (isAppend) {
 				this._scrollTo(movePos);
 			} else {
 				this._setScrollPos(pos);
 				this._scrollTo(movePos);
-				this.layout(false);
+				this._infinite.scroll(movePos, true);
 				this._recycle({start: this._infinite.getCursor("end") + 1, end: this._items.size() - 1});
 			}
 		}
@@ -754,7 +774,6 @@ class InfiniteGrid extends Component {
 			if (hasTarget([removeTarget, element])) {
 				return;
 			}
-			console.log("RM", element);
 			removeTarget.push(element);
 			const index = replaceTarget.indexOf(itemIndex);
 
@@ -1007,7 +1026,7 @@ ig.on("imageError", e => {
 			scrollPos,
 			orgScrollPos,
 		});
-		this._infinite.scroll(scrollPos, isForward, this._isProcessing());
+		this._infinite.scroll(scrollPos, isForward);
 	}
 	_onLayoutComplete(items, isAppend, isTrusted = false,
 		useRecycle = this.options.useRecycle, isLayout = false) {

@@ -16,7 +16,7 @@ export default class Watcher {
 			resize: null,
 			check: null,
 			isOverflowScroll: false,
-			isVertical: true,
+			horizontal: false,
 		}, options);
 		this._timer = {
 			resize: null,
@@ -43,13 +43,13 @@ export default class Watcher {
 		applyScrollPos && this.scrollTo(status.scrollPos);
 	}
 	scrollBy(pos) {
-		const arrPos = this.options.isVertical ? [0, pos] : [pos, 0];
+		const arrPos = this.options.horizontal ? [pos, 0] : [0, pos];
 
 		scrollBy(this._view, ...arrPos);
 		this.setScrollPos();
 	}
 	scrollTo(pos) {
-		const arrPos = this.options.isVertical ? [0, pos] : [pos, 0];
+		const arrPos = this.options.horizontal ? [pos, 0] : [0, pos];
 
 		scrollTo(this._view, ...arrPos);
 	}
@@ -69,7 +69,7 @@ export default class Watcher {
 		addEvent(window, "resize", this._onResize);
 	}
 	getOrgScrollPos() {
-		return scroll(this._view, this.options.isVertical);
+		return scroll(this._view, this.options.horizontal);
 	}
 	reset() {
 		this._prevPos = null;
@@ -89,14 +89,14 @@ export default class Watcher {
 			isForward: prevPos < scrollPos,
 			scrollPos,
 			orgScrollPos,
-			horizontal: !this.options.isVertical,
+			horizontal: this.options.horizontal,
 		});
 	}
 	getContainerOffset() {
 		return this._containerOffset;
 	}
 	_setContainerOffset() {
-		this._containerOffset = this.options.isOverflowScroll ? 0 : this.options.container[`offset${this.options.isVertical ? "Top" : "Left"}`];
+		this._containerOffset = this.options.isOverflowScroll ? 0 : this.options.container[`offset${this.options.horizontal ? "Left" : "Top"}`];
 	}
 	_onResize() {
 		if (this._timer.resize) {

@@ -86,7 +86,7 @@ export default class DOMRenderer {
 		Object.assign(this.options = {
 			isOverflowScroll: false,
 			isEqualSize: false,
-			isVertical: true,
+			horizontal: false,
 		}, options);
 		this._size = {
 			container: -1,
@@ -141,7 +141,7 @@ export default class DOMRenderer {
 			element.style.position = "relative";
 		}
 		if (this.options.isOverflowScroll) {
-			const target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
+			const target = this.options.horizontal ? ["X", "Y"] : ["Y", "X"];
 
 			this._orgStyle.overflowX = element.style.overflowX;
 			this._orgStyle.overflowY = element.style.overflowY;
@@ -149,7 +149,7 @@ export default class DOMRenderer {
 			element.style[`overflow${target[1]}`] = "hidden";
 			this.view = element;
 			// defense code for android < 4.4 or webkit < 537
-			this.container = !this.options.isVertical && DEFENSE_BROWSER ? _defense(element) : element;
+			this.container = this.options.horizontal && DEFENSE_BROWSER ? _defense(element) : element;
 		} else {
 			this.view = window;
 			this.container = element;
@@ -170,7 +170,7 @@ export default class DOMRenderer {
 	clear() {
 		this.container.innerHTML = "";
 		if (!this.options.isOverflowScroll) {
-			this.container.style[this.options.isVertical ? "height" : "width"] = "";
+			this.container.style[this.options.horizontal ? "width" : "height"] = "";
 		}
 		this._size = {
 			item: null,
@@ -197,8 +197,8 @@ export default class DOMRenderer {
 			this.container.insertBefore(df, this.container.firstChild);
 	}
 	_calcSize() {
-		return this.options.isVertical ?
-			innerWidth(this.container) : innerHeight(this.container);
+		return this.options.horizontal ?
+			innerHeight(this.container) : innerWidth(this.container);
 	}
 	getViewSize() {
 		return this._size.view;
@@ -208,22 +208,22 @@ export default class DOMRenderer {
 		return this._size.viewport;
 	}
 	setContainerSize(size) {
-		if (!this.options.isOverflowScroll || (!this.options.isVertical && DEFENSE_BROWSER)) {
-			this.container.style[this.options.isVertical ? "height" : "width"] = `${size}px`;
+		if (!this.options.isOverflowScroll || (this.options.horizontal && DEFENSE_BROWSER)) {
+			this.container.style[this.options.horizontal ? "width" : "height"] = `${size}px`;
 		}
 	}
 	resize() {
-		const isVertical = this.options.isVertical;
+		const horizontal = this.options.horizontal;
 
 		if (this.isNeededResize()) {
 			this._size = {
 				viewport: this._calcSize(),
-				view: isVertical ? innerHeight(this.view) : innerWidth(this.view),
+				view: horizontal ? innerWidth(this.view) : innerHeight(this.view),
 				item: null,
 			};
 			return true;
 		} else {
-			this._size.view = isVertical ? innerHeight(this.view) : innerWidth(this.view);
+			this._size.view = horizontal ? innerWidth(this.view) : innerHeight(this.view);
 		}
 		return false;
 	}
@@ -236,7 +236,7 @@ export default class DOMRenderer {
 			view: -1,
 			item: null,
 		};
-		this.container.style[this.options.isVertical ? "height" : "width"] = "";
+		this.container.style[this.options.horizontal ? "width" : "height"] = "";
 		for (const p in this._orgStyle) {
 			this[this.options.isOverflowScroll ? "view" : "container"].style[p] = this._orgStyle[p];
 		}
