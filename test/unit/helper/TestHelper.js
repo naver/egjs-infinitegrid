@@ -6,7 +6,7 @@ export function getItems(count) {
 	const size = [100, 200, 300];
 
 	for (let i = 0; i < count; i++) {
-		items.push(`<li class="item" style="border:1px solid #333; margin:0px;padding:0;width:${size[Math.floor((Math.random() * 3))]}px; height:${size[Math.floor((Math.random() * 3))]}px;"><div>test ${i}</div></li>`);
+		items.push(`<li class="item" style="border:1px solid #333; margin:0px;padding:0;width:${size[i % 3]}px; height:${size[(i + 1) % 3]}px;"><div>test ${i}</div></li>`);
 	}
 	return items;
 }

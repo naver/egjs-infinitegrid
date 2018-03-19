@@ -258,11 +258,11 @@ describe("InfiniteGrid Test", function() {
         }
         cleanup();
       });
-      it("should trigger fit method", done => {
+      it(`should trigger fit method(useRecycle=${useRecycle})`, done => {
         // Then
         this.inst.on("layoutComplete", e => {
           expect(e.target[0].rect.top).to.be.equals(0);
-          this.inst._items.fit(-100, true);
+          this.inst._items.fit(-100, false);
           expect(e.target[0].rect.top).to.be.equals(100);
           expect(this.inst._getEdgeValue("start")).to.be.equals(100);
 
@@ -280,7 +280,7 @@ describe("InfiniteGrid Test", function() {
         // Given
         this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
       });
-      it("should trigger fit method with loadingBar", done => {
+      it(`should trigger fit method with loadingBar(useRecycle=${useRecycle})`, done => {
         // Given
         this.inst.setLoadingBar({
           "prepend": `<div class="prepend" style="width: 100px;height: 100px;display:none;">PREPEND</div>`,
@@ -289,26 +289,21 @@ describe("InfiniteGrid Test", function() {
 
         // Then
         this.inst.on("layoutComplete", e => {
-          this.inst._items.fit(-50, true);
+          this.inst._items.fit(-50, false);
           this.inst.startLoading(false);
           expect(e.target[0].rect.top).to.be.equals(100);
           expect(this.inst._getEdgeValue("start")).to.be.equals(100);
 
           if (DEFENSE_BROWSER || !useRecycle) {
-            expect(this.inst._fit("before")).to.be.equals(0);
+            expect(this.inst._fit()).to.be.equals(0);
             expect(e.target[0].rect.top).to.be.equals(100);
-            expect(this.inst._fit("after")).to.be.equals(0);
+            expect(this.inst._fit()).to.be.equals(0);
           } else {
-            expect(this.inst._fit("before")).to.be.equals(100);
+            expect(this.inst._fit()).to.be.equals(100);
             expect(e.target[0].rect.top).to.be.equals(100);
-            expect(this.inst._fit("after")).to.be.equals(100);
           }
           this.inst.endLoading();
-          if (DEFENSE_BROWSER || !useRecycle) {
-            expect(e.target[0].rect.top).to.be.equals(100);
-          } else {
-            expect(e.target[0].rect.top).to.be.equals(0);
-          }
+          expect(e.target[0].rect.top).to.be.equals(0);
           done();
         });
         
@@ -495,7 +490,7 @@ describe("InfiniteGrid Test", function() {
           this.inst._infinite.recycle(pos, true);
           this.inst.on("layoutComplete", layoutComplete2);
           this.inst.append(item1);
-          this.inst._fit("before");
+          this.inst._fit();
         }, 10);
 
       }, 10, 20);
@@ -503,7 +498,7 @@ describe("InfiniteGrid Test", function() {
     });
   });
   [true, false].forEach(isOverflowScroll => {
-    describe(`When appending/prepending loadingStart/loaingEnd event Test (isOverflowScroll: ${isOverflowScroll})`, function() {
+    describe(`When appending/prepending loadingStart/loaingEnd event Test (isOverflowScroll: ${isOverflowScroll}, DEFENSE_BROWSER: ${DEFENSE_BROWSER})`, function() {
       beforeEach(() => {
         this.el = sandbox();
         this.el.innerHTML = "<div id='infinite'></div>";
@@ -567,11 +562,7 @@ describe("InfiniteGrid Test", function() {
 
             this.inst.endLoading();
             if (!isAppend) {
-              if (DEFENSE_BROWSER) {
-                expect(this.inst._getEdgeValue("start")).to.be.equal(base);  
-              } else {
-                expect(this.inst._getEdgeValue("start")).to.be.equal(0);
-              }
+              expect(this.inst._getEdgeValue("start")).to.be.equal(0);
             }
             expect(this.inst._isLoading()).to.be.false;
             expect(this.inst._getLoadingStatus()).to.be.equal(0);
@@ -679,6 +670,229 @@ describe("InfiniteGrid Test", function() {
         })
         done();
       }, 5, 4);
+    });
+  });
+  [true, false].forEach(useRecycle => {
+    describe(`moveTo method Test(useRecycle=${useRecycle}, defense=${DEFENSE_BROWSER})`, function() {
+      beforeEach(() => {
+        document.body.style.marginBottom = "0px";
+        document.body.style.padding = "0px";
+        document.body.insertAdjacentHTML("beforeend", `
+        <style>
+        * {
+          box-sizing:border-box;
+        }
+        </style>
+        `);
+        this.el = sandbox();
+        this.el.innerHTML = "<div id='infinite'></div>";
+        this.inst = new InfiniteGrid("#infinite", {
+          useRecycle,
+        });
+        this.inst.setLayout(GridLayout);
+      });
+      afterEach(() => {
+        if (this.inst) {
+          this.inst.destroy();
+          this.inst = null;
+          document.body.scrollTop = 0;
+        }
+        cleanup();
+      });
+      [-1, 0, 2, 5, 7, 9].forEach(itemIndex => {
+        it(`should moveTo in cursor inside(isAppend = true, itemIndex=${itemIndex})`, done => {
+            insert(this.inst, true, () => {1
+
+              const scrollPos = Math.max(...this.inst._items._data[5].outlines.start);
+              const moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[8].outlines.start) :
+                this.inst._items._data[8].items[itemIndex].rect.top;
+
+              this.inst._setScrollPos(scrollPos);
+              this.inst._scrollTo(scrollPos);
+              this.inst._infinite.recycle(scrollPos, true);
+              this.inst.moveTo(8, itemIndex);
+
+              setTimeout(() => {
+                // not fit
+                expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+                done();
+              }, 20);
+            }, 10, 10);
+        });
+        it(`should moveTo in cursor inside(isAppend = false, itemIndex=${itemIndex})`, done => {
+          insert(this.inst, true, () => {
+            const scrollPos = Math.max(...this.inst._items._data[6].outlines.start);
+
+            this.inst._watcher.setScrollPos(scrollPos);
+            this.inst._watcher.scrollTo(scrollPos);
+            this.inst._infinite.recycle(scrollPos, true);
+
+            // fit
+            this.inst.moveTo(5, itemIndex);
+
+            setTimeout(() => {
+              const moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[5].outlines.start) :
+              this.inst._items._data[5].items[itemIndex].rect.top;
+
+              expect(this.inst._watcher.getScrollPos()).to.be.at.most(moveTo);
+              done();
+            }, 20);
+          }, 10, 10);
+        });
+        it(`should moveTo in cursor outside(isAppend = true, itemIndex = ${itemIndex})`, done => {
+          insert(this.inst, true, () => {
+            const start = Math.max(...this.inst._items._data[5].outlines.start);
+            let moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[5].outlines.start) :
+              this.inst._items._data[5].items[itemIndex].rect.top;
+
+
+            this.inst._watcher.setScrollPos(1);
+            this.inst._watcher.scrollTo(1);
+            this.inst._infinite.recycle(1, false);
+            this.inst.moveTo(5, itemIndex);
+            
+            setTimeout(() => {
+              if (moveTo < start) {
+                moveTo = this.inst._items._data[5].items[itemIndex].rect.top;
+              }
+              const end = Math.max(...this.inst._items._data[5].outlines.end);
+
+              if (useRecycle && moveTo + this.inst._renderer.getViewSize() > end) {
+                moveTo = end - this.inst._renderer.getViewSize();
+                if (moveTo !== this.inst._watcher.getScrollPos()) {
+                  moveTo = this.inst._getEdgeValue("end") - this.inst._renderer.getViewSize();  
+                }
+              }
+              
+              const scrollPos = this.inst._watcher.getScrollPos();
+              expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+              done();
+            }, 40);
+          }, 10, 10);
+        });
+        it(`should moveTo in cursor outside(isAppend = false, itemIndex = ${itemIndex})`, done => {
+          insert(this.inst, true, () => {
+            const scrollPos = Math.max(...this.inst._items._data[6].outlines.start);
+
+            this.inst._watcher.setScrollPos(scrollPos);
+            this.inst._watcher.scrollTo(scrollPos);
+            this.inst._infinite.recycle(scrollPos, true);
+
+            this.inst.moveTo(1, itemIndex);
+            
+            setTimeout(() => {
+              const size = this.inst._getEdgeValue("end");
+              let moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[1].outlines.start) :
+              this.inst._items._data[1].items[itemIndex].rect.top;
+
+              expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+              done();
+            }, 30);
+          }, 10, 10);
+        });
+      
+        it(`should resize and moveTo in cursor outside(isAppend = true, itemIndex = ${itemIndex})`, done => {
+          insert(this.inst, true, () => {
+            const scrollPos = Math.max(...this.inst._items._data[4].outlines.start);
+
+            this.inst._watcher.setScrollPos(scrollPos);
+            this.inst._watcher.scrollTo(scrollPos);
+            this.inst._infinite.recycle(scrollPos, true);
+            this.inst._infinite.recycle(scrollPos, false);
+            this.inst.layout(true);
+
+            setTimeout(() => {
+              this.inst.moveTo(7, itemIndex);
+              setTimeout(() => {
+                let moveTo = itemIndex > -1 ? this.inst._items._data[7].items[itemIndex].rect.top :
+                  Math.max(...this.inst._items._data[7].outlines.start);
+
+
+                const end = Math.max(...this.inst._items._data[7].outlines.end);
+  
+                if (useRecycle && moveTo + this.inst._renderer.getViewSize() > end) {
+                  moveTo = end - this.inst._renderer.getViewSize();
+                }
+                expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+                done();
+              }, 30);
+            }, 30);
+          }, 10, 10);
+        });
+        it(`should resize and moveTo in cursor outside(isAppend = false, itemIndex = ${itemIndex})`, done => {
+          insert(this.inst, true, () => {
+            const scrollPos = Math.max(...this.inst._items._data[7].outlines.start);
+
+            this.inst._watcher.setScrollPos(scrollPos);
+            this.inst._watcher.scrollTo(scrollPos);
+            this.inst._infinite.recycle(scrollPos, true);
+            this.inst._infinite.recycle(scrollPos, false);
+            this.inst.layout(true);
+
+            setTimeout(() => {
+            this.inst.moveTo(3, itemIndex);
+              setTimeout(() => {
+                const moveTo = itemIndex > -1 ? this.inst._items._data[3].items[itemIndex].rect.top :
+                  Math.max(...this.inst._items._data[3].outlines.start);
+
+                expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+                done();
+              }, 30);
+            }, 30);
+          }, 10, 10);
+        });
+      });
+      it(`should moveTo in cursor end(isAppend = true)`, done => {
+        insert(this.inst, true, () => {
+          this.inst.on("layoutComplete", e => {
+            this.inst.off("layoutComplete");
+            const scrollPos = Math.max(...this.inst._items._data[10].outlines.start);
+
+            this.inst._infinite.recycle(scrollPos, false);
+
+            setTimeout(() => {
+            this.inst.moveTo(10);
+              setTimeout(() => {
+                const moveTo = Math.max(...this.inst._items._data[10].outlines.start);
+
+                expect(this.inst._watcher.getScrollPos()).to.be.not.equal(moveTo);
+                expect(Math.max(...this.inst._items._data[10].outlines.end) - this.inst._watcher.getScrollPos()).to.be.equal(this.inst._renderer.getViewSize());
+                done();
+              }, 20);
+            }, 30);  
+          });
+          this.inst.append(
+            [`<div style="width: 100px; height: 100px;">test1</div>`,
+            `<div style="width: 100px; height: 100px;">test2</div>`]);
+        }, 15, 10);
+      });
+      it(`should resize and moveTo in cursor end(isAppend = true)`, done => {
+        insert(this.inst, true, () => {
+          this.inst.on("layoutComplete", e => {
+            this.inst.off("layoutComplete");
+            const scrollPos = Math.max(...this.inst._items._data[10].outlines.start);
+
+            this.inst._infinite.recycle(scrollPos, false);
+            this.inst.layout(true);
+
+            setTimeout(() => {
+            this.inst.moveTo(10);
+              setTimeout(() => {
+                const moveTo = Math.max(...this.inst._items._data[10].outlines.start);
+
+                expect(this.inst._watcher.getScrollPos()).to.be.not.equal(moveTo);
+                expect(Math.max(...this.inst._items._data[10].outlines.end) - this.inst._watcher.getScrollPos()).to.be.equal(this.inst._renderer.getViewSize());
+                done();
+              }, 20);
+            }, 30);  
+          });
+          this.inst.append(
+            [`<div style="width: 100px; height: 100px;">test1</div>`,
+            `<div style="width: 100px; height: 100px;">test2</div>`,
+            `<div style="width: 100px; height: 100px;">test3</div>`,
+            `<div style="width: 100px; height: 100px;">test4</div>`]);
+        }, 15, 10);
+      });
     });
   });
   describe("setLayout method Test", function() {

@@ -33,36 +33,20 @@ function createGrid() {
 		horizontal: _horizontal,
 		threshold: 50,
 		isOverflowScroll: _overflow,
+		// useRecycle: false,
 	});
 	ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
 	ig.on({
-		"prepend": function (e) {
-			// console.log("prepend");
-			var groupKeys = ig.getGroupKeys(true);
-			var groupKey = (groupKeys[0] || 0) - 1;
-
-			if (!(groupKey in groups)) {
-				return;
-			}
-			ig.startLoading(false);
-			setTimeout(function() {
-				ig.prepend(groups[groupKey], groupKey);
-			}, 1000);
-		},
 		"append": function (e) {
 			if (ig.isProcessing()) {
 				return;
 			}
 			console.log("append");
-			var groupKeys = ig.getGroupKeys(true);
-			var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
-			if (!(groupKey in groups)) {
-				// allow append
-				groups[groupKey] = getItems(groupKey, num);
-			}
+			var groupKey = e.groupKey + 1;
+				
 			ig.startLoading(true);
 			setTimeout(function () {
-				ig.append(groups[groupKey], groupKey);
+				ig.append(getItems(groupKey, num), groupKey);
 			}, 200);
 		},
 		"layoutComplete": function (e) {
@@ -163,23 +147,17 @@ function append() {
 	var groupKeys = ig.getGroupKeys(true);
 	var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
 
-	if (!(groupKey in groups)) {
-		// allow append
-		groups[groupKey] = getItems(groupKey, num);
-	}
 	ig.startLoading(true);
-	ig.append(groups[groupKey], groupKey);
+	ig.append(getItems(groupKey, num), groupKey);
 }
 function prepend() {
 	var groupKeys = ig.getGroupKeys(true);
 	var groupKey = (groupKeys[0] || 0) - 1;
 
-	if (!(groupKey in groups)) {
-		// allow prepend
-		groups[groupKey] = getItems(groupKey, num);
-	}
-	ig.startLoading(false);
-	ig.prepend(groups[groupKey], groupKey);
+
+	//setTimeout(function() {
+		ig.prepend(getItems(groupKey, num), groupKey);
+	//}, 5000);
 }
 function layout() {
 	ig.layout();

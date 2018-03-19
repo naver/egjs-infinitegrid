@@ -131,8 +131,8 @@ describe("ItemManager Test", function() {
       });
     });
   });
-  [true, false].forEach(isVertical => {
-    describe(`fit Test(isVertical: ${isVertical})`, function() {
+  [true, false].forEach(horizontal => {
+    describe(`fit Test(horizontal: ${horizontal})`, function() {
       beforeEach(() => {
         this.inst = new ItemManager({
         });
@@ -148,10 +148,10 @@ describe("ItemManager Test", function() {
         const horizontal = [0, 200, 0, 200, 0];
         // When
         this.inst.append(initItems());
-        this.inst.fit(100, isVertical);
+        this.inst.fit(100, horizontal);
         // Then
         this.inst._data[0].items.forEach((item, i) => {
-          expect(item.rect[isVertical ? "top" : "left"]).to.be.equals((isVertical ? vertical[i] : horizontal[i]) - 100);
+          expect(item.rect[horizontal ? "left" : "top"]).to.be.equals((horizontal ? horizontal[i] : vertical[i]) - 100);
         });
       });
     });
