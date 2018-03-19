@@ -121,7 +121,7 @@ export function getStyles(el) {
 }
 function _getSize(el, name) {
 	if (el === window) { // WINDOW
-		return el.document.documentElement[`client${name}`];
+		return window[`inner${name}`] || document.body[`client${name}`];
 	} else if (el.nodeType === 9) { // DOCUMENT_NODE
 		const doc = el.documentElement;
 
