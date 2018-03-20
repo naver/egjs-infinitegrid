@@ -69,6 +69,7 @@ class App extends Component {
 		const item = this.layout.getItems()[index];
 		const {width, height, left, top} = item.state.rect;
 
+		this.state.toIndex = -1;
 		this.state.targetIndex = index;
 		this.state.start = {
 			startLeft: clientX - left,
