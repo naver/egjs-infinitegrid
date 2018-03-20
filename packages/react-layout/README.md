@@ -2,7 +2,7 @@
 
 A react component that can easily use [egjs-infinitegrid's layouts](https://github.com/naver/egjs-infinitegrid)
 
-- [Drag Demo](https://naver.github.io/egjs-infinitegrid/assets/html/drag.html)
+- [Drag Demo](https://naver.github.io/egjs-infinitegrid/assets/react/drag.html)
 
 
 ## Install
