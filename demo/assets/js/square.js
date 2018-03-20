@@ -9,7 +9,6 @@ function getItem(template, options) {
 	});
 }
 
-var groups = {};
 var num = 28;
 function getItems(no, length) {
 	var arr = [];

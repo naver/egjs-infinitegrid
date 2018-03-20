@@ -23,7 +23,6 @@ function createGrid(container, itemTemplate) {
 		return arr;
 	}
 	var num = 21;
-	var groups = {};
 	var ig = new eg.InfiniteGrid(container, {
 		horizontal: true,
 		isOverflowScroll: true,	
@@ -32,13 +31,11 @@ function createGrid(container, itemTemplate) {
 		margin: 20,
 	});
 	ig.on("append", function (e) {
-		var groupKeys = ig.getGroupKeys(true);
-		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+		var groupKey = (e.groupKey || 0) + 1;
 		ig.append(getItems(num), groupKey);
 	});
 
-	groups[0] = getItems(num * 2);
-	ig.append(groups[0], 0);
+	ig.append(getItems(num * 2), 0);
 
 
 	return ig;

@@ -17,7 +17,6 @@ function getItems(length) {
 }
 var ig = new eg.InfiniteGrid(".container");
 var num = 21;
-var groups = {};
 
 ig.setLayout(eg.InfiniteGrid.GridLayout, {
 	margin: 30,
@@ -26,7 +25,7 @@ ig.setLayout(eg.InfiniteGrid.GridLayout, {
 
 ig.on({
 	"append": function(e) {
-		ig.append(getItems(num), e.groupKey);
+		ig.append(getItems(num), e.groupKey + 1);
 	},
 	"layoutComplete": function(e) {
 		e.target.forEach(function(item) {

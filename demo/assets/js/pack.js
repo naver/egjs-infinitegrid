@@ -18,7 +18,6 @@ function getItems(no, length) {
 	return arr;
 }
 
-var groups = {};
 var num = 10;
 var ig = new eg.InfiniteGrid(".container");
 

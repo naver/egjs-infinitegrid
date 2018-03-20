@@ -27,7 +27,6 @@ var container = document.querySelector(".container");
 var ig = new eg.InfiniteGrid(container);
 var persist = new eg.Persist("table");
 var num = 40;
-var groups = {};
 
 ig.setLayout(eg.InfiniteGrid.GridLayout);
 ig.on({
