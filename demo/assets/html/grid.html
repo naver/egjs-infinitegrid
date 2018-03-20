@@ -16,7 +16,7 @@
 <script src="../../common/js/codepen.js"></script>
 <script src="../js/grid.js"></script>
 
-
+<style id="griditem"></style>
 <link rel="stylesheet" href="../css/dat.gui.css" type="text/css"/>
 <script src="../js/dat.gui.js"></script>
 <script src="../js/dat.gui.load.js"></script>
@@ -29,7 +29,10 @@ loadGUI({
 		ig._layout.options.align = text.align;
 		ig._layout.options.margin = text.margin;
 		ig._layout.options.itemSize = text.itemSize;
-		ig.layout();
+		ig._renderer._size.viewport = window.innerWidth + 1;
+
+		document.getElementById("griditem").innerHTML = text.itemSize ? ".item{width:" + text.itemSize +"px;}" : "";
+		ig.layout(true);
 	}
 });     
 </script>

@@ -28,7 +28,7 @@ ig.setLayout(eg.InfiniteGrid.FrameLayout, {
 		[1, 2, 3, 4, 5, 6],
 		[10, 9, 12, 11, 14, 13],
 	],
-	itemSize: 200
+	itemSize: 0
 });
 var num = 36;
 var parallax = new eg.Parallax(window, {
