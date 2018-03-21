@@ -91,6 +91,7 @@ export default class DOMRenderer {
 		this._size = {
 			container: -1,
 			view: -1,
+			viewport: -1,
 			item: null,
 		};
 		this._init(element);
