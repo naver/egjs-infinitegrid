@@ -8,9 +8,11 @@ import FrameLayout from "./layouts/FrameLayout";
 import SquareLayout from "./layouts/SquareLayout";
 import PackingLayout from "./layouts/PackingLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
+import Infinite from "./Infinite";
 import ImageLoaded from "./ImageLoaded";
 import AutoSizer from "./AutoSizer";
 
+InfiniteGrid.Infinite = Infinite;
 InfiniteGrid.GridLayout = GridLayout;
 InfiniteGrid.FrameLayout = FrameLayout;
 InfiniteGrid.SquareLayout = SquareLayout;
