@@ -21,10 +21,10 @@
 <script src="../js/dat.gui.load.js"></script>
 <script type="text/javascript">
 loadGUI({
-	ratioWeight: 100,
-	sizeWeight: 1,
-	aspectRatio: 1,
-	margin: 10,
+	ratioWeight: [100, 1, 150],
+	sizeWeight: [1, 1, 150],
+	aspectRatio: [1, 0, 3, 0.1],
+	margin: [10, 0, 100],
 	change: function (text) {
 		ig._layout.options.ratioWeight = text.ratioWeight;
 		ig._layout.options.sizeWeight = text.sizeWeight;

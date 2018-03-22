@@ -36,9 +36,9 @@
 loadGUI({
 	minColumn: 1,
 	maxColumn: 8,
-	minSize: 100,
-	maxSize: 300,
-	margin: 10,
+	minSize: [100, 0, 300],
+	maxSize: [300, 0, 600],
+	margin: [10, 0, 100],
 	change: function (text) {
 		ig._layout.options.margin = text.margin;
 		ig._layout.options.column = [text.minColumn, text.maxColumn];

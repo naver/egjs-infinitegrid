@@ -22,11 +22,11 @@
 <script src="../js/dat.gui.load.js"></script>
 <script type="text/javascript">
 loadGUI({
-	column: 4,
-	margin: 10,
+	column: [4, 2, 10],
+	margin: [10, 0, 100],
 	change: function (text) {
 		ig._layout.options.column = text.column;
-		ig._layout.options.itemSize = text.itemSize;
+		ig._layout.options.margin = text.margin;
 		ig.layout();
 	}
 });     
