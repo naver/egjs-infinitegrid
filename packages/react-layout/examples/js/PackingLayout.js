@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import {FrameLayout} from "../index.js";
+import {PackingLayout} from "../../src/index.js";
 
 class Item extends Component {
 	render() {
 		return (
 		<div className="item">
-			<div className="thumbnail">
 				<img src={`https://naver.github.io/egjs-infinitegrid/assets/image/${parseInt(Math.random() * 59 + 1)}.jpg`} />
-			</div>
 		</div>
 		);
 	}
@@ -20,11 +18,7 @@ class App extends Component {
   }
   render() {
     return (
-		<FrameLayout size={1000} margin={10} frame={[
-			[1, 1, 2, 2],
-			[3, 4, 4, 5],
-			[3, 4, 4, 5]
-		]}>
+		<PackingLayout size={1000} margin={10} aspectRatio={1.5}>
 			<Item/>
 			<Item/>
 			<Item/>
@@ -49,7 +43,7 @@ class App extends Component {
 			<Item/>
 			<Item/>
 			<Item/>
-		</FrameLayout>
+		</PackingLayout>
     );
   }
 }

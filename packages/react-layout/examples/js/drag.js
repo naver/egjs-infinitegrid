@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import {JustifiedLayout} from "../index.js";
+import {JustifiedLayout} from "../../src/index.js";
 
 class Item extends Component {
 	constructor(props) {

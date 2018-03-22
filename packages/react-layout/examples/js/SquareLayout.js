@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import {PackingLayout} from "../index.js";
+import {SquareLayout} from "../../src/index.js";
 
 class Item extends Component {
 	render() {
 		return (
-		<div className="item">
+		<div className="item" data-column={this.props["data-column"] || 1}>
+			<div className="thumbnail">
 				<img src={`https://naver.github.io/egjs-infinitegrid/assets/image/${parseInt(Math.random() * 59 + 1)}.jpg`} />
+			</div>
 		</div>
 		);
 	}
@@ -18,7 +20,8 @@ class App extends Component {
   }
   render() {
     return (
-		<PackingLayout size={1000} margin={10} aspectRatio={1.5}>
+		<SquareLayout size={1000} margin={10} itemSize={200}>
+			<Item data-column="2"/>
 			<Item/>
 			<Item/>
 			<Item/>
@@ -42,8 +45,8 @@ class App extends Component {
 			<Item/>
 			<Item/>
 			<Item/>
-			<Item/>
-		</PackingLayout>
+			
+		</SquareLayout>
     );
   }
 }

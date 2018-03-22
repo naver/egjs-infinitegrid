@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import {JustifiedLayout} from "../index.js";
+import {GridLayout} from "../../src/index.js";
 
 class Item extends Component {
 	render() {
@@ -9,6 +9,7 @@ class Item extends Component {
 			<div className="thumbnail">
 				<img src={`https://naver.github.io/egjs-infinitegrid/assets/image/${parseInt(Math.random() * 59 + 1)}.jpg`} />
 			</div>
+			<div className="info">egjs post</div>
 		</div>
 		);
 	}
@@ -17,10 +18,15 @@ class Item extends Component {
 class App extends Component {
   constructor(prop) {
 		super(prop);
-  }
+
+		this.onLayoutComplete = this.onLayoutComplete.bind(this);
+	}
+	onLayoutComplete(e) {
+		console.log(e.target);
+	}
   render() {
     return (
-		<JustifiedLayout size={1000} margin={10}>
+		<GridLayout size={1000} margin={10} onLayoutComplete={this.onLayoutComplete}>
 			<Item/>
 			<Item/>
 			<Item/>
@@ -45,8 +51,7 @@ class App extends Component {
 			<Item/>
 			<Item/>
 			<Item/>
-			
-		</JustifiedLayout>
+		</GridLayout>
     );
   }
 }

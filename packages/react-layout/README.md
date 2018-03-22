@@ -29,8 +29,8 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 ### props
 |name|type|description|
 |---|---------------|---|
+|size(required)|number|The viewport size of container area where items are added to a layout|
 |tag|string|The tag name of container|
-|size|number|The viewport size of container area where items are added to a layout|
 |horizontal|boolean|Direction of the scroll movement|
 |margin|number|Margin used to create space around items|
 |isEqualSize|boolean|Indicates whether sizes of all card elements are equal to one another. If true, the performance of layout arrangement can be improved.|
@@ -53,7 +53,7 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 ## Development
 
 ```bash
-# Run rc-tools server and see examples for development
+# Run webpack dev server and see examples for development
 $ npm run start
 ```
 
