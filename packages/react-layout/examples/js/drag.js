@@ -183,12 +183,7 @@ class App extends Component {
 			onTouchEnd={this.onDrop}
 			onMouseLeave={this.onDragEnd}
 			>
-			<JustifiedLayout size={this.state.width} margin={this.state.margin} ref={l => this.layout = l} minSize={300} column={this.state.column}
-			onLayoutComplete={
-				({size}) => {
-					this.wrapper.style.height = `${size}px`;
-				}
-			}>
+			<JustifiedLayout percentage={true} margin={this.state.margin} ref={l => this.layout = l} minSize={300} column={this.state.column}>
 				{this.state.items}
 			</JustifiedLayout>
 			<div className="indicator" ref={indicator => this.indicator = indicator}
@@ -205,10 +200,6 @@ class App extends Component {
 	componentDidMount() {
 		this._container = ReactDOM.findDOMNode(this.layout);
 		this._children = this._container.children;
-
-		window.addEventListener("resize", e => {
-			this.setState({width: this.wrapper.offsetWidth});
-		});
 	}
 }
 

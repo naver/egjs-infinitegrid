@@ -16,6 +16,7 @@ export default class Layout extends Component {
 		horizontal: PropTypes.bool,
 		isEqualSize: PropTypes.bool,
 		onLayoutComplete: PropTypes.func,
+		percentage: PropTypes.bool,
 	};
 	static defaultProps = {
 		tag: "div",
@@ -26,6 +27,7 @@ export default class Layout extends Component {
 		horizontal: false,
 		outline: [],
 		isEqualSize: false,
+		percentage: false,
 	};
 	static layoutProps = {};
     constructor(props) {
@@ -60,6 +62,33 @@ export default class Layout extends Component {
 	getItems() {
 		return this.state.items;
 	}
+	_render(item) {
+		const element = item.state.el;
+
+		if (!element) {
+			return;
+		}
+		const rect = item.state.rect || {left: DUMMY_POSITION, top: DUMMY_POSITION};
+		const style = ["position:absolute;"];
+		const size = this.state.size;
+		const {horizontal, percentage} = this.props;
+		
+		["left", "top", "width", "height"].forEach(p => {
+			if (!(p in rect)) {
+				return;
+			}
+			if (percentage && ((horizontal && p === "top") || 
+			(!horizontal && p === "left"))) {
+				style.push(`${p}:${rect[p] / size * 100}%;`);
+			} else {
+				style.push(`${p}:${rect[p]}px;`);
+			}
+		});
+		const cssText = style.join("");
+
+		item.state.cssText = cssText;
+		element.style.cssText += cssText;
+	}
 	_resetSize() {
 		const items = this.state.items;
 
@@ -85,7 +114,7 @@ export default class Layout extends Component {
 
 		const item = new Item(element);
 
-		item.renderElement();
+		this._render(item);
 		this.state.render = NOT_RENDER;		
 		return item;
 	}
@@ -135,11 +164,14 @@ export default class Layout extends Component {
 		}
 		this._layout.layout([group], outline || this.state.outline);
 		this.state.items.forEach((item, index) => {
-			item.renderElement();
+			this._render(item);
 		});
+
+		const max = Math.max(...group.outlines.end);
+		this._container.style.height = `${max}px`;
 		this.props.onLayoutComplete && this.props.onLayoutComplete({
 			target: items,
-			size: Math.max(...group.outlines.end) - Math.min(...group.outlines.start)
+			size: max - Math.min(...group.outlines.start)
 		});
 		this.state.render = RENDERED;
 	}
@@ -179,7 +211,7 @@ export default class Layout extends Component {
 			this.state.render = REQUEST_RENDER;
 			this.state.outline = props.outline;
 		}
-		if (this.state.size !== size && size !== state.size) {
+		if (size !==0 && this.state.size !== size && size !== state.size) {
 			clearTimeout(this._timer);
 			this._timer = setTimeout(() => {
 				this.setState({size, render: NOT_RENDER});
@@ -216,6 +248,19 @@ export default class Layout extends Component {
     }
     componentDidMount() {
 		this._container = ReactDOM.findDOMNode(this);
+
+		if (this.props.size === 0) {
+			this.state.size = this._container.clientWidth;
+
+			window.addEventListener("resize", () => {
+				clearTimeout(this._timer);
+				this._timer = setTimeout(() => {
+					const size = this._container.clientWidth;
+
+					this.setState({size, render: NOT_RENDER});
+				}, 100);
+			});
+		}
 		this._updateItems();
 		this._loadImage();
 	}

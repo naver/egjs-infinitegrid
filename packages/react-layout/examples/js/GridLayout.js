@@ -26,7 +26,7 @@ class App extends Component {
 	}
   render() {
     return (
-		<GridLayout size={1000} margin={10} onLayoutComplete={this.onLayoutComplete}>
+		<GridLayout margin={10} onLayoutComplete={this.onLayoutComplete} align={"center"}>
 			<Item/>
 			<Item/>
 			<Item/>

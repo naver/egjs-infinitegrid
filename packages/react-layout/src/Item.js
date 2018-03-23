@@ -60,23 +60,6 @@ class Item {
 			};
 		}
 	}
-	renderElement() {
-		const element = this.state.el;
-
-		if (!element) {
-			return;
-		}
-		const rect = this.state.rect || {left: DUMMY_POSITION, top: DUMMY_POSITION};
-		const style = ["position:absolute;"];
-
-		["left", "top", "width", "height"].forEach(p => {
-			(p in rect) && (style.push(`${p}:${rect[p]}px;`));
-		});
-		const cssText = style.join("");
-
-		this.state.cssText = cssText;
-		element.style.cssText += cssText;
-	}
 }
 
 export default Item;
