@@ -764,9 +764,6 @@ describe("InfiniteGrid Test", function() {
               const view = this.inst._renderer.getViewSize();
               const size = this.inst._getEdgeValue("end");
 
-
-              console.log(document.body.scrollHeight, size, view, end, this.inst._watcher.getScrollPos(), this.inst._watcher.getOrgScrollPos());
-
               expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
               done();
             }, 40);
@@ -783,11 +780,13 @@ describe("InfiniteGrid Test", function() {
             this.inst.moveTo(1, itemIndex);
             
             setTimeout(() => {
-              const size = this.inst._getEdgeValue("end");
               let moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[1].outlines.start) :
               this.inst._items._data[1].items[itemIndex].rect.top;
+              const end = Math.max(...this.inst._items._data[1].outlines.end);
+              const view = this.inst._renderer.getViewSize();
+              const size = this.inst._getEdgeValue("end");
 
-              expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+              expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
               done();
             }, 30);
           }, 10, 10);
@@ -845,9 +844,6 @@ describe("InfiniteGrid Test", function() {
         insert(this.inst, true, () => {
           this.inst.on("layoutComplete", e => {
             this.inst.off("layoutComplete");
-            const scrollPos = Math.max(...this.inst._items._data[10].outlines.start);
-
-            this.inst._infinite.recycle(scrollPos, false);
 
             setTimeout(() => {
             this.inst.moveTo(10);
@@ -866,15 +862,13 @@ describe("InfiniteGrid Test", function() {
           this.inst.append(
             [`<div style="width: 100px; height: 100px;">test1</div>`,
             `<div style="width: 100px; height: 100px;">test2</div>`]);
-        }, 15, 10);
+        }, 11, 10);
       });
       it(`should resize and moveTo in cursor end(isAppend = true)`, done => {
         insert(this.inst, true, () => {
           this.inst.on("layoutComplete", e => {
             this.inst.off("layoutComplete");
-            const scrollPos = Math.max(...this.inst._items._data[10].outlines.start);
-
-            this.inst._infinite.recycle(scrollPos, false);
+            this.inst._infinite.recycle(0, false);
             this.inst.layout(true);
 
             setTimeout(() => {
@@ -896,7 +890,7 @@ describe("InfiniteGrid Test", function() {
             `<div style="width: 100px; height: 100px;">test2</div>`,
             `<div style="width: 100px; height: 100px;">test3</div>`,
             `<div style="width: 100px; height: 100px;">test4</div>`]);
-        }, 15, 10);
+        }, 11, 10);
       });
     });
   });

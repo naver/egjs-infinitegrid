@@ -689,6 +689,7 @@ class InfiniteGrid extends Component {
 				});
 				return this;
 			}
+			pos = Math.max(Math.min(pos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
 			this._scrollTo(pos);
 		} else if (isResize) {
 			const isAppend = index > endCursor;
@@ -753,8 +754,10 @@ class InfiniteGrid extends Component {
 				movePos = layouted.items[moveItem].rect[this.options.horizotnal ? "left" : "top"];
 			}
 			if (isAppend) {
+				movePos = Math.max(Math.min(movePos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
 				this._scrollTo(movePos);
 			} else {
+				movePos = Math.max(Math.min(movePos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
 				this._infinite.scroll(movePos, true);
 				this._scrollTo(movePos);
 				this._recycle({start: this._infinite.getCursor("end") + 1, end: this._items.size() - 1});
