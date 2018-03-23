@@ -765,7 +765,7 @@ describe("InfiniteGrid Test", function() {
               const size = this.inst._getEdgeValue("end");
 
 
-              console.log(window.getComputedStyle(document.body).margin, window.innerHeight, this.inst._watcher.getScrollPos());
+              console.log(document.body.scrollHeight, size, view, end, this.inst._watcher.getScrollPos(), this.inst._watcher.getOrgScrollPos());
 
               expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
               done();
