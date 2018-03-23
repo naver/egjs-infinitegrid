@@ -15,7 +15,7 @@
 		"lint": "eslint src",
 		"jsdoc": "rm -rf ./doc && jsdoc -c jsdoc.json",
 		"coverage": "karma start --coverage",
-		"demo:start": "npm run demo:prebuild-latest && npm run demo:updateVersion && jekyll serve -s demo --host 0.0.0.0",
+		"demo:start": "npm run build && npm run demo:prebuild-latest && npm run demo:updateVersion && jekyll serve -s demo --host 0.0.0.0",
 		"demo:build": "npm run demo:updateVersion && jekyll build -s demo",
 		"demo:prebuild-version": "cpx 'dist/**/*' demo/release/$npm_package_version/dist --clean && cpx 'doc/**/*' demo/release/$npm_package_version/doc --clean",
 		"demo:prebuild-latest": "cpx 'dist/**/*' demo/release/latest/dist --clean && cpx 'doc/**/*' demo/release/latest/doc --clean",

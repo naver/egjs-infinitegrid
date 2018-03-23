@@ -23,7 +23,6 @@ function getItems(no, length) {
 	return arr;
 }
 var num = 30;
-var groups = {};
 var ig = new eg.InfiniteGrid(document.querySelector(".container"), {
 	horizontal: true
 });
@@ -40,11 +39,6 @@ ig.setLayout(eg.InfiniteGrid.FrameLayout, {
 ig.on("append", function (e) {
 	var groupKey = e.groupKey + 1;
 
-	if (!(groupKey in groups)) {
-		// allow append
-		groups[groupKey] = getItems(groupKey * num, num);
-	}
-	ig.append(groups[groupKey], groupKey);
+	ig.append(getItems(groupKey * num, num), groupKey);
 });
-groups[0] = getItems(0, num);
-ig.append(groups[0], 0);
+ig.append(getItems(0, num), 0);

@@ -1,6 +1,6 @@
 var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor';
 var imageTemplate = '<div class="item"><img src="../image/${no}.jpg"></div>';
-var postTemplate = '<div class="item ${className}"><div class="info"><p class="title">${title}</p><p class="description">${lorem}</p></div></div>';
+var postTemplate = '<div class="item"><div class="info"><p class="title">${title}</p><p class="description">${lorem}</p></div></div>';
 var link = window.HOMELINK;
 
 function getItem(template, options) {
@@ -20,52 +20,37 @@ function getItems(no, length) {
 }
 
 var ig = new eg.InfiniteGrid(document.querySelector(".container"), {
-	direction: "vertical",
+	horizontal: false
 });
 ig.setLayout(eg.InfiniteGrid.FrameLayout, {
 	margin: 0, 
 	frame: [
 		[1, 2, 3, 4, 5, 6],
-		[10, 9, 12, 11 , 14, 13],
+		[10, 9, 12, 11, 14, 13],
 	],
-	itemSize: 200,
+	itemSize: 0
 });
-var groups = {};
 var num = 36;
 var parallax = new eg.Parallax(window, {
 	container: document.querySelector(".container"),
-	direction: "vertical",
-	// strength: 0.5,
+	horizontal: false
 });
 
 ig.on({
-	"prepend": function (e) {
-		var groupKeys = ig.getGroupKeys(true);
-		var groupKey = (groupKeys[0] || 0) - 1;
-
-		if (!(groupKey in groups)) {
-			return;
-		}
-		ig.prepend(groups[groupKey], groupKey);
-	},
 	"append": function (e) {
-		var groupKeys = ig.getGroupKeys(true);
-		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
-		if (!(groupKey in groups)) {
-			// allow append
-			groups[groupKey] = getItems(groupKey * num, num);
-		}
-		ig.append(groups[groupKey], groupKey);
+		var groupKey = e.groupKey + 1;
+
+		ig.append(getItems(groupKey * num, num), groupKey);
 	},
 	"layoutComplete": function(e) {
-		parallax.refresh(e.target, e.scrollPos);
+		parallax.refresh(e.target, e.orgScrollPos);
 	},
 	"change": function(e) {
-		parallax.refresh(ig.getItems(), e.scrollPos);
+		parallax.refresh(ig.getItems(), e.orgScrollPos);
 	}
 });
-groups[0] = getItems(0, num);
-ig.append(groups[0], 0);
+
+ig.append(getItems(0, num), 0);
 
 window.addEventListener("resize", function(e) {
 	var items = ig.getItems();

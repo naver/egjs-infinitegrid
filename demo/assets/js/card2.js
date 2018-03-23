@@ -37,7 +37,7 @@ function getItems(length) {
 	return arr;
 }
 var num = 21;
-var groups = {};
+
 var container = document.querySelector(".container");
 var ig = new eg.InfiniteGrid(container, {
 	horizontal: true,
@@ -52,24 +52,10 @@ ig.setLayout(eg.InfiniteGrid.GridLayout, {
 	margin: isSupportClipPath ? -80 : 0,
 });
 ig.on({
-	"prepend": function (e) {
-		var groupKeys = ig.getGroupKeys(true);
-		var groupKey = (groupKeys[0] || 0) - 1;
-
-		if (!(groupKey in groups)) {
-			return;
-		}
-		ig.prepend(groups[groupKey], groupKey);
-	},
 	"append": function (e) {
-		var groupKeys = ig.getGroupKeys(true);
-		var groupKey = (groupKeys[groupKeys.length - 1] || 0) + 1;
+		var groupKey = (ig.groupKey || 0) + 1;
 
-		if (!(groupKey in groups)) {
-			// allow append
-			groups[groupKey] = getItems(num);
-		}
-		ig.append(groups[groupKey], groupKey);
+		ig.append(getItems(num), groupKey);
 	},
 	"layoutComplete": function (e) {
 		parallax.refresh(e.target, e.orgScrollPos);
@@ -78,8 +64,8 @@ ig.on({
 		parallax.refresh(ig.getItems(), e.orgScrollPos);
 	}
 });
-groups[0] = getItems(num * 2);
-ig.append(groups[0], 0);
+
+ig.append(getItems(num * 2), 0);
 
 
 window.addEventListener("resize", function (e) {

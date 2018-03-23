@@ -28,3 +28,23 @@
 <script src="../../common/js/codepen.js"></script>
 
 <script src="../js/search2.js"></script>
+
+<link rel="stylesheet" href="../css/dat.gui.css" type="text/css"/>
+<script src="../js/dat.gui.js"></script>
+<script src="../js/dat.gui.load.js"></script>
+<script type="text/javascript">
+loadGUI({
+	minColumn: 1,
+	maxColumn: 8,
+	minSize: [100, 0, 300],
+	maxSize: [300, 0, 600],
+	margin: [10, 0, 100],
+	change: function (text) {
+		ig._layout.options.margin = text.margin;
+		ig._layout.options.column = [text.minColumn, text.maxColumn];
+		ig._layout.options.minSize = text.minSize;
+		ig._layout.options.maxSize = text.maxSize;
+		ig.layout();
+	}
+});     
+</script>

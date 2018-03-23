@@ -15,3 +15,22 @@
 <script src="../../common/js/jquery-2.2.4.js"></script>
 <script src="../../common/js/codepen.js"></script>
 <script src="../js/pack.js"></script>
+
+<link rel="stylesheet" href="../css/dat.gui.css" type="text/css"/>
+<script src="../js/dat.gui.js"></script>
+<script src="../js/dat.gui.load.js"></script>
+<script type="text/javascript">
+loadGUI({
+	ratioWeight: [100, 1, 150],
+	sizeWeight: [1, 1, 150],
+	aspectRatio: [1, 0, 3, 0.1],
+	margin: [10, 0, 100],
+	change: function (text) {
+		ig._layout.options.ratioWeight = text.ratioWeight;
+		ig._layout.options.sizeWeight = text.sizeWeight;
+		ig._layout.options.aspectRatio = text.aspectRatio;
+		ig._layout.options.margin = text.margin;
+		ig.layout();
+	}
+});     
+</script>
