@@ -704,7 +704,7 @@ describe("InfiniteGrid Test", function() {
             insert(this.inst, true, () => {1
 
               const scrollPos = Math.max(...this.inst._items._data[5].outlines.start);
-              const moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[8].outlines.start) :
+              let moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[8].outlines.start) :
                 this.inst._items._data[8].items[itemIndex].rect.top;
 
               this.inst._setScrollPos(scrollPos);
@@ -714,7 +714,10 @@ describe("InfiniteGrid Test", function() {
 
               setTimeout(() => {
                 // not fit
-                expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+
+                const end = this.inst._getEdgeValue("end");
+
+                expect([moveTo, end - this.inst._renderer.getViewSize()]).to.include(this.inst._watcher.getScrollPos());
                 done();
               }, 20);
             }, 10, 10);
@@ -734,38 +737,34 @@ describe("InfiniteGrid Test", function() {
               const moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[5].outlines.start) :
               this.inst._items._data[5].items[itemIndex].rect.top;
 
-              expect(this.inst._watcher.getScrollPos()).to.be.at.most(moveTo);
+              // expect(this.inst._watcher.getScrollPos()).to.be.at.most(moveTo);
+              const end = this.inst._getEdgeValue("end");
+              const start =  Math.max(...this.inst._items._data[5].outlines.start);
+
+              expect([moveTo, end - this.inst._renderer.getViewSize()]).to.include(this.inst._watcher.getScrollPos());
               done();
             }, 20);
           }, 10, 10);
         });
         it(`should moveTo in cursor outside(isAppend = true, itemIndex = ${itemIndex})`, done => {
           insert(this.inst, true, () => {
-            const start = Math.max(...this.inst._items._data[5].outlines.start);
+            
             let moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[5].outlines.start) :
               this.inst._items._data[5].items[itemIndex].rect.top;
 
-
-            this.inst._watcher.setScrollPos(1);
-            this.inst._watcher.scrollTo(1);
-            this.inst._infinite.recycle(1, false);
+            this.inst._infinite.setCursor("end", 0);
+            this.inst._recycle({start: 1, end: this.inst._items.size() - 1});
             this.inst.moveTo(5, itemIndex);
             
             setTimeout(() => {
-              if (moveTo < start) {
-                moveTo = this.inst._items._data[5].items[itemIndex].rect.top;
-              }
-              const end = Math.max(...this.inst._items._data[5].outlines.end);
+              let moveTo = itemIndex === -1 ? Math.max(...this.inst._items._data[5].outlines.start) :
+              this.inst._items._data[5].items[itemIndex].rect.top;
 
-              if (useRecycle && moveTo + this.inst._renderer.getViewSize() > end) {
-                moveTo = end - this.inst._renderer.getViewSize();
-                if (moveTo !== this.inst._watcher.getScrollPos()) {
-                  moveTo = this.inst._getEdgeValue("end") - this.inst._renderer.getViewSize();  
-                }
-              }
-              
-              const scrollPos = this.inst._watcher.getScrollPos();
-              expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+              const end = Math.max(...this.inst._items._data[5].outlines.end);
+              const view = this.inst._renderer.getViewSize();
+              const size = this.inst._getEdgeValue("end");
+
+              expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
               done();
             }, 40);
           }, 10, 10);
@@ -793,12 +792,7 @@ describe("InfiniteGrid Test", function() {
       
         it(`should resize and moveTo in cursor outside(isAppend = true, itemIndex = ${itemIndex})`, done => {
           insert(this.inst, true, () => {
-            const scrollPos = Math.max(...this.inst._items._data[4].outlines.start);
-
-            this.inst._watcher.setScrollPos(scrollPos);
-            this.inst._watcher.scrollTo(scrollPos);
-            this.inst._infinite.recycle(scrollPos, true);
-            this.inst._infinite.recycle(scrollPos, false);
+            this.inst._infinite.recycle(0, false);
             this.inst.layout(true);
 
             setTimeout(() => {
@@ -809,11 +803,10 @@ describe("InfiniteGrid Test", function() {
 
 
                 const end = Math.max(...this.inst._items._data[7].outlines.end);
+                const view = this.inst._renderer.getViewSize();
+                const size = this.inst._getEdgeValue("end");
   
-                if (useRecycle && moveTo + this.inst._renderer.getViewSize() > end) {
-                  moveTo = end - this.inst._renderer.getViewSize();
-                }
-                expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+                expect([moveTo, size - view, end - view]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
                 done();
               }, 30);
             }, 30);
@@ -835,11 +828,10 @@ describe("InfiniteGrid Test", function() {
                 let moveTo = itemIndex > -1 ? this.inst._items._data[3].items[itemIndex].rect.top :
                   Math.max(...this.inst._items._data[3].outlines.start);
                 const end = Math.max(...this.inst._items._data[3].outlines.end);
-
-                if (useRecycle && moveTo + this.inst._renderer.getViewSize() > end) {
-                  moveTo = end - this.inst._renderer.getViewSize();
-                }                
-                expect(this.inst._watcher.getScrollPos()).to.equal(moveTo);
+                const view = this.inst._renderer.getViewSize();
+                const size = this.inst._getEdgeValue("end");
+  
+                expect([moveTo, size - view, end - view, 0]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
                 done();
               }, 30);
             }, 30);
@@ -859,8 +851,11 @@ describe("InfiniteGrid Test", function() {
               setTimeout(() => {
                 const moveTo = Math.max(...this.inst._items._data[10].outlines.start);
 
-                expect(this.inst._watcher.getScrollPos()).to.be.not.equal(moveTo);
-                expect(Math.max(...this.inst._items._data[10].outlines.end) - this.inst._watcher.getScrollPos()).to.be.equal(this.inst._renderer.getViewSize());
+                const end = Math.max(...this.inst._items._data[10].outlines.end);
+                const view = this.inst._renderer.getViewSize();
+                const size = this.inst._getEdgeValue("end");
+  
+                expect([moveTo, size - view, end - view]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
                 done();
               }, 20);
             }, 30);  
@@ -884,8 +879,11 @@ describe("InfiniteGrid Test", function() {
               setTimeout(() => {
                 const moveTo = Math.max(...this.inst._items._data[10].outlines.start);
 
-                expect(this.inst._watcher.getScrollPos()).to.be.not.equal(moveTo);
-                expect(Math.max(...this.inst._items._data[10].outlines.end) - this.inst._watcher.getScrollPos()).to.be.equal(this.inst._renderer.getViewSize());
+                const end = Math.max(...this.inst._items._data[10].outlines.end);
+                const view = this.inst._renderer.getViewSize();
+                const size = this.inst._getEdgeValue("end");
+  
+                expect([moveTo, size - view, end - view]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
                 done();
               }, 20);
             }, 30);  

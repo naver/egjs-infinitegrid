@@ -692,10 +692,7 @@ class InfiniteGrid extends Component {
 			this._scrollTo(pos);
 		} else if (isResize) {
 			const isAppend = index > endCursor;
-			const threshold = this.options.threshold;
-			let outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start");
-
-			outline = [isAppend ? Math.max(...outline) + threshold : Math.min(...outline) - threshold];
+			const outline = [0];
 
 			if (isAppend) {
 				this._infinite.setCursor("start", index);
@@ -704,6 +701,7 @@ class InfiniteGrid extends Component {
 			} else {
 				this._infinite.setCursor("start", index + 1);
 				this._infinite.setCursor("end", index);
+				this._recycle({start: index + 1, end: this._items.size()});
 			}
 			this._postLayout({
 				outline,
@@ -738,7 +736,9 @@ class InfiniteGrid extends Component {
 
 		if (moveItem > -2) {
 			if (isAppend) {
-				this._setScrollPos(pos - 0.1);
+				if (pos > 0) {
+					this._setScrollPos(pos - 0.1);
+				}
 			} else {
 				this._setScrollPos(pos + 0.1);
 				this._scrollTo(pos + 0.1);

@@ -13,8 +13,8 @@ export default class Watcher {
 	constructor(view, options) {
 		Object.assign(this.options = {
 			container: view,
-			resize: null,
-			check: null,
+			resize: () => {},
+			check: () => {},
 			isOverflowScroll: false,
 			horizontal: false,
 		}, options);
@@ -85,7 +85,7 @@ export default class Watcher {
 			return;
 		}
 
-		this.options.check && this.options.check({
+		this.options.check({
 			isForward: prevPos < scrollPos,
 			scrollPos,
 			orgScrollPos,
@@ -104,7 +104,7 @@ export default class Watcher {
 		}
 		this._timer.resize = setTimeout(() => {
 			this._setContainerOffset();
-			this.options.resize && this.options.resize();
+			this.options.resize();
 			this._timer.resize = null;
 			this.reset();
 		}, 100);
