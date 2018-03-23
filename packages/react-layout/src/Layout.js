@@ -16,6 +16,7 @@ export default class Layout extends Component {
 		horizontal: PropTypes.bool,
 		isEqualSize: PropTypes.bool,
 		onLayoutComplete: PropTypes.func,
+		onImageError: PropTypes.func,
 		percentage: PropTypes.bool,
 	};
 	static defaultProps = {
@@ -28,6 +29,8 @@ export default class Layout extends Component {
 		outline: [],
 		isEqualSize: false,
 		percentage: false,
+		onLayoutComplete: () => {},
+		onImageError: () => {},
 	};
 	static layoutProps = {};
     constructor(props) {
@@ -63,12 +66,12 @@ export default class Layout extends Component {
 		return this.state.items;
 	}
 	_render(item) {
-		const element = item.state.el;
+		const element = item.el;
 
 		if (!element) {
 			return;
 		}
-		const rect = item.state.rect || {left: DUMMY_POSITION, top: DUMMY_POSITION};
+		const rect = item.rect || {left: DUMMY_POSITION, top: DUMMY_POSITION};
 		const style = ["position:absolute;"];
 		const size = this.state.size;
 		const {horizontal, percentage} = this.props;
@@ -86,7 +89,7 @@ export default class Layout extends Component {
 		});
 		const cssText = style.join("");
 
-		item.state.cssText = cssText;
+		item.cssText = cssText;
 		element.style.cssText += cssText;
 	}
 	_resetSize() {
@@ -128,7 +131,7 @@ export default class Layout extends Component {
 		return this._newItem(element);
 	}
 	_updateItems() {
-		const ids = this.state.items.map(item => item.state.id);
+		const ids = this.state.items.map(item => item.id);
 
 		this.state.items = [];
 
@@ -141,9 +144,9 @@ export default class Layout extends Component {
 
 			item.update();
 			items.push(item);
-			datas[item.state.id] = item;
+			datas[item.id] = item;
 		});
-		if (!ids.every((id, index) => id === items[index].state.id)) {
+		if (!ids.every((id, index) => id === items[index].id)) {
 			this.state.render = NOT_RENDER;
 		}
 		this.state.datas = datas;
@@ -156,7 +159,7 @@ export default class Layout extends Component {
 			return;
 		}
 		const group = {
-			items: items.map(item => item.state),
+			items,
 			outlines: this.state.outlines,
 		};
 		if (outline) {
@@ -169,7 +172,7 @@ export default class Layout extends Component {
 
 		const max = Math.max(...group.outlines.end);
 		this._container.style.height = `${max}px`;
-		this.props.onLayoutComplete && this.props.onLayoutComplete({
+		this.props.onLayoutComplete({
 			target: items,
 			size: max - Math.min(...group.outlines.start)
 		});
@@ -177,7 +180,7 @@ export default class Layout extends Component {
 	}
 	_loadImage() {
 		const items = this.state.items.filter(item => {
-			const loaded = item.state.loaded !== NOT_LOADED;
+			const loaded = item.loaded !== NOT_LOADED;
 
 			return !loaded;
 		});
@@ -185,22 +188,32 @@ export default class Layout extends Component {
 			this.setState({render: REQUEST_RENDER});
 			return;
 		}
-		const elements = items.map(item => item.state.el);
+		const elements = items.map(item => item.el);
 
-		items.forEach(item => item.state.loaded = LOADING);
+		items.forEach(item => item.loaded = LOADING);
         ImageLoaded.check(elements, {
-			type: this.props.isEqualSize && this.state.items[0].state.size.width ? CHECK_ONLY_ERROR : CHECK_ALL,
+			type: this.props.isEqualSize && this.state.items[0].size.width ? CHECK_ONLY_ERROR : CHECK_ALL,
             complete: () => {
 				let size;
                 items.forEach(item => {
-					item.state.loaded = LOADED;
+					item.loaded = LOADED;
 					item.updateSize(size);
 					if (this.props.isEqualSize && !size) {
-						size = {...this.state.items[0].state.size};
+						size = {...this.state.items[0].size};
 					}
 				});
 				this.setState({render: REQUEST_RENDER});
-            }
+			},
+			error: ({target, itemIndex}) => {
+				const item = items[itemIndex];
+
+				this.props.onImageError({
+					target,
+					element: item.el,
+					item,
+					itemIndex,	
+				});
+			},
         });
 	}
     shouldComponentUpdate(props, state) {
@@ -268,7 +281,7 @@ export default class Layout extends Component {
 		const datas = this.state.datas;
 
 		for (const item in datas) {
-			item.state.el = null;
+			item.el = null;
 		}
 	}
 }

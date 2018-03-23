@@ -41,7 +41,9 @@ class App extends Component {
 		this.onDragEnd = this.onDragEnd.bind(this);
 
 		for (let i = 0; i < 5; ++i) {
-			this.state.items.push(<Item key={i} image={parseInt(Math.random() * 50) + 1} onDragStart={this.onDragStart}/>);
+			const image = i === 1 ? -1 : parseInt(Math.random() * 50) + 1;
+
+			this.state.items.push(<Item key={i} image={image} onDragStart={this.onDragStart}/>);
 		}
 	}
 	indexOfTarget(target) {
@@ -67,7 +69,7 @@ class App extends Component {
 		const rect = this.wrapper.getBoundingClientRect();
 		const {clientX, clientY} = e.touches && e.touches.length ? e.touches[0] : e;
 		const item = this.layout.getItems()[index];
-		const {width, height, left, top} = item.state.rect;
+		const {width, height, left, top} = item.rect;
 
 		this.state.toIndex = -1;
 		this.state.targetIndex = index;
@@ -100,9 +102,7 @@ class App extends Component {
 
 
 		this._ghotstImage.style.cssText += `left:${clientX - startLeft}px;top:${clientY - startTop}px;`;
-		const indicators = items.filter(({state}) => {
-			const rect = state.rect;
-
+		const indicators = items.filter(({rect}) => {
 			if (rect.top <= y && y <= rect.top + rect.height) {
 				if (rect.left - this.state.margin <= x && x <= rect.left + rect.width / 3) {
 					return true;
@@ -120,7 +120,7 @@ class App extends Component {
 			return;
 		}
 		indicator.className = "indicator is_show";
-		const {left, top, width, height} = indicators[0].state.rect;
+		const {left, top, width, height} = indicators[0].rect;
 		const margin = this.state.margin;
 
 		indicator.style.height = `${height}px`;
@@ -183,7 +183,14 @@ class App extends Component {
 			onTouchEnd={this.onDrop}
 			onMouseLeave={this.onDragEnd}
 			>
-			<JustifiedLayout percentage={true} margin={this.state.margin} ref={l => this.layout = l} minSize={300} column={this.state.column}>
+			<JustifiedLayout percentage={true} margin={this.state.margin} ref={l => this.layout = l} minSize={300}
+			column={this.state.column}
+			onImageError={e => {
+				console.log(e);
+				this.state.items.splice(e.itemIndex, 1);
+				this.setState({items: this.state.items});
+			}}
+			>
 				{this.state.items}
 			</JustifiedLayout>
 			<div className="indicator" ref={indicator => this.indicator = indicator}
