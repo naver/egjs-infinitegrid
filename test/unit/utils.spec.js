@@ -19,11 +19,11 @@ describe("Util Test", function() {
   it("should check `scrollTo/scroll` method", () => {
       // Given
       const view = $("#view");
-      expect(scroll(view, VERTICAL)).to.be.not.equal(100);
+      expect(scroll(view, !VERTICAL)).to.be.not.equal(100);
       // When 
       
       scrollTo(view, 0, 100);
       // Then
-      expect(scroll(view, VERTICAL)).to.be.equal(100);
+      expect(scroll(view, !VERTICAL)).to.be.equal(100);
   });
 });

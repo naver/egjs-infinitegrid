@@ -9,7 +9,6 @@ import {
 } from "./consts";
 import {
 	$,
-	scrollBy,
 	innerHeight,
 	innerWidth,
 	getStyles,
@@ -60,9 +59,19 @@ export default class DOMRenderer {
 		});
 	}
 	static removeElement(element) {
-		element.parentNode.removeChild(element);
+		const parentNode = element && element.parentNode;
+
+		if (!parentNode) {
+			return;
+		}
+		parentNode.removeChild(element);
 	}
 	static createElements(items) {
+		if (!items.length) {
+			return items;
+		} else if (items[0].el) {
+			return items;
+		}
 		const elements = $(items.reduce((acc, v, i) => {
 			acc.push(v.content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, ""));
 			return acc;
@@ -77,12 +86,12 @@ export default class DOMRenderer {
 		Object.assign(this.options = {
 			isOverflowScroll: false,
 			isEqualSize: false,
-			isVertical: true,
+			horizontal: false,
 		}, options);
 		this._size = {
-			containerOffset: 0,
 			container: -1,
 			view: -1,
+			viewport: -1,
 			item: null,
 		};
 		this._init(element);
@@ -95,13 +104,10 @@ export default class DOMRenderer {
 			_size: Object.assign({}, this._size),
 		};
 	}
-	setStatus(status, items) {
+	setStatus(status) {
 		this.container.style.cssText = status.cssText;
 		Object.assign(this.options, status.options);
 		Object.assign(this._size, status._size);
-
-		DOMRenderer.renderItems(items);
-		this._insert(items, APPEND);
 	}
 	updateSize(items) {
 		return items.map(item => {
@@ -136,7 +142,7 @@ export default class DOMRenderer {
 			element.style.position = "relative";
 		}
 		if (this.options.isOverflowScroll) {
-			const target = this.options.isVertical ? ["Y", "X"] : ["X", "Y"];
+			const target = this.options.horizontal ? ["X", "Y"] : ["Y", "X"];
 
 			this._orgStyle.overflowX = element.style.overflowX;
 			this._orgStyle.overflowY = element.style.overflowY;
@@ -144,7 +150,7 @@ export default class DOMRenderer {
 			element.style[`overflow${target[1]}`] = "hidden";
 			this.view = element;
 			// defense code for android < 4.4 or webkit < 537
-			this.container = !this.options.isVertical && DEFENSE_BROWSER ? _defense(element) : element;
+			this.container = this.options.horizontal && DEFENSE_BROWSER ? _defense(element) : element;
 		} else {
 			this.view = window;
 			this.container = element;
@@ -165,11 +171,10 @@ export default class DOMRenderer {
 	clear() {
 		this.container.innerHTML = "";
 		if (!this.options.isOverflowScroll) {
-			this.container.style[this.options.isVertical ? "height" : "width"] = "";
+			this.container.style[this.options.horizontal ? "width" : "height"] = "";
 		}
 		this._size = {
 			item: null,
-			containerOffset: 0,
 			viewport: -1,
 			container: -1,
 			view: -1,
@@ -193,42 +198,33 @@ export default class DOMRenderer {
 			this.container.insertBefore(df, this.container.firstChild);
 	}
 	_calcSize() {
-		return this.options.isVertical ?
-			innerWidth(this.container) : innerHeight(this.container);
+		return this.options.horizontal ?
+			innerHeight(this.container) : innerWidth(this.container);
 	}
 	getViewSize() {
 		return this._size.view;
-	}
-	scrollBy(point) {
-		const pos = this.options.isVertical ? [0, point] : [point, 0];
-
-		scrollBy(this.view, ...pos);
-	}
-	getContainerOffset() {
-		return this._size.containerOffset;
 	}
 	getViewportSize() {
 		this.resize();
 		return this._size.viewport;
 	}
 	setContainerSize(size) {
-		if (!this.options.isOverflowScroll || (!this.options.isVertical && DEFENSE_BROWSER)) {
-			this.container.style[this.options.isVertical ? "height" : "width"] = `${size}px`;
+		if (!this.options.isOverflowScroll || (this.options.horizontal && DEFENSE_BROWSER)) {
+			this.container.style[this.options.horizontal ? "width" : "height"] = `${size}px`;
 		}
 	}
 	resize() {
-		const isVertical = this.options.isVertical;
+		const horizontal = this.options.horizontal;
 
 		if (this.isNeededResize()) {
 			this._size = {
-				containerOffset: this.options.isOverflowScroll ? 0 : this.container[`offset${isVertical ? "Top" : "Left"}`],
 				viewport: this._calcSize(),
-				view: isVertical ? innerHeight(this.view) : innerWidth(this.view),
+				view: horizontal ? innerWidth(this.view) : innerHeight(this.view),
 				item: null,
 			};
 			return true;
 		} else {
-			this._size.view = isVertical ? innerHeight(this.view) : innerWidth(this.view);
+			this._size.view = horizontal ? innerWidth(this.view) : innerHeight(this.view);
 		}
 		return false;
 	}
@@ -237,12 +233,11 @@ export default class DOMRenderer {
 	}
 	destroy() {
 		this._size = {
-			containerOffset: 0,
 			viewport: -1,
 			view: -1,
 			item: null,
 		};
-		this.container.style[this.options.isVertical ? "height" : "width"] = "";
+		this.container.style[this.options.horizontal ? "width" : "height"] = "";
 		for (const p in this._orgStyle) {
 			this[this.options.isOverflowScroll ? "view" : "container"].style[p] = this._orgStyle[p];
 		}

@@ -6,25 +6,31 @@ import {
 	removeEvent,
 	scroll,
 	scrollTo,
+	scrollBy,
 } from "./utils";
 
 export default class Watcher {
-	constructor(renderer, callback) {
-		Object.assign(this._callback = {
-			layout: null,
-			check: null,
-		}, callback);
+	constructor(view, options) {
+		Object.assign(this.options = {
+			container: view,
+			resize: () => {},
+			check: () => {},
+			isOverflowScroll: false,
+			horizontal: false,
+		}, options);
 		this._timer = {
 			resize: null,
 			// doubleCheck: null,
 			// doubleCheckCount: RETRY,
 		};
 		this.reset();
-		this._renderer = renderer;
+		this._containerOffset = 0;
+		this._view = view;
 		this._onCheck = this._onCheck.bind(this);
 		this._onResize = this._onResize.bind(this);
 		this.attachEvent();
 		this.setScrollPos();
+		this._setContainerOffset();
 	}
 	getStatus() {
 		return {
@@ -36,10 +42,16 @@ export default class Watcher {
 		this._prevPos = status._prevPos;
 		applyScrollPos && this.scrollTo(status.scrollPos);
 	}
-	scrollTo(pos) {
-		const arrPos = this._renderer.options.isVertical ? [0, pos] : [pos, 0];
+	scrollBy(pos) {
+		const arrPos = this.options.horizontal ? [pos, 0] : [0, pos];
 
-		scrollTo(this._renderer.view, ...arrPos);
+		scrollBy(this._view, ...arrPos);
+		this.setScrollPos();
+	}
+	scrollTo(pos) {
+		const arrPos = this.options.horizontal ? [pos, 0] : [0, pos];
+
+		scrollTo(this._view, ...arrPos);
 	}
 	getScrollPos() {
 		return this._prevPos;
@@ -50,14 +62,14 @@ export default class Watcher {
 		if (typeof pos === "undefined") {
 			rawPos = this.getOrgScrollPos();
 		}
-		this._prevPos = rawPos - this._renderer.getContainerOffset();
+		this._prevPos = rawPos - this.getContainerOffset();
 	}
 	attachEvent() {
-		addEvent(this._renderer.view, "scroll", this._onCheck);
+		addEvent(this._view, "scroll", this._onCheck);
 		addEvent(window, "resize", this._onResize);
 	}
 	getOrgScrollPos() {
-		return scroll(this._renderer.view, this._renderer.options.isVertical);
+		return scroll(this._view, this.options.horizontal);
 	}
 	reset() {
 		this._prevPos = null;
@@ -73,21 +85,26 @@ export default class Watcher {
 			return;
 		}
 
-		this._callback.check && this._callback.check({
+		this.options.check({
 			isForward: prevPos < scrollPos,
 			scrollPos,
 			orgScrollPos,
-			horizontal: !this._renderer.options.isVertical,
+			horizontal: this.options.horizontal,
 		});
+	}
+	getContainerOffset() {
+		return this._containerOffset;
+	}
+	_setContainerOffset() {
+		this._containerOffset = this.options.isOverflowScroll ? 0 : this.options.container[`offset${this.options.horizontal ? "Left" : "Top"}`];
 	}
 	_onResize() {
 		if (this._timer.resize) {
 			clearTimeout(this._timer.resize);
 		}
 		this._timer.resize = setTimeout(() => {
-			this._renderer.isNeededResize() &&
-				this._callback.layout &&
-				this._callback.layout();
+			this._setContainerOffset();
+			this.options.resize();
 			this._timer.resize = null;
 			this.reset();
 		}, 100);

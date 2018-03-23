@@ -1,5 +1,4 @@
 import {MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME} from "./consts";
-import DOMRenderer from "./DOMRenderer";
 import {$, toArray} from "./utils";
 
 export default class ItemManager {
@@ -48,22 +47,19 @@ export default class ItemManager {
 			}),
 		};
 	}
-	setStatus(status, start, end) {
+	setStatus(status) {
 		const data = status._data;
 
-		for (let i = start; i <= end; i++) {
-			data[i].items = DOMRenderer.createElements(data[i].items);
-		}
 		this.set(data);
 	}
 	size() {
 		return this._data.length;
 	}
-	fit(base, isVertical) {
+	fit(base, horizontal) {
 		if (!this._data.length) {
 			return;
 		}
-		const property = isVertical ? "top" : "left";
+		const property = horizontal ? "left" : "top";
 
 		if (base !== 0) {
 			this._data = this._data.map(v => {
@@ -167,6 +163,18 @@ export default class ItemManager {
 		}
 		return items;
 	}
+	indexOf(data) {
+		const groupKey = typeof data === "object" ? data.groupKey : data;
+		const datas = this._data;
+		const length = datas.length;
+
+		for (let i = 0; i < length; ++i) {
+			if (groupKey === datas[i].groupKey) {
+				return i;
+			}
+		}
+		return -1;
+	}
 	get(start, end) {
 		if (typeof start !== "undefined") {
 			if (typeof end !== "undefined") {
@@ -193,5 +201,8 @@ export default class ItemManager {
 		} else {
 			this._data = data.concat();
 		}
+	}
+	getData(index) {
+		return this._data[index];
 	}
 }

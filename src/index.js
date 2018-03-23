@@ -10,6 +10,7 @@ import PackingLayout from "./layouts/PackingLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
 import ImageLoaded from "./ImageLoaded";
 import AutoSizer from "./AutoSizer";
+import Infinite from "./Infinite";
 
 export {
 	GridLayout,
@@ -17,6 +18,7 @@ export {
 	SquareLayout,
 	PackingLayout,
 	JustifiedLayout,
+	Infinite,
 	ImageLoaded,
 	AutoSizer,
 };

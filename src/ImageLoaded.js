@@ -34,10 +34,10 @@ class ImageLoaded {
 			}
 			complete && complete();
 		};
-		const onError = function(target) {
+		const onError = function(target, itemIndex = target.__ITEM_INDEX__) {
 			error && error({
 				target,
-				itemIndex: target.__ITEM_INDEX__,
+				itemIndex,
 			});
 		};
 		const onCheck = function(e) {
@@ -62,9 +62,9 @@ class ImageLoaded {
 		needCheck.forEach((images, i) => {
 			images.forEach(v => {
 				// workaround for IE
-				if (v.complete) {
-					if (errorImages.indexOf(v.src) !== -1) {
-						onError(v);
+				if (v.complete && (!IS_IE || (IS_IE && v.naturalWidth))) {
+					if (!v.naturalWidth) {
+						onError(v, i);
 					}
 					checkImage();
 					checkEnd();
@@ -103,7 +103,9 @@ class ImageLoaded {
 			}, 0);
 		}
 		if (length > 0) {
-			this.waitImageLoaded(images, {prefix, length, type, complete, error, end});
+			setTimeout(() => {
+				this.waitImageLoaded(images, {prefix, length, type, complete, error, end});
+			}, 0);
 		}
 	}
 }

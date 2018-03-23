@@ -58,7 +58,7 @@ export function $(param, multi = false) {
 		el = param;
 	} else if (("jQuery" in window && param instanceof window.jQuery) ||
 		param.constructor.prototype.jquery) { // jQuery
-		el = multi ? param.toArray() : param.get(0);
+		el = $(multi ? param.toArray() : param.get(0), multi);
 	} else if (Array.isArray(param)) {
 		el = param.map(v => $(v));
 		if (!multi) {
@@ -90,11 +90,11 @@ export function removeEvent(element, type, handler) {
 		element[`on${type}`] = null;
 	}
 }
-export function scroll(el, isVertical) {
-	const prop = `scroll${isVertical ? "Top" : "Left"}`;
+export function scroll(el, horizontal = false) {
+	const prop = `scroll${horizontal ? "Left" : "Top"}`;
 
 	if (el === window) {
-		return window[isVertical ? "pageYOffset" : "pageXOffset"] || document.body[prop] || document.documentElement[prop];
+		return window[horizontal ? "pageXOffset" : "pageYOffset"] || document.body[prop] || document.documentElement[prop];
 	} else {
 		return el[prop];
 	}
@@ -121,7 +121,7 @@ export function getStyles(el) {
 }
 function _getSize(el, name) {
 	if (el === window) { // WINDOW
-		return el.document.documentElement[`client${name}`];
+		return window[`inner${name}`] || document.body[`client${name}`];
 	} else if (el.nodeType === 9) { // DOCUMENT_NODE
 		const doc = el.documentElement;
 
