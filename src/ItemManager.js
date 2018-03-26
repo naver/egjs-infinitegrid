@@ -136,7 +136,7 @@ export default class ItemManager {
 		this._data = [];
 	}
 	remove(element, start, end) {
-		let items = null;
+		let items = [];
 		const key = element.getAttribute(GROUPKEY_ATT);
 		let data = this.get(start, end)
 			.filter(v => String(v.groupKey) === key);

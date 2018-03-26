@@ -1,106 +1,48 @@
 import * as Component from "@egjs/component";
+import {InfiniteStatus} from "./Infinite";
+import {DOMRendererStatus} from "./DOMRenderer";
+import {WatcherStatus} from "./Watcher";
+import {Item, ItemStatus} from "./ItemManager";
 
-
-
-interface InfiniteGridOption {
+export interface InfiniteGridOption {
 	itemSelector?: string;
 	isEqualSize?: boolean;
 	isOverflowScroll?: boolean;
 	threshold?: number;
 	useRecycle?: boolean;
 	horizontal?: boolean;
-	loadingBar?: string | {
-	  append?: string | HTMLElement;
-	  prepend?: string | HTMLElement;
-	}
-  }
-
-
-interface Item {
-	el?: HTMLElement;
-	content: string;
-	groupKey?: number|string;
-	orgSize?: {
-	  width: number,
-	  height: number;
-	},
-	rect?: {
-	  top: number,
-	  left: number;
-	  width?: number;
-	  height?: number;
-	} 
-	size?: {
-	  width: number,
-	  height: number;
-	},
-	column? : number
-  }
-
-interface DOMRendererStatus {
-	cssText: string;
-	options: {
-		isEqualSize: boolean;
-		isOverflowScroll: boolean;
-		horizontal: boolean;
-	}
-	_size: {
-		container: number;
-		view: number;
-		viewport: number;
-		item?: {
-			width: number;
-			height: number;
-		}
-	}
+	useFit?: boolean;
 }
-interface InfiniteGridStatus {
+
+export interface InfiniteGridStatus {
 	options: InfiniteGridOption;
-	_items: {
-	  _data: Array<Item>;
-	}
+	_items: ItemStatus;
+	_infinite: InfiniteStatus;
 	_renderer: DOMRendererStatus;
-	_infinite: {
-		startCursor: number;
-		endCursor: number;
-		size: number;
-	}
-	_size: {
-	  containerOffset: number;
-	  item?: number;
-	  view: number;
-	  viewport: number;
-	},
+	_watcher: WatcherStatus;
 	_status: {
-		end: Item;
-		endCursor: number;
-		start: Item;
-		startCursor: number;
-		loadingBar?: string | {
-		append?: string | HTMLElement;
-		prepend?: string | HTMLElement;
-		},
+		loadingSize?: number;
+		loadingStyle?: object;
 		processingStatus: number;
 	},
-	_watcher: {
-		scrollPos: number;
-		_prevPos: number;
-	}
 }
+
   
-export default class InfiniteGrid extends Component {
+declare class InfiniteGrid extends Component {
 	constructor(el: string | HTMLElement, options?: InfiniteGridOption);
-	append(elements: (string|HTMLElement)[]| string, groupKey?: string|number): InfiniteGrid;
-	prepend(elements: (string|HTMLElement)[]| string, groupKey?: string|number): InfiniteGrid;
-	moveTo(index: number, itemIndex?: number): InfiniteGrid;
-	clear(): InfiniteGrid;
+	append(elements: (string|HTMLElement)[]| string, groupKey?: string|number): this;
+	prepend(elements: (string|HTMLElement)[]| string, groupKey?: string|number): this;
+	moveTo(index: number, itemIndex?: number): this;
+	clear(): this;
 	destroy();
 	getGroupKeys(includeCached?: boolean): (string|number)[];
-	getStatus(): object;
+	getStatus(): InfiniteGridStatus;
 	isProcessing(): boolean;
-	layout(isRelayout?: boolean): InfiniteGrid;
+	layout(isRelayout?: boolean): this;
 	remove(item: HTMLElement): (object|null);
-	setLayout(LayoutKlass, options?): InfiniteGrid;
-	getItems(includeCached?: boolean): Array<Item>;
-	setStatus(status: InfiniteGridStatus, applyScrollPos: boolean): InfiniteGrid;
-  }
+	setLayout(LayoutKlass, options?): this;
+	getItems(includeCached?: boolean): Item[];
+	setStatus(status: InfiniteGridStatus, applyScrollPos?: boolean): this;
+}
+
+export default InfiniteGrid;

@@ -67,6 +67,8 @@ var layout = new eg.InfiniteGrid.PackingLayout({
 class PackingLayout {
 	constructor(options = {}) {
 		this.options = assignOptions({
+			margin: 0,
+			horizontal: false,
 			aspectRatio: 1,
 			sizeWeight: 1,
 			ratioWeight: 1,
