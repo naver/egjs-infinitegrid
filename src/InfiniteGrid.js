@@ -736,6 +736,7 @@ class InfiniteGrid extends Component {
 		let pos = Math.max(...layouted.outlines.start);
 
 		if (moveItem > -2) {
+			pos = Math.max(Math.min(pos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
 			if (isAppend) {
 				if (pos > 0) {
 					this._setScrollPos(pos - 0.1);
@@ -753,11 +754,10 @@ class InfiniteGrid extends Component {
 			if (layouted.items[moveItem]) {
 				movePos = layouted.items[moveItem].rect[this.options.horizotnal ? "left" : "top"];
 			}
+			movePos = Math.max(Math.min(movePos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
 			if (isAppend) {
-				movePos = Math.max(Math.min(movePos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
 				this._scrollTo(movePos);
 			} else {
-				movePos = Math.max(Math.min(movePos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
 				this._infinite.scroll(movePos, true);
 				this._scrollTo(movePos);
 				this._recycle({start: this._infinite.getCursor("end") + 1, end: this._items.size() - 1});
