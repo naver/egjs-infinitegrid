@@ -42,6 +42,8 @@ var layout = new eg.InfiniteGrid.GridLayout({
 class GridLayout {
 	constructor(options = {}) {
 		this.options = assignOptions({
+			margin: 0,
+			horizontal: false,
 			align: START,
 			itemSize: 0,
 		}, options);

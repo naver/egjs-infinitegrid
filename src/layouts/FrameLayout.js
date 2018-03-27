@@ -118,6 +118,8 @@ var layout = new eg.InfiniteGrid.FrameLayout({
 class FrameLayout {
 	constructor(options = {}) {
 		this.options = assignOptions({
+			margin: 0,
+			horizontal: false,
 			itemSize: 0,
 			frame: [],
 			frameFill: true,

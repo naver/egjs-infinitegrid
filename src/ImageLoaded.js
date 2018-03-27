@@ -14,7 +14,7 @@ function isDataAttribute(target, prefix) {
 }
 
 class ImageLoaded {
-	static waitImageLoaded(needCheck, {prefix, length, type, complete, error, end}) {
+	static waitImageLoaded(needCheck, {prefix = "", length, type, complete, error, end}) {
 		let checkCount = 0;
 		let endCount = length || needCheck.reduce((sum, element) => sum + element.length, 0);
 

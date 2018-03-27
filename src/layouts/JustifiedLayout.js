@@ -41,6 +41,8 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
 class JustifiedLayout {
 	constructor(options = {}) {
 		this.options = assignOptions({
+			margin: 0,
+			horizontal: false,
 			minSize: 0,
 			maxSize: 0,
 			column: [1, 8],
