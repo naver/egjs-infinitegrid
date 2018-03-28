@@ -171,7 +171,9 @@ export default class Layout extends Component {
 		});
 
 		const max = Math.max(...group.outlines.end);
-		this._container.style.height = `${max}px`;
+		const horizontal = this._layout.options.horizontal;
+
+		this._container.style[horizontal ? "width" : "height"] = `${max}px`;
 		this.props.onLayoutComplete({
 			target: items,
 			size: max - Math.min(...group.outlines.start)
