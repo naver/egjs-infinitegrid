@@ -1,9 +1,8 @@
 import React, {Component} from "react";
 import {GridLayout, ImageLoaded} from "@egjs/infinitegrid";
-import {CHECK_ONLY_ERROR, CHECK_ALL} from "@egjs/infinitegrid/src/consts";
 import ReactDOM from 'react-dom';
 import Item from "./Item";
-import {NOT_LOADED, LOADING, LOADED, LAYOUT_ID, NOT_RENDER, REQUEST_RENDER, RENDERED} from "./consts";
+import {NOT_LOADED, LOADING, LOADED, LAYOUT_ID, NOT_RENDER, REQUEST_RENDER, RENDERED, CHECK_ONLY_ERROR, CHECK_ALL} from "./consts";
 import PropTypes from 'prop-types';
 
 export default class Layout extends Component {

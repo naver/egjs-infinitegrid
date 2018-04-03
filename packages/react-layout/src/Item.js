@@ -1,6 +1,5 @@
-import {innerWidth, innerHeight} from "@egjs/infinitegrid/src/utils";
-import {DUMMY_POSITION} from "@egjs/infinitegrid/src/consts";
-import {NOT_LOADED, LAYOUT_ID} from "./consts";
+import {innerWidth, innerHeight} from "./utils";
+import {NOT_LOADED, LAYOUT_ID, DUMMY_POSITION} from "./consts";
 
 class Item {
 	constructor(element) {
