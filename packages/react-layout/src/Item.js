@@ -45,7 +45,6 @@ class Item {
 	updateSize(size) {
 		const element = this.el;
 
-		console.log(element);
 		this.size = size || {
 			width: innerWidth(element),
 			height: innerHeight(element),
