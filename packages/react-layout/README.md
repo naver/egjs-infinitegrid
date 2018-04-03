@@ -2,7 +2,7 @@
 
 A react component that can easily use [egjs-infinitegrid's layouts](https://github.com/naver/egjs-infinitegrid)
 
-- [Demo](https://naver.github.io/egjs-infinitegrid/assets/html/drag.html)
+- [Drag Demo](https://naver.github.io/egjs-infinitegrid/assets/react/drag.html)
 
 
 ## Install
@@ -15,7 +15,7 @@ $ npm install @egjs/react-layout
 ```jsx
 import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} from "@egjs/react-layout";
 
-<GridLayout tag="div" size="1000" horizontal={true} margin="10" isEqualSize={} outline={[]}>
+<GridLayout tag="div" size="1000" horizontal={true} margin="10" isEqualSize={false} outline={[]}>
     <div></div>
     <div></div>
     <div></div>
@@ -30,11 +30,14 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 |name|type|description|
 |---|---------------|---|
 |tag|string|The tag name of container|
-|size|number|The viewport size of container area where items are added to a layout|
+|size|number|The viewport size of container area where items are added to a layout. if size is zero, automatically resize the layout.|
 |horizontal|boolean|Direction of the scroll movement|
 |margin|number|Margin used to create space around items|
 |isEqualSize|boolean|Indicates whether sizes of all card elements are equal to one another. If true, the performance of layout arrangement can be improved.|
-|outline|array|Array of outline points to be reference points
+|outline|array|Array of outline points to be reference points|
+|percentage|boolean|Set percent position.|
+|onLayoutComplete|function|This event is fired when layout is successfully arranged.
+|onImageError|function|This event is fired when an error occurs in the image.
 |other props||Check out! the options of Layouts|
 
 > #### The options of Layouts
@@ -44,12 +47,15 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 > * [SquareLayout's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.SquareLayout.html)
 > * [PackingLayout's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html)
 
-
+### methods
+|name|description|
+|---|---------|
+|getItems()|Returns the layouted items|
 
 ## Development
 
 ```bash
-# Run rc-tools server and see examples for development
+# Run webpack dev server and see examples for development
 $ npm run start
 ```
 

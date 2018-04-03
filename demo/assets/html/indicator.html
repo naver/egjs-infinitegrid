@@ -5,14 +5,22 @@
     </div>
 <div class="demobox">
     <h1>
-        React JustifiedLayout DragEvent
+        React JustifiedLayout Drag To Indicator(Over IE10)
     </h1>
     <div id="__react-content"></div>
 </div>
 
 <style>
+    body {
+        margin: 10px;
+        padding: 0;
+    }
     #__react-content {
         position: relative;
+    }
+    .wrapper {
+        position: relative;
+        width: 100%;
     }
     .item {
         position: absolute;
@@ -36,7 +44,22 @@
         font-weight: bold;
         color: #777;
     }
+    .item.is_drag {
+        transition: none;
+        opacity: 0.5;
+        z-index: 2;
+    }
+    .indicator.is_show {
+        display: block;
+    }
+    .indicator {
+        display: none;
+        position: absolute;
+        width: 10px;
+        background: #f55;
+        
+    }
 </style>
 
-<script src="./drag.js"></script>
+<script src="../js/indicator.js"></script>
 

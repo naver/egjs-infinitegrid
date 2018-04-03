@@ -1,29 +1,40 @@
 {
   "name": "@egjs/react-layout",
-  "version": "1.0.0",
+  "version": "1.2.4",
   "description": "A react component that can easily use egjs-infinitegrid's layouts.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": {
     "name": "NAVER Corp."
   },
   "license": "MIT",
   "homepage": "https://github.com/naver/egjs-infinitegrid",
   "dependencies": {
-    "@egjs/infinitegrid": "^3.2.4",
+    "@egjs/infinitegrid": "^3.3.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-scripts": "1.0.17"
   },
   "devDependencies": {
-    "rc-tools": "^7.0.8"
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "file-loader": "^1.1.11",
+    "rc-tools": "^7.0.8",
+    "url-loader": "^1.0.1",
+    "webpack": "^3.10.0",
+    "write-file-webpack-plugin": "^4.2.0"
   },
   "scripts": {
-    "start": "rc-tools run server",
-    "build": "rc-tools run build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "gh-pages": "rc-tools run gh-pages",
-    "pub": "rc-tools run update-self && rc-tools run pub",
-    "lint": "rc-tools run lint"
+    "start": "webpack-dev-server --host=0.0.0.0 ",
+    "b": "webpack",
+    "build": "mkdir -p dist && babel src --out-dir dist/"
   }
 }

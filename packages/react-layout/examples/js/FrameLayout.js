@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import {JustifiedLayout} from "../index.js";
+import {FrameLayout} from "../../src/index.js";
 
 class Item extends Component {
 	render() {
@@ -20,7 +20,11 @@ class App extends Component {
   }
   render() {
     return (
-		<JustifiedLayout size={1000} margin={10}>
+		<FrameLayout size={1000} margin={10} frame={[
+			[1, 1, 2, 2],
+			[3, 4, 4, 5],
+			[3, 4, 4, 5]
+		]}>
 			<Item/>
 			<Item/>
 			<Item/>
@@ -45,8 +49,7 @@ class App extends Component {
 			<Item/>
 			<Item/>
 			<Item/>
-			
-		</JustifiedLayout>
+		</FrameLayout>
     );
   }
 }
