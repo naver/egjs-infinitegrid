@@ -221,6 +221,9 @@ export default class Layout extends Component {
     shouldComponentUpdate(props, state) {
 		const size = parseFloat(props.size);
 
+		if (!this._container) {
+			return;
+		}
 		if (this.props.outline.length !== props.outline.length ||
 			!this.props.outline.every((v, index) => v === props.outline[index])) {
 			this.state.render = REQUEST_RENDER;
@@ -249,20 +252,26 @@ export default class Layout extends Component {
 			}
 			attributes[name] = props[name];
 		}
-        return (<Tag {...attributes}>
+        return (<Tag {...attributes} ref={(container) => {this._setContainer(container);}}>
             {this.props.children}
         </Tag>);
     }
     componentDidUpdate(prevProps) {
+		if (!this._container) {
+			return;
+		}
 		if (this.state.render === REQUEST_RENDER) {
 			this.layout();
 		} else {
 			this._updateItems();
 			this._loadImage();
 		}
-    }
-    componentDidMount() {
-		this._container = ReactDOM.findDOMNode(this);
+	}
+	_setContainer(container) {
+		if (!container || this._container) {
+			return;
+		}
+		this._container = container;
 
 		if (this.props.size === 0) {
 			this.state.size = this._container.clientWidth;
@@ -282,6 +291,9 @@ export default class Layout extends Component {
 	componentWillUnmount() {
 		const datas = this.state.datas;
 
+		if (!datas) {
+			return;
+		}
 		for (const item in datas) {
 			item.el = null;
 		}
