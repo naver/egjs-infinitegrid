@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-layout",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "A react component that can easily use egjs-infinitegrid's layouts.",
   "main": "dist/index.js",
   "author": {

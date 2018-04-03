@@ -271,14 +271,15 @@ export default class Layout extends Component {
 			return;
 		}
 		this._container = container;
+		const horizontal = this._layout.options.horizontal;
 
 		if (this.props.size === 0) {
-			this.state.size = this._container.clientWidth;
+			this.state.size = this._container[horizontal ? "clientHeight" : "clientWidth"];
 
 			window.addEventListener("resize", () => {
 				clearTimeout(this._timer);
 				this._timer = setTimeout(() => {
-					const size = this._container.clientWidth;
+					const size = this._container[horizontal ? "clientHeight" : "clientWidth"];
 
 					this.setState({size, render: NOT_RENDER});
 				}, 100);
