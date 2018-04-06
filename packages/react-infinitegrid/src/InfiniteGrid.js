@@ -44,7 +44,7 @@ export default class InfiniteGrid extends Component {
 	static layoutProps = {};
 	constructor(props) {
 		super(props);
-		const Klass = this.props.type;
+		const LayoutType = this.props.type;
 
 		this.state = {
 		};
@@ -57,7 +57,7 @@ export default class InfiniteGrid extends Component {
 			}
 		}
 
-		this._layout = new Klass({
+		this._layout = new LayoutType({
 			...options,
 			horizontal: this.props.horizontal,
 		});
