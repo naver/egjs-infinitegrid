@@ -1,0 +1,47 @@
+{
+  "name": "@egjs/react-infinitegrid",
+  "version": "1.0.0",
+  "description": "A react component that can easily use egjs-infinitegrid",
+  "main": "dist/index.js",
+  "author": {
+    "name": "NAVER Corp."
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/naver/egjs-infinitegrid",
+  "dependencies": {
+    "@egjs/infinitegrid": "^3.3.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-scripts": "1.0.17"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.2",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^4.12.1",
+    "eslint-config-naver": "^2.0.1",
+    "eslint-loader": "^1.9.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-react": "^7.7.0",
+    "file-loader": "^1.1.11",
+    "rc-tools": "^7.0.8",
+    "url-loader": "^1.0.1",
+    "webpack": "^3.10.0",
+    "write-file-webpack-plugin": "^4.2.0"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --host=0.0.0.0 ",
+    "lint": "eslint src",
+    "lint:examples": "eslint examples/js",
+    "build": "mkdir -p dist && babel src --out-dir dist/"
+  }
+}
