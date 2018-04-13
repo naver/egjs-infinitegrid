@@ -43,14 +43,20 @@
 	},
 	"keywords": [
 		"infinitegrid",
+		"infinite",
+		"scroll",
 		"layout",
 		"DOM",
+		"html",
 		"gallery",
 		"grid",
-		"justified",
-		"packing",
-		"frame",
-		"square"
+		"pinterest",
+		"masonry",
+		"GridLayout",
+		"JustifiedLayout",
+		"PackingLayout",
+		"FrameLayout",
+		"SquareLayout"
 	],
 	"devDependencies": {
 		"@egjs/common-demo": "github:naver/egjs#common-demo",
