@@ -34,11 +34,13 @@ function _defense(element) {
 }
 export default class DOMRenderer {
 	static renderItem(item, styles) {
-		if (item.el) {
-			const elStyle = item.el.style;
+		const el = item.el;
+
+		if (el) {
+			const elStyle = el.style;
 
 			// for debugging
-			item.el.setAttribute(GROUPKEY_ATT, item.groupKey);
+			el.setAttribute(GROUPKEY_ATT, item.groupKey);
 			elStyle.position = "absolute";
 			["left", "top", "width", "height"].forEach(p => {
 				(p in styles) && (elStyle[p] = `${styles[p]}px`);
@@ -67,15 +69,11 @@ export default class DOMRenderer {
 		parentNode.removeChild(element);
 	}
 	static createElements(items) {
-		if (!items.length) {
-			return items;
-		} else if (items[0].el) {
+		if (!items.length || items[0].el) {
 			return items;
 		}
-		const elements = $(items.reduce((acc, v, i) => {
-			acc.push(v.content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, ""));
-			return acc;
-		}, []).join(""), MULTI);
+		const elements = $(items.map(({content}) =>
+			content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "")).join(""), MULTI);
 
 		return items.map((item, index) => {
 			item.el = elements[index];
@@ -134,6 +132,7 @@ export default class DOMRenderer {
 	_init(el) {
 		const element = $(el);
 		const style = getStyles(element);
+		const {isOverflowScroll, horizontal} = this.options;
 
 		this._orgStyle = {};
 
@@ -141,8 +140,8 @@ export default class DOMRenderer {
 			this._orgStyle.position = element.style.position;
 			element.style.position = "relative";
 		}
-		if (this.options.isOverflowScroll) {
-			const target = this.options.horizontal ? ["X", "Y"] : ["Y", "X"];
+		if (isOverflowScroll) {
+			const target = horizontal ? ["X", "Y"] : ["Y", "X"];
 
 			this._orgStyle.overflowX = element.style.overflowX;
 			this._orgStyle.overflowY = element.style.overflowY;
@@ -150,7 +149,7 @@ export default class DOMRenderer {
 			element.style[`overflow${target[1]}`] = "hidden";
 			this.view = element;
 			// defense code for android < 4.4 or webkit < 537
-			this.container = this.options.horizontal && DEFENSE_BROWSER ? _defense(element) : element;
+			this.container = horizontal && DEFENSE_BROWSER ? _defense(element) : element;
 		} else {
 			this.view = window;
 			this.container = element;
@@ -187,6 +186,7 @@ export default class DOMRenderer {
 		this._insert(itemsWithElement, isAppend);
 	}
 	_insert(items, isAppend, styles) {
+		const container = this.container;
 		const df = document.createDocumentFragment();
 
 		items.forEach(item => {
@@ -194,8 +194,8 @@ export default class DOMRenderer {
 			isAppend ? df.appendChild(item.el) : df.insertBefore(item.el, df.firstChild);
 		});
 		isAppend ?
-			this.container.appendChild(df) :
-			this.container.insertBefore(df, this.container.firstChild);
+			container.appendChild(df) :
+			container.insertBefore(df, container.firstChild);
 	}
 	_calcSize() {
 		return this.options.horizontal ?
@@ -205,28 +205,28 @@ export default class DOMRenderer {
 		return this._size.view;
 	}
 	getViewportSize() {
-		this.resize();
 		return this._size.viewport;
 	}
 	setContainerSize(size) {
-		if (!this.options.isOverflowScroll || (this.options.horizontal && DEFENSE_BROWSER)) {
-			this.container.style[this.options.horizontal ? "width" : "height"] = `${size}px`;
+		const {isOverflowScroll, horizontal} = this.options;
+
+		if (!isOverflowScroll || (horizontal && DEFENSE_BROWSER)) {
+			this.container.style[horizontal ? "width" : "height"] = `${size}px`;
 		}
 	}
 	resize() {
 		const horizontal = this.options.horizontal;
+		const view = this.view;
+		const isResize = this.isNeededResize();
 
-		if (this.isNeededResize()) {
+		if (isResize) {
 			this._size = {
 				viewport: this._calcSize(),
-				view: horizontal ? innerWidth(this.view) : innerHeight(this.view),
 				item: null,
 			};
-			return true;
-		} else {
-			this._size.view = horizontal ? innerWidth(this.view) : innerHeight(this.view);
 		}
-		return false;
+		this._size.view = horizontal ? innerWidth(view) : innerHeight(view);
+		return isResize;
 	}
 	isNeededResize() {
 		return this._calcSize() !== this._size.viewport;

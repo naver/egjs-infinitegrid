@@ -1,6 +1,6 @@
 import BoxModel from "./lib/BoxModel.js";
 import {APPEND, PREPEND} from "../consts";
-import {getStyleNames, assignOptions, toZeroArray} from "../utils";
+import {getStyleNames, assignOptions, toZeroArray, cloneItems} from "../utils";
 
 
 function getCost(originLength, length) {
@@ -13,17 +13,17 @@ function getCost(originLength, length) {
 	return cost - 1;
 }
 function fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertical) {
-	item.setHeight(itemFitSize.height);
-	item.setWidth(itemFitSize.width);
-	bestFitArea.setHeight(containerFitSize.height);
-	bestFitArea.setWidth(containerFitSize.width);
+	item.height = itemFitSize.height;
+	item.width = itemFitSize.width;
+	bestFitArea.height = containerFitSize.height;
+	bestFitArea.width = containerFitSize.width;
 
 	if (layoutVertical) {
-		item.setTop(bestFitArea.getTop() + bestFitArea.getHeight());
-		item.setLeft(bestFitArea.getLeft());
+		item.top = bestFitArea.top + bestFitArea.height;
+		item.left = bestFitArea.left;
 	} else {
-		item.setLeft(bestFitArea.getLeft() + bestFitArea.getWidth());
-		item.setTop(bestFitArea.getTop());
+		item.left = bestFitArea.left + bestFitArea.width;
+		item.top = bestFitArea.top;
 	}
 }
 
@@ -78,10 +78,10 @@ class PackingLayout {
 	}
 	_findBestFitArea(container, item) {
 		if (container.getRatio() === 0) { // 아이템 최초 삽입시 전체영역 지정
-			container.setOriginWidth(item.getWidth());
-			container.setOriginHeight(item.getHeight());
-			container.setWidth(item.getWidth());
-			container.setHeight(item.getHeight());
+			container.originWidth = item.width;
+			container.originHeight = item.height;
+			container.width = item.width;
+			container.height = item.height;
 			return;
 		}
 
@@ -98,9 +98,11 @@ class PackingLayout {
 		};
 		const {sizeWeight, ratioWeight} = this.options;
 
-		container.innerItem().forEach(v => {
+		container.items.forEach(v => {
 			const containerSizeCost = getCost(v.getOriginSize(), v.getSize()) * sizeWeight;
 			const containerRatioCost = getCost(v.getOriginRatio(), v.getRatio()) * ratioWeight;
+			const width = v.width;
+			const height = v.height;
 			let cost;
 
 			for (let i = 0; i < 2; ++i) {
@@ -111,16 +113,16 @@ class PackingLayout {
 
 				if (i === 0) {
 					// 상하에 아이템 추가
-					itemWidth = v.getWidth();
-					itemHeight = v.getHeight() * (item.getHeight() / (v.getOriginHeight() + item.getHeight()));
-					containerWidth = v.getWidth();
-					containerHeight = v.getHeight() - itemHeight;
+					itemWidth = width;
+					itemHeight = height * (item.height / (v.originHeight + item.height));
+					containerWidth = width;
+					containerHeight = height - itemHeight;
 				} else {
 					// 좌우에 아이템 추가
-					itemHeight = v.getHeight();
-					itemWidth = v.getWidth() * (item.getWidth() / (v.getOriginWidth() + item.getWidth()));
-					containerHeight = v.getHeight();
-					containerWidth = v.getWidth() - itemWidth;
+					itemHeight = height;
+					itemWidth = width * (item.width / (v.originWidth + item.width));
+					containerHeight = height;
+					containerWidth = width - itemWidth;
 				}
 
 				const itemSize = itemWidth * itemHeight;
@@ -149,44 +151,41 @@ class PackingLayout {
 	}
 	_layout(items, outline = [], isAppend) {
 		const style = this._style;
-		const isHorizontal = this.options.horizontal;
-		const aspectRatio = this.options.aspectRatio;
-		const margin = this.options.margin;
+		const {horizontal, aspectRatio, margin} = this.options;
 		const pos1Name = style.pos1;
 		const size1Name = style.size1;
-		const containerWidth = this._size * (isHorizontal ? aspectRatio : 1);
-		const containerHeight = this._size / (isHorizontal ? 1 : aspectRatio);
-		const containerSize1 = isHorizontal ? containerWidth : containerHeight;
+		const containerWidth = this._size * (horizontal ? aspectRatio : 1);
+		const containerHeight = this._size / (horizontal ? 1 : aspectRatio);
+		const containerSize1 = horizontal ? containerWidth : containerHeight;
 		const prevOutline = toZeroArray(outline);
 		const start = isAppend ? Math.max(...prevOutline) :
 			Math.min(...prevOutline) - containerSize1 - margin;
 		const end = start + containerSize1 + margin;
 		const container = new BoxModel({});
-
 		let startIndex = -1;
 		let endIndex = -1;
 		let startPos = -1;
 		let endPos = -1;
 
 		items.forEach(item => {
+			const {width, height} = item.orgSize;
 			const model = new BoxModel({
-				originWidth: item.orgSize.width,
-				originHeight: item.orgSize.height,
-				width: item.orgSize.width,
-				height: item.orgSize.height,
+				width,
+				height,
+				originWidth: width,
+				originHeight: height,
 			});
 
 			this._findBestFitArea(container, model);
-			container.pushItem(model);
+			container.push(model);
 			container.scaleTo(containerWidth + margin, containerHeight + margin);
 		});
 		items.forEach((item, i) => {
-			const boxItem = container.innerItem()[i];
-			// console.log("boxItem", boxItem, boxItem instanceof BoxModel);
-			const width = boxItem.getWidth();
-			const height = boxItem.getHeight();
-			const top = boxItem.getTop();
-			const left = boxItem.getLeft();
+			const boxItem = container.items[i];
+			const width = boxItem.width;
+			const height = boxItem.height;
+			const top = boxItem.top;
+			const left = boxItem.left;
 
 			item.rect = {top, left, width: width - margin, height: height - margin};
 			item.rect[pos1Name] += start;
@@ -216,7 +215,7 @@ class PackingLayout {
 	}
 	_insert(items = [], outline = [], type) {
 		// this only needs the size of the item.
-		const clone = items.map(item => Object.assign({}, item));
+		const clone = cloneItems(items);
 
 		return {
 			items: clone,

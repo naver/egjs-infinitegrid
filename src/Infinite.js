@@ -1,10 +1,10 @@
-import {APPEND, PREPEND} from "./consts";
 
-function isVisible(group, {threshold, scrollPos, endScrollPos}) {
-	const start = group.outlines.start;
-	const end = group.outlines.end;
+function isVisible(group, threshold, scrollPos, endScrollPos) {
+	const {items, outlines} = group;
+	const start = outlines.start;
+	const end = outlines.end;
 
-	if (start.legnth === 0 || end.length === 0 || !group.items.length || !group.items[0].el) {
+	if (start.legnth === 0 || end.length === 0 || !items.length || !items[0].el) {
 		return 2;
 	}
 	const min = Math.min(...start);
@@ -44,9 +44,8 @@ class Infinite {
 		}
 		const endScrollPos = scrollPos + size;
 		const {threshold, recycle} = this.options;
-		const visibleOptions = {threshold, scrollPos, endScrollPos};
 		const visibles = this._items.get(startCursor, endCursor)
-			.map(group => isVisible(group, visibleOptions));
+			.map(group => isVisible(group, threshold, scrollPos, endScrollPos));
 		const length = visibles.length;
 		let start = isForward ? 0 : visibles.lastIndexOf(0);
 		let end = isForward ? visibles.indexOf(0) - 1 : visibles.length - 1;
@@ -90,19 +89,19 @@ class Infinite {
 		}
 	}
 	setCursor(cursor, index) {
+		const status = this._status;
+
 		if (!this.options.useRecycle) {
-			this._status.startCursor = 0;
-			this._status.endCursor = this._items.size() - 1;
+			status.startCursor = 0;
+			status.endCursor = this._items.size() - 1;
 			return;
 		}
 		if (cursor === "start") {
-			this._status.startCursor = index;
+			status.startCursor = index;
 		} else {
-			const lastIndex = this._items.size() - 1;
-
-			this._status.endCursor = Math.min(lastIndex, index);
+			status.endCursor = Math.min(this._items.size() - 1, index);
 		}
-		this._status.startCursor = Math.max(0, this._status.startCursor);
+		status.startCursor = Math.max(0, status.startCursor);
 	}
 	updateCursor(cursor) {
 		const {startCursor, endCursor} = this._status;
@@ -122,15 +121,13 @@ class Infinite {
 		this._items.set(item, item.groupKey);
 		this.setCursor(isAppend ? "end" : "start", this._items.indexOf(item));
 	}
-	_insertData(item, isAppend) {
-		this._items[isAppend ? "append" : "prepend"](item);
-		this.updateCursor(isAppend ? "end" : "start");
-	}
 	append(item) {
-		this._insertData(item, APPEND);
+		this._items.append(item);
+		this.updateCursor("end");
 	}
 	prepend(item) {
-		this._insertData(item, PREPEND);
+		this._items.prepend(item);
+		this.updateCursor("start");
 	}
 	setStatus(status) {
 		this._status = Object.assign(this._status, status);

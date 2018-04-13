@@ -11,6 +11,9 @@ import JustifiedLayout from "./layouts/JustifiedLayout";
 import Infinite from "./Infinite";
 import ImageLoaded from "./ImageLoaded";
 import AutoSizer from "./AutoSizer";
+import DOMRenderer from "./DOMRenderer";
+import Watcher from "./Watcher";
+import ItemManager from "./ItemManager";
 
 InfiniteGrid.Infinite = Infinite;
 InfiniteGrid.GridLayout = GridLayout;
@@ -20,5 +23,9 @@ InfiniteGrid.PackingLayout = PackingLayout;
 InfiniteGrid.JustifiedLayout = JustifiedLayout;
 InfiniteGrid.ImageLoaded = ImageLoaded;
 InfiniteGrid.AutoSizer = AutoSizer;
+InfiniteGrid.DOMRenderer = DOMRenderer;
+InfiniteGrid.Watcher = Watcher;
+InfiniteGrid.ItemManager = ItemManager;
+
 
 module.exports = InfiniteGrid;

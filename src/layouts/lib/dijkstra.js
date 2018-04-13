@@ -138,30 +138,6 @@
         }
         return result;
       },
-
-      remove: function(node) {
-        var len = this.content.length;
-        // To remove a value, we must search through the array to find
-        // it.
-        for (var i = 0; i < len; i++) {
-          if (this.content[i] === node) {
-            // When it is found, the process seen in 'pop' is repeated
-            // to fill up the hole.
-            var end = this.content.pop();
-            if (i !== len - 1) {
-              this.content[i] = end;
-              if (this.scoreFunction(end) < this.scoreFunction(node)){
-                this.bubbleUp(i);
-              }else{
-                this.sinkDown(i);
-              }
-            }
-            return;
-          }
-        }
-        throw new Error('Node not found.');
-      },
-
       size: function() {
         return this.content.length;
       },
@@ -187,7 +163,6 @@
           }
         }
       },
-
       sinkDown: function(n) {
         // Look up the target element and its score.
         var length = this.content.length,

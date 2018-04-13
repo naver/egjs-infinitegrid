@@ -179,7 +179,9 @@ export function toZeroArray(outline) {
 	}
 	return outline;
 }
-
+export function cloneItems(items) {
+	return items.map(item => Object.assign({}, item));
+}
 export function isWindow(el) {
 	return el === window;
 }

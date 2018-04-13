@@ -1,5 +1,5 @@
 import {APPEND, PREPEND, DUMMY_POSITION} from "../consts";
-import {getStyleNames, assignOptions, fill} from "../utils";
+import {getStyleNames, assignOptions, fill, cloneItems} from "../utils";
 
 /*
 Frame
@@ -125,11 +125,10 @@ class FrameLayout {
 			frameFill: true,
 		}, options);
 		const frame = this.options.frame.map(row => row.slice());
-		// divide frame into shapes.
-		const shapes = getShapes(frame);
 
 		this._itemSize = this.options.itemSize || 0;
-		this._shapes = shapes;
+		// divide frame into shapes.
+		this._shapes = getShapes(frame);
 		this._size = 0;
 		this._style = getStyleNames(this.options.horizontal);
 	}
@@ -278,7 +277,7 @@ class FrameLayout {
 	}
 	_insert(items, outline, type) {
 		// this only needs the size of the item.
-		const clone = items.map(item => Object.assign({}, item));
+		const clone = cloneItems(items);
 
 		return {
 			items: clone,

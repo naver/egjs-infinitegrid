@@ -74,15 +74,9 @@ export default class ItemManager {
 		}
 	}
 	pluck(property, start, end) {
-		if (typeof start !== "undefined") {
-			if (typeof end !== "undefined") {
-				return ItemManager.pluck(this._data.slice(start, end + 1), property);
-			} else {
-				return ItemManager.pluck(this._data.slice(start, start + 1), property);
-			}
-		} else {
-			return ItemManager.pluck(this._data, property);
-		}
+		const data = typeof start === "undefined" ? this._data : this._data.slice(start, (typeof end === "undefined" ? start : end) + 1);
+
+		return ItemManager.pluck(data, property);
 	}
 	getOutline(index, property) {
 		if (this._data.length) {
@@ -176,15 +170,10 @@ export default class ItemManager {
 		return -1;
 	}
 	get(start, end) {
-		if (typeof start !== "undefined") {
-			if (typeof end !== "undefined") {
-				return this._data.slice(start, end + 1);
-			} else {
-				return this._data.slice(start, start + 1);
-			}
-		} else {
+		if (typeof start === "undefined") {
 			return this._data.concat();
 		}
+		return this._data.slice(start, (typeof end === "undefined" ? start : end) + 1);
 	}
 	set(data, key) {
 		if (typeof key !== "undefined" && !Array.isArray(data)) {

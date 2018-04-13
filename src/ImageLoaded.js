@@ -6,9 +6,6 @@ import AutoSizer from "./AutoSizer";
 export const CHECK_ALL = 1;
 export const CHECK_ONLY_ERROR = 2;
 
-
-const errorImages = [];
-
 function isDataAttribute(target, prefix) {
 	return !!target.getAttribute(`${prefix}width`);
 }
@@ -16,7 +13,7 @@ function isDataAttribute(target, prefix) {
 class ImageLoaded {
 	static waitImageLoaded(needCheck, {prefix = "", length, type, complete, error, end}) {
 		let checkCount = 0;
-		let endCount = length || needCheck.reduce((sum, element) => sum + element.length, 0);
+		let endCount = length;
 
 		if (type !== CHECK_ONLY_ERROR) {
 			checkCount = endCount;
@@ -52,7 +49,6 @@ class ImageLoaded {
 				checkImage();
 			}
 			if (e.type === "error") {
-				errorImages.push(target.src);
 				onError(target);
 			}
 			delete target.__ITEM_INDEX__;
@@ -84,7 +80,7 @@ class ImageLoaded {
 	}
 	static checkImageLoaded(el) {
 		if (el.tagName === "IMG") {
-			return !el.complete ? [el] : [];
+			return el.complete ? [] : [el];
 		} else {
 			return toArray(el.querySelectorAll("img"));
 		}
