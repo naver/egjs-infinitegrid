@@ -1,6 +1,6 @@
 import dijkstra from "./lib/dijkstra";
 import {APPEND, PREPEND} from "../consts";
-import {getStyleNames, assignOptions} from "../utils";
+import {getStyleNames, assignOptions, cloneItems} from "../utils";
 
 /**
  * @classdesc 'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout that the card is filled up on the basis of a line given a size.
@@ -74,17 +74,18 @@ class JustifiedLayout {
 				}
 				let cost = this._getCost(items, start, i, size1Name, size2Name);
 
+				if (cost === null) {
+					continue;
+				}
 				if (cost < 0 && i === length - 1) {
 					cost = 0;
 				}
-				if (cost !== null) {
-					results[`node${i}`] = Math.pow(cost, 2);
-				}
+				results[`${i}`] = Math.pow(cost, 2);
 			}
 			return results;
 		};
 		// shortest path for items' total height.
-		const path = dijkstra.find_path(graph, `node${startIndex}`, `node${endIndex}`);
+		const path = dijkstra.find_path(graph, `${startIndex}`, `${endIndex}`);
 
 		return this._setStyle(items, path, outline, isAppend);
 	}
@@ -141,8 +142,8 @@ class JustifiedLayout {
 		let height = 0;
 
 		for (let i = 0; i < length - 1; ++i) {
-			const path1 = parseInt(path[i].replace("node", ""), 10);
-			const path2 = parseInt(path[i + 1].replace("node", ""), 10);
+			const path1 = parseInt(path[i], 10);
+			const path2 = parseInt(path[i + 1], 10);
 			// pathItems(path1 to path2) are in 1 line.
 			const pathItems = items.slice(path1, path2);
 			const pathItemsLength = pathItems.length;
@@ -151,7 +152,7 @@ class JustifiedLayout {
 
 			for (let j = 0; j < pathItemsLength; ++j) {
 				const item = pathItems[j];
-				const size2 = item.size[size2Name] / item.size[size1Name] * size1;
+				const size2 = item.orgSize[size2Name] / item.orgSize[size1Name] * size1;
 				// item has margin bottom and right.
 				// first item has not margin.
 				const prevItemRect = j === 0 ? 0 : pathItems[j - 1].rect;
@@ -198,7 +199,7 @@ class JustifiedLayout {
 	}
 	_insert(items, outline, type) {
 		// this only needs the size of the item.
-		const clone = items.map(item => Object.assign({}, item));
+		const clone = cloneItems(items);
 
 		return {
 			items: clone,
