@@ -195,3 +195,7 @@ export function fill(arr, value) {
 
 	return arr;
 }
+
+export function isUndefined(target) {
+	return typeof target === "undefined";
+}

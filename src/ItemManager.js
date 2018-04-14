@@ -1,5 +1,5 @@
 import {MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME} from "./consts";
-import {$, toArray} from "./utils";
+import {$, toArray, isUndefined} from "./utils";
 
 export default class ItemManager {
 	static from(elements, selector, {groupKey, isAppend}) {
@@ -74,7 +74,8 @@ export default class ItemManager {
 		}
 	}
 	pluck(property, start, end) {
-		const data = typeof start === "undefined" ? this._data : this._data.slice(start, (typeof end === "undefined" ? start : end) + 1);
+		const data = isUndefined(start) ? this._data :
+			this._data.slice(start, (isUndefined(end) ? start : end) + 1);
 
 		return ItemManager.pluck(data, property);
 	}
@@ -170,13 +171,13 @@ export default class ItemManager {
 		return -1;
 	}
 	get(start, end) {
-		if (typeof start === "undefined") {
+		if (isUndefined(start)) {
 			return this._data.concat();
 		}
-		return this._data.slice(start, (typeof end === "undefined" ? start : end) + 1);
+		return this._data.slice(start, (isUndefined(end) ? start : end) + 1);
 	}
 	set(data, key) {
-		if (typeof key !== "undefined" && !Array.isArray(data)) {
+		if (!isUndefined(key) && !Array.isArray(data)) {
 			const len = this._data.length;
 			let idx = -1;
 
