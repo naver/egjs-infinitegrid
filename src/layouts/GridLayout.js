@@ -1,5 +1,5 @@
 import {APPEND, PREPEND, ALIGN} from "../consts";
-import {getStyleNames, assignOptions, fill} from "../utils";
+import {getStyleNames, assignOptions, fill, cloneItems} from "../utils";
 
 // ALIGN
 const {START, CENTER, END, JUSTIFY} = ALIGN;
@@ -58,9 +58,9 @@ class GridLayout {
 		return outlines.map(outline => outline[pos]);
 	}
 	checkColumn(item) {
-		const margin = this.options.margin;
-		const sizeName = this.options.horizontal ? "height" : "width";
-		const columnSize = this.options.itemSize || (item && item.size[sizeName]) || 0;
+		const {itemSize, margin, horizontal} = this.options;
+		const sizeName = horizontal ? "height" : "width";
+		const columnSize = itemSize || (item && item.size[sizeName]) || 0;
 
 		this._columnSize = columnSize;
 		if (!columnSize) {
@@ -157,7 +157,7 @@ class GridLayout {
 		};
 	}
 	_insert(items = [], outline = [], type) {
-		const clone = items.map(item => Object.assign({}, item));
+		const clone = cloneItems(items);
 
 		let startOutline = outline;
 

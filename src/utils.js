@@ -179,7 +179,9 @@ export function toZeroArray(outline) {
 	}
 	return outline;
 }
-
+export function cloneItems(items) {
+	return items.map(item => Object.assign({}, item));
+}
 export function isWindow(el) {
 	return el === window;
 }
@@ -192,4 +194,8 @@ export function fill(arr, value) {
 	}
 
 	return arr;
+}
+
+export function isUndefined(target) {
+	return typeof target === "undefined";
 }

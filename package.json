@@ -41,6 +41,23 @@
 	"dependencies": {
 		"@egjs/component": "^2.1.0"
 	},
+	"keywords": [
+		"infinitegrid",
+		"infinite",
+		"scroll",
+		"layout",
+		"DOM",
+		"html",
+		"gallery",
+		"grid",
+		"pinterest",
+		"masonry",
+		"GridLayout",
+		"JustifiedLayout",
+		"PackingLayout",
+		"FrameLayout",
+		"SquareLayout"
+	],
 	"devDependencies": {
 		"@egjs/common-demo": "github:naver/egjs#common-demo",
 		"babel-core": "^6.26.0",

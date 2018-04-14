@@ -10,6 +10,9 @@ import PackingLayout from "./layouts/PackingLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
 import ImageLoaded from "./ImageLoaded";
 import AutoSizer from "./AutoSizer";
+import DOMRenderer from "./DOMRenderer";
+import Watcher from "./Watcher";
+import ItemManager from "./ItemManager";
 import Infinite from "./Infinite";
 
 export {
@@ -21,5 +24,8 @@ export {
 	Infinite,
 	ImageLoaded,
 	AutoSizer,
+	DOMRenderer,
+	Watcher,
+	ItemManager,
 };
 export default InfiniteGrid;
