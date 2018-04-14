@@ -294,8 +294,8 @@ export default class Layout extends Component {
 		if (!datas) {
 			return;
 		}
-		for (const item in datas) {
-			item.el = null;
+		for (const id in datas) {
+			datas[id].el = null;
 		}
 	}
 }
