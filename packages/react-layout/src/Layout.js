@@ -110,7 +110,7 @@ export default class Layout extends Component {
 		}
 	}
 	_newItem(element) {
-		const id = (new Date().getTime() + Math.floor(Math.random() * 1000));
+		const id = `${new Date().getTime()}.${Math.floor(Math.random() * 1000000)}`;
 
 		element[LAYOUT_ID] = id;
 
