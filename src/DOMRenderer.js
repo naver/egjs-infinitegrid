@@ -12,8 +12,27 @@ import {
 	innerHeight,
 	innerWidth,
 	getStyles,
+	addEvent,
+	removeEvent,
 } from "./utils";
 
+const [TRANSFORM, TRANSITION, TRANSITION_END] = (function() {
+	const properties = {
+		transitionend: "",
+		webkitTransitionEnd: "-webkit-",
+		oTransitionEnd: "-o-",
+		mozTransitionEnd: "-moz-",
+	};
+
+	for (const property in properties) {
+		const prefix = properties[property];
+
+		if (`on${property.toLowerCase()}` in window) {
+			return [`${prefix}transform`, `${prefix}transition`, property];
+		}
+	}
+	return [];
+})();
 
 function _defense(element) {
 	const container = document.createElement("div");
@@ -32,24 +51,55 @@ function _defense(element) {
 	element.appendChild(container);
 	return container;
 }
+function render(properteis, rect, styles) {
+	properteis.forEach(p => {
+		(p in rect) && (styles[p] = `${rect[p]}px`);
+	});
+}
+function setTransition(styles, transitionDuration, x, y) {
+	styles[`${TRANSITION}-property`] = transitionDuration ? `${TRANSFORM},width,height` : "";
+	styles[`${TRANSITION}-duration`] = transitionDuration ? `${transitionDuration}s` : "";
+	styles[`${TRANSITION}-delay`] = transitionDuration ? `0s` : "";
+	styles[`${TRANSITION}-timing-function`] = transitionDuration ? `ease` : "";
+	styles[TRANSFORM] = transitionDuration ? `translate(${x}px,${y}px)` : "";
+}
+
 export default class DOMRenderer {
-	static renderItem(item, styles) {
-		const el = item.el;
+	static renderItem(item, rect, transitionDuration) {
+		if (!item.el) {
+			return;
+		}
+		const {el, renderRect} = item;
+		const styles = el.style;
 
-		if (el) {
-			const elStyle = el.style;
+		// for debugging
+		el.setAttribute(GROUPKEY_ATT, item.groupKey);
+		styles.position = "absolute";
+		render(["width", "height"], rect, styles);
+		if (transitionDuration && TRANSITION && renderRect) {
+			setTransition(styles, transitionDuration,
+				rect.left - renderRect.left, rect.top - renderRect.top);
+			if (item.transition) {
+				return;
+			}
+			item.transition = () => {
+				const itemRect = item.rect;
 
-			// for debugging
-			el.setAttribute(GROUPKEY_ATT, item.groupKey);
-			elStyle.position = "absolute";
-			["left", "top", "width", "height"].forEach(p => {
-				(p in styles) && (elStyle[p] = `${styles[p]}px`);
-			});
+				setTransition(styles);
+				render(["left", "top"], itemRect, styles);
+				item.renderRect = Object.assign(itemRect);
+				removeEvent(el, TRANSITION_END, item.transition);
+				item.transition = 0;
+			};
+			addEvent(el, TRANSITION_END, item.transition);
+		} else {
+			render(["left", "top"], rect, styles);
+			item.renderRect = Object.assign(rect);
 		}
 	}
-	static renderItems(items) {
+	static renderItems(items, transitionDuration = 0) {
 		items.forEach(item => {
-			DOMRenderer.renderItem(item, item.rect);
+			DOMRenderer.renderItem(item, item.rect, transitionDuration);
 		});
 	}
 	static removeItems(items) {
@@ -57,6 +107,7 @@ export default class DOMRenderer {
 			if (item.el) {
 				DOMRenderer.removeElement(item.el);
 				item.el = null;
+				item.rendRect = null;
 			}
 		});
 	}
@@ -109,17 +160,19 @@ export default class DOMRenderer {
 	}
 	updateSize(items) {
 		return items.map(item => {
-			if (item.el) {
+			const el = item.el;
+
+			if (el) {
 				if (this.options.isEqualSize) {
 					this._size.item = this._size.item || {
-						width: innerWidth(item.el),
-						height: innerHeight(item.el),
+						width: innerWidth(el),
+						height: innerHeight(el),
 					};
 					item.size = Object.assign({}, this._size.item);
 				} else {
 					item.size = {
-						width: innerWidth(item.el),
-						height: innerHeight(item.el),
+						width: innerWidth(el),
+						height: innerHeight(el),
 					};
 				}
 				if (!item.orgSize) {

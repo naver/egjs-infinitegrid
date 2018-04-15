@@ -12,6 +12,7 @@ var isParallax = false;
 var _overflow = true;
 var _layout;
 var _horizontal;
+var _transition = 0;
 
 var grid = document.querySelector("#grid");
 $(grid).click(function (e) {
@@ -33,6 +34,7 @@ function createGrid() {
 		horizontal: _horizontal,
 		threshold: 50,
 		isOverflowScroll: _overflow,
+		transitionDuration: _transition,
 		// useRecycle: false,
 	});
 	ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
@@ -50,8 +52,11 @@ function createGrid() {
 			}, 200);
 		},
 		"layoutComplete": function (e) {
+			if (e.isLayout) {
+				return;
+			}
 			ig.endLoading();
-			// console.log("layoutComplete");
+			console.log("layoutComplete");
 			if (!isParallax) {
 				return;
 			}
@@ -209,3 +214,11 @@ function overflow_false() {
 }
 
 
+function enableTransition() {
+	_transition = 1;
+	ig.options.transitionDuration = 1;
+}
+function disableTransition() {
+	_transition = 0;
+	ig.options.transitionDuration = 0;
+}
