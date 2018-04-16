@@ -5,7 +5,7 @@
  * @egjs/infinitegrid JavaScript library
  * https://github.com/naver/egjs-infinitegrid
  * 
- * @version 3.3.1-rc
+ * @version 3.3.1
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
