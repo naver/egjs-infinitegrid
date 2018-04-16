@@ -324,9 +324,6 @@ class InfiniteGrid extends Component {
 			data = infinite.getVisibleData();
 			outline = infinite.getEdgeOutline("start");
 		}
-		if (!data.length) {
-			return this;
-		}
 		this._layout.layout(data, outline);
 
 		if (isRelayout) {
@@ -336,12 +333,12 @@ class InfiniteGrid extends Component {
 				const startCursor = infinite.getCursor("start");
 				const endCursor = infinite.getCursor("end");
 
-				itemManager._data.forEach((group, cursor) => {
+				itemManager._data.forEach(({outlines}, cursor) => {
 					if (startCursor <= cursor && cursor <= endCursor) {
 						return;
 					}
-					group.outlines.start = [];
-					group.outlines.end = [];
+					outlines.start = [];
+					outlines.end = [];
 				});
 			}
 		}

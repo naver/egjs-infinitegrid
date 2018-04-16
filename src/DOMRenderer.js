@@ -87,14 +87,14 @@ export default class DOMRenderer {
 
 				setTransition(styles);
 				render(["left", "top"], itemRect, styles);
-				item.renderRect = Object.assign(itemRect);
+				item.renderRect = itemRect;
 				removeEvent(el, TRANSITION_END, item.transition);
 				item.transition = 0;
 			};
 			addEvent(el, TRANSITION_END, item.transition);
 		} else {
 			render(["left", "top"], rect, styles);
-			item.renderRect = Object.assign(rect);
+			item.renderRect = rect;
 		}
 	}
 	static renderItems(items, transitionDuration = 0) {

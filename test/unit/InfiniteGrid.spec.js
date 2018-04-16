@@ -10,6 +10,7 @@ import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND} from "../../src/consts
 import {innerWidth, innerHeight} from "../../src/utils";
 import {DEFENSE_BROWSER} from "../../src/consts";
 import {expectConnectGroupsOutline} from "./helper/common";
+import { timingSafeEqual } from "crypto";
 
 /* eslint-disable */
 describe("InfiniteGrid Test", function() {
@@ -640,7 +641,7 @@ describe("InfiniteGrid Test", function() {
       });
     });
   });  
-  describe("isEqualSize option Test", function() {
+  describe(`isEqualSize option Test(DEFENSE_BROWSER: ${DEFENSE_BROWSER})`, function() {
     beforeEach(() => {
       this.el = sandbox();
       this.el.innerHTML = "<div id='infinite'></div>";
@@ -669,6 +670,118 @@ describe("InfiniteGrid Test", function() {
           });
         })
         done();
+      }, 5, 4);
+    });
+    it(`should check no items`, () => {
+      this.inst = new InfiniteGrid("#infinite", {
+        isEqualSize: true,
+      });
+      this.inst.layout(true);
+
+      expect(this.inst._layout).is.not.ok;
+      this.inst.setLayout(GridLayout);
+      this.inst._infinite._status.startCursor = -1;
+      this.inst._infinite._status.endCursor = -1;
+
+      this.inst.layout(true);
+
+      expect(this.inst.getItems().length).to.be.equals(0);
+      
+    });
+    it(`should check layout method`, done => {
+      
+      this.inst.layout(true);
+      insert(this.inst, true, () => {
+        const datas = this.inst._items._data;
+        const rects = datas.map(data => data.items.map(item => Object.assign(item.rect)));
+        this.inst.on("layoutComplete", () => {
+          const rects2 = datas.map(data => data.items.map(item => Object.assign(item.rect)));
+
+          expect(rects).to.be.deep.equals(rects2);
+          done();
+        });
+        this.inst.layout(true);
+
+        
+        
+      }, 5, 4);
+    });
+    it(`should check layout method in cursor`, (done) => {
+      
+      this.inst.layout(true);
+      insert(this.inst, true, () => {
+        const datas = this.inst._items._data;
+        const rects = datas.map(data => data.items.map(item => item.rect.top));
+        this.inst.on("layoutComplete", () => {
+          const rects2 = datas.map(data => data.items.map(item =>item.rect.top));
+
+          if (!DEFENSE_BROWSER) {
+            expect(rects).to.be.deep.equals(rects2.map(data => data.map(top => top - rects2[0][0])));
+          }
+          done();
+        });
+        this.inst._infinite.setCursor("start", 1);
+        this.inst.layout(true);
+        
+      }, 5, 4);
+    });
+    it(`should check resize and layout method in cursor`, done => {
+      
+      this.inst.layout(true);
+      insert(this.inst, true, () => {
+        const datas = this.inst._items._data;
+        const rects = datas.map(data => data.items.map(item => item.rect.top));
+        this.inst.on("layoutComplete", () => {
+          const rects2 = datas.map(data => data.items.map(item =>item.rect.top));
+
+          if (!DEFENSE_BROWSER) {
+            expect(rects).to.be.deep.equals(rects2.map(data => data.map(top => top - rects2[0][0])));
+          }
+          done();
+        });
+        this.inst._infinite.setCursor("start", 1);
+        this.inst._renderer._size.viewport = 0;
+        this.inst._watcher._onResize();
+        
+        
+      }, 5, 4);
+    });
+    it(`should check resize and layout method with transition`, done => {
+      this.inst.options.transitionDuration = 0.1;
+      insert(this.inst, true, () => {
+        const datas = this.inst._items._data;
+        const rects = datas.map(data => data.items.map(item => item.rect));
+
+        expect(rects).to.be.deep.equals(datas.map(data => data.items.map(item => item.renderRect)));
+        
+        this.inst.on("layoutComplete", () => {
+          const layoutCompleteRects =  this.inst._items._data.map(data => data.items.map(item => item.rect));
+          const layoutCompleteRenderRects =  this.inst._items._data.map(data => data.items.map(item => item.renderRect));
+          
+
+          expect(layoutCompleteRects).to.be.not.deep.equals(layoutCompleteRenderRects);
+          expect(rects).to.be.deep.equals(layoutCompleteRenderRects);
+          expect(rects).to.be.not.deep.equals(layoutCompleteRects);
+
+          setTimeout(() => {
+            const transitionEndRenderRects = this.inst._items._data.map(data => data.items.map(item => item.renderRect));
+
+            expect(transitionEndRenderRects).to.be.deep.equals(layoutCompleteRects);
+            done();
+          }, 300);
+
+          
+        });
+        const container = this.el.querySelector("#infinite");
+
+        const width = innerWidth(container);
+        container.style.width = `${width * 3}px`;
+        datas[0].outlines.start = [];
+        this.inst._renderer._size.viewport = width * 3;
+        this.inst._layout.setSize(width * 3);
+        this.inst.layout(true);
+        
+        
       }, 5, 4);
     });
   });

@@ -1,4 +1,4 @@
-/* global describe, beforeEach, afterEach, it, expect */
+/* eslint-disable */
 import {makeItems, VIEWPORT} from "./helper/data";
 import Parallax from "../../src/Parallax";
 
