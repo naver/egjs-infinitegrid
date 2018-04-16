@@ -12,6 +12,7 @@ export interface InfiniteGridOption {
 	useRecycle?: boolean;
 	horizontal?: boolean;
 	useFit?: boolean;
+	transitionDuration?: number;
 }
 
 export interface InfiniteGridStatus {
