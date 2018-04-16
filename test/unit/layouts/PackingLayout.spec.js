@@ -1,7 +1,7 @@
 /* eslint-disable */
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "../helper/data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline} from "../helper/common";
+import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectConnectGroupsOutline} from "../helper/common";
 import Layout from "../../../src/layouts/PackingLayout";
 import { getStyleNames } from "../../../src/utils";
 
@@ -78,19 +78,6 @@ describe("PackingLayout Test", function () {
 	} 
 	describe("append test", function () {
 		checkMargin([0, 10, 20], margin => {
-			it(`test outline indicies (margin = ${margin})`, function () {
-				// Given
-				const layout = new Layout({
-					margin,
-				});
-				layout.setSize(VIEWPORT.width);
-				const group = layout.append(items, []);
-				const group2 = layout.append(items, [100]);
-
-				// Then
-				expectOutlineIndex(layout, group);
-				expectOutlineIndex(layout, group2);
-			});
 			checkDirection(horizontal => {
 				it(`test match items (margin = ${margin}, horizontal = ${horizontal})`, function() {
 					// Given

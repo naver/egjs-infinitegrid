@@ -88,9 +88,6 @@ class GridLayout {
 		const pointCaculateName = isAppend ? "min" : "max";
 		const startOutline = outline.slice();
 		const endOutline = outline.slice();
-		const startIndex = 0;
-		let endIndex = -1;
-		let endPos = -1;
 
 		for (let i = 0; i < length; ++i) {
 			const point = Math[pointCaculateName](...endOutline) || 0;
@@ -125,13 +122,6 @@ class GridLayout {
 			};
 			item.column = index;
 			endOutline[index] = isAppend ? endPos1 : pos1;
-			if (endIndex === -1) {
-				endIndex = i;
-				endPos = endPos1;
-			} else if (endPos < endPos1) {
-				endIndex = i;
-				endPos = endPos1;
-			}
 		}
 		if (!isAppend) {
 			items.sort((a, b) => {
@@ -145,15 +135,12 @@ class GridLayout {
 				}
 				return item1pos2 - item2pos2;
 			});
-			endIndex = length - 1;
 		}
 		// if append items, startOutline is low, endOutline is high
 		// if prepend items, startOutline is high, endOutline is low
 		return {
 			start: isAppend ? startOutline : endOutline,
 			end: isAppend ? endOutline : startOutline,
-			startIndex,
-			endIndex,
 		};
 	}
 	_insert(items = [], outline = [], type) {

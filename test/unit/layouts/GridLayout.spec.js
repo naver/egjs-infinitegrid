@@ -1,6 +1,6 @@
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "../helper/data";
-import { checkMargin, checkDirection, expectConnectItems, expectOutlineIndex, expectNoOutline, expectSameAppendPrepend, expectAppend} from "../helper/common";
+import { checkMargin, checkDirection, expectConnectItems, expectNoOutline, expectSameAppendPrepend, expectAppend} from "../helper/common";
 import Layout from "../../../src/layouts/GridLayout";
 import {ALIGN} from "../../../src/consts";
 import {getStyleNames} from "../../../src/utils";
@@ -47,18 +47,6 @@ describe("GridLayout Test", function () {
 			// Then
 			expectAppend(layout, items, [100, 100, 100, 100]);
 			
-		});
-		it("test outline indicies", function () {
-			// Given
-			const layout = new Layout({
-				itemSize: 200,
-			});
-			layout.setSize(VIEWPORT.width);
-			const group = layout.append(items, []);
-			const group2 = layout.append(items, [-1, 1, 2, -2]);
-			// Then
-			expectOutlineIndex(layout, group);
-			expectOutlineIndex(layout, group2);
 		});
 		it("test prepend from end outline and append from start outline are the same", function () {
 			// Given

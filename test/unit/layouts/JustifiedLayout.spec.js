@@ -1,7 +1,7 @@
 /* eslint-disable */
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "../helper/data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline} from "../helper/common";
+import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectConnectGroupsOutline} from "../helper/common";
 import Layout from "../../../src/layouts/JustifiedLayout";
 import { getStyleNames } from "../../../src/utils";
 
@@ -155,19 +155,6 @@ describe("JustifiedLayout Test", function () {
 				for (let j = 1; j < lines.length; ++j) {
 					expect(lines[j][0].rect.top).to.be.equal(lines[j - 1][0].rect.top + lines[j - 1][0].rect.height + margin);
 				}
-			});
-			it(`test outline indicies (margin = ${margin})`, function () {
-				// Given
-				const layout = new Layout({
-					margin,
-				});
-				layout.setSize(VIEWPORT.width);
-				const group = layout.append(items, []);
-				const group2 = layout.append(items, [100]);
-
-				// Then
-				expectOutlineIndex(layout, group);
-				expectOutlineIndex(layout, group2);
 			});
 			it(`test min size (margin = ${margin})`, function() {
 				// Given

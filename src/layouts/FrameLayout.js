@@ -168,13 +168,10 @@ class FrameLayout {
 		const endOutline = fill(new Array(shapesSize), DUMMY_POSITION);
 		let dist = 0;
 		let end = 0;
-		let startIndex = -1;
-		let endIndex = -1;
-		let minPos = -1;
-		let maxPos = -1;
+
 
 		if (!shapesLength) {
-			return {start: outline, end: outline, startIndex, endIndex};
+			return {start: outline, end: outline};
 		}
 		for (let i = 0; i < length; i += shapesLength) {
 			for (let j = 0; j < shapesLength && i + j < length; ++j) {
@@ -192,20 +189,6 @@ class FrameLayout {
 				for (let k = shapePos2; k < shapePos2 + shapeSize2 && k < shapesSize; ++k) {
 					if (startOutline[k] === DUMMY_POSITION) {
 						startOutline[k] = pos1;
-					}
-					if (startIndex === -1) {
-						minPos = pos1;
-						startIndex = i + j;
-						maxPos = pos1 + size1 + margin;
-						endIndex = i + j;
-					}
-					if (minPos > pos1) {
-						minPos = pos1;
-						startIndex = i + j;
-					}
-					if (maxPos < pos1 + size1 + margin) {
-						maxPos = pos1 + size1 + margin;
-						endIndex = i + j;
 					}
 					startOutline[k] = Math.min(startOutline[k], pos1);
 					endOutline[k] = Math.max(endOutline[k], pos1 + size1 + margin);
@@ -271,8 +254,6 @@ class FrameLayout {
 		return {
 			start: startOutline,
 			end: endOutline,
-			startIndex,
-			endIndex,
 		};
 	}
 	_insert(items, outline, type) {

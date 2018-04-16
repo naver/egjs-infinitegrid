@@ -1,6 +1,6 @@
 /* global describe, beforeEach, afterEach, it, expect */
 import {makeItems, VIEWPORT} from "../helper/data";
-import {checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex} from "../helper/common";
+import {checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend} from "../helper/common";
 import Layout from "../../../src/layouts/FrameLayout";
 import { DUMMY_POSITION } from "../../../src/consts";
 
@@ -69,25 +69,6 @@ describe("FrameLayout Test", function () {
 
 			// Then
 			expectAppend(layout, items, [100, 100, 100, 100, 100]);
-		});
-		it("test outline indicies", function () {
-			// Given
-			const frame = [
-				["A", "A", "B", "C", "D"],
-				["A", "A", "E", "F", "G"],
-				["H", "I", "J", "K", "L"],
-			];
-			const layout = new Layout({
-				frame,
-			});
-
-			layout.setSize(VIEWPORT.width);
-			const items = makeItems(24);			
-			const group = layout.append(items, []);
-			const group2 = layout.append(items, [0, 0, 0, 0, 100]);
-			// Then
-			expectOutlineIndex(layout, group);
-			expectOutlineIndex(layout, group2);
 		});
 		it("test prepend from end outline and append from start outline are the same", function() {
 			// Given

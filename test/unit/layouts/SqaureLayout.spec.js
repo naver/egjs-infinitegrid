@@ -1,7 +1,7 @@
 /* eslint-disable */
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "../helper/data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline} from "../helper/common";
+import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectConnectGroupsOutline} from "../helper/common";
 import Layout from "../../../src/layouts/SquareLayout";
 import { getStyleNames } from "../../../src/utils";
 
@@ -80,19 +80,6 @@ describe("SquareLayout Test", function () {
 				for (let i = 1; i < gitems.length; ++i) {
 					expect(gitems[i].rect.top).to.be.at.least(gitems[i - 1].rect.top);
 				}
-			});
-			it(`test outline indicies (margin = ${margin})`, function () {
-				// Given
-				const layout = new Layout({
-					margin,
-				});
-				layout.setSize(VIEWPORT.width);
-				const group = layout.append(items, []);
-				const group2 = layout.append(items, [100]);
-
-				// Then
-				expectOutlineIndex(layout, group);
-				expectOutlineIndex(layout, group2);
 			});
 		});
 	});
