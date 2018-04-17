@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-layout",
-  "version": "1.2.4",
+  "version": "1.2.8",
   "description": "A react component that can easily use egjs-infinitegrid's layouts.",
   "main": "dist/index.js",
   "author": {
@@ -10,10 +10,28 @@
   "homepage": "https://github.com/naver/egjs-infinitegrid",
   "dependencies": {
     "@egjs/infinitegrid": "^3.3.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-scripts": "1.0.17"
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1"
   },
+	"keywords": [
+		"infinitegrid",
+		"infinite",
+    "scroll",
+    "react",
+    "react-layout",
+		"layout",
+		"DOM",
+		"html",
+		"gallery",
+		"grid",
+		"pinterest",
+		"masonry",
+		"GridLayout",
+		"JustifiedLayout",
+		"PackingLayout",
+		"FrameLayout",
+		"SquareLayout"
+	],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -30,6 +48,7 @@
     "rc-tools": "^7.0.8",
     "url-loader": "^1.0.1",
     "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.2",
     "write-file-webpack-plugin": "^4.2.0"
   },
   "scripts": {

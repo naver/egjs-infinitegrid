@@ -110,7 +110,7 @@ export default class Layout extends Component {
 		}
 	}
 	_newItem(element) {
-		const id = (new Date().getTime() + Math.floor(Math.random() * 1000));
+		const id = `${new Date().getTime()}.${Math.floor(Math.random() * 1000000)}`;
 
 		element[LAYOUT_ID] = id;
 
@@ -271,14 +271,15 @@ export default class Layout extends Component {
 			return;
 		}
 		this._container = container;
+		const horizontal = this._layout.options.horizontal;
 
 		if (this.props.size === 0) {
-			this.state.size = this._container.clientWidth;
+			this.state.size = this._container[horizontal ? "clientHeight" : "clientWidth"];
 
 			window.addEventListener("resize", () => {
 				clearTimeout(this._timer);
 				this._timer = setTimeout(() => {
-					const size = this._container.clientWidth;
+					const size = this._container[horizontal ? "clientHeight" : "clientWidth"];
 
 					this.setState({size, render: NOT_RENDER});
 				}, 100);
@@ -293,8 +294,8 @@ export default class Layout extends Component {
 		if (!datas) {
 			return;
 		}
-		for (const item in datas) {
-			item.el = null;
+		for (const id in datas) {
+			datas[id].el = null;
 		}
 	}
 }
