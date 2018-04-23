@@ -1,4 +1,4 @@
-import {SquareLayout as LayoutType} from "@egjs/InfiniteGrid";
+import {SquareLayout as LayoutType} from "@egjs/infinitegrid";
 import InfiniteGrid from "../InfiniteGrid";
 
 export default class SquareLayout extends InfiniteGrid {

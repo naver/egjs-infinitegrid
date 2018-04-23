@@ -1,17 +1,18 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
-import {GridLayout} from "../../src/index.js";
+import InfiniteGrid, {GridLayout} from "../../src/index";
 
-class Item {
+
+class Item extends Component {
 	render() {
 		const no = this.props.num;
 		const text = `egjs ${no}`;
 
-		return (<div class="item">
-			<div class="thumbnail">
-				<img src={`https://naver.github.io/egjs-infinitegrid/assets/image/${no}.jpg`}/>
+		return (<div className="item">
+			<div className="thumbnail">
+				<img src={`https://naver.github.io/egjs-infinitegrid/assets/image/${no % 59 + 1}.jpg`}/>
 			</div>
-			<div class="info">
+			<div className="info">
 				{text}
 			</div>
 		</div>);
@@ -24,7 +25,7 @@ class App extends Component {
 		this.loading = (<div class="loading" append>Loading...</div>);
 		this.state = {
 			loading: null,
-			list: [],
+			list: this.loadItems(1, 0),
 		};
 		this.onAppend = this.onAppend.bind(this);
 		this.onLayoutComplete = this.onLayoutComplete.bind(this);
@@ -33,7 +34,7 @@ class App extends Component {
 		const items = [];
 
 		for (let i = 0; i < 20; ++i) {
-			items.push(<Item groupKey={groupKey} num={start + i} key={start + i} />);
+			items.push(<Item groupKey={groupKey} num={1 + start + i} key={start + i} />);
 		}
 		return items;
 	}
@@ -41,26 +42,29 @@ class App extends Component {
 		if (this.state.loading) {
 			return;
 		}
+		console.log("onAppend");
 		const list = this.state.list;
 		const start = list.length;
 		const items = this.loadItems(groupKey + 1, start);
 
-		this.setState({loading: this.loading, list: list.concat(items)});
+		this.setState({loading: true, list: list.concat(items)});
 	}
-	onLayoutComplete(e) {
-		this.setState({loading: false});
+	onLayoutComplete({isLayout}) {
+		console.log(isLayout);
+		window.b = this;
+		!isLayout && this.setState({loading: false});
 	}
 	render() {
 		const {list} = this.state;
 
 		return (
-			<GridLayout margin={10}
+			<InfiniteGrid margin={10}
 				align={"center"}
 				onAppend={this.onAppend}
 				onLayoutComplete={this.onLayoutComplete}
 			>
 				{list}
-			</GridLayout>
+			</InfiniteGrid>
 		);
 	}
 }
