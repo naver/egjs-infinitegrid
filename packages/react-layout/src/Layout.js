@@ -117,7 +117,7 @@ export default class Layout extends Component {
 		const item = new Item(element);
 
 		this._render(item);
-		this.state.render = NOT_RENDER;		
+		this.state.render = NOT_RENDER;
 		return item;
 	}
 	_searchItem(element) {
@@ -125,7 +125,10 @@ export default class Layout extends Component {
 		const id = element[LAYOUT_ID];
 
 		if (id && id in datas) {
-			return datas[id];
+			const item = datas[id];
+
+			item.el = element;
+			return item;
 		}
 		return this._newItem(element);
 	}
@@ -145,7 +148,7 @@ export default class Layout extends Component {
 			items.push(item);
 			datas[item.id] = item;
 		});
-		if (!ids.every((id, index) => id === items[index].id)) {
+		if (ids.length !== items.length || !ids.every((id, index) => items[index] && id === items[index].id)) {
 			this.state.render = NOT_RENDER;
 		}
 		this.state.datas = datas;
@@ -297,5 +300,7 @@ export default class Layout extends Component {
 		for (const id in datas) {
 			datas[id].el = null;
 		}
+		this.state.datas = {};
+		this.state.items =[];
 	}
 }
