@@ -89,7 +89,18 @@ export default class Layout extends Component {
 		const cssText = style.join("");
 
 		item.cssText = cssText;
+
 		element.style.cssText += cssText;
+	}
+	_setSize(isResize) {
+		const horizontal = this._layout.options.horizontal;
+		const size = this._container[horizontal ? "clientHeight" : "clientWidth"];;
+
+		if (isResize) {
+			this.setState({size, render: NOT_RENDER});
+		} else {
+			this.state.size = size;
+		}
 	}
 	_resetSize() {
 		const items = this.state.items;
@@ -257,12 +268,19 @@ export default class Layout extends Component {
         return (<Tag {...attributes} ref={(container) => {this._setContainer(container);}}>
             {this.props.children}
         </Tag>);
-    }
+	}
+	componentDidMount() {
+		this._setContainer(ReactDOM.findDOMNode(this));
+	}
     componentDidUpdate(prevProps) {
 		if (!this._container) {
 			return;
 		}
-		if (this.state.render === REQUEST_RENDER) {
+		const state = this.state;
+	
+		!state.size && this._setSize();
+
+		if (state.render === REQUEST_RENDER) {
 			this.layout();
 		} else {
 			this._updateItems();
@@ -274,17 +292,14 @@ export default class Layout extends Component {
 			return;
 		}
 		this._container = container;
-		const horizontal = this._layout.options.horizontal;
 
 		if (this.props.size === 0) {
-			this.state.size = this._container[horizontal ? "clientHeight" : "clientWidth"];
+			this._setSize();
 
 			window.addEventListener("resize", () => {
 				clearTimeout(this._timer);
 				this._timer = setTimeout(() => {
-					const size = this._container[horizontal ? "clientHeight" : "clientWidth"];
-
-					this.setState({size, render: NOT_RENDER});
+					this._setSize(true);
 				}, 100);
 			});
 		}
