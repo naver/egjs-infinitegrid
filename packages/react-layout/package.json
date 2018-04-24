@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-layout",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "A react component that can easily use egjs-infinitegrid's layouts.",
   "main": "dist/index.js",
   "author": {
@@ -53,7 +53,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --host=0.0.0.0 ",
-    "b": "webpack",
-    "build": "mkdir -p dist && babel src --out-dir dist/"
+    "build": "mkdir -p dist && babel src --out-dir dist/",
+    "publish": "npm run build && npm publish"
   }
 }
