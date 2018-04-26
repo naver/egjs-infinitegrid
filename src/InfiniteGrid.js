@@ -303,6 +303,9 @@ class InfiniteGrid extends Component {
 		const isEqualSize = this.options.isEqualSize;
 
 		if (!items.length) {
+			if (renderer.resize()) {
+				this._setSize(renderer.getViewportSize());
+			}
 			return this;
 		}
 		if (isRelayout) { // remove cache
