@@ -11,6 +11,7 @@ export default class Item extends Component {
 		};
 		this.size = {};
 		this.el = null;
+		this.mount = false;
 		this.groupKey = this.props.groupKey;
 		this.itemIndex = this.props.itemIndex;
 	}
@@ -19,17 +20,23 @@ export default class Item extends Component {
 		this.size = {};
 	}
 	render() {
-		return this.props.children;
-	}
-	updateElement() {
-		const el = ReactDOM.findDOMNode(this);
+		const element = this.props.children;
 
-		this.el = el;
+		return <element.type {...element.props} ref={el => this.updateElement(el)} />;
 	}
-	componentDidUpdate() {
+	updateElement(item) {
+		if (!item || this.el) {
+			return;
+		}
+		const el = ReactDOM.findDOMNode(item);
 
+		el && (this.el = ReactDOM.findDOMNode(el));
+	}
+	componentDidMount() {
+		this.updateElement(this);
 	}
 	componentWillUnmount() {
 		this.el = null;
+		this.mount = false;
 	}
 }
