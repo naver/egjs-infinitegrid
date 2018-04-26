@@ -269,8 +269,8 @@ class FrameLayout {
 			item.rect[pos1Name] += prevOutlineEnd - prevOutlineDist;
 		});
 		return {
-			start: startOutline,
-			end: endOutline,
+			start: startOutline.map(point => parseInt(point, 10)),
+			end: endOutline.map(point => parseInt(point, 10)),
 			startIndex,
 			endIndex,
 		};
