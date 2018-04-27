@@ -5,10 +5,9 @@ import FrameLayout from "../../src/layouts/FrameLayout";
 import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
-import {getItems, insert, checkLayoutComplete} from "./helper/TestHelper";
-import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, CONTAINER_CLASSNAME} from "../../src/consts";
-import {innerWidth, innerHeight} from "../../src/utils";
-import {DEFENSE_BROWSER} from "../../src/consts";
+import {getItems, insert} from "./helper/TestHelper";
+import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER} from "../../src/consts";
+import {innerHeight} from "../../src/utils";
 import {expectConnectGroupsOutline} from "./helper/common";
 
 /* eslint-disable */
