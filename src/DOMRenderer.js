@@ -11,6 +11,8 @@ import {
 	$,
 	innerHeight,
 	innerWidth,
+	outerWidth,
+	outerHeight,
 	getStyles,
 } from "./utils";
 
@@ -112,14 +114,14 @@ export default class DOMRenderer {
 			if (item.el) {
 				if (this.options.isEqualSize) {
 					this._size.item = this._size.item || {
-						width: innerWidth(item.el),
-						height: innerHeight(item.el),
+						width: outerWidth(item.el),
+						height: outerHeight(item.el),
 					};
 					item.size = Object.assign({}, this._size.item);
 				} else {
 					item.size = {
-						width: innerWidth(item.el),
-						height: innerHeight(item.el),
+						width: outerWidth(item.el),
+						height: outerHeight(item.el),
 					};
 				}
 				if (!item.orgSize) {
