@@ -6,7 +6,7 @@ import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
 import {getItems, insert, checkLayoutComplete} from "./helper/TestHelper";
-import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND} from "../../src/consts";
+import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, CONTAINER_CLASSNAME} from "../../src/consts";
 import {innerWidth, innerHeight} from "../../src/utils";
 import {DEFENSE_BROWSER} from "../../src/consts";
 import {expectConnectGroupsOutline} from "./helper/common";
@@ -497,6 +497,40 @@ describe("InfiniteGrid Test", function() {
       
     });
   });
+  describe(`if resize when infinitegrid has no item, size does not change.(DEFENSE_BROWSER: ${DEFENSE_BROWSER})`, function() {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = "<div id='infinite'></div>";
+      this.inst = new InfiniteGrid("#infinite", {
+        useRecycle: true,
+        isOverflowScroll: true,
+        margin: 5,
+      });
+      this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it("should check resize when no item", () => {
+      
+
+      const con = this.inst._renderer.container;
+      const offsetWidth = con.offsetWidth;
+
+      con.style.width = `${offsetWidth + 10}px`;
+      con.style.padding = "0px";
+      con.style.margin = "0px";
+      const width = con.clientWidth;
+
+      this.inst.layout(true);
+      expect(this.inst._renderer.getViewportSize()).to.be.equals(width);
+      expect(this.inst._layout._size).to.be.equals(width);
+    });
+  });
   [true, false].forEach(isOverflowScroll => {
     describe(`When appending/prepending loadingStart/loaingEnd event Test (isOverflowScroll: ${isOverflowScroll}, DEFENSE_BROWSER: ${DEFENSE_BROWSER})`, function() {
       beforeEach(() => {
@@ -677,13 +711,6 @@ describe("InfiniteGrid Test", function() {
       beforeEach(() => {
         document.body.style.marginBottom = "0px";
         document.body.style.padding = "0px";
-        document.body.insertAdjacentHTML("beforeend", `
-        <style>
-        * {
-          box-sizing:border-box;
-        }
-        </style>
-        `);
         this.el = sandbox();
         this.el.innerHTML = "<div id='infinite'></div>";
         this.inst = new InfiniteGrid("#infinite", {
