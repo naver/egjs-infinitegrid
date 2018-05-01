@@ -24,7 +24,7 @@ import {
 	IGNORE_CLASSNAME,
 } from "./consts";
 import Infinite from "./Infinite";
-import {toArray, $, innerWidth, innerHeight, matchHTML} from "./utils";
+import {toArray, $, matchHTML, outerHeight, outerWidth} from "./utils";
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -289,7 +289,11 @@ class InfiniteGrid extends Component {
 		}
 		const renderer = this._renderer;
 		const itemManager = this._items;
+		const isResize = renderer.resize();
 
+		if (isRelayout && isResize) {
+			this._setSize(renderer.getViewportSize());
+		}
 		// check childElement
 		if (!this._items.size()) {
 			this._insert(toArray(renderer.container.children), true);
@@ -313,8 +317,7 @@ class InfiniteGrid extends Component {
 			} else {
 				data = infinite.getVisibleData();
 			}
-			if (renderer.resize()) {
-				this._setSize(renderer.getViewportSize());
+			if (isResize) {
 				data.forEach(v => {
 					data.items = renderer.updateSize(v.items);
 				});
@@ -570,7 +573,7 @@ class InfiniteGrid extends Component {
 		if (!el) {
 			return;
 		}
-		this._status.loadingSize = this.options.horizontal ? innerWidth(el) : innerHeight(el);
+		this._status.loadingSize = this.options.horizontal ? outerWidth(el) : outerHeight(el);
 		const pos = isAppend ? this._getEdgeValue("end") : this._getEdgeValue("start") - this._status.loadingSize;
 		const style = Object.assign({
 			position: "absolute",

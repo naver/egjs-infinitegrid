@@ -116,10 +116,10 @@ export function scrollBy(el, x, y) {
 	}
 }
 export function getStyles(el) {
-	return SUPPORT_COMPUTEDSTYLE ?
-		window.getComputedStyle(el) : el.currentStyle;
+	return (SUPPORT_COMPUTEDSTYLE ?
+		window.getComputedStyle(el) : el.currentStyle) || {};
 }
-function _getSize(el, name) {
+function _getSize(el, name, isOffset) {
 	if (el === window) { // WINDOW
 		return window[`inner${name}`] || document.body[`client${name}`];
 	} else if (el.nodeType === 9) { // DOCUMENT_NODE
@@ -131,17 +131,22 @@ function _getSize(el, name) {
 			doc[`client${name}`]
 		);
 	} else { // NODE
-		const style = getStyles(el);
-		const value = style[name.toLowerCase()];
+		const size = el[`${isOffset ? "offset" : "client"}${name}`] || el[`${isOffset ? "client" : "offset"}${name}`];
 
-		return parseFloat(/auto|%/.test(value) ? el[`offset${name}`] : style[name.toLowerCase()]);
+		return parseFloat(size || getStyles(el)[name.toLowerCase()]) || 0;
 	}
 }
 export function innerWidth(el) {
-	return _getSize(el, "Width");
+	return _getSize(el, "Width", false);
 }
 export function innerHeight(el) {
-	return _getSize(el, "Height");
+	return _getSize(el, "Height", false);
+}
+export function outerWidth(el) {
+	return _getSize(el, "Width", true);
+}
+export function outerHeight(el) {
+	return _getSize(el, "Height", true);
 }
 export const STYLE = {
 	vertical: {
