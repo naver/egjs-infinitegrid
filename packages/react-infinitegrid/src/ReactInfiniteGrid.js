@@ -50,7 +50,4 @@ export default class ReactInfiniteGrid extends InfiniteGrid {
 	_postImageLoaded(fromCache, layouted, items, isAppend, isTrusted, moveItem = -2) {
 		return this;
 	}
-	_recycle({start, end}) {
-		return this;
-	}
 }

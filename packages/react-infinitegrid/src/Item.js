@@ -14,15 +14,15 @@ export default class Item extends Component {
 		this.mount = false;
 		this.groupKey = this.props.groupKey;
 		this.itemIndex = this.props.itemIndex;
+
+		console.log("NEW");
 	}
 	resetSize() {
 		this.orgSize = null;
 		this.size = {};
 	}
 	render() {
-		const element = this.props.children;
-
-		return <element.type {...element.props} ref={el => this.updateElement(el)} />;
+		return this.props.children;
 	}
 	updateElement(item) {
 		if (!item || this.el) {
@@ -38,5 +38,6 @@ export default class Item extends Component {
 	componentWillUnmount() {
 		this.el = null;
 		this.mount = false;
+		console.log("unmount", this.groupKey);
 	}
 }

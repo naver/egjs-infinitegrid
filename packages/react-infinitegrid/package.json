@@ -9,10 +9,11 @@
   "license": "MIT",
   "homepage": "https://github.com/naver/egjs-infinitegrid",
   "dependencies": {
-    "@egjs/infinitegrid": "^3.3.1",
+    "@egjs/infinitegrid": "^3.3.2"
+  },
+  "peerDependencies": {
     "react": "^15.4.2 || ^16.0.0",
-    "react-dom": "^15.4.2 || 16.0.0",
-    "react-scripts": "1.0.17"
+    "react-dom": "^15.4.2 || 16.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

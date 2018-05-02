@@ -25,7 +25,7 @@ class App extends Component {
 		this.loading = (<div class="loading" append>Loading...</div>);
 		this.state = {
 			loading: null,
-			list: this.loadItems(1, 0),
+			list: this.loadItems(0, 0),
 		};
 		this.onAppend = this.onAppend.bind(this);
 		this.onLayoutComplete = this.onLayoutComplete.bind(this);
