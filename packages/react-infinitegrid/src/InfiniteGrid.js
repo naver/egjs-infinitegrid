@@ -2,10 +2,9 @@ import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import {GridLayout, ImageLoaded, DOMRenderer, ItemManager, Infinite} from "@egjs/infinitegrid";
-import ReactInfiniteGrid from "./ReactInfiniteGrid";
-import {DONE, APPEND, PREPEND, LAYOUT} from "./consts";
+import {DONE, APPEND, PREPEND} from "./consts";
 import ItemWrapper from "./ItemWrapper";
-import Item from "./ItemWrapper";
+import LoadingBar from "./LoadingBar";
 import Watcher from "../../../src/Watcher";
 
 function newItem() {
@@ -113,6 +112,7 @@ export default class InfiniteGrid extends Component {
 	}
 	shouldComponentUpdate(props, state) {
 		this.state.scroll = null;
+		!props.loading && (this._bar = false);
 		if (this.state.size !== state.size) {
 			return true;
 		}
@@ -161,6 +161,7 @@ export default class InfiniteGrid extends Component {
 
 			this._infinite.scroll(scrollPos, true);
 		} else {
+			this._renderLoading(processing !== PREPEND);
 			// APPEND, PREPEND
 			this._insert();
 		}
@@ -178,8 +179,15 @@ export default class InfiniteGrid extends Component {
 	}
 	_getVisibleComponents() {
 		const datas = this.state.datas;
+		const loadingBar = this.props.loading;
 		const components = this._getVisibleGroups().map(group => getItemWrapper(datas, group))
 			.reduce((arr, children) => arr.concat(children), []);
+
+		typeof loadingBar === "object" && components.push(
+			<LoadingBar key="LOADINGBAR" horizontal={this.props.horizontal} ref={bar => { this._bar = bar; }}>
+				{loadingBar}
+			</LoadingBar>
+		);
 
 		return components;
 	}
@@ -366,6 +374,9 @@ export default class InfiniteGrid extends Component {
 			this.setState({processing: APPEND, endKey: groupKey, endIndex: index});
 			return;
 		}
+		if (this.props.loading) {
+			return;
+		}
 		this.props.onAppend({
 			groupKey: this.state.endKey,
 		});
@@ -381,6 +392,9 @@ export default class InfiniteGrid extends Component {
 			const {groupKey, index} = cache;
 
 			this.setState({processing: PREPEND, startKey: groupKey, startIndex: index});
+			return;
+		}
+		if (this.props.loading) {
 			return;
 		}
 		this.props.onPrepend({
@@ -411,7 +425,7 @@ export default class InfiniteGrid extends Component {
 	// called by visible
 	_fit() {
 		let base = this._getEdgeValue("start");
-		const margin = 0;
+		const margin = (this._bar && this._bar.getSize()) || 0;
 
 		if (!this.props.useRecycle) {
 			if (base < margin) {
@@ -491,6 +505,14 @@ export default class InfiniteGrid extends Component {
 		this._infinite.setSize(this._renderer.getViewSize());
 		this._layout.setSize(size);
 	}
+	_renderLoading(isAppend) {
+		if (!this._bar) {
+			return;
+		}
+		const pos = isAppend ? this._getEdgeValue("end") : this._getEdgeValue("start") - this._bar.getSize();
+
+		this._bar.setPosition(pos);
+	}
 	_postLayoutComplete({
 		groups,
 		items = ItemManager.pluck(groups, "items"),
@@ -506,16 +528,19 @@ export default class InfiniteGrid extends Component {
 			this._fit();
 		} else {
 			DOMRenderer.renderItems(items);
+			this._renderLoading(isAppend);
 		}
+		const {useRecycle} = this.props;
 		const watcher = this._watcher;
 		const scrollPos = watcher.getScrollPos();
 
-		if (this.props.useRecycle) {
+		if (useRecycle) {
 			this._infinite.recycle(scrollPos, isAppend);
 		}
 		const size = this._getEdgeValue("end");
+		const loadingSize = (this._bar && this._bar.getSize()) || 0;
 
-		isAppend && this._renderer.setContainerSize(size); //  + this._status.loadingSize || 0
+		isAppend && this._renderer.setContainerSize(size + loadingSize); //  + this._status.loadingSize || 0
 
 		this.props.onLayoutComplete({
 			target: items,

@@ -22,9 +22,9 @@ class Item extends Component {
 class App extends Component {
 	constructor(prop) {
 		super(prop);
-		this.loading = (<div class="loading" append>Loading...</div>);
+		this.loading = (<div className="loading">Loading...</div>);
 		this.state = {
-			loading: null,
+			loading: this.loading,
 			list: this.loadItems(0, 0),
 		};
 		this.onAppend = this.onAppend.bind(this);
@@ -39,17 +39,13 @@ class App extends Component {
 		return items;
 	}
 	onAppend({groupKey}) {
-		if (this.state.loading) {
-			return;
-		}
 		const list = this.state.list;
 		const start = list.length;
 		const items = this.loadItems(groupKey + 1, start);
 
-		this.setState({loading: true, list: list.concat(items)});
+		this.setState({loading: this.loading, list: list.concat(items)});
 	}
 	onLayoutComplete({isLayout}) {
-		console.log("layoutComplete", isLayout);
 		window.b = this;
 		!isLayout && this.setState({loading: false});
 	}
@@ -61,6 +57,7 @@ class App extends Component {
 				align={"center"}
 				onAppend={this.onAppend}
 				onLayoutComplete={this.onLayoutComplete}
+				loading = {this.state.loading}
 			>
 				{list}
 			</InfiniteGrid>
