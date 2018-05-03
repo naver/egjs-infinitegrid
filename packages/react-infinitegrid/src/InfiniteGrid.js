@@ -305,20 +305,20 @@ export default class InfiniteGrid extends Component {
 
 		const infinite = this._infinite;
 		const items = this._getVisibleItems();
-		const isEqualSize = this.props.isEqualSize;
+		const {isEqualSize, isConstantSize} = this.props;
 
 		if (!items.length) {
 			return this;
 		}
 		if (isRelayout) { // remove cache
-			if (isEqualSize) {
-				renderer.updateSize([items[0]]);
+			if (isEqualSize || isConstantSize) {
+				!isConstantSize && renderer.updateSize([items[0]]);
 				data = itemManager.get();
 				outline = itemManager.getOutline(0, "start");
 			} else {
 				data = infinite.getVisibleData();
 			}
-			if (isResize) {
+			if (!isConstantSize && isResize) {
 				data.forEach(v => {
 					data.items = renderer.updateSize(v.items);
 				});
@@ -333,7 +333,7 @@ export default class InfiniteGrid extends Component {
 		this._layout.layout(data, outline);
 
 		if (isRelayout) {
-			if (isEqualSize) {
+			if (isEqualSize || isConstantSize) {
 				this._fit();
 			} else {
 				const startCursor = infinite.getCursor("start");
@@ -555,22 +555,21 @@ export default class InfiniteGrid extends Component {
 		this.setState(isLayout ? {layout: false} : {processing: DONE});
 	}
 	_insert() {
+		const isConstantSize = this.props.isConstantSize;
 		const state = this.state;
 		const groups = this._getVisibleGroups();
 		const newGroups = groups.filter(group => !group.items.every(item => item.mount));
 		const isCache = !newGroups.length || newGroups.every(group =>
 			group.outlines.start.length && group.outlines.end.length);
 		const items = ItemManager.pluck(newGroups, "items");
-		const newItems = items.filter(item => !item.mount);
+		const newItems = items.filter(item => !item.mount && (!item.orgSize || !isConstantSize));
 
-		newItems.forEach(item => {
-			item.mount = true;
-		});
+		items.forEach(item => { item.mount = true; });
 		if (!newGroups.length) {
 			this._updateCursor();
 			return;
 		}
-		DOMRenderer.renderItems(newItems);
+		DOMRenderer.renderItems(items);
 		if (!isCache) {
 			this._updateSize({groups: newGroups, items: newItems});
 		} else {

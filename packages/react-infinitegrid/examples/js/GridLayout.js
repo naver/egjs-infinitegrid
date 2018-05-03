@@ -56,6 +56,7 @@ class App extends Component {
 			<InfiniteGrid margin={10}
 				align={"center"}
 				onAppend={this.onAppend}
+				isConstantSize={true}
 				onLayoutComplete={this.onLayoutComplete}
 				loading = {this.state.loading}
 			>
