@@ -42,7 +42,6 @@ class App extends Component {
 		if (this.state.loading) {
 			return;
 		}
-		console.log("onAppend");
 		const list = this.state.list;
 		const start = list.length;
 		const items = this.loadItems(groupKey + 1, start);
@@ -50,7 +49,7 @@ class App extends Component {
 		this.setState({loading: true, list: list.concat(items)});
 	}
 	onLayoutComplete({isLayout}) {
-		console.log(isLayout);
+		console.log("layoutComplete", isLayout);
 		window.b = this;
 		!isLayout && this.setState({loading: false});
 	}

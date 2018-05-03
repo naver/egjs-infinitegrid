@@ -1,20 +1,45 @@
 import React, {Component} from "react";
+import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import {GridLayout, ImageLoaded, DOMRenderer, ItemManager} from "@egjs/infinitegrid";
+import {GridLayout, ImageLoaded, DOMRenderer, ItemManager, Infinite} from "@egjs/infinitegrid";
 import ReactInfiniteGrid from "./ReactInfiniteGrid";
-import {DONE, APPEND, PREPEND} from "./consts";
-import Item from "./Item";
+import {DONE, APPEND, PREPEND, LAYOUT} from "./consts";
+import ItemWrapper from "./ItemWrapper";
+import Item from "./ItemWrapper";
+import Watcher from "../../../src/Watcher";
 
-function getItemWrapper(group) {
+function newItem() {
+	return {
+		el: null,
+		orgSize: null,
+		size: {},
+		groupKey: 0,
+		itemIndex: -1,
+		rect: {
+			left: -999999,
+			top: -99999,
+		},
+		mount: false,
+	};
+}
+
+function getItemWrapper(datas, group) {
 	const {groupKey, children, items} = group;
 
-	return children.map((component, i) =>
-		<Item
-			key={component.key}
-			groupKey={groupKey}
-			itemIndex={i}
-			ref={item => (item && (items[i] = item))}
-			children={component}/>
+	return children.map((component, i) => {
+		const key = component.key;
+
+		!datas[key] && (datas[key] = newItem());
+		const data = datas[key];
+
+		data.groupKey = groupKey;
+		data.itemIndex = i;
+		return <ItemWrapper
+			key={key}
+			item={datas[key]}
+			ref={item => (item && (items[i] = datas[key]))}
+		>{component}</ItemWrapper>;
+	}
 	);
 }
 export default class InfiniteGrid extends Component {
@@ -27,6 +52,7 @@ export default class InfiniteGrid extends Component {
 		isOverflowScroll: PropTypes.bool,
 		isEqualSize: PropTypes.bool,
 		useRecycle: PropTypes.bool,
+		isConstantSize: PropTypes.bool,
 		horizontal: PropTypes.bool,
 		loading: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
 		percentage: PropTypes.bool,
@@ -47,6 +73,7 @@ export default class InfiniteGrid extends Component {
 		useRecycle: true,
 		horizontal: false,
 		loading: false,
+		isConstantSize: false,
 		percentage: false,
 		onAppend: () => {},
 		onPrepend: () => {},
@@ -67,6 +94,8 @@ export default class InfiniteGrid extends Component {
 			endKey: "",
 			scroll: 0,
 			processing: DONE,
+			layout: false,
+			datas: {},
 		};
 		const options = {};
 		const layoutProps = this.constructor.layoutProps;
@@ -82,18 +111,14 @@ export default class InfiniteGrid extends Component {
 		});
 		this._refreshGroups();
 	}
-	_updateLayout() {
-		this._infiniteGrid && this._infiniteGrid.updateLayout(this.props);
-	}
 	shouldComponentUpdate(props, state) {
 		this.state.scroll = null;
 		if (this.state.size !== state.size) {
 			return true;
 		}
-		if (state.processing !== DONE) {
+		if (state.processing !== DONE || state.layout) {
 			return true;
 		}
-		this.state.scroll = this._infiniteGrid._watcher.getScrollPos();
 		const children = this.props.children;
 		const nextChildren = props.children;
 
@@ -124,6 +149,25 @@ export default class InfiniteGrid extends Component {
 			{this._getVisibleComponents()}
 		</Tag>;
 	}
+	componentDidUpdate(prevProps, prevState) {
+		const state = this.state;
+		const {processing, layout} = state;
+
+		this._updateLayout();
+		if (layout) {
+			this.layout(true);
+		} else if (processing === DONE) {
+			const scrollPos = this._watcher.getScrollPos();
+
+			this._infinite.scroll(scrollPos, true);
+		} else {
+			// APPEND, PREPEND
+			this._insert();
+		}
+	}
+	componentDidMount() {
+		this._mount(ReactDOM.findDOMNode(this));
+	}
 	_getVisibleGroups() {
 		const {groups, startIndex, endIndex} = this.state;
 
@@ -133,62 +177,14 @@ export default class InfiniteGrid extends Component {
 		return groups.slice(startIndex, endIndex + 1);
 	}
 	_getVisibleComponents() {
-		return this._getVisibleGroups().map(group => getItemWrapper(group))
-			.reduce((components, children) => components.concat(children), []);
+		const datas = this.state.datas;
+		const components = this._getVisibleGroups().map(group => getItemWrapper(datas, group))
+			.reduce((arr, children) => arr.concat(children), []);
+
+		return components;
 	}
 	_getVisibleItems() {
 		return ItemManager.pluck(this._getVisibleGroups(), "items");
-	}
-	_onLayoutComplete({isLayout}) {
-		this.props.onLayoutComplete({
-			isLayout,
-		});
-	}
-	_isProcessing() {
-		return !!this.state.processing;
-	}
-	_requestAppend = ({cache}) => {
-		if (this._isProcessing()) {
-			return;
-		}
-		if (cache) {
-			const {groupKey, index} = cache;
-
-			this.setState({processing: APPEND, endKey: groupKey, endIndex: index});
-			return;
-		}
-		this.props.onAppend({
-			groupKey: this.state.endKey,
-		});
-	}
-	_requestPrepend = ({cache, fit}) => {
-		if (this._isProcessing()) {
-			return;
-		}
-		if (cache) {
-			const {groupKey, index} = cache;
-
-			console.log("prepend req", groupKey, index);
-			this.setState({processing: PREPEND, startKey: groupKey, startIndex: index});
-			return;
-		}
-		this.props.onPrepend({
-			groupKey: this.state.startKey,
-		});
-	}
-	_recycle = ({start, end}) => {
-		const {endIndex} = this.state;
-		const groups = this.state.groups;
-
-		console.log("recycle", start, end, groups[start].groupKey, groups[end].groupKey);
-		if (end < endIndex) {
-			this.setState({startIndex: end + 1, startKey: groups[end + 1].groupKey});
-		} else {
-			this.setState({endIndex: start - 1, endKey: groups[start - 1].groupKey});
-		}
-	}
-	_check = ({scrollPos, isForward}) => {
-		this._infinite.scroll(scrollPos, isForward);
 	}
 	_refreshGroups(propsChildren = this.props.children, isChange) {
 		if (!propsChildren || !propsChildren.length) {
@@ -269,17 +265,177 @@ export default class InfiniteGrid extends Component {
 		state.endIndex = endIndex;
 		this._updateGroups();
 
-		console.log("cursorchange", isChange);
 		isChange && this._updateCursor();
 	}
+	_updateLayout() {
+		const props = this.props;
+		const options = this._layout.options;
+
+		for (const name in options) {
+			if (name in props) {
+				options[name] = props[name];
+			}
+		}
+	}
+	layout(isRelayout = true) {
+		if (!this._layout) {
+			return this;
+		}
+		const renderer = this._renderer;
+		const itemManager = this._items;
+		const isResize = renderer.resize();
+
+		if (isRelayout && isResize) {
+			this._setSize(renderer.getViewportSize());
+		}
+		// check childElement
+		if (!this._items.size()) {
+			return this;
+		}
+		let data;
+		let outline;
+
+		const infinite = this._infinite;
+		const items = this._getVisibleItems();
+		const isEqualSize = this.props.isEqualSize;
+
+		if (!items.length) {
+			return this;
+		}
+		if (isRelayout) { // remove cache
+			if (isEqualSize) {
+				renderer.updateSize([items[0]]);
+				data = itemManager.get();
+				outline = itemManager.getOutline(0, "start");
+			} else {
+				data = infinite.getVisibleData();
+			}
+			if (isResize) {
+				data.forEach(v => {
+					data.items = renderer.updateSize(v.items);
+				});
+			}
+		} else {
+			data = infinite.getVisibleData();
+			outline = infinite.getEdgeOutline("start");
+		}
+		if (!data.length) {
+			return this;
+		}
+		this._layout.layout(data, outline);
+
+		if (isRelayout) {
+			if (isEqualSize) {
+				this._fit();
+			} else {
+				const startCursor = infinite.getCursor("start");
+				const endCursor = infinite.getCursor("end");
+
+				itemManager._data.forEach((group, cursor) => {
+					if (startCursor <= cursor && cursor <= endCursor) {
+						return;
+					}
+					group.outlines.start = [];
+					group.outlines.end = [];
+				});
+			}
+		}
+		this._postLayoutComplete({
+			items,
+			isAppend: APPEND,
+			fromCache: true,
+			isTrusted: false,
+			useRecycle: false,
+			isLayout: true,
+		});
+		DOMRenderer.renderItems(items);
+		isRelayout && this._watcher.setScrollPos();
+
+		return this;
+	}
+	_isProcessing() {
+		return !!this.state.processing;
+	}
+	_requestAppend = ({cache}) => {
+		if (this._isProcessing()) {
+			return;
+		}
+		if (cache) {
+			const {groupKey, index} = cache;
+
+			this.setState({processing: APPEND, endKey: groupKey, endIndex: index});
+			return;
+		}
+		this.props.onAppend({
+			groupKey: this.state.endKey,
+		});
+	}
+	_requestPrepend = ({cache, fit}) => {
+		if (fit) {
+			this._fit();
+		}
+		if (this._isProcessing()) {
+			return;
+		}
+		if (cache) {
+			const {groupKey, index} = cache;
+
+			this.setState({processing: PREPEND, startKey: groupKey, startIndex: index});
+			return;
+		}
+		this.props.onPrepend({
+			groupKey: this.state.startKey,
+		});
+	}
+	_recycle = ({start, end}) => {
+		const {endIndex} = this.state;
+		const groups = this.state.groups;
+
+		console.log("recycle", start, end, groups[start].groupKey, groups[end].groupKey);
+		if (end < endIndex) {
+			this.setState({startIndex: end + 1, startKey: groups[end + 1].groupKey});
+		} else {
+			this.setState({endIndex: start - 1, endKey: groups[start - 1].groupKey});
+		}
+	}
+	_check = ({scrollPos, isForward}) => {
+		this._infinite.scroll(scrollPos, isForward);
+	}
+	_fitItems(base, margin = 0) {
+		base > 0 && this._watcher.scrollBy(-base);
+		this._items.fit(base, this.props.horizontal);
+		DOMRenderer.renderItems(this._getVisibleItems());
+		this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
+		base < 0 && this._watcher.scrollBy(-base);
+	}
+	// called by visible
+	_fit() {
+		let base = this._getEdgeValue("start");
+		const margin = 0;
+
+		if (!this.props.useRecycle) {
+			if (base < margin) {
+				this._fitItems(base - margin, margin);
+			}
+			base = 0;
+		} else if (base !== 0 || margin) {
+			this._fitItems(base - margin, margin);
+		} else {
+			return 0;
+		}
+		return base;
+	}
+	_getEdgeValue(cursor) {
+		return this._infinite.getEdgeValue(cursor);
+	}
 	_updateGroups() {
-		this._infiniteGrid && this._infiniteGrid.updateGroups(this.state.groups);
+		this._items && (this._items._data = this.state.groups);
 	}
 	_updateCursor() {
 		const {startIndex, endIndex} = this.state;
 
-		console.log("cursorchange", `start: ${startIndex}, end: ${endIndex}`);
-		this._infiniteGrid && this._infiniteGrid.updateCursor(startIndex, endIndex);
+		this._infinite.setCursor("start", startIndex);
+		this._infinite.setCursor("end", endIndex);
 	}
 	_updateSize({
 		groups = this._getVisibleGroups(),
@@ -291,7 +447,6 @@ export default class InfiniteGrid extends Component {
 		const state = this.state;
 		const isAppend = state.processing !== PREPEND;
 
-		state.processing = state.processing || APPEND;
 		if (!items.length) {
 			return;
 		}
@@ -299,8 +454,8 @@ export default class InfiniteGrid extends Component {
 
 		ImageLoaded.check(elements, {
 			complete: () => {
-				this._infiniteGrid._renderer.updateSize(items);
-				let outline = this._infiniteGrid._infinite.getEdgeOutline(isAppend ? "end" : "start");
+				this._renderer.updateSize(items);
+				let outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start");
 
 				groups.forEach(group => {
 					const groupOutline = group.outlines[isAppend ? "start" : "end"];
@@ -319,69 +474,129 @@ export default class InfiniteGrid extends Component {
 					group.outlines = itemInfos.outlines;
 					outline = itemInfos.outlines[isAppend ? "end" : "start"];
 				});
-				this._updateCursor();
-				this.setState({processing: DONE});
-				this._onLayoutComplete({});
-
-				DOMRenderer.renderItems(items);
-			},
-			end: () => {
-				const scrollPos = this._infiniteGrid._watcher.getScrollPos();
-
-				if (!this._isProcessing() && !this._infiniteGrid.isProcessing() && this.props.useRecycle) {
-					this._infiniteGrid._infinite.recycle(scrollPos, isAppend);
-				}
+				this._postLayoutComplete({
+					groups,
+					isAppend,
+					isTrusted: true,
+					fromCache: false,
+				});
 			},
 		});
 	}
-	componentDidUpdate(prevProps, prevState) {
-		this._infiniteGrid.updateLayout(this.props);
-		if (typeof this.state.scroll === "number") {
-			this._infiniteGrid._infinite.scroll(this.state.scroll, true);
+	_onCheck({isForward, scrollPos, horizontal, orgScrollPos}) {
+		this.props.onChange({isForward, horizontal, scrollPos, orgScrollPos});
+		this._infinite.scroll(scrollPos, isForward);
+	}
+	_setSize(size) {
+		this._infinite.setSize(this._renderer.getViewSize());
+		this._layout.setSize(size);
+	}
+	_postLayoutComplete({
+		groups,
+		items = ItemManager.pluck(groups, "items"),
+		isAppend,
+		isTrusted,
+		fromCache,
+		isLayout = false,
+	}) {
+		const viewSize = this._renderer.getViewSize();
+
+		this._updateCursor();
+		if (!isAppend) {
+			this._fit();
+		} else {
+			DOMRenderer.renderItems(items);
 		}
+		const watcher = this._watcher;
+		const scrollPos = watcher.getScrollPos();
+
+		if (this.props.useRecycle) {
+			this._infinite.recycle(scrollPos, isAppend);
+		}
+		const size = this._getEdgeValue("end");
+
+		isAppend && this._renderer.setContainerSize(size); //  + this._status.loadingSize || 0
+
+		this.props.onLayoutComplete({
+			target: items,
+			isAppend,
+			isTrusted,
+			isLayout,
+			isScroll: viewSize < watcher.getContainerOffset() + size,
+			scrollPos,
+			orgScrollPos: watcher.getOrgScrollPos(),
+			size,
+		});
+		this.setState(isLayout ? {layout: false} : {processing: DONE});
+	}
+	_insert() {
+		const state = this.state;
 		const groups = this._getVisibleGroups();
 		const newGroups = groups.filter(group => !group.items.every(item => item.mount));
-		const isCache = newGroups.every(group => {
-			console.log(group.outlines);
-			return !group.outlines.start.length || !group.outlines.end.length;
-		});
+		const isCache = !newGroups.length || newGroups.every(group =>
+			group.outlines.start.length && group.outlines.end.length);
 		const items = ItemManager.pluck(newGroups, "items");
 		const newItems = items.filter(item => !item.mount);
 
 		newItems.forEach(item => {
 			item.mount = true;
 		});
-
 		if (!newGroups.length) {
-			if (prevState.startKey !== this.state.startKey ||
-				prevState.endKey !== this.state.endKey) {
-				this._updateCursor();
-			}
+			this._updateCursor();
 			return;
 		}
 		DOMRenderer.renderItems(newItems);
-		this._updateSize({groups: newGroups, items: newItems});
+		if (!isCache) {
+			this._updateSize({groups: newGroups, items: newItems});
+		} else {
+			this._postLayoutComplete({
+				groups: newGroups,
+				isAppend: state.processing === APPEND,
+				fromCache: true,
+				isTrusted: true,
+			});
+		}
 	}
 	_mount(container) {
 		if (!container || this._container) {
 			return;
 		}
 		this._container = container;
-		const {isOverflowScroll, isEqualSize, horizontal, useRecycle, threshold} = this.props;
-
-		this._infiniteGrid = new ReactInfiniteGrid(this._container, {
+		const {
 			isOverflowScroll,
 			isEqualSize,
+			isConstantSize,
 			horizontal,
 			useRecycle,
 			threshold,
-		}, {
-			_requestAppend: param => this._requestAppend(param),
-			_requestPrepend: param => this._requestPrepend(param),
-			_recycle: param => this._recycle(param),
+		} = this.props;
+
+		this._items = new ItemManager();
+		this._renderer = new DOMRenderer(container, {
+			isOverflowScroll,
+			isEqualSize,
+			isConstantSize,
+			horizontal,
 		});
-		this._infiniteGrid.setLayout(this._layout);
+		this._watcher = new Watcher(
+			this._renderer.view,
+			{
+				isOverflowScroll,
+				horizontal,
+				container: this._renderer.container,
+				resize: () => this.setState({layout: true}),
+				check: param => this._onCheck(param),
+			});
+		this._infinite = new Infinite(this._items, {
+			horizontal,
+			useRecycle,
+			threshold,
+			append: param => this._requestAppend(param),
+			prepend: param => this._requestPrepend(param),
+			recycle: param => this._recycle(param),
+		});
 		this._updateLayout();
+		this._setSize(this._renderer.getViewportSize());
 		this._updateGroups();
 
 		const items = this._getVisibleItems();
