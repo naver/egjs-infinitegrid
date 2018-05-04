@@ -226,7 +226,7 @@ export default class Layout extends Component {
 						size = {...this.state.items[0].size};
 					}
 				});
-				this.setState({render: REQUEST_RENDER});
+				this._container && this.setState({render: REQUEST_RENDER});
 			},
 			error: ({target, itemIndex}) => {
 				const item = items[itemIndex];
