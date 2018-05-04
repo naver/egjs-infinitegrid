@@ -8,7 +8,7 @@ class Item extends Component {
 		const no = this.props.num;
 		const text = `egjs ${no}`;
 
-		return (<div className="item">
+		return (<div className="item" onClick={this.props.onClick}>
 			<div className="thumbnail">
 				<img src={`https://naver.github.io/egjs-infinitegrid/assets/image/${no % 59 + 1}.jpg`}/>
 			</div>
@@ -23,31 +23,42 @@ class App extends Component {
 	constructor(prop) {
 		super(prop);
 		this.loading = (<div className="loading">Loading...</div>);
+		this.start = 0;
 		this.state = {
 			loading: this.loading,
-			list: this.loadItems(0, 0),
+			list: this.loadItems(0),
 		};
-		this.onAppend = this.onAppend.bind(this);
-		this.onLayoutComplete = this.onLayoutComplete.bind(this);
 	}
-	loadItems(groupKey, start = this.state.list.length) {
+	loadItems(groupKey) {
 		const items = [];
+		const start = this.start || 0;
 
 		for (let i = 0; i < 20; ++i) {
-			items.push(<Item groupKey={groupKey} num={1 + start + i} key={start + i} />);
+			items.push(<Item groupKey={groupKey} num={1 + start + i} key={start + i}
+				onClick={(itemKey => (e => this.remove(itemKey)))(start + i)}/>);
 		}
+		this.start = start + 20;
 		return items;
 	}
-	onAppend({groupKey}) {
+	remove(itemKey) {
+		const list = this.state.list.slice();
+		const index = list.map(component => parseFloat(component.key)).indexOf(itemKey);
+
+		console.log(itemKey, index);
+		list.splice(index, 1);
+		this.setState({list});
+	}
+	onAppend = ({groupKey}) => {
 		const list = this.state.list;
-		const start = list.length;
-		const items = this.loadItems(groupKey + 1, start);
+		const items = this.loadItems(groupKey + 1);
 
 		this.setState({loading: this.loading, list: list.concat(items)});
 	}
-	onLayoutComplete({isLayout}) {
+	onLayoutComplete = ({isLayout}) => {
 		window.b = this;
 		!isLayout && this.setState({loading: false});
+
+		console.log("layout", isLayout);
 	}
 	render() {
 		const {list} = this.state;
