@@ -6,7 +6,7 @@ import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
 import {getItems, insert} from "./helper/TestHelper";
-import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER} from "../../src/consts";
+import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER, IDLE} from "../../src/consts";
 import {innerHeight} from "../../src/utils";
 import {expectConnectGroupsOutline} from "./helper/common";
 
@@ -118,6 +118,19 @@ describe("InfiniteGrid Test", function() {
         this.inst._renderer.container.innerHTML = items.join("");
         this.inst.layout();
         
+
+      });
+      it(`should check a initialization and getStatus`, () => {
+        // Given
+        const count = 10;
+        const items = getItems(count);
+
+        // When
+        this.inst.append(items);
+        const status = this.inst.getStatus();
+
+        // Then
+        expect(status._status.processingStatus).to.be.equals(IDLE);
 
       });
       it(`should check a initialization (isOverflowScroll: ${isOverflowScroll})`, done => {
