@@ -394,12 +394,9 @@ class InfiniteGrid extends Component {
 	 * @return {Object} State object of the eg.InfiniteGrid module<ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
 	 */
 	getStatus() {
-		const status = Object.assign({}, this._status);
-
-		status.processingStatus = IDLE;
 		return {
 			options: Object.assign({}, this.options),
-			_status: status,
+			_status: Object.assign({}, this._status),
 			_items: this._items.getStatus(),
 			_renderer: this._renderer.getStatus(),
 			_watcher: this._watcher.getStatus(),
@@ -427,6 +424,7 @@ class InfiniteGrid extends Component {
 		Object.assign(this.options, options);
 		Object.assign(this._status, _status);
 
+		this._status.processingStatus = IDLE;
 		this._items.setStatus(_items);
 		this._renderer.setStatus(_renderer);
 		this._infinite.setStatus(_infinite);
