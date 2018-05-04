@@ -215,6 +215,9 @@ export default class Layout extends Component {
         ImageLoaded.check(elements, {
 			type: this.props.isEqualSize && this.state.items[0].size.width ? CHECK_ONLY_ERROR : CHECK_ALL,
             complete: () => {
+				if (!this._container) {
+					return;
+				}
 				let size;
                 items.forEach(item => {
 					item.loaded = LOADED;
@@ -223,7 +226,7 @@ export default class Layout extends Component {
 						size = {...this.state.items[0].size};
 					}
 				});
-				this._container && this.setState({render: REQUEST_RENDER});
+				this.setState({render: REQUEST_RENDER});
 			},
 			error: ({target, itemIndex}) => {
 				const item = items[itemIndex];
