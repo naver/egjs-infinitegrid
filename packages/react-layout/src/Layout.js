@@ -93,6 +93,9 @@ export default class Layout extends Component {
 		element.style.cssText += cssText;
 	}
 	_setSize(isResize) {
+		if (!this._container) {
+			return;
+		}
 		const horizontal = this._layout.options.horizontal;
 		const size = this._container[horizontal ? "clientHeight" : "clientWidth"];;
 
@@ -220,7 +223,7 @@ export default class Layout extends Component {
 						size = {...this.state.items[0].size};
 					}
 				});
-				this.setState({render: REQUEST_RENDER});
+				this._container && this.setState({render: REQUEST_RENDER});
 			},
 			error: ({target, itemIndex}) => {
 				const item = items[itemIndex];

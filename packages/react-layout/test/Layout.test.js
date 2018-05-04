@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from "react-dom";
 import {GridLayout} from "../src/index";
 import Example from "./Example";
+import ImageExample from "./ImageExample";
 import {use, expect, assert} from "chai";
 import { matchSnapshot } from "chai-karma-snapshot";
 
@@ -61,9 +62,7 @@ describe(`test layout`, function () {
 		const rendered = ReactDOM.render(<Example/>, this.el);
 		setTimeout(() => {
 			expect(rendered.grid.state.size).to.be.equals(0);
-
 			expect(this.el.innerHTML).to.matchSnapshot();
-
 
 			rendered.setState({display: "block"});
 			setTimeout(() => {
@@ -73,5 +72,14 @@ describe(`test layout`, function () {
 				done();
 			}, 100);
 		}, 100);
+	});
+
+	it (`should check componentWillUnmount`, done => {
+		const rendered = ReactDOM.render(<ImageExample/>, this.el);
+
+		rendered.setState({unmount: true});
+		setTimeout(() => {
+			done();
+		}, 1000);
 	});
 });
