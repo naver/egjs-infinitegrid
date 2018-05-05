@@ -93,6 +93,9 @@ export default class Layout extends Component {
 		element.style.cssText += cssText;
 	}
 	_setSize(isResize) {
+		if (!this._container) {
+			return;
+		}
 		const horizontal = this._layout.options.horizontal;
 		const size = this._container[horizontal ? "clientHeight" : "clientWidth"];;
 
@@ -165,6 +168,9 @@ export default class Layout extends Component {
 		this.state.datas = datas;
 	}
 	layout(outline) {
+		if (!this._container) {
+			return;
+		}
 		this._updateLayout();
 		const items = this.state.items;
 
@@ -209,6 +215,9 @@ export default class Layout extends Component {
         ImageLoaded.check(elements, {
 			type: this.props.isEqualSize && this.state.items[0].size.width ? CHECK_ONLY_ERROR : CHECK_ALL,
             complete: () => {
+				if (!this._container) {
+					return;
+				}
 				let size;
                 items.forEach(item => {
 					item.loaded = LOADED;
@@ -287,6 +296,12 @@ export default class Layout extends Component {
 			this._loadImage();
 		}
 	}
+	_onResize = () => {
+		clearTimeout(this._timer);
+		this._timer = setTimeout(() => {
+			this._setSize(true);
+		}, 100);
+	}
 	_setContainer(container) {
 		if (!container || this._container) {
 			return;
@@ -296,12 +311,7 @@ export default class Layout extends Component {
 		if (this.props.size === 0) {
 			this._setSize();
 
-			window.addEventListener("resize", () => {
-				clearTimeout(this._timer);
-				this._timer = setTimeout(() => {
-					this._setSize(true);
-				}, 100);
-			});
+			window.addEventListener("resize", this._onResize);
 		}
 		this._updateItems();
 		this._loadImage();
@@ -315,7 +325,9 @@ export default class Layout extends Component {
 		for (const id in datas) {
 			datas[id].el = null;
 		}
+		this._container = null;
+		window.removeEventListener("resize", this._onResize);
 		this.state.datas = {};
-		this.state.items =[];
+		this.state.items = [];
 	}
 }
