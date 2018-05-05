@@ -54,7 +54,6 @@ export default class InfiniteGrid extends Component {
 		isConstantSize: PropTypes.bool,
 		horizontal: PropTypes.bool,
 		loading: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-		percentage: PropTypes.bool,
 		onAppend: PropTypes.func,
 		onPrepend: PropTypes.func,
 		onLayoutComplete: PropTypes.func,
@@ -73,7 +72,6 @@ export default class InfiniteGrid extends Component {
 		horizontal: false,
 		loading: false,
 		isConstantSize: false,
-		percentage: false,
 		onAppend: () => {},
 		onPrepend: () => {},
 		onLayoutComplete: () => {},
@@ -111,7 +109,7 @@ export default class InfiniteGrid extends Component {
 		this._refreshGroups();
 	}
 	shouldComponentUpdate(props, nextState) {
-		!props.loading && (this._bar = false);
+		typeof props.loading === "boolean" && (this._bar = false);
 		if (nextState.processing !== DONE || nextState.layout) {
 			return true;
 		}
@@ -170,10 +168,17 @@ export default class InfiniteGrid extends Component {
 			// APPEND, PREPEND
 			this._insert();
 		}
-		this._renderLoading(!(processing & PREPEND));
+		this._renderLoading();
 	}
 	componentDidMount() {
 		this._mount(ReactDOM.findDOMNode(this));
+	}
+	componentWillUnmount() {
+		this._container = null;
+		this._watcher.destroy();
+		this._infinite.destory();
+		this._renderer.destory();
+		this._items.destory();
 	}
 	_getVisibleGroups() {
 		const {groups, startIndex, endIndex} = this.state;
@@ -430,7 +435,6 @@ export default class InfiniteGrid extends Component {
 		const {endIndex} = this.state;
 		const groups = this.state.groups;
 
-		console.log("recycle", start, end, groups[start].groupKey, groups[end].groupKey);
 		if (end < endIndex) {
 			this.setState({startIndex: end + 1, startKey: groups[end + 1].groupKey});
 		} else {
@@ -496,6 +500,9 @@ export default class InfiniteGrid extends Component {
 
 		ImageLoaded.check(elements, {
 			complete: () => {
+				if (!this._container) {
+					return;
+				}
 				this._renderer.updateSize(items);
 
 				const cursor = isAppend ? "end" : "start";
@@ -544,7 +551,7 @@ export default class InfiniteGrid extends Component {
 		this._infinite.setSize(this._renderer.getViewSize());
 		this._layout.setSize(size);
 	}
-	_renderLoading(isAppend) {
+	_renderLoading(isAppend = true) {
 		if (!this._bar) {
 			return;
 		}
@@ -567,7 +574,7 @@ export default class InfiniteGrid extends Component {
 			this._fit();
 		} else {
 			DOMRenderer.renderItems(items);
-			this._renderLoading(isAppend);
+			this._renderLoading();
 		}
 		const {useRecycle} = this.props;
 		const watcher = this._watcher;
@@ -627,7 +634,6 @@ export default class InfiniteGrid extends Component {
 			isEqualSize,
 			isConstantSize,
 			horizontal,
-			useRecycle,
 			threshold,
 		} = this.props;
 
@@ -649,8 +655,8 @@ export default class InfiniteGrid extends Component {
 			});
 		this._infinite = new Infinite(this._items, {
 			horizontal,
-			useRecycle,
 			threshold,
+			useRecycle: true,
 			append: param => this._requestAppend(param),
 			prepend: param => this._requestPrepend(param),
 			recycle: param => this._recycle(param),

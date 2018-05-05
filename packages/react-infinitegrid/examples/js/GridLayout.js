@@ -68,6 +68,7 @@ class App extends Component {
 				isConstantSize={true}
 				onLayoutComplete={this.onLayoutComplete}
 				loading = {this.state.loading}
+				useRecycle={false}
 			>
 				{list}
 			</InfiniteGrid>
