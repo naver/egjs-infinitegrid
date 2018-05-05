@@ -1,6 +1,7 @@
 export const DONE = 0;
 export const APPEND = 1;
 export const PREPEND = 2;
+export const PROCESS = 4;
 
 export const LOADED = 2;
 export const LOADING = 1;

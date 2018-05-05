@@ -44,7 +44,7 @@ class App extends Component {
 		const list = this.state.list.slice();
 		const index = list.map(component => parseFloat(component.key)).indexOf(itemKey);
 
-		console.log(itemKey, index);
+		// console.log(itemKey, index);
 		list.splice(index, 1);
 		this.setState({list});
 	}
@@ -57,8 +57,6 @@ class App extends Component {
 	onLayoutComplete = ({isLayout}) => {
 		window.b = this;
 		!isLayout && this.setState({loading: false});
-
-		console.log("layout", isLayout);
 	}
 	render() {
 		const {list} = this.state;
