@@ -1,7 +1,8 @@
 {
   "name": "@egjs/react-infinitegrid",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A react component that can easily use egjs-infinitegrid",
+	"types": "declaration/index.d.ts",
   "main": "dist/index.js",
   "author": {
     "name": "NAVER Corp."
@@ -15,6 +16,24 @@
     "react": "^15.4.2 || ^16.0.0",
     "react-dom": "^15.4.2 || 16.0.0"
   },
+	"keywords": [
+    "react",
+		"infinitegrid",
+		"infinite",
+		"scroll",
+		"layout",
+		"DOM",
+		"html",
+		"gallery",
+		"grid",
+		"pinterest",
+		"masonry",
+		"GridLayout",
+		"JustifiedLayout",
+		"PackingLayout",
+		"FrameLayout",
+		"SquareLayout"
+	],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
