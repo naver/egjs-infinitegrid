@@ -423,6 +423,8 @@ class InfiniteGrid extends Component {
 		this._watcher.detachEvent();
 		Object.assign(this.options, options);
 		Object.assign(this._status, _status);
+
+		this._status.processingStatus = IDLE;
 		this._items.setStatus(_items);
 		this._renderer.setStatus(_renderer);
 		this._infinite.setStatus(_infinite);
@@ -1099,6 +1101,16 @@ ig.on("imageError", e => {
 	}
 }
 
+/**
+ * Version info string
+ * @ko 버전정보 문자열
+ * @name VERSION
+ * @static
+ * @type {String}
+ * @example
+ * eg.InfiniteGrid.VERSION;  // ex) 3.3.3
+ * @memberof eg.InfiniteGrid
+ */
 InfiniteGrid.VERSION = "#__VERSION__#";
 
 export default InfiniteGrid;
