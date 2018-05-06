@@ -1,4 +1,4 @@
-import {window} from "./browser";
+import {window, document} from "./browser";
 
 const ua = window.navigator.userAgent;
 

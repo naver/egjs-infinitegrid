@@ -7,6 +7,7 @@ import {
 	CONTAINER_CLASSNAME,
 	DEFENSE_BROWSER,
 } from "./consts";
+import {window, document} from "./browser";
 import {
 	$,
 	innerHeight,
