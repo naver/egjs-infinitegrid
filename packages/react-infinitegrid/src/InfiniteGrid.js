@@ -1,11 +1,10 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import {GridLayout, ImageLoaded, DOMRenderer, ItemManager, Infinite} from "@egjs/infinitegrid";
+import {GridLayout, ImageLoaded, DOMRenderer, ItemManager, Infinite, Watcher} from "@egjs/infinitegrid";
 import {DONE, APPEND, PREPEND, PROCESS} from "./consts";
 import ItemWrapper from "./ItemWrapper";
 import LoadingBar from "./LoadingBar";
-import Watcher from "../../../src/Watcher";
 
 function newItem() {
 	return {
@@ -83,7 +82,6 @@ export default class InfiniteGrid extends Component {
 		super(props);
 		const LayoutType = this.props.type;
 
-		window.a = this;
 		this.state = {
 			groups: [],
 			groupKeys: {},
@@ -162,6 +160,7 @@ export default class InfiniteGrid extends Component {
 				} else {
 					this.layout(false);
 				}
+				return;
 			}
 			this._infinite.scroll(scrollPos, true);
 		} else if (!(processing & PROCESS)) {
@@ -175,10 +174,10 @@ export default class InfiniteGrid extends Component {
 	}
 	componentWillUnmount() {
 		this._container = null;
-		this._watcher.destroy();
-		this._infinite.destory();
-		this._renderer.destory();
-		this._items.destory();
+		this._infinite && this._infinite.clear();
+		this._watcher && this._watcher.destroy();
+		this._items && this._items.clear();
+		this._renderer && this._renderer.destroy();
 	}
 	_getVisibleGroups() {
 		const {groups, startIndex, endIndex} = this.state;
@@ -491,7 +490,7 @@ export default class InfiniteGrid extends Component {
 			return;
 		}
 		const state = this.state;
-		const isAppend = state.processing & APPEND;
+		const isAppend = !(state.processing & PREPEND);
 
 		if (!items.length) {
 			return;
@@ -667,12 +666,13 @@ export default class InfiniteGrid extends Component {
 
 		const items = this._getVisibleItems();
 
-		items.forEach(item => {
-			item.mount = true;
-		});
-
-		DOMRenderer.renderItems(items);
-		this.state.processing = APPEND | PROCESS;
-		this._updateSize({items});
+		if (items.length) {
+			items.forEach(item => {
+				item.mount = true;
+			});
+			DOMRenderer.renderItems(items);
+			this.state.processing = APPEND | PROCESS;
+			this._updateSize({items});
+		}
 	}
 }
