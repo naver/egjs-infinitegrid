@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
-import InfiniteGrid, {GridLayout} from "../../src/index";
+import {GridLayout} from "../../src/index";
 
 
 class Item extends Component {
@@ -52,7 +52,7 @@ class App extends Component {
 		const list = this.state.list;
 		const items = this.loadItems(groupKey + 1);
 
-		this.setState({loading: this.loading, list: list.concat(items)});
+		this.setState({loading: true, list: list.concat(items)});
 	}
 	onLayoutComplete = ({isLayout}) => {
 		window.b = this;
@@ -62,7 +62,7 @@ class App extends Component {
 		const {list} = this.state;
 
 		return (
-			<InfiniteGrid margin={10}
+			<GridLayout margin={10}
 				align={"center"}
 				onAppend={this.onAppend}
 				isConstantSize={true}
@@ -71,7 +71,7 @@ class App extends Component {
 				useRecycle={false}
 			>
 				{list}
-			</InfiniteGrid>
+			</GridLayout>
 		);
 	}
 }
