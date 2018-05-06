@@ -19,8 +19,9 @@ describe("Const Test", function() {
                 window: {
                     navigator: {
                         userAgent: UA[p]
-                    }
-                }
+                    },
+                },
+                document: {},
             }
         });
         it("should check IS_IE property", () => {
