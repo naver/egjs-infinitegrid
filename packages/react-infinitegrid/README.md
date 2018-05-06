@@ -22,6 +22,7 @@ import {GridLayout} from "@egjs/react-infinitegrid";
 	threshold = {100}
 	isOverflowScroll = {false}
 	isEqualSize = {false}
+	isConstantSize = {false}
 	useRecycle = {true}
 	horizontal = {false}
 	percentage = {false}
@@ -30,26 +31,24 @@ import {GridLayout} from "@egjs/react-infinitegrid";
 	onLayoutComplete = {e => layoutComplete}
 	onImageError = {e => imageError}
 	onChange = {e => chnage}>
-	<Item/>
-	<Item/>
-	<Item/>
-	<Item/>
-	<Item/>
-	<Item/>
-	<Item/>
+	<Item groupKey={0} key={0}/>
+	<Item groupKey={0} key={1}/>
+	<Item groupKey={0} key={2}/>
+	<Item groupKey={0} key={3}/>
+	<Item groupKey={0} key={4}/>
+	<Item groupKey={0} key={5}/>
+	<Item groupKey={0} key={6}/>
 </GridLayout>
 ```
 
 ### More examples
 ```jsx
-this.loading = (<LoadingBar append>Loading... append</LoadingBar>);
+this.loading = (<div className="loading">Loading... append</div>);
 this.state = {
 	loading: false,
 	list: loadItems(0, 0),
 };
-this.onAppend = this.onAppend.bind(this);
-this.onLayoutComplete = this.onLayoutComplete.bind(this);
-loadItems(groupKey, start) {
+loadItems = (groupKey, start) => {
 	const items = [];
 
 	for (let i = 0; i < 20; ++i) {
@@ -57,15 +56,15 @@ loadItems(groupKey, start) {
 	}
 	return items;
 }
-onAppend({groupKey}) {
+onAppend = ({groupKey}) => {
 	const list = this.state.list;
 	const start = list.length;
 	const items = this.loadItems(groupKey + 1, start);
 
 	this.setState({loading: this.loading, list: list.concat(items)});
 }
-onLayoutComplete() {
-	this.setState({loading: false});
+onLayoutComplete = ({isLayout}) => {
+	!isLayout && this.setState({loading: false});
 }
 render() {
 	return (<GridLayout onAppend={this.onAppend}
