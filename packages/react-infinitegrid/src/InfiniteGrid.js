@@ -236,8 +236,9 @@ export default class InfiniteGrid extends Component {
 			}
 			const group = groupKeys[groupKey];
 			const itemIndex = group.children.length;
+			const data = datas[item.key];
 
-			group.items[itemIndex] = datas[item.key];
+			data && (group.items[itemIndex] = data);
 			group.children.push(item);
 		});
 
