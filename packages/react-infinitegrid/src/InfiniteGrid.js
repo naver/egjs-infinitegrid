@@ -20,12 +20,14 @@ function newItem() {
 		mount: false,
 	};
 }
-
+function makeKey(groupKey, itemIndex) {
+	return `__egjs_infinitegrid_${groupKey}_${itemIndex}`;
+}
 function getItemWrapper(datas, group) {
 	const {groupKey, children, items} = group;
 
 	return children.map((component, i) => {
-		const key = component.key;
+		const key = component.key || makeKey(groupKey, i);
 
 		!datas[key] && (datas[key] = newItem());
 		const data = datas[key];
@@ -107,7 +109,6 @@ export default class InfiniteGrid extends Component {
 		this._refreshGroups();
 	}
 	shouldComponentUpdate(props, nextState) {
-		typeof props.loading === "boolean" && (this._bar = false);
 		if (nextState.processing !== DONE || nextState.layout) {
 			return true;
 		}
@@ -141,6 +142,9 @@ export default class InfiniteGrid extends Component {
 		const {processing, isRemoved, layout} = state;
 
 		this._updateLayout();
+		if (!this.props.loading && this._bar) {
+			this._endLoading();
+		}
 		if (layout) {
 			this.layout(true);
 		} else if (processing === DONE) {
@@ -194,7 +198,7 @@ export default class InfiniteGrid extends Component {
 			.reduce((arr, children) => arr.concat(children), []);
 
 		typeof loadingBar === "object" && components.push(
-			<LoadingBar key="LOADINGBAR" horizontal={this.props.horizontal} ref={bar => { this._bar = bar; }}>
+			<LoadingBar key="LOADINGBAR" horizontal={this.props.horizontal} ref={bar => { bar && (this._bar = bar); }}>
 				{loadingBar}
 			</LoadingBar>
 		);
@@ -216,7 +220,8 @@ export default class InfiniteGrid extends Component {
 		let {startKey, endKey, startIndex, endIndex} = state;
 
 		React.Children.forEach(propsChildren, item => {
-			const groupKey = item.props.groupKey || 0;
+			const props = item.props;
+			const groupKey = props.groupKey || props["data-groupKey"] || 0;
 
 			if (!groupKeys[groupKey]) {
 				const prevGroup = prevGroupKeys[groupKey];
@@ -236,7 +241,7 @@ export default class InfiniteGrid extends Component {
 			}
 			const group = groupKeys[groupKey];
 			const itemIndex = group.children.length;
-			const data = datas[item.key];
+			const data = datas[item.key || makeKey(groupKey, itemIndex)];
 
 			data && (group.items[itemIndex] = data);
 			group.children.push(item);
@@ -558,6 +563,12 @@ export default class InfiniteGrid extends Component {
 		const pos = isAppend ? this._getEdgeValue("end") : this._getEdgeValue("start") - this._bar.getSize();
 
 		this._bar.setPosition(pos);
+	}
+	_endLoading() {
+		this._bar = false;
+		const size = this._getEdgeValue("end");
+
+		this._renderer.setContainerSize(size);
 	}
 	_postLayoutComplete({
 		groups,
