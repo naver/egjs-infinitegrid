@@ -7,6 +7,7 @@ import {GridLayout} from "../src/index";
 import Example from "./Example";
 import ImageExample from "./ImageExample";
 import MountExample from "./MountExample";
+import PercentageExample from "./PercentageExample";
 import {use, expect, assert} from "chai";
 import { matchSnapshot } from "chai-karma-snapshot";
 
@@ -89,11 +90,50 @@ describe(`test layout`, function () {
 
 		expect(this.el.innerHTML).to.matchSnapshot();
 
+		// When
 		rendered.setState({mount: true});
+
 		setTimeout(() => {
+			// Then
 			expect(this.el.innerHTML).to.matchSnapshot();
 			done();
 		}, 1000);
-		
-	})
+	});
+
+	[true, false].forEach(horizontal => {
+		it (`should check percentage(horizontal=${horizontal})`, done => {
+			// Given
+			const rendered = ReactDOM.render(<PercentageExample horizontal={horizontal}/>, this.el);
+
+			setTimeout(() => {
+				expect(this.el.innerHTML).to.matchSnapshot();
+
+				// When
+				rendered.setState({percentage: ["position"]});
+
+				// Then
+				expect(this.el.innerHTML).to.matchSnapshot();
+
+				// When
+				rendered.setState({percentage: ["size"]});
+
+				// Then
+				expect(this.el.innerHTML).to.matchSnapshot();
+
+				// When
+				rendered.setState({percentage: ["position", "size"]});
+
+				// Then
+				expect(this.el.innerHTML).to.matchSnapshot();
+
+				// When
+				rendered.setState({percentage: true});
+
+				// Then
+				expect(this.el.innerHTML).to.matchSnapshot();
+
+				done();
+			}, 500);
+		});
+	});
 });
