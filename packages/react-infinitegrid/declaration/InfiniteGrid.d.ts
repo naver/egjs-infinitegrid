@@ -16,11 +16,15 @@ interface InfiniteGridProps {
 	onLayoutComplete?: function,
 	onImageError?: function,
 	onChange?: function,
+	status?: object,
 	[others: string]: any,
 }
 
 declare class InfiniteGrid extends React.Component<InfiniteGridProps> {
 	layout(isRelayout?: boolean): this;
+	setStatus(status: object, applyScrollPos?: boolean): this;
+	getStatus(): object;
+	clear(): this;
 }
 declare class GridLayout extends InfiniteGrid {}
 declare class JustifiedLayout extends InfiniteGrid {}

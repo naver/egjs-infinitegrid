@@ -242,6 +242,7 @@ export default class InfiniteGrid extends Component {
 			layout: false,
 			datas: {},
 		};
+		return this;
 	}
 	_getVisibleGroups() {
 		const {groups, startIndex, endIndex} = this.state;
