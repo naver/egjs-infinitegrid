@@ -6,6 +6,7 @@ import ReactDOM from "react-dom";
 import {GridLayout} from "../src/index";
 import Example from "./Example";
 import ImageExample from "./ImageExample";
+import MountExample from "./MountExample";
 import {use, expect, assert} from "chai";
 import { matchSnapshot } from "chai-karma-snapshot";
 
@@ -82,4 +83,17 @@ describe(`test layout`, function () {
 			done();
 		}, 1000);
 	});
+	it (`should check no children`, done => {
+		// Given
+		const rendered = ReactDOM.render(<MountExample/>, this.el);
+
+		expect(this.el.innerHTML).to.matchSnapshot();
+
+		rendered.setState({mount: true});
+		setTimeout(() => {
+			expect(this.el.innerHTML).to.matchSnapshot();
+			done();
+		}, 1000);
+		
+	})
 });

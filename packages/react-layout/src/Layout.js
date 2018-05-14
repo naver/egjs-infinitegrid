@@ -108,8 +108,6 @@ export default class Layout extends Component {
 		const size = this._container[horizontal ? "clientHeight" : "clientWidth"];;
 
 		if (isResize) {
-			window.a = this;
-			console.log(size);
 			this.setState({size, render: NOT_RENDER});
 		} else {
 			this.state.size = size;
@@ -195,8 +193,6 @@ export default class Layout extends Component {
 			this.state.outline = outline.slice();
 		}
 		this._layout.layout([group], outline || this.state.outline);
-
-		console.log(group);
 		this.state.items.forEach((item, index) => {
 			this._render(item);
 		});
@@ -219,7 +215,8 @@ export default class Layout extends Component {
 			return !loaded;
 		});
 		if (!items.length) {
-			this.setState({render: REQUEST_RENDER});
+			this.state.render = REQUEST_RENDER;
+			this.layout();
 			return;
 		}
 		const elements = items.map(item => item.el);
@@ -239,7 +236,8 @@ export default class Layout extends Component {
 						size = {...this.state.items[0].size};
 					}
 				});
-				this.setState({render: REQUEST_RENDER});
+				this.state.render = REQUEST_RENDER;
+				this.layout();
 			},
 			error: ({target, itemIndex}) => {
 				const item = items[itemIndex];
@@ -257,7 +255,7 @@ export default class Layout extends Component {
 		const size = parseFloat(props.size);
 
 		if (!this._container) {
-			return;
+			return false;
 		}
 		if (this.props.outline.length !== props.outline.length ||
 			!this.props.outline.every((v, index) => v === props.outline[index])) {
@@ -302,10 +300,10 @@ export default class Layout extends Component {
 	
 		!state.size && this._setSize();
 
+		this._updateItems();
 		if (state.render === REQUEST_RENDER) {
 			this.layout();
 		} else {
-			this._updateItems();
 			this._loadImage();
 		}
 	}
