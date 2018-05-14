@@ -175,7 +175,7 @@ export default class Layout extends Component {
 		}
 		this.state.datas = datas;
 	}
-	layout(outline = []) {
+	layout(outline) {
 		if (!this._container) {
 			return;
 		}
@@ -187,12 +187,11 @@ export default class Layout extends Component {
 		}
 		const group = {
 			items,
-			outlines: {start: this.state.outline, end: this.state.outline},
+			outlines: {start: [], end: []},
 		};
-		if (outline) {
-			this.state.outline = outline.slice();
-		}
-		this._layout.layout([group], outline || this.state.outline);
+
+		outline && (this.state.outline = outline.slice());
+		this._layout.layout([group], this.state.outline);
 		this.state.items.forEach((item, index) => {
 			this._render(item);
 		});
