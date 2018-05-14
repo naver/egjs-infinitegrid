@@ -35,7 +35,7 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 |margin|number|Margin used to create space around items|
 |isEqualSize|boolean|Indicates whether sizes of all card elements are equal to one another. If true, the performance of layout arrangement can be improved.|
 |outline|array|Array of outline points to be reference points|
-|percentage|boolean|Set percent position.|
+|percentage|boolean, ["position", "size"]|Set percent position. if true, set percentage to "position" and "size".|
 |onLayoutComplete|function|This event is fired when layout is successfully arranged.
 |onImageError|function|This event is fired when an error occurs in the image.
 |other props||Check out! the options of Layouts|
