@@ -92,7 +92,7 @@ class JustifiedLayout {
 	_getSize(items, size1Name, size2Name) {
 		const margin = this.options.margin;
 		const size = items.reduce((sum, item) => sum +
-							(item.size[size2Name]) / item.size[size1Name], 0);
+							(item.orgSize[size2Name]) / item.orgSize[size1Name], 0);
 
 		return (this._size - margin * (items.length - 1)) / size;
 	}
