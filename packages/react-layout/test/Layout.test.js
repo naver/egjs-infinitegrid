@@ -110,27 +110,21 @@ describe(`test layout`, function () {
 
 				// When
 				rendered.setState({percentage: ["position"]});
-
-				// Then
-				expect(this.el.innerHTML).to.matchSnapshot();
-
-				// When
+				const percentagePositionHTML = this.el.innerHTML;
 				rendered.setState({percentage: ["size"]});
-
-				// Then
-				expect(this.el.innerHTML).to.matchSnapshot();
-
-				// When
+				const percentageSizeHTML = this.el.innerHTML;
 				rendered.setState({percentage: ["position", "size"]});
-
-				// Then
-				expect(this.el.innerHTML).to.matchSnapshot();
-
-				// When
+				const percentagePositionAndSizeHTML = this.el.innerHTML;
 				rendered.setState({percentage: true});
+				const percentageTrueHTML = this.el.innerHTML;
+
 
 				// Then
-				expect(this.el.innerHTML).to.matchSnapshot();
+				expect(percentagePositionHTML).to.matchSnapshot();
+				expect(percentageSizeHTML).to.matchSnapshot();
+				expect(percentagePositionAndSizeHTML).to.matchSnapshot();
+				expect(percentageTrueHTML).to.matchSnapshot();
+				expect(percentagePositionAndSizeHTML).to.be.equals(percentageTrueHTML);
 
 				done();
 			}, 500);
