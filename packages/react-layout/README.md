@@ -28,14 +28,14 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 
 ### props
 |name|type|description|
-|---|---------------|---|
+|---|---------------------------|---|
 |tag|string|The tag name of container|
 |size|number|The viewport size of container area where items are added to a layout. if size is zero, automatically resize the layout.|
 |horizontal|boolean|Direction of the scroll movement|
 |margin|number|Margin used to create space around items|
 |isEqualSize|boolean|Indicates whether sizes of all card elements are equal to one another. If true, the performance of layout arrangement can be improved.|
 |outline|array|Array of outline points to be reference points|
-|percentage|boolean, ["position", "size"]|Set percent position. if true, set percentage to "position" and "size".|
+|percentage|boolean or ["position"?, "size"?]|Set percent position or size, or both. if true, set percentage to "position" and "size".|
 |onLayoutComplete|function|This event is fired when layout is successfully arranged.
 |onImageError|function|This event is fired when an error occurs in the image.
 |other props||Check out! the options of Layouts|
