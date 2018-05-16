@@ -55,7 +55,7 @@ class GridLayout {
 	checkColumn(item) {
 		const {itemSize, margin, horizontal} = this.options;
 		const sizeName = horizontal ? "height" : "width";
-		const columnSize = itemSize || (item && item.size[sizeName]) || 0;
+		const columnSize = parseInt(itemSize || (item && item.size[sizeName]), 10) || 0;
 
 		this._columnSize = columnSize;
 		if (!columnSize) {
