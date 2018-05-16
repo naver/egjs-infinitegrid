@@ -507,9 +507,6 @@ export default class InfiniteGrid extends Component {
 			this.setState({endIndex: start - 1, endKey: groups[start - 1].groupKey});
 		}
 	}
-	_check = ({scrollPos, isForward}) => {
-		this._infinite.scroll(scrollPos, isForward);
-	}
 	_fitItems(base, margin = 0) {
 		base > 0 && this._watcher.scrollBy(-base);
 		this._items.fit(base, this.props.horizontal);
@@ -747,7 +744,10 @@ export default class InfiniteGrid extends Component {
 			});
 			DOMRenderer.renderItems(items);
 			this.state.processing = APPEND | PROCESS;
+
 			this._updateSize({items});
+		} else {
+			this._requestAppend({});
 		}
 	}
 }

@@ -5,18 +5,22 @@ import {GridLayout} from "../src/index";
 import {use, expect, assert} from "chai";
 import { matchSnapshot } from "chai-karma-snapshot";
 import {cleanHTML} from "./TestHelper";
+import Example from "./Example";
 use(matchSnapshot);
 
 
 describe(`test layout`, function () {
 	beforeEach(() => {
+		document.body.style.margin = "0px";
+		document.body.style.padding = "0px";
+		cleanup();
 		this.el = sandbox({
 			id: "__react-content",
 			style: "width: 500px",
 		});
 	});
 	afterEach(() => {
-		cleanup();
+		//cleanup();
 	});
 	it (`should check fixed size`, done => {
 		const rendered = ReactDOM.render(<GridLayout className="test1">
@@ -85,6 +89,27 @@ describe(`test layout`, function () {
 				expect(html).to.be.equals(this.el.innerHTML);
 				done();
 			});
+		}, 100);
+	});
+	it (`should check scroll`, done => {
+		this.el.style.width = "300px";
+
+		const rendered = ReactDOM.render(<Example/>, this.el);
+		setTimeout(() => {
+			const html = cleanHTML(this.el.innerHTML);
+			
+			rendered.grid._container.scrollTop = 1000;
+			
+			setTimeout(() => {
+				const html2 = cleanHTML(this.el.innerHTML);
+
+
+				console.log(rendered.grid._container.scrollTop)
+				expect(html).to.matchSnapshot();
+				expect(html2).to.matchSnapshot();
+
+				done();
+			}, 300);
 		}, 100);
 	});
 });

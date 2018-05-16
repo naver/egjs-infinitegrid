@@ -57,3 +57,46 @@
 <div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div>"
 ```
 
+#### `should check scroll`
+
+```
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\">item1</div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\">item1</div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 100px;\">item2</div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 200px;\">item2</div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 300px; position: absolute; left: 100px; top: 200px;\">item2</div>
+<div class=\"item\" data-groupkey=\"3\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 300px;\">item3</div>
+<div class=\"item\" data-groupkey=\"3\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 400px;\">item3</div>
+<div class=\"item\" data-groupkey=\"3\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 400px;\">item3</div>
+<div class=\"item\" data-groupkey=\"4\" style=\"width: 100px; height: 100px; position: absolute; left: 100px; top: 500px;\">item4</div>
+<div class=\"item\" data-groupkey=\"4\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 600px;\">item4</div>
+<div class=\"item\" data-groupkey=\"4\" style=\"width: 100px; height: 300px; position: absolute; left: 100px; top: 600px;\">item4</div>
+<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 700px;\">item5</div>
+<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 800px;\">item5</div>
+<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 800px;\">item5</div></div>"
+```
+
+```
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 100px;\">item2</div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 200px;\">item2</div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 300px; position: absolute; left: 100px; top: 200px;\">item2</div>
+<div class=\"item\" data-groupkey=\"3\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 300px;\">item3</div>
+<div class=\"item\" data-groupkey=\"3\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 400px;\">item3</div>
+<div class=\"item\" data-groupkey=\"3\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 400px;\">item3</div>
+<div class=\"item\" data-groupkey=\"4\" style=\"width: 100px; height: 100px; position: absolute; left: 100px; top: 500px;\">item4</div>
+<div class=\"item\" data-groupkey=\"4\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 600px;\">item4</div>
+<div class=\"item\" data-groupkey=\"4\" style=\"width: 100px; height: 300px; position: absolute; left: 100px; top: 600px;\">item4</div>
+<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 700px;\">item5</div>
+<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 800px;\">item5</div>
+<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 800px;\">item5</div>
+<div class=\"item\" data-groupkey=\"6\" style=\"width: 100px; height: 100px; position: absolute; left: 100px; top: 900px;\">item6</div>
+<div class=\"item\" data-groupkey=\"6\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 1000px;\">item6</div>
+<div class=\"item\" data-groupkey=\"6\" style=\"width: 100px; height: 300px; position: absolute; left: 100px; top: 1000px;\">item6</div>
+<div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 1100px;\">item7</div>
+<div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 1200px;\">item7</div>
+<div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 1200px;\">item7</div></div>"
+```
+
