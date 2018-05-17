@@ -144,7 +144,6 @@ export default class InfiniteGrid extends Component {
 			this.layout(true);
 		} else if (processing === DONE) {
 			const isConstantSize = this.props.isConstantSize;
-			const scrollPos = this._watcher.getScrollPos();
 			const groups = this._getVisibleGroups();
 			const updateGroups = isUpdate ? groups :
 				groups.filter(group => !group.items.every(item => item.mount));
@@ -160,6 +159,8 @@ export default class InfiniteGrid extends Component {
 				}
 				return;
 			}
+			const scrollPos = this._watcher.getScrollPos();
+
 			this._infinite.scroll(scrollPos, true);
 		} else if (!(processing & PROCESS)) {
 			// APPEND, PREPEND
@@ -216,7 +217,7 @@ export default class InfiniteGrid extends Component {
 
 		this._watcher.detachEvent();
 		Object.assign(this.state, state);
-		this.state.procesing = DONE;
+		this.state.processing = DONE;
 		this._renderer.setStatus(_renderer);
 		this._infinite.setStatus(_infinite);
 		this._refreshGroups(this.props.children);
@@ -659,8 +660,6 @@ export default class InfiniteGrid extends Component {
 		const loadingSize = (this._bar && this._bar.getSize()) || 0;
 
 		isAppend && this._renderer.setContainerSize(size + loadingSize); //  + this._status.loadingSize || 0
-
-		this.setState(isLayout ? {layout: false} : {processing: DONE});
 		this.props.onLayoutComplete({
 			target: items,
 			isAppend,
@@ -671,6 +670,7 @@ export default class InfiniteGrid extends Component {
 			orgScrollPos: watcher.getOrgScrollPos(),
 			size,
 		});
+		this.setState(isLayout ? {layout: false} : {processing: DONE});
 	}
 	_insert() {
 		const isConstantSize = this.props.isConstantSize;
@@ -736,6 +736,7 @@ export default class InfiniteGrid extends Component {
 		this._updateLayout();
 		this._setSize(this._renderer.getViewportSize());
 		this._updateGroups();
+		this._watcher.setScrollPos();
 
 		const items = this._getVisibleItems();
 
