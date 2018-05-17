@@ -6,14 +6,14 @@ import {DONE, APPEND, PREPEND, PROCESS} from "./consts";
 import ItemWrapper from "./ItemWrapper";
 import LoadingBar from "./LoadingBar";
 
-function newItem() {
+function newItem(groupKey, key, itemIndex) {
 	return {
 		el: null,
 		orgSize: null,
 		size: {},
-		key: null,
-		groupKey: 0,
-		itemIndex: -1,
+		key,
+		groupKey,
+		itemIndex,
 		rect: {
 			left: -999999,
 			top: -99999,
@@ -30,12 +30,7 @@ function getItemWrapper(datas, group) {
 	return children.map((component, i) => {
 		const key = makeKey(component, groupKey, i);
 
-		!datas[key] && (datas[key] = newItem());
-		const data = datas[key];
-
-		data.groupKey = groupKey;
-		data.key = key;
-		data.itemIndex = i;
+		!datas[key] && (datas[key] = newItem(groupKey, key, i));
 		return <ItemWrapper
 			key={key}
 			item={datas[key]}
@@ -138,9 +133,10 @@ export default class InfiniteGrid extends Component {
 	}
 	componentDidUpdate(prevProps, prevState) {
 		const state = this.state;
-		const {processing, isRemoved, layout} = state;
+		const {processing, isUpdate, layout} = state;
 
 		this._updateLayout();
+		this.state.isUpdate = false;
 		if (!this.props.loading && this._bar) {
 			this._endLoading();
 		}
@@ -150,16 +146,15 @@ export default class InfiniteGrid extends Component {
 			const isConstantSize = this.props.isConstantSize;
 			const scrollPos = this._watcher.getScrollPos();
 			const groups = this._getVisibleGroups();
-			const updateGroups = isRemoved ? groups :
+			const updateGroups = isUpdate ? groups :
 				groups.filter(group => !group.items.every(item => item.mount));
 			const newItems = ItemManager.pluck(updateGroups, "items").filter(item => !item.mount && (!item.orgSize || !isConstantSize));
 
-			this.state.isRemoved = false;
 			newItems.forEach(item => { item.mount = true; });
 
 			if (updateGroups.length) {
 				if (newItems.length) {
-					this._updateSize({groups, items: newItems});
+					this._updateSize({groups, items: newItems, isUpdate});
 				} else {
 					this.layout(false);
 				}
@@ -241,6 +236,7 @@ export default class InfiniteGrid extends Component {
 			processing: DONE,
 			layout: false,
 			datas: {},
+			isUpdate: false,
 		};
 		return this;
 	}
@@ -275,7 +271,8 @@ export default class InfiniteGrid extends Component {
 		}
 		const prevGroupKeys = state.groupKeys;
 		const prevGroups = state.groups;
-		const datas = state.datas;
+		const prevDatas = state.datas;
+		const datas = {};
 		const groupKeys = {};
 		const groups = [];
 		let {startKey, endKey, startIndex, endIndex} = state;
@@ -302,9 +299,22 @@ export default class InfiniteGrid extends Component {
 			}
 			const group = groupKeys[groupKey];
 			const itemIndex = group.children.length;
-			const data = datas[makeKey(item, groupKey, itemIndex)];
+			const key = makeKey(item, groupKey, itemIndex);
+			let data = prevDatas[key];
 
-			data && (group.items[itemIndex] = data);
+			if (!data) {
+				data = newItem(groupKey, key, itemIndex);
+				this.state.isUpdate = true;
+			} else if (
+				data.groupKey !== groupKey ||
+				data.itemIndex !== itemIndex
+			) {
+				data.groupKey = groupKey;
+				data.itemIndex = itemIndex;
+				this.state.isUpdate = true;
+			}
+			group.items[itemIndex] = data;
+			datas[key] = data;
 			group.children.push(item);
 		});
 
@@ -346,18 +356,9 @@ export default class InfiniteGrid extends Component {
 					});
 			}
 		}
-		groups.forEach(group => {
-			const {groupKey, items} = group;
-			const prevGroup = prevGroupKeys[groupKey];
-
-			if (prevGroup && prevGroup.items.length > items.length) {
-				// remove items
-				state.isRemoved = true;
-			}
-		});
-		if (prevEndIndex - prevStartIndex > endIndex - startIndex) {
-			// remove group
-			state.isRemoved = true;
+		// update group
+		if (prevEndIndex - prevStartIndex !== endIndex - startIndex) {
+			state.isUpdate = true;
 		}
 		state.groupKeys = groupKeys;
 		state.groups = groups;
@@ -365,6 +366,7 @@ export default class InfiniteGrid extends Component {
 		state.endKey = endKey;
 		state.startIndex = startIndex;
 		state.endIndex = endIndex;
+		state.datas = datas;
 		this._updateGroups();
 
 		!this.state.processing && this._updateCursor();
@@ -549,6 +551,7 @@ export default class InfiniteGrid extends Component {
 	_updateSize({
 		groups = this._getVisibleGroups(),
 		items = this._getVisibleItems(),
+		isUpdate,
 	}) {
 		if (!groups.length) {
 			return;
@@ -574,8 +577,8 @@ export default class InfiniteGrid extends Component {
 
 				groups.forEach(group => {
 					const groupOutline = group.outlines[isAppend ? "start" : "end"];
-					const isRelayout = outline.length && outline.length === groupOutline.length ?
-						!outline.every((v, index) => v === groupOutline[index]) : true;
+					const isRelayout = isUpdate || (outline.length && outline.length === groupOutline.length ?
+						!outline.every((v, index) => v === groupOutline[index]) : true);
 
 					if (!isRelayout) {
 						return;

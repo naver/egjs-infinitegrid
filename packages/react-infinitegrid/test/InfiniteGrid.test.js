@@ -66,10 +66,9 @@ describe(`test layout`, function () {
 			const status = rendered.getStatus();
 			const html = this.el.innerHTML;
 
-			expect(JSON.stringify(status)).to.matchSnapshot();
+			expect(status).to.matchSnapshot();
 			expect(cleanHTML(html)).to.matchSnapshot();
 			
-
 			this.el = sandbox({
 				id: "__react-content",
 				style: "width: 500px",
@@ -103,8 +102,6 @@ describe(`test layout`, function () {
 			setTimeout(() => {
 				const html2 = cleanHTML(this.el.innerHTML);
 
-
-				console.log(rendered.grid._container.scrollTop)
 				expect(html).to.matchSnapshot();
 				expect(html2).to.matchSnapshot();
 

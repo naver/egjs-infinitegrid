@@ -43,7 +43,504 @@
 #### `should check getStatus and setStatus`
 
 ```
-"{\"state\":{\"groups\":[{\"groupKey\":0,\"outlines\":{\"start\":[0,0],\"end\":[730,740],\"startIndex\":0,\"endIndex\":6},\"items\":[{\"el\":null,\"orgSize\":{\"width\":120,\"height\":100},\"size\":{\"width\":120,\"height\":100},\"key\":\"__egjs_infinitegrid_0_0\",\"groupKey\":0,\"itemIndex\":0,\"rect\":{\"top\":0,\"left\":30},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":200},\"size\":{\"width\":120,\"height\":200},\"key\":\"__egjs_infinitegrid_0_1\",\"groupKey\":0,\"itemIndex\":1,\"rect\":{\"top\":0,\"left\":150},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":100},\"size\":{\"width\":120,\"height\":100},\"key\":\"__egjs_infinitegrid_0_2\",\"groupKey\":0,\"itemIndex\":2,\"rect\":{\"top\":100,\"left\":30},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":400},\"size\":{\"width\":120,\"height\":400},\"key\":\"__egjs_infinitegrid_0_3\",\"groupKey\":0,\"itemIndex\":3,\"rect\":{\"top\":200,\"left\":30},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":440},\"size\":{\"width\":120,\"height\":440},\"key\":\"__egjs_infinitegrid_0_4\",\"groupKey\":0,\"itemIndex\":4,\"rect\":{\"top\":200,\"left\":150},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":130},\"size\":{\"width\":120,\"height\":130},\"key\":\"__egjs_infinitegrid_0_5\",\"groupKey\":0,\"itemIndex\":5,\"rect\":{\"top\":600,\"left\":30},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":100},\"size\":{\"width\":120,\"height\":100},\"key\":\"__egjs_infinitegrid_0_6\",\"groupKey\":0,\"itemIndex\":6,\"rect\":{\"top\":640,\"left\":150},\"mount\":true}],\"children\":[],\"index\":0}],\"groupKeys\":{\"0\":{\"groupKey\":0,\"outlines\":{\"start\":[0,0],\"end\":[730,740],\"startIndex\":0,\"endIndex\":6},\"items\":[{\"el\":null,\"orgSize\":{\"width\":120,\"height\":100},\"size\":{\"width\":120,\"height\":100},\"key\":\"__egjs_infinitegrid_0_0\",\"groupKey\":0,\"itemIndex\":0,\"rect\":{\"top\":0,\"left\":30},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":200},\"size\":{\"width\":120,\"height\":200},\"key\":\"__egjs_infinitegrid_0_1\",\"groupKey\":0,\"itemIndex\":1,\"rect\":{\"top\":0,\"left\":150},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":100},\"size\":{\"width\":120,\"height\":100},\"key\":\"__egjs_infinitegrid_0_2\",\"groupKey\":0,\"itemIndex\":2,\"rect\":{\"top\":100,\"left\":30},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":400},\"size\":{\"width\":120,\"height\":400},\"key\":\"__egjs_infinitegrid_0_3\",\"groupKey\":0,\"itemIndex\":3,\"rect\":{\"top\":200,\"left\":30},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":440},\"size\":{\"width\":120,\"height\":440},\"key\":\"__egjs_infinitegrid_0_4\",\"groupKey\":0,\"itemIndex\":4,\"rect\":{\"top\":200,\"left\":150},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":130},\"size\":{\"width\":120,\"height\":130},\"key\":\"__egjs_infinitegrid_0_5\",\"groupKey\":0,\"itemIndex\":5,\"rect\":{\"top\":600,\"left\":30},\"mount\":true},{\"el\":null,\"orgSize\":{\"width\":120,\"height\":100},\"size\":{\"width\":120,\"height\":100},\"key\":\"__egjs_infinitegrid_0_6\",\"groupKey\":0,\"itemIndex\":6,\"rect\":{\"top\":640,\"left\":150},\"mount\":true}],\"children\":[],\"index\":0}},\"startIndex\":0,\"endIndex\":0,\"startKey\":0,\"endKey\":0,\"processing\":0,\"layout\":false,\"datas\":{\"__egjs_infinitegrid_0_0\":{\"el\":null,\"orgSize\":{\"width\":120,\"height\":100},\"size\":{\"width\":120,\"height\":100},\"key\":\"__egjs_infinitegrid_0_0\",\"groupKey\":0,\"itemIndex\":0,\"rect\":{\"top\":0,\"left\":30},\"mount\":true},\"__egjs_infinitegrid_0_1\":{\"el\":null,\"orgSize\":{\"width\":120,\"height\":200},\"size\":{\"width\":120,\"height\":200},\"key\":\"__egjs_infinitegrid_0_1\",\"groupKey\":0,\"itemIndex\":1,\"rect\":{\"top\":0,\"left\":150},\"mount\":true},\"__egjs_infinitegrid_0_2\":{\"el\":null,\"orgSize\":{\"width\":120,\"height\":100},\"size\":{\"width\":120,\"height\":100},\"key\":\"__egjs_infinitegrid_0_2\",\"groupKey\":0,\"itemIndex\":2,\"rect\":{\"top\":100,\"left\":30},\"mount\":true},\"__egjs_infinitegrid_0_3\":{\"el\":null,\"orgSize\":{\"width\":120,\"height\":400},\"size\":{\"width\":120,\"height\":400},\"key\":\"__egjs_infinitegrid_0_3\",\"groupKey\":0,\"itemIndex\":3,\"rect\":{\"top\":200,\"left\":30},\"mount\":true},\"__egjs_infinitegrid_0_4\":{\"el\":null,\"orgSize\":{\"width\":120,\"height\":440},\"size\":{\"width\":120,\"height\":440},\"key\":\"__egjs_infinitegrid_0_4\",\"groupKey\":0,\"itemIndex\":4,\"rect\":{\"top\":200,\"left\":150},\"mount\":true},\"__egjs_infinitegrid_0_5\":{\"el\":null,\"orgSize\":{\"width\":120,\"height\":130},\"size\":{\"width\":120,\"height\":130},\"key\":\"__egjs_infinitegrid_0_5\",\"groupKey\":0,\"itemIndex\":5,\"rect\":{\"top\":600,\"left\":30},\"mount\":true},\"__egjs_infinitegrid_0_6\":{\"el\":null,\"orgSize\":{\"width\":120,\"height\":100},\"size\":{\"width\":120,\"height\":100},\"key\":\"__egjs_infinitegrid_0_6\",\"groupKey\":0,\"itemIndex\":6,\"rect\":{\"top\":640,\"left\":150},\"mount\":true}},\"isRemoved\":false},\"_infinite\":{\"startCursor\":0,\"endCursor\":0,\"size\":939},\"_watcher\":{\"_prevPos\":0,\"scrollPos\":0},\"_renderer\":{\"cssText\":\"position: relative; height: 740px;\",\"options\":{\"isOverflowScroll\":false,\"isEqualSize\":false,\"horizontal\":false,\"isConstantSize\":false},\"_size\":{\"viewport\":300,\"item\":null,\"view\":939}}}"
+Object {
+  "_infinite": Object {
+    "endCursor": 0,
+    "size": 939,
+    "startCursor": 0,
+  },
+  "_renderer": Object {
+    "_size": Object {
+      "item": null,
+      "view": 939,
+      "viewport": 300,
+    },
+    "cssText": "position: relative; height: 740px;",
+    "options": Object {
+      "horizontal": false,
+      "isConstantSize": false,
+      "isEqualSize": false,
+      "isOverflowScroll": false,
+    },
+  },
+  "_watcher": Object {
+    "_prevPos": 0,
+    "scrollPos": 0,
+  },
+  "state": Object {
+    "datas": Object {
+      "__egjs_infinitegrid_0_0": Object {
+        "column": 0,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 0,
+        "key": "__egjs_infinitegrid_0_0",
+        "mount": true,
+        "orgSize": Object {
+          "height": 100,
+          "width": 120,
+        },
+        "rect": Object {
+          "left": 30,
+          "top": 0,
+        },
+        "size": Object {
+          "height": 100,
+          "width": 120,
+        },
+      },
+      "__egjs_infinitegrid_0_1": Object {
+        "column": 1,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 1,
+        "key": "__egjs_infinitegrid_0_1",
+        "mount": true,
+        "orgSize": Object {
+          "height": 200,
+          "width": 120,
+        },
+        "rect": Object {
+          "left": 150,
+          "top": 0,
+        },
+        "size": Object {
+          "height": 200,
+          "width": 120,
+        },
+      },
+      "__egjs_infinitegrid_0_2": Object {
+        "column": 0,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 2,
+        "key": "__egjs_infinitegrid_0_2",
+        "mount": true,
+        "orgSize": Object {
+          "height": 100,
+          "width": 120,
+        },
+        "rect": Object {
+          "left": 30,
+          "top": 100,
+        },
+        "size": Object {
+          "height": 100,
+          "width": 120,
+        },
+      },
+      "__egjs_infinitegrid_0_3": Object {
+        "column": 0,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 3,
+        "key": "__egjs_infinitegrid_0_3",
+        "mount": true,
+        "orgSize": Object {
+          "height": 400,
+          "width": 120,
+        },
+        "rect": Object {
+          "left": 30,
+          "top": 200,
+        },
+        "size": Object {
+          "height": 400,
+          "width": 120,
+        },
+      },
+      "__egjs_infinitegrid_0_4": Object {
+        "column": 1,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 4,
+        "key": "__egjs_infinitegrid_0_4",
+        "mount": true,
+        "orgSize": Object {
+          "height": 440,
+          "width": 120,
+        },
+        "rect": Object {
+          "left": 150,
+          "top": 200,
+        },
+        "size": Object {
+          "height": 440,
+          "width": 120,
+        },
+      },
+      "__egjs_infinitegrid_0_5": Object {
+        "column": 0,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 5,
+        "key": "__egjs_infinitegrid_0_5",
+        "mount": true,
+        "orgSize": Object {
+          "height": 130,
+          "width": 120,
+        },
+        "rect": Object {
+          "left": 30,
+          "top": 600,
+        },
+        "size": Object {
+          "height": 130,
+          "width": 120,
+        },
+      },
+      "__egjs_infinitegrid_0_6": Object {
+        "column": 1,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 6,
+        "key": "__egjs_infinitegrid_0_6",
+        "mount": true,
+        "orgSize": Object {
+          "height": 100,
+          "width": 120,
+        },
+        "rect": Object {
+          "left": 150,
+          "top": 640,
+        },
+        "size": Object {
+          "height": 100,
+          "width": 120,
+        },
+      },
+    },
+    "endIndex": 0,
+    "endKey": 0,
+    "groupKeys": Object {
+      "0": Object {
+        "children": Array [],
+        "groupKey": 0,
+        "index": 0,
+        "items": Array [
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 0,
+            "key": "__egjs_infinitegrid_0_0",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 0,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 1,
+            "key": "__egjs_infinitegrid_0_1",
+            "mount": true,
+            "orgSize": Object {
+              "height": 200,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 0,
+            },
+            "size": Object {
+              "height": 200,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 2,
+            "key": "__egjs_infinitegrid_0_2",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 100,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 3,
+            "key": "__egjs_infinitegrid_0_3",
+            "mount": true,
+            "orgSize": Object {
+              "height": 400,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 200,
+            },
+            "size": Object {
+              "height": 400,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 4,
+            "key": "__egjs_infinitegrid_0_4",
+            "mount": true,
+            "orgSize": Object {
+              "height": 440,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 200,
+            },
+            "size": Object {
+              "height": 440,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 5,
+            "key": "__egjs_infinitegrid_0_5",
+            "mount": true,
+            "orgSize": Object {
+              "height": 130,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 600,
+            },
+            "size": Object {
+              "height": 130,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 6,
+            "key": "__egjs_infinitegrid_0_6",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 640,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+        ],
+        "outlines": Object {
+          "end": Array [
+            730,
+            740,
+          ],
+          "endIndex": 6,
+          "start": Array [
+            0,
+            0,
+          ],
+          "startIndex": 0,
+        },
+      },
+    },
+    "groups": Array [
+      Object {
+        "children": Array [],
+        "groupKey": 0,
+        "index": 0,
+        "items": Array [
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 0,
+            "key": "__egjs_infinitegrid_0_0",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 0,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 1,
+            "key": "__egjs_infinitegrid_0_1",
+            "mount": true,
+            "orgSize": Object {
+              "height": 200,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 0,
+            },
+            "size": Object {
+              "height": 200,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 2,
+            "key": "__egjs_infinitegrid_0_2",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 100,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 3,
+            "key": "__egjs_infinitegrid_0_3",
+            "mount": true,
+            "orgSize": Object {
+              "height": 400,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 200,
+            },
+            "size": Object {
+              "height": 400,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 4,
+            "key": "__egjs_infinitegrid_0_4",
+            "mount": true,
+            "orgSize": Object {
+              "height": 440,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 200,
+            },
+            "size": Object {
+              "height": 440,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 5,
+            "key": "__egjs_infinitegrid_0_5",
+            "mount": true,
+            "orgSize": Object {
+              "height": 130,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 600,
+            },
+            "size": Object {
+              "height": 130,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 6,
+            "key": "__egjs_infinitegrid_0_6",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 640,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+        ],
+        "outlines": Object {
+          "end": Array [
+            730,
+            740,
+          ],
+          "endIndex": 6,
+          "start": Array [
+            0,
+            0,
+          ],
+          "startIndex": 0,
+        },
+      },
+    ],
+    "isUpdate": false,
+    "layout": false,
+    "processing": 0,
+    "startIndex": 0,
+    "startKey": 0,
+  },
+}
 ```
 
 ```

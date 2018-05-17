@@ -21,7 +21,6 @@ export default class Exmaple extends Component {
 		};
 	}
 	onAppend = e => {
-		console.log(e);
 		const groupKey = e.groupKey ? e.groupKey + 1 : 1;
 
 		this.state.list = this.state.list.concat([
