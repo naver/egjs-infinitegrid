@@ -5,6 +5,17 @@ import Item from "./Item";
 import {NOT_LOADED, LOADING, LOADED, LAYOUT_ID, NOT_RENDER, REQUEST_RENDER, RENDERED, CHECK_ONLY_ERROR, CHECK_ALL} from "./consts";
 import PropTypes from 'prop-types';
 
+
+function render(rect, name, style, size, percentage) {
+	if (!(name in rect)) {
+		return;
+	}
+	if (percentage) {
+		style.push(`${name}:${rect[name] / size * 100}%;`);
+	} else {
+		style.push(`${name}:${rect[name]}px;`);
+	}
+}
 export default class Layout extends Component {
 	static propTypes = {
 		tag: PropTypes.string,
@@ -16,7 +27,7 @@ export default class Layout extends Component {
 		isEqualSize: PropTypes.bool,
 		onLayoutComplete: PropTypes.func,
 		onImageError: PropTypes.func,
-		percentage: PropTypes.bool,
+		percentage: PropTypes.oneOfType(PropTypes.bool, PropTypes.array),
 	};
 	static defaultProps = {
 		tag: "div",
@@ -74,18 +85,15 @@ export default class Layout extends Component {
 		const style = ["position:absolute;"];
 		const size = this.state.size;
 		const {horizontal, percentage} = this.props;
-		
-		["left", "top", "width", "height"].forEach(p => {
-			if (!(p in rect)) {
-				return;
-			}
-			if (percentage && ((horizontal && p === "top") || 
-			(!horizontal && p === "left"))) {
-				style.push(`${p}:${rect[p] / size * 100}%;`);
-			} else {
-				style.push(`${p}:${rect[p]}px;`);
-			}
-		});
+		const isArray = Array.isArray()
+		const percentagePosition = percentage ? percentage === true || ~percentage.indexOf("position") : false;
+		const percentageSize = percentage ? percentage === true || ~percentage.indexOf("size") : false;
+
+		render(rect, "left", style, size, !horizontal && percentagePosition);
+		render(rect, "top", style, size, horizontal && percentagePosition);
+		render(rect, "width", style, size, !horizontal && percentageSize);
+		render(rect, "height", style, size, horizontal && percentageSize);
+
 		const cssText = style.join("");
 
 		item.cssText = cssText;
@@ -179,15 +187,15 @@ export default class Layout extends Component {
 		}
 		const group = {
 			items,
-			outlines: this.state.outlines,
+			outlines: {start: [], end: []},
 		};
-		if (outline) {
-			this.state.outline = outline.slice();
-		}
-		this._layout.layout([group], outline || this.state.outline);
+
+		outline && (this.state.outline = outline.slice());
+		this._layout.layout([group], this.state.outline);
 		this.state.items.forEach((item, index) => {
 			this._render(item);
 		});
+
 
 		const max = Math.max(...group.outlines.end);
 		const horizontal = this._layout.options.horizontal;
@@ -206,7 +214,8 @@ export default class Layout extends Component {
 			return !loaded;
 		});
 		if (!items.length) {
-			this.setState({render: REQUEST_RENDER});
+			this.state.render = REQUEST_RENDER;
+			this.layout();
 			return;
 		}
 		const elements = items.map(item => item.el);
@@ -226,7 +235,8 @@ export default class Layout extends Component {
 						size = {...this.state.items[0].size};
 					}
 				});
-				this.setState({render: REQUEST_RENDER});
+				this.state.render = REQUEST_RENDER;
+				this.layout();
 			},
 			error: ({target, itemIndex}) => {
 				const item = items[itemIndex];
@@ -244,7 +254,7 @@ export default class Layout extends Component {
 		const size = parseFloat(props.size);
 
 		if (!this._container) {
-			return;
+			return false;
 		}
 		if (this.props.outline.length !== props.outline.length ||
 			!this.props.outline.every((v, index) => v === props.outline[index])) {
@@ -289,10 +299,10 @@ export default class Layout extends Component {
 	
 		!state.size && this._setSize();
 
+		this._updateItems();
 		if (state.render === REQUEST_RENDER) {
 			this.layout();
 		} else {
-			this._updateItems();
 			this._loadImage();
 		}
 	}

@@ -6,6 +6,8 @@ import ReactDOM from "react-dom";
 import {GridLayout} from "../src/index";
 import Example from "./Example";
 import ImageExample from "./ImageExample";
+import MountExample from "./MountExample";
+import PercentageExample from "./PercentageExample";
 import {use, expect, assert} from "chai";
 import { matchSnapshot } from "chai-karma-snapshot";
 
@@ -81,5 +83,51 @@ describe(`test layout`, function () {
 		setTimeout(() => {
 			done();
 		}, 1000);
+	});
+	it (`should check no children`, done => {
+		// Given
+		const rendered = ReactDOM.render(<MountExample/>, this.el);
+
+		expect(this.el.innerHTML).to.matchSnapshot();
+
+		// When
+		rendered.setState({mount: true});
+
+		setTimeout(() => {
+			// Then
+			expect(this.el.innerHTML).to.matchSnapshot();
+			done();
+		}, 1000);
+	});
+
+	[true, false].forEach(horizontal => {
+		it (`should check percentage(horizontal=${horizontal})`, done => {
+			// Given
+			const rendered = ReactDOM.render(<PercentageExample horizontal={horizontal}/>, this.el);
+
+			setTimeout(() => {
+				expect(this.el.innerHTML).to.matchSnapshot();
+
+				// When
+				rendered.setState({percentage: ["position"]});
+				const percentagePositionHTML = this.el.innerHTML;
+				rendered.setState({percentage: ["size"]});
+				const percentageSizeHTML = this.el.innerHTML;
+				rendered.setState({percentage: ["position", "size"]});
+				const percentagePositionAndSizeHTML = this.el.innerHTML;
+				rendered.setState({percentage: true});
+				const percentageTrueHTML = this.el.innerHTML;
+
+
+				// Then
+				expect(percentagePositionHTML).to.matchSnapshot();
+				expect(percentageSizeHTML).to.matchSnapshot();
+				expect(percentagePositionAndSizeHTML).to.matchSnapshot();
+				expect(percentageTrueHTML).to.matchSnapshot();
+				expect(percentagePositionAndSizeHTML).to.be.equals(percentageTrueHTML);
+
+				done();
+			}, 500);
+		});
 	});
 });
