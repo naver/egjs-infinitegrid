@@ -31,6 +31,8 @@ eg.infiniteGrid benchmark: append item performance with [masonry](https://masonr
 
 ## Third party applications
 [@egjs/react-layout](https://github.com/naver/egjs-infinitegrid/tree/master/packages/react-layout): A react component that can easily use egjs-infinitegrid's layouts
+[@egjs/react-infinitegrid](https://github.com/naver/egjs-infinitegrid/tree/master/packages/react-infinitegrid): A react component that can easily use egjs-infinitegrid
+
 
 ## Download and Installation
 
