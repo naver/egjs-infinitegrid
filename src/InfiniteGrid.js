@@ -575,16 +575,18 @@ class InfiniteGrid extends Component {
 		if (!el) {
 			return;
 		}
-		this._status.loadingSize = this.options.horizontal ? outerWidth(el) : outerHeight(el);
-		const pos = isAppend ? this._getEdgeValue("end") : this._getEdgeValue("start") - this._status.loadingSize;
 		const style = Object.assign({
 			position: "absolute",
-			[this.options.horizontal ? "left" : "top"]: `${pos}px`,
 		}, userStyle);
 
 		for (const property in style) {
 			el.style[property] = style[property];
 		}
+		this._status.loadingSize = this.options.horizontal ? outerWidth(el) : outerHeight(el);
+		const posName = this.options.horizontal ? "left" : "top";
+		const pos = isAppend ? this._getEdgeValue("end") : this._getEdgeValue("start") - this._status.loadingSize;
+
+		!(posName in style) && (el.style[posName] = `${pos}px`);
 	}
 	/**
 	 * End loading after startLoading() for append/prepend

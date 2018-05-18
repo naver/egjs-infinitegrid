@@ -131,7 +131,14 @@ function _getSize(el, name, isOffset) {
 			doc[`client${name}`]
 		);
 	} else { // NODE
-		const size = el[`${isOffset ? "offset" : "client"}${name}`] || el[`${isOffset ? "client" : "offset"}${name}`];
+		let size = 0;
+
+		if (isOffset) {
+			const clientRect = el.getBoundingClientRect();
+
+			size = name === "Width" ? clientRect.right - clientRect.left : clientRect.bottom - clientRect.top;
+		}
+		!size && (size = el[`${isOffset ? "offset" : "client"}${name}`] || el[`${isOffset ? "client" : "offset"}${name}`]);
 
 		return parseFloat(size || getStyles(el)[name.toLowerCase()]) || 0;
 	}
