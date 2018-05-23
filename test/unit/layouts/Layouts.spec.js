@@ -23,7 +23,6 @@ describe(`test layout's outline`, function() {
 			// Given
 			const options = layoutOptions[Layout.name];
 			const layout = new Layout(options);
-			const items = makeItems(20);
 
 			layout.setSize(VIEWPORT.width);
 

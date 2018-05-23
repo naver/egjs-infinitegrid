@@ -137,9 +137,9 @@ function _getSize(el, name, isOffset) {
 			const clientRect = el.getBoundingClientRect();
 
 			size = name === "Width" ? clientRect.right - clientRect.left : clientRect.bottom - clientRect.top;
+		} else {
+			size = el[`client${name}`] || el[`offset${name}`];
 		}
-		!size && (size = el[`${isOffset ? "offset" : "client"}${name}`] || el[`${isOffset ? "client" : "offset"}${name}`]);
-
 		return parseFloat(size || getStyles(el)[name.toLowerCase()]) || 0;
 	}
 }
