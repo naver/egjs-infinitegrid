@@ -24,21 +24,6 @@ function newItem(groupKey, key, itemIndex) {
 function makeKey(component, groupKey, itemIndex) {
 	return component.key || `__egjs_infinitegrid_${groupKey}_${itemIndex}`;
 }
-function getItemWrapper(datas, group) {
-	const {groupKey, children, items} = group;
-
-	return children.map((component, i) => {
-		const key = makeKey(component, groupKey, i);
-
-		!datas[key] && (datas[key] = newItem(groupKey, key, i));
-		return <ItemWrapper
-			key={key}
-			item={datas[key]}
-			ref={item => (item && (items[i] = datas[key]))}
-		>{component}</ItemWrapper>;
-	}
-	);
-}
 export default class InfiniteGrid extends Component {
 	static propTypes = {
 		tag: PropTypes.string,
@@ -241,6 +226,42 @@ export default class InfiniteGrid extends Component {
 		};
 		return this;
 	}
+	_mountElement = (itemKey, element) => {
+		const item = this.state.datas[itemKey];
+
+		if (!item) {
+			return;
+		}
+		item.el = element;
+	}
+	_unmountElement = itemKey => {
+		const item = this.state.datas[itemKey];
+
+		if (!item) {
+			return;
+		}
+		item.el = null;
+		item.mount = false;
+	}
+	_getItemWrapper(group) {
+		const datas = this.state.datas;
+		const {groupKey, children, items} = group;
+
+		return children.map((component, i) => {
+			const key = makeKey(component, groupKey, i);
+
+			!datas[key] && (datas[key] = newItem(groupKey, key, i));
+			items[i] = datas[key];
+
+			return <ItemWrapper
+				key={key}
+				itemKey={key}
+				mount={this._mountElement}
+				unmount={this._unmountElement}
+			>{component}</ItemWrapper>;
+		}
+		);
+	}
 	_getVisibleGroups() {
 		const {groups, startIndex, endIndex} = this.state;
 
@@ -250,9 +271,8 @@ export default class InfiniteGrid extends Component {
 		return groups.slice(startIndex, endIndex + 1);
 	}
 	_getVisibleComponents() {
-		const datas = this.state.datas;
 		const loadingBar = this.props.loading;
-		const components = this._getVisibleGroups().map(group => getItemWrapper(datas, group))
+		const components = this._getVisibleGroups().map(group => this._getItemWrapper(group))
 			.reduce((arr, children) => arr.concat(children), []);
 
 		typeof loadingBar === "object" && components.push(
@@ -305,7 +325,6 @@ export default class InfiniteGrid extends Component {
 
 			if (!data) {
 				data = newItem(groupKey, key, itemIndex);
-				this.state.isUpdate = true;
 			} else if (
 				data.groupKey !== groupKey ||
 				data.itemIndex !== itemIndex
@@ -616,7 +635,7 @@ export default class InfiniteGrid extends Component {
 	}
 	_setSize(size) {
 		this._infinite.setSize(this._renderer.getViewSize());
-		this._layout.setSize(size);
+		size && this._layout.setSize(size);
 	}
 	_renderLoading(isAppend = true) {
 		if (!this._bar) {

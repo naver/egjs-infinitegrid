@@ -4,6 +4,11 @@ export function getStyles(el) {
 	return SUPPORT_COMPUTEDSTYLE ?
 		window.getComputedStyle(el) : el.currentStyle;
 }
+
+export function matchHTML(html) {
+	return html.match(/^<([A-z]+)\s*([^>]*)>/);
+}
+
 function _getSize(el, name, isOffset) {
 	if (el === window) { // WINDOW
 		return window[`inner${name}`] || document.body[`client${name}`];

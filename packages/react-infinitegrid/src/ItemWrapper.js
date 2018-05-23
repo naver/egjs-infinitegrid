@@ -7,22 +7,17 @@ export default class Item extends Component {
 		return this.props.children;
 	}
 	updateElement(component) {
-		const item = this.props.item;
-
-		if (!component || item.el) {
+		if (!component) {
 			return;
 		}
 		const el = ReactDOM.findDOMNode(component);
 
-		el && (item.el = el);
+		el && this.props.mount(this.props.itemKey, el);
 	}
 	componentDidMount() {
 		this.updateElement(this);
 	}
 	componentWillUnmount() {
-		const item = this.props.item;
-
-		item.el = null;
-		item.mount = false;
+		this.props.unmount(this.props.itemKey);
 	}
 }
