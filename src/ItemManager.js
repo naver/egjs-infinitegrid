@@ -12,7 +12,7 @@ export default class ItemManager {
 			content: el.outerHTML,
 		}));
 	}
-	static selectItems(elements, selector = "*") {
+	static selectItems(elements, selector) {
 		return elements.filter(v => {
 			const classNames = v.className.split(" ");
 
@@ -80,11 +80,9 @@ export default class ItemManager {
 		return ItemManager.pluck(data, property);
 	}
 	getOutline(index, property) {
-		if (this._data.length) {
-			return this._data[index].outlines[property];
-		} else {
-			return [];
-		}
+		const data = this._data[index];
+
+		return data ? data.outlines[property] : [];
 	}
 	getEdgeIndex(cursor, start, end) {
 		const prop = cursor === "start" ? "min" : "max";
@@ -101,17 +99,6 @@ export default class ItemManager {
 			}
 		}
 		return index;
-	}
-	getEdge(cursor, start, end) {
-		const dataIdx = this.getEdgeIndex(cursor, start, end);
-		const items = this.pluck("items", dataIdx);
-
-		if (items.length) {
-			const itemIdx = this.getOutline(dataIdx, `${cursor}Index`);
-
-			return items.length > itemIdx ? items[itemIdx] : null;
-		}
-		return null;
 	}
 	getEdgeValue(cursor, start, end) {
 		const outlines = this.pluck("outlines", this.getEdgeIndex(cursor, start, end))

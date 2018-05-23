@@ -170,18 +170,6 @@ export default class DOMRenderer {
 			left: DUMMY_POSITION,
 		});
 	}
-	clear() {
-		this.container.innerHTML = "";
-		if (!this.options.isOverflowScroll) {
-			this.container.style[this.options.horizontal ? "width" : "height"] = "";
-		}
-		this._size = {
-			item: null,
-			viewport: -1,
-			container: -1,
-			view: -1,
-		};
-	}
 	createAndInsert(items, isAppend) {
 		const itemsWithElement = DOMRenderer.createElements(items);
 
@@ -234,13 +222,20 @@ export default class DOMRenderer {
 	isNeededResize() {
 		return this._calcSize() !== this._size.viewport;
 	}
-	destroy() {
+	clear() {
+		this.container.innerHTML = "";
+		if (!this.options.isOverflowScroll) {
+			this.container.style[this.options.horizontal ? "width" : "height"] = "";
+		}
 		this._size = {
-			viewport: -1,
-			view: -1,
 			item: null,
+			viewport: -1,
+			container: -1,
+			view: -1,
 		};
-		this.container.style[this.options.horizontal ? "width" : "height"] = "";
+	}
+	destroy() {
+		this.clear();
 		for (const p in this._orgStyle) {
 			this[this.options.isOverflowScroll ? "view" : "container"].style[p] = this._orgStyle[p];
 		}

@@ -197,7 +197,7 @@ class JustifiedLayout {
 			endIndex,
 		};
 	}
-	_insert(items, outline, type) {
+	_insert(items = [], outline = [], type) {
 		// this only needs the size of the item.
 		const clone = cloneItems(items);
 
@@ -255,9 +255,9 @@ class JustifiedLayout {
 	 * @example
 	 * layout.layout(groups, [100]);
 	 */
-	layout(groups, outlines) {
+	layout(groups = [], outline = []) {
 		const length = groups.length;
-		let point = outlines;
+		let point = outline;
 
 		for (let i = 0; i < length; ++i) {
 			const group = groups[i];

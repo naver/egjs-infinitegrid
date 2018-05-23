@@ -275,7 +275,7 @@ class FrameLayout {
 			endIndex,
 		};
 	}
-	_insert(items, outline, type) {
+	_insert(items = [], outline = [], type) {
 		// this only needs the size of the item.
 		const clone = cloneItems(items);
 
@@ -294,9 +294,9 @@ class FrameLayout {
 	 * @example
 	 * layout.layout(groups, [100, 200, 300, 400]);
 	 */
-	layout(groups, outlines) {
+	layout(groups = [], outline = []) {
 		const length = groups.length;
-		let point = outlines;
+		let point = outline;
 
 		for (let i = 0; i < length; ++i) {
 			const group = groups[i];
