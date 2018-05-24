@@ -52,11 +52,6 @@ class GridLayout {
 		this._columnLength = 0;
 		this._style = getStyleNames(this.options.horizontal);
 	}
-	getPoints(outlines) {
-		const pos = this.options.horizontal ? "left" : "top";
-
-		return outlines.map(outline => outline[pos]);
-	}
 	checkColumn(item) {
 		const {itemSize, margin, horizontal} = this.options;
 		const sizeName = horizontal ? "height" : "width";

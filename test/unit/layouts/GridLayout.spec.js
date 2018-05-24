@@ -1,4 +1,5 @@
-/* global describe, beforeEach, afterEach, it, expect */
+/* eslint-disable */
+
 import { makeItems, VIEWPORT } from "../helper/data";
 import { checkMargin, checkDirection, expectConnectItems, expectOutlineIndex, expectNoOutline, expectSameAppendPrepend, expectAppend} from "../helper/common";
 import Layout from "../../../src/layouts/GridLayout";
@@ -62,9 +63,8 @@ describe("GridLayout Test", function () {
 		});
 		it("test prepend from end outline and append from start outline are the same", function () {
 			// Given
-			const layout = new Layout({
+			const layout = new Layout();
 
-			});
 			layout.setSize(VIEWPORT.width);
 
 			// Then
