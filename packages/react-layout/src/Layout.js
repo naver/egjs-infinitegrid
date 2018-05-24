@@ -27,7 +27,7 @@ export default class Layout extends Component {
 		isEqualSize: PropTypes.bool,
 		onLayoutComplete: PropTypes.func,
 		onImageError: PropTypes.func,
-		percentage: PropTypes.oneOfType(PropTypes.bool, PropTypes.array),
+		percentage: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
 	};
 	static defaultProps = {
 		tag: "div",
