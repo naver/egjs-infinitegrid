@@ -19,28 +19,21 @@ class Item {
 		this.size = {};
 		this.loaded = NOT_LOADED;
 	}
-	reset() {
-		const el = this.el;
-
-		if (el) {
-			el.style.width = "";
-			el.style.height = "";
-		}
-		this.orgSize = {};
-		this.resetSize();
-	}
 	update() {
 		const el = this.el;
 
 		if (!el || this.loaded === NOT_LOADED) {
-			return;
+			return true;
 		}
 		const contents = this.contents;
 
 		this.contents = el.innerHTML;
 		if (contents !== this.contents) {
-			this.reset();
+			this.resetSize();
+			return true;
 		}
+
+		return false;
 	}
 	updateSize(size) {
 		const element = this.el;

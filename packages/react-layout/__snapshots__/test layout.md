@@ -54,6 +54,16 @@
 "<div style=\"width: 906.667px;\"><div style=\"position: absolute; left: 0px; top: 0%; width: 266.667px; height: 16.6667%;\"><img src=\"https://naver.github.io/egjs-infinitegrid/assets/image/4.jpg\"></div><div style=\"position: absolute; left: 0px; top: 16.6667%; width: 266.667px; height: 16.6667%;\"></div><div style=\"position: absolute; left: 0px; top: 33.3333%; width: 266.667px; height: 66.6667%;\"></div><div style=\"position: absolute; left: 266.667px; top: 0%; width: 320px; height: 20%;\"></div><div style=\"position: absolute; left: 266.667px; top: 20%; width: 320px; height: 80%;\"></div><div style=\"position: absolute; left: 586.667px; top: 0%; width: 320px; height: 20%;\"></div><div style=\"position: absolute; left: 586.667px; top: 20%; width: 320px; height: 80%;\"></div></div>"
 ```
 
+#### `should check html chaninging(horizontal=true)`
+
+```
+"<div style=\"width: 948.214px;\"><div style=\"position: absolute; left: 0px; top: 0px; width: 385.714px; height: 2025px;\"><img src=\"https://naver.github.io/egjs-infinitegrid/assets/image/4.jpg\"> </div><div style=\"position: absolute; left: 385.714px; top: 0px; width: 337.5px; height: 337.5px;\"></div><div style=\"position: absolute; left: 385.714px; top: 337.5px; width: 337.5px; height: 1350px;\"></div><div style=\"position: absolute; left: 385.714px; top: 1687.5px; width: 337.5px; height: 337.5px;\"></div><div style=\"position: absolute; left: 723.214px; top: 0px; width: 225px; height: 900px;\"></div><div style=\"position: absolute; left: 723.214px; top: 900px; width: 225px; height: 225px;\"></div><div style=\"position: absolute; left: 723.214px; top: 1125px; width: 225px; height: 900px;\"></div></div>"
+```
+
+```
+"<div style=\"width: 948.214px;\"><div style=\"position: absolute; left: 0px; top: 0px; width: 385.714px; height: 2025px;\"><img src=\"https://naver.github.io/egjs-infinitegrid/assets/image/4.jpg\"> <p>cc</p></div><div style=\"position: absolute; left: 385.714px; top: 0px; width: 337.5px; height: 337.5px;\"></div><div style=\"position: absolute; left: 385.714px; top: 337.5px; width: 337.5px; height: 1350px;\"></div><div style=\"position: absolute; left: 385.714px; top: 1687.5px; width: 337.5px; height: 337.5px;\"></div><div style=\"position: absolute; left: 723.214px; top: 0px; width: 225px; height: 900px;\"></div><div style=\"position: absolute; left: 723.214px; top: 900px; width: 225px; height: 225px;\"></div><div style=\"position: absolute; left: 723.214px; top: 1125px; width: 225px; height: 900px;\"></div></div>"
+```
+
 #### `should check percentage(horizontal=false)`
 
 ```
@@ -74,5 +84,15 @@
 
 ```
 "<div style=\"height: 422.222px;\"><div style=\"position: absolute; left: 0%; top: 0px; width: 44.4444%; height: 222.222px;\"><img src=\"https://naver.github.io/egjs-infinitegrid/assets/image/4.jpg\"></div><div style=\"position: absolute; left: 44.4444%; top: 0px; width: 44.4444%; height: 222.222px;\"></div><div style=\"position: absolute; left: 88.8889%; top: 0px; width: 11.1111%; height: 222.222px;\"></div><div style=\"position: absolute; left: 0%; top: 222.222px; width: 40%; height: 200px;\"></div><div style=\"position: absolute; left: 40%; top: 222.222px; width: 10%; height: 200px;\"></div><div style=\"position: absolute; left: 50%; top: 222.222px; width: 40%; height: 200px;\"></div><div style=\"position: absolute; left: 90%; top: 222.222px; width: 10%; height: 200px;\"></div></div>"
+```
+
+#### `should check html chaninging(horizontal=false)`
+
+```
+"<div style=\"height: 538.211px;\"><div style=\"position: absolute; left: 0px; top: 0px; width: 39.0244px; height: 204.878px;\"><img src=\"https://naver.github.io/egjs-infinitegrid/assets/image/4.jpg\"> </div><div style=\"position: absolute; left: 39.0244px; top: 0px; width: 204.878px; height: 204.878px;\"></div><div style=\"position: absolute; left: 243.902px; top: 0px; width: 51.2195px; height: 204.878px;\"></div><div style=\"position: absolute; left: 295.122px; top: 0px; width: 204.878px; height: 204.878px;\"></div><div style=\"position: absolute; left: 0px; top: 204.878px; width: 83.3333px; height: 333.333px;\"></div><div style=\"position: absolute; left: 83.3333px; top: 204.878px; width: 333.333px; height: 333.333px;\"></div><div style=\"position: absolute; left: 416.667px; top: 204.878px; width: 83.3333px; height: 333.333px;\"></div></div>"
+```
+
+```
+"<div style=\"height: 538.211px;\"><div style=\"position: absolute; left: 0px; top: 0px; width: 39.0244px; height: 204.878px;\"><img src=\"https://naver.github.io/egjs-infinitegrid/assets/image/4.jpg\"> <p>cc</p></div><div style=\"position: absolute; left: 39.0244px; top: 0px; width: 204.878px; height: 204.878px;\"></div><div style=\"position: absolute; left: 243.902px; top: 0px; width: 51.2195px; height: 204.878px;\"></div><div style=\"position: absolute; left: 295.122px; top: 0px; width: 204.878px; height: 204.878px;\"></div><div style=\"position: absolute; left: 0px; top: 204.878px; width: 83.3333px; height: 333.333px;\"></div><div style=\"position: absolute; left: 83.3333px; top: 204.878px; width: 333.333px; height: 333.333px;\"></div><div style=\"position: absolute; left: 416.667px; top: 204.878px; width: 83.3333px; height: 333.333px;\"></div></div>"
 ```
 
