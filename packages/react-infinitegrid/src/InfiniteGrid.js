@@ -401,71 +401,63 @@ export default class InfiniteGrid extends Component {
 			}
 		}
 	}
+	_relayout(isRelayout, groups, items) {
+		const renderer = this._renderer;
+		const {isEqualSize, isConstantSize} = renderer.options;
+		let outline = groups[0].outlines.start;
+
+		if (isRelayout) {
+			if (isEqualSize || isConstantSize) {
+				outline = [outline.length ? Math.min(...outline) : 0];
+			}
+			if (!isConstantSize && items.length) {
+				renderer.updateSize(items);
+			}
+		}
+		this._layout.layout(groups, outline);
+		return this;
+	}
 	layout(isRelayout = true) {
 		if (!this._layout) {
 			return this;
 		}
 		const renderer = this._renderer;
 		const itemManager = this._items;
+		const infinite = this._infinite;
 		const isResize = renderer.resize();
+		const items = this._getVisibleItems();
+		const {isEqualSize, isConstantSize} = renderer.options;
+		const isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
 
 		if (isRelayout && isResize) {
 			this._setSize(renderer.getViewportSize());
 		}
-		// check childElement
-		if (!this._items.size()) {
-			return this;
-		}
-		let data;
-		let outline;
-
-		const infinite = this._infinite;
-		const items = this._getVisibleItems();
-		const {isEqualSize, isConstantSize} = this.props;
-
+		// check items
 		if (!items.length) {
 			return this;
 		}
-		if (isRelayout) { // remove cache
-			if (isEqualSize || isConstantSize) {
-				!isConstantSize && renderer.updateSize([items[0]]);
-				data = itemManager.get();
-				outline = itemManager.getOutline(0, "start");
-				outline = [outline.length ? Math.min(...outline) : 0];
-			} else {
-				data = infinite.getVisibleData();
-			}
-			if (!isConstantSize && isResize) {
-				data.forEach(v => {
-					data.items = renderer.updateSize(v.items);
-				});
-			}
-		} else {
-			data = infinite.getVisibleData();
-			outline = infinite.getEdgeOutline("start");
-		}
-		if (!data.length) {
-			return this;
-		}
-		this._layout.layout(data, outline);
+		// layout datas
+		const data = isLayoutAll ? itemManager.get() : infinite.getVisibleData();
 
-		if (isRelayout) {
-			if (isEqualSize || isConstantSize) {
-				this._fit();
-				this._infinite.scroll(this._watcher.getScrollPos(), false);
-			} else {
-				const startCursor = infinite.getCursor("start");
-				const endCursor = infinite.getCursor("end");
+		// LayoutManger interface
+		this._relayout(isRelayout, data, isResize ? items : []);
+		if (isLayoutAll) {
+			this._fit();
+			infinite.scroll(this._watcher.getScrollPos(), false);
+		} else if (isRelayout) {
+			const startCursor = infinite.getCursor("start");
+			const endCursor = infinite.getCursor("end");
+			const datas = itemManager.get();
 
-				itemManager._data.forEach((group, cursor) => {
-					if (startCursor <= cursor && cursor <= endCursor) {
-						return;
-					}
-					group.outlines.start = [];
-					group.outlines.end = [];
-				});
-			}
+			datas.forEach((group, cursor) => {
+				if (startCursor <= cursor && cursor <= endCursor) {
+					return;
+				}
+				group.outlines.start = [];
+				group.outlines.end = [];
+			});
 		}
+		DOMRenderer.renderItems(items);
 		this._postLayoutComplete({
 			items,
 			isAppend: APPEND,
@@ -474,7 +466,6 @@ export default class InfiniteGrid extends Component {
 			useRecycle: false,
 			isLayout: true,
 		});
-		DOMRenderer.renderItems(items);
 		isRelayout && this._watcher.setScrollPos();
 
 		return this;
@@ -607,7 +598,7 @@ export default class InfiniteGrid extends Component {
 					const itemInfos = this._layout[isAppend ? "append" : "prepend"](groupItems, outline);
 
 					itemInfos.items.forEach(item => {
-						groupItems[item.itemIndex].rect = item.rect;
+						Object.assign(groupItems[item.itemIndex], item);
 					});
 					group.outlines = itemInfos.outlines;
 					outline = itemInfos.outlines[isAppend ? "end" : "start"];
@@ -758,9 +749,10 @@ export default class InfiniteGrid extends Component {
 		this._watcher.setScrollPos();
 
 		const items = this._getVisibleItems();
+		const status = this.props.status;
 
-		if (this.props.status) {
-			this.setStatus(this.props.status);
+		if (status) {
+			this.setStatus(status);
 		} else if (items.length) {
 			items.forEach(item => {
 				item.mount = true;
