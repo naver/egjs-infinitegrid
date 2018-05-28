@@ -8,6 +8,7 @@ import Example from "./Example";
 import ImageExample from "./ImageExample";
 import MountExample from "./MountExample";
 import PercentageExample from "./PercentageExample";
+import ChangeExample from "./ChangeExample";
 import {use, expect, assert} from "chai";
 import { matchSnapshot } from "chai-karma-snapshot";
 
@@ -99,7 +100,6 @@ describe(`test layout`, function () {
 			done();
 		}, 1000);
 	});
-
 	[true, false].forEach(horizontal => {
 		it (`should check percentage(horizontal=${horizontal})`, done => {
 			// Given
@@ -127,6 +127,33 @@ describe(`test layout`, function () {
 				expect(percentagePositionAndSizeHTML).to.be.equals(percentageTrueHTML);
 
 				done();
+			}, 500);
+		});
+		it (`should check html chaninging(horizontal=${horizontal})`, done => {
+			// Given
+			const rendered = ReactDOM.render(<ChangeExample horizontal={horizontal}/>, this.el);
+
+			setTimeout(() => {
+				// When
+				const html = this.el.innerHTML;
+				const width = this.el.children[0].children[0].style.width;
+				const height = this.el.children[0].children[0].style.height;
+				rendered.setState({change: true});
+				setTimeout(() => {
+					const changeHtml = this.el.innerHTML;
+					const width2 = this.el.children[0].children[0].style.width;
+					const height2 = this.el.children[0].children[0].style.height;
+
+					// Then
+					expect(html).to.matchSnapshot();
+					expect(changeHtml).to.matchSnapshot();
+
+					console.log(width, width2);
+					expect(width).to.be.equals(width2);
+					expect(height).to.be.equals(height2);
+
+					done();
+				}, 500);
 			}, 500);
 		});
 	});

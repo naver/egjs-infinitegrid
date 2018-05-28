@@ -1,4 +1,4 @@
 {
-	"presets": ["env", "react", "stage-2"],
+	"presets": [["env", {"loose": true}], "react", "stage-2"],
 	"plugins": ["add-module-exports"]
 }

@@ -27,7 +27,7 @@ export default class Layout extends Component {
 		isEqualSize: PropTypes.bool,
 		onLayoutComplete: PropTypes.func,
 		onImageError: PropTypes.func,
-		percentage: PropTypes.oneOfType(PropTypes.bool, PropTypes.array),
+		percentage: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
 	};
 	static defaultProps = {
 		tag: "div",
@@ -156,21 +156,21 @@ export default class Layout extends Component {
 	}
 	_updateItems() {
 		const ids = this.state.items.map(item => item.id);
-
-		this.state.items = [];
-
 		const datas = {};
-		const items = this.state.items;
 		const elements = Array.prototype.slice.call(this._container.children, 0);
+		let loaded = true;
 
-		elements.forEach(element => {
+		const items = elements.map(element => {
 			const item = this._searchItem(element);
 
-			item.update();
-			items.push(item);
+			item.update() && (loaded = false);
 			datas[item.id] = item;
+
+			return item;
 		});
-		if (ids.length !== items.length || !ids.every((id, index) => items[index] && id === items[index].id)) {
+
+		this.state.items = items;
+		if (!loaded || ids.length !== items.length || !ids.every((id, index) => items[index] && id === items[index].id)) {
 			this.state.render = NOT_RENDER;
 		}
 		this.state.datas = datas;
