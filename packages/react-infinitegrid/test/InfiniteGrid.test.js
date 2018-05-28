@@ -53,7 +53,7 @@ describe(`test layout`, function () {
 	});
 	it (`should check getStatus and setStatus`, done => {
 		this.el.style.width = "300px";
-		const rendered = ReactDOM.render(<GridLayout className="test1" align="center">
+		const rendered = ReactDOM.render(<GridLayout className="test1" align="center" isOverflowScroll={true} style={{height: "500px"}}>
 			<div style={{width: "120px", height: "100px"}}></div>
 			<div style={{width: "120px", height: "200px"}}></div>
 			<div style={{width: "120px", height: "100px"}}></div>
@@ -74,7 +74,7 @@ describe(`test layout`, function () {
 				style: "width: 500px",
 			});
 
-			const rendered2 = ReactDOM.render(<GridLayout className="test1" align="center" status={status}>
+			const rendered2 = ReactDOM.render(<GridLayout className="test1" align="center" status={status} isOverflowScroll={true} style={{height: "500px"}}>
 				<div style={{width: "120px", height: "100px"}}></div>
 				<div style={{width: "120px", height: "200px"}}></div>
 				<div style={{width: "120px", height: "100px"}}></div>
@@ -94,6 +94,8 @@ describe(`test layout`, function () {
 		this.el.style.width = "300px";
 
 		const rendered = ReactDOM.render(<Example/>, this.el);
+
+		rendered.grid._container.scrollTop = 0;
 		setTimeout(() => {
 			const html = cleanHTML(this.el.innerHTML);
 			
@@ -108,5 +110,38 @@ describe(`test layout`, function () {
 				done();
 			}, 300);
 		}, 100);
+	});
+	it ("should check layout method and event", done => {
+		// Given
+		this.el.style.width = "300px";
+		let html1;
+		let html2;
+		const rendered = ReactDOM.render(<GridLayout
+			className="test1" align="center"
+			onLayoutComplete = {e => {
+				// Then
+				if (e.isLayout) {
+					html2 = cleanHTML(this.el.innerHTML); 
+					expect(html2).to.matchSnapshot();
+					expect(html1).to.be.equals(html2);
+					done();
+				}
+			}}
+			>
+		<div style={{width: "120px", height: "100px"}}></div>
+		<div style={{width: "120px", height: "200px"}}></div>
+		<div style={{width: "120px", height: "100px"}}></div>
+		<div style={{width: "120px", height: "400px"}}></div>
+		<div style={{width: "120px", height: "440px"}}></div>
+		<div style={{width: "120px", height: "130px"}}></div>
+		<div style={{width: "120px", height: "100px"}}></div>
+	</GridLayout>, this.el);
+
+	setTimeout(() => {
+		html1 = cleanHTML(this.el.innerHTML);
+		expect(html1).to.matchSnapshot();
+		// When
+		rendered.layout(true);
+	}, 200);
 	});
 });

@@ -46,21 +46,21 @@
 Object {
   "_infinite": Object {
     "endCursor": 0,
-    "size": 939,
+    "size": 500,
     "startCursor": 0,
   },
   "_renderer": Object {
     "_size": Object {
       "item": null,
-      "view": 939,
+      "view": 500,
       "viewport": 300,
     },
-    "cssText": "position: relative; height: 740px;",
+    "cssText": "height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;",
     "options": Object {
       "horizontal": false,
       "isConstantSize": false,
       "isEqualSize": false,
-      "isOverflowScroll": false,
+      "isOverflowScroll": true,
     },
   },
   "_watcher": Object {
@@ -544,7 +544,7 @@ Object {
 ```
 
 ```
-"<div class=\"test1\" style=\"position: relative; height: 740px;\">
+"<div class=\"test1\" style=\"height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
 <div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
@@ -595,5 +595,29 @@ Object {
 <div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 1100px;\">item7</div>
 <div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 1200px;\">item7</div>
 <div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 1200px;\">item7</div></div>"
+```
+
+#### `should check layout method and event`
+
+```
+"<div class=\"test1\" style=\"position: relative; height: 740px;\">
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div>"
+```
+
+```
+"<div class=\"test1\" style=\"position: relative; height: 740px;\">
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div>"
 ```
 
