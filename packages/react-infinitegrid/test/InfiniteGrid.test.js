@@ -1,0 +1,224 @@
+/* eslint-disable */
+import React from 'react';
+import ReactDOM from "react-dom";
+import {GridLayout} from "../src/index";
+import {use, expect, assert} from "chai";
+import { matchSnapshot } from "chai-karma-snapshot";
+import {cleanHTML} from "./TestHelper";
+import Example from "./Example";
+import NoItemExample from "./NoItemExample";
+use(matchSnapshot);
+
+
+describe(`test layout`, function () {
+	beforeEach(() => {
+		document.body.style.margin = "0px";
+		document.body.style.padding = "0px";
+		cleanup();
+		this.el = sandbox({
+			id: "__react-content",
+			style: "width: 500px",
+		});
+	});
+	afterEach(() => {
+		//cleanup();
+	});
+	it (`should check fixed size`, done => {
+		const rendered = ReactDOM.render(<GridLayout className="test1">
+			<div style={{width: "100px", height: "100px"}}></div>
+			<div style={{width: "100px", height: "100px"}}></div>
+			<div style={{width: "100px", height: "100px"}}></div>
+			<div style={{width: "100px", height: "100px"}}></div>
+			<div style={{width: "100px", height: "100px"}}></div>
+		</GridLayout>, this.el);
+		expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+		setTimeout(() => {
+			expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+			done();
+		}, 100);
+	});
+	it (`should check align center`, done => {
+		this.el.style.width = "300px";
+		const rendered = ReactDOM.render(<GridLayout className="test1" align="center">
+			<div style={{width: "120px", height: "100px"}}></div>
+			<div style={{width: "120px", height: "200px"}}></div>
+			<div style={{width: "120px", height: "100px"}}></div>
+			<div style={{width: "120px", height: "400px"}}></div>
+			<div style={{width: "120px", height: "100px"}}></div>
+		</GridLayout>, this.el);
+		expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+		setTimeout(() => {
+			expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+			done();
+		}, 100);
+	});
+	it (`should check getStatus and setStatus`, done => {
+		this.el.style.width = "300px";
+		const rendered = ReactDOM.render(<GridLayout className="test1" align="center" isOverflowScroll={true} style={{height: "500px"}}>
+			<div style={{width: "120px", height: "100px"}}></div>
+			<div style={{width: "120px", height: "200px"}}></div>
+			<div style={{width: "120px", height: "100px"}}></div>
+			<div style={{width: "120px", height: "400px"}}></div>
+			<div style={{width: "120px", height: "440px"}}></div>
+			<div style={{width: "120px", height: "130px"}}></div>
+			<div style={{width: "120px", height: "100px"}}></div>
+		</GridLayout>, this.el);
+		setTimeout(() => {
+			const status = rendered.getStatus();
+			const html = this.el.innerHTML;
+
+			expect(status).to.matchSnapshot();
+			expect(cleanHTML(html)).to.matchSnapshot();
+			
+			this.el = sandbox({
+				id: "__react-content",
+				style: "width: 500px",
+			});
+
+			const rendered2 = ReactDOM.render(<GridLayout className="test1" align="center" status={status} isOverflowScroll={true} style={{height: "500px"}}>
+				<div style={{width: "120px", height: "100px"}}></div>
+				<div style={{width: "120px", height: "200px"}}></div>
+				<div style={{width: "120px", height: "100px"}}></div>
+				<div style={{width: "120px", height: "400px"}}></div>
+				<div style={{width: "120px", height: "440px"}}></div>
+				<div style={{width: "120px", height: "130px"}}></div>
+				<div style={{width: "120px", height: "100px"}}></div>
+			</GridLayout>, this.el);
+
+			setTimeout(() => {
+				expect(html).to.be.equals(this.el.innerHTML);
+				done();
+			});
+		}, 100);
+	});
+	it (`should check scroll`, done => {
+		this.el.style.width = "300px";
+
+		const rendered = ReactDOM.render(<Example/>, this.el);
+
+		rendered.grid._container.scrollTop = 0;
+
+		setTimeout(() => {
+			const html = cleanHTML(this.el.innerHTML);
+			const groups = rendered.grid.state.groups.length;
+			const startIndex = rendered.grid.state.startIndex;
+			const endIndex = rendered.grid.state.endIndex;
+		
+
+			rendered.grid._container.scrollTop = 1000;
+			setTimeout(() => {
+				const html2 = cleanHTML(this.el.innerHTML);
+
+				expect(groups).to.be.equals(5);
+				expect(startIndex).to.be.equals(0);
+				expect(endIndex).to.be.equals(4);
+				expect(html).to.matchSnapshot();
+				expect(html2).to.matchSnapshot();
+
+				done();
+			}, 600);
+		}, 100);
+	});
+	it ("should check layout method and event", done => {
+		// Given
+		this.el.style.width = "300px";
+		let html1;
+		let html2;
+		const rendered = ReactDOM.render(<GridLayout
+			className="test1" align="center"
+			onLayoutComplete = {e => {
+				// Then
+				if (e.isLayout) {
+					html2 = cleanHTML(this.el.innerHTML); 
+					expect(html2).to.matchSnapshot();
+					expect(html1).to.be.equals(html2);
+					done();
+				}
+			}}
+			>
+		<div style={{width: "120px", height: "100px"}}></div>
+		<div style={{width: "120px", height: "200px"}}></div>
+		<div style={{width: "120px", height: "100px"}}></div>
+		<div style={{width: "120px", height: "400px"}}></div>
+		<div style={{width: "120px", height: "440px"}}></div>
+		<div style={{width: "120px", height: "130px"}}></div>
+		<div style={{width: "120px", height: "100px"}}></div>
+		</GridLayout>, this.el);
+
+		setTimeout(() => {
+			html1 = cleanHTML(this.el.innerHTML);
+			expect(html1).to.matchSnapshot();
+			// When
+			rendered.layout(true);
+		}, 200);
+	});
+	it ("should check test no item", done => {
+		this.el.style.width = "300px";
+		const rendered = ReactDOM.render(<NoItemExample mount={false}/>, this.el);
+
+
+		// When
+		const html = cleanHTML(this.el.innerHTML);
+
+		const state1 = Object.assign({}, rendered.grid.state);
+
+		rendered.setState({mount: true});
+
+		setTimeout(() => {
+			const html2 = cleanHTML(this.el.innerHTML);
+			const state2 = Object.assign({}, rendered.grid.state);
+
+			rendered.setState({mount: false});
+			setTimeout(() => {
+				const html3 = cleanHTML(this.el.innerHTML);
+				const state3 = Object.assign({}, rendered.grid.state);
+
+				// Then
+				expect(html).to.matchSnapshot();
+				expect(html2).to.matchSnapshot();
+				expect(html3).to.matchSnapshot();
+
+				expect(state1.groups.length).to.be.equals(0);
+				expect(state1.startKey).to.be.equals("");
+				expect(state1.endKey).to.be.equals("");
+				expect(state1.startIndex).to.be.equals(-1);
+				expect(state1.endIndex).to.be.equals(-1);
+
+				expect(state2.groups.length).to.be.equals(2);
+				expect(state2.startKey).to.be.equals("1");
+				expect(state2.endKey).to.be.equals("2");
+				expect(state2.startIndex).to.be.equals(0);
+				expect(state2.endIndex).to.be.equals(1);
+
+				expect(state3.groups.length).to.be.equals(0);
+				expect(state3.startKey).to.be.equals("");
+				expect(state3.endKey).to.be.equals("");
+				expect(state3.startIndex).to.be.equals(-1);
+				expect(state3.endIndex).to.be.equals(-1);
+				expect(html).to.be.equals(html3);
+				done();
+			}, 100);
+		}, 100);
+	});
+	it ("should check test one item", done => {
+		// Given
+		this.el.style.width = "300px";
+		const rendered = ReactDOM.render(<GridLayout>
+			<div style={{width: "200px", height: "200px"}} data-groupkey="1">1</div>
+		</GridLayout>, this.el);
+		const html = cleanHTML(this.el.innerHTML);
+		const state = Object.assign({}, rendered.state);
+
+		// Then
+		setTimeout(() => {
+			expect(html).to.matchSnapshot();
+			expect(state.groups.length).to.be.equals(1);
+			expect(state.startKey).to.be.equals("1");
+			expect(state.endKey).to.be.equals("1");
+			expect(state.startIndex).to.be.equals(0);
+			expect(state.endIndex).to.be.equals(0);
+			done();
+		}, 100);
+		
+	});
+});
