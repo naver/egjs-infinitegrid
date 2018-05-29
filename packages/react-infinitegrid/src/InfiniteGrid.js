@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, Children} from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import {GridLayout, ImageLoaded, DOMRenderer, ItemManager, Infinite, Watcher} from "@egjs/infinitegrid";
@@ -91,8 +91,8 @@ export default class InfiniteGrid extends Component {
 		if (nextState.processing !== DONE || nextState.layout) {
 			return true;
 		}
-		const children = this.props.children;
-		const nextChildren = props.children;
+		const children = Children.toArray(this.props.children);
+		const nextChildren = Children.toArray(props.children);
 
 		if (children.length !== nextChildren.length ||
 			!children.every((component, i) => component === nextChildren[i])) {
@@ -205,7 +205,7 @@ export default class InfiniteGrid extends Component {
 		this.state.processing = DONE;
 		this._renderer.setStatus(_renderer);
 		this._infinite.setStatus(_infinite);
-		this._refreshGroups(this.props.children);
+		this._refreshGroups(Children.toArray(this.props.children));
 		DOMRenderer.renderItems(this._getVisibleItems());
 		this._watcher.setStatus(_watcher, applyScrollPos);
 		this._watcher.attachEvent();
@@ -286,8 +286,8 @@ export default class InfiniteGrid extends Component {
 	_getVisibleItems() {
 		return ItemManager.pluck(this._getVisibleGroups(), "items");
 	}
-	_refreshGroups(propsChildren = this.props.children, state = this.state) {
-		if (!propsChildren || !propsChildren.length) {
+	_refreshGroups(propsChildren = Children.toArray(this.props.children), state = this.state) {
+		if (!propsChildren) {
 			return;
 		}
 		const prevGroupKeys = state.groupKeys;
@@ -298,9 +298,9 @@ export default class InfiniteGrid extends Component {
 		const groups = [];
 		let {startKey, endKey, startIndex, endIndex} = state;
 
-		React.Children.forEach(propsChildren, item => {
+		propsChildren.forEach(item => {
 			const props = item.props;
-			const groupKey = props.groupKey || props["data-groupKey"] || 0;
+			const groupKey = props.groupKey || props["data-groupkey"] || 0;
 
 			if (!groupKeys[groupKey]) {
 				const prevGroup = prevGroupKeys[groupKey];
@@ -346,6 +346,7 @@ export default class InfiniteGrid extends Component {
 		endIndex = groupKeys[endKey] ? groupKeys[endKey].index : -1;
 
 		if (startIndex === -1) {
+			startKey = "";
 			if (!prevLength) {
 				if (groups[0]) {
 					startKey = groups[0].groupKey;
@@ -361,6 +362,7 @@ export default class InfiniteGrid extends Component {
 			}
 		}
 		if (endIndex === -1) {
+			endKey = "";
 			if (!prevLength) {
 				if (groups[0]) {
 					endKey = groups[0].groupKey;

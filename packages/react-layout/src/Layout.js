@@ -284,7 +284,7 @@ export default class Layout extends Component {
 			}
 			attributes[name] = props[name];
 		}
-        return (<Tag {...attributes} ref={element => {this._mount(element);}}>
+        return (<Tag {...attributes} ref={(container) => {this._setContainer(container);}}>
             {this.props.children}
         </Tag>);
 	}

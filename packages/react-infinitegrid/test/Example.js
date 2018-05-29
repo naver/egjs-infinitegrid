@@ -31,6 +31,9 @@ export default class Exmaple extends Component {
 
 		this.setState({list: this.state.list});
 	}
+	onChange = e => {
+
+	}
 	onLayoutComplete = e => {
 		
 	}
@@ -38,6 +41,7 @@ export default class Exmaple extends Component {
 		return <GridLayout ref={e => e && (this.grid = e)}
 			isOverflowScroll = {true}
 			onAppend = {this.onAppend}
+			onChange = {this.onChange}
 			onLayoutComplete = {this.onLayoutComplete}
 			style={{height: "600px"}}
 		>

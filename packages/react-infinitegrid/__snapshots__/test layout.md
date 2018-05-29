@@ -69,12 +69,12 @@ Object {
   },
   "state": Object {
     "datas": Object {
-      "__egjs_infinitegrid_0_0": Object {
+      ".0": Object {
         "column": 0,
         "el": null,
         "groupKey": 0,
         "itemIndex": 0,
-        "key": "__egjs_infinitegrid_0_0",
+        "key": ".0",
         "mount": true,
         "orgSize": Object {
           "height": 100,
@@ -89,12 +89,12 @@ Object {
           "width": 120,
         },
       },
-      "__egjs_infinitegrid_0_1": Object {
+      ".1": Object {
         "column": 1,
         "el": null,
         "groupKey": 0,
         "itemIndex": 1,
-        "key": "__egjs_infinitegrid_0_1",
+        "key": ".1",
         "mount": true,
         "orgSize": Object {
           "height": 200,
@@ -109,12 +109,12 @@ Object {
           "width": 120,
         },
       },
-      "__egjs_infinitegrid_0_2": Object {
+      ".2": Object {
         "column": 0,
         "el": null,
         "groupKey": 0,
         "itemIndex": 2,
-        "key": "__egjs_infinitegrid_0_2",
+        "key": ".2",
         "mount": true,
         "orgSize": Object {
           "height": 100,
@@ -129,12 +129,12 @@ Object {
           "width": 120,
         },
       },
-      "__egjs_infinitegrid_0_3": Object {
+      ".3": Object {
         "column": 0,
         "el": null,
         "groupKey": 0,
         "itemIndex": 3,
-        "key": "__egjs_infinitegrid_0_3",
+        "key": ".3",
         "mount": true,
         "orgSize": Object {
           "height": 400,
@@ -149,12 +149,12 @@ Object {
           "width": 120,
         },
       },
-      "__egjs_infinitegrid_0_4": Object {
+      ".4": Object {
         "column": 1,
         "el": null,
         "groupKey": 0,
         "itemIndex": 4,
-        "key": "__egjs_infinitegrid_0_4",
+        "key": ".4",
         "mount": true,
         "orgSize": Object {
           "height": 440,
@@ -169,12 +169,12 @@ Object {
           "width": 120,
         },
       },
-      "__egjs_infinitegrid_0_5": Object {
+      ".5": Object {
         "column": 0,
         "el": null,
         "groupKey": 0,
         "itemIndex": 5,
-        "key": "__egjs_infinitegrid_0_5",
+        "key": ".5",
         "mount": true,
         "orgSize": Object {
           "height": 130,
@@ -189,12 +189,12 @@ Object {
           "width": 120,
         },
       },
-      "__egjs_infinitegrid_0_6": Object {
+      ".6": Object {
         "column": 1,
         "el": null,
         "groupKey": 0,
         "itemIndex": 6,
-        "key": "__egjs_infinitegrid_0_6",
+        "key": ".6",
         "mount": true,
         "orgSize": Object {
           "height": 100,
@@ -223,7 +223,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 0,
-            "key": "__egjs_infinitegrid_0_0",
+            "key": ".0",
             "mount": true,
             "orgSize": Object {
               "height": 100,
@@ -243,7 +243,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 1,
-            "key": "__egjs_infinitegrid_0_1",
+            "key": ".1",
             "mount": true,
             "orgSize": Object {
               "height": 200,
@@ -263,7 +263,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 2,
-            "key": "__egjs_infinitegrid_0_2",
+            "key": ".2",
             "mount": true,
             "orgSize": Object {
               "height": 100,
@@ -283,7 +283,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 3,
-            "key": "__egjs_infinitegrid_0_3",
+            "key": ".3",
             "mount": true,
             "orgSize": Object {
               "height": 400,
@@ -303,7 +303,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 4,
-            "key": "__egjs_infinitegrid_0_4",
+            "key": ".4",
             "mount": true,
             "orgSize": Object {
               "height": 440,
@@ -323,7 +323,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 5,
-            "key": "__egjs_infinitegrid_0_5",
+            "key": ".5",
             "mount": true,
             "orgSize": Object {
               "height": 130,
@@ -343,7 +343,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 6,
-            "key": "__egjs_infinitegrid_0_6",
+            "key": ".6",
             "mount": true,
             "orgSize": Object {
               "height": 100,
@@ -384,7 +384,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 0,
-            "key": "__egjs_infinitegrid_0_0",
+            "key": ".0",
             "mount": true,
             "orgSize": Object {
               "height": 100,
@@ -404,7 +404,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 1,
-            "key": "__egjs_infinitegrid_0_1",
+            "key": ".1",
             "mount": true,
             "orgSize": Object {
               "height": 200,
@@ -424,7 +424,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 2,
-            "key": "__egjs_infinitegrid_0_2",
+            "key": ".2",
             "mount": true,
             "orgSize": Object {
               "height": 100,
@@ -444,7 +444,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 3,
-            "key": "__egjs_infinitegrid_0_3",
+            "key": ".3",
             "mount": true,
             "orgSize": Object {
               "height": 400,
@@ -464,7 +464,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 4,
-            "key": "__egjs_infinitegrid_0_4",
+            "key": ".4",
             "mount": true,
             "orgSize": Object {
               "height": 440,
@@ -484,7 +484,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 5,
-            "key": "__egjs_infinitegrid_0_5",
+            "key": ".5",
             "mount": true,
             "orgSize": Object {
               "height": 130,
@@ -504,7 +504,7 @@ Object {
             "el": null,
             "groupKey": 0,
             "itemIndex": 6,
-            "key": "__egjs_infinitegrid_0_6",
+            "key": ".6",
             "mount": true,
             "orgSize": Object {
               "height": 100,
@@ -619,5 +619,32 @@ Object {
 <div data-groupkey=\"0\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div>"
+```
+
+#### `should check test no item`
+
+```
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\"></div>"
+```
+
+```
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 100px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 100px;\"></div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 100px; top: 100px;\"></div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 100px;\"></div></div>"
+```
+
+```
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\"></div>"
+```
+
+#### `should check test one item`
+
+```
+"<div style=\"position: relative;\">
+<div data-groupkey=\"1\" style=\"width: 200px; height: 200px; position: absolute; left: -999999px; top: -99999px;\">1</div></div>"
 ```
 
