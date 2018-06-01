@@ -2,7 +2,7 @@
 module.exports = function karmaConfig(config) {
 	config.set({
 		browsers: ['Chrome'],
-		frameworks: ['mocha', "chai", "snapshot", "mocha-snapshot"],
+		frameworks: ['mocha', "chai", "sinon", "snapshot", "mocha-snapshot"],
 		files: [
 			"./node_modules/lite-fixture/index.js",
 			"./test/*.test.js",

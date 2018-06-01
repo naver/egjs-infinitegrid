@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
-import {GridLayout} from "../../src/index";
+import {GridLayout, JustifiedLayout} from "../../src/index";
 
 
 class Item extends Component {
@@ -25,19 +25,19 @@ class App extends Component {
 		this.loading = (<div className="loading">Loading...</div>);
 		this.start = 0;
 		this.state = {
-			loading: this.loading,
-			list: this.loadItems(0),
+			loading: null,
+			list: [],
 		};
 	}
-	loadItems(groupKey) {
+	loadItems(groupKey, num) {
 		const items = [];
 		const start = this.start || 0;
 
-		for (let i = 0; i < 20; ++i) {
+		for (let i = 0; i < num; ++i) {
 			items.push(<Item groupKey={groupKey} num={1 + start + i} key={start + i}
 				onClick={(itemKey => (e => this.remove(itemKey)))(start + i)}/>);
 		}
-		this.start = start + 20;
+		this.start = start + num;
 		return items;
 	}
 	remove(itemKey) {
@@ -50,7 +50,7 @@ class App extends Component {
 	}
 	onAppend = ({groupKey}) => {
 		const list = this.state.list;
-		const items = this.loadItems(groupKey + 1);
+		const items = this.loadItems(parseFloat(groupKey) + 1, 5);
 
 		this.setState({loading: true, list: list.concat(items)});
 	}
@@ -65,9 +65,9 @@ class App extends Component {
 			<GridLayout margin={10}
 				align={"center"}
 				onAppend={this.onAppend}
-				isConstantSize={true}
 				onLayoutComplete={this.onLayoutComplete}
 				loading = {this.state.loading}
+				ref = {e => {window.e = e;}}
 			>
 				{list}
 			</GridLayout>

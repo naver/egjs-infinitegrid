@@ -212,6 +212,7 @@ describe(`test layout`, function () {
 		// Then
 		setTimeout(() => {
 			expect(html).to.matchSnapshot();
+			expect(this.el.innerHTML).to.matchSnapshot();
 			expect(state.groups.length).to.be.equals(1);
 			expect(state.startKey).to.be.equals("1");
 			expect(state.endKey).to.be.equals("1");
@@ -219,6 +220,52 @@ describe(`test layout`, function () {
 			expect(state.endIndex).to.be.equals(0);
 			done();
 		}, 100);
-		
+	});
+	it ("should check test no item and onAppend", done => {
+		const onAppend = sinon.spy();
+		const rendered = ReactDOM.render(<Example onAppend={onAppend}/>, this.el);
+
+		const callCount = onAppend.callCount;
+		const html = cleanHTML(this.el.innerHTML);
+
+		setTimeout(() => {
+			const callCount2 = onAppend.callCount;
+			const html2 = cleanHTML(this.el.innerHTML);
+			rendered.setState({list: []});
+
+			setTimeout(() => {
+				const callCount3 = onAppend.callCount;
+				const html3 = cleanHTML(this.el.innerHTML);
+
+				expect(callCount < callCount2).to.be.true;
+				expect(callCount2 < callCount3).to.be.true;
+				expect(html).to.matchSnapshot();
+				expect(html2).to.matchSnapshot();
+				expect(html3).to.matchSnapshot();
+				expect(html2).to.be.equals(html3);
+				done();
+			}, 100);
+
+		}, 100);
+	});
+	it ("should check layout with resize", done => {
+		const onLayoutComplete = sinon.spy(e => {
+			// Then
+			if (e.isLayout) {
+				// layout(true);
+				expect(onLayoutComplete.callCount).to.be.equals(2);
+				done();
+			} else {
+				// no layout
+				expect(onLayoutComplete.callCount).to.be.equals(1);
+			}
+		});
+		// Given
+		const rendered = ReactDOM.render(<GridLayout onLayoutComplete={onLayoutComplete}>
+			<div style={{width: "200px", height: "200px"}} data-groupkey="1">1</div>
+		</GridLayout>, this.el);
+
+		// When
+		rendered.setState({layout: true});
 	});
 });
