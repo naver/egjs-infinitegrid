@@ -93,9 +93,10 @@ export default class InfiniteGrid extends Component {
 		}
 		const children = Children.toArray(this.state.children);
 		const nextChildren = Children.toArray(props.children);
+		const length = children.length;
 
-		if (children.length !== nextChildren.length ||
-			!children.every((component, i) => {
+		if (length !== nextChildren.length ||
+			(length && !children.every((component, i) => {
 				const nextComponent = nextChildren[i];
 				const key = component.key;
 				const nextKey = nextComponent.key;
@@ -103,8 +104,8 @@ export default class InfiniteGrid extends Component {
 				const nextGroupKey = nextComponent.props.groupKey || nextComponent.props["data-groupkey"] || 0;
 
 				return component === nextComponent || (key === nextKey && groupKey === nextGroupKey);
-			})) {
-			if (children.length === 0) {
+			}))) {
+			if (length === 0) {
 				nextState.processing = APPEND;
 			}
 			this._refreshGroups(nextChildren, nextState);
