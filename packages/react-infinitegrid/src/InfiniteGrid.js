@@ -159,9 +159,9 @@ export default class InfiniteGrid extends Component {
 				}
 				return;
 			}
-			const scrollPos = this._watcher.getScrollPos();
-
 			if (this.state.groups.length) {
+				const scrollPos = this._watcher.getScrollPos();
+
 				this._infinite.scroll(scrollPos, true);
 			} else {
 				this._requestAppend({});
