@@ -106,19 +106,22 @@ class InfiniteGrid extends Component {
 			useRecycle: true,
 			horizontal: false,
 			attributePrefix: "data-",
+			containerId: "",
 		}, options);
 		this.options.useFit = !DEFENSE_BROWSER;
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);
 		this._reset();
 		this._loadingBar = {};
 
-		const {isOverflowScroll, isEqualSize, horizontal, threshold, useRecycle} = this.options;
+		const {isOverflowScroll, isEqualSize, horizontal, threshold, useRecycle,
+			containerId} = this.options;
 
 		this._items = new ItemManager();
 		this._renderer = new DOMRenderer(element, {
 			isOverflowScroll,
 			isEqualSize,
 			horizontal,
+			containerId,
 		});
 		this._watcher = new Watcher(
 			this._renderer.view,

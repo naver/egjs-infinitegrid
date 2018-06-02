@@ -135,7 +135,7 @@ export default class DOMRenderer {
 	_init(el) {
 		const element = $(el);
 		const style = getStyles(element);
-		const {isOverflowScroll, horizontal} = this.options;
+		const {isOverflowScroll, horizontal, containerId} = this.options;
 
 		this._orgStyle = {};
 
@@ -154,7 +154,7 @@ export default class DOMRenderer {
 			// defense code for android < 4.4 or webkit < 537
 			this.container = horizontal && DEFENSE_BROWSER ? _defense(element) : element;
 		} else {
-			this.view = window;
+			this.view = containerId ? document.getElementById(containerId) || window : window;
 			this.container = element;
 		}
 	}
