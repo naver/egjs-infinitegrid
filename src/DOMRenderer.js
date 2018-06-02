@@ -154,7 +154,7 @@ export default class DOMRenderer {
 			// defense code for android < 4.4 or webkit < 537
 			this.container = horizontal && DEFENSE_BROWSER ? _defense(element) : element;
 		} else {
-			this.view = containerId ? document.getElementById(containerId) || window : window;
+			this.view = containerId ? $(containerId) || window : window;
 			this.container = element;
 		}
 	}
