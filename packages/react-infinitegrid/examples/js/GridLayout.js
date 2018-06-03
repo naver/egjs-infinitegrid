@@ -67,6 +67,8 @@ class App extends Component {
 				onAppend={this.onAppend}
 				onLayoutComplete={this.onLayoutComplete}
 				loading = {this.state.loading}
+				isConstantSize = {true}
+				// useFit = {false}
 				ref = {e => {window.e = e;}}
 			>
 				{list}

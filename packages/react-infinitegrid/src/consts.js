@@ -12,5 +12,5 @@ export const RENDERED = 2;
 export const LAYOUT_ID = "__REACT_LAYOUT_DATA_ID__";
 export const CHECK_ALL = 1;
 export const CHECK_ONLY_ERROR = 2;
-export const DUMMY_POSITION = -99999;
+export const DUMMY_POSITION = -999999;
 export const SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in window);
