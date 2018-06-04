@@ -133,7 +133,7 @@ export default class InfiniteGrid extends Component {
 	}
 	componentDidUpdate(prevProps, prevState) {
 		const state = this.state;
-		const {processing, isUpdate, layout, recycle} = state;
+		const {processing, layout, recycle, isUpdate, startIndex, startKey} = state;
 
 		this._updateLayout();
 		this.state.isUpdate = false;
@@ -150,29 +150,9 @@ export default class InfiniteGrid extends Component {
 				this.layout(true);
 				return;
 			}
-			const isConstantSize = this.props.isConstantSize;
-			const groups = this._getVisibleGroups();
-			const updateGroups = isUpdate ? groups :
-				groups.filter(group => !group.items.every(item => item.mount));
-			const newItems = ItemManager.pluck(updateGroups, "items").filter(item => !item.mount && (!item.orgSize || !isConstantSize));
-
-			newItems.forEach(item => { item.mount = true; });
-
-			if (updateGroups.length) {
-				if (newItems.length) {
-					this._updateSize({groups, items: newItems, isUpdate});
-				} else {
-					this.layout(false);
-				}
-				return;
-			}
-			if (this.state.groups.length) {
-				const scrollPos = this._watcher.getScrollPos();
-
-				this._scroll(scrollPos, true);
-			} else {
-				this._requestAppend({});
-			}
+			state.requestIndex = startIndex;
+			state.requestKey = startKey;
+			this._insert(isUpdate);
 		} else if (!(processing & PROCESS)) {
 			// APPEND, PREPEND
 			this._insert();
@@ -792,23 +772,45 @@ export default class InfiniteGrid extends Component {
 		});
 		this.setState(isLayout ? {layout: false} : {processing: DONE});
 	}
-	_insert() {
+	_insert(isUpdate) {
 		const isConstantSize = this.props.isConstantSize;
 		const state = this.state;
-		const {processing, requestIndex, startIndex, endIndex} = state;
+		const {processing, requestIndex, startIndex, endIndex, groups} = state;
 		const isAppend = processing !== PREPEND;
 		const start = (isAppend ? requestIndex : startIndex) || 0;
 		const end = (isAppend ? endIndex : requestIndex) || 0;
-		const groups = state.groups.slice(start, end + 1);
-		const items = ItemManager.pluck(groups, "items");
+		let updateGroups = state.groups.slice(start, end + 1);
+
+		updateGroups = isUpdate ? updateGroups :
+			updateGroups.filter(group => !group.items.every(item => item.mount));
+		const items = ItemManager.pluck(updateGroups, "items");
 		const newItems = items.filter(item => !item.mount && (!item.orgSize || !isConstantSize));
+		let isRelayout = false;
 
-		items.forEach(item => { item.mount = true; });
-		DOMRenderer.renderItems(items);
+		items.forEach(item => {
+			!item.orgSize && (isRelayout = true);
+			item.mount = true;
+		});
 
-		state.processing |= PROCESS;
-		!isAppend && groups.reverse();
-		this._updateSize({groups, items: newItems});
+		if (updateGroups.length) {
+			if (newItems.length) {
+				state.processing = (isAppend ? APPEND : PREPEND) + PROCESS;
+
+				!isAppend && updateGroups.reverse();
+				this._updateSize({groups: updateGroups, items: newItems, isUpdate: isUpdate || isRelayout});
+				DOMRenderer.renderItems(items);
+			} else {
+				this.layout(false);
+			}
+			return;
+		}
+		if (groups.length) {
+			const scrollPos = this._watcher.getScrollPos();
+
+			this._scroll(scrollPos, true);
+		} else {
+			this._requestAppend({});
+		}
 	}
 	_mount(container) {
 		if (!container || this._container) {

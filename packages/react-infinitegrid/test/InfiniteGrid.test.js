@@ -8,6 +8,7 @@ import {cleanHTML} from "./TestHelper";
 import Example from "./Example";
 import NoItemExample from "./NoItemExample";
 import EqualSizeExample from "./EqualSizeExample";
+import OneGroupExample from "./OneGroupExample";
 use(matchSnapshot);
 
 
@@ -297,5 +298,56 @@ describe(`test layout`, function () {
 				done();
 			}, 100)
 		}, 100);
+	});
+	it("should check one groupKey", done => {
+		const rendered = ReactDOM.render(<OneGroupExample/>, this.el);
+		const html = cleanHTML(this.el.innerHTML);
+
+
+		let html2;
+		let html3;
+		let html4;
+		
+
+		// when
+		const height = 0;
+		let height2;
+		let height3;
+		let height4;
+		rendered.append();
+		new Promise(resolve => {
+			setTimeout(() => {
+				html2 = cleanHTML(this.el.innerHTML);
+				height2 = Math.max(...rendered.grid.state.groups[0].outlines.end);
+				rendered.append();
+				resolve();
+			}, 100);
+		}).then(() => new Promise(resolve => {
+			setTimeout(() => {
+				html3 = cleanHTML(this.el.innerHTML);
+				height3 = Math.max(...rendered.grid.state.groups[0].outlines.end);
+				rendered.append();
+				resolve();
+			}, 100);
+		})).then(() => new Promise(resolve => {
+			setTimeout(() => {
+				html4 = cleanHTML(this.el.innerHTML);
+				height4 = Math.max(...rendered.grid.state.groups[0].outlines.end);
+				resolve();
+			}, 100);
+		})).then(e => {
+			// then
+			expect(html).to.matchSnapshot();
+			expect(html2).to.matchSnapshot();
+			expect(html3).to.matchSnapshot();
+			expect(html4).to.matchSnapshot();
+
+			expect(height2).to.be.above(height);
+			expect(height3).to.be.above(height2);
+			expect(height4).to.be.above(height3);
+
+			
+			done();
+		});
 	});
 });
