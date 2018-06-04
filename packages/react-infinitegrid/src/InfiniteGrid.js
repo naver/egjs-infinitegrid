@@ -613,8 +613,10 @@ export default class InfiniteGrid extends Component {
 		}
 		const state = this.state;
 		const isAppend = !(state.processing & PREPEND);
-		const elements = items.map(item => item.el);
+		const isEqualSize = this.props.isEqualSize;
+		let elements = items.map(item => item.el);
 
+		isEqualSize && (elements = this._renderer._size.item ? [] : elements.slice(0, 1));
 		ImageLoaded.check(elements, {
 			complete: () => {
 				if (!this._container) {
