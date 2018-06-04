@@ -397,7 +397,7 @@ export default class InfiniteGrid extends Component {
 		state.datas = datas;
 		// synchronize
 		this._updateGroups(groups);
-		!this.state.processing && this._updateCursor();
+		!this.state.processing && this._updateCursor(state);
 	}
 	_updateLayout() {
 		const props = this.props;
@@ -582,11 +582,11 @@ export default class InfiniteGrid extends Component {
 	_updateGroups(groups = this.state.groups) {
 		this._items && (this._items._data = groups);
 	}
-	_updateCursor() {
+	_updateCursor(state = this.state) {
 		if (!this._infinite) {
 			return;
 		}
-		const {startIndex, endIndex} = this.state;
+		const {startIndex, endIndex} = state;
 
 		this._infinite.setCursor("start", startIndex);
 		this._infinite.setCursor("end", endIndex);
