@@ -109,6 +109,7 @@ export default class InfiniteGrid extends Component {
 			}))) {
 			if (length === 0) {
 				nextState.processing = APPEND;
+				nextState.requestIndex = 0;
 			}
 			this._refreshGroups(nextChildren, nextState);
 		}
@@ -241,6 +242,7 @@ export default class InfiniteGrid extends Component {
 			groups: [],
 			groupKeys: {},
 			startIndex: -1,
+			requestIndex: 0,
 			endIndex: -1,
 			startKey: "",
 			endKey: "",
@@ -533,13 +535,19 @@ export default class InfiniteGrid extends Component {
 		if (cache && cache.length) {
 			const length = cache.length;
 			const {groupKey, index} = cache[0];
+			const requestKey = cache[length - 1].groupKey;
+			const requestIndex = cache[length - 1].index;
+			const endIndex = requestIndex < this.state.startIndex - 1 ? requestIndex : this.state.endIndex;
+			const endKey = this.state.groups[endIndex].groupKey;
 
 			this.setState({
 				processing: PREPEND,
 				startKey: groupKey,
 				startIndex: index,
-				requestKey: cache[length - 1].groupKey,
-				requestIndex: cache[length - 1].index,
+				endKey,
+				endIndex,
+				requestKey,
+				requestIndex,
 			});
 			return;
 		}
@@ -683,25 +691,22 @@ export default class InfiniteGrid extends Component {
 		const prepend = this._requestPrepend;
 		const items = this._items;
 		const datas = items.get();
-		const endScrollPos = scrollPos + size;
+		const endScrollPos = Math.max(scrollPos, 0) + size;
 		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
 		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
 		const visibles = datas.map((group, i) => {
 			const {start, end} = group.outlines;
 
-			if (startCursor <= i && i <= endCursor) {
-				return true;
-			}
-			if (i === startCursor - 1) {
-				if (scrollPos <= startEdgePos + threshold) {
-					return true;
-				}
-			} else if (i === endCursor + 1) {
-				if (endScrollPos >= endEdgePos - threshold) {
-					return true;
-				}
-			}
 			if (!start.length || !end.length) {
+				if (i === startCursor - 1) {
+					if (scrollPos <= startEdgePos + threshold) {
+						return true;
+					}
+				} else if (i === endCursor + 1) {
+					if (endScrollPos >= endEdgePos - threshold) {
+						return true;
+					}
+				}
 				return false;
 			}
 			const startPos = Math.min(...start);
@@ -718,9 +723,9 @@ export default class InfiniteGrid extends Component {
 		const end = visibles.lastIndexOf(true);
 
 		if (~start && start < startCursor) {
-			prepend({cache: datas.slice(start, startCursor)});
+			prepend({cache: datas.slice(start, Math.min(startCursor, end + 1))});
 		} else if (endCursor < end) {
-			append({cache: datas.slice(start, end + 1)});
+			append({cache: datas.slice(Math.max(start, endCursor + 1), end + 1)});
 		} else if (endScrollPos >= endEdgePos - threshold) {
 			append({});
 		} else if (scrollPos <= startEdgePos + threshold) {
@@ -854,6 +859,7 @@ export default class InfiniteGrid extends Component {
 			this.setStatus(status);
 		} else if (items.length) {
 			this.state.processing = APPEND;
+			this.state.requestIndex = 0;
 			this._insert();
 		} else {
 			this._requestAppend({});
