@@ -717,3 +717,25 @@ Object {
 <div class=\"item\" data-groupkey=\"8\" style=\"width: 100px; height: 300px; position: absolute; left: 300px; top: 800px;\">item8</div></div>"
 ```
 
+#### `should check isEqaulSize option`
+
+```
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 150px; height: 120px; position: absolute; left: 0px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 130px; height: 170px; position: absolute; left: 150px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 160px; height: 140px; position: absolute; left: 300px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 160px; height: 150px; position: absolute; left: 0px; top: 120px;\"></div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 140px; height: 160px; position: absolute; left: 150px; top: 120px;\"></div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 130px; height: 170px; position: absolute; left: 300px; top: 120px;\"></div></div>"
+```
+
+```
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 190px; position: absolute; left: 100px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 140px; height: 180px; position: absolute; left: 200px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 150px; height: 170px; position: absolute; left: 300px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 160px; position: absolute; left: 400px; top: 0px;\"></div>
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 110px; height: 150px; position: absolute; left: 0px; top: 100px;\"></div></div>"
+```
+

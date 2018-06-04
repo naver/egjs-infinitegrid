@@ -7,6 +7,7 @@ import { matchSnapshot } from "chai-karma-snapshot";
 import {cleanHTML} from "./TestHelper";
 import Example from "./Example";
 import NoItemExample from "./NoItemExample";
+import EqualSizeExample from "./EqualSizeExample";
 use(matchSnapshot);
 
 
@@ -267,5 +268,34 @@ describe(`test layout`, function () {
 
 		// When
 		rendered.setState({layout: true});
+	});
+	it ("should check isEqaulSize option", done => {
+		// Given
+		const rendered = ReactDOM.render(<EqualSizeExample/>, this.el);
+
+		setTimeout(() => {
+			const html = cleanHTML(this.el.innerHTML);
+			const sizes = rendered.grid.state.groups[0].items.map(item => Object.assign({}, item.size));
+			// When
+			rendered.setState({mount: true});
+			--rendered.grid._renderer._size.viewport;
+			rendered.grid.layout(true);
+
+			setTimeout(() => {
+				const sizes2 = rendered.grid.state.groups[0].items.map(item => Object.assign({}, item.size));
+				const html2 = cleanHTML(this.el.innerHTML);
+
+
+				expect(html).to.matchSnapshot();
+				expect(html2).to.matchSnapshot();
+				sizes.forEach(size => {
+					expect(size).to.be.deep.equals({width: 150, height: 120});
+				});
+				sizes2.forEach(size => {
+					expect(size).to.be.deep.equals({width: 100, height: 100});
+				})
+				done();
+			}, 100)
+		}, 100);
 	});
 });
