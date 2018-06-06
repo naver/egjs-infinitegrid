@@ -7,6 +7,8 @@ import { matchSnapshot } from "chai-karma-snapshot";
 import {cleanHTML} from "./TestHelper";
 import Example from "./Example";
 import NoItemExample from "./NoItemExample";
+import EqualSizeExample from "./EqualSizeExample";
+import OneGroupExample from "./OneGroupExample";
 use(matchSnapshot);
 
 
@@ -267,5 +269,85 @@ describe(`test layout`, function () {
 
 		// When
 		rendered.setState({layout: true});
+	});
+	it ("should check isEqaulSize option", done => {
+		// Given
+		const rendered = ReactDOM.render(<EqualSizeExample/>, this.el);
+
+		setTimeout(() => {
+			const html = cleanHTML(this.el.innerHTML);
+			const sizes = rendered.grid.state.groups[0].items.map(item => Object.assign({}, item.size));
+			// When
+			rendered.setState({mount: true});
+			--rendered.grid._renderer._size.viewport;
+			rendered.grid.layout(true);
+
+			setTimeout(() => {
+				const sizes2 = rendered.grid.state.groups[0].items.map(item => Object.assign({}, item.size));
+				const html2 = cleanHTML(this.el.innerHTML);
+
+
+				expect(html).to.matchSnapshot();
+				expect(html2).to.matchSnapshot();
+				sizes.forEach(size => {
+					expect(size).to.be.deep.equals({width: 150, height: 120});
+				});
+				sizes2.forEach(size => {
+					expect(size).to.be.deep.equals({width: 100, height: 100});
+				})
+				done();
+			}, 100)
+		}, 100);
+	});
+	it("should check one groupKey", done => {
+		const rendered = ReactDOM.render(<OneGroupExample/>, this.el);
+		const html = cleanHTML(this.el.innerHTML);
+
+
+		let html2;
+		let html3;
+		let html4;
+		
+
+		// when
+		const height = 0;
+		let height2;
+		let height3;
+		let height4;
+		rendered.append();
+		new Promise(resolve => {
+			setTimeout(() => {
+				html2 = cleanHTML(this.el.innerHTML);
+				height2 = Math.max(...rendered.grid.state.groups[0].outlines.end);
+				rendered.append();
+				resolve();
+			}, 100);
+		}).then(() => new Promise(resolve => {
+			setTimeout(() => {
+				html3 = cleanHTML(this.el.innerHTML);
+				height3 = Math.max(...rendered.grid.state.groups[0].outlines.end);
+				rendered.append();
+				resolve();
+			}, 100);
+		})).then(() => new Promise(resolve => {
+			setTimeout(() => {
+				html4 = cleanHTML(this.el.innerHTML);
+				height4 = Math.max(...rendered.grid.state.groups[0].outlines.end);
+				resolve();
+			}, 100);
+		})).then(e => {
+			// then
+			expect(html).to.matchSnapshot();
+			expect(html2).to.matchSnapshot();
+			expect(html3).to.matchSnapshot();
+			expect(html4).to.matchSnapshot();
+
+			expect(height2).to.be.above(height);
+			expect(height3).to.be.above(height2);
+			expect(height4).to.be.above(height3);
+
+			
+			done();
+		});
 	});
 });

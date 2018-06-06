@@ -17,6 +17,7 @@ interface InfiniteGridProps {
 	onImageError?: function,
 	onChange?: function,
 	status?: object,
+	useFit?: bool,
 	[others: string]: any,
 }
 

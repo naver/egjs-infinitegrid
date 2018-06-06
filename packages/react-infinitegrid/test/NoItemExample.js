@@ -7,7 +7,7 @@ export default class Exmaple extends Component {
 		super(props);
 
 		this.state = {
-			mount: this.props.mount,
+			mount: !!this.props.mount,
 		};
 	}
 	render() {

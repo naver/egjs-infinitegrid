@@ -2,7 +2,7 @@ import React, {Component, Children} from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import {GridLayout, ImageLoaded, DOMRenderer, ItemManager, Infinite, Watcher} from "@egjs/infinitegrid";
-import {DONE, APPEND, PREPEND, PROCESS} from "./consts";
+import {DONE, APPEND, PREPEND, PROCESS, DUMMY_POSITION} from "./consts";
 import ItemWrapper from "./ItemWrapper";
 import LoadingBar from "./LoadingBar";
 
@@ -15,8 +15,8 @@ function newItem(groupKey, key, itemIndex) {
 		groupKey,
 		itemIndex,
 		rect: {
-			left: -999999,
-			top: -99999,
+			left: DUMMY_POSITION,
+			top: DUMMY_POSITION,
 		},
 		mount: false,
 	};
@@ -35,6 +35,7 @@ export default class InfiniteGrid extends Component {
 		isOverflowScroll: PropTypes.bool,
 		isEqualSize: PropTypes.bool,
 		useRecycle: PropTypes.bool,
+		useFit: PropTypes.bool,
 		isConstantSize: PropTypes.bool,
 		horizontal: PropTypes.bool,
 		loading: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
@@ -53,6 +54,7 @@ export default class InfiniteGrid extends Component {
 		isOverflowScroll: false,
 		isEqualSize: false,
 		useRecycle: true,
+		useFit: true,
 		horizontal: false,
 		loading: false,
 		isConstantSize: false,
@@ -107,6 +109,7 @@ export default class InfiniteGrid extends Component {
 			}))) {
 			if (length === 0) {
 				nextState.processing = APPEND;
+				nextState.requestIndex = 0;
 			}
 			this._refreshGroups(nextChildren, nextState);
 		}
@@ -130,12 +133,16 @@ export default class InfiniteGrid extends Component {
 	}
 	componentDidUpdate(prevProps, prevState) {
 		const state = this.state;
-		const {processing, isUpdate, layout} = state;
+		const {processing, layout, recycle, isUpdate, startIndex, startKey} = state;
 
 		this._updateLayout();
-		this.state.isUpdate = false;
+		state.isUpdate = false;
 		if (!this.props.loading && this._bar) {
 			this._endLoading();
+		}
+		if (recycle) {
+			this._renderer.setContainerSize(this._getEdgeValue("end"));
+			state.recycle = false;
 		}
 		if (processing === DONE) {
 			// block processing
@@ -143,29 +150,9 @@ export default class InfiniteGrid extends Component {
 				this.layout(true);
 				return;
 			}
-			const isConstantSize = this.props.isConstantSize;
-			const groups = this._getVisibleGroups();
-			const updateGroups = isUpdate ? groups :
-				groups.filter(group => !group.items.every(item => item.mount));
-			const newItems = ItemManager.pluck(updateGroups, "items").filter(item => !item.mount && (!item.orgSize || !isConstantSize));
-
-			newItems.forEach(item => { item.mount = true; });
-
-			if (updateGroups.length) {
-				if (newItems.length) {
-					this._updateSize({groups, items: newItems, isUpdate});
-				} else {
-					this.layout(false);
-				}
-				return;
-			}
-			if (this.state.groups.length) {
-				const scrollPos = this._watcher.getScrollPos();
-
-				this._infinite.scroll(scrollPos, true);
-			} else {
-				this._requestAppend({});
-			}
+			state.requestIndex = startIndex;
+			state.requestKey = startKey;
+			this._insert(isUpdate);
 		} else if (!(processing & PROCESS)) {
 			// APPEND, PREPEND
 			this._insert();
@@ -235,6 +222,7 @@ export default class InfiniteGrid extends Component {
 			groups: [],
 			groupKeys: {},
 			startIndex: -1,
+			requestIndex: 0,
 			endIndex: -1,
 			startKey: "",
 			endKey: "",
@@ -322,20 +310,18 @@ export default class InfiniteGrid extends Component {
 			const groupKey = props.groupKey || props["data-groupkey"] || 0;
 
 			if (!groupKeys[groupKey]) {
-				const prevGroup = prevGroupKeys[groupKey];
-				const outlines = prevGroup ? prevGroup.outlines : {start: [], end: []};
-				const items = [];
+				const prevGroup = prevGroupKeys[groupKey] ||
+					{
+						groupKey,
+						outlines: {start: [], end: []},
+						index: -1,
+					};
 
-				groupKeys[groupKey] = {
-					groupKey,
-					outlines,
-					items,
-					children: [],
-					index: -1,
-				};
-
-				groupKeys[groupKey].index = groups.length;
-				groups.push(groupKeys[groupKey]);
+				prevGroup.index = groups.length;
+				prevGroup.items = [];
+				prevGroup.children = [];
+				groupKeys[groupKey] = prevGroup;
+				groups.push(prevGroup);
 			}
 			const group = groupKeys[groupKey];
 			const itemIndex = group.children.length;
@@ -350,7 +336,7 @@ export default class InfiniteGrid extends Component {
 			) {
 				data.groupKey = groupKey;
 				data.itemIndex = itemIndex;
-				this.state.isUpdate = true;
+				state.isUpdate = true;
 			}
 			group.items[itemIndex] = data;
 			datas[key] = data;
@@ -425,13 +411,11 @@ export default class InfiniteGrid extends Component {
 	}
 	_relayout(isRelayout, groups, items) {
 		const renderer = this._renderer;
-		const {isEqualSize, isConstantSize} = renderer.options;
+		const {isConstantSize} = renderer.options;
 		let outline = groups[0].outlines.start;
 
 		if (isRelayout) {
-			if (isEqualSize || isConstantSize) {
-				outline = [outline.length ? Math.min(...outline) : 0];
-			}
+			outline = [outline.length ? Math.min(...outline) : 0];
 			if (!isConstantSize && items.length) {
 				renderer.updateSize(items);
 			}
@@ -467,7 +451,6 @@ export default class InfiniteGrid extends Component {
 		this._relayout(isRelayout, data, isResize ? items : []);
 		if (isLayoutAll) {
 			this._fit();
-			infinite.scroll(this._watcher.getScrollPos(), false);
 		} else if (isRelayout) {
 			const datas = itemManager.get();
 
@@ -475,11 +458,17 @@ export default class InfiniteGrid extends Component {
 				if (startCursor <= cursor && cursor <= endCursor) {
 					return;
 				}
+				group.items.forEach(item => {
+					item.rect.top = DUMMY_POSITION;
+					item.rect.left = DUMMY_POSITION;
+				});
 				group.outlines.start = [];
 				group.outlines.end = [];
 			});
 		}
 		DOMRenderer.renderItems(items);
+		isRelayout && this._watcher.setScrollPos();
+		this._scroll(this._watcher.getScrollPos());
 		this._postLayoutComplete({
 			items,
 			isAppend: APPEND,
@@ -488,8 +477,6 @@ export default class InfiniteGrid extends Component {
 			useRecycle: false,
 			isLayout: true,
 		});
-		isRelayout && this._watcher.setScrollPos();
-
 		return this;
 	}
 	_isProcessing() {
@@ -499,10 +486,16 @@ export default class InfiniteGrid extends Component {
 		if (this._isProcessing()) {
 			return;
 		}
-		if (cache) {
-			const {groupKey, index} = cache;
+		if (cache && cache.length) {
+			const {groupKey, index} = cache[cache.length - 1];
 
-			this.setState({processing: APPEND, endKey: groupKey, endIndex: index});
+			this.setState({
+				processing: APPEND,
+				endKey: groupKey,
+				endIndex: index,
+				requestKey: cache[0].groupKey,
+				requestIndex: cache[0].index,
+			});
 			return;
 		}
 		if (this.props.loading) {
@@ -512,21 +505,37 @@ export default class InfiniteGrid extends Component {
 			groupKey: this.state.endKey,
 		});
 	}
-	_requestPrepend = ({cache, fit}) => {
+	_requestPrepend = ({cache, fit = true}) => {
 		if (fit) {
 			this._fit();
 		}
 		if (this._isProcessing()) {
 			return;
 		}
-		if (cache) {
-			const {groupKey, index} = cache;
+		if (cache && cache.length) {
+			const length = cache.length;
+			const {groupKey, index} = cache[0];
+			const requestKey = cache[length - 1].groupKey;
+			const requestIndex = cache[length - 1].index;
+			const endIndex = requestIndex < this.state.startIndex - 1 ? requestIndex : this.state.endIndex;
+			const endKey = this.state.groups[endIndex].groupKey;
 
-			this.setState({processing: PREPEND, startKey: groupKey, startIndex: index});
+			this.setState({
+				processing: PREPEND,
+				startKey: groupKey,
+				startIndex: index,
+				endKey,
+				endIndex,
+				requestKey,
+				requestIndex,
+			});
 			return;
 		}
 		if (this.props.loading) {
 			return;
+		}
+		if (!this.props.useFit) {
+			this._fit(true);
 		}
 		this.props.onPrepend({
 			groupKey: this.state.startKey,
@@ -537,9 +546,9 @@ export default class InfiniteGrid extends Component {
 		const groups = this.state.groups;
 
 		if (end < endIndex) {
-			this.setState({startIndex: end + 1, startKey: groups[end + 1].groupKey});
+			this.setState({startIndex: end + 1, startKey: groups[end + 1].groupKey, recycle: true});
 		} else {
-			this.setState({endIndex: start - 1, endKey: groups[start - 1].groupKey});
+			this.setState({endIndex: start - 1, endKey: groups[start - 1].groupKey, recycle: true});
 		}
 	}
 	_fitItems(base, margin = 0) {
@@ -550,11 +559,12 @@ export default class InfiniteGrid extends Component {
 		base < 0 && this._watcher.scrollBy(-base);
 	}
 	// called by visible
-	_fit() {
+	_fit(useFit = this.props.useFit) {
 		let base = this._getEdgeValue("start");
 		const margin = (this._bar && this._bar.getSize()) || 0;
+		const {isConstantSize, isEqualSize} = this.props;
 
-		if (!this.props.useRecycle) {
+		if (!this.props.useRecycle || !useFit || isConstantSize || isEqualSize) {
 			if (base < margin) {
 				this._fitItems(base - margin, margin);
 			}
@@ -591,8 +601,10 @@ export default class InfiniteGrid extends Component {
 		}
 		const state = this.state;
 		const isAppend = !(state.processing & PREPEND);
-		const elements = items.map(item => item.el);
+		const isEqualSize = this.props.isEqualSize;
+		let elements = items.map(item => item.el);
 
+		isEqualSize && (elements = this._renderer._size.item ? [] : elements.slice(0, 1));
 		ImageLoaded.check(elements, {
 			complete: () => {
 				if (!this._container) {
@@ -609,6 +621,7 @@ export default class InfiniteGrid extends Component {
 						!outline.every((v, index) => v === groupOutline[index]) : true);
 
 					if (!isRelayout) {
+						outline = group.outlines[isAppend ? "end" : "start"];
 						return;
 					}
 					const groupItems = group.items;
@@ -639,7 +652,65 @@ export default class InfiniteGrid extends Component {
 	}
 	_onCheck({isForward, scrollPos, horizontal, orgScrollPos}) {
 		this.props.onChange({isForward, horizontal, scrollPos, orgScrollPos});
-		this._infinite.scroll(scrollPos, isForward);
+		this._scroll(scrollPos, isForward);
+	}
+	// Infinite interface for isEqualSize or isConstantSize
+	_scroll(scrollPos, isForward) {
+		const startCursor = this._infinite.getCursor("start");
+		const endCursor = this._infinite.getCursor("end");
+
+		if (typeof scrollPos !== "number") {
+			return;
+		}
+		if (startCursor === -1 || endCursor === -1) {
+			return;
+		}
+		const size = this._renderer.getViewSize();
+		const threshold = this.props.threshold;
+		const append = this._requestAppend;
+		const prepend = this._requestPrepend;
+		const items = this._items;
+		const datas = items.get();
+		const endScrollPos = Math.max(scrollPos, 0) + size;
+		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
+		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
+		const visibles = datas.map((group, i) => {
+			const {start, end} = group.outlines;
+
+			if (!start.length || !end.length) {
+				if (i === startCursor - 1) {
+					if (scrollPos <= startEdgePos + threshold) {
+						return true;
+					}
+				} else if (i === endCursor + 1) {
+					if (endScrollPos >= endEdgePos - threshold) {
+						return true;
+					}
+				}
+				return false;
+			}
+			const startPos = Math.min(...start);
+			const endPos = Math.max(...end);
+
+			if (endPos + threshold >= scrollPos && startPos - threshold <= endScrollPos) {
+				return true;
+			}
+			return false;
+		});
+
+
+		const start = visibles.indexOf(true);
+		const end = visibles.lastIndexOf(true);
+
+		if (~start && start < startCursor) {
+			prepend({cache: datas.slice(start, Math.min(startCursor, end + 1))});
+		} else if (endCursor < end) {
+			append({cache: datas.slice(Math.max(start, endCursor + 1), end + 1)});
+		} else if (endScrollPos >= endEdgePos - threshold) {
+			append({});
+		} else if (scrollPos <= startEdgePos + threshold) {
+			prepend({});
+		}
 	}
 	_setSize(size) {
 		this._infinite.setSize(this._renderer.getViewSize());
@@ -671,7 +742,9 @@ export default class InfiniteGrid extends Component {
 
 		!isLayout && this._updateCursor();
 		if (!isAppend) {
-			this._fit();
+			if (!this._fit()) {
+				DOMRenderer.renderItems(items);
+			}
 		} else {
 			DOMRenderer.renderItems(items);
 			this._renderLoading();
@@ -699,21 +772,45 @@ export default class InfiniteGrid extends Component {
 		});
 		this.setState(isLayout ? {layout: false} : {processing: DONE});
 	}
-	_insert() {
+	_insert(isUpdate) {
 		const isConstantSize = this.props.isConstantSize;
 		const state = this.state;
-		const {processing, startKey, endKey} = state;
+		const {processing, requestIndex, startIndex, endIndex, groups} = state;
 		const isAppend = processing !== PREPEND;
-		const group = state.groupKeys[isAppend ? endKey : startKey];
+		const start = (isAppend ? requestIndex : startIndex) || 0;
+		const end = (isAppend ? endIndex : requestIndex) || 0;
+		let updateGroups = state.groups.slice(start, end + 1);
 
-		const items = group.items;
+		updateGroups = isUpdate ? updateGroups :
+			updateGroups.filter(group => !group.items.every(item => item.mount));
+		const items = ItemManager.pluck(updateGroups, "items");
 		const newItems = items.filter(item => !item.mount && (!item.orgSize || !isConstantSize));
+		let isRelayout = false;
 
-		items.forEach(item => { item.mount = true; });
-		DOMRenderer.renderItems(items);
+		items.forEach(item => {
+			!item.orgSize && (isRelayout = true);
+			item.mount = true;
+		});
 
-		state.processing |= PROCESS;
-		this._updateSize({groups: [group], items: newItems});
+		if (updateGroups.length) {
+			if (newItems.length) {
+				state.processing = (isAppend ? APPEND : PREPEND) + PROCESS;
+
+				!isAppend && updateGroups.reverse();
+				this._updateSize({groups: updateGroups, items: newItems, isUpdate: isUpdate || isRelayout});
+				DOMRenderer.renderItems(items);
+			} else {
+				this.layout(false);
+			}
+			return;
+		}
+		if (groups.length) {
+			const scrollPos = this._watcher.getScrollPos();
+
+			this._scroll(scrollPos, true);
+		} else {
+			this._requestAppend({});
+		}
 	}
 	_mount(container) {
 		if (!container || this._container) {
@@ -764,6 +861,7 @@ export default class InfiniteGrid extends Component {
 			this.setStatus(status);
 		} else if (items.length) {
 			this.state.processing = APPEND;
+			this.state.requestIndex = 0;
 			this._insert();
 		} else {
 			this._requestAppend({});
