@@ -136,7 +136,7 @@ export default class InfiniteGrid extends Component {
 		const {processing, layout, recycle, isUpdate, startIndex, startKey} = state;
 
 		this._updateLayout();
-		this.state.isUpdate = false;
+		state.isUpdate = false;
 		if (!this.props.loading && this._bar) {
 			this._endLoading();
 		}
