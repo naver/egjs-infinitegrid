@@ -2,7 +2,7 @@
 
 A react component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
 
-* Demo
+* [Demo](https://935xz7zy8r.codesandbox.io/)
 * [API Documentation](https://github.com/naver/egjs-infinitegrid/wiki/react-infinitegrid-API-documentation)
 
 ## Install
@@ -23,6 +23,7 @@ import {GridLayout} from "@egjs/react-infinitegrid";
 	isOverflowScroll = {false}
 	isEqualSize = {false}
 	isConstantSize = {false}
+	useFit = {true}
 	useRecycle = {true}
 	horizontal = {false}
 	percentage = {false}
@@ -33,19 +34,17 @@ import {GridLayout} from "@egjs/react-infinitegrid";
 	onChange = {e => chnage}>
 	<Item groupKey={0} key={0}/>
 	<Item groupKey={0} key={1}/>
-	<Item groupKey={0} key={2}/>
-	<Item groupKey={0} key={3}/>
-	<Item groupKey={0} key={4}/>
-	<Item groupKey={0} key={5}/>
-	<Item groupKey={0} key={6}/>
+	<Item groupKey={1} key={2}/>
+	<Item groupKey={1} key={3}/>
+	<Item groupKey={2} key={4}/>
+	<Item groupKey={2} key={5}/>
+	<Item groupKey={2} key={6}/>
 </GridLayout>
 ```
 
 ### More examples
 ```jsx
-this.loading = (<div className="loading">Loading... append</div>);
 this.state = {
-	loading: false,
 	list: loadItems(0, 0),
 };
 loadItems = (groupKey, start) => {
@@ -56,24 +55,24 @@ loadItems = (groupKey, start) => {
 	}
 	return items;
 }
-onAppend = ({groupKey}) => {
+onAppend = ({groupKey, startLoading}) => {
 	const list = this.state.list;
 	const start = list.length;
 	const items = this.loadItems(groupKey + 1, start);
 
-	this.setState({loading: this.loading, list: list.concat(items)});
+	startLoading();
+	this.setState({list: list.concat(items)});
 }
-onLayoutComplete = ({isLayout}) => {
-	!isLayout && this.setState({loading: false});
+onLayoutComplete = ({isLayout, endLoading}) => {
+	!isLayout && endLoading();
 }
 render() {
 	return (<GridLayout onAppend={this.onAppend}
 	onLayoutComplete={this.onLayoutComplete}
-	loading={this.state.loading}>
+	loading={<div className="loading">Loading... append</div>}>
 		{this.state.list}
 	</GridLayout>);
 }
-
 ```
 
 ## Development
@@ -90,7 +89,7 @@ If you find a bug, please report it to us using the [Issues](https://github.com/
 
 
 ## License
-react-layout is released under the [MIT license](https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE).
+react-infinitegrid is released under the [MIT license](https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE).
 
 
 ```
