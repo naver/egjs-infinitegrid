@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import {GridLayout} from "../src/index";
 import {use, expect, assert} from "chai";
 import { matchSnapshot } from "chai-karma-snapshot";
-import {cleanHTML} from "./TestHelper";
+import {cleanHTML, awaitTimer} from "./TestHelper";
 import Example from "./Example";
 import NoItemExample from "./NoItemExample";
 import EqualSizeExample from "./EqualSizeExample";
@@ -315,39 +315,32 @@ describe(`test layout`, function () {
 		let height3;
 		let height4;
 		rendered.append();
-		new Promise(resolve => {
-			setTimeout(() => {
-				html2 = cleanHTML(this.el.innerHTML);
-				height2 = Math.max(...rendered.grid.state.groups[0].outlines.end);
-				rendered.append();
-				resolve();
-			}, 100);
-		}).then(() => new Promise(resolve => {
-			setTimeout(() => {
-				html3 = cleanHTML(this.el.innerHTML);
-				height3 = Math.max(...rendered.grid.state.groups[0].outlines.end);
-				rendered.append();
-				resolve();
-			}, 100);
-		})).then(() => new Promise(resolve => {
-			setTimeout(() => {
-				html4 = cleanHTML(this.el.innerHTML);
-				height4 = Math.max(...rendered.grid.state.groups[0].outlines.end);
-				resolve();
-			}, 100);
-		})).then(e => {
+		awaitTimer(() => {
+			html2 = cleanHTML(this.el.innerHTML);
+			height2 = Math.max(...rendered.grid.state.groups[0].outlines.end);
+			rendered.append();
+		})().then(awaitTimer(() => {
+			html3 = cleanHTML(this.el.innerHTML);
+			height3 = Math.max(...rendered.grid.state.groups[0].outlines.end);
+			rendered.append();
+		})).then(awaitTimer(() => {
+			html4 = cleanHTML(this.el.innerHTML);
+			height4 = Math.max(...rendered.grid.state.groups[0].outlines.end);
+		})).then(awaitTimer(() => {
 			// then
+			console.log(height2, height3, height4);
 			expect(html).to.matchSnapshot();
 			expect(html2).to.matchSnapshot();
 			expect(html3).to.matchSnapshot();
 			expect(html4).to.matchSnapshot();
 
+			
 			expect(height2).to.be.above(height);
 			expect(height3).to.be.above(height2);
 			expect(height4).to.be.above(height3);
-
+			
 			
 			done();
-		});
+		}));
 	});
 });

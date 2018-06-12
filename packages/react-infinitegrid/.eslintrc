@@ -1,6 +1,7 @@
 {
 	"extends": ["naver"],
 	"rules": {
+		"array-element-newline": 0,
 		"comma-dangle": ["error", {
 			"arrays": "always-multiline",
 			"objects": "always-multiline",

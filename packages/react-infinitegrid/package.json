@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-infinitegrid",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "A react component that can easily use egjs-infinitegrid",
   "types": "declaration/index.d.ts",
   "main": "dist/index.js",
@@ -48,6 +48,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "chai-karma-snapshot": "^0.7.0",
+    "css-loader": "^0.28.11",
     "eslint": "^4.12.1",
     "eslint-config-naver": "^2.0.1",
     "eslint-loader": "^1.9.0",
@@ -72,6 +73,7 @@
     "react-dom": "^16.3.2",
     "s": "^0.1.1",
     "sinon": "^5.0.10",
+    "style-loader": "^0.21.0",
     "url-loader": "^1.0.1",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.2",
