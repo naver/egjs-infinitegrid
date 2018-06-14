@@ -74,7 +74,7 @@ describe(`test layout`, function () {
 			
 			this.el = sandbox({
 				id: "__react-content",
-				style: "width: 500px",
+				style: "width: 300px",
 			});
 
 			const rendered2 = ReactDOM.render(<GridLayout className="test1" align="center" status={status} isOverflowScroll={true} style={{height: "500px"}}>

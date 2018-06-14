@@ -63,11 +63,7 @@ Object {
       "isOverflowScroll": true,
     },
   },
-  "_watcher": Object {
-    "_prevPos": 0,
-    "scrollPos": 0,
-  },
-  "state": Object {
+  "_state": Object {
     "datas": Object {
       ".0": Object {
         "column": 0,
@@ -541,6 +537,10 @@ Object {
     "requestKey": 0,
     "startIndex": 0,
     "startKey": 0,
+  },
+  "_watcher": Object {
+    "_prevPos": 0,
+    "scrollPos": 0,
   },
 }
 ```
