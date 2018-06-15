@@ -556,6 +556,37 @@ Object {
 <div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div>"
 ```
 
+#### `should check getStatus(startKey, endKey)`
+
+```
+"<div class=\"test1\" style=\"height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div data-groupkey=\"1\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
+<div data-groupkey=\"1\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
+<div data-groupkey=\"2\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
+<div data-groupkey=\"2\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
+<div data-groupkey=\"3\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
+<div data-groupkey=\"3\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div></div>"
+```
+
+```
+"<div class=\"test2\" style=\"height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
+<div data-groupkey=\"2\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
+<div data-groupkey=\"2\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
+<div data-groupkey=\"3\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
+<div data-groupkey=\"3\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div>
+<div data-groupkey=\"4\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div>"
+```
+
+```
+"<div class=\"test3\" style=\"height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div data-groupkey=\"2\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
+<div data-groupkey=\"2\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
+<div data-groupkey=\"3\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
+<div data-groupkey=\"3\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div></div>"
+```
+
 #### `should check scroll`
 
 ```
