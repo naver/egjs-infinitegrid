@@ -507,7 +507,8 @@ export default class InfiniteGrid extends Component {
 		// layout datas
 		const startCursor = infinite.getCursor("start");
 		const endCursor = infinite.getCursor("end");
-		const data = isLayoutAll ? itemManager.get() : itemManager.get(startCursor, itemManager.size());
+		const data = isLayoutAll ? itemManager.get() :
+			itemManager.get(startCursor, isRelayout && isResize ? endCursor : itemManager.size());
 
 		// LayoutManger interface
 		this._relayout(isRelayout, data, isResize ? items : []);
