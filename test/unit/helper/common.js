@@ -17,15 +17,14 @@ export function checkDirection(callback, callback2 = callback) {
 	callback2(true);
 }
 export function expectOutlineIndex(layout, group) {
-	const {start, end, startIndex, endIndex} = group.outlines;
+	const {start, end} = group.outlines;
 	const {margin, direction} = layout.options;
 	const {pos1, size1} = getStyleNames(direction);
+	const minPos = Math.min(...group.items.map(item => item.rect[pos1]));
+	const maxPos = Math.min(...group.items.map(item => (item.rect[size1] || item.size[size1]) + item.rect[pos1]));
 
-	const startItem = group.items[startIndex];
-	const endItem = group.items[endIndex];
-
-	expect(approximate(startItem.rect[pos1])).to.be.equal(approximate(Math.min(...start)));
-	expect(approximate(endItem.rect[pos1] + (endItem.rect[size1] || endItem.size[size1]) + margin)).to.be.equal(approximate((Math.max(...end))));
+	expect(approximate(minPos)).to.be.equal(approximate(Math.min(...start)));
+	expect(approximate(maxPos + margin)).to.be.equal(approximate((Math.max(...end))));
 }
 export function expectAppend(layout, items, outline) {
 	// When

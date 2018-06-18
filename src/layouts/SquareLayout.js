@@ -136,8 +136,6 @@ class SquareLayout extends FrameLayout {
 		const result = super._layout(items, outline, isAppend);
 
 		if (!isAppend) {
-			const lastItem = items[items.length - 1];
-
 			shapes.sort((shape1, shape2) => {
 				const item1pos1 = shape1[pos1Name];
 				const item1pos2 = shape1[pos2Name];
@@ -160,8 +158,6 @@ class SquareLayout extends FrameLayout {
 				}
 				return item1pos2 - item2pos2;
 			});
-			result.startIndex = 0;
-			result.endIndex = items.indexOf(lastItem);
 		}
 		return result;
 	}
