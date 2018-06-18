@@ -4,6 +4,7 @@ module.exports = function karmaConfig(config) {
 		browsers: ['Chrome'],
 		frameworks: ['mocha', "chai", "sinon", "snapshot", "mocha-snapshot"],
 		files: [
+			"./node_modules/babel-polyfill/dist/polyfill.js",
 			"./node_modules/lite-fixture/index.js",
 			"./test/*.test.js",
 			"./__snapshots__/**/*.md",

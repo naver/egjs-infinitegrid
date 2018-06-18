@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-infinitegrid",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "A react component that can easily use egjs-infinitegrid",
   "types": "declaration/index.d.ts",
   "main": "dist/index.js",

@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import {GridLayout} from "../src/index";
 import {use, expect, assert} from "chai";
 import { matchSnapshot } from "chai-karma-snapshot";
-import {cleanHTML, awaitTimer} from "./TestHelper";
+import {cleanHTML, awaitTimer, concatItems} from "./TestHelper";
 import Example from "./Example";
 import NoItemExample from "./NoItemExample";
 import EqualSizeExample from "./EqualSizeExample";
@@ -74,7 +74,7 @@ describe(`test layout`, function () {
 			
 			this.el = sandbox({
 				id: "__react-content",
-				style: "width: 500px",
+				style: "width: 300px",
 			});
 
 			const rendered2 = ReactDOM.render(<GridLayout className="test1" align="center" status={status} isOverflowScroll={true} style={{height: "500px"}}>
@@ -92,6 +92,89 @@ describe(`test layout`, function () {
 				done();
 			});
 		}, 100);
+	});
+	it (`should check getStatus(startKey, endKey)`, async () => {
+		// Given
+		this.el.style.width = "300px";
+		const rendered = ReactDOM.render(<GridLayout className="test1" align="center" isOverflowScroll={true} style={{height: "500px"}}>
+			<div data-groupkey="1" key={0} style={{width: "120px", height: "100px"}}></div>
+			<div data-groupkey="1" key={1} style={{width: "120px", height: "200px"}}></div>
+			<div data-groupkey="2" key={2} style={{width: "120px", height: "100px"}}></div>
+			<div data-groupkey="2" key={3} style={{width: "120px", height: "400px"}}></div>
+			<div data-groupkey="3" key={4} style={{width: "120px", height: "440px"}}></div>
+			<div data-groupkey="3" key={5} style={{width: "120px", height: "130px"}}></div>
+			<div data-groupkey="4" key={6} style={{width: "120px", height: "100px"}}></div>
+		</GridLayout>, this.el);
+
+		let status;
+		let html;
+		let status2;
+		let html2;
+		let status3;
+		let html3;
+
+		// When
+		await awaitTimer(() => {
+			status = rendered.getStatus("2", "3");
+			html = cleanHTML(this.el.innerHTML);
+		}, 100);
+
+		this.el = sandbox({
+			id: "__react-content",
+			style: "width: 300px",
+		});
+		const rendered2 = ReactDOM.render(<GridLayout className="test2" align="center" isOverflowScroll={true} style={{height: "500px"}} status={status}>
+			<div data-groupkey="0" key={0} style={{width: "120px", height: "100px"}}></div>
+			<div data-groupkey="0" key={1} style={{width: "120px", height: "200px"}}></div>
+			<div data-groupkey="2" key={2} style={{width: "120px", height: "100px"}}></div>
+			<div data-groupkey="2" key={3} style={{width: "120px", height: "400px"}}></div>
+			<div data-groupkey="3" key={4} style={{width: "120px", height: "440px"}}></div>
+			<div data-groupkey="3" key={5} style={{width: "120px", height: "130px"}}></div>
+			<div data-groupkey="4" key={6} style={{width: "120px", height: "100px"}}></div>
+		</GridLayout>, this.el);
+
+		await awaitTimer(() => {
+			status2 = rendered2.getStatus("2", "3");
+			html2 = cleanHTML(this.el.innerHTML);
+		}, 100);
+
+		this.el = sandbox({
+			id: "__react-content",
+			style: "width: 300px",
+		});
+		const rendered3 = ReactDOM.render(<GridLayout className="test3" align="center" isOverflowScroll={true} style={{height: "500px"}} status={status2}>
+			<div data-groupkey="2" key={2} style={{width: "120px", height: "100px"}}></div>
+			<div data-groupkey="2" key={3} style={{width: "120px", height: "400px"}}></div>
+			<div data-groupkey="3" key={4} style={{width: "120px", height: "440px"}}></div>
+			<div data-groupkey="3" key={5} style={{width: "120px", height: "130px"}}></div>
+		</GridLayout>, this.el);
+
+		await awaitTimer(() => {
+			status3 = rendered3.getStatus("2", "3");
+			html3 = cleanHTML(this.el.innerHTML);
+		}, 100);
+
+		// Then
+		try {
+			expect(html).to.matchSnapshot();
+			expect(html2).to.matchSnapshot();
+			expect(html3).to.matchSnapshot();
+			expect(status._state.groups.length).to.be.equals(2);
+			expect(status2._state.groups.length).to.be.equals(2);
+			expect(status3._state.groups.length).to.be.equals(2);
+			expect(status._state.groups[0].groupKey).to.be.equals("2");
+			expect(status._state.groups[1].groupKey).to.be.equals("3");
+			expect(status2._state.groups[0].groupKey).to.be.equals("2");
+			expect(status2._state.groups[1].groupKey).to.be.equals("3");
+			expect(status3._state.groups[0].groupKey).to.be.equals("2");
+			expect(status3._state.groups[1].groupKey).to.be.equals("3");
+			expect(concatItems(status._state.groups[0].items)).to.be.deep.equals(concatItems(status2._state.groups[0].items));
+			expect(concatItems(status2._state.groups[0].items)).to.be.deep.equals(concatItems(status3._state.groups[0].items));
+			expect(concatItems(status._state.groups[1].items)).to.be.deep.equals(concatItems(status2._state.groups[1].items));
+			expect(concatItems(status2._state.groups[1].items)).to.be.deep.equals(concatItems(status3._state.groups[1].items));
+		} catch(e) {
+			console.error(e);
+		}
 	});
 	it (`should check scroll`, done => {
 		this.el.style.width = "300px";
@@ -299,7 +382,7 @@ describe(`test layout`, function () {
 			}, 100)
 		}, 100);
 	});
-	it("should check one groupKey", done => {
+	it("should check one groupKey", async () => {
 		const rendered = ReactDOM.render(<OneGroupExample/>, this.el);
 		const html = cleanHTML(this.el.innerHTML);
 
@@ -315,32 +398,30 @@ describe(`test layout`, function () {
 		let height3;
 		let height4;
 		rendered.append();
-		awaitTimer(() => {
+		await awaitTimer(() => {
 			html2 = cleanHTML(this.el.innerHTML);
 			height2 = Math.max(...rendered.grid.state.groups[0].outlines.end);
 			rendered.append();
-		})().then(awaitTimer(() => {
+		});
+		await awaitTimer(() => {
 			html3 = cleanHTML(this.el.innerHTML);
 			height3 = Math.max(...rendered.grid.state.groups[0].outlines.end);
 			rendered.append();
-		})).then(awaitTimer(() => {
+		});
+		await awaitTimer(() => {
 			html4 = cleanHTML(this.el.innerHTML);
 			height4 = Math.max(...rendered.grid.state.groups[0].outlines.end);
-		})).then(awaitTimer(() => {
-			// then
-			console.log(height2, height3, height4);
-			expect(html).to.matchSnapshot();
-			expect(html2).to.matchSnapshot();
-			expect(html3).to.matchSnapshot();
-			expect(html4).to.matchSnapshot();
+		})
+		// then
+		console.log(height2, height3, height4);
+		expect(html).to.matchSnapshot();
+		expect(html2).to.matchSnapshot();
+		expect(html3).to.matchSnapshot();
+		expect(html4).to.matchSnapshot();
 
-			
-			expect(height2).to.be.above(height);
-			expect(height3).to.be.above(height2);
-			expect(height4).to.be.above(height3);
-			
-			
-			done();
-		}));
+		
+		expect(height2).to.be.above(height);
+		expect(height3).to.be.above(height2);
+		expect(height4).to.be.above(height3);
 	});
 });
