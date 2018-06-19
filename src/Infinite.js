@@ -66,26 +66,48 @@ class Infinite {
 			this.setCursor("end", start - 1);
 		}
 	}
-	scroll(scrollPos, isForward) {
-		const {startCursor, endCursor, size} = this._status;
+	scroll(scrollPos) {
+		const startCursor = this.getCursor("start");
+		const endCursor = this.getCursor("end");
+		const items = this._items;
 
-		if (startCursor === -1 || endCursor === -1) {
+		if (typeof scrollPos !== "number" || startCursor === -1 ||
+			endCursor === -1 || !items.size()) {
 			return;
 		}
-		const {append, prepend, threshold} = this.options;
-		const items = this._items;
-		const length = items.size();
-		const endScrollPos = scrollPos + size;
-		const targetItem = items.getData(isForward ? endCursor : startCursor);
-		const outlines = targetItem.outlines[isForward ? "end" : "start"];
-		const edgePos = Math[isForward ? "min" : "max"](...outlines);
+		const size = this._status.size;
+		const {threshold, append, prepend} = this.options;
+		const datas = items.get();
+		const endScrollPos = Math.max(scrollPos, 0) + size;
+		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
+		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
+		const visibles = datas.map((group, i) => {
+			const {start, end} = group.outlines;
 
-		if (isForward) {
-			if (endScrollPos >= edgePos - threshold) {
-				append({cache: length > endCursor + 1 && items.getData(endCursor + 1)});
+			if (!start.length || !end.length) {
+				return false;
 			}
-		} else if (scrollPos <= edgePos + threshold) {
-			prepend({cache: (startCursor > 0) && items.getData(startCursor - 1)});
+			const startPos = Math.min(...start);
+			const endPos = Math.max(...end);
+
+			if ((scrollPos <= startPos && startPos <= endScrollPos + threshold) ||
+				(scrollPos - threshold <= endPos && endPos <= endScrollPos)
+			) {
+				return true;
+			}
+			return false;
+		});
+		const start = visibles.indexOf(true);
+		const end = visibles.lastIndexOf(true);
+
+		if (~start && start < startCursor) {
+			prepend({cache: datas.slice(start, Math.min(startCursor, end + 1))});
+		} else if (endCursor < end) {
+			append({cache: datas.slice(Math.max(start, endCursor + 1), end + 1)});
+		} else if (endScrollPos >= endEdgePos - threshold) {
+			append({cache: datas.slice(endCursor + 1, endCursor + 2)});
+		} else if (scrollPos <= startEdgePos + threshold) {
+			prepend({cache: datas.slice(startCursor - 1, startCursor)});
 		}
 	}
 	setCursor(cursor, index) {

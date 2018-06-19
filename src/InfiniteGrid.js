@@ -803,8 +803,8 @@ ig.on("imageError", e => {
 		if (this._isProcessing()) {
 			return;
 		}
-		if (cache) {
-			this._postCache({cache: [cache], isAppend: APPEND});
+		if (cache && cache.length) {
+			this._postCache({cache, isAppend: APPEND});
 		} else {
 			/**
 			 * This event is fired when a card element must be added at the bottom or right of a layout because there is no card to be displayed on screen when a user scrolls near bottom or right.
@@ -828,8 +828,8 @@ ig.on("imageError", e => {
 		if (this._isProcessing()) {
 			return;
 		}
-		if (cache) {
-			this._postCache({cache: [cache], isAppend: PREPEND});
+		if (cache && cache.length) {
+			this._postCache({cache, isAppend: PREPEND});
 		} else {
 			/**
 			 * This event is fired when a card element must be added at the top or left of a layout because there is no card to be displayed on screen when a user scrolls near top or left.
