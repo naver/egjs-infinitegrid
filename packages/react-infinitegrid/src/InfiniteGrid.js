@@ -24,6 +24,13 @@ function newItem(groupKey, key, itemIndex) {
 function makeKey(component, groupKey, itemIndex) {
 	return component.key || `__egjs_infinitegrid_${groupKey}_${itemIndex}`;
 }
+function _updateSize(items) {
+	// DOMRenderer temporary code
+	items.forEach(item => {
+		item.size.width = parseInt(item.size.width, 10);
+		item.size.height = parseInt(item.size.height, 10);
+	});
+}
 export default class InfiniteGrid extends Component {
 	static propTypes = {
 		tag: PropTypes.string,
@@ -243,6 +250,11 @@ export default class InfiniteGrid extends Component {
 		watcher.setStatus(_watcher, applyScrollPos);
 		watcher.attachEvent();
 
+		ItemManager.pluck(state.groups, "items").forEach(item => {
+			if (!item.orgSize || item.rect.top < DUMMY_POSITION / 10) {
+				item.mount = false;
+			}
+		});
 		if (isReLayout) {
 			renderer.resize();
 			this._setSize(renderer.getViewportSize());
@@ -471,16 +483,21 @@ export default class InfiniteGrid extends Component {
 
 			return item.orgSize && item.rect.top > DUMMY_POSITION / 10;
 		});
+
+		if (!layoutGroups.length) {
+			return [];
+		}
 		let outline = layoutGroups[0].outlines.start;
 
 		if (isRelayout) {
 			outline = [outline.length ? Math.min(...outline) : 0];
 			if (!isConstantSize && items.length) {
 				renderer.updateSize(items);
+				_updateSize(items);
 			}
 		}
 		this._layout.layout(layoutGroups, outline);
-		return this;
+		return layoutGroups;
 	}
 	_clearOutlines(startCursor = -1, endCursor = -1) {
 		const datas = this._items.get();
@@ -523,7 +540,13 @@ export default class InfiniteGrid extends Component {
 			itemManager.get(startCursor, isRelayout && isResize ? endCursor : itemManager.size());
 
 		// LayoutManger interface
-		this._relayout(isRelayout, data, isResize ? items : []);
+		const layoutGroups = this._relayout(isRelayout, data, isResize ? items : []);
+
+		if (!layoutGroups.length) {
+			this.state.requestIndex = 0;
+			this._insert(true);
+			return this;
+		}
 		if (isLayoutAll) {
 			this._fit();
 		} else if (isRelayout && isResize) {
@@ -712,6 +735,7 @@ export default class InfiniteGrid extends Component {
 					return;
 				}
 				this._renderer.updateSize(items);
+				_updateSize(items);
 				const cursor = isAppend ? "end" : "start";
 				const prevGroup = state.groups[groups[0].index + (isAppend ? -1 : 1)];
 				let outline = prevGroup ? prevGroup.outlines[cursor] : [0];
