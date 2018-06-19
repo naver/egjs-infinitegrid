@@ -103,32 +103,6 @@ class Infinite {
 		}
 		status.startCursor = Math.max(0, status.startCursor);
 	}
-	updateCursor(cursor) {
-		const {startCursor, endCursor} = this._status;
-
-		if (cursor === "start") {
-			if (startCursor <= 0) {
-				this.setCursor("start", 0);
-				this.setCursor("end", endCursor + 1);
-			} else {
-				this.setCursor(cursor, startCursor - 1);
-			}
-		} else {
-			this.setCursor(cursor, endCursor + 1);
-		}
-	}
-	setData(item, isAppend = true) {
-		this._items.set(item, item.groupKey);
-		this.setCursor(isAppend ? "end" : "start", this._items.indexOf(item));
-	}
-	append(item) {
-		this._items.append(item);
-		this.updateCursor("end");
-	}
-	prepend(item) {
-		this._items.prepend(item);
-		this.updateCursor("start");
-	}
 	setStatus(status) {
 		this._status = Object.assign(this._status, status);
 	}
