@@ -3,6 +3,7 @@ import ImageLoaded, {CHECK_ALL, CHECK_ONLY_ERROR} from "./ImageLoaded";
 import ItemManager from "./ItemManager";
 import {matchHTML} from "./utils";
 import {DUMMY_POSITION} from "./consts";
+import DOMRenderer from "./DOMRenderer";
 
 function hasTarget(...targets) {
 	return targets.every(target => ~target[0].indexOf(target[1]));
@@ -36,23 +37,28 @@ export default class LayoutMananger {
 
 		this._renderer.updateSize(items);
 
-		groups.forEach(group => {
+		const groupInfos = groups.map(group => {
 			const groupOutline = group.outlines[isAppend ? "start" : "end"];
 			const isRelayout = isUpdate || !outline.length || (outline.length === groupOutline.length ?
 				!outline.every((v, index) => v === groupOutline[index]) : true);
 
 			if (!isRelayout) {
 				outline = group.outlines[isAppend ? "end" : "start"];
-				return;
+				DOMRenderer.renderItems(group.items);
+				return group;
 			}
 			const groupItems = group.items;
-			const groupInfo = this._layout[isAppend ? "append" : "prepend"](groupItems, outline);
+			const groupInfo = this._layout[isAppend ? "append" : "prepend"](groupItems, outline, true);
 
 			Object.assign(group, groupInfo);
+			DOMRenderer.renderItems(groupInfo.items);
 			outline = groupInfo.outlines[isAppend ? "end" : "start"];
+
+			return groupInfo;
 		});
+
 		callback({
-			groups,
+			groups: groupInfos,
 			items,
 			isAppend,
 		});

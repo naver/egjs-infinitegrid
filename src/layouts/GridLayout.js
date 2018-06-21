@@ -138,8 +138,8 @@ class GridLayout {
 			end: isAppend ? endOutline : startOutline,
 		};
 	}
-	_insert(items = [], outline = [], type) {
-		const clone = cloneItems(items);
+	_insert(items = [], outline = [], type, cache) {
+		const clone = cache ? items : cloneItems(items);
 
 		let startOutline = outline;
 
@@ -167,8 +167,8 @@ class GridLayout {
 	 * @example
 	 * layout.prepend(items, [100, 200, 300, 400]);
 	 */
-	append(items, outline) {
-		return this._insert(items, outline, APPEND);
+	append(items, outline, cache) {
+		return this._insert(items, outline, APPEND, cache);
 	}
 	/**
 	 * Adds items at the top of a outline.
@@ -180,8 +180,8 @@ class GridLayout {
 	 * @example
 	 * layout.prepend(items, [100, 200, 300, 400]);
 	 */
-	prepend(items, outline) {
-		return this._insert(items, outline, PREPEND);
+	prepend(items, outline, cache) {
+		return this._insert(items, outline, PREPEND, cache);
 	}
 	/**
 	 * Adds items of groups at the bottom of a outline.

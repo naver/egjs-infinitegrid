@@ -1,4 +1,4 @@
-import {MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME} from "./consts";
+import {MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME, DUMMY_POSITION} from "./consts";
 import {$, toArray, isUndefined} from "./utils";
 
 export default class ItemManager {
@@ -106,6 +106,36 @@ export default class ItemManager {
 
 		return outlines.length ? Math[cursor === "start" ? "min" : "max"](...outlines) : 0;
 	}
+	clearOutlines(startCursor = -1, endCursor = -1) {
+		const datas = this.get();
+
+		datas.forEach((group, cursor) => {
+			if (startCursor <= cursor && cursor <= endCursor) {
+				return;
+			}
+			group.items.forEach(item => {
+				item.rect.top = DUMMY_POSITION;
+				item.rect.left = DUMMY_POSITION;
+			});
+			group.outlines.start = [];
+			group.outlines.end = [];
+		});
+	}
+	getMaxEdgeValue() {
+		const groups = this.get();
+		const length = groups.length;
+
+		for (let i = length - 1; i >= 0; --i) {
+			const end = groups[i].outlines.end;
+
+			if (end.length) {
+				const pos = Math.max(...end);
+
+				return pos;
+			}
+		}
+		return 0;
+	}
 	append(layouted) {
 		this._data.push(layouted);
 		return layouted.items;
@@ -158,10 +188,8 @@ export default class ItemManager {
 		return -1;
 	}
 	get(start, end) {
-		if (isUndefined(start)) {
-			return this._data.concat();
-		}
-		return this._data.slice(start, (isUndefined(end) ? start : end) + 1);
+		return isUndefined(start) ? this._data :
+			this._data.slice(start, (isUndefined(end) ? start : end) + 1);
 	}
 	set(data, key) {
 		if (!isUndefined(key) && !Array.isArray(data)) {

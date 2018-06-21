@@ -255,9 +255,9 @@ class FrameLayout {
 			end: endOutline.map(point => parseInt(point, 10)),
 		};
 	}
-	_insert(items = [], outline = [], type) {
+	_insert(items = [], outline = [], type, cache) {
 		// this only needs the size of the item.
-		const clone = cloneItems(items);
+		const clone = cache ? items : cloneItems(items);
 
 		return {
 			items: clone,
@@ -310,8 +310,8 @@ class FrameLayout {
 	 * @example
 	 * layout.prepend(items, [100]);
 	 */
-	append(items, outline) {
-		return this._insert(items, outline, APPEND);
+	append(items, outline, cache) {
+		return this._insert(items, outline, APPEND, cache);
 	}
 	/**
 	 * Adds items at the top of a outline.
@@ -323,8 +323,8 @@ class FrameLayout {
 	 * @example
 	 * layout.prepend(items, [100]);
 	 */
-	prepend(items, outline) {
-		return this._insert(items, outline, PREPEND);
+	prepend(items, outline, cache) {
+		return this._insert(items, outline, PREPEND, cache);
 	}
 }
 
