@@ -30,7 +30,7 @@ export default class Watcher {
 		this._onResize = this._onResize.bind(this);
 		this.attachEvent();
 		this.setScrollPos();
-		this._setContainerOffset();
+		this.resize();
 	}
 	getStatus() {
 		return {
@@ -95,15 +95,21 @@ export default class Watcher {
 	getContainerOffset() {
 		return this._containerOffset;
 	}
-	_setContainerOffset() {
-		this._containerOffset = this.options.isOverflowScroll ? 0 : this.options.container[`offset${this.options.horizontal ? "Left" : "Top"}`];
+	_getOffset() {
+		const {container, horizontal} = this.options;
+		const rect = container.getBoundingClientRect();
+
+		return rect[horizontal ? "left" : "top"] + this.getOrgScrollPos();
+	}
+	resize() {
+		this._containerOffset = this.options.isOverflowScroll ? 0 : this._getOffset();
 	}
 	_onResize() {
 		if (this._timer.resize) {
 			clearTimeout(this._timer.resize);
 		}
 		this._timer.resize = setTimeout(() => {
-			this._setContainerOffset();
+			this.resize();
 			this.options.resize();
 			this._timer.resize = null;
 			this.reset();
@@ -117,4 +123,3 @@ export default class Watcher {
 		this.reset();
 	}
 }
-
