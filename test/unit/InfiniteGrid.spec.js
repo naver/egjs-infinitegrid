@@ -89,6 +89,7 @@ describe("InfiniteGrid Test", function() {
 
           expect(item1.map(e1 => e1.rect))
             .to.be.deep.equals(item2.map(e1 => e1.rect));
+            inst.destroy();
           done();
         });
         inst.on("layoutComplete", layoutCompleteHandler2);

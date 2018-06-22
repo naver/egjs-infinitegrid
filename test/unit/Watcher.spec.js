@@ -52,8 +52,7 @@ import { scrollTo, scroll } from "../../src/utils";
 		});
 		it (`should check containeroffset with offset`, () => {
 			// Given
-			this.wrapper.style.top = "1000px";
-			this.wrapper.style.left = "1000px";
+			this.wrapper.style[horizontal ? "left" : "top"] = "1000px";
 			this.watcher = new Watcher(window, {
 				container: this.el.querySelector(".view"),
 				horizontal,
@@ -65,15 +64,14 @@ import { scrollTo, scroll } from "../../src/utils";
 		it (`should check containeroffset with offset and scroll`, () => {
 
 			// Given
-			this.wrapper.style.top = "4000.25px";
-			this.wrapper.style.left = "4000.25px";
+			this.wrapper.style[horizontal ? "left" : "top"] = "4000.25px";
 			this.watcher = new Watcher(window, {
 				container: this.el.querySelector(".view"),
 				horizontal,
 			});
 
 			// When
-			scrollTo(window, 545, 545);
+			scrollTo(window, horizontal ? 545 : 0, horizontal ? 0 : 545);
 
 
 			// Then
@@ -84,23 +82,21 @@ import { scrollTo, scroll } from "../../src/utils";
 
 
 			// Given
-			this.wrapper.style.top = "4000.25px";
-			this.wrapper.style.left = "4000.25px";
-			scrollTo(window, 545, 545);
+			this.wrapper.style[horizontal ? "left" : "top"] = "4000.25px";
+			scrollTo(window, horizontal ? 545 : 0, horizontal ? 0 : 545);
 			this.watcher = new Watcher(window, {
 				container: this.view,
 				horizontal,
 			});
 			
 			// When
-			this.wrapper.style.top = "2000.25px";
-			this.wrapper.style.left = "2000.25px";
+			this.wrapper.style[horizontal ? "left" : "top"] = "2000.25px";
 
 			// Then
 			expect(scroll(window, horizontal)).to.be.equals(545);
 			expect(this.watcher.getContainerOffset()).to.be.equals(4000.25);
 
-			this.watcher._onResize();
+			window.dispatchEvent(new Event("resize"));
 
 			setTimeout(() => {
 				expect(scroll(window, horizontal)).to.be.equals(545);
