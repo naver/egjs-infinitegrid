@@ -1,13 +1,11 @@
 export function cleanHTML(html) {
 	return html.replace(/(\>)(\<[^\/])/g, "$1\n$2");
 }
-export function awaitTimer(callback, delay = 100) {
+export function wait(time = 100) {
 	return new Promise(resolve => {
 		setTimeout(() => {
-			const rv = callback();
-
-			resolve(rv);
-		}, delay);
+			resolve();
+		}, time);
 	});
 }
 export function itemToArray(item) {

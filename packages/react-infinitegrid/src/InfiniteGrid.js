@@ -514,6 +514,12 @@ export default class InfiniteGrid extends Component {
 			group.outlines.end = [];
 		});
 	}
+	resize() {
+		this._watcher.resize();
+		if (this._renderer.isNeededResize()) {
+			this.layout(true);
+		}
+	}
 	layout(isRelayout = true) {
 		if (!this._layout) {
 			return this;

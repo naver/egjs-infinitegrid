@@ -23,6 +23,7 @@ interface InfiniteGridProps {
 
 declare class InfiniteGrid extends React.Component<InfiniteGridProps> {
 	layout(isRelayout?: boolean): this;
+	resize(): this;
 	setStatus(status: object, applyScrollPos?: boolean): this;
 	getStatus(): object;
 	clear(): this;
