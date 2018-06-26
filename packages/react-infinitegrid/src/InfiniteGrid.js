@@ -165,7 +165,7 @@ export default class InfiniteGrid extends Component {
 			} else {
 				const scrollPos = this._watcher.getScrollPos();
 
-				this._scroll(scrollPos, true);
+				this._scroll(scrollPos);
 			}
 		}
 	}
@@ -250,7 +250,9 @@ export default class InfiniteGrid extends Component {
 		watcher.setStatus(_watcher, applyScrollPos);
 		watcher.attachEvent();
 
-		ItemManager.pluck(state.groups, "items").forEach(item => {
+		const items = ItemManager.pluck(state.groups, "items");
+
+		items.forEach(item => {
 			if (!item.orgSize || item.rect.top < DUMMY_POSITION / 10) {
 				item.mount = false;
 			}
@@ -262,8 +264,9 @@ export default class InfiniteGrid extends Component {
 				this.layout(true);
 			} else {
 				this._clearOutlines();
+				items.forEach(item => { item.mount = false; });
 				state.processing |= APPEND;
-				state.requestIndex = 0;
+				state.requestIndex = Math.max(0, state.startIndex);
 				this._insert(true);
 			}
 		} else {
@@ -689,12 +692,12 @@ export default class InfiniteGrid extends Component {
 		base < 0 && this._watcher.scrollBy(-base);
 	}
 	// called by visible
-	_fit(useFit = this.props.useFit) {
+	_fit(isForce) {
 		let base = this._getEdgeValue("start");
 		const margin = (this._loading && this._loading.getSize(false)) || 0;
-		const {isConstantSize, isEqualSize, useRecycle} = this.props;
+		const {isConstantSize, isEqualSize, useRecycle, useFit} = this.props;
 
-		if (!useRecycle || !useFit || isConstantSize || isEqualSize) {
+		if (!isForce && (!useRecycle || !useFit || isConstantSize || isEqualSize)) {
 			if (base < margin) {
 				this._fitItems(base - margin, margin);
 			}
@@ -783,10 +786,10 @@ export default class InfiniteGrid extends Component {
 	}
 	_onCheck({isForward, scrollPos, horizontal, orgScrollPos}) {
 		this.props.onChange({isForward, horizontal, scrollPos, orgScrollPos});
-		this._scroll(scrollPos, isForward);
+		this._scroll(scrollPos);
 	}
 	// Infinite interface for isEqualSize or isConstantSize
-	_scroll(scrollPos, isForward) {
+	_scroll(scrollPos) {
 		const startCursor = this._infinite.getCursor("start");
 		const endCursor = this._infinite.getCursor("end");
 
@@ -807,6 +810,12 @@ export default class InfiniteGrid extends Component {
 		const prepend = this._requestPrepend;
 		const datas = items.get();
 		const endScrollPos = Math.max(scrollPos, 0) + size;
+		const startItem = datas[startCursor];
+		const endItem = datas[endCursor];
+
+		if (!startItem || !endItem) {
+			return;
+		}
 		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
 		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
 		const visibles = datas.map((group, i) => {
@@ -974,7 +983,7 @@ export default class InfiniteGrid extends Component {
 		if (groups.length) {
 			const scrollPos = this._watcher.getScrollPos();
 
-			this._scroll(scrollPos, true);
+			this._scroll(scrollPos);
 		} else {
 			this._requestAppend({});
 		}
