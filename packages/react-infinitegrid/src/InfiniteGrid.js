@@ -99,11 +99,12 @@ export default class InfiniteGrid extends Component {
 		if (nextState.processing & (APPEND | PREPEND) || nextState.layout) {
 			return true;
 		}
-		const children = Children.toArray(this.state.children);
+		const children = this.state.children;
 		const nextChildren = Children.toArray(props.children);
 		const length = children.length;
+		const nextLength = nextChildren.length;
 
-		if (length !== nextChildren.length ||
+		if (length !== nextLength ||
 			(length && !children.every((component, i) => {
 				const nextComponent = nextChildren[i];
 				const key = component.key;
@@ -118,6 +119,8 @@ export default class InfiniteGrid extends Component {
 				nextState.requestIndex = 0;
 			}
 			this._refreshGroups(nextChildren, nextState);
+		} else if (length && length === nextLength) {
+			this._refreshChildren(nextChildren, nextState);
 		}
 		return true;
 	}
@@ -175,7 +178,6 @@ export default class InfiniteGrid extends Component {
 	componentWillUnmount() {
 		this.clear();
 		this._container = null;
-		this._infinite && this._infinite.clear();
 		this._watcher && this._watcher.destroy();
 		this._items && this._items.clear();
 		this._renderer && this._renderer.destroy();
@@ -289,6 +291,10 @@ export default class InfiniteGrid extends Component {
 			datas: {},
 			isUpdate: false,
 		};
+		if (this._infinite) {
+			this._infinite.clear();
+			this._setSize();
+		}
 		return this;
 	}
 	_mountElement = (itemKey, element) => {
@@ -358,6 +364,25 @@ export default class InfiniteGrid extends Component {
 	}
 	_getVisibleItems() {
 		return ItemManager.pluck(this._getVisibleGroups(), "items");
+	}
+	_refreshChildren(propsChildren = Children.toArray(this.props.children), state = this.state) {
+		const {groupKeys, groups} = state;
+
+		groups.forEach(group => {
+			group.children = [];
+		});
+		propsChildren.forEach(item => {
+			const props = item.props;
+			const groupKey = props.groupKey || props["data-groupkey"] || 0;
+			const group = groupKeys[groupKey];
+
+			if (!group) {
+				return;
+			}
+			group.children.push(item);
+		});
+
+		state.children = propsChildren;
 	}
 	_refreshGroups(propsChildren = Children.toArray(this.props.children), state = this.state) {
 		if (!propsChildren) {
@@ -431,6 +456,10 @@ export default class InfiniteGrid extends Component {
 						startIndex = groupKeys[groupKey].index;
 					}
 				});
+				if (startIndex === -1 && groups[0]) {
+					startKey = groups[0].groupKey;
+					startIndex = 0;
+				}
 			}
 		}
 		if (endIndex === -1) {
@@ -545,8 +574,8 @@ export default class InfiniteGrid extends Component {
 		// layout datas
 		const startCursor = infinite.getCursor("start");
 		const endCursor = infinite.getCursor("end");
-		const data = isLayoutAll ? itemManager.get() :
-			itemManager.get(startCursor, isRelayout && isResize ? endCursor : itemManager.size());
+		const data = isLayoutAll || !(isRelayout && isResize) ? itemManager.get() :
+			itemManager.get(startCursor, endCursor);
 
 		// LayoutManger interface
 		const layoutGroups = this._relayout(isRelayout, data, isResize ? items : []);
@@ -836,9 +865,7 @@ export default class InfiniteGrid extends Component {
 			const startPos = Math.min(...start);
 			const endPos = Math.max(...end);
 
-			if ((scrollPos <= startPos && startPos <= endScrollPos + threshold) ||
-				(scrollPos - threshold <= endPos && endPos <= endScrollPos)
-			) {
+			if (startPos - threshold <= endScrollPos && scrollPos <= endPos + threshold) {
 				return true;
 			}
 			return false;
