@@ -90,9 +90,7 @@ class Infinite {
 			const startPos = Math.min(...start);
 			const endPos = Math.max(...end);
 
-			if ((scrollPos <= startPos && startPos <= endScrollPos + threshold) ||
-				(scrollPos - threshold <= endPos && endPos <= endScrollPos)
-			) {
+			if (startPos - threshold <= endScrollPos && scrollPos <= endPos + threshold) {
 				return true;
 			}
 			return false;
@@ -112,16 +110,22 @@ class Infinite {
 	}
 	setCursor(cursor, index) {
 		const status = this._status;
+		const items = this._items;
+		const size = items.size();
 
 		if (!this.options.useRecycle) {
 			status.startCursor = 0;
-			status.endCursor = this._items.size() - 1;
-			return;
+			if (items.getOutline(size - 1, "end").length) {
+				status.endCursor = size - 1;
+				return;
+			} if (cursor !== "end") {
+				return;
+			}
 		}
 		if (cursor === "start") {
 			status.startCursor = index;
 		} else {
-			status.endCursor = Math.min(this._items.size() - 1, index);
+			status.endCursor = Math.min(size - 1, index);
 		}
 		status.startCursor = Math.max(0, status.startCursor);
 	}
