@@ -626,6 +626,7 @@ export default class InfiniteGrid extends Component {
 			return;
 		}
 		if (cache && cache.length) {
+			const useRecycle = this.props.useRecycle;
 			const endItem = cache[cache.length - 1];
 			const endKey = endItem.groupKey;
 			const endIndex = endItem.index;
@@ -633,7 +634,8 @@ export default class InfiniteGrid extends Component {
 			const requestKey = cache[0].groupKey;
 			const requestIndex = cache[0].index;
 			// not in cursor
-			const startIndex = requestIndex > state.endIndex + 1 ? requestIndex : state.startIndex;
+			const startIndex = useRecycle && requestIndex > state.endIndex + 1 ?
+				requestIndex : state.startIndex;
 			const startKey = state.groups[startIndex].groupKey;
 
 			this.setState({
@@ -666,6 +668,7 @@ export default class InfiniteGrid extends Component {
 			return;
 		}
 		if (cache && cache.length) {
+			const useRecycle = this.props.useRecycle;
 			const startItem = cache[0];
 			const startKey = startItem.groupKey;
 			const startIndex = startItem.index;
@@ -675,7 +678,8 @@ export default class InfiniteGrid extends Component {
 			const requestKey = cache[length - 1].groupKey;
 			const requestIndex = cache[length - 1].index;
 			// not in cursor
-			const endIndex = requestIndex < state.startIndex - 1 ? requestIndex : state.endIndex;
+			const endIndex = useRecycle && requestIndex < state.startIndex - 1 ?
+				requestIndex : state.endIndex;
 			const endKey = state.groups[endIndex].groupKey;
 
 			this.setState({
@@ -1041,7 +1045,7 @@ export default class InfiniteGrid extends Component {
 				isOverflowScroll,
 				horizontal,
 				container: this._renderer.container,
-				resize: () => this.setState({layout: true}),
+				resize: () => setTimeout(() => { this.setState({layout: true}); }),
 				check: param => this._onCheck(param),
 			});
 		this._infinite = new Infinite(this._items, {
