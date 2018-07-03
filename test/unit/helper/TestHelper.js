@@ -1,6 +1,7 @@
+import {ItemManager} from "../../../src/index";
 // import {utils} from "../../src/utils";
 // import {} from "../../src/utils";
-
+/* eslint-disable */
 export function getItems(count) {
 	const items = [];
 	const size = [100, 200, 300];
@@ -11,6 +12,19 @@ export function getItems(count) {
 	return items;
 }
 
+export function makeItems(items, isAppend, groupKey) {
+	return ItemManager.from(items,  "*", {
+		isAppend,
+		groupKey,
+	});
+}
+export function makeGroup(items, isAppend, groupKey) {
+	return {
+		groupKey,
+		items: makeItems(items, isAppend, groupKey),
+		outlines: {start: [], end: []},
+	};
+}
 export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 	let idx = 1;
 	// const oldHandler = instance.callback.layoutComplete;
@@ -39,7 +53,29 @@ export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 	instance[method](getItems(count), idx++);
 	return layoutHandler;
 }
+export function wait(time = 100) {
+	return new Promise(resolve => {
+		setTimeout(() => {
+			resolve();
+		}, time);
+	});
+}
+export function waitInsert(instance, isAppend, count, retry) {
+	return new Promise(resolve => {
+		let handler;
 
+		handler = insert(instance, isAppend, () => {resolve(handler)}, count, retry);
+	});
+}
+export function waitEvent(instance, eventName) {
+	return new Promise(resolve => {
+		const event = e => {
+			instance.off(eventName, event);
+			resolve(e);
+		};
+		instance.on(eventName, event);
+	});
+}
 // check layout properties
 export function checkLayoutComplete(handler, {count, isAppend, isTrusted}) {
 	for (let i = 0, len = handler.callCount; i < len; i++) {
@@ -50,6 +86,7 @@ export function checkLayoutComplete(handler, {count, isAppend, isTrusted}) {
 		expect(param.isTrusted).to.be.equal(isTrusted);
 	}
 }
+
 
 // function parseCssText(str) {
 // 	const ht = {};

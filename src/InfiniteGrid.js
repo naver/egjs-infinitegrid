@@ -942,7 +942,6 @@ ig.on("imageError", e => {
 	 * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
 	 */
 	destroy() {
-		this.off();
 		this._infinite.clear();
 		this._watcher.destroy();
 		this._layout.destroy();

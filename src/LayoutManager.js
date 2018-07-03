@@ -1,12 +1,12 @@
 import AutoSizer from "./AutoSizer";
 import ImageLoaded, {CHECK_ALL, CHECK_ONLY_ERROR} from "./ImageLoaded";
 import ItemManager from "./ItemManager";
-import {matchHTML} from "./utils";
+import {matchHTML, $} from "./utils";
 import {DUMMY_POSITION} from "./consts";
 import DOMRenderer from "./DOMRenderer";
 
-function hasTarget(...targets) {
-	return targets.every(target => ~target[0].indexOf(target[1]));
+function hasTarget(target, value) {
+	return ~target.indexOf(value);
 }
 
 export default class LayoutMananger {
@@ -70,7 +70,7 @@ export default class LayoutMananger {
 
 		// remove item
 		const removeItem = () => {
-			if (hasTarget([removeTarget, element])) {
+			if (hasTarget(removeTarget, element)) {
 				return;
 			}
 			removeTarget.push(element);
@@ -84,19 +84,19 @@ export default class LayoutMananger {
 				removeItem();
 				return;
 			}
-			if (hasTarget([removeTarget, element])) {
+			if (hasTarget(removeTarget, element)) {
 				return;
 			}
 			target.parentNode.removeChild(target);
 			item.content = element.outerHTML;
-			if (hasTarget([replaceTarget, errorIndex])) {
+			if (hasTarget(replaceTarget, errorIndex)) {
 				return;
 			}
 			replaceTarget.push(errorIndex);
 		};
 		// replace image
 		const replace = src => {
-			if (hasTarget([removeTarget, element])) {
+			if (hasTarget(removeTarget, element)) {
 				return;
 			}
 			if (src) {
@@ -116,18 +116,21 @@ export default class LayoutMananger {
 				}
 			}
 			item.content = element.outerHTML;
-			if (hasTarget([replaceTarget, errorIndex])) {
+			if (hasTarget(replaceTarget, errorIndex)) {
 				return;
 			}
 			replaceTarget.push(errorIndex);
 		};
 		// replace item
 		const replaceItem = content => {
-			if (hasTarget([removeTarget, element], [replaceTarget, errorIndex])) {
+			if (hasTarget(removeTarget, element)) {
 				return;
 			}
 			element.innerHTML = content;
 			item.content = element.outerHTML;
+			if (hasTarget(replaceTarget, errorIndex)) {
+				return;
+			}
 			replaceTarget.push(errorIndex);
 		};
 

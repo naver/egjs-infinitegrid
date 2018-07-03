@@ -8,7 +8,7 @@ $("#controller").click(function(e) {
 	}
 	var className = $(target).attr("class");
 
-	window[className]();
+	window[className](target);
 
 });
 
