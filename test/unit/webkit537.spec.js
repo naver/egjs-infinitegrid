@@ -1,5 +1,4 @@
-import AgentInjection from "./helper/AgentInjection";
-import a from "./InfiniteGrid.spec.js";
+import "./helper/AgentInjection";
 import {WEBKIT_VERSION, DEFENSE_BROWSER} from "../../src/consts";
 
 describe("InfiniteGrid Agent test", function (e) {

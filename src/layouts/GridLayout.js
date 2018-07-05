@@ -55,7 +55,7 @@ class GridLayout {
 	checkColumn(item) {
 		const {itemSize, margin, horizontal} = this.options;
 		const sizeName = horizontal ? "height" : "width";
-		const columnSize = itemSize || (item && item.size[sizeName]) || 0;
+		const columnSize = parseInt(itemSize || (item && item.size[sizeName]), 10) || 0;
 
 		this._columnSize = columnSize;
 		if (!columnSize) {
@@ -83,9 +83,6 @@ class GridLayout {
 		const pointCaculateName = isAppend ? "min" : "max";
 		const startOutline = outline.slice();
 		const endOutline = outline.slice();
-		const startIndex = 0;
-		let endIndex = -1;
-		let endPos = -1;
 
 		for (let i = 0; i < length; ++i) {
 			const point = Math[pointCaculateName](...endOutline) || 0;
@@ -120,13 +117,6 @@ class GridLayout {
 			};
 			item.column = index;
 			endOutline[index] = isAppend ? endPos1 : pos1;
-			if (endIndex === -1) {
-				endIndex = i;
-				endPos = endPos1;
-			} else if (endPos < endPos1) {
-				endIndex = i;
-				endPos = endPos1;
-			}
 		}
 		if (!isAppend) {
 			items.sort((a, b) => {
@@ -140,19 +130,16 @@ class GridLayout {
 				}
 				return item1pos2 - item2pos2;
 			});
-			endIndex = length - 1;
 		}
 		// if append items, startOutline is low, endOutline is high
 		// if prepend items, startOutline is high, endOutline is low
 		return {
 			start: isAppend ? startOutline : endOutline,
 			end: isAppend ? endOutline : startOutline,
-			startIndex,
-			endIndex,
 		};
 	}
-	_insert(items = [], outline = [], type) {
-		const clone = cloneItems(items);
+	_insert(items = [], outline = [], type, cache) {
+		const clone = cache ? items : cloneItems(items);
 
 		let startOutline = outline;
 
@@ -180,8 +167,8 @@ class GridLayout {
 	 * @example
 	 * layout.prepend(items, [100, 200, 300, 400]);
 	 */
-	append(items, outline) {
-		return this._insert(items, outline, APPEND);
+	append(items, outline, cache) {
+		return this._insert(items, outline, APPEND, cache);
 	}
 	/**
 	 * Adds items at the top of a outline.
@@ -193,8 +180,8 @@ class GridLayout {
 	 * @example
 	 * layout.prepend(items, [100, 200, 300, 400]);
 	 */
-	prepend(items, outline) {
-		return this._insert(items, outline, PREPEND);
+	prepend(items, outline, cache) {
+		return this._insert(items, outline, PREPEND, cache);
 	}
 	/**
 	 * Adds items of groups at the bottom of a outline.

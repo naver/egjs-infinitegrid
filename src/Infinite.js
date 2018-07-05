@@ -66,68 +66,68 @@ class Infinite {
 			this.setCursor("end", start - 1);
 		}
 	}
-	scroll(scrollPos, isForward) {
-		const {startCursor, endCursor, size} = this._status;
+	scroll(scrollPos) {
+		const startCursor = this.getCursor("start");
+		const endCursor = this.getCursor("end");
+		const items = this._items;
 
-		if (startCursor === -1 || endCursor === -1) {
+		if (typeof scrollPos !== "number" || startCursor === -1 ||
+			endCursor === -1 || !items.size()) {
 			return;
 		}
-		const {append, prepend, threshold} = this.options;
-		const items = this._items;
-		const length = items.size();
-		const endScrollPos = scrollPos + size;
-		const targetItem = items.getData(isForward ? endCursor : startCursor);
-		const outlines = targetItem.outlines[isForward ? "end" : "start"];
-		const edgePos = Math[isForward ? "min" : "max"](...outlines);
+		const size = this._status.size;
+		const {threshold, append, prepend} = this.options;
+		const datas = items.get();
+		const endScrollPos = Math.max(scrollPos, 0) + size;
+		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
+		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
+		const visibles = datas.map((group, i) => {
+			const {start, end} = group.outlines;
 
-		if (isForward) {
-			if (endScrollPos >= edgePos - threshold) {
-				append({cache: length > endCursor + 1 && items.getData(endCursor + 1)});
+			if (!start.length || !end.length) {
+				return false;
 			}
-		} else if (scrollPos <= edgePos + threshold) {
-			prepend({cache: (startCursor > 0) && items.getData(startCursor - 1)});
+			const startPos = Math.min(...start);
+			const endPos = Math.max(...end);
+
+			if (startPos - threshold <= endScrollPos && scrollPos <= endPos + threshold) {
+				return true;
+			}
+			return false;
+		});
+		const start = visibles.indexOf(true);
+		const end = visibles.lastIndexOf(true);
+
+		if (~start && start < startCursor) {
+			prepend({cache: datas.slice(start, Math.min(startCursor, end + 1))});
+		} else if (endCursor < end) {
+			append({cache: datas.slice(Math.max(start, endCursor + 1), end + 1)});
+		} else if (endScrollPos >= endEdgePos - threshold) {
+			append({cache: datas.slice(endCursor + 1, endCursor + 2)});
+		} else if (scrollPos <= startEdgePos + threshold) {
+			prepend({cache: datas.slice(startCursor - 1, startCursor)});
 		}
 	}
 	setCursor(cursor, index) {
 		const status = this._status;
+		const items = this._items;
+		const size = items.size();
 
 		if (!this.options.useRecycle) {
 			status.startCursor = 0;
-			status.endCursor = this._items.size() - 1;
-			return;
+			if (items.getOutline(size - 1, "end").length) {
+				status.endCursor = size - 1;
+				return;
+			} if (cursor !== "end") {
+				return;
+			}
 		}
 		if (cursor === "start") {
 			status.startCursor = index;
 		} else {
-			status.endCursor = Math.min(this._items.size() - 1, index);
+			status.endCursor = Math.min(size - 1, index);
 		}
 		status.startCursor = Math.max(0, status.startCursor);
-	}
-	updateCursor(cursor) {
-		const {startCursor, endCursor} = this._status;
-
-		if (cursor === "start") {
-			if (startCursor <= 0) {
-				this.setCursor("start", 0);
-				this.setCursor("end", endCursor + 1);
-			} else {
-				this.setCursor(cursor, startCursor - 1);
-			}
-		} else {
-			this.setCursor(cursor, endCursor + 1);
-		}
-	}
-	setData(item, isAppend = true) {
-		this._items.set(item, item.groupKey);
-		this.setCursor(isAppend ? "end" : "start", this._items.indexOf(item));
-	}
-	append(item) {
-		this._items.append(item);
-		this.updateCursor("end");
-	}
-	prepend(item) {
-		this._items.prepend(item);
-		this.updateCursor("start");
 	}
 	setStatus(status) {
 		this._status = Object.assign(this._status, status);

@@ -169,16 +169,12 @@ class JustifiedLayout {
 			endPoint = startPoint + height;
 		}
 		const itemsLength = items.length;
-		const startIndex = itemsLength ? 0 : -1;
-		const endIndex = itemsLength ? itemsLength - 1 : -1;
 
 		if (isAppend) {
 			// previous group's end outline is current group's start outline
 			return {
 				start: [startPoint],
 				end: [endPoint],
-				startIndex,
-				endIndex,
 			};
 		}
 		// for prepend, only substract height from position.
@@ -193,13 +189,11 @@ class JustifiedLayout {
 		return {
 			start: [startPoint - height],
 			end: [startPoint], // endPoint - height = startPoint
-			startIndex,
-			endIndex,
 		};
 	}
-	_insert(items = [], outline = [], type) {
+	_insert(items = [], outline = [], type, cache) {
 		// this only needs the size of the item.
-		const clone = cloneItems(items);
+		const clone = cache ? items : cloneItems(items);
 
 		return {
 			items: clone,
@@ -229,8 +223,8 @@ class JustifiedLayout {
 	 * @example
 	 * layout.prepend(items, [100]);
 	 */
-	append(items, outline) {
-		return this._insert(items, outline, APPEND);
+	append(items, outline, cache) {
+		return this._insert(items, outline, APPEND, cache);
 	}
 	/**
 	 * Adds items at the top of a outline.
@@ -242,8 +236,8 @@ class JustifiedLayout {
 	 * @example
 	 * layout.prepend(items, [100]);
 	 */
-	prepend(items, outline) {
-		return this._insert(items, outline, PREPEND);
+	prepend(items, outline, cache) {
+		return this._insert(items, outline, PREPEND, cache);
 	}
 	/**
 	 * Adds items of groups at the bottom of a outline.

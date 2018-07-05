@@ -5,7 +5,6 @@ import {
 	MULTI,
 	GROUPKEY_ATT,
 	CONTAINER_CLASSNAME,
-	DEFENSE_BROWSER,
 } from "./consts";
 import {window, document} from "./browser";
 import {
@@ -18,7 +17,7 @@ import {
 } from "./utils";
 
 
-function _defense(element) {
+function createContainer(element) {
 	const container = document.createElement("div");
 
 	container.className = CONTAINER_CLASSNAME;
@@ -31,7 +30,6 @@ function _defense(element) {
 	for (let i = 0; i < length; i++) {
 		container.appendChild(children[0]);
 	}
-
 	element.appendChild(container);
 	return container;
 }
@@ -72,22 +70,26 @@ export default class DOMRenderer {
 		parentNode.removeChild(element);
 	}
 	static createElements(items) {
-		if (!items.length || items[0].el) {
-			return items;
+		if (!items.length) {
+			return;
 		}
-		const elements = $(items.map(({content}) =>
+		const noElementItems = items.filter(item => !item.el);
+
+		if (!noElementItems.length) {
+			return;
+		}
+		const elements = $(noElementItems.map(({content}) =>
 			content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "")).join(""), MULTI);
 
-		return items.map((item, index) => {
+		noElementItems.forEach((item, index) => {
 			item.el = elements[index];
-			return item;
 		});
 	}
 	constructor(element, options) {
 		Object.assign(this.options = {
-			isOverflowScroll: false,
 			isEqualSize: false,
 			horizontal: false,
+			container: false,
 		}, options);
 		this._size = {
 			container: -1,
@@ -101,13 +103,11 @@ export default class DOMRenderer {
 	getStatus() {
 		return {
 			cssText: this.container.style.cssText,
-			options: Object.assign({}, this.options),
 			_size: Object.assign({}, this._size),
 		};
 	}
 	setStatus(status) {
 		this.container.style.cssText = status.cssText;
-		Object.assign(this.options, status.options);
 		Object.assign(this._size, status._size);
 	}
 	updateSize(items) {
@@ -135,7 +135,7 @@ export default class DOMRenderer {
 	_init(el) {
 		const element = $(el);
 		const style = getStyles(element);
-		const {isOverflowScroll, horizontal} = this.options;
+		const {container, horizontal} = this.options;
 
 		this._orgStyle = {};
 
@@ -143,7 +143,7 @@ export default class DOMRenderer {
 			this._orgStyle.position = element.style.position;
 			element.style.position = "relative";
 		}
-		if (isOverflowScroll) {
+		if (container) {
 			const target = horizontal ? ["X", "Y"] : ["Y", "X"];
 
 			this._orgStyle.overflowX = element.style.overflowX;
@@ -151,8 +151,7 @@ export default class DOMRenderer {
 			element.style[`overflow${target[0]}`] = "scroll";
 			element.style[`overflow${target[1]}`] = "hidden";
 			this.view = element;
-			// defense code for android < 4.4 or webkit < 537
-			this.container = horizontal && DEFENSE_BROWSER ? _defense(element) : element;
+			this.container = container === true ? createContainer(this.view) : container;
 		} else {
 			this.view = window;
 			this.container = element;
@@ -171,10 +170,10 @@ export default class DOMRenderer {
 		});
 	}
 	createAndInsert(items, isAppend) {
-		const itemsWithElement = DOMRenderer.createElements(items);
+		DOMRenderer.createElements(items);
 
-		DOMRenderer.renderItems(itemsWithElement);
-		this._insert(itemsWithElement, isAppend);
+		DOMRenderer.renderItems(items);
+		this._insert(items, isAppend);
 	}
 	_insert(items, isAppend, styles) {
 		const container = this.container;
@@ -199,11 +198,7 @@ export default class DOMRenderer {
 		return this._size.viewport;
 	}
 	setContainerSize(size) {
-		const {isOverflowScroll, horizontal} = this.options;
-
-		if (!isOverflowScroll || (horizontal && DEFENSE_BROWSER)) {
-			this.container.style[horizontal ? "width" : "height"] = `${size}px`;
-		}
+		this.container.style[this.options.horizontal ? "width" : "height"] = `${size}px`;
 	}
 	resize() {
 		const horizontal = this.options.horizontal;
@@ -224,9 +219,8 @@ export default class DOMRenderer {
 	}
 	clear() {
 		this.container.innerHTML = "";
-		if (!this.options.isOverflowScroll) {
-			this.container.style[this.options.horizontal ? "width" : "height"] = "";
-		}
+		this.container.style[this.options.horizontal ? "width" : "height"] = "";
+
 		this._size = {
 			item: null,
 			viewport: -1,
@@ -236,9 +230,12 @@ export default class DOMRenderer {
 	}
 	destroy() {
 		this.clear();
+		const container = this.options.container;
+
 		for (const p in this._orgStyle) {
-			this[this.options.isOverflowScroll ? "view" : "container"].style[p] = this._orgStyle[p];
+			this[container ? "view" : "container"].style[p] = this._orgStyle[p];
 		}
+		container && this.container.parentNode.removeChild(this.container);
 	}
 }
 
