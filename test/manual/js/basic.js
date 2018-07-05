@@ -12,6 +12,7 @@ var isParallax = false;
 var _overflow = true;
 var _layout;
 var _horizontal;
+var _useFit = true;
 
 var grid = document.querySelector("#grid");
 $(grid).click(function (e) {
@@ -33,6 +34,7 @@ function createGrid() {
 		horizontal: _horizontal,
 		threshold: 50,
 		isOverflowScroll: _overflow,
+		useFit: _useFit,
 		// useRecycle: false,
 	});
 	ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
@@ -172,40 +174,32 @@ function setStatus() {
 	groups = _groups;
 	ig.setStatus(_status);
 }
-function enableParallax() {
-	isParallax = true;
-	parallax.refresh(ig.getItems(), document.body.scrollTop);
-}
-function disableParallax() {
-	isParallax = false;
-}
 function getStatus() {
 	_status = ig.getStatus();
 	_groups = groups;
 }
-function vertical() {
-	_horizontal = false;
+function toggleParallax(target) {
+	isParallax = !isParallax;
+	isParallax && parallax.refresh(ig.getItems(), document.body.scrollTop);
+	target.innerHTML = isParallax ? "disable Parallax" : "enable Parallax";
+}
+function toggleDirection(target) {
+	_horizontal = !_horizontal;
 	createGrid();
-	$("#grid").attr("data-direction", "vertical");
+	$("#grid").attr("data-direction", _horizontal ? "horizontal" : "vertical");
+	target.innerHTML = _horizontal ? "vertical" : "horizontal";
 	window[_layout]();
 }
-function horizontal() {
-	_horizontal = true;
-	createGrid();
-	$("#grid").attr("data-direction", "horizontal");
-	window[_layout]();
-}
-function overflow() {
-	_overflow = true;
+function toggleOverflow(target) {
+	_overflow = !_overflow;
 	createGrid();
 	$("#grid").attr("data-overflow", "true");
+	target.innerHTML = _overflow ? "disable overflow" : "enable overflow";
 	window[_layout]();
 }
-function overflow_false() {
-	_overflow = false;
+function toggleFit(target) {
+	_useFit = !_useFit;
 	createGrid();
-	$("#grid").attr("data-overflow", "false");
+	target.innerHTML = _useFit ? "disable useFit" : "enable useFit";
 	window[_layout]();
 }
-
-

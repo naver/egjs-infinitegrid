@@ -3,8 +3,6 @@ export interface Group {
 	outlines: {
 		start: number[],
 		end: number[],
-		startIndex?: number,
-		endIndex?: number,
 	};
 }
 

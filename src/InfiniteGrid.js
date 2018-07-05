@@ -5,9 +5,7 @@
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
-import ImageLoaded, {CHECK_ALL, CHECK_ONLY_ERROR} from "./ImageLoaded";
 import Watcher from "./Watcher";
-import AutoSizer from "./AutoSizer";
 import {
 	APPEND,
 	PREPEND,
@@ -22,9 +20,11 @@ import {
 	PROCESSING,
 	DEFENSE_BROWSER,
 	IGNORE_CLASSNAME,
+	DUMMY_POSITION,
 } from "./consts";
 import Infinite from "./Infinite";
-import {toArray, $, matchHTML, outerHeight, outerWidth} from "./utils";
+import {toArray, $, outerHeight, outerWidth} from "./utils";
+import LayoutMananger from "./LayoutManager";
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -42,10 +42,6 @@ if (typeof Object.create !== "function") {
 	};
 }
 /* eslint-enable */
-
-function hasTarget(...targets) {
-	return targets.every(target => ~target[0].indexOf(target[1]));
-}
 
 /**
  * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -92,6 +88,7 @@ class InfiniteGrid extends Component {
 	 * @param {Boolean} [options.useRecycle=true] Indicates whether keep the number of DOMs is maintained. If the useRecycle value is 'true', keep the number of DOMs is maintained. If the useRecycle value is 'false', the number of DOMs will increase as card elements are added. <ko>DOM의 수를 유지할지 여부를 나타낸다. useRecycle 값이 'true'이면 DOM 개수를 일정하게 유지한다. useRecycle 값이 'false' 이면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
 	 * @param {Boolean} [options.isOverflowScroll=false] Indicates whether overflow:scroll is applied<ko>overflow:scroll 적용여부를 결정한다.</ko>
 	 * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향)</ko>
+	 * @param {Boolean} [options.useFit=true] The useFit option scrolls upwards so that no space is visible until an item is added <ko>위로 스크롤할 시 아이템을 추가하는 동안 보이는 빈 공간을 안보이게 한다.</ko>
 	 * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
 	 * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
 	 * @param {String} [options.attributePrefix="data-"] The prefix to use element's data attribute.<ko>엘리먼트의 데이타 속성에 사용할 접두사.</ko>
@@ -105,9 +102,10 @@ class InfiniteGrid extends Component {
 			isEqualSize: false,
 			useRecycle: true,
 			horizontal: false,
+			useFit: true,
 			attributePrefix: "data-",
 		}, options);
-		this.options.useFit = !DEFENSE_BROWSER;
+		DEFENSE_BROWSER && (this.options.useFit = false);
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);
 		this._reset();
 		this._loadingBar = {};
@@ -116,9 +114,9 @@ class InfiniteGrid extends Component {
 
 		this._items = new ItemManager();
 		this._renderer = new DOMRenderer(element, {
-			isOverflowScroll,
 			isEqualSize,
 			horizontal,
+			container: isOverflowScroll,
 		});
 		this._watcher = new Watcher(
 			this._renderer.view,
@@ -154,7 +152,7 @@ class InfiniteGrid extends Component {
 	 * infinitegrid.append(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
 	 */
 	append(elements, groupKey) {
-		this._layout && this._insert(elements, APPEND, groupKey);
+		this._manager && this._insert(elements, APPEND, groupKey);
 		return this;
 	}
 	/**
@@ -171,7 +169,7 @@ class InfiniteGrid extends Component {
 	 * infinitegrid.prepend(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
 	 */
 	prepend(elements, groupKey) {
-		this._layout && this._insert(elements, PREPEND, groupKey);
+		this._manager && this._insert(elements, PREPEND, groupKey);
 		return this;
 	}
 	/**
@@ -212,13 +210,22 @@ class InfiniteGrid extends Component {
 	 * infinitegrid.setLayout(layout);
 	 */
 	setLayout(LayoutKlass, options = {}) {
+		const {isEqualSize, isConstantSize, attributePrefix, horizontal} = this.options;
+
+		if (!this._manager) {
+			this._manager = new LayoutMananger(this._items, this._renderer, {
+				attributePrefix,
+				isEqualSize,
+				isConstantSize,
+			});
+		}
 		if (typeof LayoutKlass === "function") {
-			this._layout = new LayoutKlass(Object.assign(options, {
-				horizontal: this.options.horizontal,
-			}));
+			this._manager.setLayout(new LayoutKlass(Object.assign(options, {
+				horizontal,
+			})));
 		} else {
-			this._layout = LayoutKlass;
-			this._layout.options.horizontal = this.options.horizontal;
+			LayoutKlass.options.horizontal = horizontal;
+			this._manager.setLayout(LayoutKlass);
 		}
 		this._renderer.resize();
 		this._setSize(this._renderer.getViewportSize());
@@ -226,7 +233,7 @@ class InfiniteGrid extends Component {
 	}
 	_setSize(size) {
 		this._infinite.setSize(this._renderer.getViewSize());
-		this._layout.setSize(size);
+		this._manager.setSize(size);
 	}
 	/**
 	 * Returns the layouted items.
@@ -241,33 +248,22 @@ class InfiniteGrid extends Component {
 		base > 0 && this._watcher.scrollBy(-base);
 		this._items.fit(base, this.options.horizontal);
 		DOMRenderer.renderItems(this.getItems());
-		this._renderer.setContainerSize(this._getEdgeValue("end") || margin);
+		this._setContainerSize(this._getEdgeValue("end") || margin);
 		base < 0 && this._watcher.scrollBy(-base);
 	}
 	// called by visible
-	_fit() {
-		// for caching
-		if (!this._layout) {
-			return 0;
-		}
+	_fit(useFit = this.options.useFit) {
 		let base = this._getEdgeValue("start");
 		const margin = (this._getLoadingStatus() === LOADING_PREPEND && this._status.loadingSize) || 0;
+		const {isConstantSize, isEqualSize, useRecycle} = this.options;
 
-		if (!this.options.useRecycle || !this.options.useFit) {
+		if (!useRecycle || !useFit || isConstantSize || isEqualSize) {
 			if (base < margin) {
 				this._fitItems(base - margin, margin);
 			}
 			base = 0;
 		} else if (base !== 0 || margin) {
-			const isProcessing = this._isProcessing();
-
-			this._process(PROCESSING);
-			// "before" is base > 0
-			// "after" is base < 0
 			this._fitItems(base - margin, margin);
-			if (!isProcessing) {
-				this._process(PROCESSING, false);
-			}
 		} else {
 			return 0;
 		}
@@ -284,69 +280,40 @@ class InfiniteGrid extends Component {
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	layout(isRelayout = true) {
-		if (!this._layout) {
+		if (!this._manager) {
 			return this;
 		}
 		const renderer = this._renderer;
 		const itemManager = this._items;
+		const infinite = this._infinite;
 		const isResize = renderer.resize();
+		const items = this.getItems();
+		const {isEqualSize, isConstantSize} = renderer.options;
+		const isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
+		const size = itemManager.size();
 
 		if (isRelayout && isResize) {
 			this._setSize(renderer.getViewportSize());
 		}
 		// check childElement
-		if (!this._items.size()) {
+		if (!size) {
 			this._insert(toArray(renderer.container.children), true);
 			return this;
 		}
-		let data;
-		let outline;
+		// layout datas
+		const startCursor = infinite.getCursor("start");
+		const endCursor = infinite.getCursor("end");
+		const data = isLayoutAll || !(isRelayout && isResize) ? itemManager.get() :
+			itemManager.get(startCursor, endCursor);
 
-		const infinite = this._infinite;
-		const items = this.getItems();
-		const isEqualSize = this.options.isEqualSize;
-
-		if (!items.length) {
-			return this;
+		// LayoutManger interface
+		this._manager.layout(isRelayout, data, isResize ? items : []);
+		if (isLayoutAll) {
+			this._fit();
+		} else if (isRelayout && isResize) {
+			itemManager.clearOutlines(startCursor, endCursor);
 		}
-		if (isRelayout) { // remove cache
-			if (isEqualSize) {
-				renderer.updateSize([items[0]]);
-				data = itemManager.get();
-				outline = itemManager.getOutline(0, "start");
-			} else {
-				data = infinite.getVisibleData();
-			}
-			if (isResize) {
-				data.forEach(v => {
-					data.items = renderer.updateSize(v.items);
-				});
-			}
-		} else {
-			data = infinite.getVisibleData();
-			outline = infinite.getEdgeOutline("start");
-		}
-		if (!data.length) {
-			return this;
-		}
-		this._layout.layout(data, outline);
-
-		if (isRelayout) {
-			if (isEqualSize) {
-				this._fit();
-			} else {
-				const startCursor = infinite.getCursor("start");
-				const endCursor = infinite.getCursor("end");
-
-				itemManager._data.forEach((group, cursor) => {
-					if (startCursor <= cursor && cursor <= endCursor) {
-						return;
-					}
-					group.outlines.start = [];
-					group.outlines.end = [];
-				});
-			}
-		}
+		DOMRenderer.renderItems(items);
 		this._onLayoutComplete({
 			items,
 			isAppend: APPEND,
@@ -355,7 +322,6 @@ class InfiniteGrid extends Component {
 			useRecycle: false,
 			isLayout: true,
 		});
-		DOMRenderer.renderItems(items);
 		isRelayout && this._watcher.setScrollPos();
 
 		return this;
@@ -516,9 +482,29 @@ class InfiniteGrid extends Component {
 		if (!items.length) {
 			return;
 		}
+
+		const group = {
+			groupKey: key,
+			items,
+			outlines: {start: [], end: []},
+		};
+		const method = isAppend ? "append" : "prepend";
+
+		this._items[method](group);
+
+		if (!isAppend) {
+			const infinite = this._infinite;
+			const startCursor = infinite.getCursor("start");
+			const endCursor = infinite.getCursor("end");
+
+			infinite.setCursor("start", startCursor + 1);
+			infinite.setCursor("end", endCursor + 1);
+		}
 		this._postLayout({
 			fromCache: NO_CACHE,
+			groups: [group],
 			items,
+			newItems: items,
 			isAppend,
 			isTrusted: NO_TRUSTED,
 		});
@@ -561,7 +547,7 @@ class InfiniteGrid extends Component {
 		if (!isAppend) {
 			this._fit();
 		} else {
-			this._renderer.setContainerSize(this._getEdgeValue("end") + this._status.loadingSize);
+			this._setContainerSize(this._getEdgeValue("end") + this._status.loadingSize);
 		}
 		return this;
 	}
@@ -621,13 +607,16 @@ class InfiniteGrid extends Component {
 			if (!isAppend) {
 				this._fitItems(size);
 			} else {
-				this._renderer.setContainerSize(this._getEdgeValue("end"));
+				this._setContainerSize(this._getEdgeValue("end"));
 			}
 		}
 		if (this.options.useRecycle && !this.isProcessing()) {
 			this._infinite.recycle(this._watcher.getScrollPos(), isAppend);
 		}
 		return this;
+	}
+	_setContainerSize(size) {
+		this._renderer.setContainerSize(Math.max(this._items.getMaxEdgeValue(), size));
 	}
 	/**
 	 * Move to some group or item position.
@@ -636,7 +625,7 @@ class InfiniteGrid extends Component {
 	 * @param {Number} [itemIndex=-1] item's index <ko> 그룹의 index</ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
-	moveTo(index, itemIndex = -1) {
+	moveTo(index, itemIndex = 0) {
 		if (this.isProcessing()) {
 			return this;
 		}
@@ -647,19 +636,16 @@ class InfiniteGrid extends Component {
 		}
 		const infinite = this._infinite;
 		const outlines = data.outlines;
-		const item = data.items[itemIndex];
+		const items = data.items;
+		const item = items[itemIndex];
 		const isResize = outlines.start && (outlines.start.length === 0);
 		const startCursor = infinite.getCursor("start");
 		const endCursor = infinite.getCursor("end");
 		const isInCursor = startCursor <= index && index <= endCursor;
-		const {useRecycle, isEqualSize, horizontal} = this.options;
+		const {useRecycle, horizontal} = this.options;
 
-		if (isInCursor || !useRecycle || isEqualSize || !isResize) {
-			let pos = item && item.rect[horizontal ? "left" : "top"];
-
-			if (typeof pos === "undefined") {
-				pos = Math.max(...outlines.start);
-			}
+		if (isInCursor || !useRecycle || !isResize) {
+			let pos = item ? item.rect[horizontal ? "left" : "top"] : Math.max(...outlines.start);
 			const fit = Math.min(...outlines.start);
 
 			if (fit < 0) {
@@ -667,53 +653,30 @@ class InfiniteGrid extends Component {
 				this._fitItems(fit, 0);
 				pos -= fit;
 			}
-			if (!isInCursor && useRecycle) {
-				const isAppend = index > startCursor;
+			const isAppend = index > startCursor;
 
-				if (isAppend) {
-					// append
-					if (endCursor + 1 < index) {
-						infinite.setCursor("start", index);
-						// prepare append
-						infinite.setCursor("end", index - 1);
-					}
-					// recycle previous items
-					this._recycle({start: 0, end: index - 1});
-				} else if (index + 1 < startCursor) {
-					// prepare prepend
-					infinite.setCursor("start", index + 1);
-					infinite.setCursor("end", index);
-				}
-				this._postCache({
-					isAppend,
-					outline: outlines[isAppend ? "start" : "end"],
-					cache: data,
-					isTrusted: NO_TRUSTED,
-					moveItem: itemIndex,
-				});
+			if (isInCursor || isAppend) {
+				this._scrollTo(pos);
 				return this;
 			}
-			pos = Math.max(Math.min(pos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
-			this._scrollTo(pos);
-		} else if (isResize) {
-			const isAppend = index > endCursor;
-			const outline = [0];
-
-			if (isAppend) {
-				infinite.setCursor("start", index);
-				infinite.setCursor("end", index - 1);
-				this._recycle({start: 0, end: index - 1});
-			} else {
-				infinite.setCursor("start", index + 1);
-				infinite.setCursor("end", index);
-				this._recycle({start: index + 1, end: this._items.size()});
-			}
 			this._postLayout({
-				outline,
+				fromCache: true,
+				groups: [data],
+				items,
+				newItems: [],
 				isAppend,
-				fromCache: CACHE,
-				items: data.items,
-				isTrusted: TRUSTED,
+				isTrusted: false,
+				moveCache: true,
+				moveItem: itemIndex,
+			});
+			return this;
+		} else {
+			const isAppend = index > endCursor || index < startCursor - 1;
+
+			this._postCache({
+				isAppend,
+				cache: [data],
+				isTrusted: false,
 				moveItem: itemIndex,
 			});
 		}
@@ -725,69 +688,7 @@ class InfiniteGrid extends Component {
 	_scrollTo(pos) {
 		this._watcher.scrollTo(this._watcher.getContainerOffset() + pos);
 	}
-	_postLayoutComplete({layouted, isAppend, isTrusted, fromCache,
-		moveItem = -2, useRecycle = this.options.useRecycle}) {
-		let pos = Math.max(...layouted.outlines.start);
-
-		if (moveItem > -2) {
-			pos = Math.max(Math.min(pos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
-			if (!isAppend) {
-				this._setScrollPos(pos + 0.1);
-				this._scrollTo(pos + 0.1);
-			} else if (pos > 0) {
-				this._setScrollPos(pos - 0.1);
-			}
-		}
-		const items = layouted.items;
-
-		this._onLayoutComplete({items, isAppend, fromCache, isTrusted, useRecycle});
-		if (moveItem > -2) {
-			(!isAppend) && (pos = Math.max(...layouted.outlines.start));
-			let movePos = pos;
-
-			if (items[moveItem]) {
-				movePos = items[moveItem].rect[this.options.horizotnal ? "left" : "top"];
-			}
-			movePos = Math.max(Math.min(movePos, this._getEdgeValue("end") - this._renderer.getViewSize()), 0);
-			if (isAppend) {
-				this._scrollTo(movePos);
-			} else {
-				this._infinite.scroll(movePos, true);
-				this._scrollTo(movePos);
-				this._recycle({start: this._infinite.getCursor("end") + 1, end: this._items.size() - 1});
-			}
-		}
-	}
-	_postImageLoaded(fromCache, layouted, items, isAppend, isTrusted, moveItem = -2) {
-		const groupKey = (layouted.items && layouted.items[0].groupKey) || 0;
-
-		layouted.groupKey = groupKey;
-		if (fromCache) {
-			this._infinite.setData(layouted, isAppend);
-		} else {
-			this._infinite[isAppend ? "append" : "prepend"](layouted);
-		}
-		DOMRenderer.renderItems(layouted.items);
-		this._postLayoutComplete({layouted, isAppend, fromCache, isTrusted, moveItem, useRecycle: false});
-	}
-	_onImageError(target, item, itemIndex, removeTarget, replaceTarget) {
-		const element = item.el;
-		const prefix = this.options.attributePrefix;
-
-		item.content = element.outerHTML;
-
-		const removeItem = () => {
-			if (hasTarget([removeTarget, element])) {
-				return;
-			}
-			removeTarget.push(element);
-			const index = replaceTarget.indexOf(itemIndex);
-
-			if (index !== -1) {
-				replaceTarget.splice(index, 1);
-			}
-		};
-
+	_onImageError(e) {
 		/**
 		 * This event is fired when an error occurs in the image.
 		 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
@@ -795,6 +696,7 @@ class InfiniteGrid extends Component {
 		 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
 		 * @param {Element} param.target Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
 		 * @param {Element} param.elememt The item's element with error images.<ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트</ko>
+		 * @param {Object} param.items The items being added.<ko>화면에 추가중인 아이템들</ko>
 		 * @param {Object} param.item The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
 		 * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
 		 * @param {Function} param.remove In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
@@ -810,156 +712,98 @@ ig.on("imageError", e => {
 	e.replaceItem("item html");
 });
 		 */
-		this.trigger("imageError", {
-			target,
-			element,
-			item,
-			itemIndex,
-			// remove item
-			removeItem,
-			// remove image
-			remove: () => {
-				if (target === element) {
-					removeItem();
-					return;
-				}
-				if (hasTarget([removeTarget, element])) {
-					return;
-				}
-				target.parentNode.removeChild(target);
-				item.content = element.outerHTML;
-				if (hasTarget([replaceTarget, itemIndex])) {
-					return;
-				}
-				replaceTarget.push(itemIndex);
-			},
-			// replace image
-			replace: src => {
-				if (hasTarget([removeTarget, element])) {
-					return;
-				}
-				if (src) {
-					if (matchHTML(src) || typeof src === "object") {
-						const parentNode = target.parentNode;
-
-						parentNode.insertBefore($(src), target);
-						parentNode.removeChild(target);
-						item.content = element.outerHTML;
-					} else {
-						target.src = src;
-						if (target.getAttribute(`${prefix}width`)) {
-							AutoSizer.remove(target);
-							target.removeAttribute(`${prefix}width`);
-							target.removeAttribute(`${prefix}height`);
-						}
-					}
-				}
-				item.content = element.outerHTML;
-				if (hasTarget([replaceTarget, itemIndex])) {
-					return;
-				}
-				replaceTarget.push(itemIndex);
-			},
-			// replace item
-			replaceItem: content => {
-				if (hasTarget([removeTarget, element], [replaceTarget, itemIndex])) {
-					return;
-				}
-				element.innerHTML = content;
-				item.content = element.outerHTML;
-				replaceTarget.push(itemIndex);
-			},
-		});
+		this.trigger("imageError", Object.assign(e, {element: e.item.el}));
 	}
-	_postImageLoadedEnd(items, isAppend, removeTarget, replaceTarget) {
-		const scrollPos = this._watcher.getScrollPos();
-		const {useRecycle, isEqualSize, attributePrefix} = this.options;
-
-		if (!removeTarget.length && !replaceTarget.length) {
-			if (!this.isProcessing() && useRecycle) {
-				this._infinite.recycle(scrollPos, isAppend);
+	_postCache({cache, isAppend, isTrusted = true, moveItem = -1}) {
+		const {isConstantSize} = this.options;
+		const items = ItemManager.pluck(cache, "items");
+		let fromCache = true;
+		const newItems = items.filter(item => {
+			if (!item.orgSize) {
+				fromCache = false;
+				return true;
 			}
-			return;
-		}
-		const layoutedItems = replaceTarget.map(itemIndex => items[itemIndex]);
-
-		removeTarget.forEach(element => {
-			this.remove(element, false);
+			return !isConstantSize && item.rect.top < DUMMY_POSITION / 10;
 		});
-		if (isEqualSize) {
-			if (removeTarget.length > 0) {
-				this.layout(false);
-			} else if (!this.isProcessing() && useRecycle) {
-				this._infinite.recycle(scrollPos, isAppend);
-			}
-			return;
-		}
-		// wait layoutComplete beacause of error event.
-		ImageLoaded.check(layoutedItems.map(v => v.el), {
-			prefix: attributePrefix,
-			complete: () => {
-				this._renderer.updateSize(layoutedItems);
-				this.layout(false);
-			},
-		});
-	}
-	_postCache({cache, isAppend, isTrusted = true,
-		outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start"), moveItem = -2}) {
-		const cacheOutline = cache.outlines[isAppend ? "start" : "end"];
 
-		const fromRelayout = outline.length === cacheOutline.length ?
-			!outline.every((v, index) => v === cacheOutline[index]) : true;
-
-		if (!fromRelayout) {
-			this._infinite.updateCursor(isAppend ? "end" : "start");
-			this._renderer.createAndInsert(cache.items, isAppend);
-			this._postLayoutComplete({layouted: cache, isAppend, isTrusted, moveItem});
-			return;
-		}
 		this._postLayout({
-			fromCache: CACHE,
-			items: cache.items,
-			outline,
+			fromCache,
+			groups: isAppend ? cache : cache.reverse(),
+			items,
+			newItems,
 			isAppend,
 			isTrusted,
 			moveItem,
 		});
 	}
-	_postLayout({fromCache, items, isAppend,
-		outline = this._infinite.getEdgeOutline(isAppend ? "end" : "start"),
-		isTrusted, moveItem = -2}) {
+	_postLayout({
+		fromCache,
+		groups,
+		items = ItemManager.pluck(groups, "items"),
+		newItems,
+		isAppend,
+		isTrusted,
+		moveCache,
+		moveItem = -2}) {
 		this._process(PROCESSING);
 		const method = isAppend ? "append" : "prepend";
+		const itemManager = this._items;
+		const horizontal = this.options.horizontal;
 
-		fromCache && DOMRenderer.createElements(items);
+		DOMRenderer.createElements(items);
 		this._renderer[method](items);
-
-		// check image sizes after elements are attated on DOM
-		const type = this.options.isEqualSize && this._renderer._size.item ? CHECK_ONLY_ERROR : CHECK_ALL;
-		const prefix = this.options.attributePrefix;
-		const replaceTarget = [];
-		const removeTarget = [];
-		let layouted;
-
-		ImageLoaded.check(items.map(item => item.el), {
-			prefix,
-			type,
+		this._manager[method]({
+			groups,
+			items: newItems,
+			isAppend,
+		}, {
 			complete: () => {
-				layouted = this._layout[method](
-					this._renderer.updateSize(items),
-					outline
-				);
-				// no recycle
-				this._postImageLoaded(fromCache, layouted, items, isAppend, isTrusted, moveItem);
-			},
-			error: ({target, itemIndex}) => {
-				const item = (layouted && layouted.items[itemIndex]) || items[itemIndex];
+				const infinite = this._infinite;
+				const startCursor = Math.max(infinite.getCursor("start"), 0);
+				const endCursor = Math.max(infinite.getCursor("end"), 0);
+				let requestStartCursor = itemManager.indexOf(groups[0].groupKey);
+				let requestEndCursor = itemManager.indexOf(groups[groups.length - 1].groupKey);
+				let isInCursor = true;
 
-				this._onImageError(target, item, itemIndex, removeTarget, replaceTarget);
+				if (requestStartCursor > endCursor + 1 || requestEndCursor < startCursor - 1) {
+					isInCursor = false;
+				}
+				if (isInCursor) {
+					if (isAppend) {
+						requestStartCursor = startCursor;
+						requestEndCursor = Math.max(endCursor, requestEndCursor);
+					} else {
+						requestStartCursor = Math.max(Math.min(startCursor, requestStartCursor), 0);
+						requestEndCursor = endCursor;
+					}
+				}
+
+				!isInCursor && this._recycle({start: startCursor, end: endCursor});
+				infinite.setCursor("start", requestStartCursor);
+				infinite.setCursor("end", requestEndCursor);
+
+				if (moveItem > -1) {
+					const pos = items[moveItem].rect[horizontal ? "left" : "top"];
+
+					if (!isInCursor && !moveCache) {
+						itemManager.clearOutlines(requestStartCursor, requestEndCursor);
+					}
+					this._scrollTo(pos);
+					this._setScrollPos(pos);
+				}
+				this._onLayoutComplete({groups, items, isAppend, fromCache, isTrusted, useRecycle: false});
 			},
-			end: () => {
-				// recycle
-				this._postImageLoadedEnd(items, isAppend, removeTarget, replaceTarget);
+			error: e => this._onImageError(e),
+			end: ({remove, layout}) => {
+				remove.forEach(el => this.remove(el, false));
+				if (layout) {
+					this.layout(false);
+				} else if (!this.isProcessing() && this.options.useRecycle) {
+					const watcher = this._watcher;
+					const scrollPos = watcher.getScrollPos();
+
+					this._infinite.recycle(scrollPos, isAppend);
+				}
 			},
 		});
 		return this;
@@ -969,7 +813,7 @@ ig.on("imageError", e => {
 		if (this._isProcessing()) {
 			return;
 		}
-		if (cache) {
+		if (cache && cache.length) {
 			this._postCache({cache, isAppend: APPEND});
 		} else {
 			/**
@@ -987,14 +831,12 @@ ig.on("imageError", e => {
 		}
 	}
 	// called by visible
-	_requestPrepend({cache, fit = true}) {
-		if (fit) {
-			this._fit();
-		}
+	_requestPrepend({cache}) {
+		this._fit(this.options.useFit || !cache.length);
 		if (this._isProcessing()) {
 			return;
 		}
-		if (cache) {
+		if (cache && cache.length) {
 			this._postCache({cache, isAppend: PREPEND});
 		} else {
 			/**
@@ -1032,7 +874,7 @@ ig.on("imageError", e => {
 			scrollPos,
 			orgScrollPos,
 		});
-		this._infinite.scroll(scrollPos, isForward);
+		this._infinite.scroll(scrollPos);
 	}
 	_onLayoutComplete({items, isAppend, isTrusted = false,
 		useRecycle = this.options.useRecycle,
@@ -1057,10 +899,9 @@ ig.on("imageError", e => {
 
 		const size = this._getEdgeValue("end");
 
-		isAppend && this._renderer.setContainerSize(size + this._status.loadingSize || 0);
+		isAppend && this._setContainerSize(size + this._status.loadingSize || 0);
 		!isLayout && this._process(PROCESSING, false);
 
-		//  @param {Boolean} param.fromCache Check whether these items are cache or not <ko>해당 아이템들이 캐시인지 아닌지 확인한다.</ko>
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
 		 * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
@@ -1068,6 +909,8 @@ ig.on("imageError", e => {
 		 *
 		 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
 		 * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
+		 * @param {Boolean} param.fromCache Check whether these items are cache or not <ko>해당 아이템들이 캐시인지 아닌지 확인한다.</ko>
+		 * @param {Boolean} param.isLayout Returns true if this is an event called by resize event or layout method. Returns false if this is an event called by adding an item. <ko>해당 이벤트가 리사이즈 이벤트 또는 layout() 메서드를 통해 호출됐으면 true, 아이템 추가로 호출됐으면 false를 반환한다.</ko>
 		 * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
 		 * @param {Boolean} param.isScroll Checks whether scrolling has occurred after the append(), prepend(), ..., etc method is called <ko>append, prend 등 호출 후 스크롤이 생겼는지 확인한다.</ko>
 		 * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
@@ -1079,6 +922,8 @@ ig.on("imageError", e => {
 			target: items.concat(),
 			isAppend,
 			isTrusted,
+			fromCache,
+			isLayout,
 			isScroll: viewSize < watcher.getContainerOffset() + size,
 			scrollPos,
 			orgScrollPos: watcher.getOrgScrollPos(),
@@ -1097,9 +942,9 @@ ig.on("imageError", e => {
 	 * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
 	 */
 	destroy() {
-		this.off();
 		this._infinite.clear();
 		this._watcher.destroy();
+		this._manager.destroy();
 		this._reset();
 		this._items.clear();
 		this._renderer.destroy();

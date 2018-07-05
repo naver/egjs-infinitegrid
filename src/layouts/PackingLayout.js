@@ -153,7 +153,6 @@ class PackingLayout {
 		const style = this._style;
 		const {horizontal, aspectRatio, margin} = this.options;
 		const pos1Name = style.pos1;
-		const size1Name = style.size1;
 		const containerWidth = this._size * (horizontal ? aspectRatio : 1);
 		const containerHeight = this._size / (horizontal ? 1 : aspectRatio);
 		const containerSize1 = horizontal ? containerWidth : containerHeight;
@@ -162,10 +161,6 @@ class PackingLayout {
 			Math.min(...prevOutline) - containerSize1 - margin;
 		const end = start + containerSize1 + margin;
 		const container = new BoxModel({});
-		let startIndex = -1;
-		let endIndex = -1;
-		let startPos = -1;
-		let endPos = -1;
 
 		items.forEach(item => {
 			const {width, height} = item.orgSize;
@@ -189,33 +184,16 @@ class PackingLayout {
 
 			item.rect = {top, left, width: width - margin, height: height - margin};
 			item.rect[pos1Name] += start;
-
-			if (startIndex === -1) {
-				startIndex = i;
-				endIndex = i;
-				startPos = item.rect[pos1Name];
-				endPos = startPos;
-			}
-			if (startPos > item.rect[pos1Name]) {
-				startPos = item.rect[pos1Name];
-				startIndex = i;
-			}
-			if (endPos < item.rect[pos1Name] + item.rect[size1Name] + margin) {
-				endPos = item.rect[pos1Name] + item.rect[size1Name] + margin;
-				endIndex = i;
-			}
 		});
 
 		return {
 			start: [start],
 			end: [end],
-			startIndex,
-			endIndex,
 		};
 	}
-	_insert(items = [], outline = [], type) {
+	_insert(items = [], outline = [], type, cache) {
 		// this only needs the size of the item.
-		const clone = cloneItems(items);
+		const clone = cache ? items : cloneItems(items);
 
 		return {
 			items: clone,
@@ -232,8 +210,8 @@ class PackingLayout {
 	 * @example
 	 * layout.prepend(items, [100]);
 	 */
-	append(items, outline) {
-		return this._insert(items, outline, APPEND);
+	append(items, outline, cache) {
+		return this._insert(items, outline, APPEND, cache);
 	}
 	/**
 	 * Adds items at the top of a outline.
@@ -245,8 +223,8 @@ class PackingLayout {
 	 * @example
 	 * layout.prepend(items, [100]);
 	 */
-	prepend(items, outline) {
-		return this._insert(items, outline, PREPEND);
+	prepend(items, outline, cache) {
+		return this._insert(items, outline, PREPEND, cache);
 	}
 	/**
 	 * Adds items of groups at the bottom of a outline.
