@@ -87,7 +87,6 @@ export default class DOMRenderer {
 	}
 	constructor(element, options) {
 		Object.assign(this.options = {
-			isOverflowScroll: false,
 			isEqualSize: false,
 			horizontal: false,
 			container: false,

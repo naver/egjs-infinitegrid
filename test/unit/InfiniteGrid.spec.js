@@ -556,7 +556,7 @@ describe("InfiniteGrid Test", function () {
 
       this.inst.layout(true);
       expect(this.inst._renderer.getViewportSize()).to.be.equals(width);
-      expect(this.inst._layout._layout._size).to.be.equals(width);
+      expect(this.inst._manager._layout._size).to.be.equals(width);
     });
   });
   [true, false].forEach(isOverflowScroll => {
@@ -600,6 +600,17 @@ describe("InfiniteGrid Test", function () {
           expect(this.inst._isLoading()).to.be.true;
           expect(this.inst._getLoadingStatus()).to.be.equal(isAppend ? LOADING_APPEND : LOADING_PREPEND);
           expect(this.inst._status.loadingSize).to.be.equal(isAppend ? 75 : 100);
+
+          const layoutCompleteHandler = sinon.spy(e => {
+            if (!isOverflowScroll) {
+              expect(innerHeight(this.inst._renderer.container)).to.be.equal(this.inst._getEdgeValue("end") - this.inst._getEdgeValue("start") + (isAppend ? 75 : 100));
+            }
+            expect(this.inst._isLoading()).to.be.true;
+            if (isAppend) {
+              expect(parseInt(this.inst.getLoadingBar().style.top, 10)).to.be.equal(this.inst._getEdgeValue("end"));
+            }
+          });
+          this.inst.on("layoutComplete", layoutCompleteHandler);
 
           if (!isOverflowScroll) {
             expect(innerHeight(this.inst._renderer.container)).to.be.equal(isAppend ? 75 : 100);
@@ -991,8 +1002,8 @@ describe("InfiniteGrid Test", function () {
         ].forEach(v => {
           // Then
           this.inst.setLayout(v);
-          expect(this.inst._layout._layout.options.horizontal).to.be.equal(this.inst.options.horizontal);
-          expect(this.inst._layout._layout instanceof v).to.be.true;
+          expect(this.inst._manager._layout.options.horizontal).to.be.equal(this.inst.options.horizontal);
+          expect(this.inst._manager._layout instanceof v).to.be.true;
         });
       });
     });

@@ -152,7 +152,7 @@ class InfiniteGrid extends Component {
 	 * infinitegrid.append(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
 	 */
 	append(elements, groupKey) {
-		this._layout && this._insert(elements, APPEND, groupKey);
+		this._manager && this._insert(elements, APPEND, groupKey);
 		return this;
 	}
 	/**
@@ -169,7 +169,7 @@ class InfiniteGrid extends Component {
 	 * infinitegrid.prepend(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
 	 */
 	prepend(elements, groupKey) {
-		this._layout && this._insert(elements, PREPEND, groupKey);
+		this._manager && this._insert(elements, PREPEND, groupKey);
 		return this;
 	}
 	/**
@@ -212,20 +212,20 @@ class InfiniteGrid extends Component {
 	setLayout(LayoutKlass, options = {}) {
 		const {isEqualSize, isConstantSize, attributePrefix, horizontal} = this.options;
 
-		if (!this._layout) {
-			this._layout = new LayoutMananger(this._items, this._renderer, {
+		if (!this._manager) {
+			this._manager = new LayoutMananger(this._items, this._renderer, {
 				attributePrefix,
 				isEqualSize,
 				isConstantSize,
 			});
 		}
 		if (typeof LayoutKlass === "function") {
-			this._layout.setLayout(new LayoutKlass(Object.assign(options, {
+			this._manager.setLayout(new LayoutKlass(Object.assign(options, {
 				horizontal,
 			})));
 		} else {
 			LayoutKlass.options.horizontal = horizontal;
-			this._layout.setLayout(LayoutKlass);
+			this._manager.setLayout(LayoutKlass);
 		}
 		this._renderer.resize();
 		this._setSize(this._renderer.getViewportSize());
@@ -233,7 +233,7 @@ class InfiniteGrid extends Component {
 	}
 	_setSize(size) {
 		this._infinite.setSize(this._renderer.getViewSize());
-		this._layout.setSize(size);
+		this._manager.setSize(size);
 	}
 	/**
 	 * Returns the layouted items.
@@ -280,7 +280,7 @@ class InfiniteGrid extends Component {
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	layout(isRelayout = true) {
-		if (!this._layout) {
+		if (!this._manager) {
 			return this;
 		}
 		const renderer = this._renderer;
@@ -307,7 +307,7 @@ class InfiniteGrid extends Component {
 			itemManager.get(startCursor, endCursor);
 
 		// LayoutManger interface
-		this._layout.layout(isRelayout, data, isResize ? items : []);
+		this._manager.layout(isRelayout, data, isResize ? items : []);
 		if (isLayoutAll) {
 			this._fit();
 		} else if (isRelayout && isResize) {
@@ -752,7 +752,7 @@ ig.on("imageError", e => {
 
 		DOMRenderer.createElements(items);
 		this._renderer[method](items);
-		this._layout[method]({
+		this._manager[method]({
 			groups,
 			items: newItems,
 			isAppend,
@@ -944,7 +944,7 @@ ig.on("imageError", e => {
 	destroy() {
 		this._infinite.clear();
 		this._watcher.destroy();
-		this._layout.destroy();
+		this._manager.destroy();
 		this._reset();
 		this._items.clear();
 		this._renderer.destroy();
