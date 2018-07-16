@@ -7,7 +7,7 @@ import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
 import { getItems, insert, wait, waitInsert, waitEvent } from "./helper/TestHelper";
 import { APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER, IDLE, PROCESSING } from "../../src/consts";
-import { innerHeight } from "../../src/utils";
+import { innerHeight, innerWidth } from "../../src/utils";
 import { expectConnectGroupsOutline } from "./helper/common";
 
 /* eslint-disable */
@@ -694,6 +694,137 @@ describe("InfiniteGrid Test", function () {
               done();
             }, 100);
           }, ITEMCOUNT, RETRY);
+        });
+      });
+    });
+  });
+  describe("isConstantSize option Test", function () {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = "<div id='infinite'></div>";
+      this.inst = new InfiniteGrid("#infinite", {
+        isConstantSize: true,
+      });
+      this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it(`should check isConstantSize option`, async () => {
+      // Given
+      await waitInsert(this.inst, true, 5, 4);
+      const datas = this.inst._items._data;
+
+
+      // When
+      datas.forEach(({ items }) => {
+        items.forEach(({ el }) => {
+          el.style.width = "10%";
+        });
+      });
+      this.inst._renderer._size.viewport = 0;
+      this.inst.layout();
+
+      // Then
+      datas.forEach(({ items }) => {
+        items.forEach(({ size, orgSize }) => {
+          expect(size).to.be.deep.equals(orgSize);
+        });
+      });
+      expect(datas[0].outlines.start.every(p => p === datas[0].outlines.start[0])).to.be.true;
+    });
+    it(`should check isConstantSize option in cursor`, async () => {
+      // Given
+      this.inst.layout(true);
+      await waitInsert(this.inst, true, 5, 4);
+
+      // When
+      const datas = this.inst._items._data;
+      const rects = datas.map(data => data.items.map(item => item.rect.top));
+      const waitLayout = waitEvent(this.inst, "layoutComplete");
+      this.inst._infinite.setCursor("start", 1);
+      this.inst._renderer._size.viewport = 0;
+      this.inst._watcher._onResize();
+      await waitLayout;
+
+      const rects2 = datas.map(data => data.items.map(item => item.rect.top));
+
+      // Then
+      if (!DEFENSE_BROWSER) {
+        expect(rects).to.be.deep.equals(rects2.map(data => data.map(top => top - rects2[0][0])));
+      }
+      expect(datas[0].outlines.start.every(p => p === datas[0].outlines.start[0])).to.be.true;
+    });
+    it(`should check resize width and isConstantSize option in cursor`, async () => {
+      // Given
+      this.inst.layout(true);
+      await waitInsert(this.inst, true, 5, 4);
+
+      // When
+      const datas = this.inst._items._data;
+      const size = datas.map(data => data.items.map(item => Object.assign(item.size)));
+      const waitLayout = waitEvent(this.inst, "layoutComplete");
+      const container = this.el.querySelector("#infinite");
+      const width = innerWidth(container);
+      container.style.width = `${width * 2}px`;
+      datas[0].outlines.start = [0];
+      this.inst._renderer._size.viewport = width * 2;
+      this.inst._manager.setSize(width * 2);
+      this.inst.layout(true);
+
+      await waitLayout;
+      const size2 = datas.map(data => data.items.map(item => Object.assign(item.size)));
+
+      // Then
+      expect(size).to.be.deep.equals(size2);
+      expect(datas[0].outlines.start.length).to.be.ok;
+      expect(isNaN(datas[0].outlines.start[0])).to.be.false;
+      expect(isFinite(datas[0].outlines.start[0])).to.be.true;
+      expect(datas[0].outlines.start.every(p => p === datas[0].outlines.start[0])).to.be.true;
+    });
+    it(`should check isEqualSize and isConstantSize option`, async () => {
+      // Given
+      this.inst.options.isEqualSize = true;
+      this.inst._renderer.options.isEqualSize = true;
+      this.inst._manager.options.isEqualSize = true;
+      // When
+      await waitInsert(this.inst, true, 5, 4);
+      const datas = this.inst._items._data;
+
+      // Then
+      const standardSize = datas[0].items[0].size;
+      datas.forEach(({ items }) => {
+        items.forEach(({ size }) => {
+          expect(size).to.deep.equals(standardSize);
+        });
+      })
+    });
+    it(`should check resize and isEqualSize and isConstantSize option`, async () => {
+      // Given
+      this.inst.options.isEqualSize = true;
+      this.inst._renderer.options.isEqualSize = true;
+      this.inst._manager.options.isEqualSize = true;
+      await waitInsert(this.inst, true, 5, 4);
+
+      // When
+      const datas = this.inst._items._data;
+      const standardSize = Object.assign(datas[0].items[0].size);
+      const waitLayout = waitEvent(this.inst, "layoutComplete");
+
+      this.inst._infinite.setCursor("start", 1);
+      this.inst._renderer._size.viewport = 0;
+      this.inst._watcher._onResize();
+
+      await waitLayout;
+
+      // Then
+      datas.forEach(({ items }) => {
+        items.forEach(({ size }) => {
+          expect(size).to.deep.equals(standardSize);
         });
       });
     });

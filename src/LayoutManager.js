@@ -184,6 +184,7 @@ export default class LayoutMananger {
 		if (!groups.length) {
 			return;
 		}
+		const checkGroups = isAppend ? groups : groups.reverse();
 		const replaceTarget = [];
 		const removeTarget = [];
 		const elements = items.map(item => item.el);
@@ -197,7 +198,7 @@ export default class LayoutMananger {
 				if (!this._items) {
 					return;
 				}
-				this._complete(groups, items, isAppend, isUpdate, complete);
+				this._complete(checkGroups, items, isAppend, isUpdate, complete);
 			},
 			error: ({target, itemIndex}) => {
 				if (!this._items) {

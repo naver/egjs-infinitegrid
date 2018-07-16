@@ -90,6 +90,7 @@ class InfiniteGrid extends Component {
 	 * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향)</ko>
 	 * @param {Boolean} [options.useFit=true] The useFit option scrolls upwards so that no space is visible until an item is added <ko>위로 스크롤할 시 아이템을 추가하는 동안 보이는 빈 공간을 안보이게 한다.</ko>
 	 * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
+	 * @param {Boolean} [options.isConstantSize=false] Indicates whether sizes of all card elements does not change, the performance of layout arrangement can be improved. <ko>모든 카드 엘리먼트의 크기가 불변일 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
 	 * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
 	 * @param {String} [options.attributePrefix="data-"] The prefix to use element's data attribute.<ko>엘리먼트의 데이타 속성에 사용할 접두사.</ko>
 	 */
@@ -100,6 +101,7 @@ class InfiniteGrid extends Component {
 			isOverflowScroll: false,
 			threshold: 100,
 			isEqualSize: false,
+			isConstantSize: false,
 			useRecycle: true,
 			horizontal: false,
 			useFit: true,
@@ -110,11 +112,19 @@ class InfiniteGrid extends Component {
 		this._reset();
 		this._loadingBar = {};
 
-		const {isOverflowScroll, isEqualSize, horizontal, threshold, useRecycle} = this.options;
+		const {
+			isOverflowScroll,
+			isEqualSize,
+			isConstantSize,
+			horizontal,
+			threshold,
+			useRecycle,
+		} = this.options;
 
 		this._items = new ItemManager();
 		this._renderer = new DOMRenderer(element, {
 			isEqualSize,
+			isConstantSize,
 			horizontal,
 			container: isOverflowScroll,
 		});
@@ -314,6 +324,7 @@ class InfiniteGrid extends Component {
 			itemManager.clearOutlines(startCursor, endCursor);
 		}
 		DOMRenderer.renderItems(items);
+		isRelayout && this._watcher.setScrollPos();
 		this._onLayoutComplete({
 			items,
 			isAppend: APPEND,
@@ -322,8 +333,6 @@ class InfiniteGrid extends Component {
 			useRecycle: false,
 			isLayout: true,
 		});
-		isRelayout && this._watcher.setScrollPos();
-
 		return this;
 	}
 	/**
@@ -728,7 +737,7 @@ ig.on("imageError", e => {
 
 		this._postLayout({
 			fromCache,
-			groups: isAppend ? cache : cache.reverse(),
+			groups: cache,
 			items,
 			newItems,
 			isAppend,

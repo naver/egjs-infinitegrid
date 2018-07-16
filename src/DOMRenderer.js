@@ -16,7 +16,12 @@ import {
 	getStyles,
 } from "./utils";
 
-
+function getSize(el) {
+	return {
+		width: outerWidth(el),
+		height: outerHeight(el),
+	};
+}
 function createContainer(element) {
 	const container = document.createElement("div");
 
@@ -88,6 +93,7 @@ export default class DOMRenderer {
 	constructor(element, options) {
 		Object.assign(this.options = {
 			isEqualSize: false,
+			isConstantSize: false,
 			horizontal: false,
 			container: false,
 		}, options);
@@ -111,23 +117,21 @@ export default class DOMRenderer {
 		Object.assign(this._size, status._size);
 	}
 	updateSize(items) {
+		const {isEqualSize, isConstantSize} = this.options;
+		const size = this._size;
+
 		return items.map(item => {
-			if (item.el) {
-				if (this.options.isEqualSize) {
-					this._size.item = this._size.item || {
-						width: outerWidth(item.el),
-						height: outerHeight(item.el),
-					};
-					item.size = Object.assign({}, this._size.item);
-				} else {
-					item.size = {
-						width: outerWidth(item.el),
-						height: outerHeight(item.el),
-					};
-				}
-				if (!item.orgSize) {
-					item.orgSize = Object.assign({}, item.size);
-				}
+			if (!item.el) {
+				return item;
+			}
+			if (isEqualSize && !size.item) {
+				size.item = getSize(item.el);
+			}
+			item.size = (isEqualSize && Object.assign(size.item)) ||
+						(isConstantSize && item.orgSize && Object.assign(item.orgSize)) ||
+						getSize(item.el);
+			if (!item.orgSize) {
+				item.orgSize = Object.assign({}, item.size);
 			}
 			return item;
 		});
