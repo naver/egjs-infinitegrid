@@ -716,10 +716,11 @@ describe("InfiniteGrid Test", function () {
     });
     it(`should check isConstantSize option`, async () => {
       // Given
-      // When
       await waitInsert(this.inst, true, 5, 4);
       const datas = this.inst._items._data;
 
+
+      // When
       datas.forEach(({ items }) => {
         items.forEach(({ el }) => {
           el.style.width = "10%";
@@ -728,6 +729,7 @@ describe("InfiniteGrid Test", function () {
       this.inst._renderer._size.viewport = 0;
       this.inst.layout();
 
+      // Then
       datas.forEach(({ items }) => {
         items.forEach(({ size, orgSize }) => {
           expect(size).to.be.deep.equals(orgSize);
@@ -736,9 +738,11 @@ describe("InfiniteGrid Test", function () {
       expect(datas[0].outlines.start.every(p => p === datas[0].outlines.start[0])).to.be.true;
     });
     it(`should check isConstantSize option in cursor`, async () => {
+      // Given
       this.inst.layout(true);
       await waitInsert(this.inst, true, 5, 4);
 
+      // When
       const datas = this.inst._items._data;
       const rects = datas.map(data => data.items.map(item => item.rect.top));
       const waitLayout = waitEvent(this.inst, "layoutComplete");
@@ -749,15 +753,18 @@ describe("InfiniteGrid Test", function () {
 
       const rects2 = datas.map(data => data.items.map(item => item.rect.top));
 
+      // Then
       if (!DEFENSE_BROWSER) {
         expect(rects).to.be.deep.equals(rects2.map(data => data.map(top => top - rects2[0][0])));
       }
       expect(datas[0].outlines.start.every(p => p === datas[0].outlines.start[0])).to.be.true;
     });
     it(`should check resize width and isConstantSize option in cursor`, async () => {
+      // Given
       this.inst.layout(true);
       await waitInsert(this.inst, true, 5, 4);
 
+      // When
       const datas = this.inst._items._data;
       const size = datas.map(data => data.items.map(item => Object.assign(item.size)));
       const waitLayout = waitEvent(this.inst, "layoutComplete");
@@ -772,6 +779,7 @@ describe("InfiniteGrid Test", function () {
       await waitLayout;
       const size2 = datas.map(data => data.items.map(item => Object.assign(item.size)));
 
+      // Then
       expect(size).to.be.deep.equals(size2);
       expect(datas[0].outlines.start.length).to.be.ok;
       expect(isNaN(datas[0].outlines.start[0])).to.be.false;
@@ -787,6 +795,7 @@ describe("InfiniteGrid Test", function () {
       await waitInsert(this.inst, true, 5, 4);
       const datas = this.inst._items._data;
 
+      // Then
       const standardSize = datas[0].items[0].size;
       datas.forEach(({ items }) => {
         items.forEach(({ size }) => {
@@ -799,8 +808,9 @@ describe("InfiniteGrid Test", function () {
       this.inst.options.isEqualSize = true;
       this.inst._renderer.options.isEqualSize = true;
       this.inst._manager.options.isEqualSize = true;
-      // When
       await waitInsert(this.inst, true, 5, 4);
+
+      // When
       const datas = this.inst._items._data;
       const standardSize = Object.assign(datas[0].items[0].size);
       const waitLayout = waitEvent(this.inst, "layoutComplete");
@@ -810,6 +820,8 @@ describe("InfiniteGrid Test", function () {
       this.inst._watcher._onResize();
 
       await waitLayout;
+
+      // Then
       datas.forEach(({ items }) => {
         items.forEach(({ size }) => {
           expect(size).to.deep.equals(standardSize);
