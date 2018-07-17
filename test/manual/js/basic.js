@@ -13,6 +13,8 @@ var _overflow = true;
 var _layout;
 var _horizontal;
 var _useFit = true;
+var _transitionDuration = 0;
+
 
 var grid = document.querySelector("#grid");
 $(grid).click(function (e) {
@@ -35,7 +37,9 @@ function createGrid() {
 		threshold: 50,
 		isOverflowScroll: _overflow,
 		useFit: _useFit,
+		transitionDuration: _transitionDuration,
 		// useRecycle: false,
+		
 	});
 	ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
 	ig.on({
@@ -201,5 +205,11 @@ function toggleFit(target) {
 	_useFit = !_useFit;
 	createGrid();
 	target.innerHTML = _useFit ? "disable useFit" : "enable useFit";
+	window[_layout]();
+}
+function toggleTransition(target) {
+	_transitionDuration = _transitionDuration ? 0 : 0.2;
+	createGrid();
+	target.innerHTML = _transitionDuration ? "disable transition" : "enable transition";
 	window[_layout]();
 }

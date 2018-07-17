@@ -7,6 +7,7 @@ import JustifiedLayout from "./layouts/JustifiedLayout";
 import ImageLoaded from "./ImageLoaded";
 import AutoSizer from "./AutoSizer";
 import Infinite from "./Infinite";
+import DOMRenderer from "./DOMRenderer";
 
 export {
 	Infinite,
@@ -17,5 +18,6 @@ export {
 	JustifiedLayout,
 	ImageLoaded,
 	AutoSizer,
+	DOMRenderer,
 };
 export default InfiniteGrid;

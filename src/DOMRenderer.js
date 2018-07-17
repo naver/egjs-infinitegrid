@@ -5,23 +5,21 @@ import {
 	MULTI,
 	GROUPKEY_ATT,
 	CONTAINER_CLASSNAME,
+	TRANSITION_NAME,
+	TRANSITION,
+	TRANSITION_END,
+	TRANSFORM,
 } from "./consts";
 import {window, document} from "./browser";
 import {
 	$,
 	innerHeight,
 	innerWidth,
-	outerWidth,
-	outerHeight,
+	getSize,
 	getStyles,
+	addOnceEvent,
 } from "./utils";
 
-function getSize(el) {
-	return {
-		width: outerWidth(el),
-		height: outerHeight(el),
-	};
-}
 function createContainer(element) {
 	const container = document.createElement("div");
 
@@ -38,24 +36,52 @@ function createContainer(element) {
 	element.appendChild(container);
 	return container;
 }
+function render(properteis, rect, styles) {
+	properteis.forEach(p => {
+		(p in rect) && (styles[p] = `${rect[p]}px`);
+	});
+}
+function setTransition(styles, transitionDuration, pos1, pos2) {
+	styles[`${TRANSITION}-property`] = transitionDuration ? `${TRANSFORM},width,height` : "";
+	styles[`${TRANSITION}-duration`] = transitionDuration ? `${transitionDuration}s` : "";
+	styles[`${TRANSITION}-delay`] = transitionDuration ? `0s` : "";
+	styles[TRANSFORM] = transitionDuration ? `translate(${pos1.left - pos2.left}px,${pos1.top - pos2.top}px)` : "";
+}
+
 export default class DOMRenderer {
-	static renderItem(item, styles) {
-		const el = item.el;
+	static renderItem(item, rect, transitionDuration) {
+		if (!item.el) {
+			return;
+		}
+		const {el, prevRect} = item;
+		const styles = el.style;
 
-		if (el) {
-			const elStyle = el.style;
+		// for debugging
+		el.setAttribute(GROUPKEY_ATT, item.groupKey);
+		styles.position = "absolute";
+		render(["width", "height"], rect, styles);
+		if (transitionDuration && TRANSITION && prevRect) {
+			setTransition(styles, transitionDuration, rect, prevRect);
+			if (el[TRANSITION_NAME]) {
+				return;
+			}
+			el[TRANSITION_NAME] = true;
+			addOnceEvent(el, TRANSITION_END, () => {
+				const itemRect = item.rect;
 
-			// for debugging
-			el.setAttribute(GROUPKEY_ATT, item.groupKey);
-			elStyle.position = "absolute";
-			["left", "top", "width", "height"].forEach(p => {
-				(p in styles) && (elStyle[p] = `${styles[p]}px`);
+				setTransition(styles);
+				render(["left", "top"], itemRect, styles);
+				item.prevRect = itemRect;
+				el[TRANSITION_NAME] = false;
 			});
+		} else {
+			render(["left", "top"], rect, styles);
+			item.prevRect = rect;
 		}
 	}
-	static renderItems(items) {
+	static renderItems(items, transitionDuration) {
 		items.forEach(item => {
-			DOMRenderer.renderItem(item, item.rect);
+			DOMRenderer.renderItem(item, item.rect, transitionDuration);
 		});
 	}
 	static removeItems(items) {
