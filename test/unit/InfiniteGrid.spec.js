@@ -867,7 +867,7 @@ describe("InfiniteGrid Test", function () {
       // When
       // no layout and no items
       inst.layout(true);  
-      const layout1 = this.inst._layout;
+      const layout1 = inst._layout;
       // layout and no items
       inst.setLayout(GridLayout);
       inst._infinite._status.startCursor = -1;
@@ -875,7 +875,7 @@ describe("InfiniteGrid Test", function () {
       inst.layout(true);
 
       // Then
-      expect(this.inst._layout).is.not.ok;
+      expect(layout1).is.not.ok;
       expect(inst.getItems().length).to.be.equals(0);
 
       inst.destroy();
@@ -918,16 +918,16 @@ describe("InfiniteGrid Test", function () {
       expect(rects).to.be.deep.equals(rects2.map(data => data.map(top => top - rects2[0][0])));
     });
     it(`should check resize and layout method with transition`, async() => {
+      // Given
       this.inst.options.transitionDuration = 0.1;
 
       await waitInsert(this.inst, true, 5,4);
 
-      
       const datas = this.inst._items._data;
       const rects = datas.map(data => data.items.map(item => Object.assign({}, item.rect)));
       const prevRects = datas.map(data => data.items.map(item => Object.assign({}, item.prevRect)));
       
-      
+      // When
       const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
       const container = this.el.querySelector("#infinite");
       const width = innerWidth(container);
@@ -938,10 +938,11 @@ describe("InfiniteGrid Test", function () {
       this.inst.layout(true);
 
       await waitLayoutComplete;
+
+      // Then
       const layoutCompleteRects =  this.inst._items._data.map(data => data.items.map(item => item.rect));
       const layoutCompletePrevRects =  this.inst._items._data.map(data => data.items.map(item => item.prevRect));
       
-
       expect(rects).to.be.deep.equals(prevRects);
       expect(layoutCompleteRects).to.be.not.deep.equals(layoutCompletePrevRects);
       expect(rects).to.be.deep.equals(layoutCompletePrevRects);

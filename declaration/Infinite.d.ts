@@ -11,7 +11,7 @@ export interface InfiniteOption {
 	threshold?: number;
 	append?: (event?: {cache: any[]}) => any;
 	prepend?: (event?: {cache: any[]}) => any;
-	recycle?: (event?: {cache: any[]}) => any;
+	recycle?: (event?: {start: number, end: number}) => any;
 }
 declare class Infinite {
 	constructor(itemManager: ItemManager, options?: InfiniteOption);
