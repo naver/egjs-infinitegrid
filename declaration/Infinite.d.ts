@@ -9,20 +9,18 @@ export interface InfiniteStatus {
 export interface InfiniteOption {
 	useRecycle?: boolean;
 	threshold?: number;
-	append?: (event?: {cache: any}) => any;
-	prepend?: (event?: {cache: any}) => any;
-	recycle?: (event?: {cache: any}) => any;
+	append?: (event?: {cache: any[]}) => any;
+	prepend?: (event?: {cache: any[]}) => any;
+	recycle?: (event?: {start: number, end: number}) => any;
 }
 declare class Infinite {
 	constructor(itemManager: ItemManager, options?: InfiniteOption);
 	setSize(size: number): this;
 	recycle(scrollPos: number, isForward: boolean): this;
-	scroll(scrollPos: number, isForward: boolean): this;
+	scroll(scrollPos: number): this;
 	setCursor(cursor: string, index: number): this;
 	updateCursor(cursor: string): this;
 	setData(item: object, isAppend?: boolean): this;
-	append(item: object): this;
-	prepend(item: object): this;
 	setStatus(status: InfiniteStatus);
 	getStatus(): InfiniteStatus;
 	getCursor(cursor: string): number;

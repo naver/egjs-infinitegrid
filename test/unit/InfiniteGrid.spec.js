@@ -858,7 +858,103 @@ describe("InfiniteGrid Test", function () {
         });
       })
     });
+    it(`should check no items`, () => {
+      // Given
+      const inst = new InfiniteGrid("#infinite", {
+        isEqualSize: true,
+      });
+
+      // When
+      // no layout and no items
+      inst.layout(true);  
+      const layout1 = inst._layout;
+      // layout and no items
+      inst.setLayout(GridLayout);
+      inst._infinite._status.startCursor = -1;
+      inst._infinite._status.endCursor = -1;
+      inst.layout(true);
+
+      // Then
+      expect(layout1).is.not.ok;
+      expect(inst.getItems().length).to.be.equals(0);
+
+      inst.destroy();
+    });
+    it(`should check layout method`, async() => {
+      // Given
+      this.inst.layout(true);
+      await waitInsert(this.inst, true, 5, 4);
+      
+      const datas = this.inst._items._data;
+      const rects = datas.map(data => data.items.map(item => Object.assign(item.rect)));
+      const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+
+      // When
+      this.inst.layout(true);
+      await waitLayoutComplete;
+
+      const rects2 = datas.map(data => data.items.map(item => Object.assign(item.rect)));
+
+      // Then
+      expect(rects).to.be.deep.equals(rects2);
+    });
+    it(`should check layout method in cursor`, async() => {
+      // Given
+      this.inst.layout(true);
+
+      await waitInsert(this.inst, true, 5, 4);
+
+      // When
+      const datas = this.inst._items._data;
+      const rects = datas.map(data => data.items.map(item => item.rect.top));
+      const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+
+      this.inst._infinite.setCursor("start", 1);
+      this.inst.layout(true);
+      await waitLayoutComplete;
+
+      // Then
+      const rects2 = datas.map(data => data.items.map(item =>item.rect.top));
+      expect(rects).to.be.deep.equals(rects2.map(data => data.map(top => top - rects2[0][0])));
+    });
+    it(`should check resize and layout method with transition`, async() => {
+      // Given
+      this.inst.options.transitionDuration = 0.1;
+
+      await waitInsert(this.inst, true, 5,4);
+
+      const datas = this.inst._items._data;
+      const rects = datas.map(data => data.items.map(item => Object.assign({}, item.rect)));
+      const prevRects = datas.map(data => data.items.map(item => Object.assign({}, item.prevRect)));
+      
+      // When
+      const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+      const container = this.el.querySelector("#infinite");
+      const width = innerWidth(container);
+      container.style.width = `${width * 3}px`;
+      datas[0].outlines.start = [];
+      this.inst._renderer._size.viewport = width * 3;
+      this.inst._manager.setSize(width * 3);
+      this.inst.layout(true);
+
+      await waitLayoutComplete;
+
+      // Then
+      const layoutCompleteRects =  this.inst._items._data.map(data => data.items.map(item => item.rect));
+      const layoutCompletePrevRects =  this.inst._items._data.map(data => data.items.map(item => item.prevRect));
+      
+      expect(rects).to.be.deep.equals(prevRects);
+      expect(layoutCompleteRects).to.be.not.deep.equals(layoutCompletePrevRects);
+      expect(rects).to.be.deep.equals(layoutCompletePrevRects);
+      expect(rects).to.be.not.deep.equals(layoutCompleteRects);
+
+      await wait(300);
+      const transitionEndPrevRects = this.inst._items._data.map(data => data.items.map(item => item.prevRect));
+
+      expect(transitionEndPrevRects).to.be.deep.equals(layoutCompleteRects);
+    });
   });
+ 
   describe(`resize Test`, function () {
     beforeEach(() => {
       document.body.style.marginBottom = "0px";

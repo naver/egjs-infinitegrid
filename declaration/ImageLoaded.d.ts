@@ -4,7 +4,7 @@ declare class ImageLoaded {
 		type: number,
 		length: number,
 		complete?: () => {},
-		error?: (parameter?: {target?: Element, itemIndex?:number}) => {},
+		error?: (params?: {target?: Element, itemIndex?:number}) => {},
 		end?: () => {},
 	});
 	static checkImageLoaded(el: Element);
@@ -12,7 +12,7 @@ declare class ImageLoaded {
 		prefix?: string,
 		type: number,
 		complete?: () => {},
-		error?: (parameter?: {target?: Element, itemIndex?:number}) => {},
+		error?: (params?: {target?: Element, itemIndex?:number}) => {},
 		end?: () => {}
 	});
 }

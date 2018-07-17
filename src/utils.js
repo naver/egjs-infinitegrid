@@ -90,6 +90,14 @@ export function removeEvent(element, type, handler) {
 		element[`on${type}`] = null;
 	}
 }
+export function addOnceEvent(element, type, handler, eventListenerOptions) {
+	const callback = e => {
+		removeEvent(element, type, callback);
+		handler(e);
+	};
+
+	addEvent(element, type, callback, eventListenerOptions);
+}
 export function scroll(el, horizontal = false) {
 	const prop = `scroll${horizontal ? "Left" : "Top"}`;
 
@@ -154,6 +162,12 @@ export function outerWidth(el) {
 }
 export function outerHeight(el) {
 	return _getSize(el, "Height", true);
+}
+export function getSize(el) {
+	return {
+		width: outerWidth(el),
+		height: outerHeight(el),
+	};
 }
 export const STYLE = {
 	vertical: {
