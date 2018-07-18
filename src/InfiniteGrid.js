@@ -373,11 +373,10 @@ class InfiniteGrid extends Component {
 	 * @ko 카드의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
 	 * @return {Object} State object of the eg.InfiniteGrid module<ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
 	 */
-	getStatus() {
+	getStatus(startKey, endKey) {
 		return {
-			options: Object.assign({}, this.options),
 			_status: Object.assign({}, this._status),
-			_items: this._items.getStatus(),
+			_items: this._items.getStatus(startKey, endKey),
 			_renderer: this._renderer.getStatus(),
 			_watcher: this._watcher.getStatus(),
 			_infinite: this._infinite.getStatus(),
@@ -394,23 +393,56 @@ class InfiniteGrid extends Component {
 		if (!status) {
 			return this;
 		}
-		const {options, _status, _renderer, _items, _watcher, _infinite} = status;
+		const {_status, _renderer, _items, _watcher, _infinite} = status;
 
 		if (!_status ||
 			!_renderer || !_items || !_watcher || !_infinite) {
 			return this;
 		}
-		this._watcher.detachEvent();
-		Object.assign(this.options, options);
-		Object.assign(this._status, _status);
+		const items = this._items;
+		const renderer = this._renderer;
+		const watcher = this._watcher;
+		const infinite = this._infinite;
 
+		watcher.detachEvent();
+		Object.assign(this._status, _status);
 		this._status.processingStatus = IDLE;
-		this._items.setStatus(_items);
-		this._renderer.setStatus(_renderer);
-		this._infinite.setStatus(_infinite);
-		this._renderer.createAndInsert(this.getItems());
-		this._watcher.setStatus(_watcher, applyScrollPos);
-		this._watcher.attachEvent();
+		items.setStatus(_items);
+		renderer.setStatus(_renderer);
+		infinite.setStatus(_infinite);
+
+		const visibleItems = this.getItems();
+
+		renderer.createAndInsert(visibleItems);
+
+		const isReLayout = renderer.isNeededResize();
+
+		watcher.setStatus(_watcher, applyScrollPos);
+		watcher.attachEvent();
+
+		const {isConstantSize, isEqualSize} = this.options;
+
+		if (isReLayout) {
+			renderer.resize();
+			this._setSize(renderer.getViewportSize());
+
+			if (isConstantSize) {
+				this.layout(true);
+			} else {
+				this._items.clearOutlines();
+				this._process(PROCESSING);
+				this._postLayout({
+					fromCache: true,
+					groups: isEqualSize ? items.get() : infinite.getVisibleData(),
+					items: visibleItems,
+					newItems: visibleItems,
+					isAppend: true,
+					isTrusted: false,
+				});
+			}
+		} else {
+			this.layout(false);
+		}
 		return this;
 	}
 	/**

@@ -31,9 +31,16 @@ export default class ItemManager {
 	constructor() {
 		this.clear();
 	}
-	getStatus() {
+	getStatus(startKey, endKey) {
+		const datas = this._data;
+		let startIndex = this.indexOf(startKey);
+		let endIndex = this.indexOf(endKey) + 1;
+
+		~startIndex && (startIndex = 0);
+		!endIndex && (endIndex = datas.length);
+
 		return {
-			_data: this._data.map(data => {
+			_data: datas.slice(startIndex, endIndex).map(data => {
 				const items = data.items.map(item => {
 					const item2 = Object.assign({}, item);
 
