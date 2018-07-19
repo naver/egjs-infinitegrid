@@ -40,7 +40,7 @@ module.exports = function(config) {
     customLaunchers: {
       CustomChromeHeadless: {
         base: 'ChromeHeadless',
-        flags: ['--window-size=400,300', '--no-sandbox', '--disable-setuid-sandbox']
+        flags: ['--window-size=600,300', '--no-sandbox', '--disable-setuid-sandbox']
       }
     },
 

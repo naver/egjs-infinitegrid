@@ -315,6 +315,9 @@ class InfiniteGrid extends Component {
 			this._insert(toArray(renderer.container.children), true);
 			return this;
 		}
+		if (!items.length) {
+			return this;
+		}
 		// layout datas
 		const startCursor = infinite.getCursor("start");
 		const endCursor = infinite.getCursor("end");
@@ -379,7 +382,7 @@ class InfiniteGrid extends Component {
 			_items: this._items.getStatus(startKey, endKey),
 			_renderer: this._renderer.getStatus(),
 			_watcher: this._watcher.getStatus(),
-			_infinite: this._infinite.getStatus(),
+			_infinite: this._infinite.getStatus(startKey, endKey),
 		};
 	}
 	/**
@@ -412,6 +415,7 @@ class InfiniteGrid extends Component {
 		infinite.setStatus(_infinite);
 
 		const visibleItems = this.getItems();
+		const length = visibleItems.length;
 
 		renderer.createAndInsert(visibleItems);
 
@@ -422,7 +426,9 @@ class InfiniteGrid extends Component {
 
 		const {isConstantSize, isEqualSize} = this.options;
 
-		if (isReLayout) {
+		if (!length) {
+			this._requestAppend({cache: visibleItems.slice(0, 1)});
+		} else if (isReLayout) {
 			renderer.resize();
 			this._setSize(renderer.getViewportSize());
 
@@ -523,6 +529,7 @@ class InfiniteGrid extends Component {
 		const items = ItemManager.from(elements, this.options.itemSelector, {
 			isAppend,
 			groupKey: key,
+			outlines: {start: [], end: []},
 		});
 
 		if (!items.length) {

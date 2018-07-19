@@ -39,10 +39,7 @@ export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 		});
 		
 		if (idx <= retry) {
-			isAppend ? instance[method](getItems(count), idx++) : 
-				setTimeout(() => {
-					instance[method](getItems(count), idx++);
-				}, 10);
+			instance[method](getItems(count), idx++);
 		} else {
 			instance.off("layoutComplete");
 			// instance.callback.layoutComplete = oldHandler;

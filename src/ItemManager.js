@@ -10,6 +10,10 @@ export default class ItemManager {
 			el,
 			groupKey,
 			content: el.outerHTML,
+			rect: {
+				top: DUMMY_POSITION,
+				left: DUMMY_POSITION,
+			},
 		}));
 	}
 	static selectItems(elements, selector) {
@@ -33,11 +37,8 @@ export default class ItemManager {
 	}
 	getStatus(startKey, endKey) {
 		const datas = this._data;
-		let startIndex = this.indexOf(startKey);
-		let endIndex = this.indexOf(endKey) + 1;
-
-		~startIndex && (startIndex = 0);
-		!endIndex && (endIndex = datas.length);
+		const startIndex = Math.max(this.indexOf(startKey), 0);
+		const endIndex = this.indexOf(endKey) + 1 || datas.length;
 
 		return {
 			_data: datas.slice(startIndex, endIndex).map(data => {
