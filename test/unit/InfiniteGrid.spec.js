@@ -1123,13 +1123,13 @@ describe("InfiniteGrid Test", function () {
 
         // get scroll bar width
         var scrollDiv = document.createElement("div");
-        scrollDiv.style.cssText = "width: 100px; height: 100px; overflow: scroll; position: absolute; top: -999px";
+        scrollDiv.style.cssText = "width: 100px; height: 100px; overflow: scroll; position: absolute; top: -999px; border: 0;";
         document.body.appendChild(scrollDiv);
         this.scrollHeight = scrollDiv.offsetHeight - scrollDiv.clientHeight;
         document.body.removeChild(scrollDiv);
 
         this.el = sandbox();
-        this.el.innerHTML = "<div id='infinite' style='height: 500px'></div>";
+        this.el.innerHTML = "<div id='infinite' style='height: 500px; border: 0;'></div>";
         this.inst = new InfiniteGrid("#infinite", {
           useRecycle,
         });
