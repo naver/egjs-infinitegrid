@@ -1,5 +1,8 @@
 import Watcher from "../../src/Watcher";
 import { scrollTo, scroll } from "../../src/utils";
+import WatcherInjection from "inject-loader!../../src/Watcher";
+import { wait } from "./helper/TestHelper";
+
 /* eslint-disable */
 
 [true, false].forEach(horizontal => {
@@ -103,6 +106,46 @@ import { scrollTo, scroll } from "../../src/utils";
 				expect(this.watcher.getContainerOffset()).to.be.equals(2000.25);
 				done();
 			}, 100);
+		});
+		[true, false].forEach(IS_IOS => {
+			it(`should check scroll test(IS_IOS: ${IS_IOS})`, async () => {
+				// Given
+				this.view.style[horizontal ? "width" : "height"] = "4000.25px";
+				const Watcher2 = WatcherInjection({
+					"./consts": {
+						IS_IOS,
+					},
+				});
+				//scrollTo(window, horizontal ? 545 : 0, horizontal ? 0 : 545);
+
+				const spy = sinon.spy();
+				scrollTo(window, 0, 0);
+				this.watcher = new Watcher2(window, {
+					container: this.view,
+					horizontal,
+					check: spy
+				});
+
+				const issue1 = this.watcher._scrollIssue;
+				
+				// When
+				this.watcher._prevPos = -1;
+				window.dispatchEvent(new Event("scroll"));
+
+				const issue2 = this.watcher._scrollIssue;
+
+				scrollTo(window, horizontal ? 545 : 0, horizontal ? 0 : 545);
+				await wait(500);
+
+				const issue3 = this.watcher._scrollIssue;
+				// Then
+
+
+				expect(spy.callCount).to.be.equals(IS_IOS ? 1: 2);
+				expect(issue1).to.be.equals(IS_IOS);
+				expect(issue2).to.be.equals(IS_IOS);
+				expect(issue3).to.be.false;
+			});
 		});
 	});
 });
