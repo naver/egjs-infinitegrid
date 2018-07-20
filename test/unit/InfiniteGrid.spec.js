@@ -751,6 +751,37 @@ describe("InfiniteGrid Test", function () {
           expect(this.inst._getLoadingStatus()).to.be.equal(0);
           expect(this.inst._status.loadingSize).to.be.equal(0);
         });
+        it (`should check startLoading / endLoading parameter method when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll})`, async() => {
+          await waitInsert(this.inst, true, 5, 4);
+
+          const waitAppend = waitEvent(this.inst, isAppend ? "append" : "prepend");
+          const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+
+          this.inst._watcher.scrollTo(this.inst._getEdgeValue("end") / 2);
+          await wait(100);
+          this.inst._watcher.scrollTo(isAppend ? this.inst._getEdgeValue("end") : 0);
+          const param1 = await waitAppend;
+
+          param1.startLoading();
+          const loading1 = this.inst._isLoading();
+          param1.endLoading();
+          const loading2 = this.inst._isLoading();
+          param1.startLoading();
+          const loading3 = this.inst._isLoading();
+
+          waitInsert(this.inst, true, 1, 1);
+          const param2 = await waitLayoutComplete;
+          const loading4 = this.inst._isLoading();
+
+          param2.endLoading();
+          const loading5 = this.inst._isLoading();
+
+          expect(loading1).to.be.true;
+          expect(loading2).to.be.false;
+          expect(loading3).to.be.true;
+          expect(loading4).to.be.true;
+          expect(loading5).to.be.false;
+        });
       });
     });
   });
