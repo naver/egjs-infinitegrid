@@ -68,6 +68,7 @@ class App extends Component {
 				onLayoutComplete={this.onLayoutComplete}
 				loading = {this.state.loading}
 				isConstantSize = {true}
+				transitionDuration = {0.2}
 				// useFit = {false}
 				ref = {e => {window.e = e;}}
 			>

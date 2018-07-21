@@ -24,13 +24,6 @@ function newItem(groupKey, key, itemIndex) {
 function makeKey(component, groupKey, itemIndex) {
 	return component.key || `__egjs_infinitegrid_${groupKey}_${itemIndex}`;
 }
-function _updateSize(items) {
-	// DOMRenderer temporary code
-	items.forEach(item => {
-		item.size.width = parseInt(item.size.width, 10);
-		item.size.height = parseInt(item.size.height, 10);
-	});
-}
 export default class InfiniteGrid extends Component {
 	static propTypes = {
 		tag: PropTypes.string,
@@ -52,6 +45,7 @@ export default class InfiniteGrid extends Component {
 		onImageError: PropTypes.func,
 		onChange: PropTypes.func,
 		containerTag: PropTypes.string,
+		transitionDuration: PropTypes.number,
 	};
 	static defaultProps = {
 		tag: "div",
@@ -61,6 +55,7 @@ export default class InfiniteGrid extends Component {
 		threshold: 100,
 		isOverflowScroll: false,
 		containerTag: "div",
+		transitionDuration: 0,
 		isEqualSize: false,
 		useRecycle: true,
 		useFit: true,
@@ -537,6 +532,7 @@ export default class InfiniteGrid extends Component {
 		const infinite = this._infinite;
 		const isResize = renderer.resize();
 		const items = this._getVisibleItems();
+		const transitionDuration = this.props.transitionDuration;
 		const {isEqualSize, isConstantSize} = renderer.options;
 		const isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
 
@@ -566,7 +562,7 @@ export default class InfiniteGrid extends Component {
 		} else if (isRelayout && isResize) {
 			this._items.clearOutlines(startCursor, endCursor);
 		}
-		DOMRenderer.renderItems(items);
+		DOMRenderer.renderItems(items, transitionDuration);
 		isRelayout && this._watcher.setScrollPos();
 		this._infinite.scroll(this._watcher.getScrollPos());
 		this._postLayoutComplete({
@@ -844,7 +840,7 @@ export default class InfiniteGrid extends Component {
 				DOMRenderer.renderItems(items);
 			}
 		} else {
-			DOMRenderer.renderItems(items);
+			!isLayout && DOMRenderer.renderItems(items);
 			this._setContainerSize();
 		}
 		if (useRecycle) {
