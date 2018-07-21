@@ -1,7 +1,7 @@
 import React, {Component, Children} from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import {GridLayout, ImageLoaded, DOMRenderer, ItemManager, Infinite, Watcher} from "@egjs/infinitegrid";
+import {GridLayout, ImageLoaded, DOMRenderer, ItemManager, Infinite, Watcher, LayoutManager} from "@egjs/infinitegrid";
 import {DONE, APPEND, PREPEND, PROCESS, DUMMY_POSITION, LOADING_APPEND, LOADING_PREPEND} from "./consts";
 import ItemWrapper from "./ItemWrapper";
 import LoadingBar from "./LoadingBar";
@@ -51,6 +51,7 @@ export default class InfiniteGrid extends Component {
 		onLayoutComplete: PropTypes.func,
 		onImageError: PropTypes.func,
 		onChange: PropTypes.func,
+		containerTag: PropTypes.string,
 	};
 	static defaultProps = {
 		tag: "div",
@@ -59,6 +60,7 @@ export default class InfiniteGrid extends Component {
 		margin: 0,
 		threshold: 100,
 		isOverflowScroll: false,
+		containerTag: "div",
 		isEqualSize: false,
 		useRecycle: true,
 		useFit: true,
@@ -168,7 +170,7 @@ export default class InfiniteGrid extends Component {
 			} else {
 				const scrollPos = this._watcher.getScrollPos();
 
-				this._scroll(scrollPos);
+				this._infinite.scroll(scrollPos);
 			}
 		}
 	}
@@ -592,7 +594,7 @@ export default class InfiniteGrid extends Component {
 		}
 		DOMRenderer.renderItems(items);
 		isRelayout && this._watcher.setScrollPos();
-		this._scroll(this._watcher.getScrollPos());
+		this._infinite.scroll(this._watcher.getScrollPos());
 		this._postLayoutComplete({
 			items,
 			isAppend: APPEND,
@@ -819,75 +821,7 @@ export default class InfiniteGrid extends Component {
 	}
 	_onCheck({isForward, scrollPos, horizontal, orgScrollPos}) {
 		this.props.onChange({isForward, horizontal, scrollPos, orgScrollPos});
-		this._scroll(scrollPos);
-	}
-	// Infinite interface for isEqualSize or isConstantSize
-	_scroll(scrollPos) {
-		const startCursor = this._infinite.getCursor("start");
-		const endCursor = this._infinite.getCursor("end");
-
-		if (typeof scrollPos !== "number") {
-			return;
-		}
-		if (startCursor === -1 || endCursor === -1) {
-			return;
-		}
-		const items = this._items;
-
-		if (!items.size()) {
-			return;
-		}
-		const size = this._renderer.getViewSize();
-		const threshold = this.props.threshold;
-		const append = this._requestAppend;
-		const prepend = this._requestPrepend;
-		const datas = items.get();
-		const endScrollPos = Math.max(scrollPos, 0) + size;
-		const startItem = datas[startCursor];
-		const endItem = datas[endCursor];
-
-		if (!startItem || !endItem) {
-			return;
-		}
-		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
-		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
-		const visibles = datas.map((group, i) => {
-			const {start, end} = group.outlines;
-
-			if (!start.length || !end.length) {
-				if (i === startCursor - 1) {
-					if (scrollPos <= startEdgePos + threshold) {
-						return true;
-					}
-				} else if (i === endCursor + 1) {
-					if (endScrollPos >= endEdgePos - threshold) {
-						return true;
-					}
-				}
-				return false;
-			}
-			const startPos = Math.min(...start);
-			const endPos = Math.max(...end);
-
-			if (startPos - threshold <= endScrollPos && scrollPos <= endPos + threshold) {
-				return true;
-			}
-			return false;
-		});
-
-
-		const start = visibles.indexOf(true);
-		const end = visibles.lastIndexOf(true);
-
-		if (~start && start < startCursor) {
-			prepend({cache: datas.slice(start, Math.min(startCursor, end + 1))});
-		} else if (endCursor < end) {
-			append({cache: datas.slice(Math.max(start, endCursor + 1), end + 1)});
-		} else if (endScrollPos >= endEdgePos - threshold) {
-			append({cache: datas.slice(endCursor + 1, endCursor + 2)});
-		} else if (scrollPos <= startEdgePos + threshold) {
-			prepend({cache: datas.slice(startCursor - 1, startCursor)});
-		}
+		this._infinite.scroll(scrollPos);
 	}
 	_setSize(size) {
 		this._infinite.setSize(this._renderer.getViewSize());
@@ -1014,7 +948,7 @@ export default class InfiniteGrid extends Component {
 		if (groups.length) {
 			const scrollPos = this._watcher.getScrollPos();
 
-			this._scroll(scrollPos);
+			this._infinite.scroll(scrollPos);
 		} else {
 			this._requestAppend({});
 		}
