@@ -126,6 +126,17 @@ export default class InfiniteGrid extends Component {
 		}
 		return true;
 	}
+	renderContainer() {
+		const props = this.props;
+		const ContainerTag = props.containerTag;
+		const isOverflowScroll = props.isOverflowScroll;
+		const components = this._getVisibleComponents();
+
+		if (!isOverflowScroll) {
+			return components;
+		}
+		return <ContainerTag ref={element => this._mountContainer(element)}>{components}</ContainerTag>;
+	}
 	render() {
 		const attributes = {};
 		const layout = this._layout;
@@ -139,7 +150,7 @@ export default class InfiniteGrid extends Component {
 			attributes[name] = props[name];
 		}
 		return <Tag {...attributes} ref={element => this._mount(element)}>
-			{this._getVisibleComponents()}
+			{this.renderContainer()}
 		</Tag>;
 	}
 	componentDidUpdate(prevProps, prevState) {
@@ -179,6 +190,7 @@ export default class InfiniteGrid extends Component {
 	}
 	componentWillUnmount() {
 		this.clear();
+		this._viewer = null;
 		this._container = null;
 		this._watcher && this._watcher.destroy();
 		this._items && this._items.clear();
@@ -775,7 +787,7 @@ export default class InfiniteGrid extends Component {
 		isEqualSize && (elements = this._renderer._size.item ? [] : elements.slice(0, 1));
 		ImageLoaded.check(elements, {
 			complete: () => {
-				if (!this._container) {
+				if (!this._viewer) {
 					return;
 				}
 				this._renderer.updateSize(items);
@@ -953,11 +965,17 @@ export default class InfiniteGrid extends Component {
 			this._requestAppend({});
 		}
 	}
-	_mount(container) {
+	_mountContainer(container) {
 		if (!container || this._container) {
 			return;
 		}
 		this._container = container;
+	}
+	_mount(viewer) {
+		if (!viewer || this._viewer) {
+			return;
+		}
+		this._viewer = viewer;
 		const {
 			isOverflowScroll,
 			isEqualSize,
@@ -967,8 +985,8 @@ export default class InfiniteGrid extends Component {
 		} = this.props;
 
 		this._items = new ItemManager();
-		this._renderer = new DOMRenderer(container, {
-			isOverflowScroll,
+		this._renderer = new DOMRenderer(viewer, {
+			container: isOverflowScroll ? this._container : false,
 			isEqualSize,
 			isConstantSize,
 			horizontal,
@@ -990,6 +1008,7 @@ export default class InfiniteGrid extends Component {
 			prepend: param => this._requestPrepend(param),
 			recycle: param => this._recycle(param),
 		});
+
 		this._updateLayout();
 		this._setSize(this._renderer.getViewportSize());
 		this._updateGroups();
