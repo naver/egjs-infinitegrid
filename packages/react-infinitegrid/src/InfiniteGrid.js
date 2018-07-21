@@ -1,7 +1,7 @@
 import React, {Component, Children} from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import {GridLayout, ImageLoaded, DOMRenderer, ItemManager, Infinite, Watcher, LayoutManager} from "@egjs/infinitegrid";
+import {GridLayout, DOMRenderer, ItemManager, Infinite, Watcher, LayoutManager} from "@egjs/infinitegrid";
 import {DONE, APPEND, PREPEND, PROCESS, DUMMY_POSITION, LOADING_APPEND, LOADING_PREPEND} from "./consts";
 import ItemWrapper from "./ItemWrapper";
 import LoadingBar from "./LoadingBar";
@@ -195,6 +195,7 @@ export default class InfiniteGrid extends Component {
 		this._watcher && this._watcher.destroy();
 		this._items && this._items.clear();
 		this._renderer && this._renderer.destroy();
+		this._manager && this._manager.destroy();
 	}
 	getStatus(startKey = "", endKey = "") {
 		const state = Object.assign({}, this.state);
@@ -279,7 +280,7 @@ export default class InfiniteGrid extends Component {
 			if (this.props.isConstantSize) {
 				this.layout(true);
 			} else {
-				this._clearOutlines();
+				this._items.clearOutlines();
 				items.forEach(item => { item.mount = false; });
 				state.processing |= APPEND;
 				state.requestIndex = Math.max(0, state.startIndex);
@@ -521,45 +522,6 @@ export default class InfiniteGrid extends Component {
 			}
 		}
 	}
-	_relayout(isRelayout, groups, items) {
-		const renderer = this._renderer;
-		const {isConstantSize} = renderer.options;
-		const layoutGroups = groups.filter(group => {
-			const item = group.items[0];
-
-			return item.orgSize && item.rect.top > DUMMY_POSITION / 10;
-		});
-
-		if (!layoutGroups.length) {
-			return [];
-		}
-		let outline = layoutGroups[0].outlines.start;
-
-		if (isRelayout) {
-			outline = [outline.length ? Math.min(...outline) : 0];
-			if (!isConstantSize && items.length) {
-				renderer.updateSize(items);
-				_updateSize(items);
-			}
-		}
-		this._layout.layout(layoutGroups, outline);
-		return layoutGroups;
-	}
-	_clearOutlines(startCursor = -1, endCursor = -1) {
-		const datas = this._items.get();
-
-		datas.forEach((group, cursor) => {
-			if (startCursor <= cursor && cursor <= endCursor) {
-				return;
-			}
-			group.items.forEach(item => {
-				item.rect.top = DUMMY_POSITION;
-				item.rect.left = DUMMY_POSITION;
-			});
-			group.outlines.start = [];
-			group.outlines.end = [];
-		});
-	}
 	resize() {
 		this._watcher.resize();
 		if (this._renderer.isNeededResize()) {
@@ -592,7 +554,7 @@ export default class InfiniteGrid extends Component {
 			itemManager.get(startCursor, endCursor);
 
 		// LayoutManger interface
-		const layoutGroups = this._relayout(isRelayout, data, isResize ? items : []);
+		const layoutGroups = this._manager.layout(isRelayout, data, isResize ? items : []);
 
 		if (!layoutGroups.length) {
 			this.state.requestIndex = 0;
@@ -602,7 +564,7 @@ export default class InfiniteGrid extends Component {
 		if (isLayoutAll) {
 			this._fit();
 		} else if (isRelayout && isResize) {
-			this._clearOutlines(startCursor, endCursor);
+			this._items.clearOutlines(startCursor, endCursor);
 		}
 		DOMRenderer.renderItems(items);
 		isRelayout && this._watcher.setScrollPos();
@@ -785,35 +747,16 @@ export default class InfiniteGrid extends Component {
 		let elements = items.map(item => item.el);
 
 		isEqualSize && (elements = this._renderer._size.item ? [] : elements.slice(0, 1));
-		ImageLoaded.check(elements, {
+
+		this._manager[isAppend ? "append" : "prepend"]({
+			groups,
+			items,
+			isAppend,
+		}, {
 			complete: () => {
 				if (!this._viewer) {
 					return;
 				}
-				this._renderer.updateSize(items);
-				_updateSize(items);
-				const cursor = isAppend ? "end" : "start";
-				const prevGroup = state.groups[groups[0].index + (isAppend ? -1 : 1)];
-				let outline = prevGroup ? prevGroup.outlines[cursor] : [0];
-
-				groups.forEach(group => {
-					const groupOutline = group.outlines[isAppend ? "start" : "end"];
-					const isRelayout = isUpdate || !outline.length || (outline.length === groupOutline.length ?
-						!outline.every((v, index) => v === groupOutline[index]) : true);
-
-					if (!isRelayout) {
-						outline = group.outlines[isAppend ? "end" : "start"];
-						return;
-					}
-					const groupItems = group.items;
-					const itemInfos = this._layout[isAppend ? "append" : "prepend"](groupItems, outline);
-
-					itemInfos.items.forEach(item => {
-						Object.assign(groupItems[item.itemIndex], item);
-					});
-					group.outlines = itemInfos.outlines;
-					outline = itemInfos.outlines[isAppend ? "end" : "start"];
-				});
 				this._postLayoutComplete({
 					groups,
 					isAppend,
@@ -821,7 +764,7 @@ export default class InfiniteGrid extends Component {
 					fromCache: !items.length,
 				});
 			},
-			error: ({target, itemIndex}) => {
+			error: () => ({target, itemIndex}) => {
 				const item = items[itemIndex];
 				const element = item.el;
 				const group = this.state.groupKeys[item.groupKey];
@@ -1008,7 +951,12 @@ export default class InfiniteGrid extends Component {
 			prepend: param => this._requestPrepend(param),
 			recycle: param => this._recycle(param),
 		});
+		this._manager = new LayoutManager(this._items, this._renderer, {
+			isEqualSize,
+			isConstantSize,
+		});
 
+		this._manager.setLayout(this._layout);
 		this._updateLayout();
 		this._setSize(this._renderer.getViewportSize());
 		this._updateGroups();
