@@ -14,6 +14,7 @@ import AutoSizer from "./AutoSizer";
 import DOMRenderer from "./DOMRenderer";
 import Watcher from "./Watcher";
 import ItemManager from "./ItemManager";
+import LayoutManager from "./LayoutManager";
 
 InfiniteGrid.Infinite = Infinite;
 InfiniteGrid.GridLayout = GridLayout;
@@ -26,6 +27,6 @@ InfiniteGrid.AutoSizer = AutoSizer;
 InfiniteGrid.DOMRenderer = DOMRenderer;
 InfiniteGrid.Watcher = Watcher;
 InfiniteGrid.ItemManager = ItemManager;
-
+InfiniteGrid.LayoutManager = LayoutManager;
 
 module.exports = InfiniteGrid;

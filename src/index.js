@@ -14,7 +14,7 @@ import DOMRenderer from "./DOMRenderer";
 import Watcher from "./Watcher";
 import ItemManager from "./ItemManager";
 import Infinite from "./Infinite";
-import LayoutManger from "./LayoutManager";
+import LayoutManager from "./LayoutManager";
 
 export {
 	GridLayout,
@@ -28,6 +28,6 @@ export {
 	DOMRenderer,
 	Watcher,
 	ItemManager,
-	LayoutManger,
+	LayoutManager,
 };
 export default InfiniteGrid;
