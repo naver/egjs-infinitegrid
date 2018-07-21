@@ -436,7 +436,6 @@ class InfiniteGrid extends Component {
 				this.layout(true);
 			} else {
 				this._items.clearOutlines();
-				this._process(PROCESSING);
 				this._postLayout({
 					fromCache: true,
 					groups: isEqualSize ? items.get() : infinite.getVisibleData(),
