@@ -132,12 +132,16 @@ class Infinite {
 	setStatus(status) {
 		this._status = Object.assign(this._status, status);
 	}
-	getStatus() {
+	getStatus(startKey, endKey) {
 		const {startCursor, endCursor, size} = this._status;
+		const startIndex = Math.max(this._items.indexOf(startKey), 0);
+		const endIndex = (this._items.indexOf(endKey) + 1 || this._items.size()) - 1;
+		const start = Math.max(startCursor - startIndex, ~startCursor ? 0 : -1);
+		const end = Math.max(Math.min(endCursor - startIndex, endIndex - startIndex), start);
 
 		return {
-			startCursor,
-			endCursor,
+			startCursor: start,
+			endCursor: end,
 			size,
 		};
 	}

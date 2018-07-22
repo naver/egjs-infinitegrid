@@ -26,6 +26,7 @@ export default class Watcher {
 		this.reset();
 		this._containerOffset = 0;
 		this._view = view;
+		this._scrollIssue = IS_IOS;
 		this._onCheck = this._onCheck.bind(this);
 		this._onResize = this._onResize.bind(this);
 		this.attachEvent();
@@ -81,10 +82,11 @@ export default class Watcher {
 		this.setScrollPos(orgScrollPos);
 		const scrollPos = this.getScrollPos();
 
-		if (prevPos === null || (IS_IOS && orgScrollPos === 0) || prevPos === scrollPos) {
+		if (prevPos === null || (this._scrollIssue && orgScrollPos === 0) || prevPos === scrollPos) {
+			orgScrollPos && (this._scrollIssue = false);
 			return;
 		}
-
+		this._scrollIssue = false;
 		this.options.check({
 			isForward: prevPos < scrollPos,
 			scrollPos,
@@ -116,6 +118,7 @@ export default class Watcher {
 		}, 100);
 	}
 	detachEvent() {
+		removeEvent(this._view, "scroll", this._onCheck);
 		removeEvent(window, "resize", this._onResize);
 	}
 	destroy() {

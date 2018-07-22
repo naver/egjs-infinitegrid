@@ -36,8 +36,8 @@ function createContainer(element) {
 	element.appendChild(container);
 	return container;
 }
-function render(properteis, rect, styles) {
-	properteis.forEach(p => {
+function render(properties, rect, styles) {
+	properties.forEach(p => {
 		(p in rect) && (styles[p] = `${rect[p]}px`);
 	});
 }

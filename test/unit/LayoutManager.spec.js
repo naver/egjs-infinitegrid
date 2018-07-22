@@ -1,17 +1,17 @@
 
-import {ItemManager, LayoutManger, DOMRenderer, GridLayout} from "../../src/index";
+import {ItemManager, LayoutManager, DOMRenderer, GridLayout} from "../../src/index";
 import {$} from "../../src/utils";
 import {makeGroup, wait} from "./helper/TestHelper";
 /* eslint-disable */
 
-describe("LayoutManger Test", function () {
-	describe("should check append test with LayoutManger", function () {
+describe("LayoutManager Test", function () {
+	describe("should check append test with LayoutManager", function () {
 		beforeEach(() => {
 			this.el = sandbox();
 			this.el.innerHTML = "<div id='infinite' style='width: 400px;'></div>";
 			this.container = this.el.querySelector("#infinite");
 			this._items = new ItemManager();
-			this.inst = new LayoutManger(this._items, new DOMRenderer(this.container), {});
+			this.inst = new LayoutManager(this._items, new DOMRenderer(this.container), {});
 			this.inst.setLayout(new GridLayout());
 			this.inst.setSize(400);
 			

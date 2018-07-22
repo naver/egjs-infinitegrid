@@ -6,7 +6,7 @@ import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
 import { getItems, insert, wait, waitInsert, waitEvent } from "./helper/TestHelper";
-import { APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER, IDLE, PROCESSING } from "../../src/consts";
+import { APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER, IDLE, PROCESSING, DUMMY_POSITION } from "../../src/consts";
 import { innerHeight, innerWidth } from "../../src/utils";
 import { expectConnectGroupsOutline } from "./helper/common";
 
@@ -54,7 +54,7 @@ describe("InfiniteGrid Test", function () {
     describe(`initailization Test (onlayoutComplete)(isOverflowScroll: ${isOverflowScroll})`, function () {
       beforeEach(() => {
         this.el = sandbox();
-        this.el.innerHTML = "<div id='infinite'></div>";
+        this.el.innerHTML = "<div id='infinite' style='height: 500px'></div>";
         this.inst = new InfiniteGrid("#infinite", {
           isOverflowScroll,
           horizontal: true,
@@ -122,25 +122,130 @@ describe("InfiniteGrid Test", function () {
 
 
       });
-      it(`should check a initialization and getStatus, setStatus`, () => {
+      it(`should check a initialization and getStatus, setStatus`, async () => {
         // Given
-        const count = 10;
-        const items = getItems(count);
+        await waitInsert(this.inst, true, 10, 10);
 
         // When
-        this.inst.append(items);
         const status = this.inst.getStatus();
 
-        // Then
-        expect(status._status.processingStatus).to.be.equals(PROCESSING);
-
-        // When
         this.inst.setStatus(status);
-
         // Then
         expect(this.inst._status.processingStatus).to.be.equals(IDLE);
 
       });
+      it(`should check a initialization and getStatus, setStatus with complete data`, async () => {
+        // Given
+        await waitInsert(this.inst, true, 10, 10);
+
+        // When
+        const status = this.inst.getStatus();
+
+        this.inst.setStatus(status);
+
+        // Then
+        expect(this.inst._status.processingStatus).to.be.equals(IDLE);
+      });
+      it(`should check a initialization and getStatus, setStatus with resize`, async () => {
+        // Given
+        await waitInsert(this.inst, true, 10, 10);
+
+        // When
+        this.inst._infinite.setCursor("start", 1);
+
+        const status = this.inst.getStatus();
+        this.inst.clear();
+        status._renderer._size.viewport = 300;
+        
+        this.inst.setStatus(status);
+
+        // Then
+        expect(this.inst.isProcessing()).to.be.true;
+
+        await wait(300);
+        expect(this.inst.isProcessing()).to.be.false;
+
+        const outlines = this.inst._items._data[1].outlines.start;
+        outlines.forEach(outline => {
+          expect(outline).to.be.equals(outlines[0]);
+        });
+        
+
+      });
+      it(`should check getStatus(startCursor, endCursor)`, async () => {
+        // Given
+        await waitInsert(this.inst, true, 10, 10);
+
+        // When
+        // items[1], items[2]
+        const status = this.inst.getStatus(2, 3);
+        const status2 = this.inst.getStatus(11, 12);
+        const status3 = this.inst.getStatus(2);
+        const status4 = this.inst.getStatus(undefined, 8);
+
+        // Then
+        expect(this.inst._infinite.getCursor("start")).to.be.equals(0);
+        expect(this.inst._infinite.getCursor("end")).to.be.equals(9);
+
+        expect(status._items._data.length).to.be.equals(2);
+        expect(status._items._data[0].groupKey).to.be.equals(2);
+        expect(status._items._data[1].groupKey).to.be.equals(3);
+        expect(status._infinite.startCursor).to.be.equals(0);
+        expect(status._infinite.endCursor).to.be.equals(1);
+
+        expect(status2._items._data.length).to.be.equals(10);
+        expect(status2._infinite.startCursor).to.be.equals(0);
+        expect(status2._infinite.endCursor).to.be.equals(9);
+
+        expect(status3._items._data.length).to.be.equals(9);
+        expect(status3._items._data[0].groupKey).to.be.equals(2);
+        expect(status3._items._data[8].groupKey).to.be.equals(10);
+
+        expect(status4._items._data.length).to.be.equals(8);
+        expect(status4._items._data[0].groupKey).to.be.equals(1);
+        expect(status4._items._data[7].groupKey).to.be.equals(8);
+      });
+      it(`should check getStatus outside(startCursor, endCursor)`, async () => {
+        // Given
+        await waitInsert(this.inst, true, 10, 10);
+        this.inst._infinite.setCursor("start", 5); // groupKey = 6
+        this.inst._infinite.setCursor("end", 7); // groupKey = 8
+
+        // When
+        const status = this.inst.getStatus(6, 8);
+        const status2 = this.inst.getStatus(3, 7);
+        const status3 = this.inst.getStatus(3, 9);
+        const status4 = this.inst.getStatus(7, 9);
+
+        // Then
+        expect(this.inst._infinite.getCursor("start")).to.be.equals(5);
+        expect(this.inst._infinite.getCursor("end")).to.be.equals(7);
+
+        expect(status._items._data.length).to.be.equals(3);
+        expect(status._items._data[0].groupKey).to.be.equals(6);
+        expect(status._items._data[2].groupKey).to.be.equal(8);
+        expect(status._infinite.startCursor).to.be.equals(0);
+        expect(status._infinite.endCursor).to.be.equals(2);
+
+        expect(status2._items._data.length).to.be.equals(5);
+        expect(status2._items._data[0].groupKey).to.be.equals(3);
+        expect(status2._items._data[4].groupKey).to.be.equal(7);
+        expect(status2._infinite.startCursor).to.be.equals(3);
+        expect(status2._infinite.endCursor).to.be.equals(4);
+
+        expect(status3._items._data.length).to.be.equals(7);
+        expect(status3._items._data[0].groupKey).to.be.equals(3);
+        expect(status3._items._data[6].groupKey).to.be.equal(9);
+        expect(status3._infinite.startCursor).to.be.equals(3);
+        expect(status3._infinite.endCursor).to.be.equals(5);
+
+        expect(status4._items._data.length).to.be.equals(3);
+        expect(status4._items._data[0].groupKey).to.be.equals(7);
+        expect(status4._items._data[2].groupKey).to.be.equal(9);
+        expect(status4._infinite.startCursor).to.be.equals(0);
+        expect(status4._infinite.endCursor).to.be.equals(1);
+      });
+
       it(`should check a initialization (isOverflowScroll: ${isOverflowScroll})`, done => {
         // Given
         const count = 10;
@@ -646,6 +751,37 @@ describe("InfiniteGrid Test", function () {
           expect(this.inst._getLoadingStatus()).to.be.equal(0);
           expect(this.inst._status.loadingSize).to.be.equal(0);
         });
+        it (`should check startLoading / endLoading parameter method when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll})`, async() => {
+          await waitInsert(this.inst, true, 5, 4);
+
+          const waitAppend = waitEvent(this.inst, isAppend ? "append" : "prepend");
+          const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+
+          this.inst._watcher.scrollTo(this.inst._getEdgeValue("end") / 2);
+          await wait(100);
+          this.inst._watcher.scrollTo(isAppend ? this.inst._getEdgeValue("end") : 0);
+          const param1 = await waitAppend;
+
+          param1.startLoading();
+          const loading1 = this.inst._isLoading();
+          param1.endLoading();
+          const loading2 = this.inst._isLoading();
+          param1.startLoading();
+          const loading3 = this.inst._isLoading();
+
+          waitInsert(this.inst, true, 1, 1);
+          const param2 = await waitLayoutComplete;
+          const loading4 = this.inst._isLoading();
+
+          param2.endLoading();
+          const loading5 = this.inst._isLoading();
+
+          expect(loading1).to.be.true;
+          expect(loading2).to.be.false;
+          expect(loading3).to.be.true;
+          expect(loading4).to.be.true;
+          expect(loading5).to.be.false;
+        });
       });
     });
   });
@@ -1015,8 +1151,16 @@ describe("InfiniteGrid Test", function () {
         `);
         document.body.style.marginBottom = "0px";
         document.body.style.padding = "0px";
+
+        // get scroll bar width
+        var scrollDiv = document.createElement("div");
+        scrollDiv.style.cssText = "width: 100px; height: 100px; overflow: scroll; position: absolute; top: -999px; border: 0;";
+        document.body.appendChild(scrollDiv);
+        this.scrollHeight = scrollDiv.offsetHeight - scrollDiv.clientHeight;
+        document.body.removeChild(scrollDiv);
+
         this.el = sandbox();
-        this.el.innerHTML = "<div id='infinite' style='height: 500px'></div>";
+        this.el.innerHTML = "<div id='infinite' style='height: 500px; border: 0;'></div>";
         this.inst = new InfiniteGrid("#infinite", {
           useRecycle,
         });
@@ -1170,7 +1314,7 @@ describe("InfiniteGrid Test", function () {
         const viewSize = view.clientHeight;
         const size = this.inst._getEdgeValue("end");
         // Then
-        expect([moveTo, size - viewSize, end - viewSize]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
+        expect([moveTo, size - viewSize, end - viewSize, end - viewSize - this.scrollHeight]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
       });
       it(`should resize and moveTo in cursor end(isAppend = true)`, async () => {
         // Given
@@ -1197,7 +1341,7 @@ describe("InfiniteGrid Test", function () {
         const size = this.inst._getEdgeValue("end");
 
         // Then
-        expect([moveTo, size - viewSize, end - viewSize]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
+        expect([moveTo, size - viewSize, end - viewSize, end - viewSize - this.scrollHeight]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
       });
     });
   });

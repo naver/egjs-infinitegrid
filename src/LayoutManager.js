@@ -228,6 +228,10 @@ export default class LayoutMananger {
 
 			return item.orgSize && item.rect.top > DUMMY_POSITION / 10;
 		});
+
+		if (!layoutGroups.length) {
+			return [];
+		}
 		let outline = layoutGroups[0].outlines.start;
 
 		if (isRelayout) {
@@ -237,7 +241,7 @@ export default class LayoutMananger {
 			}
 		}
 		this._layout.layout(layoutGroups, outline);
-		return this;
+		return layoutGroups;
 	}
 	destroy() {
 		this._items = null;

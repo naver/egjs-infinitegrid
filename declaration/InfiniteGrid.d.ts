@@ -12,6 +12,8 @@ export interface InfiniteGridOption {
 	useRecycle?: boolean;
 	horizontal?: boolean;
 	useFit?: boolean;
+	isConstantSize?: boolean;
+	transitionDuration?: number;
 }
 
 export interface InfiniteGridStatus {
@@ -36,7 +38,7 @@ declare class InfiniteGrid extends Component {
 	clear(): this;
 	destroy();
 	getGroupKeys(includeCached?: boolean): (string|number)[];
-	getStatus(): InfiniteGridStatus;
+	getStatus(startKey?: any, endKey?: any): InfiniteGridStatus;
 	isProcessing(): boolean;
 	layout(isRelayout?: boolean): this;
 	remove(item: HTMLElement): (object|null);

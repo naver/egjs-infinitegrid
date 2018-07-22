@@ -7,7 +7,7 @@ export function getItems(count) {
 	const size = [100, 200, 300];
 
 	for (let i = 0; i < count; i++) {
-		items.push(`<li class="item" style="border:1px solid #333; margin:0px;padding:0;width:${size[i % 3]}px; height:${size[(i + 1) % 3]}px;"><div>test ${i}</div></li>`);
+		items.push(`<li class="item" style="box-sizing: border-box;border:1px solid #333; margin:0px;padding:0;width:${size[i % 3]}px; height:${size[(i + 1) % 3]}px;"><div>test ${i}</div></li>`);
 	}
 	return items;
 }
@@ -39,10 +39,7 @@ export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 		});
 		
 		if (idx <= retry) {
-			isAppend ? instance[method](getItems(count), idx++) : 
-				setTimeout(() => {
-					instance[method](getItems(count), idx++);
-				}, 10);
+			instance[method](getItems(count), idx++);
 		} else {
 			instance.off("layoutComplete");
 			// instance.callback.layoutComplete = oldHandler;
