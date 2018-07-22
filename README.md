@@ -23,6 +23,7 @@ eg.infiniteGrid benchmark: append item performance with [masonry](https://masonr
 
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
+- [InfiniteGrid Options](https://github.com/naver/egjs-infinitegrid/wiki/InfiniteGrid-Options)
 - [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
 - [Migrating from v2.0 to v3.0](https://github.com/naver/egjs-infinitegrid/wiki/Migrating-from-v2.0-to-v3.0)
 - Articles
