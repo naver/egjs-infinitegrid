@@ -16,6 +16,7 @@ export const RENDERED = 2;
 export const CHECK_ALL = 1;
 export const CHECK_ONLY_ERROR = 2;
 
+export const CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
 export const LAYOUT_ID = "__REACT_LAYOUT_DATA_ID__";
 export const DUMMY_POSITION = -999999;
 export const SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in window);

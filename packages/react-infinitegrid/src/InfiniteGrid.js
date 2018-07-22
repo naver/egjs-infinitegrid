@@ -2,7 +2,7 @@ import React, {Component, Children} from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import {GridLayout, DOMRenderer, ItemManager, Infinite, Watcher, LayoutManager} from "@egjs/infinitegrid";
-import {DONE, APPEND, PREPEND, PROCESS, DUMMY_POSITION, LOADING_APPEND, LOADING_PREPEND} from "./consts";
+import {DONE, APPEND, PREPEND, PROCESS, DUMMY_POSITION, LOADING_APPEND, LOADING_PREPEND, CONTAINER_CLASSNAME} from "./consts";
 import ItemWrapper from "./ItemWrapper";
 import LoadingBar from "./LoadingBar";
 
@@ -130,7 +130,11 @@ export default class InfiniteGrid extends Component {
 		if (!isOverflowScroll) {
 			return components;
 		}
-		return <ContainerTag ref={element => this._mountContainer(element)}>{components}</ContainerTag>;
+		return <ContainerTag
+			className={CONTAINER_CLASSNAME}
+			ref={element => this._mountContainer(element)}>
+			{components}
+		</ContainerTag>;
 	}
 	render() {
 		const attributes = {};
