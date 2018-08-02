@@ -231,7 +231,7 @@ pre code {
   font-weight: bold; 
 }
 .container {
-  max-width: 800px;
+  max-width: 900px;
 }
 .promo .intro {
   /* max-width: 680px; */
@@ -371,7 +371,7 @@ pre code {
   /* text-shadow: 1px 1px #8c532e; */
 }
 .docs-inner {
-  max-width: 800px;
+  max-width: 900px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
@@ -881,4 +881,21 @@ span.size {
 .scroll-view.appear {
   opacity: 1;
   transform: translateY(0px);
+}
+
+.tab-options table {
+  margin: 0px auto;
+  text-align: center;
+  width: 100%;
+}
+.tab-options table td, .tab-options table th {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+.tab-options table tr:nth-child(2n) {
+  background-color: #f5f5f5;
+}
+.tab-options table td img {
+  max-width: 100%;
 }

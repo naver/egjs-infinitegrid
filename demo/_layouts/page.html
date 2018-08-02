@@ -32,10 +32,10 @@
 {% include promo.html %}
 {% include nav.html %}
 <div class="contents">
-	<section id="demos" class="tab tab-home docs section demos scroll-view">
+	<section id="home" class="tab tab-home docs section demos scroll-view" data-tab="home">
 		{% capture demo %}{% include_relative demo.md %}{% endcapture %} {{ demo | markdownify }}
 	</section>
-	<section id="getting-started" class="tab tab-started docs section started scroll-view">
+	<section id="started" class="tab tab-started docs section started scroll-view" data-tab="started">
 		<div class="container">
 			<div class="docs-inner">
 				<h2 class="title">Getting Started</h2>
@@ -44,7 +44,7 @@
 			</div>
 		</div>
 	</section>
-	<section id="layouts" class="tab tab-layouts docs section layouts scroll-view">
+	<section id="layouts" class="tab tab-layouts docs section layouts scroll-view" data-tab="layouts">
 		<div class="container">
 			<div class="docs-inner">
 				<h2 class="title">Layouts</h2>
@@ -52,7 +52,7 @@
 			</div>
 		</div>
 	</section>
-	<section id="layout-list" class="tab tab-layouts scroll-view">
+	<section id="layout-list" class="tab tab-layouts scroll-view" data-tab="layouts">
 		<div class="layout-list">
 			<ul class="docs-inner">
 			{% for layout in site.data.egjs.layouts %}
@@ -65,7 +65,7 @@
 			</ul>
 		</nav>
 	</section>
-	<sections class="tab tab-layouts">
+	<section id="layouts" class="tab tab-layouts" data-tab="layouts">
 		{% for layout in site.data.egjs.layouts %}
 		<div id="{{layout.name}}" class="docs section layouts-view scroll-view">
 			<div class="container">
@@ -92,7 +92,16 @@
 			</div>
 		</div>
 		{% endfor %}
-	</sections>
+	</section>
+	<section id="options" class="tab tab-options docs section scroll-view" data-tab="options">
+		<div class="container">
+				<div class="docs-inner">
+					<h2 class="title">Options</h2>
+					{% capture options %}{% include_relative options.md %}{% endcapture %} {{ options | markdownify }}
+				</div>
+			</div>
+		
+	</section>
 	
 </div>
 {% include footer.html %}
