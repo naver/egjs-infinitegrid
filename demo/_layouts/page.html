@@ -25,41 +25,6 @@
 	//window.HOMELINK + 
 	window.LIBLINK.push("{{ dist }}");
 	{% endfor %}
-
-	var demoTemplate = '<li class="demo-item"><a href="./assets/html/{target}.html" target="_blank"><p><img src="./assets/image/demos/{target}.gif" /></p><p>{name}</p></a></li>';
-	var layouts = [];
-	{% for layout in site.data.egjs.layouts %}
-	layouts["{{layout.name}}"] = {
-		image: "{{layout.image}}",
-		desc: "{{layout.desc}}",
-		demos: {}
-	};
-	{% for demo in layout.demos %}
-	layouts["{{layout.name}}"].demos["{{demo.name}}"] = {
-		name: "{{demo.name}}",
-		target: "{{demo.target}}"
-	};
-	{% endfor %}
-	{% endfor %}
-	function showLayout(name, self) {
-		layoutList.removeClass("checked");
-		$(self).addClass("checked");
-
-		var layout = layouts[name];
-		img.attr("src", layout.image);
-		title.text(name);
-		desc.text(layout.desc);
-
-		var demos = layout.demos;
-		var name;
-		var demosHTML = [];
-		for (name in demos) {
-			demosHTML.push(demoTemplate.replace(/\{(\S*)\}/g, function(_, replaceTarget) {
-				return demos[name][replaceTarget];
-			}));
-		}
-		demoList.html(demosHTML.join(""))
-	}
 </script>
 <body>
 {% include facebook.html %}
@@ -67,10 +32,10 @@
 {% include promo.html %}
 {% include nav.html %}
 <div class="contents">
-	<section id="demos" class="tab tab-home docs section demos">
+	<section id="demos" class="tab tab-home docs section demos scroll-view">
 		{% capture demo %}{% include_relative demo.md %}{% endcapture %} {{ demo | markdownify }}
 	</section>
-	<section id="getting-started" class="tab tab-started docs section started">
+	<section id="getting-started" class="tab tab-started docs section started scroll-view">
 		<div class="container">
 			<div class="docs-inner">
 				<h2 class="title">Getting Started</h2>
@@ -79,7 +44,7 @@
 			</div>
 		</div>
 	</section>
-	<section id="layouts" class="tab tab-layouts docs section layouts">
+	<section id="layouts" class="tab tab-layouts docs section layouts scroll-view">
 		<div class="container">
 			<div class="docs-inner">
 				<h2 class="title">Layouts</h2>
@@ -87,7 +52,7 @@
 			</div>
 		</div>
 	</section>
-	<section id="layout-list" class="tab tab-layouts">
+	<section id="layout-list" class="tab tab-layouts scroll-view">
 		<div class="layout-list">
 			<ul class="docs-inner">
 			{% for layout in site.data.egjs.layouts %}
@@ -102,7 +67,7 @@
 	</section>
 	<sections class="tab tab-layouts">
 		{% for layout in site.data.egjs.layouts %}
-		<div id="{{layout.name}}" class="docs section layouts-view">
+		<div id="{{layout.name}}" class="docs section layouts-view scroll-view">
 			<div class="container">
 				<div class="docs-inner">
 					<div class="layout-view">

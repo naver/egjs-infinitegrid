@@ -1,3 +1,49 @@
+/* eslint-disable */
+var Watcher = eg.InfiniteGrid.Watcher;
+var items = [];
+var innerHeight = window.innerHeight;
+var onScroll = function(e) {
+		
+	var scrollPos = e.scrollPos;
+	var endScrollPos = scrollPos + innerHeight;
+	var visibleItems = items.filter(function (item) {
+		return item.start <= endScrollPos && scrollPos <= item.end;
+	}).map(function (item) {
+		return item.el;
+	});
+
+	$(visibleItems).addClass("appear");
+};
+var watcher = new Watcher(window, {
+	container: document.querySelector(".contents"),
+	check: onScroll,
+	resize: function(e) {innerHeight = window.innerHeight;}
+});
+
+function openTab(tab) {
+	var scrollView = $("." + tab + ".scroll-view, ." + tab + " .scroll-view");
+	var scrollPos = watcher.getOrgScrollPos();
+	var offset = watcher.getContainerOffset();
+
+	items = scrollView.map(function (index, el) {
+		var rect = el.getBoundingClientRect();
+		var start = rect.top + scrollPos - offset;
+		var end = start + rect.height;
+
+		return {
+			el: el,
+			start: start,
+			end: end,
+		};
+	}).toArray();
+
+	onScroll({scrollPos: watcher.getScrollPos()});
+}
+function closeTab(tab) {
+	var scrollView = $("." + tab + ".scroll-view, ." + tab + " .scroll-view");
+
+	scrollView.removeClass("appear");
+}
 
 var Tab = {};
 
@@ -7,17 +53,32 @@ Tab.currentTab = "";
 Tab.opens = {};
 Tab.closes = {};
 Tab.close = function(name) {
+	if (!name) {
+		return;
+	}
+	closeTab(name);
 	Tab.closes[name] && Tab.closes[name]();
 };
+Tab.items = [];
 Tab.open = function(name) {
 	Tab.$tabs.css("display", "none");
-	$("." + name).css("display", "block");
+	var target = $("." + name);
 
+	target.css("display", "block");
+
+	var currentTab = Tab.currentTab;
+	Tab.currentTab = name;
+	
 	Tab.opens[name] && Tab.opens[name]();
-	if (Tab.currentTab) {
-		Tab.closeTab(Tab.currentTab);
+
+	openTab(name);
+	if (currentTab) {
+		Tab.close(currentTab);
 	}
+	
 };
 
+Tab.opens["tab-home"] = function () {
+	demoIg.layout(true);
+}
 Tab.open("tab-home");
-

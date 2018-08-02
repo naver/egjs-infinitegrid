@@ -871,3 +871,14 @@ span.size {
 .tab {
   display: none;
 }
+.scroll-view {
+  opacity: 0;
+  transition: opacity ease 1s;
+  transition-property: opacity, transform;
+  transition-delay: 0.2s;
+  transform: translateY(-30px);
+}
+.scroll-view.appear {
+  opacity: 1;
+  transform: translateY(0px);
+}
