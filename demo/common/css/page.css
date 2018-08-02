@@ -214,9 +214,8 @@ pre code {
   /*color: #8c532e;*/
   background: #f3f3f3;
   padding-top: 0px;
-}
-.promo .container {
-  max-width: 800px;
+  padding-bottom: 80px;
+  border-bottom: 3px solid #eee;
 }
   
 .promo .title {
@@ -232,8 +231,7 @@ pre code {
   font-weight: bold; 
 }
 .promo .intro {
-  max-width: 680px;
-  margin-bottom: 30px;
+  /* max-width: 680px; */
   text-align: left;
   font-size: 16px;
 }
@@ -355,25 +353,22 @@ pre code {
   position: relative;
   top: -5px;
 }
-/* ======= Docs Section ======= */e                                                                                                                                                                                                                                                                                                                                                                                                                   
+/* ======= Docs Section ======= */                                                                                                                                                                                                                                                                                                                                                                                                          
 .docs {
   padding: 30px 0;
-  /*background: #f5f5f5;*/
-  /* background: #eebf3f; */
-}
-.docs.started, .section.navs, .layouts-view {
-  background: #f5f5f5;
+  border-bottom: 3px solid #eee;
 }
 .docs .title {
   /*color: #8c532e;*/
   /* color: #eebf3f; */
+  font-size: 60px;
+  font-weight: 400;
   margin-top: 0;
   margin-bottom: 30px;
   /* text-shadow: 1px 1px #8c532e; */
 }
 .docs .docs-inner {
   max-width: 800px;
-  padding: 40px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
@@ -544,12 +539,23 @@ span.version:hover {
 .layouts .docs-inner {
   padding: 20px; 
 }
+#layout-list a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
 .layout-list {
-  margin: 0;
-  padding: 0;
+  position: relative;
+  background: #eee;
+  font-size: 0;
   text-align: center;
 }
-
+.layout-list ul {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 15px;
+}
 .layout-item {
   width: 140px;
   /* padding: 15px 25px; */
@@ -559,11 +565,8 @@ span.version:hover {
   vertical-align: top;
   cursor: pointer;
 }
-.layout-item.checked {
-  background: #f5f5f5;
-}
 .layout-item a {
-  padding: 20px;
+  padding: 5px;
   display: block;
   position: relative;
   width: 100%;
@@ -573,24 +576,9 @@ span.version:hover {
   font-size: 15px;
   text-align: center;
 }
-.layout-item.checked img {
-  -webkit-mask: #f55;
-}
-.layout-item.checked p {
-  font-weight: bold;
-  /* color: #5a5;   */
-}
 
-.layout-item img {
-  width: 70px;
-  height: 70px;
-  /* border-radius: 50%; */
-}
 .layout-view .title {
   font-size: 40px;
-}
-.layout-view .desc {
-
 }
 .layout-view .logo-area {
   position: relative;
@@ -605,16 +593,6 @@ span.version:hover {
   10% {
     transform: translateY(0);
   }
-  100% {
-    transform: translateY(-200px);
-  }
-}
-@keyframes go2 {
-  10% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-
   100% {
     transform: translateY(-200px);
     opacity: 1;
@@ -639,7 +617,6 @@ span.version:hover {
 .layout-view .logo-area .logo2 {
   opacity: 0;
   bottom: -100%;
-  animation-name: go2;
 }
 .layout-view .demo-list {
   display: block;
@@ -648,18 +625,16 @@ span.version:hover {
   padding: 0;
   text-align: center;
   padding-top: 50px;
-  width: 520px;
 }
 .layout-view .demo-item {
   display: inline-block;
-  width: 160px;
+  width: 220px;
   padding: 10px;
   text-align: center;
   vertical-align: top;
 }
 .layout-view .demo-item img {
-  width: 140px;
-  height: 100px;
+  width: 100%;
   border: 1px solid #ccc;
   /* border-radius: 50%; */
 }
@@ -670,29 +645,6 @@ span.version:hover {
   display: none;
 }
 
-/* ======= project ====== */
-#projects {}
-.project-list {
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
-.project-item {
-  width: 100px;
-  margin: 5px;
-  display: inline-block;
-  list-style: none;
-  vertical-align: top;
-}
-.project-item img {
-  width: 100px;
-  height: 100px;
-  /* border-radius: 50%; */
-}
-.project-item p {
-  text-align: center;
-  font-weight: bold;
-}
 
 
 /* Extra small devices (phones, less than 768px) */
