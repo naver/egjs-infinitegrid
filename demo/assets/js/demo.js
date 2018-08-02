@@ -1,4 +1,4 @@
-var template = '<div class="item"><div class="thumbnail"><img src="${link}assets/image/${no}.jpg"></div><div class="info">${text}</div></div>';
+var template = '<div class="item"><a href="${url}"><span class="thumbnail"><img src="' + window.HOMELINK + 'assets/image/showcase/${target}.png"></span><span class="info">${name}</span></a></div>';
 var link = window.HOMELINK;
 function getItem(template, options) {
 	return template.replace(/\$\{([^\}]*)\}/g, function () {
@@ -7,29 +7,42 @@ function getItem(template, options) {
 		return options[replaceTarget];
 	});
 }
-function getItems(length) {
+function getItems(items) {
 	var arr = [];
+	var length = items.length;
 
-	for (var i = 0; i < length; ++i) {
-		arr.push(getItem(template, { no: i % 60 + 1, text: "egjs post " + (i + 1), link: link }));
+	for (var i = 0;  i < length; ++i) {
+		arr.push(getItem(template, items[i]));
 	}
 	return arr;
 }
 var ig = new eg.InfiniteGrid(".demobox", {
-	isOverflowScroll: true
+	isConstantSize: true,
+	transitionDuration: 0.2
 });
 var num = 21;
 
 ig.setLayout(eg.InfiniteGrid.GridLayout, {
-	margin: 30,
+	margin: 20,
 	align: "center"
 });
 
 ig.on({
+	"layoutComplete": function (e) {
+		var targets = e.target;
+
+		for (var i = 0, length = targets.length; i < length; ++i) {
+			targets[i].el.setAttribute("class", "item animate");
+		}
+	},
 	"append": function (e) {
 		var groupKey = (e.groupKey || 0) + 1;
 
-		ig.append(getItems(num * 2), groupKey);
+		if (!groups[groupKey]) {
+			return;
+		}
+		ig.append(getItems(groups[groupKey].slice(0, -1), groupKey));
 	}
 });
-ig.append(getItems(num * 2), 0);
+
+ig.append(getItems(groups[0].slice(0, -1)), 0);
