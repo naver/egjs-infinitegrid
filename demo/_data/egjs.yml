@@ -11,6 +11,7 @@ github:
 js:
 - https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js
 - assets/js/demo.js
+- common/js/tab.js
 css:
 - assets/css/demo.css
 layouts:

@@ -230,6 +230,9 @@ pre code {
   color: #2B2B2B;
   font-weight: bold; 
 }
+.container {
+  max-width: 800px;
+}
 .promo .intro {
   /* max-width: 680px; */
   text-align: left;
@@ -367,7 +370,7 @@ pre code {
   margin-bottom: 30px;
   /* text-shadow: 1px 1px #8c532e; */
 }
-.docs .docs-inner {
+.docs-inner {
   max-width: 800px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -536,9 +539,6 @@ span.version:hover {
 }
 /*======layouts=====*/ 
 
-.layouts .docs-inner {
-  padding: 20px; 
-}
 #layout-list a {
   text-decoration: none;
   color: black;
@@ -548,12 +548,11 @@ span.version:hover {
   position: relative;
   background: #eee;
   font-size: 0;
-  text-align: center;
 }
 .layout-list ul {
   position: relative;
-  width: 100%;
-  margin: 0;
+  /* width: 100%; */
+  margin: 0px auto;
   padding: 15px;
 }
 .layout-item {
@@ -574,7 +573,7 @@ span.version:hover {
 }
 .layout-item p {
   font-size: 15px;
-  text-align: center;
+  /* text-align: center; */
 }
 
 .layout-view .title {
@@ -865,4 +864,10 @@ footer #footerContent .right {
 }
 span.size {
     opacity: .6;
+}
+
+
+/* ====== tabs ====== */
+.tab {
+  display: none;
 }
