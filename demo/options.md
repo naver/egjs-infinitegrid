@@ -25,7 +25,7 @@ Indicates whether keep the number of DOMs is maintained. If the useRecycle value
 
 |useRecycle(true)|useRecycle(false)
 |---|---|
-|![](https://user-images.githubusercontent.com/3433062/43043912-44de40c0-8dd7-11e8-8969-e824fc88af49.gif)|![](https://user-images.githubusercontent.com/3433062/43043913-45050ef8-8dd7-11e8-8f6f-3ddbc5abe05c.gif)|
+|![](https://user-images.githubusercontent.com/3433062/43628822-5b2def70-9736-11e8-88a4-ada172eceaae.gif)|![](https://user-images.githubusercontent.com/3433062/43628824-5b5795be-9736-11e8-8fe0-46387595dd7a.gif)|
 
 ## isOverflowScroll [default=false]
 Indicates whether overflow:scroll is applied
@@ -56,7 +56,7 @@ Indicates whether sizes of all card elements does not change, the performance of
 |Constant Size| X | X | O|
 |Block Error| Error | X | X|
 
-## transitionDruation [default=0]
+## transitionDuration [default=0]
 Indicates how many seconds a transition effect takes to complete.
 
 <p align="center"><img src="https://user-images.githubusercontent.com/3433062/43044085-85d76a0e-8dda-11e8-80c2-0e42687ca3cb.gif"/>
