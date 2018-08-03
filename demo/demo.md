@@ -22,7 +22,17 @@
 			},
 			{% endfor %}
 			{% endfor %}
-		0]
+		0],
+		/* reacts */
+		[
+			{% for demo in site.data.egjs.reacts %}
+			{
+				name: "{{demo.name}}",
+				url: "{{demo.url}}",
+				target: "{{demo.target}}",
+			},
+			{% endfor %}
+		0],
 	];
 </script>
 {% include_relative assets/html/demo.html %}
