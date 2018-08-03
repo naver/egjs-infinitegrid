@@ -2,7 +2,9 @@
 
 A react component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
 
-* [Demo](https://935xz7zy8r.codesandbox.io/)
+* [GridLayout Demo](https://codesandbox.io/s/030opyqkvw)
+* [JustifiedLayout Demo(typescript)]()
+* [Youtube Demo](https://codesandbox.io/s/935xz7zy8r)
 * [API Documentation](https://github.com/naver/egjs-infinitegrid/wiki/react-infinitegrid-API-documentation)
 
 ## Install
