@@ -12,6 +12,7 @@ interface InfiniteGridProps {
 	isConstantSize?: boolean,
 	horizontal?: boolean,
 	loading?: object | boolean,
+	transitionDuration?: number,
 	onAppend?: (param?: any) => void,
 	onPrepend?: (param?: any) => void,
 	onLayoutComplete?: (param?: any) => void,
