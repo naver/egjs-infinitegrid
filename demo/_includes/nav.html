@@ -12,11 +12,13 @@
 		height: 50px;
 		line-height: 50px;
 		font-weight: bold;
-		color: #999;
 		box-sizing: border-box;
 		display: inline-block;
 		transition: color ease 0.2s;
 		vertical-align: top;
+		text-decoration: none;
+		color: #999;
+		transition: color ease 0.2s;
 	}
 	.tabs li:before {
 		content: "";
@@ -38,21 +40,25 @@
 </style>
 <nav>
 	<ul class="tabs container">
-		<li class="checked" tab="home">Home</li>
-		<li tab="layouts">Layouts</li>
-		<li tab="started">Getting Started</li>
-		<li tab="options">Options</li>
+		<li data-tab="home">Home</li>
+		<li data-tab="layouts">Layouts</li>
+		<li data-tab="started">Getting Started</li>
+		<li data-tab="options">Options</li>
 	</ul>
 </nav>
 
 <script>
-	var lis = $("ul.tabs li");
+	var lis = $(".tabs li");
 	lis.click(function (e) {
-		var target = e.target;
+		var target = e.currentTarget;
+		var hash = target.getAttribute("data-tab");
 
+
+		location.hash = hash;
 		lis.removeClass("checked");
 		target.setAttribute('class', "checked");
-
-		Tab.open("tab-" + target.getAttribute("tab"));
+		
+		Tab.open(hash);
+		return false;
 	});
 </script>

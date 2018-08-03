@@ -1,6 +1,16 @@
 var demoIg;
 
 (function () {
+	var requestAnimationFrame = (function() {
+		return window.requestAnimationFrame ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame	||
+			function(callback) {
+				setTimeout(() => {
+					callback();
+				}, 100);
+			};
+	})();
 	var template = '<div class="item"><a href="${url}"><span class="thumbnail"><img src="' + window.HOMELINK + 'assets/image/showcase/${target}.png"></span><span class="info">${name}</span></a></div>';
 		function getItem(template, options) {
 		return template.replace(/\$\{([^\}]*)\}/g, function () {
@@ -40,8 +50,14 @@ var demoIg;
 			if (!groups[groupKey]) {
 				return;
 			}
-			demoIg.append(getItems(groups[groupKey].slice(0, -1), groupKey));
+			demoIg.append(getItems(groups[groupKey].slice(0, -1)), groupKey);
+		},
+		"refresh": function (e) {
+			demoIg.layout(true);
+			if (!demoIg.getItems().length) {
+				demoIg.append(getItems(groups[0].slice(0, -1)), 0);
+			}
 		}
 	});
-	demoIg.append(getItems(groups[0].slice(0, -1)), 0);
+
 })();

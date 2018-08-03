@@ -21,7 +21,7 @@ var watcher = new Watcher(window, {
 });
 
 function openTab(tab) {
-	var scrollView = $("." + tab + ".scroll-view, ." + tab + " .scroll-view");
+	var scrollView = $(".tab-" + tab + ".scroll-view, .tab-" + tab + " .scroll-view");
 	var scrollPos = watcher.getOrgScrollPos();
 	var offset = watcher.getContainerOffset();
 
@@ -40,17 +40,20 @@ function openTab(tab) {
 	onScroll({scrollPos: watcher.getScrollPos()});
 }
 function closeTab(tab) {
-	var scrollView = $("." + tab + ".scroll-view, ." + tab + " .scroll-view");
+	var scrollView = $(".tab-" + tab + ".scroll-view, .tab-" + tab + " .scroll-view");
 
 	scrollView.removeClass("appear");
 }
 
 var Tab = {};
 
-Tab.tabs = [".tab-home", ".tab-layouts", ".tab-started", ".tab-options"];
 Tab.$tabs = $(".tab");
 Tab.currentTab = "";
-Tab.opens = {};
+Tab.opens = {
+	"home": function () {
+		demoIg.trigger("refresh");
+	}	
+};
 Tab.closes = {};
 Tab.close = function(name) {
 	if (!name) {
@@ -61,8 +64,11 @@ Tab.close = function(name) {
 };
 Tab.items = [];
 Tab.open = function(name) {
+	if (Tab.currentTab === name) {
+		return;
+	}
 	Tab.$tabs.css("display", "none");
-	var target = $("." + name);
+	var target = $(".tab-" + name);
 
 	target.css("display", "block");
 
@@ -70,15 +76,9 @@ Tab.open = function(name) {
 	Tab.currentTab = name;
 	
 	Tab.opens[name] && Tab.opens[name]();
-
 	openTab(name);
 	if (currentTab) {
 		Tab.close(currentTab);
 	}
 	
 };
-
-Tab.opens["tab-home"] = function () {
-	demoIg.layout(true);
-}
-Tab.open("tab-home");

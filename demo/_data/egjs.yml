@@ -12,6 +12,7 @@ js:
 - https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js
 - assets/js/demo.js
 - common/js/tab.js
+- common/js/hash.js
 css:
 - assets/css/demo.css
 layouts:
@@ -65,6 +66,17 @@ layouts:
   demos:
   - name: PackingLayout 1
     target: pack
+reacts:
+- name: Drag & Drop demo(react)
+  url: https://naver.github.io/egjs-infinitegrid/assets/react/drag.html
+  target: drag
+- name: GridLayout demo(react)
+  url: https://codesandbox.io/s/030opyqkvw
+  target: reactgrid
+- name: Youtube demo(react)
+  url: https://codesandbox.io/s/935xz7zy8r
+  target: youtube
+
 projects:
 - name: Naver Shopping
   url: http://swindow.naver.com/department/home
@@ -90,3 +102,6 @@ projects:
   url: https://s.search.naver.com/p/h_cnd010/p_21811/sbi/search.naver?where=sbi&query=sbi&orgPath=http%3A%2F%2Fblogfiles1.naver.net%2F20110805_228%2Fsabell83_1312550810373Qod26_JPEG%2FIMG_6680.JPG
   image: ./assets/image/projects/smartlens.png
   target: smartlens
+- name: Naver Blog Editor
+  url: https://blog.editor.naver.com/editor
+  target: blogeditor
