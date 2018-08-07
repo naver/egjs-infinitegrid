@@ -95,12 +95,19 @@
 	</section>
 	<section id="options" class="tab tab-options docs section scroll-view" data-tab="options">
 		<div class="container">
-				<div class="docs-inner">
-					<h2 class="title">Options</h2>
-					{% capture options %}{% include_relative options.md %}{% endcapture %} {{ options | markdownify }}
-				</div>
+			<div class="docs-inner">
+				<h2 class="title">Options</h2>
+				{% capture options %}{% include_relative options.md %}{% endcapture %} {{ options | markdownify }}
 			</div>
-		
+		</div>
+	</section>
+	<section id="components" class="tab tab-components docs scroll-view" data-tab="components">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title">Components</h2>
+				{% capture components %}{% include_relative components.md %}{% endcapture %} {{ components | markdownify }}
+			</div>
+		</div>
 	</section>
 	
 </div>
