@@ -43,6 +43,7 @@ var demoIg;
 			for (var i = 0, length = targets.length; i < length; ++i) {
 				targets[i].el.setAttribute("class", "item animate");
 			}
+			!e.isLayout && e.endLoading();
 		},
 		"append": function (e) {
 			var groupKey = (e.groupKey || 0) + 1;
@@ -50,14 +51,18 @@ var demoIg;
 			if (!groups[groupKey]) {
 				return;
 			}
+			e.startLoading();
 			demoIg.append(getItems(groups[groupKey].slice(0, -1)), groupKey);
 		},
 		"refresh": function (e) {
+			demoIg._watcher.resize();
 			demoIg.layout(true);
 			if (!demoIg.getItems().length) {
+				demoIg.startLoading(true);
 				demoIg.append(getItems(groups[0].slice(0, -1)), 0);
 			}
 		}
 	});
+	demoIg.setLoadingBar('<div class="loading"><div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div></div>');
 
 })();

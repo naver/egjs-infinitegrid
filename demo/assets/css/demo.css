@@ -5,16 +5,19 @@
 	width: 250px;
 	padding: 10px;
 	opacity: 0;
+
 }
 .item .thumbnail {
 	max-height: 400px;
 	overflow: hidden;
 	border-radius: 8px;
-	padding: 0;
+	background: #eee;
+	padding: 7px;
 	border: 0;
 }
 .item .thumbnail img {
 	width: 100%;
+	border-radius: 8px;
 }
 .item .info {
 	margin-top: 10px;
