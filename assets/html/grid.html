@@ -26,9 +26,9 @@ loadGUI({
 	margin: [30, 0, 100],
 	itemSize: [250, 100, 400],
 	change: function (text) {
-		ig._layout.options.align = text.align;
-		ig._layout.options.margin = text.margin;
-		ig._layout.options.itemSize = text.itemSize;
+		layout.options.align = text.align;
+		layout.options.margin = text.margin;
+		layout.options.itemSize = text.itemSize;
 		ig._renderer._size.viewport = window.innerWidth + 1;
 
 		document.getElementById("griditem").innerHTML = text.itemSize ? ".item{width:" + text.itemSize +"px;}" : "";

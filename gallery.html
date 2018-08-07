@@ -47,7 +47,195 @@
 		<div class="container">
 			<div class="docs-inner">
 				
-				<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+				<script>
+	var groups = [
+		/* projects */
+		[
+			
+			{
+				name: "Naver Shopping",
+				url: "http://swindow.naver.com/department/home",
+				target: "navershopping",
+			},
+			
+			{
+				name: "Naver Cafe",
+				url: "https://m.cafe.naver.com/PopularArticleList.nhn?cafeId=12048475",
+				target: "navercafe",
+			},
+			
+			{
+				name: "Naver Modoo",
+				url: "https://markethub.modoo.at/",
+				target: "modoo",
+			},
+			
+			{
+				name: "Grafolio",
+				url: "http://www.grafolio.com/works/list.grfl",
+				target: "grafolio",
+			},
+			
+			{
+				name: "Plug",
+				url: "https://www.plug.game/penguinrun-en/photos",
+				target: "plug",
+			},
+			
+			{
+				name: "Naver SmartLens",
+				url: "https://s.search.naver.com/p/h_cnd010/p_21811/sbi/search.naver?where=sbi&query=sbi&orgPath=http%3A%2F%2Fblogfiles1.naver.net%2F20110805_228%2Fsabell83_1312550810373Qod26_JPEG%2FIMG_6680.JPG",
+				target: "smartlens",
+			},
+			
+			{
+				name: "Naver Blog Editor",
+				url: "https://blog.editor.naver.com/editor",
+				target: "blogeditor",
+			},
+			
+		0],
+		/* layouts */
+		[
+			
+			/* GridLayout */
+			
+			{
+				name: "GridLayout1",
+				url: "./assets/html/grid.html",
+				target: "grid",
+			},
+			
+			{
+				name: "Card Gallery",
+				url: "./assets/html/cards.html",
+				target: "cards",
+			},
+			
+			{
+				name: "Grid Page",
+				url: "./assets/html/card2.html",
+				target: "card2",
+			},
+			
+			{
+				name: "1 Column Table",
+				url: "./assets/html/table1.html",
+				target: "table1",
+			},
+			
+			{
+				name: "2 Column Table",
+				url: "./assets/html/table2.html",
+				target: "table2",
+			},
+			
+			{
+				name: "Table <br/>(Pull To Refresh)",
+				url: "./assets/html/pulltorefresh.html",
+				target: "pulltorefresh",
+			},
+			
+			{
+				name: "Chat",
+				url: "./assets/html/chat.html",
+				target: "chat",
+			},
+			
+			
+			/* JustifiedLayout */
+			
+			{
+				name: "Image Search 1",
+				url: "./assets/html/search.html",
+				target: "search",
+			},
+			
+			{
+				name: "Image Search<br/>(Pull To Refresh)",
+				url: "./assets/html/search2.html",
+				target: "search2",
+			},
+			
+			
+			/* FrameLayout */
+			
+			{
+				name: "FrameLayout 1",
+				url: "./assets/html/frame.html",
+				target: "frame",
+			},
+			
+			{
+				name: "Metro",
+				url: "./assets/html/frame2.html",
+				target: "frame2",
+			},
+			
+			{
+				name: "Calendar",
+				url: "./assets/html/frame3.html",
+				target: "frame3",
+			},
+			
+			{
+				name: "Timeline",
+				url: "./assets/html/timeline.html",
+				target: "timeline",
+			},
+			
+			
+			/* SquareLayout */
+			
+			{
+				name: "SquareLayout 1",
+				url: "./assets/html/square.html",
+				target: "square",
+			},
+			
+			
+			/* PackingLayout */
+			
+			{
+				name: "PackingLayout 1",
+				url: "./assets/html/pack.html",
+				target: "pack",
+			},
+			
+			
+		0],
+		/* reacts */
+		[
+			
+			{
+				name: "Drag & Drop demo(react)",
+				url: "https://naver.github.io/egjs-infinitegrid/assets/react/drag.html",
+				target: "drag",
+			},
+			
+			{
+				name: "GridLayout demo(react)",
+				url: "https://codesandbox.io/s/030opyqkvw",
+				target: "reactgrid",
+			},
+			
+			{
+				name: "Youtube demo(react)",
+				url: "https://codesandbox.io/s/935xz7zy8r",
+				target: "youtube",
+			},
+			
+			{
+				name: "FrameLayout demo(react)",
+				url: "https://codesandbox.io/s/n5j4rv4n84",
+				target: "reactframelayout",
+			},
+			
+		0],
+	];
+</script>
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 
 <div class="demobox" codepen="demo">
 
@@ -61,6 +249,10 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
 
 	<script src="assets/js/demo.js"></script>
+
+	<script src="common/js/tab.js"></script>
+
+	<script src="common/js/hash.js"></script>
 
 <script>
 $("h3[id]").append(function() {

@@ -40,10 +40,10 @@ loadGUI({
 	maxSize: [300, 0, 600],
 	margin: [10, 0, 100],
 	change: function (text) {
-		ig._layout.options.margin = text.margin;
-		ig._layout.options.column = [text.minColumn, text.maxColumn];
-		ig._layout.options.minSize = text.minSize;
-		ig._layout.options.maxSize = text.maxSize;
+		layout.options.margin = text.margin;
+		layout.options.column = [text.minColumn, text.maxColumn];
+		layout.options.minSize = text.minSize;
+		layout.options.maxSize = text.maxSize;
 		ig.layout();
 	}
 });     

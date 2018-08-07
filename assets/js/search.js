@@ -16,11 +16,12 @@ function getItems(no, length) {
 }
 var num = 40;
 var ig = new eg.InfiniteGrid(".container");
-ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
+var layout = new eg.InfiniteGrid.JustifiedLayout({
 	minSize: 100,
 	maxSize: 300,
-	margin: 10,
+	margin: 10
 });
+ig.setLayout(layout);
 ig.on({
 	"append": function (e) {
 		var groupKey = e.groupKey + 1;

@@ -17,12 +17,12 @@ function getItems(length) {
 }
 var ig = new eg.InfiniteGrid(".container");
 var num = 21;
-
-ig.setLayout(eg.InfiniteGrid.GridLayout, {
+var layout = new eg.InfiniteGrid.GridLayout({
 	margin: 30,
 	align: "center"
 });
 
+ig.setLayout(layout);
 ig.on({
 	"append": function(e) {
 		ig.append(getItems(num), e.groupKey + 1);
@@ -32,7 +32,7 @@ ig.on({
 			if (!item.el) {
 				return;
 			}
-			// add abunatuib
+			// add animation
 			item.el.setAttribute("class", "item animate");
 		});
 	}
