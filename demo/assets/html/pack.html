@@ -26,10 +26,10 @@ loadGUI({
 	aspectRatio: [1, 0, 3, 0.1],
 	margin: [10, 0, 100],
 	change: function (text) {
-		ig._layout.options.ratioWeight = text.ratioWeight;
-		ig._layout.options.sizeWeight = text.sizeWeight;
-		ig._layout.options.aspectRatio = text.aspectRatio;
-		ig._layout.options.margin = text.margin;
+		layout.options.ratioWeight = text.ratioWeight;
+		layout.options.sizeWeight = text.sizeWeight;
+		layout.options.aspectRatio = text.aspectRatio;
+		layout.options.margin = text.margin;
 		ig.layout();
 	}
 });     
