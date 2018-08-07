@@ -2,7 +2,7 @@
 
 |Internext Explorer|Chrome|Firefox|Safari|IOS|Android|
 |---|---|---|---|---|---|
-|8+(possibly 9 also)|Yes|Yes|Yes|7+|2.1+ (except 3.x)|
+|8+ (possibly 9 also)|Yes|Yes|Yes|7+|2.1+ (except 3.x)|
 
 ### Quick steps to use:
 

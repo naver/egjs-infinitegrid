@@ -645,6 +645,71 @@ span.version:hover {
 }
 
 
+/* ====== tabs ====== */
+.tab {
+  display: none;
+}
+.scroll-view {
+  opacity: 0;
+  transition: opacity ease 1s;
+  transition-property: opacity, transform;
+  transition-delay: 0.2s;
+  transform: translateY(-30px);
+}
+.scroll-view.appear {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+/* ===== markdown ==== */
+table {
+  margin: 0px auto;
+  text-align: center;
+  width: 100%;
+}
+table td, table th {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+table tr:nth-child(2n) {
+  background-color: #f5f5f5;
+}
+table td img {
+  max-width: 100%;
+}
+
+/* ===== loading ==== */
+.loading {
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  display: none;
+}
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #999;
+  margin: 0px 3px;
+  animation: dot 1.5s infinite ease-in-out;
+}
+.dot.dot2 {
+  animation-delay: 0.35s;
+}
+.dot.dot3 {
+  animation-delay: 0.7s;
+}
+
+@keyframes dot {
+  0% {
+    background: #fff;
+  }
+  60% {
+    background: #999;
+  }
+}
 
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
@@ -745,6 +810,12 @@ span.version:hover {
   .layout-view .logo-area {
     float: none;
     margin: 10px;
+  }
+  table td, table th {
+    padding: 5px;
+  }
+  .tabs, .layout-list .container {
+    text-align: center;
   }
 }
 @media (max-width: 570px) {
@@ -866,69 +937,3 @@ span.size {
     opacity: .6;
 }
 
-
-/* ====== tabs ====== */
-.tab {
-  display: none;
-}
-.scroll-view {
-  opacity: 0;
-  transition: opacity ease 1s;
-  transition-property: opacity, transform;
-  transition-delay: 0.2s;
-  transform: translateY(-30px);
-}
-.scroll-view.appear {
-  opacity: 1;
-  transform: translateY(0px);
-}
-
-/* ===== markdown ==== */
-table {
-  margin: 0px auto;
-  text-align: center;
-  width: 100%;
-}
-table td, table th {
-  text-align: center;
-  padding: 10px;
-  border: 1px solid #ddd;
-}
-table tr:nth-child(2n) {
-  background-color: #f5f5f5;
-}
-table td img {
-  max-width: 100%;
-}
-
-/* ===== loading ==== */
-.loading {
-  text-align: center;
-  width: 100%;
-  position: absolute;
-  display: none;
-}
-.dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #999;
-  margin: 0px 3px;
-  animation: dot 1.5s infinite ease-in-out;
-}
-.dot.dot2 {
-  animation-delay: 0.35s;
-}
-.dot.dot3 {
-  animation-delay: 0.7s;
-}
-
-@keyframes dot {
-  0% {
-    background: #fff;
-  }
-  60% {
-    background: #999;
-  }
-}
