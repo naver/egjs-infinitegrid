@@ -534,9 +534,7 @@ export default class InfiniteGrid extends Component {
 		const {isEqualSize, isConstantSize} = renderer.options;
 		const isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
 
-		if (isRelayout && isResize) {
-			this._setSize(renderer.getViewportSize());
-		}
+		this._setSize(renderer.getViewportSize());
 		// check items
 		if (!items.length) {
 			return this;
@@ -887,10 +885,8 @@ export default class InfiniteGrid extends Component {
 		if (updateGroups.length) {
 			if (isProcessing || newItems.length) {
 				state.processing |= (isAppend ? APPEND : PREPEND) | PROCESS;
-
-				!isAppend && updateGroups.reverse();
-				this._updateSize({groups: updateGroups, items: newItems, isUpdate: isUpdate || isRelayout});
 				DOMRenderer.renderItems(items);
+				this._updateSize({groups: updateGroups, items: newItems, isUpdate: isUpdate || isRelayout});
 			} else {
 				this.layout(false);
 			}
