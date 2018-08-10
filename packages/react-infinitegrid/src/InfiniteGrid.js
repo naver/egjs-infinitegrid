@@ -182,6 +182,7 @@ export default class InfiniteGrid extends Component {
 		this._mount(ReactDOM.findDOMNode(this));
 	}
 	componentWillUnmount() {
+		console.log(this.state);
 		this.clear();
 		this._viewer = null;
 		this._container = null;
@@ -469,6 +470,9 @@ export default class InfiniteGrid extends Component {
 					startIndex = 0;
 				}
 			}
+			if (startKey) {
+				state.layout = true;
+			}
 		}
 		if (endIndex === -1) {
 			endKey = "";
@@ -488,9 +492,8 @@ export default class InfiniteGrid extends Component {
 			}
 			endIndex = Math.max(startIndex, endIndex);
 			endKey = groups[endIndex] ? groups[endIndex].groupKey : "";
-		}
-		// update group
-		if (prevEndIndex - prevStartIndex !== endIndex - startIndex) {
+		} else if (prevEndIndex - prevStartIndex !== endIndex - startIndex) {
+			// update group
 			state.isUpdate = true;
 		}
 		state.children = propsChildren;
@@ -503,7 +506,9 @@ export default class InfiniteGrid extends Component {
 		state.datas = datas;
 		// synchronize
 		this._updateGroups(groups);
-		(!this._isProcessing() || !groups.length) && this._updateCursor(state);
+		if (!this._isProcessing() || !groups.length || !state.isUpdate) {
+			this._updateCursor(state);
+		}
 	}
 	_updateLayout() {
 		const props = this.props;
@@ -755,13 +760,15 @@ export default class InfiniteGrid extends Component {
 					fromCache: !items.length,
 				});
 			},
-			error: () => ({target, itemIndex}) => {
+			error: ({target, itemIndex}) => {
 				const item = items[itemIndex];
 				const element = item.el;
 				const group = this.state.groupKeys[item.groupKey];
-				const index = (group && group.items.indexOf(item)) || -1;
+				const index = group ? group.items.indexOf(item) : -1;
+				const component = group ? group.children[index] : -1;
+				const componentIndex = this.state.children.indexOf(component);
 
-				this.props.onImageError({target, element, item, itemIndex: index});
+				this.props.onImageError({target, element, item, itemIndex: componentIndex});
 			},
 		});
 	}

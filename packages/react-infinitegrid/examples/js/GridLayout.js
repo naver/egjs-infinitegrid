@@ -10,7 +10,7 @@ class Item extends Component {
 
 		return (<div className="item" onClick={this.props.onClick}>
 			<div className="thumbnail">
-				<img src={`https://naver.github.io/egjs-infinitegrid/assets/image/${no % 59 + 1}.jpg`}/>
+				<img src={`https://naver.github.io/egjs-infinitegrid/assets/image/${no % 59}.jpg`}/>
 			</div>
 			<div className="info">
 				{text}
@@ -34,7 +34,7 @@ class App extends Component {
 		const start = this.start || 0;
 
 		for (let i = 0; i < num; ++i) {
-			items.push(<Item groupKey={groupKey} num={1 + start + i} key={start + i}
+			items.push(<Item groupKey={groupKey} num={start + i} key={start + i}
 				onClick={(itemKey => (e => this.remove(itemKey)))(start + i)}/>);
 		}
 		this.start = start + num;
@@ -50,7 +50,7 @@ class App extends Component {
 	}
 	onAppend = ({groupKey}) => {
 		const list = this.state.list;
-		const items = this.loadItems(parseFloat(groupKey) + 1, 5);
+		const items = this.loadItems(parseFloat(groupKey || 0) + 1, 5);
 
 		this.setState({loading: true, list: list.concat(items)});
 	}
@@ -58,19 +58,23 @@ class App extends Component {
 		window.b = this;
 		!isLayout && this.setState({loading: false});
 	}
+	onImageError = ({item, itemIndex}) => {
+		this.state.list.splice(itemIndex, 1);
+		this.setState({list: this.state.list});
+	}
 	render() {
 		const {list} = this.state;
 
+		window.a = this;
 		return (
 			<GridLayout margin={10}
 				align={"center"}
 				onAppend={this.onAppend}
 				onLayoutComplete={this.onLayoutComplete}
+				onImageError={this.onImageError}
 				loading = {this.state.loading}
 				isConstantSize = {true}
 				transitionDuration = {0.2}
-				// useFit = {false}
-				ref = {e => {window.e = e;}}
 			>
 				{list}
 			</GridLayout>

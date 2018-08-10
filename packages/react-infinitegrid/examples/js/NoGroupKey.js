@@ -8,8 +8,7 @@ const Item = ({ num }) => (
     <div className="thumbnail">
       <img
         src={`https://naver.github.io/egjs-infinitegrid/assets/image/${(num %
-          59) +
-          1}.jpg`}
+          59)}.jpg`}
         alt="egjs"
       />
     </div>
@@ -24,7 +23,7 @@ class App extends React.Component {
     const start = this.start || 0;
 
     for (let i = 0; i < num; ++i) {
-      items.push(<Item groupKey={1} num={1 + start + i} key={start + i} />);
+      items.push(<Item groupKey={1} num={start + i} key={start + i} />);
     }
     this.start = start + num;
     return items;
@@ -39,6 +38,10 @@ class App extends React.Component {
   onLayoutComplete = ({ isLayout, endLoading }) => {
     !isLayout && endLoading();
   };
+  onImageError = ({item, itemIndex}) => {
+    this.state.list.splice(itemIndex, 1);
+    this.setState({list: this.state.list});
+  }
   render() {
     return (
       <GridLayout
@@ -46,6 +49,7 @@ class App extends React.Component {
         align="center"
         onAppend={this.onAppend}
         onLayoutComplete={this.onLayoutComplete}
+        onImageError={this.onImageError}
         transitionDuration={0.2}
         isConstantSize={true}
         ref={e => (window.e = e)}
