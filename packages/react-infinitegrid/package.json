@@ -10,7 +10,7 @@
   "license": "MIT",
   "homepage": "https://github.com/naver/egjs-infinitegrid",
   "dependencies": {
-    "@egjs/infinitegrid": "^3.3.6"
+    "@egjs/infinitegrid": "^3.4.0"
   },
   "peerDependencies": {
     "react": "^15.4.2 || ^16.0.0",

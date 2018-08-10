@@ -158,7 +158,15 @@ export default class InfiniteGrid extends Component {
 
 		this._updateLayout();
 		state.isUpdate = false;
-		if (processing === DONE) {
+		if (processing & (APPEND | PREPEND)) {
+			if (!this._isLoading(prevState) && this._isLoading(state)) {
+				this._setContainerSize();
+			}
+			if (!(processing & PROCESS)) {
+				// Not PROCESS, only APPEND, PREPEND
+				this._insert();
+			}
+		} else {
 			// block processing
 			if (layout) {
 				this.layout(true);
@@ -168,20 +176,6 @@ export default class InfiniteGrid extends Component {
 			state.requestIndex = startIndex;
 			state.requestKey = startKey;
 			this._insert(isUpdate);
-		} else {
-			if (!this._isLoading(prevState) && this._isLoading(state)) {
-				this._setContainerSize();
-			}
-			if (processing & (APPEND | PREPEND)) {
-				if (!(processing & PROCESS)) {
-					// Not PROCESS, only APPEND, PREPEND
-					this._insert();
-				}
-			} else {
-				const scrollPos = this._watcher.getScrollPos();
-
-				this._infinite.scroll(scrollPos);
-			}
 		}
 	}
 	componentDidMount() {
@@ -747,7 +741,6 @@ export default class InfiniteGrid extends Component {
 		let elements = items.map(item => item.el);
 
 		isEqualSize && (elements = this._renderer._size.item ? [] : elements.slice(0, 1));
-
 		this._manager[isAppend ? "append" : "prepend"]({
 			groups,
 			items,
@@ -776,6 +769,9 @@ export default class InfiniteGrid extends Component {
 	}
 	_onCheck({isForward, scrollPos, horizontal, orgScrollPos}) {
 		this.props.onChange({isForward, horizontal, scrollPos, orgScrollPos});
+		if (this._isProcessing()) {
+			return;
+		}
 		this._infinite.scroll(scrollPos);
 	}
 	_setSize(size) {
