@@ -182,7 +182,6 @@ export default class InfiniteGrid extends Component {
 		this._mount(ReactDOM.findDOMNode(this));
 	}
 	componentWillUnmount() {
-		console.log(this.state);
 		this.clear();
 		this._viewer = null;
 		this._container = null;
@@ -928,7 +927,7 @@ export default class InfiniteGrid extends Component {
 
 		this._items = new ItemManager();
 		this._renderer = new DOMRenderer(viewer, {
-			container: isOverflowScroll ? this._container : false,
+			container: isOverflowScroll ? this._container : null,
 			isEqualSize,
 			isConstantSize,
 			horizontal,
