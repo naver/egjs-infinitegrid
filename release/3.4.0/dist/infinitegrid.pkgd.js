@@ -3763,7 +3763,7 @@ module.exports = exports["default"];
  * @egjs/component JavaScript library
  * http://naver.github.io/egjs/component
  * 
- * @version 2.1.1
+ * @version 2.1.0
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(true)
@@ -3837,11 +3837,27 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Component = __webpack_require__(1);
+
+var _Component2 = _interopRequireDefault(_Component);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+_Component2["default"].VERSION = "2.1.0";
+module.exports = _Component2["default"];
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3859,8 +3875,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 /**
- * A class used to manage events in a component
- * @ko 컴포넌트의 이벤트을 관리할 수 있게 하는 클래스
+ * A class used to manage events and options in a component
+ * @ko 컴포넌트의 이벤트와 옵션을 관리할 수 있게 하는 클래스
  * @alias eg.Component
  */
 var Component = function () {
@@ -3912,7 +3928,7 @@ var Component = function () {
 			return true;
 		}
 
-		// If detach method call in handler in first time then handler list calls.
+		// If detach method call in handler in first time then handeler list calls.
 		handlerList = handlerList.concat();
 
 		customEvent.eventType = eventName;
@@ -4112,31 +4128,10 @@ var Component = function () {
 exports["default"] = Component;
 module.exports = exports["default"];
 
-/***/ }),
-/* 1 */,
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _Component = __webpack_require__(0);
-
-var _Component2 = _interopRequireDefault(_Component);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-_Component2["default"].VERSION = "2.1.1";
-
-exports["default"] = _Component2["default"];
-module.exports = exports["default"];
-
 /***/ })
 /******/ ]);
 });
-//# sourceMappingURL=component.module.js.map
+//# sourceMappingURL=component.js.map
 
 /***/ }),
 /* 14 */
