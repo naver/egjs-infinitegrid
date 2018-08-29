@@ -1,4 +1,4 @@
-class BoxModel {
+export default class BoxModel {
 	constructor(options) {
 		Object.assign(this, {
 			originWidth: 0,
@@ -44,5 +44,3 @@ class BoxModel {
 		return (this.height === 0) ? 0 : this.width / this.height;
 	}
 }
-
-module.exports = BoxModel;
