@@ -55,13 +55,7 @@ Object {
       "view": 500,
       "viewport": 300,
     },
-    "cssText": "height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;",
-    "options": Object {
-      "horizontal": false,
-      "isConstantSize": false,
-      "isEqualSize": false,
-      "isOverflowScroll": true,
-    },
+    "cssText": "height: 740px;",
   },
   "_state": Object {
     "datas": Object {
@@ -75,6 +69,10 @@ Object {
         "orgSize": Object {
           "height": 100,
           "width": 120,
+        },
+        "prevRect": Object {
+          "left": 30,
+          "top": 0,
         },
         "rect": Object {
           "left": 30,
@@ -96,6 +94,10 @@ Object {
           "height": 200,
           "width": 120,
         },
+        "prevRect": Object {
+          "left": 150,
+          "top": 0,
+        },
         "rect": Object {
           "left": 150,
           "top": 0,
@@ -115,6 +117,10 @@ Object {
         "orgSize": Object {
           "height": 100,
           "width": 120,
+        },
+        "prevRect": Object {
+          "left": 30,
+          "top": 100,
         },
         "rect": Object {
           "left": 30,
@@ -136,6 +142,10 @@ Object {
           "height": 400,
           "width": 120,
         },
+        "prevRect": Object {
+          "left": 30,
+          "top": 200,
+        },
         "rect": Object {
           "left": 30,
           "top": 200,
@@ -155,6 +165,10 @@ Object {
         "orgSize": Object {
           "height": 440,
           "width": 120,
+        },
+        "prevRect": Object {
+          "left": 150,
+          "top": 200,
         },
         "rect": Object {
           "left": 150,
@@ -176,6 +190,10 @@ Object {
           "height": 130,
           "width": 120,
         },
+        "prevRect": Object {
+          "left": 30,
+          "top": 600,
+        },
         "rect": Object {
           "left": 30,
           "top": 600,
@@ -195,6 +213,10 @@ Object {
         "orgSize": Object {
           "height": 100,
           "width": 120,
+        },
+        "prevRect": Object {
+          "left": 150,
+          "top": 640,
         },
         "rect": Object {
           "left": 150,
@@ -225,6 +247,10 @@ Object {
               "height": 100,
               "width": 120,
             },
+            "prevRect": Object {
+              "left": 30,
+              "top": 0,
+            },
             "rect": Object {
               "left": 30,
               "top": 0,
@@ -244,6 +270,10 @@ Object {
             "orgSize": Object {
               "height": 200,
               "width": 120,
+            },
+            "prevRect": Object {
+              "left": 150,
+              "top": 0,
             },
             "rect": Object {
               "left": 150,
@@ -265,6 +295,10 @@ Object {
               "height": 100,
               "width": 120,
             },
+            "prevRect": Object {
+              "left": 30,
+              "top": 100,
+            },
             "rect": Object {
               "left": 30,
               "top": 100,
@@ -284,6 +318,10 @@ Object {
             "orgSize": Object {
               "height": 400,
               "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 200,
             },
             "rect": Object {
               "left": 30,
@@ -305,6 +343,10 @@ Object {
               "height": 440,
               "width": 120,
             },
+            "prevRect": Object {
+              "left": 150,
+              "top": 200,
+            },
             "rect": Object {
               "left": 150,
               "top": 200,
@@ -324,6 +366,10 @@ Object {
             "orgSize": Object {
               "height": 130,
               "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 600,
             },
             "rect": Object {
               "left": 30,
@@ -345,6 +391,10 @@ Object {
               "height": 100,
               "width": 120,
             },
+            "prevRect": Object {
+              "left": 150,
+              "top": 640,
+            },
             "rect": Object {
               "left": 150,
               "top": 640,
@@ -360,12 +410,10 @@ Object {
             730,
             740,
           ],
-          "endIndex": 6,
           "start": Array [
             0,
             0,
           ],
-          "startIndex": 0,
         },
       },
     },
@@ -386,6 +434,10 @@ Object {
               "height": 100,
               "width": 120,
             },
+            "prevRect": Object {
+              "left": 30,
+              "top": 0,
+            },
             "rect": Object {
               "left": 30,
               "top": 0,
@@ -405,6 +457,10 @@ Object {
             "orgSize": Object {
               "height": 200,
               "width": 120,
+            },
+            "prevRect": Object {
+              "left": 150,
+              "top": 0,
             },
             "rect": Object {
               "left": 150,
@@ -426,6 +482,10 @@ Object {
               "height": 100,
               "width": 120,
             },
+            "prevRect": Object {
+              "left": 30,
+              "top": 100,
+            },
             "rect": Object {
               "left": 30,
               "top": 100,
@@ -445,6 +505,10 @@ Object {
             "orgSize": Object {
               "height": 400,
               "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 200,
             },
             "rect": Object {
               "left": 30,
@@ -466,6 +530,10 @@ Object {
               "height": 440,
               "width": 120,
             },
+            "prevRect": Object {
+              "left": 150,
+              "top": 200,
+            },
             "rect": Object {
               "left": 150,
               "top": 200,
@@ -485,6 +553,10 @@ Object {
             "orgSize": Object {
               "height": 130,
               "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 600,
             },
             "rect": Object {
               "left": 30,
@@ -506,6 +578,10 @@ Object {
               "height": 100,
               "width": 120,
             },
+            "prevRect": Object {
+              "left": 150,
+              "top": 640,
+            },
             "rect": Object {
               "left": 150,
               "top": 640,
@@ -521,12 +597,10 @@ Object {
             730,
             740,
           ],
-          "endIndex": 6,
           "start": Array [
             0,
             0,
           ],
-          "startIndex": 0,
         },
       },
     ],
@@ -547,50 +621,55 @@ Object {
 
 ```
 "<div class=\"test1\" style=\"height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 740px;\">
 <div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div>
-<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div>"
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div></div>"
 ```
 
 #### `should check getStatus(startKey, endKey)`
 
 ```
 "<div class=\"test1\" style=\"height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 730px;\">
 <div data-groupkey=\"1\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
 <div data-groupkey=\"1\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
 <div data-groupkey=\"2\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
 <div data-groupkey=\"2\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
 <div data-groupkey=\"3\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
-<div data-groupkey=\"3\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div></div>"
+<div data-groupkey=\"3\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div></div></div>"
 ```
 
 ```
 "<div class=\"test2\" style=\"height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 740px;\">
 <div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
 <div data-groupkey=\"0\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
 <div data-groupkey=\"2\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
 <div data-groupkey=\"2\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
 <div data-groupkey=\"3\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
 <div data-groupkey=\"3\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div>
-<div data-groupkey=\"4\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div>"
+<div data-groupkey=\"4\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div></div>"
 ```
 
 ```
 "<div class=\"test3\" style=\"height: 500px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 730px;\">
 <div data-groupkey=\"2\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
 <div data-groupkey=\"2\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
 <div data-groupkey=\"3\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
-<div data-groupkey=\"3\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div></div>"
+<div data-groupkey=\"3\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div></div></div>"
 ```
 
 #### `should check scroll`
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 1100px;\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div>
@@ -605,11 +684,15 @@ Object {
 <div class=\"item\" data-groupkey=\"4\" style=\"width: 100px; height: 300px; position: absolute; left: 100px; top: 600px;\">item4</div>
 <div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 700px;\">item5</div>
 <div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 800px;\">item5</div>
-<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 800px;\">item5</div></div>"
+<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 800px;\">item5</div></div></div>"
 ```
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 1100px;\">
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\">item1</div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\">item1</div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 100px;\">item2</div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 200px;\">item2</div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 300px; position: absolute; left: 100px; top: 200px;\">item2</div>
@@ -621,13 +704,7 @@ Object {
 <div class=\"item\" data-groupkey=\"4\" style=\"width: 100px; height: 300px; position: absolute; left: 100px; top: 600px;\">item4</div>
 <div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 700px;\">item5</div>
 <div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 800px;\">item5</div>
-<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 800px;\">item5</div>
-<div class=\"item\" data-groupkey=\"6\" style=\"width: 100px; height: 100px; position: absolute; left: 100px; top: 900px;\">item6</div>
-<div class=\"item\" data-groupkey=\"6\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 1000px;\">item6</div>
-<div class=\"item\" data-groupkey=\"6\" style=\"width: 100px; height: 300px; position: absolute; left: 100px; top: 1000px;\">item6</div>
-<div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 1100px;\">item7</div>
-<div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 1200px;\">item7</div>
-<div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 1200px;\">item7</div></div>"
+<div class=\"item\" data-groupkey=\"5\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 800px;\">item5</div></div></div>"
 ```
 
 #### `should check layout method and event`
@@ -657,21 +734,24 @@ Object {
 #### `should check test no item`
 
 ```
-"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\"></div>"
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\"></div></div>"
 ```
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 200px;\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 100px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 100px;\"></div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 100px; top: 100px;\"></div>
-<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 100px;\"></div></div>"
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 200px; top: 100px;\"></div></div></div>"
 ```
 
 ```
-"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\"></div>"
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 0px;\"></div></div>"
 ```
 
 #### `should check test one item`
@@ -689,13 +769,15 @@ Object {
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: -999999px; top: -999999px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: -999999px; top: -999999px;\">item1</div>
-<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: -999999px; top: -999999px;\">item1</div></div>"
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: -999999px; top: -999999px;\">item1</div></div></div>"
 ```
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 1100px;\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div>
@@ -719,11 +801,12 @@ Object {
 <div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 700px;\">item7</div>
 <div class=\"item\" data-groupkey=\"8\" style=\"width: 100px; height: 100px; position: absolute; left: 300px; top: 700px;\">item8</div>
 <div class=\"item\" data-groupkey=\"8\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 800px;\">item8</div>
-<div class=\"item\" data-groupkey=\"8\" style=\"width: 100px; height: 300px; position: absolute; left: 300px; top: 800px;\">item8</div></div>"
+<div class=\"item\" data-groupkey=\"8\" style=\"width: 100px; height: 300px; position: absolute; left: 300px; top: 800px;\">item8</div></div></div>"
 ```
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 1100px;\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div>
@@ -747,56 +830,62 @@ Object {
 <div class=\"item\" data-groupkey=\"7\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 700px;\">item7</div>
 <div class=\"item\" data-groupkey=\"8\" style=\"width: 100px; height: 100px; position: absolute; left: 300px; top: 700px;\">item8</div>
 <div class=\"item\" data-groupkey=\"8\" style=\"width: 100px; height: 200px; position: absolute; left: 0px; top: 800px;\">item8</div>
-<div class=\"item\" data-groupkey=\"8\" style=\"width: 100px; height: 300px; position: absolute; left: 300px; top: 800px;\">item8</div></div>"
+<div class=\"item\" data-groupkey=\"8\" style=\"width: 100px; height: 300px; position: absolute; left: 300px; top: 800px;\">item8</div></div></div>"
 ```
 
 #### `should check isEqaulSize option`
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 240px;\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 150px; height: 120px; position: absolute; left: 0px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 130px; height: 170px; position: absolute; left: 150px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 160px; height: 140px; position: absolute; left: 300px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 160px; height: 150px; position: absolute; left: 0px; top: 120px;\"></div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 140px; height: 160px; position: absolute; left: 150px; top: 120px;\"></div>
-<div class=\"item\" data-groupkey=\"2\" style=\"width: 130px; height: 170px; position: absolute; left: 300px; top: 120px;\"></div></div>"
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 130px; height: 170px; position: absolute; left: 300px; top: 120px;\"></div></div></div>"
 ```
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 200px;\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 190px; position: absolute; left: 100px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 140px; height: 180px; position: absolute; left: 200px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 150px; height: 170px; position: absolute; left: 300px; top: 0px;\"></div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 160px; position: absolute; left: 400px; top: 0px;\"></div>
-<div class=\"item\" data-groupkey=\"2\" style=\"width: 110px; height: 150px; position: absolute; left: 0px; top: 100px;\"></div></div>"
+<div class=\"item\" data-groupkey=\"2\" style=\"width: 110px; height: 150px; position: absolute; left: 0px; top: 100px;\"></div></div></div>"
 ```
 
 #### `should check one groupKey`
 
 ```
-"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\"></div>"
+"<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\"></div></div>"
 ```
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 300px;\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\">item1</div>
-<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div></div>"
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div></div></div>"
 ```
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 400px;\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 300px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 400px; top: 0px;\">item1</div>
-<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 0px; top: 100px;\">item1</div></div>"
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 0px; top: 100px;\">item1</div></div></div>"
 ```
 
 ```
 "<div style=\"height: 600px; position: relative; overflow-y: scroll; overflow-x: hidden;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 500px;\">
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div>
@@ -805,6 +894,6 @@ Object {
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 0px; top: 100px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 300px; top: 100px;\">item1</div>
 <div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 200px;\">item1</div>
-<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 300px; top: 200px;\">item1</div></div>"
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 300px; top: 200px;\">item1</div></div></div>"
 ```
 

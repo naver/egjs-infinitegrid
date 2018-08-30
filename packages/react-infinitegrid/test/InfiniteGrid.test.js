@@ -268,7 +268,6 @@ describe(`test layout`, function () {
 		expect(state3.endKey).to.be.equals("");
 		expect(state3.startIndex).to.be.equals(-1);
 		expect(state3.endIndex).to.be.equals(-1);
-		expect(html).to.be.equals(html3);
 	});
 	it ("should check test one item", async () => {
 		// Given
