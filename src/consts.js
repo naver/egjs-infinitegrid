@@ -23,7 +23,6 @@ export const SUPPORT_PASSIVE = (() => {
 export const IS_IE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
 export const IS_IOS = /iPhone|iPad/.test(ua);
 export const IS_ANDROID2 = /Android 2\./.test(ua);
-export const RETRY = 3;
 export const CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
 export const IGNORE_CLASSNAME = "_eg-infinitegrid-ignore_";
 export const TRANSITION_NAME = "_INFINITEGRID_TRANSITION";
