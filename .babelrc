@@ -22,7 +22,7 @@
                     "@babel/preset-env",
                     {
                         "loose": true,
-                        "modules": "commonjs",
+                        "modules": "commonjs"
                     }
                 ]
             ],

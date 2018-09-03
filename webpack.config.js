@@ -14,7 +14,6 @@ function getConfig(env) {
       filename: "[name].js",
       library: [pkg.namespace.eg, env.name],
 			libraryTarget: "umd",
-			libraryExport: "default",
     }
   };
 }
@@ -47,9 +46,6 @@ var config = {
 		}]
 	},
 	plugins: [
-		new webpack.EnvironmentPlugin({
-			BABEL_ENV: "umd",
-		}),
 		new webpack.optimize.ModuleConcatenationPlugin(),
 		new StringReplacePlugin()
 	]

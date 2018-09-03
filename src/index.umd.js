@@ -8,4 +8,4 @@ for (const name in modules) {
 	InfiniteGrid[name] = modules[name];
 }
 
-export default InfiniteGrid;
+module.exports = InfiniteGrid;
