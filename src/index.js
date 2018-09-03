@@ -16,17 +16,8 @@ import ItemManager from "./ItemManager";
 import Infinite from "./Infinite";
 import LayoutManager from "./LayoutManager";
 
-/**
- * Version info string
- * @ko 버전정보 문자열
- * @name VERSION
- * @static
- * @type {String}
- * @example
- * eg.InfiniteGrid.VERSION;  // ex) 3.3.3
- * @memberof eg.InfiniteGrid
- */
-export const VERSION = "#__VERSION__#";
+
+export {default as VERSION} from "./version";
 export {
 	GridLayout,
 	FrameLayout,
