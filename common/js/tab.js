@@ -3,8 +3,10 @@ var Watcher = eg.InfiniteGrid.Watcher;
 var items = [];
 var innerHeight = window.innerHeight;
 var onScroll = function(e) {
-		
 	var scrollPos = e.scrollPos;
+	if (scrollPos === null) {
+		return;
+	}
 	var endScrollPos = scrollPos + innerHeight;
 	var visibleItems = items.filter(function (item) {
 		return item.start <= endScrollPos && scrollPos <= item.end;
@@ -17,9 +19,11 @@ var onScroll = function(e) {
 var watcher = new Watcher(window, {
 	container: document.querySelector(".contents"),
 	check: onScroll,
-	resize: function(e) {innerHeight = window.innerHeight;}
+	resize: function(e) {
+		innerHeight = window.innerHeight;
+		openTab(Tab.currentTab);
+	}
 });
-
 function openTab(tab) {
 	var scrollView = $(".tab-" + tab + ".scroll-view, .tab-" + tab + " .scroll-view");
 	var scrollPos = watcher.getOrgScrollPos();
