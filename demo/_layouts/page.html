@@ -25,143 +25,95 @@
 	//window.HOMELINK + 
 	window.LIBLINK.push("{{ dist }}");
 	{% endfor %}
-
-	var demoTemplate = '<li class="demo-item"><a href="./assets/html/{target}.html" target="_blank"><p><img src="./assets/image/demos/{target}.gif" /></p><p>{name}</p></a></li>';
-	var layouts = [];
-	{% for layout in site.data.egjs.layouts %}
-	layouts["{{layout.name}}"] = {
-		image: "{{layout.image}}",
-		desc: "{{layout.desc}}",
-		demos: {}
-	};
-	{% for demo in layout.demos %}
-	layouts["{{layout.name}}"].demos["{{demo.name}}"] = {
-		name: "{{demo.name}}",
-		target: "{{demo.target}}"
-	};
-	{% endfor %}
-	{% endfor %}
-	function showLayout(name, self) {
-		layoutList.removeClass("checked");
-		$(self).addClass("checked");
-
-		var layout = layouts[name];
-		img.attr("src", layout.image);
-		title.text(name);
-		desc.text(layout.desc);
-
-		var demos = layout.demos;
-		var name;
-		var demosHTML = [];
-		for (name in demos) {
-			demosHTML.push(demoTemplate.replace(/\{(\S*)\}/g, function(_, replaceTarget) {
-				return demos[name][replaceTarget];
-			}));
-		}
-		demoList.html(demosHTML.join(""))
-	}
 </script>
 <body>
 {% include facebook.html %}
 {% include header.html %}
 {% include promo.html %}
-<div>
-	<section id="demos" class="docs section demos">
-		<div class="container">
-			<div class="docs-inner">
-				<h2 class="title text-center">Showcase</h2>
-				{% capture demo %}{% include_relative demo.md %}{% endcapture %} {{ demo | markdownify }}
-			</div>
-		</div>
+{% include nav.html %}
+<div class="contents">
+	<section id="home" class="tab tab-home docs section demos scroll-view" data-tab="home">
+		{% capture demo %}{% include_relative demo.md %}{% endcapture %} {{ demo | markdownify }}
 	</section>
-	<section id="index" class="section navs">
+	<section id="started" class="tab tab-started docs section started scroll-view" data-tab="started">
 		<div class="container">
 			<div class="docs-inner">
-				<p class="text-center">
-					<a href="#getting-started">Getting Started </a>/
-					<a href="#layouts"> Layouts </a>/
-					<a href="#layouts"> Projects </a>
-				</p>
-			</div>
-		</div>
-	</section>
-	<section id="getting-started" class="docs section started">
-		<div class="container">
-			<div class="docs-inner">
-				<h2 class="title text-center">Getting Started</h2>
+				<h2 class="title">Getting Started</h2>
 				{% capture started %}{% include_relative started.md %}{% endcapture %}
 				{{ started | markdownify }}
 			</div>
 		</div>
 	</section>
-	<section id="layouts" class="docs section layouts">
+	<section id="layouts" class="tab tab-layouts docs section layouts scroll-view" data-tab="layouts">
 		<div class="container">
 			<div class="docs-inner">
-				<h2 class="title text-center">Layouts</h2>
-				<ul class="layout-list">
-				 {% for layout in site.data.egjs.layouts %}
-					 <li id="{{layout.name}}" class="layout-item {% if layout.name == "GridLayout" %}checked{% endif %}" onclick="showLayout('{{layout.name}}', this)">
-						<a href="#{{layout.name}}">
-							<p><img src="{{layout.image}}"></p>
-							<p>{{layout.name}}</p>
-						</a>
-					</li>
-				{% endfor %}
-				</ul>
+				<h2 class="title">Layouts</h2>
+				<p>Infinitegrid offers five layouts. You can place items with the layout.</p>
 			</div>
 		</div>
 	</section>
-	<section id="layouts_view" class="docs section layouts-view">
-		<div class="container">
-			<div class="docs-inner">
-				<div class="layout-view">
-					<div class="logo-area">
-						<img class="logo logo1" />
-						<img class="logo logo2" />
+	<section id="layout-list" class="tab tab-layouts scroll-view" data-tab="layouts">
+		<div class="layout-list">
+			<ul class="docs-inner container">
+			{% for layout in site.data.egjs.layouts %}
+				<li class="layout-item">
+					<a href="#{{layout.name}}">
+						<p>{{layout.name}}</p>
+					</a>
+				</li>
+			{% endfor %}
+			</ul>
+		</nav>
+	</section>
+	<section id="layouts" class="tab tab-layouts" data-tab="layouts">
+		{% for layout in site.data.egjs.layouts %}
+		<div id="{{layout.name}}" class="docs section layouts-view scroll-view">
+			<div class="container">
+				<div class="docs-inner">
+					<div class="layout-view">
+						<div class="logo-area">
+							<img class="logo logo1" src="{{layout.image}}" />
+							<img class="logo logo2" src="{{layout.image}}" />
+						</div>
+						<h3 class="title">{{layout.name}}</h3>
+						<p class="desc">{{layout.desc}}</p>
+						<ul class="demo-list">
+							{% for demo in layout.demos %}
+							<li class="demo-item">
+								<a href="./assets/html/{{demo.target}}.html" target="_blank">
+									<p><img src="./assets/image/demos/{{demo.target}}.gif" /></p>
+									<p>{{demo.name}}</p>
+								</a>
+							</li>
+							{% endfor %}
+						</ul>
 					</div>
-					<h3 class="title"></h3>
-					<p class="desc"></p>
-					<ul class="demo-list">
-					</ul>
 				</div>
 			</div>
 		</div>
+		{% endfor %}
 	</section>
-	<section id="projects" class="docs section projects">
+	<section id="options" class="tab tab-options docs section scroll-view" data-tab="options">
 		<div class="container">
 			<div class="docs-inner">
-				<h2 class="title text-center">Projects</h2>
-				<ul class="project-list">
-					{% for project in site.data.egjs.projects %}
-					<li class="project-item">
-						<a target="blank" href="{{project.url}}"><p>
-							<img src="{{project.image}}">
-						</p>
-						<p>{{project.name}}</p></a>
-					</li>
-					{% endfor %}
-				</ul>
+				<h2 class="title">Options</h2>
+				{% capture options %}{% include_relative options.md %}{% endcapture %} {{ options | markdownify }}
 			</div>
 		</div>
 	</section>
+	<section id="components" class="tab tab-components docs scroll-view" data-tab="components">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title">Components</h2>
+				{% capture components %}{% include_relative components.md %}{% endcapture %} {{ components | markdownify }}
+			</div>
+		</div>
+	</section>
+	
 </div>
 {% include footer.html %}
 {% for js in site.data.egjs.js %}
 	<script src="{{ js }}"></script>
 {% endfor %}
-<script>
-	var view = $("#layouts_view");
-	var title = view.find(".title");
-	var desc = view.find(".desc");
-	var layoutList = $(".layout-list li");
-	var demoList = view.find(".demo-list");
-	var img = view.find(".logo");
-	var hash = (location.hash || "#GridLayout").replace("#", "");
-	var selectedLayout = "GridLayout";
-	if (hash in layouts) {
-		selectedLayout = hash;
-	}
-	showLayout(selectedLayout, $("#" + selectedLayout));
-</script>
 </body>
 </html>

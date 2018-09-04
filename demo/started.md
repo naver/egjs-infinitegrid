@@ -1,5 +1,8 @@
 ### Browser support
-IE 8+ (possibly 9 also), latest of Chrome/FF/Safari, iOS 7+ and Android 2.1+ (except 3.x)
+
+|Internext Explorer|Chrome|Firefox|Safari|IOS|Android|
+|---|---|---|---|---|---|
+|8+ (possibly 9 also)|Yes|Yes|Yes|7+|2.1+ (except 3.x)|
 
 ### Quick steps to use:
 

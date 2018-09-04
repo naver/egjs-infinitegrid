@@ -2,26 +2,50 @@
 	height: 600px;
 }
 .item {
-	width: 200px;
-	/* opacity: 0; */
+	width: 250px;
+	padding: 10px;
+	opacity: 0;
+	transition: opacity ease 1s;
+	transition-property: opacity;
 }
 .item .thumbnail {
-	max-height: 300px;
+	max-height: 400px;
 	overflow: hidden;
 	border-radius: 8px;
-	padding: 0;
+	background: #eee;
+	padding: 7px;
 	border: 0;
 }
 .item .thumbnail img {
 	width: 100%;
+	border-radius: 8px;
 }
 .item .info {
 	margin-top: 10px;
 	font-weight: bold;
-	color: #777;
+	color: #333;
+	font-size: 15px;
+}
+.item:after {
+	content: "";
+	position: absolute;
+	transition: all ease 0.2s;
+	transition-property: background-color, left, right, top, bottom;
+	z-index: -1;
+	top: 10px;
+	bottom: 10px;
+	left: 10px;
+	right: 10px;
+	border-radius: 8px;
+}
+.item:hover:after {
+	background: #eee;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 .item.animate {
-	transition: opacity ease 1s;
-	transition-delay: 0.2s;
+
 	opacity: 1;
 }

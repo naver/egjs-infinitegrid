@@ -11,6 +11,8 @@ github:
 js:
 - https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js
 - assets/js/demo.js
+- common/js/tab.js
+- common/js/hash.js
 css:
 - assets/css/demo.css
 layouts:
@@ -30,6 +32,8 @@ layouts:
       target: table2
     - name: Table <br/>(Pull To Refresh)
       target: pulltorefresh
+    - name: Chat
+      target: chat
 - name: JustifiedLayout
   image: ./assets/image/JustifiedLayout.svg
   desc: \'justified\' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout in which the image is filled up on the basis of a line given a width in the meaning of the term.
@@ -62,22 +66,44 @@ layouts:
   demos:
   - name: PackingLayout 1
     target: pack
+reacts:
+- name: Drag & Drop demo(react)
+  url: https://naver.github.io/egjs-infinitegrid/assets/react/drag.html
+  target: drag
+- name: GridLayout demo(react)
+  url: https://codesandbox.io/s/030opyqkvw
+  target: reactgrid
+- name: Youtube demo(react)
+  url: https://codesandbox.io/s/935xz7zy8r
+  target: youtube
+- name: FrameLayout demo(react)
+  url: https://codesandbox.io/s/n5j4rv4n84
+  target: reactframelayout
 projects:
 - name: Naver Shopping
   url: http://swindow.naver.com/department/home
+  target: navershopping
   image: ./assets/image/projects/nshopping.png
 - name: Naver Cafe
   url: https://m.cafe.naver.com/PopularArticleList.nhn?cafeId=12048475
+  target: navercafe
   image: ./assets/image/projects/ncafe.png
 - name: Naver Modoo
   url: https://markethub.modoo.at/
+  target: modoo
   image: ./assets/image/projects/modoo.png
 - name: Grafolio
   url: http://www.grafolio.com/works/list.grfl
+  target: grafolio
   image: ./assets/image/projects/grafolio.jpg
 - name: Plug
   url: https://www.plug.game/penguinrun-en/photos
   image: ./assets/image/projects/plug.png
+  target: plug
 - name: Naver SmartLens
   url: https://s.search.naver.com/p/h_cnd010/p_21811/sbi/search.naver?where=sbi&query=sbi&orgPath=http%3A%2F%2Fblogfiles1.naver.net%2F20110805_228%2Fsabell83_1312550810373Qod26_JPEG%2FIMG_6680.JPG
   image: ./assets/image/projects/smartlens.png
+  target: smartlens
+- name: Naver Blog Editor
+  url: https://blog.editor.naver.com/editor
+  target: blogeditor

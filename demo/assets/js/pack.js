@@ -20,11 +20,11 @@ function getItems(no, length) {
 
 var num = 10;
 var ig = new eg.InfiniteGrid(".container");
-
-ig.setLayout(eg.InfiniteGrid.PackingLayout, {
+var layout = new eg.InfiniteGrid.PackingLayout({
 	ratioWeight: 10000,
-	margin: 10,
+	margin: 10
 });
+ig.setLayout(layout);
 ig.on({
 	"append": function (e) {
 		var groupKey = e.groupKey + 1;

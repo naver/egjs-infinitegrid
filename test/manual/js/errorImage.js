@@ -2,7 +2,7 @@
 // window.console = window.console || {log: function(){}};
 
 
-var template = '<div class="item" data-column="${column}" data-i=${i} data-group=${group} data-g=${rgroup}>HEADER<img src="../../demo/assets/image/${no}.jpg" ${data}>FOOTER</div >';
+var template = '<div class="item" data-column="${column}" data-i=${i} data-group=${group} data-g=${rgroup}>HEADER<img src="../../demo/assets/image/${no}.jpg">FOOTER</div >';
 var num = 10;
 var groups = {};
 
@@ -20,7 +20,6 @@ function getItems(group, length) {
 	for (var i = 0; i < length; ++i) {
 		var no = Math.round(Math.random() * 59 + 1);
 		arr.push(getItem(template, {i:i, no: no % 5 === 0 ? 1000 : no, column: i % 5 === 0 ? 2 : 1, group: Math.abs(group) % 5, rgroup: group,
-		data: images[no] ? 'data-width="'+images[no][0]+'" data-height="'+images[no][1]+'"' : ""
 		}));
 	}
 	return arr;
