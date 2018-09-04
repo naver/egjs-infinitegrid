@@ -35,6 +35,9 @@ ig.on({
 			// add animation
 			item.el.setAttribute("class", "item animate");
 		});
+		if (!e.isAppend && e.fromCache && e.target[0].groupKey === 0) {
+			ig.layout(true);
+		}
 	}
 });
 
