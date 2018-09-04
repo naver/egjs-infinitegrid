@@ -1,17 +1,18 @@
 (function() {
-		var receiveTemplate = '<div class="item receive">' +
-		'<div class="profile" data-name="egjs">' +
-			'<img src="../image/1.jpg" />' +
-		'</div>' +
-		'<div class="speech" data-time="10:00">' +
-			'<p>${title}</p>' +
-		'</div>' +
-		'</div>';
-		var sendTemplate = '<div class="item send">' +
-		'<div class="speech" data-time="10:00">' +
-			'<p>${title}</p>' + 
-		'</div>' +
-		'</div>';
+	var link = window.HOMELINK;
+	var receiveTemplate = '<div class="item receive">' +
+	'<div class="profile" data-name="egjs">' +
+		'<img src="${link}../image/1.jpg" data-width="100" data-height="100"/>' +
+	'</div>' +
+	'<div class="speech" data-time="10:00">' +
+		'<p>${title}</p>' +
+	'</div>' +
+	'</div>';
+	var sendTemplate = '<div class="item send">' +
+	'<div class="speech" data-time="10:00">' +
+		'<p>${title}</p>' + 
+	'</div>' +
+	'</div>';
 
 	function getItem(template, options) {
 		return template.replace(/\$\{([^\}]*)\}/g, function () {
@@ -24,7 +25,7 @@
 		var arr = [];
 
 		for (let i = 0; i < length; ++i) {
-			arr.push(getItem(receiveTemplate, {title: "egjs post" + i}));
+			arr.push(getItem(receiveTemplate, {title: "egjs post" + i, link: link}));
 		}
 		return arr;
 	}
@@ -47,7 +48,6 @@
 	ig.on("prepend", function (e) {
 		var items = getItems(20);
 		ig.prepend(items);
-		no += 20;
 	});
 	
 	var input = document.querySelector("input");
@@ -55,7 +55,7 @@
 		if (!text) {
 			return;
 		}
-		ig.append([getItem(sendTemplate, { title: text }), getItem(receiveTemplate, { title: text })]);
+		ig.append([getItem(sendTemplate, { title: text }), getItem(receiveTemplate, { title: text, link: link })]);
 	};
 	input.addEventListener("keyup", function(e) {
 		if (e.keyCode !== 13) {
@@ -75,5 +75,5 @@
 	ig.prepend(items);
 	setTimeout(function() {
 		ig.append(sendMessage("hi egjs!!!"));
-	}, 100);
+	}, 150);
 })();
