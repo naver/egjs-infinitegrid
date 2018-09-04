@@ -238,4 +238,4 @@ document.body.addEventListener("scroll", function (e) {
 	}
 }
 
-module.exports = Parallax;
+export default Parallax;

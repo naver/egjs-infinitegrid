@@ -13,7 +13,7 @@ function getConfig(env) {
       path: path.resolve(__dirname, "dist"),
       filename: "[name].js",
       library: [pkg.namespace.eg, env.name],
-      libraryTarget: "umd",
+			libraryTarget: "umd",
     }
   };
 }

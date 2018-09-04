@@ -1,16 +1,37 @@
 {
-    "presets": [ 
-        [
-            "es2015",
-            {
-                "loose": true
-            }
-        ]
-    ],
-    "plugins": [
-        "add-module-exports",
-        "transform-object-assign",
-        "transform-es3-property-literals",
-        "transform-es3-member-expression-literals"
-    ]
+    "env": {
+        "esm": {
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "loose": true,
+                        "modules": false
+                    }
+                ]
+            ],
+            "plugins": [
+                "@babel/plugin-transform-object-assign",
+                "transform-es3-property-literals",
+                "transform-es3-member-expression-literals"
+            ]
+        },
+        "umd": {
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "loose": true,
+                        "modules": "commonjs"
+                    }
+                ]
+            ],
+            "plugins": [
+                "add-module-exports",
+                "@babel/plugin-transform-object-assign",
+                "transform-es3-property-literals",
+                "transform-es3-member-expression-literals"
+            ]
+        }
+    }
 }
