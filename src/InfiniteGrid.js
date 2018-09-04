@@ -307,8 +307,11 @@ class InfiniteGrid extends Component {
 		const isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
 		const size = itemManager.size();
 
-		if (isRelayout && isResize) {
-			this._setSize(renderer.getViewportSize());
+		if (isRelayout) {
+			this._watcher.resize();
+			if (isResize) {
+				this._setSize(renderer.getViewportSize());
+			}
 		}
 		// check childElement
 		if (!size) {
