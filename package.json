@@ -11,7 +11,7 @@
 		"build": "rm -rf ./dist && concurrently 'npm run build:infinitegrid' 'npm run build:module' 'npm run build:parallax'",
 		"build:module": "BABEL_ENV=esm babel ./src --out-dir ./dist/esm && npm run build:version",
 		"build:version": "replace-in-file '#__VERSION__#' $npm_package_version dist/esm/version.js",
-		"build:infinitegrid": "BABEL_ENV=umd webpack --env.type=production --env.name=InfiniteGrid --env.path=./src/index.umd.js && webpack --env.type=packaged --env.name=InfiniteGrid --env.path=./src/index.umd.js",
+		"build:infinitegrid": "BABEL_ENV=umd webpack --env.type=production --env.name=InfiniteGrid --env.path=./src/index.umd.js &&BABEL_ENV=umd webpack --env.type=packaged --env.name=InfiniteGrid --env.path=./src/index.umd.js",
 		"build:parallax": "BABEL_ENV=umd webpack --env.type=production --env.name=Parallax --env.path=./src/Parallax.js",
 		"test": "BABEL_ENV=umd karma start",
 		"test:chrome": "BABEL_ENV=umd karma start --chrome",
