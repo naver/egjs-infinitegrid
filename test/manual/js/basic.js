@@ -97,7 +97,6 @@ function getItems(group, length) {
 	for (var i = 0; i < length; ++i) {
 		var no = Math.round(Math.random() * 59 + 1);
 		arr.push(getItem(template, { no: no, column: i % 5 === 0 ? 2 : 1, group: Math.abs(group) % 5, rgroup: group,
-		data: images[no] ? 'data-width="'+images[no][0]+'" data-height="'+images[no][1]+'"' : ""
 		}));
 	}
 	return arr;
