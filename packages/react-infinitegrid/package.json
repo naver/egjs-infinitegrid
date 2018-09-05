@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-infinitegrid",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A react component that can easily use egjs-infinitegrid",
   "types": "declaration/index.d.ts",
   "main": "dist/index.js",
@@ -35,18 +35,17 @@
     "SquareLayout"
   ],
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@daybrush/babel-plugin-no-side-effect-class-properties": "0.0.4",
     "babel-eslint": "^8.2.2",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-loader": "^8.0.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
     "chai-karma-snapshot": "^0.7.0",
     "css-loader": "^0.28.11",
     "eslint": "^4.12.1",
@@ -80,11 +79,13 @@
     "write-file-webpack-plugin": "^4.2.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --host=0.0.0.0 ",
-    "test": "karma start",
+    "start": "BABEL_ENV=common webpack-dev-server --host=0.0.0.0 ",
+    "test": "BABEL_ENV=common karma start",
     "lint": "eslint src",
     "lint:examples": "eslint examples/js",
-    "build": "mkdir -p dist && babel src --out-dir dist/",
+    "build": "npm run build:common && npm run build:esm",
+    "build:common": "BABEL_ENV=common babel src --out-dir dist/",
+    "build:esm": "BABEL_ENV=esm babel src --out-dir dist/esm",
     "prepublish": "mkdir -p dist && babel src --out-dir dist/"
   }
 }
