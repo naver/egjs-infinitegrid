@@ -747,6 +747,7 @@ export default class InfiniteGrid extends Component {
 			groups,
 			items,
 			isAppend,
+			isUpdate,
 		}, {
 			complete: () => {
 				if (!this._viewer) {
