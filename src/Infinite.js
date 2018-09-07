@@ -78,7 +78,7 @@ class Infinite {
 		const size = this._status.size;
 		const {threshold, append, prepend} = this.options;
 		const datas = items.get();
-		const endScrollPos = Math.max(scrollPos, 0) + size;
+		const endScrollPos = scrollPos + size;
 		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
 		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
 		const visibles = datas.map((group, i) => {
