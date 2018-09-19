@@ -138,5 +138,52 @@ describe("LayoutManager Test", function () {
 
 			expect(isComplete).to.be.equals(false);
 		});
+		it(`should check 'layout' method(isEqualSize)`, () => {
+			// Given
+			const el = sandbox();
+			el.innerHTML = "<div id='infinite2' style='width: 400px;'></div>";
+			const container = this.el.querySelector("#infinite2");
+			const items = new ItemManager();
+			const inst = new LayoutManager(this._items, new DOMRenderer(this.container, {
+				isEqualSize: true,
+			}), {
+				isEqualSize: true,
+			});
+			inst.setLayout(new GridLayout());
+			inst.setSize(400);
+
+
+			const imgs = $(`<div style="width: 100px; height: 100px"></div>`, true);
+			imgs.forEach(img => this.container.appendChild(img));
+
+			const group = makeGroup(imgs, true, "key1");
+			const group2 = makeGroup(imgs, true, "key2");
+			const group3 = makeGroup(imgs, true, "key3");
+			const group4 = makeGroup(imgs, true, "key4");
+			const groups = [group, group2, group3, group4];
+
+			items.append(group);
+			items.append(group2);
+			items.append(group3);
+			items.append(group4);
+
+			const groupItems = ItemManager.pluck(groups, "items");
+
+			groupItems.forEach(item => {
+				item.orgSize = {width: 1, height: 1};
+				item.size = {width: 1, height: 1};
+				item.rect = {top: 0, left: 0};
+			})
+
+			// When
+			inst.layout(true, groups, group2.items);
+			inst.destroy();
+
+			// Then
+			groupItems.forEach(item => {
+				expect(item.size).to.be.deep.equals({width: 100, height: 100});
+			})
+		});
+
 	});
 });

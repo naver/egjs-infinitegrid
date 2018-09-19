@@ -222,7 +222,7 @@ export default class LayoutMananger {
 	}
 	layout(isRelayout, groups, items) {
 		const renderer = this._renderer;
-		const {isConstantSize} = renderer.options;
+		const {isEqualSize, isConstantSize} = renderer.options;
 		const layoutGroups = groups.filter(group => {
 			const item = group.items[0];
 
@@ -238,6 +238,13 @@ export default class LayoutMananger {
 			outline = [outline.length ? Math.min(...outline) : 0];
 			if (!isConstantSize && items.length) {
 				renderer.updateSize(items);
+
+				// update invisible items' size
+				if (isEqualSize && items[0].size) {
+					ItemManager.pluck(layoutGroups, "items").forEach(item => {
+						item.size = Object.assign({}, items[0].size);
+					});
+				}
 			}
 		}
 		this._layout.layout(layoutGroups, outline);
