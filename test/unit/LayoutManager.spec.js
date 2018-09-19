@@ -139,7 +139,7 @@ describe("LayoutManager Test", function () {
 			expect(isComplete).to.be.equals(false);
 		});
 		it(`should check 'layout' method(isEqualSize)`, () => {
-			// GIven
+			// Given
 			const el = sandbox();
 			el.innerHTML = "<div id='infinite2' style='width: 400px;'></div>";
 			const container = this.el.querySelector("#infinite2");
@@ -175,12 +175,11 @@ describe("LayoutManager Test", function () {
 				item.rect = {top: 0, left: 0};
 			})
 
+			// When
 			inst.layout(true, groups, group2.items);
 			inst.destroy();
 
-
-			
-
+			// Then
 			groupItems.forEach(item => {
 				expect(item.size).to.be.deep.equals({width: 100, height: 100});
 			})

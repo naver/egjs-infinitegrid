@@ -239,6 +239,7 @@ export default class LayoutMananger {
 			if (!isConstantSize && items.length) {
 				renderer.updateSize(items);
 
+				// update invisible items' size
 				if (isEqualSize && items[0].size) {
 					ItemManager.pluck(layoutGroups, "items").forEach(item => {
 						item.size = Object.assign({}, items[0].size);
