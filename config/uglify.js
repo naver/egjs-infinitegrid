@@ -3,7 +3,7 @@ module.exports = {
 	uglifyOptions: {
 		ie8: true,
 		compress: {
-			warnings: false
+			warnings: false,
 		},
 		output: {
 			comments: false,
