@@ -420,7 +420,7 @@ class InfiniteGrid extends Component {
 		const visibleItems = this.getItems();
 		const length = visibleItems.length;
 
-		renderer.createAndInsert(visibleItems);
+		renderer.createAndInsert(visibleItems, true);
 
 		const isReLayout = renderer.isNeededResize();
 
