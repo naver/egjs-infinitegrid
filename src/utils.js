@@ -56,7 +56,7 @@ export function $(param, multi = false) {
 	} else if (param.nodeName &&
 		(param.nodeType === 1 || param.nodeType === 9)) { // HTMLElement, Document
 		el = param;
-	} else if (("jQuery" in window && param instanceof window.jQuery) ||
+	} else if ((typeof window.jQuery === "function" && param instanceof window.jQuery) ||
 		param.constructor.prototype.jquery) { // jQuery
 		el = $(multi ? param.toArray() : param.get(0), multi);
 	} else if (Array.isArray(param)) {
