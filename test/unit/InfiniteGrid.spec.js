@@ -442,6 +442,33 @@ describe("InfiniteGrid Test", function () {
       });
     });
   });
+  describe(`When scroll is attached to the Bottom`, function () {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = `<div id='infinite'></div><div id="footer" style="position:relative;width: 100%; height: ${window.innerHeight * 3}px;"></div>`;
+      this.inst = new InfiniteGrid("#infinite", {
+        margin: 5,
+      });
+      this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it (`should check attached scroll`, async () => {
+      const scrollPos = document.body.offsetHeight - window.innerHeight;
+      window.scrollTo(0, scrollPos);
+
+
+      await waitInsert(this.inst, true, 10, 4);
+
+      expect(document.body.scrollTop || document.documentElement.scrollTop).to.be.equals(scrollPos);
+      
+    });
+  });
   describe(`When appending, image test`, function () {
     beforeEach(() => {
       this.el = sandbox();

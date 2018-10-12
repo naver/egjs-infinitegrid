@@ -980,7 +980,10 @@ ig.on("imageError", e => {
 
 		const size = this._getEdgeValue("end");
 
-		isAppend && this._setContainerSize(size + this._status.loadingSize || 0);
+		if (isAppend) {
+			this._setContainerSize(size + this._status.loadingSize || 0);
+			this._scrollTo(scrollPos);
+		}
 		!isLayout && this._process(PROCESSING, false);
 
 		/**
