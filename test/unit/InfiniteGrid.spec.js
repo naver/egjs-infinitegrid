@@ -467,6 +467,7 @@ describe("InfiniteGrid Test", function () {
 
       // When
       window.scrollTo(0, scrollPos);
+      await wait(100);
       await waitInsert(this.inst, true, 10, 4);
 
       // Then

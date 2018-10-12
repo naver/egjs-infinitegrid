@@ -318,7 +318,7 @@ class InfiniteGrid extends Component {
 			const children = toArray(renderer.container.children);
 
 			if (children.length) {
-				this._insert(toArray(renderer.container.children), true);
+				this._insert(children, true);
 			} else {
 				this._requestAppend({});
 			}
