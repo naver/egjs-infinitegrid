@@ -314,11 +314,14 @@ class InfiniteGrid extends Component {
 			}
 		}
 		// check childElement
-		if (!size) {
-			this._insert(toArray(renderer.container.children), true);
-			return this;
-		}
-		if (!items.length) {
+		if (!size || !items.length) {
+			const children = toArray(renderer.container.children);
+
+			if (children.length) {
+				this._insert(children, true);
+			} else {
+				this._requestAppend({});
+			}
 			return this;
 		}
 		// layout datas
@@ -885,7 +888,7 @@ ig.on("imageError", e => {
 			 */
 			this.trigger("append", {
 				isTrusted: TRUSTED,
-				groupKey: this.getGroupKeys().pop(),
+				groupKey: this.getGroupKeys().pop() || "",
 				startLoading: userStyle => {
 					this.startLoading(true, userStyle);
 				},
@@ -974,7 +977,10 @@ ig.on("imageError", e => {
 
 		const size = this._getEdgeValue("end");
 
-		isAppend && this._setContainerSize(size + this._status.loadingSize || 0);
+		if (isAppend) {
+			this._setContainerSize(size + this._status.loadingSize || 0);
+			this._scrollTo(scrollPos);
+		}
 		!isLayout && this._process(PROCESSING, false);
 
 		/**

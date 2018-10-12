@@ -169,9 +169,19 @@ describe("InfiniteGrid Test", function () {
         outlines.forEach(outline => {
           expect(outline).to.be.equals(outlines[0]);
         });
-        
-
       });
+      it(`should check no children and call 'append' event`, async() => {
+        // Given
+        const waitAppend = waitEvent(this.inst, "append");
+
+        // When
+        this.inst.layout();
+
+        const rv = await waitAppend;
+
+        // Then
+        expect(rv.groupKey).to.be.equals("");
+      })
       it(`should check getStatus(startCursor, endCursor)`, async () => {
         // Given
         await waitInsert(this.inst, true, 10, 10);
@@ -433,6 +443,36 @@ describe("InfiniteGrid Test", function () {
         // When
         this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
       });
+    });
+  });
+  describe(`When scroll is attached to the Bottom`, function () {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = `<div id='infinite'></div><div id="footer" style="position:relative;width: 100%; height: ${window.innerHeight * 3}px;"></div>`;
+      this.inst = new InfiniteGrid("#infinite", {
+        margin: 5,
+      });
+      this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it (`should check attached scroll`, async () => {
+      // Given
+      const scrollPos = document.body.offsetHeight - window.innerHeight;
+
+      // When
+      window.scrollTo(0, scrollPos);
+      await wait(100);
+      await waitInsert(this.inst, true, 10, 4);
+
+      // Then
+      expect(Math.max(document.body.scrollTop, document.documentElement.scrollTop)).to.be.equals(scrollPos);
+      
     });
   });
   describe(`When appending, image test`, function () {
