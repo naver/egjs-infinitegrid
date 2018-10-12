@@ -314,7 +314,7 @@ class InfiniteGrid extends Component {
 			}
 		}
 		// check childElement
-		if (!size) {
+		if (!size || !items.length) {
 			const children = toArray(renderer.container.children);
 
 			if (children.length) {
@@ -322,9 +322,6 @@ class InfiniteGrid extends Component {
 			} else {
 				this._requestAppend({});
 			}
-			return this;
-		}
-		if (!items.length) {
 			return this;
 		}
 		// layout datas
