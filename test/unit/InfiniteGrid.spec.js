@@ -171,12 +171,15 @@ describe("InfiniteGrid Test", function () {
         });
       });
       it(`should check no children and call 'append' event`, async() => {
-        const callback = waitEvent(this.inst, "append");
+        // Given
+        const waitAppend = waitEvent(this.inst, "append");
 
+        // When
         this.inst.layout();
 
-        const rv = await callback;
+        const rv = await waitAppend;
 
+        // Then
         expect(rv.groupKey).to.be.equals("");
       })
       it(`should check getStatus(startCursor, endCursor)`, async () => {
@@ -459,13 +462,15 @@ describe("InfiniteGrid Test", function () {
       cleanup();
     });
     it (`should check attached scroll`, async () => {
+      // Given
       const scrollPos = document.body.offsetHeight - window.innerHeight;
+
+      // When
       window.scrollTo(0, scrollPos);
-
-
       await waitInsert(this.inst, true, 10, 4);
 
-      expect(document.body.scrollTop || document.documentElement.scrollTop).to.be.equals(scrollPos);
+      // Then
+      expect(Math.max(document.body.scrollTop, document.documentElement.scrollTop)).to.be.equals(scrollPos);
       
     });
   });
