@@ -169,9 +169,16 @@ describe("InfiniteGrid Test", function () {
         outlines.forEach(outline => {
           expect(outline).to.be.equals(outlines[0]);
         });
-        
-
       });
+      it(`should check no children and call 'append' event`, async() => {
+        const callback = waitEvent(this.inst, "append");
+
+        this.inst.layout();
+
+        const rv = await callback;
+
+        expect(rv.groupKey).to.be.equals("");
+      })
       it(`should check getStatus(startCursor, endCursor)`, async () => {
         // Given
         await waitInsert(this.inst, true, 10, 10);

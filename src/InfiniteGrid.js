@@ -315,7 +315,13 @@ class InfiniteGrid extends Component {
 		}
 		// check childElement
 		if (!size) {
-			this._insert(toArray(renderer.container.children), true);
+			const children = toArray(renderer.container.children);
+
+			if (children.length) {
+				this._insert(toArray(renderer.container.children), true);
+			} else {
+				this._requestAppend({});
+			}
 			return this;
 		}
 		if (!items.length) {
@@ -885,7 +891,7 @@ ig.on("imageError", e => {
 			 */
 			this.trigger("append", {
 				isTrusted: TRUSTED,
-				groupKey: this.getGroupKeys().pop(),
+				groupKey: this.getGroupKeys().pop() || "",
 				startLoading: userStyle => {
 					this.startLoading(true, userStyle);
 				},
