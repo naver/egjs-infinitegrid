@@ -445,7 +445,7 @@ describe("InfiniteGrid Test", function () {
       });
     });
   });
-  describe.only(`When scroll is attached`, function () {
+  describe(`When scroll is attached`, function () {
     beforeEach(() => {
       this.el = sandbox();
       this.el.innerHTML = `
