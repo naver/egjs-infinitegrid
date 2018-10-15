@@ -2,6 +2,9 @@ import {
 	IS_IOS,
 } from "./consts";
 import {
+	window,
+} from "./browser";
+import {
 	addEvent,
 	removeEvent,
 	scroll,
