@@ -3,7 +3,7 @@
 let win;
 
 if (typeof window === "undefined") {
-	// window is undefined in SSR
+	// window is undefined in node.js
 	win = {
 		document: {},
 		navigator: {
