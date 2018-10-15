@@ -212,4 +212,3 @@ demo/release/
 CHANGELOG.md
 build/
 packages/*/dist
-dist/
