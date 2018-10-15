@@ -30,8 +30,8 @@ export default class Watcher {
 		this._onCheck = this._onCheck.bind(this);
 		this._onResize = this._onResize.bind(this);
 		this.attachEvent();
-		this.setScrollPos();
 		this.resize();
+		this.setScrollPos();
 	}
 	getStatus() {
 		return {

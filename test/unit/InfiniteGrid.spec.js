@@ -7,7 +7,7 @@ import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
 import { getItems, insert, wait, waitInsert, waitEvent } from "./helper/TestHelper";
 import { APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER, IDLE, PROCESSING, DUMMY_POSITION } from "../../src/consts";
-import { innerHeight, innerWidth } from "../../src/utils";
+import { scroll, innerHeight, innerWidth } from "../../src/utils";
 import { expectConnectGroupsOutline } from "./helper/common";
 
 /* eslint-disable */
@@ -445,10 +445,13 @@ describe("InfiniteGrid Test", function () {
       });
     });
   });
-  describe(`When scroll is attached to the Bottom`, function () {
+  describe(`When scroll is attached`, function () {
     beforeEach(() => {
       this.el = sandbox();
-      this.el.innerHTML = `<div id='infinite'></div><div id="footer" style="position:relative;width: 100%; height: ${window.innerHeight * 3}px;"></div>`;
+      this.el.innerHTML = `
+      <div id="header" style="position:relative;width: 100%; height: ${window.innerHeight * 3}px;"></div>
+      <div id='infinite'></div>
+      <div id="footer" style="position:relative;width: 100%; height: ${window.innerHeight * 3}px;"></div>`;
       this.inst = new InfiniteGrid("#infinite", {
         margin: 5,
       });
@@ -461,7 +464,23 @@ describe("InfiniteGrid Test", function () {
       }
       cleanup();
     });
-    it (`should check attached scroll`, async () => {
+    it (`should check scroll attached to the top`, async () => {
+      // Given
+      const scrollPos = this.inst._watcher.getScrollPos();
+
+      // When
+      window.scrollTo(0, 0);
+      await wait(100);
+      await waitInsert(this.inst, true, 10, 4);
+
+
+      // Then
+      expect(scrollPos).to.be.below(-100);
+      expect(scroll(window)).to.be.equals(0);
+      expect(this.inst._watcher.getScrollPos()).to.be.equals(scrollPos);
+      
+    });
+    it (`should check scroll attached to the bottom`, async () => {
       // Given
       const scrollPos = document.body.offsetHeight - window.innerHeight;
 
