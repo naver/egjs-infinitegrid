@@ -824,6 +824,7 @@ ig.on("imageError", e => {
 		const itemManager = this._items;
 		const horizontal = this.options.horizontal;
 
+		// If container has children, it does not render first.
 		if (!isChildren) {
 			DOMRenderer.createElements(items);
 			this._renderer[method](items);
