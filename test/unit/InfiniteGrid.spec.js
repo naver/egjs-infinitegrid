@@ -182,6 +182,33 @@ describe("InfiniteGrid Test", function () {
         // Then
         expect(rv.groupKey).to.be.equals("");
       })
+      it(`should check children`, async() => {
+        // Given
+        const container = this.inst._renderer.container;
+        container.innerHTML = `<div class="item">1</div><div class="item">2</div><div class="item">3</div>`;
+        const children = Array.prototype.slice.call(container.children);
+        const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+
+        // When
+        this.inst.layout();
+
+        const positions = children.map(el => ({position: el.style.position, left: el.style.left}));
+        const rv = await waitLayoutComplete;
+
+        // Then
+        // has 3 children
+        expect(children.length).to.be.equals(3);
+        // no change
+        positions.forEach(style => {
+          expect(style.position).to.be.not.ok;
+          expect(style.left).to.be.not.ok;
+        });
+        // change position, top, left
+        children.forEach(el => {
+          expect(el.style.position).to.be.equals("absolute");
+          expect(el.style.left).to.be.ok;
+        });
+      })
       it(`should check getStatus(startCursor, endCursor)`, async () => {
         // Given
         await waitInsert(this.inst, true, 10, 10);

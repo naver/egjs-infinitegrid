@@ -167,7 +167,11 @@ class InfiniteGrid extends Component {
 	 * infinitegrid.append(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
 	 */
 	append(elements, groupKey) {
-		this._manager && this._insert(elements, APPEND, groupKey);
+		this._manager && this._insert({
+			elements,
+			isAppend: APPEND,
+			groupKey,
+		});
 		return this;
 	}
 	/**
@@ -184,7 +188,11 @@ class InfiniteGrid extends Component {
 	 * infinitegrid.prepend(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
 	 */
 	prepend(elements, groupKey) {
-		this._manager && this._insert(elements, PREPEND, groupKey);
+		this._manager && this._insert({
+			elements,
+			isAppend: PREPEND,
+			groupKey,
+		});
 		return this;
 	}
 	/**
@@ -318,7 +326,11 @@ class InfiniteGrid extends Component {
 			const children = toArray(renderer.container.children);
 
 			if (children.length) {
-				this._insert(children, true);
+				this._insert({
+					elements: children,
+					isAppend: true,
+					isChildren: true,
+				});
 			} else {
 				this._requestAppend({});
 			}
@@ -524,16 +536,18 @@ class InfiniteGrid extends Component {
 			this._status.processingStatus -= this._status.processingStatus & status;
 		}
 	}
-	_insert(elements, isAppend, groupKey) {
+	_insert({
+		elements,
+		isAppend,
+		isChildren,
+		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
+	}) {
 		if (this._isProcessing() || elements.length === 0) {
 			return;
 		}
-		const key = typeof groupKey === "undefined" ? (new Date().getTime() + Math
-			.floor(
-				Math.random() * 1000)) : groupKey;
 		const items = ItemManager.from(elements, this.options.itemSelector, {
 			isAppend,
-			groupKey: key,
+			groupKey,
 			outlines: {start: [], end: []},
 		});
 
@@ -542,7 +556,7 @@ class InfiniteGrid extends Component {
 		}
 
 		const group = {
-			groupKey: key,
+			groupKey,
 			items,
 			outlines: {start: [], end: []},
 		};
@@ -564,6 +578,7 @@ class InfiniteGrid extends Component {
 			items,
 			newItems: items,
 			isAppend,
+			isChildren,
 			isTrusted: NO_TRUSTED,
 		});
 	}
@@ -800,6 +815,7 @@ ig.on("imageError", e => {
 		items = ItemManager.pluck(groups, "items"),
 		newItems,
 		isAppend,
+		isChildren,
 		isTrusted,
 		moveCache,
 		moveItem = -2}) {
@@ -808,8 +824,11 @@ ig.on("imageError", e => {
 		const itemManager = this._items;
 		const horizontal = this.options.horizontal;
 
-		DOMRenderer.createElements(items);
-		this._renderer[method](items);
+		// If container has children, it does not render first.
+		if (!isChildren) {
+			DOMRenderer.createElements(items);
+			this._renderer[method](items);
+		}
 		this._manager[method]({
 			groups,
 			items: newItems,
