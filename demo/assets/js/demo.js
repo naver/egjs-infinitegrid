@@ -6,7 +6,7 @@ var demoIg;
 			window.webkitRequestAnimationFrame ||
 			window.mozRequestAnimationFrame	||
 			function(callback) {
-				setTimeout(() => {
+				setTimeout(function() {
 					callback();
 				}, 100);
 			};
