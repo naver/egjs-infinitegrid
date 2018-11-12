@@ -6,15 +6,15 @@ declare class ImageLoaded {
 		complete?: () => {},
 		error?: (params?: {target?: Element, itemIndex?:number}) => {},
 		end?: () => {},
-	});
-	static checkImageLoaded(el: Element);
+	}): void;
+	static checkImageLoaded(el: Element): void;
 	static check(elements: Element[], options: {
 		prefix?: string,
 		type: number,
 		complete?: () => {},
 		error?: (params?: {target?: Element, itemIndex?:number}) => {},
 		end?: () => {}
-	});
+	}): void;
 }
 
 export default ImageLoaded;

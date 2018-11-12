@@ -25,7 +25,7 @@ declare class DOMRenderer {
 	updateSize(items: any[]): void;
 	append(items: any[]): void;
 	prepend(items: any[]): void;
-	createAndInsert(items: any[], isAppend: boolean);
+	createAndInsert(items: any[], isAppend: boolean): void;
 	getViewSize(): number;
 	getViewportSize(): number;
 	setContainerSize(size: number): void;

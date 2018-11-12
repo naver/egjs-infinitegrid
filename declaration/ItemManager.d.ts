@@ -36,15 +36,15 @@ declare class ItemManager {
 	static selectItems(elements: any[], selector: string): any[];
 	static pluck(data: any[], property: string): any[];
 	constructor();
-	getStatus(startKey?: any, endKey?: any);
-	setStatus(status?: ItemStatus);
+	getStatus(startKey?: any, endKey?: any): ItemStatus;
+	setStatus(status?: ItemStatus): this;
 	size(): number;
 	fit(base: number, horizontal: boolean): void;
 	pluck(property: string, start?: number, end?: number): any[];
 	getOutline(index: number, property: string): any[];
 	getEdgeIndex(cursor: string, start: number, end: number): number;
 	getEdgeValue(cursor: string, start: number, end: number): number;
-	clearOutlines(startCursor?: number, endCursor?: number);
+	clearOutlines(startCursor?: number, endCursor?: number): this;
 	getMaxEdgeValue(): number;
 	append(layouted: any): any[];
 	prepend(layouted: any): any[];

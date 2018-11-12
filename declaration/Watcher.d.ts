@@ -19,7 +19,7 @@ declare class Watcher {
 	getStatus(): WatcherStatus;
 	setStatus(status: WatcherStatus, applyScrollPos?: boolean): void;
 	scrollBy(pos: number): void;
-	scrollTo(pos: number): boif;
+	scrollTo(pos: number): void;
 	getScrollPos(): number | null;
 	setScrollPos(pos?: number): void;
 	attachEvent(): void;

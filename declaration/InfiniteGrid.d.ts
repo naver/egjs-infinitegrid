@@ -1,4 +1,4 @@
-import * as Component from "@egjs/component";
+import Component from "@egjs/component";
 import {InfiniteStatus} from "./Infinite";
 import {DOMRendererStatus} from "./DOMRenderer";
 import {WatcherStatus} from "./Watcher";
@@ -36,13 +36,13 @@ declare class InfiniteGrid extends Component {
 	prepend(elements: (string|HTMLElement)[]| string, groupKey?: string|number): this;
 	moveTo(index: number, itemIndex?: number): this;
 	clear(): this;
-	destroy();
+	destroy(): void;
 	getGroupKeys(includeCached?: boolean): (string|number)[];
 	getStatus(startKey?: any, endKey?: any): InfiniteGridStatus;
 	isProcessing(): boolean;
 	layout(isRelayout?: boolean): this;
 	remove(item: HTMLElement): (object|null);
-	setLayout(LayoutKlass, options?): this;
+	setLayout(LayoutKlass?: any, options?: any): this;
 	getItems(includeCached?: boolean): Item[];
 	setStatus(status: InfiniteGridStatus, applyScrollPos?: boolean): this;
 }

@@ -1,13 +1,12 @@
 import DOMRenderer from "./DOMRenderer";
 import ItemManager from "./ItemManager";
 
-
 export interface LayoutManagerOptions {
 	attributePrefix?: string,
 	isEqualSize?: boolean,
 	isConstantSize?: boolean,
 	horizontal?: boolean,
-};
+}
 export interface LayoutManagerCallbacks {
 	complete?: (params?: {
 		groups?: any[],
@@ -29,7 +28,7 @@ export interface LayoutManagerCallbacks {
 		remove?: any[],
 		layout?: boolean,
 	}) => void;
-};
+}
   
 declare class LayoutManager {
 	constructor(items: ItemManager, renderer: DOMRenderer, options?: LayoutManagerOptions);

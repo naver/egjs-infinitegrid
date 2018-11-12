@@ -21,7 +21,7 @@ declare class Infinite {
 	setCursor(cursor: string, index: number): this;
 	updateCursor(cursor: string): this;
 	setData(item: object, isAppend?: boolean): this;
-	setStatus(status: InfiniteStatus);
+	setStatus(status: InfiniteStatus): this;
 	getStatus(startKey?: any, endKey?: any): InfiniteStatus;
 	getCursor(cursor: string): number;
 	getEdgeOutline(cursor: string): any[];
