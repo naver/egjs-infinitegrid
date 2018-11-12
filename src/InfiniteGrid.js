@@ -21,6 +21,7 @@ import {
 	DEFENSE_BROWSER,
 	IGNORE_CLASSNAME,
 	DUMMY_POSITION,
+	IS_IOS,
 } from "./consts";
 import Infinite from "./Infinite";
 import {toArray, $, outerHeight, outerWidth} from "./utils";
@@ -999,7 +1000,7 @@ ig.on("imageError", e => {
 		if (isAppend) {
 			this._setContainerSize(size + this._status.loadingSize || 0);
 			if (scrollPos > 0) {
-				this._scrollTo(scrollPos);
+				!IS_IOS && this._scrollTo(scrollPos);
 			}
 		}
 		!isLayout && this._process(PROCESSING, false);
