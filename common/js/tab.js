@@ -1,7 +1,7 @@
 /* eslint-disable */
 var Watcher = eg.InfiniteGrid.Watcher;
 var items = [];
-var innerHeight = window.innerHeight;
+var innerHeight = window.innerHeight || document.body.clientHeight;
 var onScroll = function(e) {
 	var scrollPos = e.scrollPos;
 	if (scrollPos === null) {
@@ -20,7 +20,7 @@ var watcher = new Watcher(window, {
 	container: document.querySelector(".contents"),
 	check: onScroll,
 	resize: function(e) {
-		innerHeight = window.innerHeight;
+		innerHeight = window.innerHeight || document.body.clientHeight;
 		openTab(Tab.currentTab);
 	}
 });

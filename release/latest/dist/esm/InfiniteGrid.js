@@ -10,7 +10,7 @@ import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
 import Watcher from "./Watcher";
-import { APPEND, PREPEND, CACHE, NO_CACHE, TRUSTED, NO_TRUSTED, IS_ANDROID2, IDLE, LOADING_APPEND, LOADING_PREPEND, PROCESSING, DEFENSE_BROWSER, IGNORE_CLASSNAME, DUMMY_POSITION } from "./consts";
+import { APPEND, PREPEND, CACHE, NO_CACHE, TRUSTED, NO_TRUSTED, IS_ANDROID2, IDLE, LOADING_APPEND, LOADING_PREPEND, PROCESSING, DEFENSE_BROWSER, IGNORE_CLASSNAME, DUMMY_POSITION, IS_IOS } from "./consts";
 import Infinite from "./Infinite";
 import { toArray, $, outerHeight, outerWidth } from "./utils";
 import LayoutMananger from "./LayoutManager"; // IE8
@@ -1275,7 +1275,7 @@ function (_Component) {
       this._setContainerSize(size + this._status.loadingSize || 0);
 
       if (scrollPos > 0) {
-        this._scrollTo(scrollPos);
+        !IS_IOS && this._scrollTo(scrollPos);
       }
     }
 
