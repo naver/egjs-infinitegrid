@@ -4039,7 +4039,7 @@ function (_Component) {
       this._setContainerSize(size + this._status.loadingSize || 0);
 
       if (scrollPos > 0) {
-        this._scrollTo(scrollPos);
+        !_consts.IS_IOS && this._scrollTo(scrollPos);
       }
     }
 
