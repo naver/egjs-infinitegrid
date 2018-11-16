@@ -4,7 +4,7 @@
 */
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
-import DOMRenderer from "./DOMRenderer";
+import DOMRenderer, { resetSize } from "./DOMRenderer";
 import Watcher from "./Watcher";
 import {
 	APPEND,
@@ -702,6 +702,47 @@ class InfiniteGrid extends Component {
 	}
 	_setContainerSize(size) {
 		this._renderer.setContainerSize(Math.max(this._items.getMaxEdgeValue(), size));
+	}
+	getItem(groupIndex = 0, itemIndex = 0) {
+		if (itemIndex == null && typeof groupIndex === "object") {
+			const items = this.getItems();
+			const length = items.length;
+
+			for (let i = 0; i < length; ++i) {
+				if (items[i].el === groupIndex) {
+					return items[i];
+				}
+			}
+			return undefined;
+		} else {
+			const group = this._items.getData(groupIndex);
+
+			return group && group.items[itemIndex];
+		}
+	}
+	_updateItem(item) {
+		if (item && item.el) {
+			item.content = item.el.innerHTML;
+
+			!this.options.isEqualSize && resetSize(item);
+			DOMRenderer.renderItems([item]);
+			return true;
+		}
+		return false;
+	}
+	updateItem(groupIndex, itemIndex) {
+		const item = this.getItem(groupIndex, itemIndex);
+
+		this._updateItem(item) && this.layout();
+
+		return this;
+	}
+	updateItems() {
+		this.getItems().forEach(item => {
+			this._updateItem(item);
+		});
+		this.layout();
+		return this;
 	}
 	/**
 	 * Move to some group or item position.

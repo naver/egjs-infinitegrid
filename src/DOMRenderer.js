@@ -20,6 +20,11 @@ import {
 	addOnceEvent,
 } from "./utils";
 
+
+export function resetSize(item) {
+	item.orgSize = 0;
+	item.size = 0;
+}
 function createContainer(element) {
 	const container = document.createElement("div");
 
