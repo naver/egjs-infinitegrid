@@ -40,32 +40,38 @@ eg.infiniteGrid benchmark: append item performance with [masonry](https://masonr
 
 Download dist files from repo directly or install it via npm. 
 
-### For development (Uncompressed)
+### Packaged version (with Dependencies)
+> Packaged version is not an official distribution.
+> Is just to provide for ease use of 'egjs-infinitegrid' with dependency.
+
+- **latest version**
+
+|| Uncompressed | Compressed |
+|---|----|---|
+|All| [infinitegrid.pkgd.js (173kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.js) | [infinitegrid.pkgd.min.js (46kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.min.js)|
+|GridLayout| [infinitegrid.gridlayout.js (123kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.gridlayout.js) | [infinitegrid.gridlayout.min.js (36kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.gridlayout.min.js) |
+|JustifiedLayout| [infinitegrid.justifiedlayout.js (131kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.justifiedlayout.js) | [infinitegrid.justifiedlayout.min.js (37kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.justifiedlayout.min.js)|
+|FrameLayout| [infinitegrid.framelayout.js (126kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.framelayout.js) | [infinitegrid.framelayout.min.js (36kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.framelayout.min.js) |
+|SquareLayout| [infinitegrid.squarelayout.js (132kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.squarelayout.js) | [infinitegrid.squarelayout.min.js (38kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.squarelayout.min.js) |
+|PackingLayout| [infinitegrid.packinglayout.js (125kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.packinglayout.js) | [infinitegrid.packinglayout.min.js (37kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.packinglayout.min.js) |
+
+- **Specific version**
+    * https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/[FILE_NAME]
+
+### For development (Uncompressed with No Dependencies)
 
 You can download the uncompressed files for development
 
 - Latest : https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.js
 - Specific version : https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/infinitegrid.js
 
-### For production (Compressed)
+### For production (Compressed with No Dependencies)
 
 You can download the compressed files for production
 
 - Latest : https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js
 - Specific version : https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/infinitegrid.min.js
 
-
-### Packaged version (with Dependencies)
-> Packaged version is not an official distribution.
-> Is just to provide for ease use of 'egjs-infinitegrid' with dependency.
-
- - **Latest**
-    - https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.js
-    - https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.min.js
-
- - **Specific version**
-    - https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/infinitegrid.pkgd.js
-    - https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/infinitegrid.pkgd.min.js
 
 ### Installation with npm
 

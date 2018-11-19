@@ -8,7 +8,8 @@
 	"types": "declaration/index.d.ts",
 	"scripts": {
 		"start": "concurrently 'webpack-dev-server --host=0.0.0.0 --env.name=InfiniteGrid --env.path=./src/index.umd.js' 'webpack --watch --env.name=Parallax --env.path=./src/Parallax.js'",
-		"build": "rm -rf ./dist && rollup -c && print-sizes ./dist --exclude=\\.map",
+		"build": "rm -rf ./dist && rollup -c && npm run printsizes",
+		"printsizes": "print-sizes ./dist --exclude=\\.map && node ./config/readme.js",
 		"build:webpack": "rm -rf ./dist && concurrently 'npm run build:infinitegrid' 'npm run build:parallax'",
 		"build:parallax": "webpack --env.type=production --env.name=Parallax --env.path=./src/Parallax.js",
 		"test": "karma start",
@@ -100,7 +101,7 @@
 		"karma-webpack": "^3.0.0",
 		"lite-fixture": "^1.0.2",
 		"mocha": "^4.0.1",
-		"print-sizes": "0.0.1-rc2",
+		"print-sizes": "^0.0.3",
 		"replace-in-file": "^3.4.2",
 		"rollup": "^0.67.1",
 		"rollup-plugin-babel": "^4.0.3",
