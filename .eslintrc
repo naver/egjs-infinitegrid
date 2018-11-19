@@ -2,6 +2,7 @@
 	// Naver https://github.com/naver/eslint-config-naver/blob/master/STYLE_GUIDE.md
 	"extends": "naver",
 	"rules": {
+		"array-element-newline": ["error", "consistent"],
 		"comma-dangle": ["error", {
 			"arrays": "always-multiline",
 			"objects": "always-multiline",
