@@ -48,7 +48,7 @@ Download dist files from repo directly or install it via npm.
 
 || Uncompressed | Compressed |
 |---|----|---|
-|No Dependency<br/>(@egjs/component)| [infinitegrid.js (163.9kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.js)| [infinitegrid.min.js (45.3kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js)|
+|No Dependency<br/>([@egjs/component](https://github.com/naver/egjs-component))| [infinitegrid.js (163.9kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.js)| [infinitegrid.min.js (45.3kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js)|
 |All| [infinitegrid.pkgd.js (173.2kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.js) | [infinitegrid.pkgd.min.js (46.8kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.min.js)|(https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js)
 |GridLayout| [infinitegrid.gridlayout.js (123.4kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.gridlayout.js) | [infinitegrid.gridlayout.min.js (36.2kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.gridlayout.min.js) |
 |JustifiedLayout| [infinitegrid.justifiedlayout.js (131.1kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.justifiedlayout.js) | [infinitegrid.justifiedlayout.min.js (37.6kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.justifiedlayout.min.js)|
