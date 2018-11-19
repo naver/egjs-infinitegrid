@@ -27,8 +27,8 @@ const uglify = pluginUglify({
 				return /@egjs\/infinitegrid/.test(text);
 			}
 			return false;
-		}
-	}
+		},
+	},
 });
 
 
@@ -36,15 +36,21 @@ const babel = pluginBabel({
 	babelrc: false,
 	"presets": [
 		[
-			"@babel/preset-env", {
+			"@babel/preset-env",
+			{
 				"loose": true,
 				"modules": false,
 			},
-		]
+		],
 	],
 	"plugins": [
 		"no-side-effect-class-properties",
-		["@babel/plugin-proposal-class-properties", {"loose": true}],
+		[
+			"@babel/plugin-proposal-class-properties",
+			{
+				"loose": true,
+			},
+		],
 		"@babel/plugin-transform-object-assign",
 		"transform-es3-property-literals",
 		"transform-es3-member-expression-literals",
@@ -52,25 +58,23 @@ const babel = pluginBabel({
 });
 const replace = pluginReplace({
 	"#__VERSION__#": version,
-	delimiters: ["", ""]
+	delimiters: ["", ""],
 });
 const _resolve = pluginResolve({});
 
-
-
 function umd({
-  input,
-  output,
+	input,
+	output,
 	library,
 	ugly,
 	externals = {},
 	resolve,
 }) {
-  const plugins = [babel, replace];
+	const plugins = [babel, replace];
 
-  resolve && plugins.push(_resolve);
-  ugly && plugins.push(uglify);
-  return {
+	resolve && plugins.push(_resolve);
+	ugly && plugins.push(uglify);
+	return {
 		input,
 		plugins,
 		external: Object.keys(externals),
@@ -83,33 +87,31 @@ function umd({
 			format: "umd",
 			exports: "default",
 			interop: false,
-			sourcemap: true
-		}
-  }
+			sourcemap: true,
+		},
+	};
 }
 
 exports.umds = function umds({
-  input,
-  outputs,
+	input,
+	outputs,
 	library,
 	externals,
 	resolve,
 	ugly,
 }) {
-	return outputs.map(output => {
-		return umd({
-			input,
-			output,
-			library,
-			externals,
-			resolve: resolve || ~output.indexOf(".pkgd"),
-			ugly: ugly || ~output.indexOf(".min"),
-		});
-	});
-}
+	return outputs.map(output => umd({
+		input,
+		output,
+		library,
+		externals,
+		resolve: resolve || ~output.indexOf(".pkgd"),
+		ugly: ugly || ~output.indexOf(".min"),
+	}));
+};
 
 exports.esm = function esm({
-  input,
+	input,
 	output,
 }) {
 	const plugins = [babel, replace];
@@ -123,9 +125,9 @@ exports.esm = function esm({
 			freeze: false,
 			format: "esm",
 			interop: false,
-			sourcemap: true
-		}
-  }
-}
+			sourcemap: true,
+		},
+	};
+};
 
 exports.umd = umd;

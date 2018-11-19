@@ -4,7 +4,7 @@
 	"parser": "babel-eslint",
 	"rules": {
 		"no-undef": 0,
-		"array-element-newline": ["error", { "multiline": true }],
+		"array-element-newline": 0,
 		"comma-dangle": ["error", {
 			"arrays": "always-multiline",
 			"objects": "always-multiline",

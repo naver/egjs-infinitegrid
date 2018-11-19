@@ -62,5 +62,6 @@ export default [
 	esm({
 		input: "./src/index.js",
 		output: "./dist/infinitegrid.esm.js",
-	}),	
-]
+	}),
+];
+
