@@ -2,10 +2,9 @@
  * Copyright (c) NAVER Corp.
  * egjs-infinitegrid projects are licensed under the MIT license
  */
-import InfiniteGrid, * as modules from "./index";
+import InfiniteGrid from "./InfiniteGrid";
+import GridLayout from "./layouts/GridLayout";
 
-for (const name in modules) {
-	InfiniteGrid[name] = modules[name];
-}
+InfiniteGrid.GridLayout = GridLayout;
 
 export default InfiniteGrid;

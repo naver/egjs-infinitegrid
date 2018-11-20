@@ -1,7 +1,10 @@
 {
 	// Naver https://github.com/naver/eslint-config-naver/blob/master/STYLE_GUIDE.md
 	"extends": "naver",
+	"parser": "babel-eslint",
 	"rules": {
+		"no-undef": 0,
+		"array-element-newline": 0,
 		"comma-dangle": ["error", {
 			"arrays": "always-multiline",
 			"objects": "always-multiline",

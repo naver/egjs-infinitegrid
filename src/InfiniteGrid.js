@@ -86,6 +86,17 @@ some.layout();
  **/
 class InfiniteGrid extends Component {
 	/**
+ * Version info string
+ * @ko 버전정보 문자열
+ * @name VERSION
+ * @static
+ * @type {String}
+ * @example
+ * eg.InfiniteGrid.VERSION;  // ex) 3.3.3
+ * @memberof eg.InfiniteGrid
+ */
+	static VERSION = "#__VERSION__#";
+	/**
 	 * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
 	 * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
 	 * @param {String} [options.itemSelector] A selector to select card elements that make up the layout<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)</ko>
