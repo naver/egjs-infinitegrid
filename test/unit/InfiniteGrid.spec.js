@@ -1478,9 +1478,6 @@ describe("InfiniteGrid Test", function () {
       const {outlines: {start}} = this.inst._items.getData(1);
 
       // When
-      this.inst.layout();
-
-      const {outlines: {start: start2}} = this.inst._items.getData(1);
       // change content
       item1.el.innerHTML = "updateItem1";
       item2.el.innerHTML = "updateItem2";
@@ -1502,7 +1499,7 @@ describe("InfiniteGrid Test", function () {
       expect(item2.content).to.have.string("updateItem2");
       expect(height1).to.be.not.equal(item1.size.height);
       expect(height2).to.be.not.equal(item2.size.height);
-      expect(start).to.be.deep.equal(start2);
+      expect(start.length).to.be.equal(start3.length);
       expect(start).to.be.not.deep.equal(start3);
     });
     it (`should check "updateItems" method`, async () => {
@@ -1518,9 +1515,6 @@ describe("InfiniteGrid Test", function () {
       const {outlines: {start}} = this.inst._items.getData(1);
 
       // When
-      this.inst.layout();
-
-      const {outlines: {start: start2}} = this.inst._items.getData(1);
       // change content
       item1.el.innerHTML = "updateItem1";
       item2.el.innerHTML = "updateItem2";
@@ -1541,7 +1535,7 @@ describe("InfiniteGrid Test", function () {
       expect(item2.content).to.have.string("updateItem2");
       expect(height1).to.be.not.equal(item1.size.height);
       expect(height2).to.be.not.equal(item2.size.height);
-      expect(start).to.be.deep.equal(start2);
+      expect(start.length).to.be.equal(start3.length);
       expect(start).to.be.not.deep.equal(start3);
     });
   });
