@@ -703,7 +703,7 @@ class InfiniteGrid extends Component {
 	_setContainerSize(size) {
 		this._renderer.setContainerSize(Math.max(this._items.getMaxEdgeValue(), size));
 	}
-	getItem(groupIndex = 0, itemIndex = 0) {
+	getItem(groupIndex = 0, itemIndex) {
 		if (itemIndex == null && typeof groupIndex === "object") {
 			const items = this.getItems();
 			const length = items.length;
@@ -717,7 +717,7 @@ class InfiniteGrid extends Component {
 		} else {
 			const group = this._items.getData(groupIndex);
 
-			return group && group.items[itemIndex];
+			return group && group.items[itemIndex || 0];
 		}
 	}
 	_updateItem(item) {
@@ -725,7 +725,7 @@ class InfiniteGrid extends Component {
 			item.content = item.el.innerHTML;
 
 			!this.options.isEqualSize && resetSize(item);
-			DOMRenderer.renderItems([item]);
+			this._renderer.updateSize([item]);
 			return true;
 		}
 		return false;
