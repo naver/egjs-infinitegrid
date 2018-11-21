@@ -733,7 +733,7 @@ class InfiniteGrid extends Component {
 	updateItem(groupIndex, itemIndex) {
 		const item = this.getItem(groupIndex, itemIndex);
 
-		this._updateItem(item) && this.layout();
+		this._updateItem(item) && this.layout(false);
 
 		return this;
 	}
@@ -741,7 +741,7 @@ class InfiniteGrid extends Component {
 		this.getItems().forEach(item => {
 			this._updateItem(item);
 		});
-		this.layout();
+		this.layout(false);
 		return this;
 	}
 	/**
