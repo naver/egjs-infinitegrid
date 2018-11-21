@@ -4,7 +4,7 @@
 */
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
-import DOMRenderer, { resetSize } from "./DOMRenderer";
+import DOMRenderer, {resetSize} from "./DOMRenderer";
 import Watcher from "./Watcher";
 import {
 	APPEND,
