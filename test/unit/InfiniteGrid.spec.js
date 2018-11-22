@@ -1465,7 +1465,7 @@ describe("InfiniteGrid Test", function () {
       expect(item3.el).to.be.not.ok;
       expect(item4).to.be.not.ok;
     });
-    it (`should check "updateItem" method`, async () => {
+    it (`should check "updateItem(el)" method`, async () => {
       // Given
       // group 1 ~ 40
       await waitInsert(this.inst, true, 30, 40);
@@ -1473,34 +1473,55 @@ describe("InfiniteGrid Test", function () {
       this.inst._infinite.recycle(0, false);
 
       const item1 = this.inst.getItem(0, 0);
-      const item2 = this.inst.getItem(0, 1);
       // group2 is below group1
       const {outlines: {start}} = this.inst._items.getData(1);
 
       // When
       // change content
       item1.el.innerHTML = "updateItem1";
-      item2.el.innerHTML = "updateItem2";
 
       // change size
       item1.el.style.height = `${parseInt(item1.el.style.height) + 200}px`;
-      item2.el.style.height = `${parseInt(item2.el.style.height) + 200}px`;
-
 
       const height1 = item1.size.height;
-      const height2 = item2.size.height;
 
       this.inst.updateItem(item1.el);
-      this.inst.updateItem(0, 1);
 
-      const {outlines: {start: start3}} = this.inst._items.getData(1);
+      const {outlines: {start: start2}} = this.inst._items.getData(1);
       // Then
       expect(item1.content).to.have.string("updateItem1");
-      expect(item2.content).to.have.string("updateItem2");
       expect(height1).to.be.not.equal(item1.size.height);
-      expect(height2).to.be.not.equal(item2.size.height);
-      expect(start.length).to.be.equal(start3.length);
-      expect(start).to.be.not.deep.equal(start3);
+      expect(start.length).to.be.equal(start2.length);
+      expect(start).to.be.not.deep.equal(start2);
+    });
+    it (`should check "updateItem(groupIndex, itemIndex)" method`, async () => {
+      // Given
+      // group 1 ~ 40
+      await waitInsert(this.inst, true, 30, 40);
+      // Only group1 is visible, group2 ~ 40 are invisible.
+      this.inst._infinite.recycle(0, false);
+
+      const item1 = this.inst.getItem(0, 0);
+      // group2 is below group1
+      const {outlines: {start}} = this.inst._items.getData(1);
+
+      // When
+      // change content
+      item1.el.innerHTML = "updateItem1";
+
+      // change size
+      item1.el.style.height = `${parseInt(item1.el.style.height) + 200}px`;
+
+      const height1 = item1.size.height;
+
+      this.inst.updateItem(0, 0);
+
+      const {outlines: {start: start2}} = this.inst._items.getData(1);
+      // Then
+      expect(item1.content).to.have.string("updateItem1");
+      expect(height1).to.be.not.equal(item1.size.height);
+      expect(start.length).to.be.equal(start2.length);
+      expect(start).to.be.not.deep.equal(start2);
     });
     it (`should check "updateItems" method`, async () => {
       // Given
