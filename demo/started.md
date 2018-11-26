@@ -28,16 +28,22 @@
 
 
 ##### ES5
-``` html {% for dist in site.data.egjs.dist %}
-<script src="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/{{ dist }}"></script>
-{% endfor %}```
+
+``` html 
+{% for dist in site.data.egjs.files %}
+// {{dist.name}}: {{dist.size}}
+<script src="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/release/latest/dist/{{ dist.file }}"></script>
+{% endfor %}
+```
+
+
 ```js
 var InfiniteGrid = eg.InfiniteGrid;
-var JustifiedLayout = InfiniteGrid.JustifiedLayout;
+var GridLayout = InfiniteGrid.GridLayout;
 ```
 ##### ES6+
 ```js
-import InfiniteGrid, {JustifiedLayout} from "@egjs/infinitegrid";
+import InfiniteGrid, {GridLayout} from "@egjs/infinitegrid";
 ```
 
 ### Initialize
@@ -47,8 +53,8 @@ var ig = new InfiniteGrid("#grid", {
 });
 
 // initialize layout
-// GridLayout(default), JustifiedLayout, FrameLayout, SquareLayout, PackingLayout
-ig.setLayout(JustifiedLayout, {
+// GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout
+ig.setLayout(GridLayout, {
     itemSize: 200,
 });
 ```
