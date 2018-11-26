@@ -2796,6 +2796,10 @@ https://github.com/naver/egjs-infinitegrid
         }
 
         if (itemIndex == null && typeof groupIndex === "object") {
+          if (!groupIndex) {
+            return undefined;
+          }
+
           var items = this.getItems();
           var length = items.length;
 

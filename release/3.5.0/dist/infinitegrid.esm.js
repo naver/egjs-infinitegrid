@@ -2792,6 +2792,10 @@ function () {
       }
 
       if (itemIndex == null && typeof groupIndex === "object") {
+        if (!groupIndex) {
+          return undefined;
+        }
+
         var items = this.getItems();
         var length = items.length;
 

@@ -3069,6 +3069,10 @@ NOTE: This is not an official distribution file and is only for user convenience
         }
 
         if (itemIndex == null && typeof groupIndex === "object") {
+          if (!groupIndex) {
+            return undefined;
+          }
+
           var items = this.getItems();
           var length = items.length;
 
