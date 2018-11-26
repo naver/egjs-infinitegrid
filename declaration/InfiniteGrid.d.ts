@@ -39,11 +39,11 @@ declare class InfiniteGrid extends Component {
 	destroy(): void;
 	getGroupKeys(includeCached?: boolean): (string|number)[];
 	getStatus(startKey?: any, endKey?: any): InfiniteGridStatus;
-	getItem(el: HTMLElement): Item;
+	getItem(el: Element | null): Item;
 	getItem(groupIndex: number, itemIndex: number): Item;
-	updateItem(el: HTMLElement): this;
+	updateItem(el: Element | null): this;
 	updateItem(groupIndex: number, itemIndex: number): this;
-	updateItems();
+	updateItems(): this;
 	isProcessing(): boolean;
 	layout(isRelayout?: boolean): this;
 	remove(item: HTMLElement): (object|null);

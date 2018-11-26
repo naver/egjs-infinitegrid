@@ -723,6 +723,9 @@ class InfiniteGrid extends Component {
 	 */
 	getItem(groupIndex = 0, itemIndex) {
 		if (itemIndex == null && typeof groupIndex === "object") {
+			if (!groupIndex) {
+				return undefined;
+			}
 			const items = this.getItems();
 			const length = items.length;
 
