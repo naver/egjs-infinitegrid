@@ -1431,6 +1431,135 @@ describe("InfiniteGrid Test", function () {
       });
     });
   });
+  describe(`getItem, updateItem, updateItems Test`, function () {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = "<div id='infinite'></div>";
+      this.inst = new InfiniteGrid("#infinite");
+      this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it (`should check "getItem" method`, async () => {
+      // Given, When
+      // group 1 ~ 40
+      await waitInsert(this.inst, true, 30, 40);
+
+      // Only group1 is visible, group2 ~ 40 are invisible.
+      this.inst._infinite.recycle(0, false);
+
+      // Then
+      const item1 = this.inst.getItem(0, 0);
+      const item2 = this.inst.getItem(item1.el);
+
+      // no item element
+      const item3 = this.inst.getItem(1, 0);
+      const item4 = this.inst.getItem(document.createElement("div"));
+      expect(item1).to.be.equal(item2);
+      expect(item1).to.be.not.equal(item3);
+      expect(item3.el).to.be.not.ok;
+      expect(item4).to.be.not.ok;
+    });
+    it (`should check "updateItem(el)" method`, async () => {
+      // Given
+      // group 1 ~ 40
+      await waitInsert(this.inst, true, 30, 40);
+      // Only group1 is visible, group2 ~ 40 are invisible.
+      this.inst._infinite.recycle(0, false);
+
+      const item1 = this.inst.getItem(0, 0);
+      // group2 is below group1
+      const {outlines: {start}} = this.inst._items.getData(1);
+
+      // When
+      // change content
+      item1.el.innerHTML = "updateItem1";
+
+      // change size
+      item1.el.style.height = `${parseInt(item1.el.style.height) + 200}px`;
+
+      const height1 = item1.size.height;
+
+      this.inst.updateItem(item1.el);
+
+      const {outlines: {start: start2}} = this.inst._items.getData(1);
+      // Then
+      expect(item1.content).to.have.string("updateItem1");
+      expect(height1).to.be.not.equal(item1.size.height);
+      expect(start.length).to.be.equal(start2.length);
+      expect(start).to.be.not.deep.equal(start2);
+    });
+    it (`should check "updateItem(groupIndex, itemIndex)" method`, async () => {
+      // Given
+      // group 1 ~ 40
+      await waitInsert(this.inst, true, 30, 40);
+      // Only group1 is visible, group2 ~ 40 are invisible.
+      this.inst._infinite.recycle(0, false);
+
+      const item1 = this.inst.getItem(0, 0);
+      // group2 is below group1
+      const {outlines: {start}} = this.inst._items.getData(1);
+
+      // When
+      // change content
+      item1.el.innerHTML = "updateItem1";
+
+      // change size
+      item1.el.style.height = `${parseInt(item1.el.style.height) + 200}px`;
+
+      const height1 = item1.size.height;
+
+      this.inst.updateItem(0, 0);
+
+      const {outlines: {start: start2}} = this.inst._items.getData(1);
+      // Then
+      expect(item1.content).to.have.string("updateItem1");
+      expect(height1).to.be.not.equal(item1.size.height);
+      expect(start.length).to.be.equal(start2.length);
+      expect(start).to.be.not.deep.equal(start2);
+    });
+    it (`should check "updateItems" method`, async () => {
+      // Given
+      // group 1 ~ 40
+      await waitInsert(this.inst, true, 30, 40);
+      // Only group1 is visible, group2 ~ 40 are invisible.
+      this.inst._infinite.recycle(0, false);
+
+      const item1 = this.inst.getItem(0, 0);
+      const item2 = this.inst.getItem(0, 1);
+      // group2 is below group1
+      const {outlines: {start}} = this.inst._items.getData(1);
+
+      // When
+      // change content
+      item1.el.innerHTML = "updateItem1";
+      item2.el.innerHTML = "updateItem2";
+
+      // change size
+      item1.el.style.height = `${parseInt(item1.el.style.height) + 200}px`;
+      item2.el.style.height = `${parseInt(item2.el.style.height) + 200}px`;
+
+
+      const height1 = item1.size.height;
+      const height2 = item2.size.height;
+
+      this.inst.updateItems();
+
+      const {outlines: {start: start3}} = this.inst._items.getData(1);
+      // Then
+      expect(item1.content).to.have.string("updateItem1");
+      expect(item2.content).to.have.string("updateItem2");
+      expect(height1).to.be.not.equal(item1.size.height);
+      expect(height2).to.be.not.equal(item2.size.height);
+      expect(start.length).to.be.equal(start3.length);
+      expect(start).to.be.not.deep.equal(start3);
+    });
+  });
   describe("setLayout method Test", function () {
     beforeEach(() => {
       this.el = sandbox();
