@@ -703,6 +703,24 @@ class InfiniteGrid extends Component {
 	_setContainerSize(size) {
 		this._renderer.setContainerSize(Math.max(this._items.getMaxEdgeValue(), size));
 	}
+	/**
+	 * Retrieves the item via index or the element.
+	 * @ko index 또는 element를 통해 아이템을 가져온다.
+	 * @param {number | HTMLElement} [groupIndex=0] The element corresponding to item or the index of the group where the item is in position <ko> item에 해당하는 element 또는 해당 item이 있는 group의 index</ko>
+	 * @param {number} [itemIndex] If groupIndex is used, the index of the item in the group <ko> groupIndex를 사용할 경우 해당 group에 있는 Item의 index </ko>
+	 * @return {object} The item containing the content, size and position,etc<ko>content, size, position 등이 담겨있는 item 정보</ko>
+	 * @example
+
+	 ig.getItem(0, 0);
+	 ig.getItem(element);
+
+	 {
+		el: HTMLElement,
+		content: "<div>...</div>",
+		size: {width: ..., height: ...},
+		rect: {top: ..., left: ..., width: ..., height: ...},
+	 }
+	 */
 	getItem(groupIndex = 0, itemIndex) {
 		if (itemIndex == null && typeof groupIndex === "object") {
 			const items = this.getItems();
@@ -722,7 +740,7 @@ class InfiniteGrid extends Component {
 	}
 	_updateItem(item) {
 		if (item && item.el) {
-			item.content = item.el.innerHTML;
+			item.content = item.el.outerHTML;
 
 			!this.options.isEqualSize && resetSize(item);
 			this._renderer.updateSize([item]);
@@ -730,6 +748,18 @@ class InfiniteGrid extends Component {
 		}
 		return false;
 	}
+	/**
+	 * Updates the item via index or the element.
+	 * @ko index 또는 element를 통해 아이템을 업데이트한다.
+	 * @param {number | HTMLElement} [groupIndex=0] The element corresponding to item or the index of the group where the item is in position <ko> item에 해당하는 element 또는 해당 item이 있는 group의 index</ko>
+	 * @param {number} [itemIndex] If groupIndex is used, the index of the item in the group <ko> groupIndex를 사용할 경우 해당 group에 있는 Item의 index </ko>
+	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 * @example
+	element.innerHTML = "2";
+	element.style.height = "400px";
+	ig.updateItem(element);
+	ig.updateItem(0, 0);
+	 */
 	updateItem(groupIndex, itemIndex) {
 		const item = this.getItem(groupIndex, itemIndex);
 
@@ -737,6 +767,19 @@ class InfiniteGrid extends Component {
 
 		return this;
 	}
+	/**
+	 * Update the currently displayed items.
+	 * 현재보여주는 아이템들을 업데이트한다.
+	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+	 * @example
+	element.innerHTML = "2";
+	element.style.height = "400px";
+
+	element2.innerHTML = "2";
+	element2.style.height = "400px";
+
+	ig.updateItems();
+	 */
 	updateItems() {
 		this.getItems().forEach(item => {
 			this._updateItem(item);
