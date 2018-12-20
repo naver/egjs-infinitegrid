@@ -530,7 +530,6 @@ export default class InfiniteGrid extends Component {
 		if (!this._layout) {
 			return this;
 		}
-		this.state.isFirstRender = false;
 
 		const renderer = this._renderer;
 		const itemManager = this._items;
@@ -851,6 +850,7 @@ export default class InfiniteGrid extends Component {
 			!isLayout && DOMRenderer.renderItems(items);
 			this._setContainerSize();
 		}
+		this.state.isFirstRender = false;
 		if (useRecycle) {
 			this._infinite.recycle(scrollPos, isAppend);
 		}
