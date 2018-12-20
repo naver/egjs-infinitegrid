@@ -530,6 +530,8 @@ export default class InfiniteGrid extends Component {
 		if (!this._layout) {
 			return this;
 		}
+		this.state.isFirstRender = false;
+
 		const renderer = this._renderer;
 		const itemManager = this._items;
 		const infinite = this._infinite;
@@ -894,7 +896,6 @@ export default class InfiniteGrid extends Component {
 			if (isProcessing || newItems.length) {
 				state.processing |= (isAppend ? APPEND : PREPEND) | PROCESS;
 				!isFirstRender && DOMRenderer.renderItems(items);
-				state.isFirstRender = false;
 				this._updateSize({groups: updateGroups, items: newItems, isUpdate: isUpdate || isRelayout});
 			} else {
 				this.layout(false);
