@@ -297,6 +297,7 @@ export default class InfiniteGrid extends Component {
 			processing: DONE,
 			layout: false,
 			datas: {},
+			isFirstRender: true,
 			isUpdate: false,
 		};
 		if (this._infinite) {
@@ -870,7 +871,7 @@ export default class InfiniteGrid extends Component {
 	_insert(isUpdate) {
 		const isConstantSize = this.props.isConstantSize;
 		const state = this.state;
-		const {processing, requestIndex, startIndex, endIndex, groups} = state;
+		const {processing, requestIndex, startIndex, endIndex, groups, isFirstRender} = state;
 		const isAppend = !(processing & PREPEND);
 		const isProcessing = this._isProcessing();
 		const start = (isAppend ? requestIndex : startIndex) || 0;
@@ -892,7 +893,8 @@ export default class InfiniteGrid extends Component {
 		if (updateGroups.length) {
 			if (isProcessing || newItems.length) {
 				state.processing |= (isAppend ? APPEND : PREPEND) | PROCESS;
-				DOMRenderer.renderItems(items);
+				!isFirstRender && DOMRenderer.renderItems(items);
+				state.isFirstRender = false;
 				this._updateSize({groups: updateGroups, items: newItems, isUpdate: isUpdate || isRelayout});
 			} else {
 				this.layout(false);
