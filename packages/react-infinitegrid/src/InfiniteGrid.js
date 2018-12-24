@@ -297,6 +297,7 @@ export default class InfiniteGrid extends Component {
 			processing: DONE,
 			layout: false,
 			datas: {},
+			isFirstRender: true,
 			isUpdate: false,
 		};
 		if (this._infinite) {
@@ -529,6 +530,7 @@ export default class InfiniteGrid extends Component {
 		if (!this._layout) {
 			return this;
 		}
+
 		const renderer = this._renderer;
 		const itemManager = this._items;
 		const infinite = this._infinite;
@@ -848,6 +850,7 @@ export default class InfiniteGrid extends Component {
 			!isLayout && DOMRenderer.renderItems(items);
 			this._setContainerSize();
 		}
+		this.state.isFirstRender = false;
 		if (useRecycle) {
 			this._infinite.recycle(scrollPos, isAppend);
 		}
@@ -870,7 +873,7 @@ export default class InfiniteGrid extends Component {
 	_insert(isUpdate) {
 		const isConstantSize = this.props.isConstantSize;
 		const state = this.state;
-		const {processing, requestIndex, startIndex, endIndex, groups} = state;
+		const {processing, requestIndex, startIndex, endIndex, groups, isFirstRender} = state;
 		const isAppend = !(processing & PREPEND);
 		const isProcessing = this._isProcessing();
 		const start = (isAppend ? requestIndex : startIndex) || 0;
@@ -892,7 +895,7 @@ export default class InfiniteGrid extends Component {
 		if (updateGroups.length) {
 			if (isProcessing || newItems.length) {
 				state.processing |= (isAppend ? APPEND : PREPEND) | PROCESS;
-				DOMRenderer.renderItems(items);
+				!isFirstRender && DOMRenderer.renderItems(items);
 				this._updateSize({groups: updateGroups, items: newItems, isUpdate: isUpdate || isRelayout});
 			} else {
 				this.layout(false);

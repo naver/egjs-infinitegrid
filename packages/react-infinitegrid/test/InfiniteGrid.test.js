@@ -294,22 +294,25 @@ describe(`test layout`, function () {
 
 		const callCount = onAppend.callCount;
 		const html = cleanHTML(this.el.innerHTML);
+		// styles not check styles...
 
 		await wait();
 		const callCount2 = onAppend.callCount;
 		const html2 = cleanHTML(this.el.innerHTML);
+		const styles2 = Array.prototype.slice.call(this.el.children).map(el => el.style.cssText);
 		rendered.setState({list: []});
 
 		await wait();
 		const callCount3 = onAppend.callCount;
 		const html3 = cleanHTML(this.el.innerHTML);
+		const styles3 = Array.prototype.slice.call(this.el.children).map(el => el.style.cssText);
 
 		expect(callCount < callCount2).to.be.true;
 		expect(callCount2 < callCount3).to.be.true;
 		expect(html).to.matchSnapshot();
 		expect(html2).to.matchSnapshot();
 		expect(html3).to.matchSnapshot();
-		expect(html2).to.be.equals(html3);
+		expect(styles2).to.be.deep.equals(styles3);
 	});
 	it ("should check layout with resize", done => {
 		const onLayoutComplete = sinon.spy(e => {
