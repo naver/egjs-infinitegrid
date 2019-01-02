@@ -111,6 +111,8 @@
 		"sinon": "^4.1.2",
 		"string-replace-webpack-plugin": "0.1.3",
 		"sync-exec": "^0.6.2",
+		"tslint": "^5.12.0",
+		"typescript": "^3.2.2",
 		"uglifyjs-webpack-plugin": "^1.1.2",
 		"webpack": "^3.12.0",
 		"webpack-dev-server": "^2.9.5",
