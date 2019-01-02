@@ -227,7 +227,7 @@ export default class InfiniteGrid extends Component {
 
 				datas[itemInfo.key] = itemInfo;
 				itemInfo.el = null;
-				delete state.status;
+				delete state.isWaitMount;
 				return itemInfo;
 			});
 
@@ -273,7 +273,7 @@ export default class InfiniteGrid extends Component {
 		const visibleItems = this._getVisibleItems();
 
 		visibleItems.filter(item => !item.el).forEach(item => {
-			item.status = true;
+			item.isWaitMount = true;
 		});
 		!isReLayout && DOMRenderer.renderItems(this._getVisibleItems());
 		watcher.setStatus(_watcher, applyScrollPos);
@@ -332,9 +332,9 @@ export default class InfiniteGrid extends Component {
 			return;
 		}
 		item.el = element;
-		if (item.status) {
+		if (item.isWaitMount) {
 			DOMRenderer.renderItems([item]);
-			delete item.status;
+			delete item.isWaitMount;
 		}
 	}
 	_unmountElement = itemKey => {
