@@ -8,8 +8,7 @@
 	"types": "declaration/index.d.ts",
 	"scripts": {
 		"start": "concurrently 'webpack-dev-server --host=0.0.0.0 --env.name=InfiniteGrid --env.path=./src/index.umd.ts' 'webpack --watch --env.name=Parallax --env.path=./src/Parallax.ts'",
-		"build": "rm -rf ./dist && rollup -c && npm run printsizes",
-		"build:tsc": "rm -rf ./dist && rollup -c && npm run declaration && npm run printsizes",
+		"build": "rm -rf ./dist ./declaration && rollup -c && npm run declaration && npm run printsizes",
 		"declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
 		"printsizes": "print-sizes ./dist --exclude=\\.map && node ./config/readme.js",
 		"build:webpack": "rm -rf ./dist && concurrently 'npm run build:infinitegrid' 'npm run build:parallax'",

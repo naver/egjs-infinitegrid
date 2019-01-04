@@ -1,17 +1,55 @@
-import {Group} from "./Layout";
-
-declare class FrameLayout {
-	constructor(options?: {
-		margin?: number,
-		horizontal?: boolean,
-		itemSize?: number,
-		frame?: any[],
-		frameFill?: boolean,
-	});
-	setSize(size: number): this;
-	append(items: any[], outline?: number[]): Group;
-	prepend(items: any[], outline?: number[]): Group;
-	layout(groups: any[], outline?: number[]): this;
+import { ILayout, IRectlProperties, ISize } from "../types";
+import { IInfiniteGridGroup, IInfiniteGridItem } from "../ItemManager";
+export declare type FrameType = number[][];
+export interface IFrameShape {
+    left?: number;
+    top?: number;
+    type: any;
+    width: number;
+    height: number;
+    index?: number;
 }
-
+export interface IFrameLayoutInterface {
+    horizontal: boolean;
+    margin: number;
+    frame: FrameType;
+    frameFill: boolean;
+    itemSize: number | ISize;
+    [key: string]: any;
+}
+declare class FrameLayout implements ILayout {
+    options: IFrameLayoutInterface;
+    protected _itemSize: number | ISize;
+    protected _shapes: {
+        shapes: IFrameShape[];
+        width?: number;
+        height?: number;
+    };
+    protected _size: number;
+    protected _style: IRectlProperties;
+    constructor(options?: Partial<IFrameLayoutInterface>);
+    layout(groups?: IInfiniteGridGroup[], outline?: number[]): this;
+    setSize(size: number): this;
+    append(items: IInfiniteGridItem[], outline?: number[], cache?: boolean): {
+        items: IInfiniteGridItem[];
+        outlines: {
+            start: number[];
+            end: number[];
+        };
+    };
+    prepend(items: IInfiniteGridItem[], outline?: number[], cache?: boolean): {
+        items: IInfiniteGridItem[];
+        outlines: {
+            start: number[];
+            end: number[];
+        };
+    };
+    protected _getItemSize(): number | ISize;
+    protected _checkItemSize(): void;
+    protected _layout(items: IInfiniteGridItem[], outline?: number[], isAppend?: boolean): {
+        start: number[];
+        end: number[];
+    };
+    private _insert;
+}
 export default FrameLayout;

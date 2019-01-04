@@ -1,43 +1,59 @@
+import ItemManager, { IInfiniteGridGroup, IInfiniteGridItem } from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
-import ItemManager from "./ItemManager";
-
-export interface LayoutManagerOptions {
-	attributePrefix?: string,
-	isEqualSize?: boolean,
-	isConstantSize?: boolean,
-	horizontal?: boolean,
+import { ILayout, ILayoutResult } from "./types";
+export interface ILayoutManagerOptions {
+    attributePrefix?: string;
+    isEqualSize?: boolean;
+    isConstantSize?: boolean;
+    horizontal?: boolean;
 }
-export interface LayoutManagerCallbacks {
-	complete?: (params?: {
-		groups?: any[],
-		items?: any[],
-		isAppend?: boolean,
-	}) => void;
-	error?: (params?: {
-		target?: HTMLElement,
-		element?: HTMLElement,
-		items?: any[],
-		item?: any,
-		itemIndex?: number,
-		replace: (src: any) => void,
-		replaceItem: (content?: string) => void,
-		remove: () => void,
-		removeItem: () => void,
-	}) => void;
-	end?: (params?: {
-		remove?: any[],
-		layout?: boolean,
-	}) => void;
+export interface ILayoutManagerErrorCallbackOptions {
+    target: HTMLImageElement;
+    element: HTMLElement;
+    items: IInfiniteGridItem[];
+    item: IInfiniteGridItem;
+    itemIndex?: number;
+    replace: (src: string) => void;
+    replaceItem: (content: string) => void;
+    remove: () => void;
+    removeItem: () => void;
 }
-  
-declare class LayoutManager {
-	constructor(items: ItemManager, renderer: DOMRenderer, options?: LayoutManagerOptions);
-	setLayout(layout: any): void;
-	setSize(size: number): void;
-	append(params: {groups?: any[], items?: any[], isUpdate?: boolean}, callbacks?: LayoutManagerCallbacks): void;
-	prepend(params: {groups?: any[], items?: any[], isUpdate?: boolean}, callbacks?: LayoutManagerCallbacks): void;
-	layout(isRelayout: boolean, groups: any[], items: any[]): any[];
-	destroy(): void;
+export interface ILayoutManagerCompleteCallbackOptions {
+    groups?: ILayoutResult[];
+    items?: IInfiniteGridItem[];
+    isAppend?: boolean;
 }
-
-export default LayoutManager;
+export interface ILayoutManagerEndCallbackOptions {
+    remove: HTMLElement[];
+    layout?: boolean;
+}
+export interface ILayoutManagerCallbacks {
+    complete: (e?: ILayoutManagerCompleteCallbackOptions) => void;
+    error: (e?: ILayoutManagerErrorCallbackOptions) => void;
+    end: (e?: ILayoutManagerEndCallbackOptions) => void;
+}
+export default class LayoutMananger {
+    options: Required<ILayoutManagerOptions>;
+    _items: ItemManager;
+    _renderer: DOMRenderer;
+    _layout: ILayout;
+    constructor(items: ItemManager, renderer: DOMRenderer, options?: ILayoutManagerOptions);
+    setLayout(layout: ILayout): void;
+    setSize(size: number): void;
+    append({ groups, items, isUpdate, }: {
+        groups: IInfiniteGridGroup[];
+        items: IInfiniteGridItem[];
+        isUpdate?: boolean;
+    }, callbacks: Partial<ILayoutManagerCallbacks>): void;
+    prepend({ groups, items, isUpdate, }: {
+        groups: IInfiniteGridGroup[];
+        items: IInfiniteGridItem[];
+        isUpdate?: boolean;
+    }, callbacks: Partial<ILayoutManagerCallbacks>): void;
+    layout(isRelayout: boolean, groups: IInfiniteGridGroup[], items: IInfiniteGridItem[]): IInfiniteGridGroup[];
+    destroy(): void;
+    private _complete;
+    private _error;
+    private _end;
+    private _insert;
+}

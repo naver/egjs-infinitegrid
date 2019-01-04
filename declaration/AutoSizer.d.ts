@@ -1,8 +1,10 @@
-declare class AutoSizer {
-	static add(element: Element, prefix?: string): void;
-	static resize(element: Element, prefix?: boolean): void;
-	static remove(element: Element, isFixed?: boolean): void;
-	static resizeAll(): void;
+interface IAutoSizierElemenet extends HTMLElement {
+    __PREFIX__?: string;
 }
-
-export default AutoSizer;
+export default class AutoSizer {
+    static add(element: IAutoSizierElemenet, prefix?: string): void;
+    static remove(element: IAutoSizierElemenet, isFixed?: boolean): void;
+    static resize(element: IAutoSizierElemenet, prefix?: string): void;
+    static resizeAll(): void;
+}
+export {};
