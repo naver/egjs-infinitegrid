@@ -10,6 +10,7 @@
 		"downlevelIteration": true,
 		"noUnusedLocals": true,
 		"skipLibCheck": true,
+		"strictNullChecks": false,
 		"moduleResolution": "node",
 		"lib": ["es2015", "dom"],
 	},
