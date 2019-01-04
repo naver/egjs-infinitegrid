@@ -152,7 +152,7 @@ describe("GridLayout Test", function () {
 						}
 						const itemLength = parseInt((layout._size + margin) / (100 + margin), 10);
 						const style = getStyleNames(horizontal);
-						const {size1, size2, pos1, pos2} = style;
+						const {size1, size2, startPos1, startPos2} = style;
 						if (align === CENTER) {
 							expectConnectItems({
 								item1: gitems[0],
@@ -161,12 +161,12 @@ describe("GridLayout Test", function () {
 								horizontal: !horizontal
 							});
 							
-							expect(gitems[0].rect[pos2]).to.be.equal(layout._size - (gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2]));
+							expect(gitems[0].rect[startPos2]).to.be.equal(layout._size - (gitems[itemLength - 1].rect[startPos2] + gitems[itemLength - 1].size[size2]));
 						} else if (align === END) {
-							expect((gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2])).to.be.equal(layout._size);
+							expect((gitems[itemLength - 1].rect[startPos2] + gitems[itemLength - 1].size[size2])).to.be.equal(layout._size);
 						} else if (align === JUSTIFY) {
-							expect(gitems[0].rect[pos2]).to.be.equal(0);
-							expect(gitems[itemLength - 1].rect[pos2] + gitems[itemLength - 1].size[size2]).to.be.equal(layout._size);
+							expect(gitems[0].rect[startPos2]).to.be.equal(0);
+							expect(gitems[itemLength - 1].rect[startPos2] + gitems[itemLength - 1].size[size2]).to.be.equal(layout._size);
 
 
 							layout.setSize(50);
@@ -175,7 +175,7 @@ describe("GridLayout Test", function () {
 								if (i === 0) {
 									return;
 								}
-								expect(item.rect[pos1]).to.be.closeTo(gitems[i - 1].rect[pos1] + gitems[i - 1].size[size1] + margin, 1);
+								expect(item.rect[startPos1]).to.be.closeTo(gitems[i - 1].rect[startPos1] + gitems[i - 1].size[size1] + margin, 1);
 							});
 							
 						}
