@@ -73,6 +73,7 @@ export default class InfiniteGrid extends Component {
 		const LayoutType = this.props.type;
 
 		this.clear();
+		this.state.isFirstRender = true;
 		const options = {};
 		const layoutProps = this.constructor.layoutProps;
 
@@ -316,7 +317,7 @@ export default class InfiniteGrid extends Component {
 			processing: DONE,
 			layout: false,
 			datas: {},
-			isFirstRender: true,
+			isFirstRender: false,
 			isUpdate: false,
 		};
 		if (this._infinite) {
@@ -997,6 +998,7 @@ export default class InfiniteGrid extends Component {
 			this.state.requestIndex = 0;
 			this._insert();
 		} else {
+			this.state.isFirstRender = false;
 			this._requestAppend({});
 		}
 	}

@@ -43,6 +43,18 @@
 #### `should check getStatus and call setStatus method`
 
 ```
+"<div class=\"test1\" style=\"height: 500px; position: relative; overflow: hidden scroll;\">
+<div class=\"_eg-infinitegrid-container_\">
+<div class=\"testtarget\" style=\"width: 120px; height: 100px;\"></div>
+<div style=\"width: 120px; height: 200px;\"></div>
+<div style=\"width: 120px; height: 100px;\"></div>
+<div style=\"width: 120px; height: 400px;\"></div>
+<div style=\"width: 120px; height: 440px;\"></div>
+<div style=\"width: 120px; height: 130px;\"></div>
+<div style=\"width: 120px; height: 100px;\"></div></div></div>"
+```
+
+```
 Object {
   "_infinite": Object {
     "endCursor": 0,
@@ -623,13 +635,13 @@ Object {
 ```
 "<div class=\"test1\" style=\"height: 500px; position: relative; overflow: hidden scroll;\">
 <div class=\"_eg-infinitegrid-container_\" style=\"height: 740px;\">
-<div class=\"testtarget\" data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
-<div data-groupkey=\"0\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
-<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
-<div data-groupkey=\"0\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
-<div data-groupkey=\"0\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
-<div data-groupkey=\"0\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div>
-<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div></div>"
+<div class=\"testtarget\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\" data-groupkey=\"0\"></div>
+<div style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\" data-groupkey=\"0\"></div>
+<div style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\" data-groupkey=\"0\"></div>
+<div style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\" data-groupkey=\"0\"></div>
+<div style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\" data-groupkey=\"0\"></div>
+<div style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\" data-groupkey=\"0\"></div>
+<div style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\" data-groupkey=\"0\"></div></div></div>"
 ```
 
 #### `should check getStatus and setStatus`
@@ -1363,17 +1375,17 @@ Object {
 ```
 "<div style=\"height: 600px; position: relative; overflow: hidden scroll;\">
 <div class=\"_eg-infinitegrid-container_\">
-<div class=\"item\" style=\"width: 100px; height: 100px;\">item1</div>
-<div class=\"item\" style=\"width: 100px; height: 200px;\">item1</div>
-<div class=\"item\" style=\"width: 100px; height: 300px;\">item1</div></div></div>"
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: -999999px; top: -999999px;\">item1</div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: -999999px; top: -999999px;\">item1</div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: -999999px; top: -999999px;\">item1</div></div></div>"
 ```
 
 ```
 "<div style=\"height: 600px; position: relative; overflow: hidden scroll;\">
 <div class=\"_eg-infinitegrid-container_\" style=\"height: 1100px;\">
-<div class=\"item\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\" data-groupkey=\"1\">item1</div>
-<div class=\"item\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\" data-groupkey=\"1\">item1</div>
-<div class=\"item\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\" data-groupkey=\"1\">item1</div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 100px; position: absolute; left: 0px; top: 0px;\">item1</div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 200px; position: absolute; left: 100px; top: 0px;\">item1</div>
+<div class=\"item\" data-groupkey=\"1\" style=\"width: 100px; height: 300px; position: absolute; left: 200px; top: 0px;\">item1</div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 100px; position: absolute; left: 300px; top: 0px;\">item2</div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 200px; position: absolute; left: 400px; top: 0px;\">item2</div>
 <div class=\"item\" data-groupkey=\"2\" style=\"width: 100px; height: 300px; position: absolute; left: 0px; top: 100px;\">item2</div>
