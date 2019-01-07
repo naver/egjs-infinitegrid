@@ -76,7 +76,7 @@ describe(`test layout`, function () {
 			expect(cleanHTML(html)).to.matchSnapshot();
 			
 			
-			rendered.setStatus(status, true, 1);
+			rendered.setStatus(status, true);
 
 			
 
