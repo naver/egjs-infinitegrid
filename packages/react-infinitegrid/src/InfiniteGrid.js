@@ -227,6 +227,7 @@ export default class InfiniteGrid extends Component {
 
 				datas[itemInfo.key] = itemInfo;
 				itemInfo.el = null;
+				delete state.isWaitMount;
 				return itemInfo;
 			});
 
@@ -249,13 +250,31 @@ export default class InfiniteGrid extends Component {
 		const state = this.state;
 
 		watcher.detachEvent();
+
+		const datas = state.datas;
+		const userDatas = _state.datas;
+		const newDatas = {};
+
 		Object.assign(state, _state);
+		state.datas = newDatas;
+		for (const key in userDatas) {
+			const data = datas[key];
+
+			newDatas[key] = data ? {...userDatas[key], el: data.el} :
+				userDatas[key];
+		}
 		state.processing = DONE;
 		renderer.setStatus(_renderer);
 		this._infinite.setStatus(_infinite);
 		this._refreshGroups(Children.toArray(this.props.children));
 		const isReLayout = renderer.isNeededResize();
 
+
+		const visibleItems = this._getVisibleItems();
+
+		visibleItems.filter(item => !item.el).forEach(item => {
+			item.isWaitMount = true;
+		});
 		!isReLayout && DOMRenderer.renderItems(this._getVisibleItems());
 		watcher.setStatus(_watcher, applyScrollPos);
 		watcher.attachEvent();
@@ -313,6 +332,10 @@ export default class InfiniteGrid extends Component {
 			return;
 		}
 		item.el = element;
+		if (item.isWaitMount) {
+			DOMRenderer.renderItems([item]);
+			delete item.isWaitMount;
+		}
 	}
 	_unmountElement = itemKey => {
 		const item = this.state.datas[itemKey];

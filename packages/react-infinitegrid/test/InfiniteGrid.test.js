@@ -54,6 +54,39 @@ describe(`test layout`, function () {
 			done();
 		}, 100);
 	});
+	it (`should check getStatus and call setStatus method`, done => {
+		this.el.style.width = "300px";
+		const rendered = ReactDOM.render(<GridLayout className="test1" align="center" isOverflowScroll={true} style={{height: "500px"}}>
+			<div className="testtarget" style={{width: "120px", height: "100px"}}></div>
+			<div style={{width: "120px", height: "200px"}}></div>
+			<div style={{width: "120px", height: "100px"}}></div>
+			<div style={{width: "120px", height: "400px"}}></div>
+			<div style={{width: "120px", height: "440px"}}></div>
+			<div style={{width: "120px", height: "130px"}}></div>
+			<div style={{width: "120px", height: "100px"}}></div>
+		</GridLayout>, this.el);
+		setTimeout(() => {
+			const status = rendered.getStatus();
+			const html = this.el.innerHTML;
+
+			this.el.querySelector(".testtarget").style.top = "1000px";
+			
+
+			expect(status).to.matchSnapshot();
+			expect(cleanHTML(html)).to.matchSnapshot();
+			
+			
+			rendered.setStatus(status, true);
+
+			
+
+			setTimeout(() => {
+				expect(this.el.querySelector(".testtarget").style.top).to.be.equals("0px");
+				expect(html).to.be.equals(this.el.innerHTML);
+				done();
+			});
+		}, 100);
+	});
 	it (`should check getStatus and setStatus`, done => {
 		this.el.style.width = "300px";
 		const rendered = ReactDOM.render(<GridLayout className="test1" align="center" isOverflowScroll={true} style={{height: "500px"}}>

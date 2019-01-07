@@ -40,6 +40,598 @@
 <div style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 200px;\" data-groupkey=\"0\"></div></div>"
 ```
 
+#### `should check getStatus and call setStatus method`
+
+```
+Object {
+  "_infinite": Object {
+    "endCursor": 0,
+    "size": 500,
+    "startCursor": 0,
+  },
+  "_renderer": Object {
+    "_size": Object {
+      "item": null,
+      "view": 500,
+      "viewport": 300,
+    },
+    "cssText": "height: 740px;",
+  },
+  "_state": Object {
+    "datas": Object {
+      ".0": Object {
+        "column": 0,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 0,
+        "key": ".0",
+        "mount": true,
+        "orgSize": Object {
+          "height": 100,
+          "width": 120,
+        },
+        "prevRect": Object {
+          "left": 30,
+          "top": 0,
+        },
+        "rect": Object {
+          "left": 30,
+          "top": 0,
+        },
+        "size": Object {
+          "height": 100,
+          "width": 120,
+        },
+      },
+      ".1": Object {
+        "column": 1,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 1,
+        "key": ".1",
+        "mount": true,
+        "orgSize": Object {
+          "height": 200,
+          "width": 120,
+        },
+        "prevRect": Object {
+          "left": 150,
+          "top": 0,
+        },
+        "rect": Object {
+          "left": 150,
+          "top": 0,
+        },
+        "size": Object {
+          "height": 200,
+          "width": 120,
+        },
+      },
+      ".2": Object {
+        "column": 0,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 2,
+        "key": ".2",
+        "mount": true,
+        "orgSize": Object {
+          "height": 100,
+          "width": 120,
+        },
+        "prevRect": Object {
+          "left": 30,
+          "top": 100,
+        },
+        "rect": Object {
+          "left": 30,
+          "top": 100,
+        },
+        "size": Object {
+          "height": 100,
+          "width": 120,
+        },
+      },
+      ".3": Object {
+        "column": 0,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 3,
+        "key": ".3",
+        "mount": true,
+        "orgSize": Object {
+          "height": 400,
+          "width": 120,
+        },
+        "prevRect": Object {
+          "left": 30,
+          "top": 200,
+        },
+        "rect": Object {
+          "left": 30,
+          "top": 200,
+        },
+        "size": Object {
+          "height": 400,
+          "width": 120,
+        },
+      },
+      ".4": Object {
+        "column": 1,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 4,
+        "key": ".4",
+        "mount": true,
+        "orgSize": Object {
+          "height": 440,
+          "width": 120,
+        },
+        "prevRect": Object {
+          "left": 150,
+          "top": 200,
+        },
+        "rect": Object {
+          "left": 150,
+          "top": 200,
+        },
+        "size": Object {
+          "height": 440,
+          "width": 120,
+        },
+      },
+      ".5": Object {
+        "column": 0,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 5,
+        "key": ".5",
+        "mount": true,
+        "orgSize": Object {
+          "height": 130,
+          "width": 120,
+        },
+        "prevRect": Object {
+          "left": 30,
+          "top": 600,
+        },
+        "rect": Object {
+          "left": 30,
+          "top": 600,
+        },
+        "size": Object {
+          "height": 130,
+          "width": 120,
+        },
+      },
+      ".6": Object {
+        "column": 1,
+        "el": null,
+        "groupKey": 0,
+        "itemIndex": 6,
+        "key": ".6",
+        "mount": true,
+        "orgSize": Object {
+          "height": 100,
+          "width": 120,
+        },
+        "prevRect": Object {
+          "left": 150,
+          "top": 640,
+        },
+        "rect": Object {
+          "left": 150,
+          "top": 640,
+        },
+        "size": Object {
+          "height": 100,
+          "width": 120,
+        },
+      },
+    },
+    "endIndex": 0,
+    "endKey": 0,
+    "groupKeys": Object {
+      "0": Object {
+        "children": Array [],
+        "groupKey": 0,
+        "index": 0,
+        "items": Array [
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 0,
+            "key": ".0",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 0,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 0,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 1,
+            "key": ".1",
+            "mount": true,
+            "orgSize": Object {
+              "height": 200,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 150,
+              "top": 0,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 0,
+            },
+            "size": Object {
+              "height": 200,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 2,
+            "key": ".2",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 100,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 100,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 3,
+            "key": ".3",
+            "mount": true,
+            "orgSize": Object {
+              "height": 400,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 200,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 200,
+            },
+            "size": Object {
+              "height": 400,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 4,
+            "key": ".4",
+            "mount": true,
+            "orgSize": Object {
+              "height": 440,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 150,
+              "top": 200,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 200,
+            },
+            "size": Object {
+              "height": 440,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 5,
+            "key": ".5",
+            "mount": true,
+            "orgSize": Object {
+              "height": 130,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 600,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 600,
+            },
+            "size": Object {
+              "height": 130,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 6,
+            "key": ".6",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 150,
+              "top": 640,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 640,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+        ],
+        "outlines": Object {
+          "end": Array [
+            730,
+            740,
+          ],
+          "start": Array [
+            0,
+            0,
+          ],
+        },
+      },
+    },
+    "groups": Array [
+      Object {
+        "children": Array [],
+        "groupKey": 0,
+        "index": 0,
+        "items": Array [
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 0,
+            "key": ".0",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 0,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 0,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 1,
+            "key": ".1",
+            "mount": true,
+            "orgSize": Object {
+              "height": 200,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 150,
+              "top": 0,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 0,
+            },
+            "size": Object {
+              "height": 200,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 2,
+            "key": ".2",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 100,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 100,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 3,
+            "key": ".3",
+            "mount": true,
+            "orgSize": Object {
+              "height": 400,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 200,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 200,
+            },
+            "size": Object {
+              "height": 400,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 4,
+            "key": ".4",
+            "mount": true,
+            "orgSize": Object {
+              "height": 440,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 150,
+              "top": 200,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 200,
+            },
+            "size": Object {
+              "height": 440,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 0,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 5,
+            "key": ".5",
+            "mount": true,
+            "orgSize": Object {
+              "height": 130,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 30,
+              "top": 600,
+            },
+            "rect": Object {
+              "left": 30,
+              "top": 600,
+            },
+            "size": Object {
+              "height": 130,
+              "width": 120,
+            },
+          },
+          Object {
+            "column": 1,
+            "el": null,
+            "groupKey": 0,
+            "itemIndex": 6,
+            "key": ".6",
+            "mount": true,
+            "orgSize": Object {
+              "height": 100,
+              "width": 120,
+            },
+            "prevRect": Object {
+              "left": 150,
+              "top": 640,
+            },
+            "rect": Object {
+              "left": 150,
+              "top": 640,
+            },
+            "size": Object {
+              "height": 100,
+              "width": 120,
+            },
+          },
+        ],
+        "outlines": Object {
+          "end": Array [
+            730,
+            740,
+          ],
+          "start": Array [
+            0,
+            0,
+          ],
+        },
+      },
+    ],
+    "isFirstRender": false,
+    "isUpdate": false,
+    "layout": false,
+    "processing": 0,
+    "requestIndex": 0,
+    "requestKey": 0,
+    "startIndex": 0,
+    "startKey": 0,
+  },
+  "_watcher": Object {
+    "_prevPos": 0,
+    "scrollPos": 0,
+  },
+}
+```
+
+```
+"<div class=\"test1\" style=\"height: 500px; position: relative; overflow: hidden scroll;\">
+<div class=\"_eg-infinitegrid-container_\" style=\"height: 740px;\">
+<div class=\"testtarget\" data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 0px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 200px; position: absolute; left: 150px; top: 0px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 30px; top: 100px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 400px; position: absolute; left: 30px; top: 200px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 440px; position: absolute; left: 150px; top: 200px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 130px; position: absolute; left: 30px; top: 600px;\"></div>
+<div data-groupkey=\"0\" style=\"width: 120px; height: 100px; position: absolute; left: 150px; top: 640px;\"></div></div></div>"
+```
+
 #### `should check getStatus and setStatus`
 
 ```
