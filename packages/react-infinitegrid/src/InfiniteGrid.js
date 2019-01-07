@@ -990,7 +990,11 @@ export default class InfiniteGrid extends Component {
 
 		const items = this._getVisibleItems();
 		const status = this.props.status;
+		const length = items.length;
 
+		if (!length) {
+			this.state.isFirstRender = false;
+		}
 		if (status) {
 			this.setStatus(status);
 		} else if (items.length) {
@@ -998,7 +1002,6 @@ export default class InfiniteGrid extends Component {
 			this.state.requestIndex = 0;
 			this._insert();
 		} else {
-			this.state.isFirstRender = false;
 			this._requestAppend({});
 		}
 	}
