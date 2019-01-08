@@ -3,40 +3,40 @@ import { fill } from "../utils";
 import { IInfiniteGridItem } from "../ItemManager";
 
 function makeShapeOutline(
-  outline: number[],
-  itemSize: number,
-  columnLength: number,
-  isAppend: boolean,
+	outline: number[],
+	itemSize: number,
+	columnLength: number,
+	isAppend: boolean,
 ) {
-  const point = Math[isAppend ? "min" : "max"](...outline) || 0;
+	const point = Math[isAppend ? "min" : "max"](...outline) || 0;
 
-  if (outline.length !== columnLength) {
-    return fill(new Array(columnLength), 0);
-  }
-  return outline.map(l => Math.floor((l - point) / itemSize));
+	if (outline.length !== columnLength) {
+		return fill(new Array(columnLength), 0);
+	}
+	return outline.map(l => Math.floor((l - point) / itemSize));
 }
 function getColumn(item: IInfiniteGridItem) {
-  if (item.column) {
-    return item.column;
-  }
-  let column = 0;
+	if (item.column) {
+		return item.column;
+	}
+	let column = 0;
 
-  if (item.el) {
-    const dataset = item.el.dataset;
+	if (item.el) {
+		const dataset = item.el.dataset;
 
-    if (dataset) {
-      column = parseInt(dataset.column, 10) || 1;
-    } else {
-      column = parseInt(item.el.getAttribute("column"), 10) || 1;
-    }
-  } else {
-    column = 1;
-  }
-  item.column = column;
-  return column;
+		if (dataset) {
+			column = parseInt(dataset.column, 10) || 1;
+		} else {
+			column = parseInt(item.el.getAttribute("column"), 10) || 1;
+		}
+	} else {
+		column = 1;
+	}
+	item.column = column;
+	return column;
 }
 interface ISquareLayoutOptions extends IFrameLayoutInterface {
-  column: number;
+	column: number;
 }
 /**
  * @classdesc SquareLayout is a layout that places all cards like squares on a checkerboard, and important cards are n times larger. The main card can be enlarged, and then a small card can be placed to naturally show the relationship of the card.
@@ -74,108 +74,108 @@ layout.append([item1, item2]);
 ```
  **/
 export default class SquareLayout extends FrameLayout {
-  public options: ISquareLayoutOptions;
+	public options: ISquareLayoutOptions;
 
-  constructor(options: Partial<ISquareLayoutOptions> = {}) {
-    super(options);
-  }
-  protected _checkItemSize() {
-    const column = this.options.column;
+	constructor(options: Partial<ISquareLayoutOptions> = {}) {
+		super(options);
+	}
+	protected _checkItemSize() {
+		const column = this.options.column;
 
-    if (!column) {
-      super._checkItemSize();
-      return;
-    }
-    const margin = this.options.margin;
+		if (!column) {
+			super._checkItemSize();
+			return;
+		}
+		const margin = this.options.margin;
 
-    // if itemSize is not in options, caculate itemSize from size.
-    this._itemSize = (this._size + margin) / column - margin;
-  }
-  protected _layout(
-    items: IInfiniteGridItem[],
-    outline: number[] = [],
-    isAppend?: boolean,
-  ) {
-    const itemSize = this._getItemSize() as number;
-    const margin = this.options.margin;
-    const columnLength = this.options.column ||
-      Math.floor((this._size + margin) / (itemSize + margin)) || 1;
-    const length = items.length;
-    const endOutline = makeShapeOutline(outline, itemSize, columnLength, isAppend);
-    const pointCaculateName = isAppend ? "min" : "max";
-    const shapes: IFrameShape[] = [];
-    const sign = isAppend ? 1 : -1;
-    const style = this._style;
-    const pos1Name = style.startPos1;
-    const pos2Name = style.startPos2;
+		// if itemSize is not in options, caculate itemSize from size.
+		this._itemSize = (this._size + margin) / column - margin;
+	}
+	protected _layout(
+		items: IInfiniteGridItem[],
+		outline: number[] = [],
+		isAppend?: boolean,
+	) {
+		const itemSize = this._getItemSize() as number;
+		const margin = this.options.margin;
+		const columnLength = this.options.column ||
+			Math.floor((this._size + margin) / (itemSize + margin)) || 1;
+		const length = items.length;
+		const endOutline = makeShapeOutline(outline, itemSize, columnLength, isAppend);
+		const pointCaculateName = isAppend ? "min" : "max";
+		const shapes: IFrameShape[] = [];
+		const sign = isAppend ? 1 : -1;
+		const style = this._style;
+		const pos1Name = style.startPos1;
+		const pos2Name = style.startPos2;
 
-    for (let i = 0; i < length; ++i) {
-      const point = Math[pointCaculateName](...endOutline);
-      let index = endOutline[isAppend ? "indexOf" : "lastIndexOf"](point);
-      const item = items[i];
-      const columnWidth = item.columnWidth;
-      const column = (columnWidth && columnWidth[0] === columnLength &&
-        columnWidth[1]) || getColumn(item);
-      let columnCount = 1;
+		for (let i = 0; i < length; ++i) {
+			const point = Math[pointCaculateName](...endOutline);
+			let index = endOutline[isAppend ? "indexOf" : "lastIndexOf"](point);
+			const item = items[i];
+			const columnWidth = item.columnWidth;
+			const column = (columnWidth && columnWidth[0] === columnLength &&
+				columnWidth[1]) || getColumn(item);
+			let columnCount = 1;
 
-      if (column > 1) {
-        for (let j = 1; j < column &&
-          ((isAppend && index + j < columnLength) || (!isAppend && index - j >= 0)); ++j) {
-          if ((isAppend && endOutline[index + sign * j] <= point) ||
-            (!isAppend && endOutline[index + sign * j] >= point)) {
-            ++columnCount;
-            continue;
-          }
-          break;
-        }
-        if (!isAppend) {
-          index -= columnCount - 1;
-        }
-      }
-      item.columnWidth = [columnLength, columnCount];
-      shapes.push({
-        width: columnCount,
-        height: columnCount,
-        [pos1Name]: point - (!isAppend ? columnCount : 0),
-        [pos2Name]: index,
-        type: i + 1,
-        index: i,
-      });
-      for (let j = 0; j < columnCount; ++j) {
-        endOutline[index + j] = point + sign * columnCount;
-      }
-    }
-    this._shapes = {
-      shapes,
-      [style.size2]: columnLength,
-    };
+			if (column > 1) {
+				for (let j = 1; j < column &&
+					((isAppend && index + j < columnLength) || (!isAppend && index - j >= 0)); ++j) {
+					if ((isAppend && endOutline[index + sign * j] <= point) ||
+						(!isAppend && endOutline[index + sign * j] >= point)) {
+						++columnCount;
+						continue;
+					}
+					break;
+				}
+				if (!isAppend) {
+					index -= columnCount - 1;
+				}
+			}
+			item.columnWidth = [columnLength, columnCount];
+			shapes.push({
+				width: columnCount,
+				height: columnCount,
+				[pos1Name]: point - (!isAppend ? columnCount : 0),
+				[pos2Name]: index,
+				type: i + 1,
+				index: i,
+			});
+			for (let j = 0; j < columnCount; ++j) {
+				endOutline[index + j] = point + sign * columnCount;
+			}
+		}
+		this._shapes = {
+			shapes,
+			[style.size2]: columnLength,
+		};
 
-    const result = super._layout(items, outline, isAppend);
+		const result = super._layout(items, outline, isAppend);
 
-    if (!isAppend) {
-      shapes.sort((shape1, shape2) => {
-        const item1pos1 = shape1[pos1Name];
-        const item1pos2 = shape1[pos2Name];
-        const item2pos1 = shape2[pos1Name];
-        const item2pos2 = shape2[pos2Name];
+		if (!isAppend) {
+			shapes.sort((shape1, shape2) => {
+				const item1pos1 = shape1[pos1Name];
+				const item1pos2 = shape1[pos2Name];
+				const item2pos1 = shape2[pos1Name];
+				const item2pos2 = shape2[pos2Name];
 
-        if (item1pos1 - item2pos1) {
-          return item1pos1 - item2pos1;
-        }
-        return item1pos2 - item2pos2;
-      });
-      items.sort((a, b) => {
-        const item1pos1 = a.rect[pos1Name];
-        const item1pos2 = a.rect[pos2Name];
-        const item2pos1 = b.rect[pos1Name];
-        const item2pos2 = b.rect[pos2Name];
+				if (item1pos1 - item2pos1) {
+					return item1pos1 - item2pos1;
+				}
+				return item1pos2 - item2pos2;
+			});
+			items.sort((a, b) => {
+				const item1pos1 = a.rect[pos1Name];
+				const item1pos2 = a.rect[pos2Name];
+				const item2pos1 = b.rect[pos1Name];
+				const item2pos2 = b.rect[pos2Name];
 
-        if (item1pos1 - item2pos1) {
-          return item1pos1 - item2pos1;
-        }
-        return item1pos2 - item2pos2;
-      });
-    }
-    return result;
-  }
+				if (item1pos1 - item2pos1) {
+					return item1pos1 - item2pos1;
+				}
+				return item1pos2 - item2pos2;
+			});
+		}
+		return result;
+	}
 }

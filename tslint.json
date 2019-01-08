@@ -1,6 +1,8 @@
 {
 	"defaultSeverity": "error",
-	"extends": ["tslint:recommended"],
+	"extends": [
+		"tslint:recommended"
+	],
 	"rules": {
 		"jsdoc-format": false,
 		"forin": false,
@@ -8,19 +10,26 @@
 		"no-any": false,
 		"variable-name": false,
 		"no-bitwise": false,
-		"indent": [true, "spaces", 2],
+		"indent": [
+			true,
+			"tabs",
+			4
+		],
 		"interface-name": false,
 		"ordered-imports": false,
 		"object-literal-sort-keys": false,
 		"no-unused-expression": false,
-		"arrow-parens": [true, "ban-single-arg-parens"],
+		"arrow-parens": [
+			true,
+			"ban-single-arg-parens"
+		],
 		"max-line-length": [
-      true,
-      {
-        "limit": 120,
-        "ignore-pattern": "|//|(\\* [a-zA-z0-9@])"
-      }
-    ],
+			true,
+			{
+				"limit": 120,
+				"ignore-pattern": "|//|(\\* [a-zA-z0-9@])"
+			}
+		],
 		"trailing-comma": [
 			true,
 			{

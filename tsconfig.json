@@ -1,19 +1,20 @@
 {
 	"compilerOptions": {
-	  "outDir": "./outjs/",
-	  "esModuleInterop": true,
+		"outDir": "./outjs/",
 		"sourceMap": true,
-	  "noImplicitAny": true,
-	  "module": "es2015",
+		"module": "es2015",
 		"target": "es5",
-		"experimentalDecorators": true,
-		"downlevelIteration": true,
-		"noUnusedLocals": true,
-		"skipLibCheck": true,
 		"strictNullChecks": false,
 		"moduleResolution": "node",
-		"lib": ["es2015", "dom"],
+		"lib": [
+			"es2015",
+			"dom"
+		],
 	},
-	"include": ["./src/**/*.ts"],
-	"exclude": ["node_modules"]
-  }
+	"include": [
+		"./src/**/*.ts"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}

@@ -6,21 +6,21 @@ const ua = window.navigator.userAgent;
 export const SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in window);
 export const SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
 export const SUPPORT_PASSIVE = (() => {
-  let supportsPassiveOption = false;
+	let supportsPassiveOption = false;
 
-  try {
-    if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
-      document.addEventListener("test", null, Object.defineProperty({},
-        "passive", {
-          get() {
-            supportsPassiveOption = true;
-          },
-        }));
-    }
-  } catch (e) {
-    //
-  }
-  return supportsPassiveOption;
+	try {
+		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
+			document.addEventListener("test", null, Object.defineProperty({},
+				"passive", {
+					get() {
+						supportsPassiveOption = true;
+					},
+				}));
+		}
+	} catch (e) {
+		//
+	}
+	return supportsPassiveOption;
 })();
 
 export const IS_IE = /MSIE|Trident|Windows Phone|Edge/.test(ua);
@@ -44,18 +44,18 @@ export const DUMMY_POSITION = -100000;
 export const GROUPKEY_ATT = "data-groupkey";
 
 export const DEFAULT_OPTIONS = {
-  horizontal: false,
-  margin: 0,
+	horizontal: false,
+	margin: 0,
 };
 
 export const agent = ua.toLowerCase();
 export const isMobile = /mobi|ios|android/.test(agent);
 
 export const ALIGN: IAlign = {
-  START: "start",
-  CENTER: "center",
-  END: "end",
-  JUSTIFY: "justify",
+	START: "start",
+	CENTER: "center",
+	END: "end",
+	JUSTIFY: "justify",
 };
 
 export const IDLE = 0;
@@ -69,28 +69,28 @@ export const WEBKIT_VERSION = (webkit && parseInt(webkit[1], 10)) || 0;
 export const DEFENSE_BROWSER = (WEBKIT_VERSION && WEBKIT_VERSION < 537);
 
 interface ITransitionEnd {
-  transitionend: string;
-  webkitTransitionEnd: string;
-  MSTransitionEnd: string;
-  oTransitionEnd: string;
-  mozTransitionEnd: string;
+	transitionend: string;
+	webkitTransitionEnd: string;
+	MSTransitionEnd: string;
+	oTransitionEnd: string;
+	mozTransitionEnd: string;
 }
 
-export const [TRANSFORM, TRANSITION , TRANSITION_END] = (() => {
-  const properties: ITransitionEnd = {
-    transitionend: "",
-    webkitTransitionEnd: "-webkit-",
-    MSTransitionEnd: "-ms-",
-    oTransitionEnd: "-o-",
-    mozTransitionEnd: "-moz-",
-  };
+export const [TRANSFORM, TRANSITION, TRANSITION_END] = (() => {
+	const properties: ITransitionEnd = {
+		transitionend: "",
+		webkitTransitionEnd: "-webkit-",
+		MSTransitionEnd: "-ms-",
+		oTransitionEnd: "-o-",
+		mozTransitionEnd: "-moz-",
+	};
 
-  for (const property in properties) {
-    const prefix = properties[property as keyof ITransitionEnd];
+	for (const property in properties) {
+		const prefix = properties[property as keyof ITransitionEnd];
 
-    if (`on${property.toLowerCase()}` in window) {
-      return [`${prefix}transform`, `${prefix}transition`, property];
-    }
-  }
-  return [];
+		if (`on${property.toLowerCase()}` in window) {
+			return [`${prefix}transform`, `${prefix}transition`, property];
+		}
+	}
+	return [];
 })() as ["transform", "transition", "transitionend"];
