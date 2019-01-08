@@ -1,2 +1,2 @@
-import InfiniteGrid from "./index";
+import InfiniteGrid from "./InfiniteGrid";
 export default InfiniteGrid;
