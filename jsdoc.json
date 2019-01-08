@@ -5,7 +5,7 @@
 	},
 	"source": {
 		"include": ["src", "src/layouts", "README.md" , "node_modules/@egjs/component/src/component.js"], 
-		"includePattern": ".+\\.js(doc|x)?$",
+		"includePattern": ".+\\.(j|t)s(doc|x)?$",
 		"excludePattern": "(^|\\/|\\\\)_"
 	},
 	"opts": {
