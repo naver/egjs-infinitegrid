@@ -317,6 +317,7 @@ export default class InfiniteGrid extends Component {
 			processing: DONE,
 			layout: false,
 			datas: {},
+			// Set isFirstRender to false when calling clear dynamically.
 			isFirstRender: false,
 			isUpdate: false,
 		};
