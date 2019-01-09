@@ -19,9 +19,9 @@ export function checkDirection(callback, callback2 = callback) {
 export function expectOutlineIndex(layout, group) {
 	const {start, end} = group.outlines;
 	const {margin, direction} = layout.options;
-	const {pos1, size1} = getStyleNames(direction);
-	const minPos = Math.min(...group.items.map(item => item.rect[pos1]));
-	const maxPos = Math.min(...group.items.map(item => (item.rect[size1] || item.size[size1]) + item.rect[pos1]));
+	const {startPos1, size1} = getStyleNames(direction);
+	const minPos = Math.min(...group.items.map(item => item.rect[startPos1]));
+	const maxPos = Math.min(...group.items.map(item => (item.rect[size1] || item.size[size1]) + item.rect[startPos1]));
 
 	expect(approximate(minPos)).to.be.equal(approximate(Math.min(...start)));
 	expect(approximate(maxPos + margin)).to.be.equal(approximate((Math.max(...end))));

@@ -1,5 +1,3 @@
-const webpack = require("webpack");
-
 module.exports = config => {
 	const karmaConfig = {
 		frameworks: ["mocha", "chai", "sinon"],
@@ -9,21 +7,35 @@ module.exports = config => {
 			"./node_modules/babel-polyfill/dist/polyfill.js",
 			"./node_modules/lite-fixture/index.js",
 			"./test/unit/**/*.spec.js",
-			'test/unit/image/*.jpg',
+			"test/unit/image/*.jpg",
 		],
 		client: {
 			mocha: {
-				opts: "./mocha.opts"
+				opts: "./mocha.opts",
 			},
 		},
 		webpack: {
 			devtool: "inline-source-map",
+			resolve: {
+				extensions: [".ts", ".js"],
+			},
 			module: {
 				rules: [
 					{
 						test: /\.js$/,
 						exclude: /node_modules/,
 						loader: "babel-loader",
+					},
+					{
+						test: /\.ts$/,
+						exclude: /node_modules/,
+						use: {
+							loader: "awesome-typescript-loader",
+							options: {
+								transpileOnly: true,
+								module: "commonjs",
+							},
+						},
 					},
 				],
 			},
@@ -60,7 +72,7 @@ module.exports = config => {
 			dir: "./coverage",
 		};
 		karmaConfig.webpack.module.rules.unshift({
-			test: /\.js$/,
+			test: /\.ts$/,
 			exclude: /(node_modules|test)/,
 			loader: "istanbul-instrumenter-loader",
 		});

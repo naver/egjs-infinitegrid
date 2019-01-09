@@ -1,59 +1,59 @@
-
-export interface Item {
-	el?: HTMLElement;
-	content: string;
-	groupKey?: number|string;
-	orgSize?: {
-		width: number,
-		height: number;
-	},
-	rect?: {
-		top: number,
-		left: number;
-		width?: number;
-		height?: number;
-	},
-	prevRect?: {
-		top: number,
-		left: number;
-		width?: number;
-		height?: number;
-	}
-	size?: {
-		width: number,
-		height: number;
-	},
-	[others: string]: any,
+import { CursorType, IInfiniteGridItemElement, ISize, IPosition, IJQuery } from "./types";
+export interface IInfiniteGridItem {
+    groupKey: string | number;
+    content: string;
+    el?: IInfiniteGridItemElement;
+    orgSize?: ISize;
+    size?: ISize;
+    rect?: Partial<ISize & IPosition>;
+    prevRect?: Partial<ISize & IPosition>;
+    [key: string]: any;
 }
-
-
-export interface ItemStatus  {
-	_data: Item[];
+export interface IInfiniteGridGroup {
+    groupKey: string | number;
+    items: IInfiniteGridItem[];
+    outlines: {
+        start: number[];
+        end: number[];
+    };
 }
-
-declare class ItemManager {
-	static from(elements: any[] | string, selector: string, options: {groupKey?: any, isAppend?: boolean}): any[];
-	static selectItems(elements: any[], selector: string): any[];
-	static pluck(data: any[], property: string): any[];
-	constructor();
-	getStatus(startKey?: any, endKey?: any): ItemStatus;
-	setStatus(status?: ItemStatus): this;
-	size(): number;
-	fit(base: number, horizontal: boolean): void;
-	pluck(property: string, start?: number, end?: number): any[];
-	getOutline(index: number, property: string): any[];
-	getEdgeIndex(cursor: string, start: number, end: number): number;
-	getEdgeValue(cursor: string, start: number, end: number): number;
-	clearOutlines(startCursor?: number, endCursor?: number): this;
-	getMaxEdgeValue(): number;
-	append(layouted: any): any[];
-	prepend(layouted: any): any[];
-	clear(): void;
-	remove(element: HTMLElement, start?: number, end?: number): any[];
-	indexOf(data: any): number;
-	get(start?: number, end?: number): any[];
-	set(data?: any, key?: any): void;
-	getData(index?: number): any;
+export interface IItemManagerStatus {
+    _data: IInfiniteGridGroup[];
 }
-
-export default ItemManager;
+export default class ItemManager {
+    static from(elements: HTMLElement[] | string | string[] | IJQuery, selector: string, { groupKey }: {
+        groupKey: string | number;
+    }): {
+        el: HTMLElement;
+        groupKey: string | number;
+        content: string;
+        rect: {
+            top: number;
+            left: number;
+        };
+    }[];
+    static selectItems(elements: HTMLElement[], selector?: string): HTMLElement[];
+    static pluck<A extends {
+        [key: string]: any;
+    }, B extends keyof A>(data: A[], property: B): A[B] extends any[] ? A[B] : Array<A[B]>;
+    _data: IInfiniteGridGroup[];
+    constructor();
+    getStatus(startKey?: string | number, endKey?: string | number): IItemManagerStatus;
+    setStatus(status: IItemManagerStatus): void;
+    size(): number;
+    fit(base: number, horizontal: boolean): void;
+    pluck<T extends keyof IInfiniteGridGroup>(property: T, start?: number, end?: number): IInfiniteGridGroup[T] extends any[] ? IInfiniteGridGroup[T] : IInfiniteGridGroup[T][];
+    getOutline(index: number, property: keyof IInfiniteGridGroup["outlines"]): number[];
+    getEdgeIndex(cursor: CursorType, start: number, end: number): number;
+    getEdgeValue(cursor: CursorType, start: number, end: number): number;
+    clearOutlines(startCursor?: number, endCursor?: number): void;
+    getMaxEdgeValue(): number;
+    append(layouted: IInfiniteGridGroup): IInfiniteGridItem[];
+    prepend(layouted: IInfiniteGridGroup): IInfiniteGridItem[];
+    clear(): void;
+    remove(element: HTMLElement, start: number, end: number): IInfiniteGridItem[];
+    indexOf(data: IInfiniteGridGroup | string | number): number;
+    get(start?: number, end?: number): IInfiniteGridGroup[];
+    set(data: IInfiniteGridGroup | IInfiniteGridGroup[], key?: string | number): void;
+    getData(index: number): IInfiniteGridGroup;
+}

@@ -1,35 +1,41 @@
-import ItemManager from "./ItemManager";
-
-export interface InfiniteStatus {
-	startCursor: number;
-	endCursor: number;
-	size: number;
+import ItemManager, { IInfiniteGridGroup } from "./ItemManager";
+import { CursorType } from "./types";
+export interface IInfiniteOptions {
+    useRecycle?: boolean;
+    threshold?: number;
+    append?: (e?: {
+        cache: IInfiniteGridGroup[];
+    }) => void;
+    prepend?: (e?: {
+        cache: IInfiniteGridGroup[];
+    }) => void;
+    recycle?: (e?: {
+        start: number;
+        end: number;
+    }) => void;
 }
-
-export interface InfiniteOption {
-	useRecycle?: boolean;
-	threshold?: number;
-	append?: (event?: {cache: any[]}) => any;
-	prepend?: (event?: {cache: any[]}) => any;
-	recycle?: (event?: {start: number, end: number}) => any;
+export interface IInfiniteStatus {
+    startCursor: number;
+    endCursor: number;
+    size: number;
 }
 declare class Infinite {
-	constructor(itemManager: ItemManager, options?: InfiniteOption);
-	setSize(size: number): this;
-	recycle(scrollPos: number, isForward: boolean): this;
-	scroll(scrollPos: number): this;
-	setCursor(cursor: string, index: number): this;
-	updateCursor(cursor: string): this;
-	setData(item: object, isAppend?: boolean): this;
-	setStatus(status: InfiniteStatus): this;
-	getStatus(startKey?: any, endKey?: any): InfiniteStatus;
-	getCursor(cursor: string): number;
-	getEdgeOutline(cursor: string): any[];
-	getEdgeValue(cursor: string): number;
-	getVisibleData(): any[];
-	getVisibleItems(): any[];
-	remove(element: Element): any[];
-	clear(): void;
+    options: Required<IInfiniteOptions>;
+    private _items;
+    private _status;
+    constructor(itemManger: ItemManager, options: IInfiniteOptions);
+    setSize(size: number): void;
+    recycle(scrollPos: number, isForward?: boolean): void;
+    scroll(scrollPos: number): void;
+    setCursor(cursor: CursorType, index: number): void;
+    setStatus(status: IInfiniteStatus): void;
+    getStatus(startKey: string | number, endKey: string | number): IInfiniteStatus;
+    getEdgeOutline(cursor: CursorType): number[];
+    getEdgeValue(cursor: CursorType): number;
+    getVisibleItems(): import("./ItemManager").IInfiniteGridItem[];
+    getCursor(cursor: CursorType): number;
+    getVisibleData(): IInfiniteGridGroup[];
+    remove(element: HTMLElement): import("./ItemManager").IInfiniteGridItem[];
+    clear(): void;
 }
-
 export default Infinite;
