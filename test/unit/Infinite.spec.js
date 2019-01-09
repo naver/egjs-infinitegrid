@@ -1,6 +1,6 @@
 import Infinite from "../../src/Infinite";
 import ItemManager from "../../src/ItemManager";
-import {wait} from "./helper/TestHelper";
+import {wait, createElement} from "./helper/TestHelper";
 /* eslint-disable */
 [true, false].forEach(useRecycle => {
 	[0, 50, 100, 200].forEach(threshold => {
@@ -295,6 +295,86 @@ import {wait} from "./helper/TestHelper";
 				expect(this.infinite.getCursor("start")).to.be.equal(useRecycle ? 1 : 0);
 				expect(this.infinite.getCursor("end")).to.be.equal(2);
 				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
+			});
+			it(`should check append and remove method`, () => {
+				// Given
+				this.items.append({
+					groupKey: 0,
+					items: [
+						{
+							el: createElement(0),
+						},
+						{
+							el: createElement(0),
+						},
+					],
+					outlines: {
+						start: [0],
+						end: [1000],
+					},
+				});
+				this.items.append({
+					groupKey: 1,
+					items: [
+						{
+							el: createElement(1),
+						},
+						{
+							el: createElement(1),
+						},
+					],
+					outlines: {
+						start: [1000],
+						end: [2000],
+					},
+				});
+				this.infinite.setCursor("start", 0);
+				this.infinite.setCursor("end", 1);
+
+				// When
+				const size1 = this.items.size(); // 2
+
+				// remove group0 item0
+				const group0 = this.items.getData(0);
+				this.infinite.remove(group0.items[0].el);
+				const length1 = group0.items.length; // 1
+
+				// remove group0 item1
+				this.infinite.remove(group0.items[0].el);
+				const length2 = group0.items.length; // 0
+
+				const startCursor1 = this.infinite.getCursor("start");
+				const endCursor1 = this.infinite.getCursor("end");
+
+				const size2 = this.items.size(); // 1
+				const group1 = this.items.getData(0);
+
+				// remove group1 item0
+				this.infinite.remove(group1.items[0].el);
+				const length3 = group1.items.length; // 1
+
+				// remove group1 item1
+				this.infinite.remove(group1.items[0].el);
+				const length4 = group1.items.length; // 0
+
+				const startCursor2 = this.infinite.getCursor("start");
+				const endCursor2 = this.infinite.getCursor("end");
+				// no groups, no items
+				const size3 = this.items.size(); // 0
+
+				// Then
+				expect(size1).to.be.equals(2);
+				expect(size2).to.be.equals(1);
+				expect(size3).to.be.equals(0);
+				expect(length1).to.be.equals(1);
+				expect(length2).to.be.equals(0);
+				expect(length3).to.be.equals(1);
+				expect(length4).to.be.equals(0);
+				expect(startCursor1).to.be.equals(0);
+				expect(endCursor1).to.be.equals(0);
+				expect(startCursor2).to.be.equals(-1);
+				expect(endCursor2).to.be.equals(-1);
+
 			});
 			it(`should check recycle method (multiple/append)`, () => {
 				this.infinite.options.recycle = sinon.spy(({start, end}) => {

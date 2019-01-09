@@ -83,7 +83,12 @@ export function checkLayoutComplete(handler, {count, isAppend, isTrusted}) {
 		expect(param.isTrusted).to.be.equal(isTrusted);
 	}
 }
+export function createElement(groupKey) {
+  const div = document.createElement("div");
 
+  div.setAttribute("data-groupkey", groupKey);
+  return div;
+}
 
 // function parseCssText(str) {
 // 	const ht = {};
