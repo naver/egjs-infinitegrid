@@ -1,16 +1,15 @@
-import FrameLayout from "./FrameLayout";
-import {Group} from "./Layout";
-
-declare class SquareLayout extends FrameLayout {
-	constructor(options?: {
-		margin?: number,
-		horizontal?: boolean,
-		itemSize?: number,
-	});
-	setSize(size: number): this;
-	append(items: any[], outline?: number[]): Group;
-	prepend(items: any[], outline?: number[]): Group;
-	layout(groups: any[], outline?: number[]): this;
+import FrameLayout, { IFrameLayoutInterface } from "./FrameLayout";
+import { IInfiniteGridItem } from "../ItemManager";
+interface ISquareLayoutOptions extends IFrameLayoutInterface {
+    column: number;
 }
-
-export default FrameLayout;
+export default class SquareLayout extends FrameLayout {
+    options: ISquareLayoutOptions;
+    constructor(options?: Partial<ISquareLayoutOptions>);
+    protected _checkItemSize(): void;
+    protected _layout(items: IInfiniteGridItem[], outline?: number[], isAppend?: boolean): {
+        start: number[];
+        end: number[];
+    };
+}
+export {};

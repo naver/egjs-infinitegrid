@@ -20,7 +20,7 @@ const {esm, umds} = require("./rollup/config");
 
 const layouts = ["gridlayout", "justifiedlayout", "squarelayout", "framelayout", "packinglayout"];
 const layoutUmds = layouts.reduce((arr, layout) => arr.concat(umds({
-	input: `./src/index.${layout}.js`,
+	input: `./src/index.${layout}.ts`,
 	library: "eg.InfiniteGrid",
 	outputs: [
 		`./dist/infinitegrid.${layout}.js`,
@@ -32,7 +32,7 @@ const layoutUmds = layouts.reduce((arr, layout) => arr.concat(umds({
 
 export default [
 	...umds({
-		input: "./src/index.umd.js",
+		input: "./src/index.umd.ts",
 		outputs: [
 			`./dist/infinitegrid.js`,
 			`./dist/infinitegrid.min.js`,
@@ -43,7 +43,7 @@ export default [
 		},
 	}),
 	...umds({
-		input: "./src/index.umd.js",
+		input: "./src/index.umd.ts",
 		outputs: [
 			`./dist/infinitegrid.pkgd.js`,
 			`./dist/infinitegrid.pkgd.min.js`,
@@ -51,7 +51,7 @@ export default [
 		library: "eg.InfiniteGrid",
 	}),
 	...umds({
-		input: "./src/Parallax.js",
+		input: "./src/Parallax.ts",
 		outputs: [
 			`./dist/parallax.js`,
 			`./dist/parallax.min.js`,
@@ -60,7 +60,7 @@ export default [
 	}),
 	...layoutUmds,
 	esm({
-		input: "./src/index.js",
+		input: "./src/index.ts",
 		output: "./dist/infinitegrid.esm.js",
 	}),
 ];

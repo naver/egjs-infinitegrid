@@ -37,7 +37,7 @@ function createGrid() {
 		threshold: 50,
 		isOverflowScroll: _overflow,
 		useFit: _useFit,
-		transitionDuration: _transitionDuration,
+		transitionDuration: _transitionDuration
 		// useRecycle: false,
 		
 	});

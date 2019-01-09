@@ -1,9 +1,10 @@
 
 const pluginResolve = require("rollup-plugin-node-resolve");
 const pluginBabel = require("rollup-plugin-babel");
+const pluginTypescript = require("rollup-plugin-typescript");
 const pluginReplace = require("rollup-plugin-replace");
 const pluginUglify = require("rollup-plugin-uglify").uglify;
-
+const pluginProtoMinify = require("rollup-plugin-prototype-minify");
 const {common, pkgd} = require("../config/banner");
 const version = require("../package.json").version;
 
@@ -31,7 +32,16 @@ const uglify = pluginUglify({
 	},
 });
 
-
+const protoMinify = pluginProtoMinify({
+	sourcemap: true,
+});
+const typescript = pluginTypescript({
+	"module": "es2015",
+	"target": "es5",
+	"lib": ["es2015", "dom"],
+	"exclude": "node_modules/**",
+	"sourceMap": true,
+});
 const babel = pluginBabel({
 	babelrc: false,
 	"presets": [
@@ -58,6 +68,7 @@ const babel = pluginBabel({
 });
 const replace = pluginReplace({
 	"#__VERSION__#": version,
+	"/** @class */": "/*#__PURE__*/",
 	delimiters: ["", ""],
 });
 const _resolve = pluginResolve({});
@@ -70,7 +81,7 @@ function umd({
 	externals = {},
 	resolve,
 }) {
-	const plugins = [babel, replace];
+	const plugins = [typescript, protoMinify, replace];
 
 	resolve && plugins.push(_resolve);
 	ugly && plugins.push(uglify);
@@ -114,7 +125,7 @@ exports.esm = function esm({
 	input,
 	output,
 }) {
-	const plugins = [babel, replace];
+	const plugins = [typescript, protoMinify, replace];
 
 	return {
 		input,

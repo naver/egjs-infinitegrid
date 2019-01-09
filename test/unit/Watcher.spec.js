@@ -115,7 +115,7 @@ import { wait } from "./helper/TestHelper";
 					"./consts": {
 						IS_IOS,
 					},
-				});
+				}).default;
 				//scrollTo(window, horizontal ? 545 : 0, horizontal ? 0 : 545);
 
 				const spy = sinon.spy();
@@ -126,18 +126,18 @@ import { wait } from "./helper/TestHelper";
 					check: spy
 				});
 
-				const issue1 = this.watcher._scrollIssue;
+				const issue1 = this.watcher._isScrollIssue;
 				
 				// When
 				this.watcher._prevPos = -1;
 				window.dispatchEvent(new Event("scroll"));
 
-				const issue2 = this.watcher._scrollIssue;
+				const issue2 = this.watcher._isScrollIssue;
 
 				scrollTo(window, horizontal ? 545 : 0, horizontal ? 0 : 545);
 				await wait(500);
 
-				const issue3 = this.watcher._scrollIssue;
+				const issue3 = this.watcher._isScrollIssue;
 				// Then
 
 

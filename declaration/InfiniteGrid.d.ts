@@ -1,55 +1,90 @@
 import Component from "@egjs/component";
-import {InfiniteStatus} from "./Infinite";
-import {DOMRendererStatus} from "./DOMRenderer";
-import {WatcherStatus} from "./Watcher";
-import {Item, ItemStatus} from "./ItemManager";
-
-export interface InfiniteGridOption {
-	itemSelector?: string;
-	isEqualSize?: boolean;
-	isOverflowScroll?: boolean;
-	threshold?: number;
-	useRecycle?: boolean;
-	horizontal?: boolean;
-	useFit?: boolean;
-	isConstantSize?: boolean;
-	transitionDuration?: number;
+import { IInfiniteGridItem, IItemManagerStatus } from "./ItemManager";
+import { IDOMRendererStatus } from "./DOMRenderer";
+import { IWatchStatus } from "./Watcher";
+import { IInfiniteStatus } from "./Infinite";
+import { IJQuery, ILayout, StyleType } from "./types";
+export interface IInfiniteGridOptions {
+    itemSelector: string;
+    isOverflowScroll: boolean;
+    threshold: number;
+    isEqualSize: boolean;
+    isConstantSize: boolean;
+    useRecycle: boolean;
+    horizontal: boolean;
+    transitionDuration: number;
+    useFit: boolean;
+    attributePrefix: string;
 }
-
-export interface InfiniteGridStatus {
-	options: InfiniteGridOption;
-	_items: ItemStatus;
-	_infinite: InfiniteStatus;
-	_renderer: DOMRendererStatus;
-	_watcher: WatcherStatus;
-	_status: {
-		loadingSize?: number;
-		loadingStyle?: object;
-		processingStatus: number;
-	},
+export interface IInfiniteGridStatus {
+    _status: {
+        processingStatus: number;
+        loadingSize: number;
+        loadingStyle: StyleType;
+    };
+    _items: IItemManagerStatus;
+    _renderer: IDOMRendererStatus;
+    _watcher: IWatchStatus;
+    _infinite: IInfiniteStatus;
 }
-
-  
 declare class InfiniteGrid extends Component {
-	constructor(el: string | HTMLElement, options?: InfiniteGridOption);
-	append(elements: (string|HTMLElement)[]| string, groupKey?: string|number): this;
-	prepend(elements: (string|HTMLElement)[]| string, groupKey?: string|number): this;
-	moveTo(index: number, itemIndex?: number): this;
-	clear(): this;
-	destroy(): void;
-	getGroupKeys(includeCached?: boolean): (string|number)[];
-	getStatus(startKey?: any, endKey?: any): InfiniteGridStatus;
-	getItem(el: Element | null): Item;
-	getItem(groupIndex: number, itemIndex: number): Item;
-	updateItem(el: Element | null): this;
-	updateItem(groupIndex: number, itemIndex: number): this;
-	updateItems(): this;
-	isProcessing(): boolean;
-	layout(isRelayout?: boolean): this;
-	remove(item: HTMLElement): (object|null);
-	setLayout(LayoutKlass?: any, options?: any): this;
-	getItems(includeCached?: boolean): Item[];
-	setStatus(status: InfiniteGridStatus, applyScrollPos?: boolean): this;
+    static VERSION: string;
+    options: IInfiniteGridOptions;
+    private _loadingBar;
+    private _items;
+    private _renderer;
+    private _manager;
+    private _watcher;
+    private _infinite;
+    private _status;
+    constructor(element: HTMLElement | string | IJQuery, options?: Partial<IInfiniteGridOptions>);
+    append(elements: HTMLElement[] | IJQuery | string[] | string, groupKey?: string | number): this;
+    prepend(elements: HTMLElement[] | IJQuery | string[] | string, groupKey?: string | number): this;
+    setLayout(LayoutKlass: ILayout | (new (...args: any[]) => ILayout), options?: {}): this;
+    getItems(includeCached?: boolean): IInfiniteGridItem[];
+    layout(isRelayout?: boolean): this;
+    remove(element: HTMLElement, isLayout?: boolean): IInfiniteGridItem[];
+    getGroupKeys(includeCached?: boolean): (string | number)[];
+    getStatus(startKey?: string | number, endKey?: string | number): IInfiniteGridStatus;
+    setStatus(status: IInfiniteGridStatus, applyScrollPos?: boolean): this;
+    clear(): this;
+    setLoadingBar(userLoadingBar?: {
+        append?: string | HTMLElement;
+        prepepnd?: string | HTMLElement;
+    } | string): this;
+    isProcessing(): boolean;
+    getLoadingBar(isAppend?: boolean): HTMLElement;
+    startLoading(isAppend?: boolean, userStyle?: StyleType): this;
+    endLoading(userStyle?: StyleType): this;
+    getItem(groupIndex?: number, itemIndex?: number): IInfiniteGridItem;
+    updateItem(groupIndex?: number, itemIndex?: number): this;
+    updateItems(): this;
+    moveTo(index?: number, itemIndex?: number): this;
+    destroy(): void;
+    private _setContainerSize;
+    private _appendLoadingBar;
+    private _setSize;
+    private _fitItems;
+    private _fit;
+    private _getEdgeValue;
+    private _isProcessing;
+    private _isLoading;
+    private _getLoadingStatus;
+    private _process;
+    private _insert;
+    private _recycle;
+    private _renderLoading;
+    private _updateItem;
+    private _setScrollPos;
+    private _scrollTo;
+    private _onImageError;
+    private _postCache;
+    private _postLayout;
+    private _requestAppend;
+    private _requestPrepend;
+    private _onResize;
+    private _onCheck;
+    private _onLayoutComplete;
+    private _reset;
 }
-
 export default InfiniteGrid;

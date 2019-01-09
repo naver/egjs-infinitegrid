@@ -1,33 +1,42 @@
-export interface WatcherStatus {
-	scrollPos: number;
-	_prevPos: number;
+import { WindowMockType } from "./browser";
+export interface IWatcherOptions {
+    container: HTMLElement;
+    isOverflowScroll: boolean;
+    horizontal: boolean;
+    resize: () => void;
+    check: (e?: {
+        isForward: boolean;
+        scrollPos: number;
+        orgScrollPos: number;
+        horizontal: boolean;
+    }) => void;
 }
-export interface WatcherOptions {
-	container?: HTMLElement;
-	resize?: () => {},
-	check?: (params?: {
-		isForward?: boolean,
-		scrollPos?: number | null,
-		orgScrollPos?: number,
-		horizontal?: boolean,
-	}) => {},
-	isOverflowScroll?: false;
-	horizontal?: false;
+export interface IWatchStatus {
+    _prevPos: number;
+    scrollPos: number;
 }
-declare class Watcher {
-	constructor(view: HTMLElement, options?: WatcherOptions);
-	getStatus(): WatcherStatus;
-	setStatus(status: WatcherStatus, applyScrollPos?: boolean): void;
-	scrollBy(pos: number): void;
-	scrollTo(pos: number): void;
-	getScrollPos(): number | null;
-	setScrollPos(pos?: number): void;
-	attachEvent(): void;
-	getOrgScrollPos(): number;
-	reset(): void;
-	getContainerOffset(): number;
-	resize(): void;
-	detachEvent(): void;
-	destroy(): void;
+export default class Watcher {
+    options: IWatcherOptions;
+    private _timer;
+    private _containerOffset;
+    private _view;
+    private _isScrollIssue;
+    private _prevPos;
+    constructor(view: WindowMockType | HTMLElement, options?: Partial<IWatcherOptions>);
+    getStatus(): IWatchStatus;
+    setStatus(status: IWatchStatus, applyScrollPos?: boolean): void;
+    scrollBy(pos: number): void;
+    scrollTo(pos: number): void;
+    getScrollPos(): number;
+    setScrollPos(pos?: number): void;
+    attachEvent(): void;
+    getOrgScrollPos(): number;
+    reset(): void;
+    getContainerOffset(): number;
+    resize(): void;
+    detachEvent(): void;
+    destroy(): void;
+    private _onCheck;
+    private _getOffset;
+    private _onResize;
 }
-export default Watcher;
