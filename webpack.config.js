@@ -66,7 +66,7 @@ module.exports = function (env) {
 		path: "./src/index.umd.ts",
 	}, env);
 
-	const partConfig = require(path.resolve(__dirname, "config") + "/webpack.config." + env.type + ".ㅅs");
+	const partConfig = require(path.resolve(__dirname, "config") + "/webpack.config." + env.type + ".ts");
 
 	return partConfig(Object.assign(config, getConfig(env)), env.name.toLowerCase(), env.path);
 };
