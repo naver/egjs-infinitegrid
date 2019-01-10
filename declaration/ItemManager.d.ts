@@ -51,7 +51,10 @@ export default class ItemManager {
     append(layouted: IInfiniteGridGroup): IInfiniteGridItem[];
     prepend(layouted: IInfiniteGridGroup): IInfiniteGridItem[];
     clear(): void;
-    remove(element: HTMLElement, start: number, end: number): IInfiniteGridItem[];
+    remove(element: HTMLElement, start: number, end: number): {
+        items: IInfiniteGridItem[];
+        groups: IInfiniteGridGroup[];
+    };
     indexOf(data: IInfiniteGridGroup | string | number): number;
     get(start?: number, end?: number): IInfiniteGridGroup[];
     set(data: IInfiniteGridGroup | IInfiniteGridGroup[], key?: string | number): void;

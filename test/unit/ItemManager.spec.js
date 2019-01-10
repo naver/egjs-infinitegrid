@@ -1,13 +1,16 @@
 import ItemManager from "../../src/ItemManager";
 import {IGNORE_CLASSNAME} from "../../src/consts";
-
+import {createElement} from "./helper/TestHelper";
 /* eslint-disable */
+
 function initItems(groupKey = 1) {
   return {
     groupKey,
     outlines: {start:[100], end: []},
     items:[
     {
+      groupKey,
+      el: createElement(groupKey),
       size: {
         width: 100,
         height: 50
@@ -21,25 +24,29 @@ function initItems(groupKey = 1) {
       }
     },
     {
-      size: {
-        width: 100,
-        height: 50
-      },
-      type: 1,
-      rect: {
-        top: 0,
-        left: 200,
-        width: 200,
-        height: 100
-      }
-    },
-    {
+      groupKey,
+      el: createElement(groupKey),
       size: {
         width: 100,
         height: 50
       },
       type: 2,
       rect: {
+        top: 0,
+        left: 200,
+        width: 200,
+        height: 100
+      }
+    },
+    {
+      groupKey,
+      el: createElement(groupKey),
+      size: {
+        width: 100,
+        height: 50
+      },
+      type: 3,
+      rect: {
         top: 100,
         left: 0,
         width: 200,
@@ -47,11 +54,13 @@ function initItems(groupKey = 1) {
       }
     },
     {
+      groupKey,
+      el: createElement(groupKey),
       size: {
         width: 100,
         height: 50
       },
-      type: 3,
+      type: 4,
       rect: {
         top: 100,
         left: 200,
@@ -60,11 +69,13 @@ function initItems(groupKey = 1) {
       }
     },
     {
+      groupKey,
+      el: createElement(groupKey),
       size: {
         width: 100,
         height: 50
       },
-      type: 3,
+      type: 5,
       rect: {
         top: 200,
         left: 0,
@@ -170,6 +181,36 @@ describe("ItemManager Test", function() {
       expect(index5).to.be.equals(1);
       expect(index6).to.be.equals(1);      
     });
+    it("should check append and remove", () => {
+      // Given
+      const group1 = initItems(1);
+      const group2 = initItems(2);
+
+      this.inst.append(group1);
+      this.inst.append(group2);
+
+      // When
+      const groupsLength1 = this.inst.size();
+      const length = group1.items.length;
+      // remove all items1
+      for (let i = 0; i < length; ++i) {
+        this.inst.remove(group1.items[0].el);
+      }
+      const groupsLength2 = this.inst.size();
+
+
+      const length2 = group2.items.length;
+      // remove all items2
+      for (let i = 0; i < length2; ++i) {
+        this.inst.remove(group2.items[0].el);
+      }
+      const groupsLength3 = this.inst.size();
+
+      // Then
+      expect(groupsLength1).to.be.equals(2);
+      expect(groupsLength2).to.be.equals(1);
+      expect(groupsLength3).to.be.equals(0);
+    })
   });
   [true, false].forEach(horizontal => {
     describe(`fit Test(horizontal: ${horizontal})`, function() {

@@ -1,4 +1,4 @@
-interface IAutoSizierElemenet extends HTMLElement {
+export interface IAutoSizierElemenet extends HTMLElement {
     __PREFIX__?: string;
 }
 export default class AutoSizer {
@@ -7,4 +7,3 @@ export default class AutoSizer {
     static resize(element: IAutoSizierElemenet, prefix?: string): void;
     static resizeAll(): void;
 }
-export {};
