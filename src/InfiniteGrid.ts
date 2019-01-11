@@ -391,10 +391,10 @@ class InfiniteGrid extends Component {
 	 */
 	public remove(element: HTMLElement, isLayout = true) {
 		if (element) {
-			const items = this._infinite.remove(element);
+			const {items, groups} = this._infinite.remove(element);
 
 			items && DOMRenderer.removeElement(element);
-			isLayout && this.layout(false);
+			isLayout && this.layout(groups.length > 0);
 			return items;
 		}
 		return null;

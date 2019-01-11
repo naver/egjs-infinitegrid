@@ -184,17 +184,17 @@ class Infinite {
 	}
 	public remove(element: HTMLElement) {
 		const { startCursor, endCursor } = this._status;
-		const { items, groups } =
+		const result =
 			this._items.remove(element, startCursor, endCursor);
 
-		if (groups.length) {
+		if (result.groups.length) {
 			this.setCursor("end", endCursor - 1);
 		}
 		if (!this._items.size()) {
 			this._status.startCursor = -1;
 			this._status.endCursor = -1;
 		}
-		return items;
+		return result;
 	}
 	public clear() {
 		this._status = {
