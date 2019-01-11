@@ -3,9 +3,9 @@
  * egjs projects are licensed under the MIT license
 */
 import Component from "@egjs/component";
-import ItemManager, { IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus } from "./ItemManager";
-import DOMRenderer, { resetSize, IDOMRendererStatus } from "./DOMRenderer";
-import Watcher, { IWatchStatus } from "./Watcher";
+import ItemManager from "./ItemManager";
+import DOMRenderer, { resetSize } from "./DOMRenderer";
+import Watcher from "./Watcher";
 import {
 	APPEND,
 	PREPEND,
@@ -23,10 +23,15 @@ import {
 	DUMMY_POSITION,
 	IS_IOS,
 } from "./consts";
-import Infinite, { IInfiniteStatus } from "./Infinite";
+import Infinite from "./Infinite";
 import { toArray, $, outerHeight, outerWidth, assign } from "./utils";
-import LayoutMananger, { IErrorCallbackOptions } from "./LayoutManager";
-import { IJQuery, ILayout, CursorType, StyleType } from "./types";
+import LayoutMananger from "./LayoutManager";
+import {
+	IJQuery, ILayout,
+	CursorType, StyleType,
+	IItemManagerStatus, IInfiniteGridItem,
+	IInfiniteGridGroup, IErrorCallbackOptions, IDOMRendererStatus, IWatchStatus, IInfiniteStatus
+} from "./types";
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -47,7 +52,7 @@ import { IJQuery, ILayout, CursorType, StyleType } from "./types";
 // }
 /* eslint-enable */
 
-export interface IInfiniteGridOptions {
+interface IInfiniteGridOptions {
 	itemSelector: string;
 	isOverflowScroll: boolean;
 	threshold: number;
@@ -59,7 +64,7 @@ export interface IInfiniteGridOptions {
 	useFit: boolean;
 	attributePrefix: string;
 }
-export interface IInfiniteGridStatus {
+interface IInfiniteGridStatus {
 	_status: {
 		processingStatus: number,
 		loadingSize: number,

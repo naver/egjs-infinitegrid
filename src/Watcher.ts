@@ -2,7 +2,7 @@ import {
 	IS_IOS,
 } from "./consts";
 import {
-	window, WindowMockType,
+	window,
 } from "./browser";
 import {
 	addEvent,
@@ -12,8 +12,9 @@ import {
 	scrollBy,
 	assign,
 } from "./utils";
+import { WindowMockType, IWatchStatus } from "./types";
 
-export interface IWatcherOptions {
+interface IWatcherOptions {
 	container: HTMLElement;
 	isOverflowScroll: boolean;
 	horizontal: boolean;
@@ -25,10 +26,7 @@ export interface IWatcherOptions {
 		horizontal: boolean,
 	}) => void;
 }
-export interface IWatchStatus {
-	_prevPos: number;
-	scrollPos: number;
-}
+
 export default class Watcher {
 	public options: IWatcherOptions;
 	private _timer: {

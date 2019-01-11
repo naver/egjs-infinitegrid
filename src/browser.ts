@@ -1,6 +1,4 @@
-export type WindowMockType = {
-	[P in keyof Window]?: Window[P] extends (...args: any[]) => any ? Window[P] : Partial<Window[P]>
-};
+import { WindowMockType } from "./types";
 
 let win: WindowMockType;
 

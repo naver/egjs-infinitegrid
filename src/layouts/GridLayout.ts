@@ -1,7 +1,6 @@
 import { ALIGN, APPEND, PREPEND } from "../consts";
 import { getStyleNames, assignOptions, fill, cloneItems } from "../utils";
-import { ILayout, IAlign, IRectlProperties } from "../types";
-import { IInfiniteGridItem, IInfiniteGridGroup } from "../ItemManager";
+import { ILayout, IAlign, IRectlProperties, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
 
 // ALIGN
 const { START, CENTER, END, JUSTIFY } = ALIGN;

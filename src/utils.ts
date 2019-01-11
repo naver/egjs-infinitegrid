@@ -1,5 +1,5 @@
 
-import { window, document, WindowMockType } from "./browser";
+import { window, document } from "./browser";
 import {
 	SUPPORT_COMPUTEDSTYLE,
 	SUPPORT_ADDEVENTLISTENER,
@@ -8,7 +8,7 @@ import {
 	HORIZONTAL,
 	DEFAULT_OPTIONS,
 } from "./consts";
-import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType } from "./types";
+import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType, WindowMockType } from "./types";
 
 export function toArray(nodes: HTMLCollection): HTMLElement[];
 export function toArray<T extends Node>(nodes: T[] | NodeListOf<T>): T[];

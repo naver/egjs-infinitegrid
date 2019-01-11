@@ -1,6 +1,6 @@
-import ItemManager, { IInfiniteGridGroup } from "./ItemManager";
+import ItemManager from "./ItemManager";
 import { assign } from "./utils";
-import { CursorType } from "./types";
+import { CursorType, IInfiniteGridGroup, IInfiniteStatus } from "./types";
 
 function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: number, endScrollPos: number) {
 	const { items, outlines } = group;
@@ -21,17 +21,12 @@ function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: numb
 	return 0;
 }
 
-export interface IInfiniteOptions {
+interface IInfiniteOptions {
 	useRecycle?: boolean;
 	threshold?: number;
 	append?: (e?: { cache: IInfiniteGridGroup[] }) => void;
 	prepend?: (e?: { cache: IInfiniteGridGroup[] }) => void;
 	recycle?: (e?: { start: number, end: number }) => void;
-}
-export interface IInfiniteStatus {
-	startCursor: number;
-	endCursor: number;
-	size: number;
 }
 class Infinite {
 	public options: Required<IInfiniteOptions>;

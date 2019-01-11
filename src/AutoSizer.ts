@@ -6,7 +6,7 @@ const elements: HTMLElement[] = [];
 function onResize() {
 	AutoSizer.resizeAll();
 }
-export interface IAutoSizierElemenet extends HTMLElement {
+interface IAutoSizierElemenet extends HTMLElement {
 	__PREFIX__?: string;
 }
 export default class AutoSizer {

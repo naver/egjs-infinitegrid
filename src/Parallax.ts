@@ -1,8 +1,7 @@
 import { ALIGN, isMobile, TRANSFORM } from "./consts";
 import { $, isWindow, assign } from "./utils";
-import { IAlign, IJQuery, PositionType, SizeType, InnerSizeType, ClientSizeType, IInfiniteGridItemElement, OffsetSizeType } from "./types";
-import { WindowMockType } from "./browser";
-import { IInfiniteGridItem } from "./ItemManager";
+import { IAlign, IJQuery, PositionType, SizeType, InnerSizeType, ClientSizeType, IInfiniteGridItemElement, OffsetSizeType, WindowMockType, IInfiniteGridItem } from "./types";
+
 interface IParallaxStyle {
 	position: PositionType;
 	size: SizeType;
