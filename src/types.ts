@@ -80,13 +80,13 @@ export interface IErrorCallbackOptions {
  * @ko Item Interface
  * @memberof eg.InfiniteGrid
  * @typedef
- * @property - Key in group containing item <ko>item을 포함하고 있는 group의 key</ko>
- * @property - html of element in item <ko>item의 element의 html</ko>
- * @property {HTMLElement} - Element for the item <ko>Element for the item</ko>
- * @property - Size at first rendering <ko>처음 렌더링 했을 때의 사이즈</ko>
- * @property - Currently seen the size of element <ko>현재 보여지는 Element의 사이즈</ko>
- * @property - Position and size shown in layout <ko>레이아웃할 때 보여지는 포지션과 사이즈</ko>
- * @property - Position and size that was shown when I was layouted <ko>전에 레이아웃했을 때 보였었던 포지션과 사이즈</ko>
+ * @property - Key in group containing item <ko>아이템을 포함하고 있는 그룹의 키</ko>
+ * @property - html of element in item <ko>아이템의 엘리먼트 html</ko>
+ * @property {HTMLElement} - Element for the item <ko>아이템에 있는 엘리먼트</ko>
+ * @property - Size of elements of the rendering when the first time. <ko>처음 렌더링 했을 때의 엘리먼트의 사이즈</ko>
+ * @property - Currently seen the size of element <ko>현재 보여지는 엘리먼트의 사이즈</ko>
+ * @property - Position and size of the element shown in layout <ko>레이아웃할 때 보여지는 포지션과 사이즈</ko>
+ * @property - The position and size of the element that was seen in the layout before <ko>전에 레이아웃했을 때 보였었던 포지션과 사이즈</ko>
  */
 export interface IInfiniteGridItem {
 	groupKey: string | number;
