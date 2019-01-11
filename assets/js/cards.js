@@ -60,6 +60,8 @@ function refresh(pos) {
 	var size = ig3._renderer._size.view;
 	var csize = Math.pow(size / 2, 2);
 	var centerPos = pos + size / 2;
+
+	console.log(pos, size, csize, centerPos);
 	ig3.getItems().forEach(function (item) {
 		if (pos > item.rect.left + item.size.width || pos + size < item.rect.left) {
 			return;

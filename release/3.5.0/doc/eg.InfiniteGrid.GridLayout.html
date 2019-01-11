@@ -91,6 +91,16 @@
     </ul>
     <ul class="typedefs itemMembers expends">
     
+    <span class="subtitle">Typedefs</span>
+    
+        <li data-name="eg.InfiniteGrid.IErrorCallbackOptions"><a href="eg.InfiniteGrid.html#.IErrorCallbackOptions">IErrorCallbackOptions</a></li>
+    
+        <li data-name="eg.InfiniteGrid.IInfiniteGridItem"><a href="eg.InfiniteGrid.html#.IInfiniteGridItem">IInfiniteGridItem</a></li>
+    
+        <li data-name="eg.InfiniteGrid.IPosition"><a href="eg.InfiniteGrid.html#.IPosition">IPosition</a></li>
+    
+        <li data-name="eg.InfiniteGrid.ISize"><a href="eg.InfiniteGrid.html#.ISize">ISize</a></li>
+    
     </ul>
     <ul class="methods itemMembers expends">
     
@@ -381,6 +391,7 @@
 
 <header>
     <h2>
+    
         <span class="ancestors">eg<a href="eg.InfiniteGrid.html">.InfiniteGrid</a>.</span>
     
     
@@ -409,7 +420,7 @@
     
         
         <div class="tag-source">
-            <a href="src_layouts_GridLayout.js.html">GridLayout.js</a>, <a href="src_layouts_GridLayout.js.html#line8">line 8</a>
+            <a href="src_layouts_GridLayout.ts.html">GridLayout.ts</a>, <a href="src_layouts_GridLayout.ts.html#line8">line 8</a>
         </div>
         
     </div>
@@ -647,25 +658,26 @@
     
     <pre class="prettyprint"><code><pre class="prettyprint source"><code>&lt;script>
 var ig = new eg.InfiniteGrid(&quot;#grid&quot;. {
-    horizontal: true,
+  horizontal: true,
 });
 
 ig.setLayout(eg.InfiniteGrid.GridLayout, {
-    margin: 10,
-    align: &quot;start&quot;,
-    itemSize: 200
+  margin: 10,
+  align: &quot;start&quot;,
+  itemSize: 200
 });
 
 // or
 
 var layout = new eg.InfiniteGrid.GridLayout({
-    margin: 10,
-    align: &quot;center&quot;,
-    itemSize: 200,
-    horizontal: true,
+  margin: 10,
+  align: &quot;center&quot;,
+  itemSize: 200,
+  horizontal: true,
 });
 
-&lt;/script></code></pre></code></pre>
+&lt;/script>
+</code></pre></code></pre>
     
 
     
@@ -730,12 +742,12 @@ var layout = new eg.InfiniteGrid.GridLayout({
     <div class="nameContainer">
         <h4 class="name" id="append">
             
-            append<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            append<span class="signature">(items, <span class="optional">outline</span>, <span class="optional">cache</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_GridLayout.js.html">GridLayout.js</a>, <a href="src_layouts_GridLayout.js.html#line160">line 160</a>
+            <a href="src_layouts_GridLayout.ts.html">GridLayout.ts</a>, <a href="src_layouts_GridLayout.ts.html#line65">line 65</a>
         </div>
         
     </div>
@@ -827,6 +839,38 @@ var layout = new eg.InfiniteGrid.GridLayout({
             
             <div class="description en"><p>Array of outline points to be reference points </p></div>
             <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>cache</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
             
         </div>
 
@@ -931,12 +975,12 @@ var layout = new eg.InfiniteGrid.GridLayout({
     <div class="nameContainer">
         <h4 class="name" id="layout">
             
-            layout<span class="signature">(groups, outline)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.GridLayout.html">eg.InfiniteGrid.GridLayout</a>}</span>
+            layout<span class="signature">(<span class="optional">groups</span>, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.GridLayout.html">eg.InfiniteGrid.GridLayout</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_GridLayout.js.html">GridLayout.js</a>, <a href="src_layouts_GridLayout.js.html#line186">line 186</a>
+            <a href="src_layouts_GridLayout.ts.html">GridLayout.ts</a>, <a href="src_layouts_GridLayout.ts.html#line91">line 91</a>
         </div>
         
     </div>
@@ -970,7 +1014,16 @@ var layout = new eg.InfiniteGrid.GridLayout({
         <div>
             <strong>groups</strong>
             
+                (default: <code>[]</code>)
+            
 
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
             
         </div>
         <!-- parameter type -->
@@ -998,7 +1051,16 @@ var layout = new eg.InfiniteGrid.GridLayout({
         <div>
             <strong>outline</strong>
             
+                (default: <code>[]</code>)
+            
 
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
             
         </div>
         <!-- parameter type -->
@@ -1118,12 +1180,12 @@ var layout = new eg.InfiniteGrid.GridLayout({
     <div class="nameContainer">
         <h4 class="name" id="prepend">
             
-            prepend<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            prepend<span class="signature">(items, <span class="optional">outline</span>, <span class="optional">cache</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_GridLayout.js.html">GridLayout.js</a>, <a href="src_layouts_GridLayout.js.html#line173">line 173</a>
+            <a href="src_layouts_GridLayout.ts.html">GridLayout.ts</a>, <a href="src_layouts_GridLayout.ts.html#line78">line 78</a>
         </div>
         
     </div>
@@ -1215,6 +1277,38 @@ var layout = new eg.InfiniteGrid.GridLayout({
             
             <div class="description en"><p>Array of outline points to be reference points </p></div>
             <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>cache</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
             
         </div>
 
@@ -1324,7 +1418,7 @@ var layout = new eg.InfiniteGrid.GridLayout({
     
         
         <div class="tag-source">
-            <a href="src_layouts_GridLayout.js.html">GridLayout.js</a>, <a href="src_layouts_GridLayout.js.html#line222">line 222</a>
+            <a href="src_layouts_GridLayout.ts.html">GridLayout.ts</a>, <a href="src_layouts_GridLayout.ts.html#line127">line 127</a>
         </div>
         
     </div>
@@ -1497,7 +1591,7 @@ var layout = new eg.InfiniteGrid.GridLayout({
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 26 2018 17:10:07 GMT+0900 (Korean Standard Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 0.3.0-rc9</a> on Fri Jan 11 2019 21:59:03 GMT+0900 (Korean Standard Time)
         </footer>
     </div>
 </div>

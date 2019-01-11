@@ -91,6 +91,16 @@
     </ul>
     <ul class="typedefs itemMembers expends">
     
+    <span class="subtitle">Typedefs</span>
+    
+        <li data-name="eg.InfiniteGrid.IErrorCallbackOptions"><a href="eg.InfiniteGrid.html#.IErrorCallbackOptions">IErrorCallbackOptions</a></li>
+    
+        <li data-name="eg.InfiniteGrid.IInfiniteGridItem"><a href="eg.InfiniteGrid.html#.IInfiniteGridItem">IInfiniteGridItem</a></li>
+    
+        <li data-name="eg.InfiniteGrid.IPosition"><a href="eg.InfiniteGrid.html#.IPosition">IPosition</a></li>
+    
+        <li data-name="eg.InfiniteGrid.ISize"><a href="eg.InfiniteGrid.html#.ISize">ISize</a></li>
+    
     </ul>
     <ul class="methods itemMembers expends">
     
@@ -381,6 +391,7 @@
 
 <header>
     <h2>
+    
         <span class="ancestors">eg<a href="eg.InfiniteGrid.html">.InfiniteGrid</a>.</span>
     
     
@@ -409,7 +420,7 @@
     
         
         <div class="tag-source">
-            <a href="src_layouts_PackingLayout.js.html">PackingLayout.js</a>, <a href="src_layouts_PackingLayout.js.html#line30">line 30</a>
+            <a href="src_layouts_PackingLayout.ts.html">PackingLayout.ts</a>, <a href="src_layouts_PackingLayout.ts.html#line36">line 36</a>
         </div>
         
     </div>
@@ -684,27 +695,28 @@
     
     <pre class="prettyprint"><code><pre class="prettyprint source"><code>&lt;script>
 var ig = new eg.InfiniteGrid(&quot;#grid&quot;. {
-    horizontal: true,
+  horizontal: true,
 });
 
 ig.setLayout(eg.InfiniteGrid.PackingLayout, {
-    margin: 10,
-    aspectRatio: 1,
-    sizeWeight: 1,
-    ratioWeight: 2,
+  margin: 10,
+  aspectRatio: 1,
+  sizeWeight: 1,
+  ratioWeight: 2,
 });
 
 // or
 
 var layout = new eg.InfiniteGrid.PackingLayout({
-    horizontal: true,
-    margin: 10,
-    aspectRatio: 1,
-    sizeWeight: 1,
-    ratioWeight: 2,
+  horizontal: true,
+  margin: 10,
+  aspectRatio: 1,
+  sizeWeight: 1,
+  ratioWeight: 2,
 });
 
-&lt;/script></code></pre></code></pre>
+&lt;/script>
+</code></pre></code></pre>
     
 
     
@@ -769,12 +781,12 @@ var layout = new eg.InfiniteGrid.PackingLayout({
     <div class="nameContainer">
         <h4 class="name" id="append">
             
-            append<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            append<span class="signature">(items, <span class="optional">outline</span>, <span class="optional">cache</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_PackingLayout.js.html">PackingLayout.js</a>, <a href="src_layouts_PackingLayout.js.html#line203">line 203</a>
+            <a href="src_layouts_PackingLayout.ts.html">PackingLayout.ts</a>, <a href="src_layouts_PackingLayout.ts.html#line94">line 94</a>
         </div>
         
     </div>
@@ -866,6 +878,38 @@ var layout = new eg.InfiniteGrid.PackingLayout({
             
             <div class="description en"><p>Array of outline points to be reference points </p></div>
             <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>cache</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
             
         </div>
 
@@ -970,12 +1014,12 @@ var layout = new eg.InfiniteGrid.PackingLayout({
     <div class="nameContainer">
         <h4 class="name" id="layout">
             
-            layout<span class="signature">(groups, outline)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.PackingLayout.html">eg.InfiniteGrid.PackingLayout</a>}</span>
+            layout<span class="signature">(<span class="optional">groups</span>, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.PackingLayout.html">eg.InfiniteGrid.PackingLayout</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_PackingLayout.js.html">PackingLayout.js</a>, <a href="src_layouts_PackingLayout.js.html#line229">line 229</a>
+            <a href="src_layouts_PackingLayout.ts.html">PackingLayout.ts</a>, <a href="src_layouts_PackingLayout.ts.html#line120">line 120</a>
         </div>
         
     </div>
@@ -1009,7 +1053,16 @@ var layout = new eg.InfiniteGrid.PackingLayout({
         <div>
             <strong>groups</strong>
             
+                (default: <code>[]</code>)
+            
 
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
             
         </div>
         <!-- parameter type -->
@@ -1037,7 +1090,16 @@ var layout = new eg.InfiniteGrid.PackingLayout({
         <div>
             <strong>outline</strong>
             
+                (default: <code>[]</code>)
+            
 
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
             
         </div>
         <!-- parameter type -->
@@ -1157,12 +1219,12 @@ var layout = new eg.InfiniteGrid.PackingLayout({
     <div class="nameContainer">
         <h4 class="name" id="prepend">
             
-            prepend<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            prepend<span class="signature">(items, <span class="optional">outline</span>, <span class="optional">cache</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_PackingLayout.js.html">PackingLayout.js</a>, <a href="src_layouts_PackingLayout.js.html#line216">line 216</a>
+            <a href="src_layouts_PackingLayout.ts.html">PackingLayout.ts</a>, <a href="src_layouts_PackingLayout.ts.html#line107">line 107</a>
         </div>
         
     </div>
@@ -1254,6 +1316,38 @@ var layout = new eg.InfiniteGrid.PackingLayout({
             
             <div class="description en"><p>Array of outline points to be reference points </p></div>
             <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>cache</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
             
         </div>
 
@@ -1363,7 +1457,7 @@ var layout = new eg.InfiniteGrid.PackingLayout({
     
         
         <div class="tag-source">
-            <a href="src_layouts_PackingLayout.js.html">PackingLayout.js</a>, <a href="src_layouts_PackingLayout.js.html#line252">line 252</a>
+            <a href="src_layouts_PackingLayout.ts.html">PackingLayout.ts</a>, <a href="src_layouts_PackingLayout.ts.html#line143">line 143</a>
         </div>
         
     </div>
@@ -1536,7 +1630,7 @@ var layout = new eg.InfiniteGrid.PackingLayout({
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 26 2018 17:10:07 GMT+0900 (Korean Standard Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 0.3.0-rc9</a> on Fri Jan 11 2019 21:59:03 GMT+0900 (Korean Standard Time)
         </footer>
     </div>
 </div>

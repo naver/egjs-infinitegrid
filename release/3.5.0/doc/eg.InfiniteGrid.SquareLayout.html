@@ -91,6 +91,16 @@
     </ul>
     <ul class="typedefs itemMembers expends">
     
+    <span class="subtitle">Typedefs</span>
+    
+        <li data-name="eg.InfiniteGrid.IErrorCallbackOptions"><a href="eg.InfiniteGrid.html#.IErrorCallbackOptions">IErrorCallbackOptions</a></li>
+    
+        <li data-name="eg.InfiniteGrid.IInfiniteGridItem"><a href="eg.InfiniteGrid.html#.IInfiniteGridItem">IInfiniteGridItem</a></li>
+    
+        <li data-name="eg.InfiniteGrid.IPosition"><a href="eg.InfiniteGrid.html#.IPosition">IPosition</a></li>
+    
+        <li data-name="eg.InfiniteGrid.ISize"><a href="eg.InfiniteGrid.html#.ISize">ISize</a></li>
+    
     </ul>
     <ul class="methods itemMembers expends">
     
@@ -381,6 +391,7 @@
 
 <header>
     <h2>
+    
         <span class="ancestors">eg<a href="eg.InfiniteGrid.html">.InfiniteGrid</a>.</span>
     
     
@@ -409,7 +420,7 @@
     
         
         <div class="tag-source">
-            <a href="src_layouts_SquareLayout.js.html">SquareLayout.js</a>, <a href="src_layouts_SquareLayout.js.html#line33">line 33</a>
+            <a href="src_layouts_SquareLayout.ts.html">SquareLayout.ts</a>, <a href="src_layouts_SquareLayout.ts.html#line41">line 41</a>
         </div>
         
     </div>
@@ -610,27 +621,27 @@
     
     <pre class="prettyprint"><code><pre class="prettyprint source"><code>&lt;script>
 var ig = new eg.InfiniteGrid(&quot;#grid&quot;. {
-    horizontal: true,
+	horizontal: true,
 });
 
 ig.setLayout(eg.InfiniteGrid.SquareLayout, {
-    margin: 10,
-    itemSize: 200,
+	margin: 10,
+	itemSize: 200,
 });
 
 // or
 
 var layout = new eg.InfiniteGrid.SquareLayout({
-    margin: 10,
-    itemSize: 200,
-    horizontal: true,
+	margin: 10,
+	itemSize: 200,
+	horizontal: true,
 });
-
 
 var item1 = '&lt;div data-column=&quot;2&quot;>&lt;/div>';
 var item2 = &quot;&lt;div>&lt;/div>&quot;
 layout.append([item1, item2]);
-&lt;/script></code></pre></code></pre>
+&lt;/script>
+</code></pre></code></pre>
     
 
     
@@ -707,12 +718,12 @@ layout.append([item1, item2]);
             
                 <span class="inherited"><a href="eg.InfiniteGrid.FrameLayout.html#append">inherited</a></span>
             
-            append<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            append<span class="signature">(items, <span class="optional">outline</span>, <span class="optional">cache</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_FrameLayout.js.html">FrameLayout.js</a>, <a href="src_layouts_FrameLayout.js.html#line303">line 303</a>
+            <a href="src_layouts_FrameLayout.ts.html">FrameLayout.ts</a>, <a href="src_layouts_FrameLayout.ts.html#line213">line 213</a>
         </div>
         
     </div>
@@ -804,6 +815,38 @@ layout.append([item1, item2]);
             
             <div class="description en"><p>Array of outline points to be reference points </p></div>
             <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>cache</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
             
         </div>
 
@@ -910,12 +953,12 @@ layout.append([item1, item2]);
             
                 <span class="inherited"><a href="eg.InfiniteGrid.FrameLayout.html#layout">inherited</a></span>
             
-            layout<span class="signature">(groups, outline)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>}</span>
+            layout<span class="signature">(<span class="optional">groups</span>, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.FrameLayout.html">eg.InfiniteGrid.FrameLayout</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_FrameLayout.js.html">FrameLayout.js</a>, <a href="src_layouts_FrameLayout.js.html#line267">line 267</a>
+            <a href="src_layouts_FrameLayout.ts.html">FrameLayout.ts</a>, <a href="src_layouts_FrameLayout.ts.html#line177">line 177</a>
         </div>
         
     </div>
@@ -949,7 +992,16 @@ layout.append([item1, item2]);
         <div>
             <strong>groups</strong>
             
+                (default: <code>[]</code>)
+            
 
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
             
         </div>
         <!-- parameter type -->
@@ -977,7 +1029,16 @@ layout.append([item1, item2]);
         <div>
             <strong>outline</strong>
             
+                (default: <code>[]</code>)
+            
 
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
             
         </div>
         <!-- parameter type -->
@@ -1099,12 +1160,12 @@ layout.append([item1, item2]);
             
                 <span class="inherited"><a href="eg.InfiniteGrid.FrameLayout.html#prepend">inherited</a></span>
             
-            prepend<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            prepend<span class="signature">(items, <span class="optional">outline</span>, <span class="optional">cache</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_FrameLayout.js.html">FrameLayout.js</a>, <a href="src_layouts_FrameLayout.js.html#line316">line 316</a>
+            <a href="src_layouts_FrameLayout.ts.html">FrameLayout.ts</a>, <a href="src_layouts_FrameLayout.ts.html#line226">line 226</a>
         </div>
         
     </div>
@@ -1196,6 +1257,38 @@ layout.append([item1, item2]);
             
             <div class="description en"><p>Array of outline points to be reference points </p></div>
             <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>cache</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
             
         </div>
 
@@ -1307,7 +1400,7 @@ layout.append([item1, item2]);
     
         
         <div class="tag-source">
-            <a href="src_layouts_FrameLayout.js.html">FrameLayout.js</a>, <a href="src_layouts_FrameLayout.js.html#line290">line 290</a>
+            <a href="src_layouts_FrameLayout.ts.html">FrameLayout.ts</a>, <a href="src_layouts_FrameLayout.ts.html#line200">line 200</a>
         </div>
         
     </div>
@@ -1480,7 +1573,7 @@ layout.append([item1, item2]);
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 26 2018 17:10:07 GMT+0900 (Korean Standard Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 0.3.0-rc9</a> on Fri Jan 11 2019 21:59:03 GMT+0900 (Korean Standard Time)
         </footer>
     </div>
 </div>

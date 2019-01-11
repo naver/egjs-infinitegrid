@@ -91,6 +91,16 @@
     </ul>
     <ul class="typedefs itemMembers expends">
     
+    <span class="subtitle">Typedefs</span>
+    
+        <li data-name="eg.InfiniteGrid.IErrorCallbackOptions"><a href="eg.InfiniteGrid.html#.IErrorCallbackOptions">IErrorCallbackOptions</a></li>
+    
+        <li data-name="eg.InfiniteGrid.IInfiniteGridItem"><a href="eg.InfiniteGrid.html#.IInfiniteGridItem">IInfiniteGridItem</a></li>
+    
+        <li data-name="eg.InfiniteGrid.IPosition"><a href="eg.InfiniteGrid.html#.IPosition">IPosition</a></li>
+    
+        <li data-name="eg.InfiniteGrid.ISize"><a href="eg.InfiniteGrid.html#.ISize">ISize</a></li>
+    
     </ul>
     <ul class="methods itemMembers expends">
     
@@ -381,6 +391,7 @@
 
 <header>
     <h2>
+    
         <span class="ancestors">eg<a href="eg.InfiniteGrid.html">.InfiniteGrid</a>.</span>
     
     
@@ -409,7 +420,7 @@
     
         
         <div class="tag-source">
-            <a href="src_layouts_JustifiedLayout.js.html">JustifiedLayout.js</a>, <a href="src_layouts_JustifiedLayout.js.html#line5">line 5</a>
+            <a href="src_layouts_JustifiedLayout.ts.html">JustifiedLayout.ts</a>, <a href="src_layouts_JustifiedLayout.ts.html#line6">line 6</a>
         </div>
         
     </div>
@@ -687,26 +698,27 @@
     
     <pre class="prettyprint"><code><pre class="prettyprint source"><code>&lt;script>
 var ig = new eg.InfiniteGrid(&quot;#grid&quot;. {
-    horizontal: true,
+  horizontal: true,
 });
 
 ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
-    margin: 10,
-    minSize: 100,
-    maxSize: 300,
+  margin: 10,
+  minSize: 100,
+  maxSize: 300,
 });
 
 // or
 
 var layout = new eg.InfiniteGrid.JustifiedLayout({
-    margin: 10,
-    minSize: 100,
-    maxSize: 300,
-    column: 5,
-    horizontal: true,
+  margin: 10,
+  minSize: 100,
+  maxSize: 300,
+  column: 5,
+  horizontal: true,
 });
 
-&lt;/script></code></pre></code></pre>
+&lt;/script>
+</code></pre></code></pre>
     
 
     
@@ -771,12 +783,12 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
     <div class="nameContainer">
         <h4 class="name" id="append">
             
-            append<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            append<span class="signature">(items, <span class="optional">outline</span>, <span class="optional">cache</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_JustifiedLayout.js.html">JustifiedLayout.js</a>, <a href="src_layouts_JustifiedLayout.js.html#line216">line 216</a>
+            <a href="src_layouts_JustifiedLayout.ts.html">JustifiedLayout.ts</a>, <a href="src_layouts_JustifiedLayout.ts.html#line78">line 78</a>
         </div>
         
     </div>
@@ -868,6 +880,38 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
             
             <div class="description en"><p>Array of outline points to be reference points </p></div>
             <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>cache</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
             
         </div>
 
@@ -972,12 +1016,12 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
     <div class="nameContainer">
         <h4 class="name" id="layout">
             
-            layout<span class="signature">(groups, outline)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.JustifiedLayout.html">eg.InfiniteGrid.JustifiedLayout</a>}</span>
+            layout<span class="signature">(<span class="optional">groups</span>, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.InfiniteGrid.JustifiedLayout.html">eg.InfiniteGrid.JustifiedLayout</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_JustifiedLayout.js.html">JustifiedLayout.js</a>, <a href="src_layouts_JustifiedLayout.js.html#line242">line 242</a>
+            <a href="src_layouts_JustifiedLayout.ts.html">JustifiedLayout.ts</a>, <a href="src_layouts_JustifiedLayout.ts.html#line104">line 104</a>
         </div>
         
     </div>
@@ -1011,7 +1055,16 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
         <div>
             <strong>groups</strong>
             
+                (default: <code>[]</code>)
+            
 
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
             
         </div>
         <!-- parameter type -->
@@ -1039,7 +1092,16 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
         <div>
             <strong>outline</strong>
             
+                (default: <code>[]</code>)
+            
 
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
             
         </div>
         <!-- parameter type -->
@@ -1159,12 +1221,12 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
     <div class="nameContainer">
         <h4 class="name" id="prepend">
             
-            prepend<span class="signature">(items, <span class="optional">outline</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            prepend<span class="signature">(items, <span class="optional">outline</span>, <span class="optional">cache</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="src_layouts_JustifiedLayout.js.html">JustifiedLayout.js</a>, <a href="src_layouts_JustifiedLayout.js.html#line229">line 229</a>
+            <a href="src_layouts_JustifiedLayout.ts.html">JustifiedLayout.ts</a>, <a href="src_layouts_JustifiedLayout.ts.html#line91">line 91</a>
         </div>
         
     </div>
@@ -1256,6 +1318,38 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
             
             <div class="description en"><p>Array of outline points to be reference points </p></div>
             <div class="description ko"><p>기준점이 되는 아웃라인 점들의 배열</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>cache</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">boolean</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
             
         </div>
 
@@ -1365,7 +1459,7 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
     
         
         <div class="tag-source">
-            <a href="src_layouts_JustifiedLayout.js.html">JustifiedLayout.js</a>, <a href="src_layouts_JustifiedLayout.js.html#line203">line 203</a>
+            <a href="src_layouts_JustifiedLayout.ts.html">JustifiedLayout.ts</a>, <a href="src_layouts_JustifiedLayout.ts.html#line65">line 65</a>
         </div>
         
     </div>
@@ -1538,7 +1632,7 @@ var layout = new eg.InfiniteGrid.JustifiedLayout({
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 26 2018 17:10:07 GMT+0900 (Korean Standard Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 0.3.0-rc9</a> on Fri Jan 11 2019 21:59:03 GMT+0900 (Korean Standard Time)
         </footer>
     </div>
 </div>

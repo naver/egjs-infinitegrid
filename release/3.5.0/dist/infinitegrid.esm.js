@@ -9,31 +9,44 @@ https://github.com/naver/egjs-infinitegrid
 */
 import Component from '@egjs/component';
 
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
 
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
 
-    return target;
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+/* global Reflect, Promise */
+var extendStatics = function (d, b) {
+  extendStatics = Object.setPrototypeOf || {
+    __proto__: []
+  } instanceof Array && function (d, b) {
+    d.__proto__ = b;
+  } || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
   };
 
-  return _extends.apply(this, arguments);
+  return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+  extendStatics(d, b);
+
+  function __() {
+    this.constructor = d;
+  }
+
+  d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
-function _inheritsLoose(subClass, superClass) {
-  subClass.prototype = Object.create(superClass.prototype);
-  subClass.prototype.constructor = subClass;
-  subClass.__proto__ = superClass;
-}
-
-/* eslint-disable no-new-func, no-nested-ternary */
 var win;
 
 if (typeof window === "undefined") {
@@ -49,6 +62,7 @@ if (typeof window === "undefined") {
 }
 var document = win.document;
 
+var _a;
 var ua = win.navigator.userAgent;
 var SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in win);
 var SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
@@ -58,12 +72,13 @@ var SUPPORT_PASSIVE = function () {
   try {
     if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
       document.addEventListener("test", null, Object.defineProperty({}, "passive", {
-        get: function get() {
+        get: function () {
           supportsPassiveOption = true;
         }
       }));
     }
-  } catch (e) {}
+  } catch (e) {//
+  }
 
   return supportsPassiveOption;
 }();
@@ -103,11 +118,11 @@ var PROCESSING = 4;
 var webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
 var WEBKIT_VERSION = webkit && parseInt(webkit[1], 10) || 0;
 var DEFENSE_BROWSER = WEBKIT_VERSION && WEBKIT_VERSION < 537;
-
-var _ref = function () {
+var TRANSFORM = (_a = function () {
   var properties = {
     transitionend: "",
     webkitTransitionEnd: "-webkit-",
+    MSTransitionEnd: "-ms-",
     oTransitionEnd: "-o-",
     mozTransitionEnd: "-moz-"
   };
@@ -121,10 +136,9 @@ var _ref = function () {
   }
 
   return [];
-}(),
-    TRANSFORM = _ref[0],
-    TRANSITION = _ref[1],
-    TRANSITION_END = _ref[2];
+}(), _a[0]),
+    TRANSITION = _a[1],
+    TRANSITION_END = _a[2];
 
 function toArray(nodes) {
   // SCRIPT5014 in IE8
@@ -141,15 +155,6 @@ function toArray(nodes) {
 function matchHTML(html) {
   return html.match(/^<([A-z]+)\s*([^>]*)>/);
 }
-/**
- * Select or create element
- * @param {String|HTMLElement|jQuery} param
- *  when string given is as HTML tag, then create element
- *  otherwise it returns selected elements
- * @param {Boolean} multi
- * @returns {HTMLElement}
- */
-
 function $(param, multi) {
   if (multi === void 0) {
     multi = false;
@@ -173,19 +178,16 @@ function $(param, multi) {
     }
 
     if (multi) {
-      el = toArray(el);
+      return toArray(el);
     } else {
-      el = el && el.length > 0 && el[0] || undefined;
+      return el && el[0];
     }
-  } else if (param === win) {
+  } else if (isWindow(param)) {
     // window
     el = param;
-  } else if (param.nodeName && (param.nodeType === 1 || param.nodeType === 9)) {
-    // HTMLElement, Document
-    el = param;
-  } else if (typeof win.jQuery === "function" && param instanceof win.jQuery || param.constructor.prototype.jquery) {
+  } else if (isJQuery(param)) {
     // jQuery
-    el = $(multi ? param.toArray() : param.get(0), multi);
+    el = multi ? $(param.toArray(), true) : $(param.get(0), false);
   } else if (Array.isArray(param)) {
     el = param.map(function (v) {
       return $(v);
@@ -194,6 +196,9 @@ function $(param, multi) {
     if (!multi) {
       el = el.length >= 1 ? el[0] : undefined;
     }
+  } else if (param.nodeName && (param.nodeType === 1 || param.nodeType === 9)) {
+    // HTMLElement, Document
+    el = param;
   }
 
   return el;
@@ -223,7 +228,7 @@ function removeEvent(element, type, handler) {
   }
 }
 function addOnceEvent(element, type, handler, eventListenerOptions) {
-  var callback = function callback(e) {
+  var callback = function (e) {
     removeEvent(element, type, callback);
     handler(e);
   };
@@ -237,14 +242,14 @@ function scroll(el, horizontal) {
 
   var prop = "scroll" + (horizontal ? "Left" : "Top");
 
-  if (el === win) {
+  if (isWindow(el)) {
     return win[horizontal ? "pageXOffset" : "pageYOffset"] || document.body[prop] || document.documentElement[prop];
   } else {
     return el[prop];
   }
 }
 function scrollTo(el, x, y) {
-  if (el === win) {
+  if (isWindow(el)) {
     el.scroll(x, y);
   } else {
     el.scrollLeft = x;
@@ -252,7 +257,7 @@ function scrollTo(el, x, y) {
   }
 }
 function scrollBy(el, x, y) {
-  if (el === win) {
+  if (isWindow(el)) {
     el.scrollBy(x, y);
   } else {
     el.scrollLeft += x;
@@ -264,13 +269,14 @@ function getStyles(el) {
 }
 
 function _getSize(el, name, isOffset) {
-  if (el === win) {
+  if (isWindow(el)) {
     // WINDOW
     return win["inner" + name] || document.body["client" + name];
-  } else if (el.nodeType === 9) {
+  } else if (isDocument(el)) {
     // DOCUMENT_NODE
     var doc = el.documentElement;
-    return Math.max(el.body["scroll" + name], doc["scroll" + name], el.body["offset" + name], doc["offset" + name], doc["client" + name]);
+    var body = el.body;
+    return Math.max(body["scroll" + name], doc["scroll" + name], body["offset" + name], doc["offset" + name], doc["client" + name]);
   } else {
     // NODE
     var size = 0;
@@ -306,18 +312,18 @@ function getSize(el) {
 }
 var STYLE = {
   vertical: {
-    pos1: "top",
+    startPos1: "top",
     endPos1: "bottom",
     size1: "height",
-    pos2: "left",
+    startPos2: "left",
     endPos2: "right",
     size2: "width"
   },
   horizontal: {
-    pos1: "left",
+    startPos1: "left",
     endPos1: "right",
     size1: "width",
-    pos2: "top",
+    startPos2: "top",
     endPos2: "bottom",
     size2: "height"
   }
@@ -325,8 +331,22 @@ var STYLE = {
 function getStyleNames(isHorizontal) {
   return STYLE[isHorizontal ? HORIZONTAL : VERTICAL];
 }
+function assign(target) {
+  var sources = [];
+
+  for (var _i = 1; _i < arguments.length; _i++) {
+    sources[_i - 1] = arguments[_i];
+  }
+
+  sources.forEach(function (source) {
+    for (var key in source) {
+      target[key] = source[key];
+    }
+  });
+  return target;
+}
 function assignOptions(defaultOptions, options) {
-  return _extends({}, DEFAULT_OPTIONS, defaultOptions, options);
+  return assign({}, DEFAULT_OPTIONS, defaultOptions, options);
 }
 function toZeroArray(outline) {
   if (!outline || !outline.length) {
@@ -337,8 +357,17 @@ function toZeroArray(outline) {
 }
 function cloneItems(items) {
   return items.map(function (item) {
-    return _extends({}, item);
+    return assign({}, item);
   });
+}
+function isJQuery(el) {
+  return typeof win.jQuery === "function" && el instanceof win.jQuery || el.constructor.prototype.jquery && el.toArray;
+}
+function isWindow(el) {
+  return el === win;
+}
+function isDocument(el) {
+  return el.nodeType === 9;
 }
 function fill(arr, value) {
   var length = arr.length;
@@ -356,9 +385,14 @@ function isUndefined(target) {
 var ItemManager =
 /*#__PURE__*/
 function () {
-  ItemManager.from = function from(elements, selector, _ref) {
-    var groupKey = _ref.groupKey,
-        isAppend = _ref.isAppend;
+  function ItemManager() {
+    this.clear();
+  }
+
+  var __proto = ItemManager.prototype;
+
+  ItemManager.from = function (elements, selector, _a) {
+    var groupKey = _a.groupKey;
     var filted = ItemManager.selectItems($(elements, MULTI), selector); // Item Structure
 
     return toArray(filted).map(function (el) {
@@ -374,7 +408,7 @@ function () {
     });
   };
 
-  ItemManager.selectItems = function selectItems(elements, selector) {
+  ItemManager.selectItems = function (elements, selector) {
     return elements.filter(function (v) {
       var classNames = v.className.split(" ");
 
@@ -392,49 +426,40 @@ function () {
     });
   };
 
-  ItemManager.pluck = function pluck(data, property) {
+  ItemManager.pluck = function (data, property) {
     return data.reduce(function (acc, v) {
       return acc.concat(v[property]);
     }, []);
   };
 
-  function ItemManager() {
-    this.clear();
-  }
-
-  var _proto = ItemManager.prototype;
-
-  _proto.getStatus = function getStatus(startKey, endKey) {
+  __proto.getStatus = function (startKey, endKey) {
     var datas = this._data;
     var startIndex = Math.max(this.indexOf(startKey), 0);
     var endIndex = this.indexOf(endKey) + 1 || datas.length;
     return {
       _data: datas.slice(startIndex, endIndex).map(function (data) {
         var items = data.items.map(function (item) {
-          var item2 = _extends({}, item);
-
+          var item2 = assign({}, item);
           delete item2.el;
           return item2;
         });
-
-        var data2 = _extends({}, data);
-
+        var data2 = assign({}, data);
         data2.items = items;
         return data2;
       })
     };
   };
 
-  _proto.setStatus = function setStatus(status) {
+  __proto.setStatus = function (status) {
     var data = status._data;
     this.set(data);
   };
 
-  _proto.size = function size() {
+  __proto.size = function () {
     return this._data.length;
   };
 
-  _proto.fit = function fit(base, horizontal) {
+  __proto.fit = function (base, horizontal) {
     if (!this._data.length) {
       return;
     }
@@ -458,17 +483,17 @@ function () {
     }
   };
 
-  _proto.pluck = function pluck(property, start, end) {
+  __proto.pluck = function (property, start, end) {
     var data = isUndefined(start) ? this._data : this._data.slice(start, (isUndefined(end) ? start : end) + 1);
     return ItemManager.pluck(data, property);
   };
 
-  _proto.getOutline = function getOutline(index, property) {
+  __proto.getOutline = function (index, property) {
     var data = this._data[index];
     return data ? data.outlines[property] : [];
   };
 
-  _proto.getEdgeIndex = function getEdgeIndex(cursor, start, end) {
+  __proto.getEdgeIndex = function (cursor, start, end) {
     var prop = cursor === "start" ? "min" : "max";
     var index = -1;
     var targetValue = cursor === "start" ? Infinity : -Infinity;
@@ -485,14 +510,14 @@ function () {
     return index;
   };
 
-  _proto.getEdgeValue = function getEdgeValue(cursor, start, end) {
+  __proto.getEdgeValue = function (cursor, start, end) {
     var outlines = this.pluck("outlines", this.getEdgeIndex(cursor, start, end)).reduce(function (acc, v) {
       return acc.concat(v[cursor]);
     }, []);
     return outlines.length ? Math[cursor === "start" ? "min" : "max"].apply(Math, outlines) : 0;
   };
 
-  _proto.clearOutlines = function clearOutlines(startCursor, endCursor) {
+  __proto.clearOutlines = function (startCursor, endCursor) {
     if (startCursor === void 0) {
       startCursor = -1;
     }
@@ -516,7 +541,7 @@ function () {
     });
   };
 
-  _proto.getMaxEdgeValue = function getMaxEdgeValue() {
+  __proto.getMaxEdgeValue = function () {
     var groups = this.get();
     var length = groups.length;
 
@@ -532,55 +557,68 @@ function () {
     return 0;
   };
 
-  _proto.append = function append(layouted) {
+  __proto.append = function (layouted) {
     this._data.push(layouted);
 
     return layouted.items;
   };
 
-  _proto.prepend = function prepend(layouted) {
+  __proto.prepend = function (layouted) {
     this._data.unshift(layouted);
 
     return layouted.items;
   };
 
-  _proto.clear = function clear() {
+  __proto.clear = function () {
     this._data = [];
   };
 
-  _proto.remove = function remove(element, start, end) {
+  __proto.remove = function (element, start, end) {
     var items = [];
+    var groups = [];
     var key = element.getAttribute(GROUPKEY_ATT);
-    var data = this.get(start, end).filter(function (v) {
+    var datas = this.get(start, end).filter(function (v) {
       return String(v.groupKey) === key;
     });
 
-    if (!data.length) {
-      return items;
+    if (!datas.length) {
+      return {
+        items: items,
+        groups: groups
+      };
     }
 
-    data = data[0];
-    var len = data.items.length;
+    var data = datas[0];
+    var length = data.items.length;
     var idx = -1;
 
-    for (var i = 0; i < len; i++) {
+    for (var i = 0; i < length; i++) {
       if (data.items[i].el === element) {
         idx = i;
         break;
       }
     }
 
-    if (~idx) {
+    if (idx >= 0) {
       // remove item information
-      data.items.splice(idx, 1);
-      this.set(data, key);
-      items = data.items;
+      items = data.items.splice(idx, 1);
+
+      if (!data.items.length) {
+        this._data.splice(this.indexOf(data), 1);
+
+        groups = [data];
+      } else {
+        this.set(data, key);
+      }
     }
 
-    return items;
+    return {
+      items: items,
+      groups: groups
+    };
   };
 
-  _proto.indexOf = function indexOf(data) {
+  __proto.indexOf = function (data) {
     var groupKey = typeof data === "object" ? data.groupKey : data;
     var datas = this._data;
     var length = datas.length;
@@ -594,29 +632,31 @@ function () {
     return -1;
   };
 
-  _proto.get = function get(start, end) {
+  __proto.get = function (start, end) {
     return isUndefined(start) ? this._data : this._data.slice(start, (isUndefined(end) ? start : end) + 1);
   };
 
-  _proto.set = function set(data, key) {
-    if (!isUndefined(key) && !Array.isArray(data)) {
-      var len = this._data.length;
-      var idx = -1;
+  __proto.set = function (data, key) {
+    if (!Array.isArray(data)) {
+      if (!isUndefined(key)) {
+        var len = this._data.length;
+        var idx = -1;
 
-      for (var i = 0; i < len; i++) {
-        if (this._data[i].groupKey === key) {
-          idx = i;
-          break;
+        for (var i = 0; i < len; i++) {
+          if (this._data[i].groupKey === key) {
+            idx = i;
+            break;
+          }
         }
-      }
 
-      ~idx && (this._data[idx] = data);
+        idx > 0 && (this._data[idx] = data);
+      }
     } else {
       this._data = data.concat();
     }
   };
 
-  _proto.getData = function getData(index) {
+  __proto.getData = function (index) {
     return this._data[index];
   };
 
@@ -624,8 +664,8 @@ function () {
 }();
 
 function resetSize(item) {
-  item.orgSize = 0;
-  item.size = 0;
+  item.orgSize = null;
+  item.size = null;
 }
 
 function createContainer(element) {
@@ -660,7 +700,30 @@ function setTransition(styles, transitionDuration, pos1, pos2) {
 var DOMRenderer =
 /*#__PURE__*/
 function () {
-  DOMRenderer.renderItem = function renderItem(item, rect, transitionDuration) {
+  function DOMRenderer(element, options) {
+    this.options = {
+      isEqualSize: false,
+      isConstantSize: false,
+      horizontal: false,
+      container: false
+    };
+    this._size = {
+      container: -1,
+      view: -1,
+      viewport: -1,
+      item: null
+    };
+    this._orgStyle = {};
+    assign(this.options, options);
+
+    this._init(element);
+
+    this.resize();
+  }
+
+  var __proto = DOMRenderer.prototype;
+
+  DOMRenderer.renderItem = function (item, rect, transitionDuration) {
     if (!item.el) {
       return;
     }
@@ -669,7 +732,7 @@ function () {
         prevRect = item.prevRect;
     var styles = el.style; // for debugging
 
-    el.setAttribute(GROUPKEY_ATT, item.groupKey);
+    el.setAttribute(GROUPKEY_ATT, "" + item.groupKey);
     styles.position = "absolute";
     render(["width", "height"], rect, styles);
 
@@ -694,13 +757,13 @@ function () {
     }
   };
 
-  DOMRenderer.renderItems = function renderItems(items, transitionDuration) {
+  DOMRenderer.renderItems = function (items, transitionDuration) {
     items.forEach(function (item) {
       DOMRenderer.renderItem(item, item.rect, transitionDuration);
     });
   };
 
-  DOMRenderer.removeItems = function removeItems(items) {
+  DOMRenderer.removeItems = function (items) {
     items.forEach(function (item) {
       if (item.el) {
         DOMRenderer.removeElement(item.el);
@@ -709,7 +772,7 @@ function () {
     });
   };
 
-  DOMRenderer.removeElement = function removeElement(element) {
+  DOMRenderer.removeElement = function (element) {
     var parentNode = element && element.parentNode;
 
     if (!parentNode) {
@@ -719,7 +782,7 @@ function () {
     parentNode.removeChild(element);
   };
 
-  DOMRenderer.createElements = function createElements(items) {
+  DOMRenderer.createElements = function (items) {
     if (!items.length) {
       return;
     }
@@ -732,8 +795,8 @@ function () {
       return;
     }
 
-    var elements = $(noElementItems.map(function (_ref) {
-      var content = _ref.content;
+    var elements = $(noElementItems.map(function (_a) {
+      var content = _a.content;
       return content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "");
     }).join(""), MULTI);
     noElementItems.forEach(function (item, index) {
@@ -741,45 +804,22 @@ function () {
     });
   };
 
-  function DOMRenderer(element, options) {
-    _extends(this.options = {
-      isEqualSize: false,
-      isConstantSize: false,
-      horizontal: false,
-      container: false
-    }, options);
-
-    this._size = {
-      container: -1,
-      view: -1,
-      viewport: -1,
-      item: null
-    };
-
-    this._init(element);
-
-    this.resize();
-  }
-
-  var _proto = DOMRenderer.prototype;
-
-  _proto.getStatus = function getStatus() {
+  __proto.getStatus = function () {
     return {
       cssText: this.container.style.cssText,
-      _size: _extends({}, this._size)
+      _size: assign({}, this._size)
     };
   };
 
-  _proto.setStatus = function setStatus(status) {
+  __proto.setStatus = function (status) {
     this.container.style.cssText = status.cssText;
-
-    _extends(this._size, status._size);
+    assign(this._size, status._size);
   };
 
-  _proto.updateSize = function updateSize(items) {
-    var _this$options = this.options,
-        isEqualSize = _this$options.isEqualSize,
-        isConstantSize = _this$options.isConstantSize;
+  __proto.updateSize = function (items) {
+    var _a = this.options,
+        isEqualSize = _a.isEqualSize,
+        isConstantSize = _a.isConstantSize;
     var size = this._size;
     return items.map(function (item) {
       if (!item.el) {
@@ -790,23 +830,97 @@ function () {
         size.item = getSize(item.el);
       }
 
-      item.size = isEqualSize && _extends(size.item) || isConstantSize && item.orgSize && _extends(item.orgSize) || getSize(item.el);
+      item.size = isEqualSize && assign({}, size.item) || isConstantSize && item.orgSize && assign({}, item.orgSize) || getSize(item.el);
 
       if (!item.orgSize) {
-        item.orgSize = _extends({}, item.size);
+        item.orgSize = assign({}, item.size);
       }
 
       return item;
     });
   };
 
-  _proto._init = function _init(el) {
+  __proto.append = function (items) {
+    this._insert(items, APPEND, {
+      top: DUMMY_POSITION,
+      left: DUMMY_POSITION
+    });
+  };
+
+  __proto.prepend = function (items) {
+    this._insert(items, PREPEND, {
+      top: DUMMY_POSITION,
+      left: DUMMY_POSITION
+    });
+  };
+
+  __proto.createAndInsert = function (items, isAppend) {
+    DOMRenderer.createElements(items);
+    DOMRenderer.renderItems(items);
+
+    this._insert(items, isAppend);
+  };
+
+  __proto.getViewSize = function () {
+    return this._size.view;
+  };
+
+  __proto.getViewportSize = function () {
+    return this._size.viewport;
+  };
+
+  __proto.setContainerSize = function (size) {
+    this.container.style[this.options.horizontal ? "width" : "height"] = size + "px";
+  };
+
+  __proto.resize = function () {
+    var horizontal = this.options.horizontal;
+    var view = this.view;
+    var isResize = this.isNeededResize();
+
+    if (isResize) {
+      this._size = {
+        viewport: this._calcSize(),
+        item: null
+      };
+    }
+
+    this._size.view = horizontal ? innerWidth(view) : innerHeight(view);
+    return isResize;
+  };
+
+  __proto.isNeededResize = function () {
+    return this._calcSize() !== this._size.viewport;
+  };
+
+  __proto.clear = function () {
+    this.container.innerHTML = "";
+    this.container.style[this.options.horizontal ? "width" : "height"] = "";
+    this._size = {
+      item: null,
+      viewport: -1,
+      container: -1,
+      view: -1
+    };
+  };
+
+  __proto.destroy = function () {
+    this.clear();
+    var container = this.options.container;
+
+    for (var p in this._orgStyle) {
+      this[container ? "view" : "container"].style[p] = this._orgStyle[p];
+    }
+
+    container && this.container.parentNode.removeChild(this.container);
+  };
+
+  __proto._init = function (el) {
     var element = $(el);
     var style = getStyles(element);
-    var _this$options2 = this.options,
-        container = _this$options2.container,
-        horizontal = _this$options2.horizontal;
-    this._orgStyle = {};
+    var _a = this.options,
+        container = _a.container,
+        horizontal = _a.horizontal;
 
     if (style.position === "static") {
       this._orgStyle.position = element.style.position;
@@ -827,28 +941,7 @@ function () {
     }
   };
 
-  _proto.append = function append(items) {
-    this._insert(items, APPEND, {
-      top: DUMMY_POSITION,
-      left: DUMMY_POSITION
-    });
-  };
-
-  _proto.prepend = function prepend(items) {
-    this._insert(items, PREPEND, {
-      top: DUMMY_POSITION,
-      left: DUMMY_POSITION
-    });
-  };
-
-  _proto.createAndInsert = function createAndInsert(items, isAppend) {
-    DOMRenderer.createElements(items);
-    DOMRenderer.renderItems(items);
-
-    this._insert(items, isAppend);
-  };
-
-  _proto._insert = function _insert(items, isAppend, styles) {
+  __proto._insert = function (items, isAppend, styles) {
     var container = this.container;
     var df = document.createDocumentFragment();
     items.forEach(function (item) {
@@ -858,62 +951,8 @@ function () {
     isAppend ? container.appendChild(df) : container.insertBefore(df, container.firstChild);
   };
 
-  _proto._calcSize = function _calcSize() {
+  __proto._calcSize = function () {
     return this.options.horizontal ? innerHeight(this.container) : innerWidth(this.container);
-  };
-
-  _proto.getViewSize = function getViewSize() {
-    return this._size.view;
-  };
-
-  _proto.getViewportSize = function getViewportSize() {
-    return this._size.viewport;
-  };
-
-  _proto.setContainerSize = function setContainerSize(size) {
-    this.container.style[this.options.horizontal ? "width" : "height"] = size + "px";
-  };
-
-  _proto.resize = function resize() {
-    var horizontal = this.options.horizontal;
-    var view = this.view;
-    var isResize = this.isNeededResize();
-
-    if (isResize) {
-      this._size = {
-        viewport: this._calcSize(),
-        item: null
-      };
-    }
-
-    this._size.view = horizontal ? innerWidth(view) : innerHeight(view);
-    return isResize;
-  };
-
-  _proto.isNeededResize = function isNeededResize() {
-    return this._calcSize() !== this._size.viewport;
-  };
-
-  _proto.clear = function clear() {
-    this.container.innerHTML = "";
-    this.container.style[this.options.horizontal ? "width" : "height"] = "";
-    this._size = {
-      item: null,
-      viewport: -1,
-      container: -1,
-      view: -1
-    };
-  };
-
-  _proto.destroy = function destroy() {
-    this.clear();
-    var container = this.options.container;
-
-    for (var p in this._orgStyle) {
-      this[container ? "view" : "container"].style[p] = this._orgStyle[p];
-    }
-
-    container && this.container.parentNode.removeChild(this.container);
   };
 
   return DOMRenderer;
@@ -923,23 +962,28 @@ var Watcher =
 /*#__PURE__*/
 function () {
   function Watcher(view, options) {
-    _extends(this.options = {
+    if (options === void 0) {
+      options = {};
+    }
+
+    assign(this.options = {
       container: view,
-      resize: function resize() {},
-      check: function check() {},
+      resize: function () {
+        return void 0;
+      },
+      check: function () {
+        return void 0;
+      },
       isOverflowScroll: false,
       horizontal: false
     }, options);
-
     this._timer = {
-      resize: null // doubleCheck: null,
-      // doubleCheckCount: RETRY,
-
+      resize: null
     };
     this.reset();
     this._containerOffset = 0;
     this._view = view;
-    this._scrollIssue = IS_IOS;
+    this._isScrollIssue = IS_IOS;
     this._onCheck = this._onCheck.bind(this);
     this._onResize = this._onResize.bind(this);
     this.attachEvent();
@@ -947,16 +991,16 @@ function () {
     this.setScrollPos();
   }
 
-  var _proto = Watcher.prototype;
+  var __proto = Watcher.prototype;
 
-  _proto.getStatus = function getStatus() {
+  __proto.getStatus = function () {
     return {
       _prevPos: this._prevPos,
       scrollPos: this.getOrgScrollPos()
     };
   };
 
-  _proto.setStatus = function setStatus(status, applyScrollPos) {
+  __proto.setStatus = function (status, applyScrollPos) {
     if (applyScrollPos === void 0) {
       applyScrollPos = true;
     }
@@ -965,25 +1009,26 @@ function () {
     applyScrollPos && this.scrollTo(status.scrollPos);
   };
 
-  _proto.scrollBy = function scrollBy$$1(pos) {
+  __proto.scrollBy = function (pos) {
     var arrPos = this.options.horizontal ? [pos, 0] : [0, pos];
-
-    scrollBy.apply(void 0, [this._view].concat(arrPos));
-
+    scrollBy(this._view, arrPos[0], arrPos[1]);
     this.setScrollPos();
   };
 
-  _proto.scrollTo = function scrollTo$$1(pos) {
+  __proto.scrollTo = function (pos) {
     var arrPos = this.options.horizontal ? [pos, 0] : [0, pos];
-
-    scrollTo.apply(void 0, [this._view].concat(arrPos));
+    scrollTo(this._view, arrPos[0], arrPos[1]);
   };
 
-  _proto.getScrollPos = function getScrollPos() {
+  __proto.getScrollPos = function () {
     return this._prevPos;
   };
 
-  _proto.setScrollPos = function setScrollPos(pos) {
+  __proto.setScrollPos = function (pos) {
+    if (pos === void 0) {
+      pos = this.getOrgScrollPos();
+    }
+
     var rawPos = pos;
 
     if (typeof pos === "undefined") {
@@ -993,31 +1038,49 @@ function () {
     this._prevPos = rawPos - this.getContainerOffset();
   };
 
-  _proto.attachEvent = function attachEvent() {
+  __proto.attachEvent = function () {
     addEvent(this._view, "scroll", this._onCheck);
     addEvent(win, "resize", this._onResize);
   };
 
-  _proto.getOrgScrollPos = function getOrgScrollPos() {
+  __proto.getOrgScrollPos = function () {
     return scroll(this._view, this.options.horizontal);
   };
 
-  _proto.reset = function reset() {
+  __proto.reset = function () {
     this._prevPos = null;
   };
 
-  _proto._onCheck = function _onCheck() {
+  __proto.getContainerOffset = function () {
+    return this._containerOffset;
+  };
+
+  __proto.resize = function () {
+    this._containerOffset = this.options.isOverflowScroll ? 0 : this._getOffset();
+  };
+
+  __proto.detachEvent = function () {
+    removeEvent(this._view, "scroll", this._onCheck);
+    removeEvent(win, "resize", this._onResize);
+  };
+
+  __proto.destroy = function () {
+    this.detachEvent();
+    this.reset();
+  };
+
+  __proto._onCheck = function () {
     var prevPos = this.getScrollPos();
     var orgScrollPos = this.getOrgScrollPos();
     this.setScrollPos(orgScrollPos);
     var scrollPos = this.getScrollPos();
 
-    if (prevPos === null || this._scrollIssue && orgScrollPos === 0 || prevPos === scrollPos) {
-      orgScrollPos && (this._scrollIssue = false);
+    if (prevPos === null || this._isScrollIssue && orgScrollPos === 0 || prevPos === scrollPos) {
+      orgScrollPos && (this._isScrollIssue = false);
       return;
     }
 
-    this._scrollIssue = false;
+    this._isScrollIssue = false;
     this.options.check({
       isForward: prevPos < scrollPos,
       scrollPos: scrollPos,
@@ -1026,23 +1089,15 @@ function () {
     });
   };
 
-  _proto.getContainerOffset = function getContainerOffset() {
-    return this._containerOffset;
-  };
-
-  _proto._getOffset = function _getOffset() {
-    var _this$options = this.options,
-        container = _this$options.container,
-        horizontal = _this$options.horizontal;
+  __proto._getOffset = function () {
+    var _a = this.options,
+        container = _a.container,
+        horizontal = _a.horizontal;
     var rect = container.getBoundingClientRect();
     return rect[horizontal ? "left" : "top"] + this.getOrgScrollPos();
   };
 
-  _proto.resize = function resize() {
-    this._containerOffset = this.options.isOverflowScroll ? 0 : this._getOffset();
-  };
-
-  _proto._onResize = function _onResize() {
+  __proto._onResize = function () {
     var _this = this;
 
     if (this._timer.resize) {
@@ -1060,16 +1115,6 @@ function () {
     }, 100);
   };
 
-  _proto.detachEvent = function detachEvent() {
-    removeEvent(this._view, "scroll", this._onCheck);
-    removeEvent(win, "resize", this._onResize);
-  };
-
-  _proto.destroy = function destroy() {
-    this.detachEvent();
-    this.reset();
-  };
-
   return Watcher;
 }();
 
@@ -1079,7 +1124,7 @@ function isVisible(group, threshold, scrollPos, endScrollPos) {
   var start = outlines.start;
   var end = outlines.end;
 
-  if (start.legnth === 0 || end.length === 0 || !items.length || !items[0].el) {
+  if (start.length === 0 || end.length === 0 || !items.length || !items[0].el) {
     return 2;
   }
 
@@ -1099,41 +1144,47 @@ var Infinite =
 /*#__PURE__*/
 function () {
   function Infinite(itemManger, options) {
-    this.options = _extends({
+    this.options = assign({
       useRecycle: true,
       threshold: 100,
-      append: function append() {},
-      prepend: function prepend() {},
-      recycle: function recycle() {}
+      append: function () {
+        return void 0;
+      },
+      prepend: function () {
+        return void 0;
+      },
+      recycle: function () {
+        return void 0;
+      }
     }, options);
     this._items = itemManger;
     this.clear();
   }
 
-  var _proto = Infinite.prototype;
+  var __proto = Infinite.prototype;
 
-  _proto.setSize = function setSize(size) {
+  __proto.setSize = function (size) {
     this._status.size = size;
   };
 
-  _proto.recycle = function recycle(scrollPos, isForward) {
+  __proto.recycle = function (scrollPos, isForward) {
     if (!this.options.useRecycle) {
       return;
     }
 
-    var _this$_status = this._status,
-        startCursor = _this$_status.startCursor,
-        endCursor = _this$_status.endCursor,
-        size = _this$_status.size;
+    var _a = this._status,
+        startCursor = _a.startCursor,
+        endCursor = _a.endCursor,
+        size = _a.size;
 
     if (startCursor === -1 || endCursor === -1) {
       return;
     }
 
     var endScrollPos = scrollPos + size;
-    var _this$options = this.options,
-        threshold = _this$options.threshold,
-        recycle = _this$options.recycle;
+    var _b = this.options,
+        threshold = _b.threshold,
+        recycle = _b.recycle;
 
     var visibles = this._items.get(startCursor, endCursor).map(function (group) {
       return isVisible(group, threshold, scrollPos, endScrollPos);
@@ -1165,7 +1216,7 @@ function () {
     }
   };
 
-  _proto.scroll = function scroll(scrollPos) {
+  __proto.scroll = function (scrollPos) {
     var startCursor = this.getCursor("start");
     var endCursor = this.getCursor("end");
     var items = this._items;
@@ -1175,18 +1226,18 @@ function () {
     }
 
     var size = this._status.size;
-    var _this$options2 = this.options,
-        threshold = _this$options2.threshold,
-        append = _this$options2.append,
-        prepend = _this$options2.prepend;
+    var _a = this.options,
+        threshold = _a.threshold,
+        append = _a.append,
+        prepend = _a.prepend;
     var datas = items.get();
     var endScrollPos = scrollPos + size;
     var startEdgePos = Math.max.apply(Math, datas[startCursor].outlines.start);
     var endEdgePos = Math.min.apply(Math, datas[endCursor].outlines.end);
     var visibles = datas.map(function (group, i) {
-      var _group$outlines = group.outlines,
-          start = _group$outlines.start,
-          end = _group$outlines.end;
+      var _a = group.outlines,
+          start = _a.start,
+          end = _a.end;
 
       if (!start.length || !end.length) {
         return false;
@@ -1201,16 +1252,16 @@ function () {
 
       return false;
     });
-    var start = visibles.indexOf(true);
-    var end = visibles.lastIndexOf(true);
+    var startIndex = visibles.indexOf(true);
+    var endIndex = visibles.lastIndexOf(true);
 
-    if (~start && start < startCursor) {
+    if (~startIndex && startIndex < startCursor) {
       prepend({
-        cache: datas.slice(start, Math.min(startCursor, end + 1))
+        cache: datas.slice(startIndex, Math.min(startCursor, endIndex + 1))
       });
-    } else if (endCursor < end) {
+    } else if (endCursor < endIndex) {
       append({
-        cache: datas.slice(Math.max(start, endCursor + 1), end + 1)
+        cache: datas.slice(Math.max(startIndex, endCursor + 1), endIndex + 1)
       });
     } else if (endScrollPos >= endEdgePos - threshold) {
       append({
@@ -1223,7 +1274,7 @@ function () {
     }
   };
 
-  _proto.setCursor = function setCursor(cursor, index) {
+  __proto.setCursor = function (cursor, index) {
     var status = this._status;
     var items = this._items;
     var size = items.size();
@@ -1250,15 +1301,15 @@ function () {
     status.startCursor = Math.max(0, status.startCursor);
   };
 
-  _proto.setStatus = function setStatus(status) {
-    this._status = _extends(this._status, status);
+  __proto.setStatus = function (status) {
+    this._status = assign(this._status, status);
   };
 
-  _proto.getStatus = function getStatus(startKey, endKey) {
-    var _this$_status2 = this._status,
-        startCursor = _this$_status2.startCursor,
-        endCursor = _this$_status2.endCursor,
-        size = _this$_status2.size;
+  __proto.getStatus = function (startKey, endKey) {
+    var _a = this._status,
+        startCursor = _a.startCursor,
+        endCursor = _a.endCursor,
+        size = _a.size;
     var startIndex = Math.max(this._items.indexOf(startKey), 0);
     var endIndex = (this._items.indexOf(endKey) + 1 || this._items.size()) - 1;
     var start = Math.max(startCursor - startIndex, ~startCursor ? 0 : -1);
@@ -1270,10 +1321,10 @@ function () {
     };
   };
 
-  _proto.getEdgeOutline = function getEdgeOutline(cursor) {
-    var _this$_status3 = this._status,
-        startCursor = _this$_status3.startCursor,
-        endCursor = _this$_status3.endCursor;
+  __proto.getEdgeOutline = function (cursor) {
+    var _a = this._status,
+        startCursor = _a.startCursor,
+        endCursor = _a.endCursor;
 
     if (startCursor === -1 || endCursor === -1) {
       return [];
@@ -1282,28 +1333,45 @@ function () {
     return this._items.getOutline(cursor === "start" ? startCursor : endCursor, cursor);
   };
 
-  _proto.getEdgeValue = function getEdgeValue(cursor) {
+  __proto.getEdgeValue = function (cursor) {
     var outlines = this.getEdgeOutline(cursor);
     return outlines.length ? Math[cursor === "start" ? "min" : "max"].apply(Math, outlines) : 0;
   };
 
-  _proto.getVisibleItems = function getVisibleItems() {
+  __proto.getVisibleItems = function () {
     return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
   };
 
-  _proto.getCursor = function getCursor(cursor) {
+  __proto.getCursor = function (cursor) {
     return this._status[cursor === "start" ? "startCursor" : "endCursor"];
   };
 
-  _proto.getVisibleData = function getVisibleData() {
+  __proto.getVisibleData = function () {
     return this._items.get(this._status.startCursor, this._status.endCursor);
   };
 
-  _proto.remove = function remove(element) {
-    return this._items.remove(element, this._status.startCursor, this._status.endCursor);
+  __proto.remove = function (element) {
+    var _a = this._status,
+        startCursor = _a.startCursor,
+        endCursor = _a.endCursor;
+
+    var _b = this._items.remove(element, startCursor, endCursor),
+        items = _b.items,
+        groups = _b.groups;
+
+    if (groups.length) {
+      this.setCursor("end", endCursor - 1);
+    }
+
+    if (!this._items.size()) {
+      this._status.startCursor = -1;
+      this._status.endCursor = -1;
+    }
+
+    return items;
   };
 
-  _proto.clear = function clear() {
+  __proto.clear = function () {
     this._status = {
       startCursor: -1,
       endCursor: -1,
@@ -1315,25 +1383,22 @@ function () {
 }();
 
 var elements = [];
-/* eslint-disable */
 
-function onResize(e) {
+function onResize() {
   AutoSizer.resizeAll();
 }
-/* eslint-enable */
-
 
 var AutoSizer =
 /*#__PURE__*/
 function () {
   function AutoSizer() {}
 
-  AutoSizer.add = function add(element, prefix) {
+  AutoSizer.add = function (element, prefix) {
     if (prefix === void 0) {
       prefix = "data-";
     }
 
-    if (!element.length) {
+    if (!elements.length) {
       addEvent(win, "resize", onResize);
     }
 
@@ -1342,7 +1407,7 @@ function () {
     AutoSizer.resize(element);
   };
 
-  AutoSizer.remove = function remove(element, isFixed) {
+  AutoSizer.remove = function (element, isFixed) {
     if (isFixed === void 0) {
       isFixed = false;
     }
@@ -1355,7 +1420,7 @@ function () {
 
     var index = elements.indexOf(element);
 
-    if (!~index) {
+    if (index < 0) {
       return;
     }
 
@@ -1366,27 +1431,26 @@ function () {
     }
   };
 
-  AutoSizer.resize = function resize(element, prefix) {
+  AutoSizer.resize = function (element, prefix) {
     if (prefix === void 0) {
       prefix = "data-";
     }
 
     var elementPrefix = typeof element.__PREFIX__ === "string" ? element.__PREFIX__ : prefix;
-    var dataWidth = element.getAttribute(elementPrefix + "width");
-    var dataHeight = element.getAttribute(elementPrefix + "height");
+    var dataWidth = parseInt(element.getAttribute(elementPrefix + "width"), 10) || 0;
+    var dataHeight = parseInt(element.getAttribute(elementPrefix + "height"), 10) || 0;
     var fixed = element.getAttribute(elementPrefix + "fixed");
 
     if (fixed === "height") {
       var size = innerHeight(element) || dataHeight;
       element.style.width = dataWidth / dataHeight * size + "px";
     } else {
-      var _size = innerWidth(element) || dataWidth;
-
-      element.style.height = dataHeight / dataWidth * _size + "px";
+      var size = innerWidth(element) || dataWidth;
+      element.style.height = dataHeight / dataWidth * size + "px";
     }
   };
 
-  AutoSizer.resizeAll = function resizeAll() {
+  AutoSizer.resizeAll = function () {
     elements.forEach(function (element) {
       return AutoSizer.resize(element);
     });
@@ -1407,14 +1471,14 @@ var ImageLoaded =
 function () {
   function ImageLoaded() {}
 
-  ImageLoaded.waitImageLoaded = function waitImageLoaded(needCheck, _ref) {
-    var _ref$prefix = _ref.prefix,
-        prefix = _ref$prefix === void 0 ? "" : _ref$prefix,
-        length = _ref.length,
-        type = _ref.type,
-        complete = _ref.complete,
-        error = _ref.error,
-        end = _ref.end;
+  ImageLoaded.waitImageLoaded = function (checklist, _a) {
+    var _b = _a.prefix,
+        prefix = _b === void 0 ? "" : _b,
+        length = _a.length,
+        type = _a.type,
+        complete = _a.complete,
+        error = _a.error,
+        end = _a.end;
     var checkCount = 0;
     var endCount = length;
 
@@ -1422,7 +1486,7 @@ function () {
       checkCount = endCount;
     }
 
-    var checkEnd = function checkEnd() {
+    var checkEnd = function () {
       if (--endCount !== 0) {
         return;
       }
@@ -1430,7 +1494,7 @@ function () {
       end && end();
     };
 
-    var checkImage = function checkImage() {
+    var checkImage = function () {
       checkCount--;
 
       if (checkCount !== 0) {
@@ -1440,7 +1504,7 @@ function () {
       complete && complete();
     };
 
-    var onError = function onError(target, itemIndex) {
+    var onError = function (target, itemIndex) {
       if (itemIndex === void 0) {
         itemIndex = target.__ITEM_INDEX__;
       }
@@ -1451,7 +1515,7 @@ function () {
       });
     };
 
-    var onCheck = function onCheck(e) {
+    var onCheck = function (e) {
       var target = e.target || e.srcElement;
       removeEvent(target, "error", onCheck);
       removeEvent(target, "load", onCheck);
@@ -1470,7 +1534,7 @@ function () {
       checkEnd();
     };
 
-    needCheck.forEach(function (images, i) {
+    checklist.forEach(function (images, i) {
       images.forEach(function (v) {
         // workaround for IE
         if (v.complete && (!IS_IE || IS_IE && v.naturalWidth)) {
@@ -1497,7 +1561,7 @@ function () {
     });
   };
 
-  ImageLoaded.checkImageLoaded = function checkImageLoaded(el) {
+  ImageLoaded.checkImageLoaded = function (el) {
     if (el.tagName === "IMG") {
       return el.complete ? [] : [el];
     } else {
@@ -1505,15 +1569,15 @@ function () {
     }
   };
 
-  ImageLoaded.check = function check(elements, _ref2) {
+  ImageLoaded.check = function (elements, _a) {
     var _this = this;
 
-    var prefix = _ref2.prefix,
-        _ref2$type = _ref2.type,
-        type = _ref2$type === void 0 ? CHECK_ALL : _ref2$type,
-        complete = _ref2.complete,
-        error = _ref2.error,
-        end = _ref2.end;
+    var prefix = _a.prefix,
+        _b = _a.type,
+        type = _b === void 0 ? CHECK_ALL : _b,
+        complete = _a.complete,
+        error = _a.error,
+        end = _a.end;
     var images = elements.map(function (element) {
       return _this.checkImageLoaded(element);
     });
@@ -1546,6 +1610,8 @@ function () {
     }
   };
 
+  ImageLoaded.CHECK_ALL = 1;
+  ImageLoaded.CHECK_ONLY_ERROR = 2;
   return ImageLoaded;
 }();
 
@@ -1561,29 +1627,94 @@ function () {
       options = {};
     }
 
-    _extends(this.options = {
+    assign(this.options = {
       attributePrefix: "data-",
       isEqualSize: false,
       isConstantSize: false,
       horizontal: false
     }, options);
-
     this._items = items;
     this._renderer = renderer;
     this._layout = null;
   }
 
-  var _proto = LayoutMananger.prototype;
+  var __proto = LayoutMananger.prototype;
 
-  _proto.setLayout = function setLayout(layout) {
+  __proto.setLayout = function (layout) {
     this._layout = layout;
   };
 
-  _proto.setSize = function setSize(size) {
+  __proto.setSize = function (size) {
     this._layout.setSize(size);
   };
 
-  _proto._complete = function _complete(groups, items, isAppend, isUpdate, callback) {
+  __proto.append = function (_a, callbacks) {
+    var groups = _a.groups,
+        items = _a.items,
+        isUpdate = _a.isUpdate;
+
+    this._insert({
+      groups: groups,
+      items: items,
+      isUpdate: isUpdate,
+      isAppend: true
+    }, callbacks);
+  };
+
+  __proto.prepend = function (_a, callbacks) {
+    var groups = _a.groups,
+        items = _a.items,
+        isUpdate = _a.isUpdate;
+
+    this._insert({
+      groups: groups,
+      items: items,
+      isUpdate: isUpdate,
+      isAppend: false
+    }, callbacks);
+  };
+
+  __proto.layout = function (isRelayout, groups, items) {
+    var renderer = this._renderer;
+    var _a = renderer.options,
+        isEqualSize = _a.isEqualSize,
+        isConstantSize = _a.isConstantSize;
+    var layoutGroups = groups.filter(function (group) {
+      var item = group.items[0];
+      return item.orgSize && item.rect.top > DUMMY_POSITION / 10;
+    });
+
+    if (!layoutGroups.length) {
+      return [];
+    }
+
+    var outline = layoutGroups[0].outlines.start;
+
+    if (isRelayout) {
+      outline = [outline.length ? Math.min.apply(Math, outline) : 0];
+
+      if (!isConstantSize && items.length) {
+        renderer.updateSize(items); // update invisible items' size
+
+        if (isEqualSize && items[0].size) {
+          ItemManager.pluck(layoutGroups, "items").forEach(function (item) {
+            item.size = assign({}, items[0].size);
+          });
+        }
+      }
+    }
+
+    this._layout.layout(layoutGroups, outline);
+
+    return layoutGroups;
+  };
+
+  __proto.destroy = function () {
+    this._items = null;
+    this._renderer = null;
+  };
+
+  __proto._complete = function (groups, items, isAppend, isUpdate, callback) {
     var _this = this;
 
     var itemManager = this._items;
@@ -1610,8 +1741,7 @@ function () {
 
       var groupInfo = _this._layout[isAppend ? "append" : "prepend"](groupItems, outline, true);
 
-      _extends(group, groupInfo);
-
+      assign(group, groupInfo);
       DOMRenderer.renderItems(groupInfo.items);
       outline = groupInfo.outlines[isAppend ? "end" : "start"];
       return groupInfo;
@@ -1623,12 +1753,12 @@ function () {
     });
   };
 
-  _proto._error = function _error(removeTarget, replaceTarget, target, items, errorIndex, callback) {
+  __proto._error = function (removeTarget, replaceTarget, target, items, errorIndex, callback) {
     var item = items[errorIndex];
     var element = item.el;
     var prefix = this.options.attributePrefix; // remove item
 
-    var removeItem = function removeItem() {
+    var removeItem = function () {
       if (hasTarget(removeTarget, element)) {
         return;
       }
@@ -1639,7 +1769,7 @@ function () {
     }; // remove image
 
 
-    var remove = function remove() {
+    var remove = function () {
       if (target === element) {
         removeItem();
         return;
@@ -1660,7 +1790,7 @@ function () {
     }; // replace image
 
 
-    var replace = function replace(src) {
+    var replace = function (src) {
       if (hasTarget(removeTarget, element)) {
         return;
       }
@@ -1692,7 +1822,7 @@ function () {
     }; // replace item
 
 
-    var replaceItem = function replaceItem(content) {
+    var replaceItem = function (content) {
       if (hasTarget(removeTarget, element)) {
         return;
       }
@@ -1720,8 +1850,8 @@ function () {
     });
   };
 
-  _proto._end = function _end(removeTarget, replaceTarget, items, callback) {
-    var _this2 = this;
+  __proto._end = function (removeTarget, replaceTarget, items, callback) {
+    var _this = this;
 
     var attributePrefix = this.options.attributePrefix;
     var removeTargetLength = removeTarget.length;
@@ -1751,8 +1881,8 @@ function () {
       return v.el;
     }), {
       prefix: attributePrefix,
-      complete: function complete() {
-        _this2._renderer.updateSize(layoutedItems);
+      complete: function () {
+        _this._renderer.updateSize(layoutedItems);
 
         callback({
           remove: removeTarget,
@@ -1762,21 +1892,26 @@ function () {
     });
   };
 
-  _proto._insert = function _insert(_ref, _ref2) {
-    var _this3 = this;
+  __proto._insert = function (_a, _b) {
+    var _this = this;
 
-    var groups = _ref.groups,
-        _ref$items = _ref.items,
-        items = _ref$items === void 0 ? ItemManager.pluck(groups, "items") : _ref$items,
-        isAppend = _ref.isAppend,
-        isUpdate = _ref.isUpdate;
-
-    var _ref2$error = _ref2.error,
-        _error2 = _ref2$error === void 0 ? function () {} : _ref2$error,
-        _ref2$complete = _ref2.complete,
-        _complete2 = _ref2$complete === void 0 ? function () {} : _ref2$complete,
-        _ref2$end = _ref2.end,
-        _end2 = _ref2$end === void 0 ? function () {} : _ref2$end;
+    var groups = _a.groups,
+        _c = _a.items,
+        items = _c === void 0 ? ItemManager.pluck(groups, "items") : _c,
+        isAppend = _a.isAppend,
+        isUpdate = _a.isUpdate;
+    var _d = _b.error,
+        error = _d === void 0 ? function () {
+      return void 0;
+    } : _d,
+        _e = _b.complete,
+        complete = _e === void 0 ? function () {
+      return void 0;
+    } : _e,
+        _f = _b.end,
+        end = _f === void 0 ? function () {
+      return void 0;
+    } : _f;
 
     if (!groups.length) {
       return;
@@ -1793,129 +1928,35 @@ function () {
     ImageLoaded.check(elements, {
       prefix: prefix,
       type: type,
-      complete: function complete() {
-        if (!_this3._items) {
+      complete: function () {
+        if (!_this._items) {
           return;
         }
 
-        _this3._complete(checkGroups, items, isAppend, isUpdate, _complete2);
+        _this._complete(checkGroups, items, isAppend, isUpdate, complete);
       },
-      error: function error(_ref3) {
-        var target = _ref3.target,
-            itemIndex = _ref3.itemIndex;
+      error: function (_a) {
+        var target = _a.target,
+            itemIndex = _a.itemIndex;
 
-        if (!_this3._items) {
+        if (!_this._items) {
           return;
         }
 
-        _this3._error(removeTarget, replaceTarget, target, items, itemIndex, _error2);
+        _this._error(removeTarget, replaceTarget, target, items, itemIndex, error);
       },
-      end: function end() {
-        if (!_this3._items) {
+      end: function () {
+        if (!_this._items) {
           return;
         }
 
-        _this3._end(removeTarget, replaceTarget, items, _end2);
+        _this._end(removeTarget, replaceTarget, items, end);
       }
     });
-  };
-
-  _proto.append = function append(_ref4, callbacks) {
-    var groups = _ref4.groups,
-        items = _ref4.items,
-        isUpdate = _ref4.isUpdate;
-
-    if (callbacks === void 0) {
-      callbacks = {};
-    }
-
-    this._insert({
-      groups: groups,
-      items: items,
-      isUpdate: isUpdate,
-      isAppend: true
-    }, callbacks);
-  };
-
-  _proto.prepend = function prepend(_ref5, callbacks) {
-    var groups = _ref5.groups,
-        items = _ref5.items,
-        isUpdate = _ref5.isUpdate;
-
-    if (callbacks === void 0) {
-      callbacks = {};
-    }
-
-    this._insert({
-      groups: groups,
-      items: items,
-      isUpdate: isUpdate,
-      isAppend: false
-    }, callbacks);
-  };
-
-  _proto.layout = function layout(isRelayout, groups, items) {
-    var renderer = this._renderer;
-    var _renderer$options = renderer.options,
-        isEqualSize = _renderer$options.isEqualSize,
-        isConstantSize = _renderer$options.isConstantSize;
-    var layoutGroups = groups.filter(function (group) {
-      var item = group.items[0];
-      return item.orgSize && item.rect.top > DUMMY_POSITION / 10;
-    });
-
-    if (!layoutGroups.length) {
-      return [];
-    }
-
-    var outline = layoutGroups[0].outlines.start;
-
-    if (isRelayout) {
-      outline = [outline.length ? Math.min.apply(Math, outline) : 0];
-
-      if (!isConstantSize && items.length) {
-        renderer.updateSize(items); // update invisible items' size
-
-        if (isEqualSize && items[0].size) {
-          ItemManager.pluck(layoutGroups, "items").forEach(function (item) {
-            item.size = _extends({}, items[0].size);
-          });
-        }
-      }
-    }
-
-    this._layout.layout(layoutGroups, outline);
-
-    return layoutGroups;
-  };
-
-  _proto.destroy = function destroy() {
-    this._items = null;
-    this._renderer = null;
   };
 
   return LayoutMananger;
 }();
-
-// https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
-
-/* eslint-disable */
-
-if (typeof Object.create !== "function") {
-  Object.create = function (o, properties) {
-    if (typeof o !== "object" && typeof o !== "function") {
-      throw new TypeError("Object prototype may only be an Object: " + o);
-    } else if (o === null) {
-      throw new Error("This browser's implementation of Object.create is a shim and doesn't support 'null' as the first argument.");
-    }
-
-    function F() {}
-
-    F.prototype = o;
-    return new F();
-  };
-}
-/* eslint-enable */
 
 /**
  * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -1926,28 +1967,28 @@ if (typeof Object.create !== "function") {
  * @example
 ```
 <ul id="grid">
-	<li class="card">
-		<div>test1</div>
-	</li>
-	<li class="card">
-		<div>test2</div>
-	</li>
-	<li class="card">
-		<div>test3</div>
-	</li>
-	<li class="card">
-		<div>test4</div>
-	</li>
-	<li class="card">
-		<div>test5</div>
-	</li>
-	<li class="card">
-		<div>test6</div>
-	</li>
+  <li class="card">
+    <div>test1</div>
+  </li>
+  <li class="card">
+    <div>test2</div>
+  </li>
+  <li class="card">
+    <div>test3</div>
+  </li>
+  <li class="card">
+    <div>test4</div>
+  </li>
+  <li class="card">
+    <div>test5</div>
+  </li>
+  <li class="card">
+    <div>test6</div>
+  </li>
 </ul>
 <script>
 var some = new eg.InfiniteGrid("#grid").on("layoutComplete", function(e) {
-	// ...
+  // ...
 });
 
 // If you already have items in the container, call "layout" method.
@@ -1958,1392 +1999,1365 @@ some.layout();
  * @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
  **/
 
-
 var InfiniteGrid =
 /*#__PURE__*/
-function () {
-  var InfiniteGrid =
-  /*#__PURE__*/
-  function (_Component) {
-    _inheritsLoose(InfiniteGrid, _Component);
+function (_super) {
+  __extends(InfiniteGrid, _super);
+  /**
+   * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
+   * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
+   * @param {String} [options.itemSelector] A selector to select card elements that make up the layout<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)</ko>
+   * @param {Boolean} [options.useRecycle=true] Indicates whether keep the number of DOMs is maintained. If the useRecycle value is 'true', keep the number of DOMs is maintained. If the useRecycle value is 'false', the number of DOMs will increase as card elements are added. <ko>DOM의 수를 유지할지 여부를 나타낸다. useRecycle 값이 'true'이면 DOM 개수를 일정하게 유지한다. useRecycle 값이 'false' 이면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
+   * @param {Boolean} [options.isOverflowScroll=false] Indicates whether overflow:scroll is applied<ko>overflow:scroll 적용여부를 결정한다.</ko>
+   * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향)</ko>
+   * @param {Boolean} [options.useFit=true] The useFit option scrolls upwards so that no space is visible until an item is added <ko>위로 스크롤할 시 아이템을 추가하는 동안 보이는 빈 공간을 안보이게 한다.</ko>
+   * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
+   * @param {Boolean} [options.isConstantSize=false] Indicates whether sizes of all card elements does not change, the performance of layout arrangement can be improved. <ko>모든 카드 엘리먼트의 크기가 불변일 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
+   * @param {Number} [options.transitionDruation=0] Indicates how many seconds a transition effect takes to complete. <ko>트랜지션 효과를 완료하는데 걸리는 시간을 나타낸다.</ko>
+   * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
+   * @param {String} [options.attributePrefix="data-"] The prefix to use element's data attribute.<ko>엘리먼트의 데이타 속성에 사용할 접두사.</ko>
+   */
 
-    /**
-    * Version info string
-    * @ko 버전정보 문자열
-    * @name VERSION
-    * @static
-    * @type {String}
-    * @example
-    * eg.InfiniteGrid.VERSION;  // ex) 3.3.3
-    * @memberof eg.InfiniteGrid
-    */
 
-    /**
-     * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
-     * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
-     * @param {String} [options.itemSelector] A selector to select card elements that make up the layout<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)</ko>
-     * @param {Boolean} [options.useRecycle=true] Indicates whether keep the number of DOMs is maintained. If the useRecycle value is 'true', keep the number of DOMs is maintained. If the useRecycle value is 'false', the number of DOMs will increase as card elements are added. <ko>DOM의 수를 유지할지 여부를 나타낸다. useRecycle 값이 'true'이면 DOM 개수를 일정하게 유지한다. useRecycle 값이 'false' 이면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
-     * @param {Boolean} [options.isOverflowScroll=false] Indicates whether overflow:scroll is applied<ko>overflow:scroll 적용여부를 결정한다.</ko>
-     * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향)</ko>
-     * @param {Boolean} [options.useFit=true] The useFit option scrolls upwards so that no space is visible until an item is added <ko>위로 스크롤할 시 아이템을 추가하는 동안 보이는 빈 공간을 안보이게 한다.</ko>
-     * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
-     * @param {Boolean} [options.isConstantSize=false] Indicates whether sizes of all card elements does not change, the performance of layout arrangement can be improved. <ko>모든 카드 엘리먼트의 크기가 불변일 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
-     * @param {Number} [options.transitionDruation=0] Indicates how many seconds a transition effect takes to complete. <ko>트랜지션 효과를 완료하는데 걸리는 시간을 나타낸다.</ko>
-     * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
-     * @param {String} [options.attributePrefix="data-"] The prefix to use element's data attribute.<ko>엘리먼트의 데이타 속성에 사용할 접두사.</ko>
-     */
-    function InfiniteGrid(element, options) {
-      var _this;
+  function InfiniteGrid(element, options) {
+    var _this = _super.call(this) || this;
 
-      _this = _Component.call(this) || this;
+    assign(_this.options = {
+      itemSelector: "*",
+      isOverflowScroll: false,
+      threshold: 100,
+      isEqualSize: false,
+      isConstantSize: false,
+      useRecycle: true,
+      horizontal: false,
+      transitionDuration: 0,
+      useFit: true,
+      attributePrefix: "data-"
+    }, options);
+    DEFENSE_BROWSER && (_this.options.useFit = false);
+    IS_ANDROID2 && (_this.options.isOverflowScroll = false);
 
-      _extends(_this.options = {
-        itemSelector: "*",
-        isOverflowScroll: false,
-        threshold: 100,
-        isEqualSize: false,
-        isConstantSize: false,
-        useRecycle: true,
-        horizontal: false,
-        transitionDuration: 0,
-        useFit: true,
-        attributePrefix: "data-"
-      }, options);
+    _this._reset();
 
-      DEFENSE_BROWSER && (_this.options.useFit = false);
-      IS_ANDROID2 && (_this.options.isOverflowScroll = false);
+    _this._loadingBar = {};
+    var _a = _this.options,
+        isOverflowScroll = _a.isOverflowScroll,
+        isEqualSize = _a.isEqualSize,
+        isConstantSize = _a.isConstantSize,
+        horizontal = _a.horizontal,
+        threshold = _a.threshold,
+        useRecycle = _a.useRecycle;
+    _this._items = new ItemManager();
+    _this._renderer = new DOMRenderer(element, {
+      isEqualSize: isEqualSize,
+      isConstantSize: isConstantSize,
+      horizontal: horizontal,
+      container: isOverflowScroll
+    });
+    _this._watcher = new Watcher(_this._renderer.view, {
+      isOverflowScroll: isOverflowScroll,
+      horizontal: horizontal,
+      container: _this._renderer.container,
+      resize: function () {
+        return _this._onResize();
+      },
+      check: function (param) {
+        return _this._onCheck(param);
+      }
+    });
+    _this._infinite = new Infinite(_this._items, {
+      useRecycle: useRecycle,
+      threshold: threshold,
+      append: function (param) {
+        return _this._requestAppend(param);
+      },
+      prepend: function (param) {
+        return _this._requestPrepend(param);
+      },
+      recycle: function (param) {
+        return _this._recycle(param);
+      }
+    });
+    return _this;
+  }
+  /**
+   * Adds a card element at the bottom of a layout. This method is available only if the isProcessing() method returns false.
+   * @ko 카드 엘리먼트를 레이아웃 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
+   * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
+   * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
+   * @param {Number|String} [groupKey] The group key to be configured in a card element. It is automatically generated by default.
+   * <ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.</ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * infinitegrid.append("&lt;div class='item'&gt;test1&lt;/div&gt;&lt;div class='item'&gt;test2&lt;/div&gt;");
+   * infinitegrid.append(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]);
+   * infinitegrid.append([HTMLElement1, HTMLElement2]);
+   * infinitegrid.append(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
+   */
 
-      _this._reset();
 
-      _this._loadingBar = {};
-      var _this$options = _this.options,
-          isOverflowScroll = _this$options.isOverflowScroll,
-          isEqualSize = _this$options.isEqualSize,
-          isConstantSize = _this$options.isConstantSize,
-          horizontal = _this$options.horizontal,
-          threshold = _this$options.threshold,
-          useRecycle = _this$options.useRecycle;
-      _this._items = new ItemManager();
-      _this._renderer = new DOMRenderer(element, {
-        isEqualSize: isEqualSize,
-        isConstantSize: isConstantSize,
-        horizontal: horizontal,
-        container: isOverflowScroll
-      });
-      _this._watcher = new Watcher(_this._renderer.view, {
-        isOverflowScroll: isOverflowScroll,
-        horizontal: horizontal,
-        container: _this._renderer.container,
-        resize: function resize() {
-          return _this._onResize();
-        },
-        check: function check(param) {
-          return _this._onCheck(param);
-        }
-      });
-      _this._infinite = new Infinite(_this._items, {
-        horizontal: horizontal,
-        useRecycle: useRecycle,
-        threshold: threshold,
-        append: function append(param) {
-          return _this._requestAppend(param);
-        },
-        prepend: function prepend(param) {
-          return _this._requestPrepend(param);
-        },
-        recycle: function recycle(param) {
-          return _this._recycle(param);
-        }
-      });
-      return _this;
+  var __proto = InfiniteGrid.prototype;
+
+  __proto.append = function (elements, groupKey) {
+    this._manager && this._insert({
+      elements: elements,
+      isAppend: APPEND,
+      groupKey: groupKey
+    });
+    return this;
+  };
+  /**
+   * Adds a card element at the top of a layout. This method is available only if the isProcessing() method returns false.
+   * @ko 카드 엘리먼트를 레이아웃의 위에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
+   * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
+   * @param {Number|String} [groupKey] The group key to be configured in a card element. It is automatically generated by default.
+   * <ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.</ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * infinitegrid.prepend("&lt;div class='item'&gt;test1&lt;/div&gt;&lt;div class='item'&gt;test2&lt;/div&gt;");
+   * infinitegrid.prepend(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]);
+   * infinitegrid.prepend([HTMLElement1, HTMLElement2]);
+   * infinitegrid.prepend(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
+   */
+
+
+  __proto.prepend = function (elements, groupKey) {
+    this._manager && this._insert({
+      elements: elements,
+      isAppend: PREPEND,
+      groupKey: groupKey
+    });
+    return this;
+  };
+  /**
+   * Specifies the Layout class to use.
+   * @ko 사용할 Layout 클래스를 지정한다.
+   * @param {Class|Object} LayoutKlass The Layout class to use or an instance of a layout moudle<ko>사용할 Layout 클래스 또는 레이아웃 모듈의 인스턴스</ko>
+   * @param {Object} options Options to apply to the Layout.<ko>Layout에 적용할 옵션</ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * infinitegrid.setLayout(eg.InfiniteGrid.GridLayout, {
+   *  margin: 10,
+   *  align: "start"
+   * });
+   * infinitegrid.setLayout(eg.InfiniteGrid.JustifiedLayout, {
+   *  margin: 10,
+   *  minSize: 100,
+   *  maxSize: 200
+   * });
+   * infinitegrid.setLayout(eg.InfiniteGrid.SquareLayout, {
+   *  margin: 10,
+   *  column: 2
+   * });
+   * infinitegrid.setLayout(eg.InfiniteGrid.FrameLayout, {
+   *  margin: 10,
+   *  frame: [
+   *   [1, 2],
+   *   [4, 3],
+   *  ]
+   * });
+   * infinitegrid.setLayout(eg.InfiniteGrid.PackingLayout, {
+   *  margin: 10,
+   *  aspectRatio: 1.5
+   * });
+   * var layout = new eg.InfiniteGrid.GridLayout({
+   *   margin: 10,
+   *  align: "start"
+   * });
+   * infinitegrid.setLayout(layout);
+   */
+
+
+  __proto.setLayout = function (LayoutKlass, options) {
+    if (options === void 0) {
+      options = {};
     }
-    /**
-     * Adds a card element at the bottom of a layout. This method is available only if the isProcessing() method returns false.
-     * @ko 카드 엘리먼트를 레이아웃 아래에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
-     * 이 메소드는 isProcessing()의 반환값이 false일 경우에만 사용 가능하다.
-     * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트의 배열</ko>
-     * @param {Number|String} [groupKey] The group key to be configured in a card element. It is automatically generated by default.
-     * <ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.</ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     * @example
-     * infinitegrid.append("&lt;div class='item'&gt;test1&lt;/div&gt;&lt;div class='item'&gt;test2&lt;/div&gt;");
-     * infinitegrid.append(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]);
-     * infinitegrid.append([HTMLElement1, HTMLElement2]);
-     * infinitegrid.append(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
-     */
 
+    var _a = this.options,
+        isEqualSize = _a.isEqualSize,
+        isConstantSize = _a.isConstantSize,
+        attributePrefix = _a.attributePrefix,
+        horizontal = _a.horizontal;
 
-    var _proto = InfiniteGrid.prototype;
-
-    _proto.append = function append(elements, groupKey) {
-      this._manager && this._insert({
-        elements: elements,
-        isAppend: APPEND,
-        groupKey: groupKey
+    if (!this._manager) {
+      this._manager = new LayoutMananger(this._items, this._renderer, {
+        attributePrefix: attributePrefix,
+        isEqualSize: isEqualSize,
+        isConstantSize: isConstantSize
       });
+    }
+
+    if (typeof LayoutKlass === "function") {
+      this._manager.setLayout(new LayoutKlass(assign(options, {
+        horizontal: horizontal
+      })));
+    } else {
+      LayoutKlass.options.horizontal = horizontal;
+
+      this._manager.setLayout(LayoutKlass);
+    }
+
+    this._renderer.resize();
+
+    this._setSize(this._renderer.getViewportSize());
+
+    return this;
+  };
+  /**
+   * Returns the layouted items.
+   * @ko 레이아웃된 아이템들을 반환한다.
+   * @param {Boolean} includeCached Indicates whether to include the cached items. <ko>캐싱된 아이템을 포함할지 여부를 나타낸다.</ko>
+   * @returns List of items <ko>아이템의 목록</ko>
+   */
+
+
+  __proto.getItems = function (includeCached) {
+    if (includeCached === void 0) {
+      includeCached = false;
+    }
+
+    return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
+  };
+  /**
+   * Rearranges a layout.
+   * @ko 레이아웃을 다시 배치한다.
+   * @param {Boolean} [isRelayout=true] Indicates whether a card element is being relayouted <ko>카드 엘리먼트 재배치 여부</ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   */
+
+
+  __proto.layout = function (isRelayout) {
+    if (isRelayout === void 0) {
+      isRelayout = true;
+    }
+
+    if (!this._manager) {
       return this;
-    };
-    /**
-     * Adds a card element at the top of a layout. This method is available only if the isProcessing() method returns false.
-     * @ko 카드 엘리먼트를 레이아웃의 위에 추가한다. isProcessing() 메서드의 반환값이 'false'일 때만 이 메서드를 사용할 수 있다
-     * @param {Array|jQuery} elements Array of the card elements to be added <ko>추가할 카드 엘리먼트 배열</ko>
-     * @param {Number|String} [groupKey] The group key to be configured in a card element. It is automatically generated by default.
-     * <ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.</ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     * @example
-     * infinitegrid.prepend("&lt;div class='item'&gt;test1&lt;/div&gt;&lt;div class='item'&gt;test2&lt;/div&gt;");
-     * infinitegrid.prepend(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]);
-     * infinitegrid.prepend([HTMLElement1, HTMLElement2]);
-     * infinitegrid.prepend(jQuery(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]));
-     */
-
-
-    _proto.prepend = function prepend(elements, groupKey) {
-      this._manager && this._insert({
-        elements: elements,
-        isAppend: PREPEND,
-        groupKey: groupKey
-      });
-      return this;
-    };
-    /**
-     * Specifies the Layout class to use.
-     * @ko 사용할 Layout 클래스를 지정한다.
-     * @param {Class|Object} LayoutKlass The Layout class to use or an instance of a layout moudle<ko>사용할 Layout 클래스 또는 레이아웃 모듈의 인스턴스</ko>
-     * @param {Object} options Options to apply to the Layout.<ko>Layout에 적용할 옵션</ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     * @example
-     * infinitegrid.setLayout(eg.InfiniteGrid.GridLayout, {
-     *  margin: 10,
-     *  align: "start"
-     * });
-      * infinitegrid.setLayout(eg.InfiniteGrid.JustifiedLayout, {
-     *  margin: 10,
-     *  minSize: 100,
-     *  maxSize: 200
-     * });
-      * infinitegrid.setLayout(eg.InfiniteGrid.SquareLayout, {
-     *  margin: 10,
-     *  column: 2
-     * });
-     * infinitegrid.setLayout(eg.InfiniteGrid.FrameLayout, {
-     *  margin: 10,
-     *  frame: [
-     *   [1, 2],
-      *   [4, 3],
-     *  ]
-     * });
-     * infinitegrid.setLayout(eg.InfiniteGrid.PackingLayout, {
-     *  margin: 10,
-     *  aspectRatio: 1.5
-     * });
-     * var layout = new eg.InfiniteGrid.GridLayout({
-     * 	margin: 10,
-     *	align: "start"
-     * });
-     * infinitegrid.setLayout(layout);
-     */
-
-
-    _proto.setLayout = function setLayout(LayoutKlass, options) {
-      if (options === void 0) {
-        options = {};
-      }
-
-      var _this$options2 = this.options,
-          isEqualSize = _this$options2.isEqualSize,
-          isConstantSize = _this$options2.isConstantSize,
-          attributePrefix = _this$options2.attributePrefix,
-          horizontal = _this$options2.horizontal;
-
-      if (!this._manager) {
-        this._manager = new LayoutMananger(this._items, this._renderer, {
-          attributePrefix: attributePrefix,
-          isEqualSize: isEqualSize,
-          isConstantSize: isConstantSize
-        });
-      }
-
-      if (typeof LayoutKlass === "function") {
-        this._manager.setLayout(new LayoutKlass(_extends(options, {
-          horizontal: horizontal
-        })));
-      } else {
-        LayoutKlass.options.horizontal = horizontal;
-
-        this._manager.setLayout(LayoutKlass);
-      }
-
-      this._renderer.resize();
-
-      this._setSize(this._renderer.getViewportSize());
-
-      return this;
-    };
-
-    _proto._setSize = function _setSize(size) {
-      this._infinite.setSize(this._renderer.getViewSize());
-
-      this._manager.setSize(size);
-    };
-    /**
-     * Returns the layouted items.
-     * @ko 레이아웃된 아이템들을 반환한다.
-     * @param {Boolean} includeCached Indicates whether to include the cached items. <ko>캐싱된 아이템을 포함할지 여부를 나타낸다.</ko>
-     * @returns {Array} List of items <ko>아이템의 목록</ko>
-     */
-
-
-    _proto.getItems = function getItems(includeCached) {
-      if (includeCached === void 0) {
-        includeCached = false;
-      }
-
-      return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
-    };
-
-    _proto._fitItems = function _fitItems(base, margin) {
-      if (margin === void 0) {
-        margin = 0;
-      }
-
-      base > 0 && this._watcher.scrollBy(-base);
-
-      this._items.fit(base, this.options.horizontal);
-
-      DOMRenderer.renderItems(this.getItems());
-
-      this._setContainerSize(this._getEdgeValue("end") || margin);
-
-      base < 0 && this._watcher.scrollBy(-base);
-    }; // called by visible
-
-
-    _proto._fit = function _fit(useFit) {
-      if (useFit === void 0) {
-        useFit = this.options.useFit;
-      }
-
-      var base = this._getEdgeValue("start");
-
-      var margin = this._getLoadingStatus() === LOADING_PREPEND && this._status.loadingSize || 0;
-      var _this$options3 = this.options,
-          isConstantSize = _this$options3.isConstantSize,
-          isEqualSize = _this$options3.isEqualSize,
-          useRecycle = _this$options3.useRecycle;
-
-      if (!useRecycle || !useFit || isConstantSize || isEqualSize) {
-        if (base < margin) {
-          this._fitItems(base - margin, margin);
-        }
-
-        base = 0;
-      } else if (base !== 0 || margin) {
-        this._fitItems(base - margin, margin);
-      } else {
-        return 0;
-      }
-
-      this._isLoading() && this._renderLoading();
-      return base;
-    };
-
-    _proto._getEdgeValue = function _getEdgeValue(cursor) {
-      return this._infinite.getEdgeValue(cursor);
-    };
-    /**
-     * Rearranges a layout.
-     * @ko 레이아웃을 다시 배치한다.
-     * @param {Boolean} [isRelayout=true] Indicates whether a card element is being relayouted <ko>카드 엘리먼트 재배치 여부</ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     */
-
-
-    _proto.layout = function layout(isRelayout) {
-      if (isRelayout === void 0) {
-        isRelayout = true;
-      }
-
-      if (!this._manager) {
-        return this;
-      }
-
-      var renderer = this._renderer;
-      var itemManager = this._items;
-      var infinite = this._infinite;
-      var isResize = renderer.resize();
-      var items = this.getItems();
-      var _this$options4 = this.options,
-          isEqualSize = _this$options4.isEqualSize,
-          isConstantSize = _this$options4.isConstantSize,
-          transitionDuration = _this$options4.transitionDuration;
-      var isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
-      var size = itemManager.size();
-
-      if (isRelayout) {
-        this._watcher.resize();
-
-        if (isResize) {
-          this._setSize(renderer.getViewportSize());
-        }
-      } // check childElement
-
-
-      if (!size || !items.length) {
-        var children = toArray(renderer.container.children);
-
-        if (children.length) {
-          this._insert({
-            elements: children,
-            isAppend: true,
-            isChildren: true
-          });
-        } else {
-          this._requestAppend({});
-        }
-
-        return this;
-      } // layout datas
-
-
-      var startCursor = infinite.getCursor("start");
-      var endCursor = infinite.getCursor("end");
-      var data = isLayoutAll || !(isRelayout && isResize) ? itemManager.get() : itemManager.get(startCursor, endCursor); // LayoutManger interface
-
-      this._manager.layout(isRelayout, data, isResize ? items : []);
-
-      if (isLayoutAll) {
-        this._fit();
-      } else if (isRelayout && isResize) {
-        itemManager.clearOutlines(startCursor, endCursor);
-      }
-
-      DOMRenderer.renderItems(items, transitionDuration);
-      isRelayout && this._watcher.setScrollPos();
-
-      this._onLayoutComplete({
-        items: items,
-        isAppend: APPEND,
-        fromCache: CACHE,
-        isTrusted: NO_TRUSTED,
-        useRecycle: false,
-        isLayout: true
-      });
-
-      return this;
-    };
-    /**
-     * Removes a item element on a grid layout.
-     * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
-     * @param {HTMLElement} item element to be removed <ko>삭제될 아이템 엘리먼트</ko>
-     * @return {Object}  Removed item element <ko>삭제된 아이템 엘리먼트 정보</ko>
-     */
-
-
-    _proto.remove = function remove(element, isLayout) {
-      if (isLayout === void 0) {
-        isLayout = true;
-      }
-
-      if (element) {
-        var items = this._infinite.remove(element);
-
-        items && DOMRenderer.removeElement(element);
-        isLayout && this.layout(false);
-        return items;
-      }
-
-      return null;
-    };
-    /**
-     * Returns the list of group keys which belongs to card elements currently being maintained. You can use the append() or prepend() method to configure group keys so that multiple card elements can be managed at once. If you do not use these methods to configure group keys, groupkey is automatically generated.
-     * @ko 현재 유지하고 있는 카드 엘리먼트의 그룹 키 목록을 반환한다. 여러 개의 카드 엘리먼트를 묶어서 관리할 수 있도록 append() 메서드나 prepend() 메서드에서 그룹 키를 지정할 수 있다. append() 메서드나 prepend() 메서드에서 그룹 키를 지정하지 않았다면 자동으로 그룹키가 생성된다.
-     * @param {Boolean} includeCached Indicates whether to include the cached groups. <ko>캐싱된 그룹을 포함할지 여부를 나타낸다.</ko>
-     * @return {Array} List of group keys <ko>그룹 키의 목록</ko>
-     */
-
-
-    _proto.getGroupKeys = function getGroupKeys(includeCached) {
-      var data = includeCached ? this._items.get() : this._infinite.getVisibleData();
-      return data.map(function (v) {
-        return v.groupKey;
-      });
-    };
-    /**
-     * Returns the current state of a module such as location information. You can use the setStatus() method to restore the information returned through a call to this method.
-     * @ko 카드의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
-     * @return {Object} State object of the eg.InfiniteGrid module<ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
-     */
-
-
-    _proto.getStatus = function getStatus(startKey, endKey) {
-      return {
-        _status: _extends({}, this._status),
-        _items: this._items.getStatus(startKey, endKey),
-        _renderer: this._renderer.getStatus(),
-        _watcher: this._watcher.getStatus(),
-        _infinite: this._infinite.getStatus(startKey, endKey)
-      };
-    };
-    /**
-     * Sets the state of the eg.InfiniteGrid module with the information returned through a call to the getStatue() method.
-     * @ko getStatue() 메서드가 저장한 정보로 eg.InfiniteGrid 모듈의 상태를 설정한다.
-     * @param {Object} status State object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
-     * @param {boolean} [applyScrollPos=true] Checks whether to scroll<ko>스크롤의 위치를 복원할지 결정한다.</ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     */
-
-
-    _proto.setStatus = function setStatus(status, applyScrollPos) {
-      if (applyScrollPos === void 0) {
-        applyScrollPos = true;
-      }
-
-      if (!status) {
-        return this;
-      }
-
-      var _status = status._status,
-          _renderer = status._renderer,
-          _items = status._items,
-          _watcher = status._watcher,
-          _infinite = status._infinite;
-
-      if (!_status || !_renderer || !_items || !_watcher || !_infinite) {
-        return this;
-      }
-
-      var items = this._items;
-      var renderer = this._renderer;
-      var watcher = this._watcher;
-      var infinite = this._infinite;
-      watcher.detachEvent();
-
-      _extends(this._status, _status);
-
-      this._status.processingStatus = IDLE;
-      items.setStatus(_items);
-      renderer.setStatus(_renderer);
-      infinite.setStatus(_infinite);
-      var visibleItems = this.getItems();
-      var length = visibleItems.length;
-      renderer.createAndInsert(visibleItems, true);
-      var isReLayout = renderer.isNeededResize();
-      watcher.setStatus(_watcher, applyScrollPos);
-      watcher.attachEvent();
-      var _this$options5 = this.options,
-          isConstantSize = _this$options5.isConstantSize,
-          isEqualSize = _this$options5.isEqualSize;
-
-      if (!length) {
-        this._requestAppend({
-          cache: visibleItems.slice(0, 1)
-        });
-      } else if (isReLayout) {
-        renderer.resize();
-
+    }
+
+    var renderer = this._renderer;
+    var itemManager = this._items;
+    var infinite = this._infinite;
+    var isResize = renderer.resize();
+    var items = this.getItems();
+    var _a = this.options,
+        isEqualSize = _a.isEqualSize,
+        isConstantSize = _a.isConstantSize,
+        transitionDuration = _a.transitionDuration;
+    var isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
+    var size = itemManager.size();
+
+    if (isRelayout) {
+      this._watcher.resize();
+
+      if (isResize) {
         this._setSize(renderer.getViewportSize());
+      }
+    } // check childElement
 
-        if (isConstantSize) {
-          this.layout(true);
-        } else {
-          this._items.clearOutlines();
 
-          this._postLayout({
-            fromCache: true,
-            groups: isEqualSize ? items.get() : infinite.getVisibleData(),
-            items: visibleItems,
-            newItems: visibleItems,
-            isAppend: true,
-            isTrusted: false
-          });
-        }
+    if (!size || !items.length) {
+      var children = toArray(renderer.container.children);
+
+      if (children.length) {
+        this._insert({
+          elements: children,
+          isAppend: true,
+          isChildren: true
+        });
       } else {
-        this.layout(false);
+        this._requestAppend({});
       }
 
       return this;
+    } // layout datas
+
+
+    var startCursor = infinite.getCursor("start");
+    var endCursor = infinite.getCursor("end");
+    var data = isLayoutAll || !(isRelayout && isResize) ? itemManager.get() : itemManager.get(startCursor, endCursor); // LayoutManger interface
+
+    this._manager.layout(isRelayout, data, isResize ? items : []);
+
+    if (isLayoutAll) {
+      this._fit();
+    } else if (isRelayout && isResize) {
+      itemManager.clearOutlines(startCursor, endCursor);
+    }
+
+    DOMRenderer.renderItems(items, transitionDuration);
+    isRelayout && this._watcher.setScrollPos();
+
+    this._onLayoutComplete({
+      items: items,
+      isAppend: APPEND,
+      fromCache: CACHE,
+      isTrusted: NO_TRUSTED,
+      useRecycle: false,
+      isLayout: true
+    });
+
+    return this;
+  };
+  /**
+   * Removes a item element on a grid layout.
+   * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
+   * @param {HTMLElement} item element to be removed <ko>삭제될 아이템 엘리먼트</ko>
+   * @return {Object}  Removed item element <ko>삭제된 아이템 엘리먼트 정보</ko>
+   */
+
+
+  __proto.remove = function (element, isLayout) {
+    if (isLayout === void 0) {
+      isLayout = true;
+    }
+
+    if (element) {
+      var items = this._infinite.remove(element);
+
+      items && DOMRenderer.removeElement(element);
+      isLayout && this.layout(false);
+      return items;
+    }
+
+    return null;
+  };
+  /**
+   * Returns the list of group keys which belongs to card elements currently being maintained. You can use the append() or prepend() method to configure group keys so that multiple card elements can be managed at once. If you do not use these methods to configure group keys, groupkey is automatically generated.
+   * @ko 현재 유지하고 있는 카드 엘리먼트의 그룹 키 목록을 반환한다. 여러 개의 카드 엘리먼트를 묶어서 관리할 수 있도록 append() 메서드나 prepend() 메서드에서 그룹 키를 지정할 수 있다. append() 메서드나 prepend() 메서드에서 그룹 키를 지정하지 않았다면 자동으로 그룹키가 생성된다.
+   * @param {Boolean} includeCached Indicates whether to include the cached groups. <ko>캐싱된 그룹을 포함할지 여부를 나타낸다.</ko>
+   * @return {Array} List of group keys <ko>그룹 키의 목록</ko>
+   */
+
+
+  __proto.getGroupKeys = function (includeCached) {
+    var data = includeCached ? this._items.get() : this._infinite.getVisibleData();
+    return data.map(function (v) {
+      return v.groupKey;
+    });
+  };
+  /**
+   * Returns the current state of a module such as location information. You can use the setStatus() method to restore the information returned through a call to this method.
+   * @ko 카드의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
+   * @return {Object} State object of the eg.InfiniteGrid module<ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
+   */
+
+
+  __proto.getStatus = function (startKey, endKey) {
+    return {
+      _status: assign({}, this._status),
+      _items: this._items.getStatus(startKey, endKey),
+      _renderer: this._renderer.getStatus(),
+      _watcher: this._watcher.getStatus(),
+      _infinite: this._infinite.getStatus(startKey, endKey)
     };
-    /**
-     * Clears added card elements and data.
-     * @ko 추가된 카드 엘리먼트와 데이터를 모두 지운다.
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     */
+  };
+  /**
+   * Sets the state of the eg.InfiniteGrid module with the information returned through a call to the getStatue() method.
+   * @ko getStatue() 메서드가 저장한 정보로 eg.InfiniteGrid 모듈의 상태를 설정한다.
+   * @param {Object} status State object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 상태 객체</ko>
+   * @param {boolean} [applyScrollPos=true] Checks whether to scroll<ko>스크롤의 위치를 복원할지 결정한다.</ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   */
 
 
-    _proto.clear = function clear() {
-      this._items.clear();
+  __proto.setStatus = function (status, applyScrollPos) {
+    if (applyScrollPos === void 0) {
+      applyScrollPos = true;
+    }
 
-      this._renderer.clear();
-
-      this._infinite.clear();
-
-      this._reset();
-
-      this._appendLoadingBar();
-
+    if (!status) {
       return this;
-    };
-    /**
-     * Specifies the Loading Bar to use for append or prepend items.
-     * @ko 아이템을 append 또는 prepend 하기 위해 사용할 로딩 바를 지정한다.
-     * @param {String|Object} [userLoadingBar={}] The loading bar HTML markup or element or element selector <ko> 로딩 바 HTML 또는 element 또는 selector </ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     */
+    }
 
+    var _status = status._status,
+        _renderer = status._renderer,
+        _items = status._items,
+        _watcher = status._watcher,
+        _infinite = status._infinite;
 
-    _proto.setLoadingBar = function setLoadingBar(userLoadingBar) {
-      if (userLoadingBar === void 0) {
-        userLoadingBar = {};
-      }
-
-      var loadingBarObj = typeof userLoadingBar === "object" ? userLoadingBar : {
-        "append": userLoadingBar,
-        "prepend": userLoadingBar
-      };
-      this._status.loadingSize = 0;
-      this._status.loadingStyle = {};
-      var loadingBar = this._loadingBar;
-
-      for (var type in loadingBarObj) {
-        loadingBar[type] = $(loadingBarObj[type]);
-        loadingBar[type].className += " " + IGNORE_CLASSNAME;
-      }
-
-      this._appendLoadingBar();
-
+    if (!_status || !_renderer || !_items || !_watcher || !_infinite) {
       return this;
-    };
+    }
 
-    _proto._appendLoadingBar = function _appendLoadingBar() {
-      var loadingBar = this._loadingBar;
-      var container = this._renderer.container;
+    var items = this._items;
+    var renderer = this._renderer;
+    var watcher = this._watcher;
+    var infinite = this._infinite;
+    watcher.detachEvent();
+    assign(this._status, _status);
+    this._status.processingStatus = IDLE;
+    items.setStatus(_items);
+    renderer.setStatus(_renderer);
+    infinite.setStatus(_infinite);
+    var visibleItems = this.getItems();
+    var length = visibleItems.length;
+    renderer.createAndInsert(visibleItems, true);
+    var isReLayout = renderer.isNeededResize();
+    watcher.setStatus(_watcher, applyScrollPos);
+    watcher.attachEvent();
+    var _a = this.options,
+        isConstantSize = _a.isConstantSize,
+        isEqualSize = _a.isEqualSize;
 
-      for (var type in loadingBar) {
-        container.appendChild(loadingBar[type]);
-      }
-    };
-    /**
-     * Checks whether a card element or data is being added.
-     * @ko 카드 엘리먼트 추가 또는 데이터 로딩이 진행 중인지 확인한다
-     * @return {Boolean} Indicates whether a card element or data is being added <ko>카드 엘리먼트 추가 또는 데이터 로딩 진행 중 여부</ko>
-     */
-
-
-    _proto.isProcessing = function isProcessing() {
-      return this._isProcessing() || this._isLoading();
-    };
-
-    _proto._isProcessing = function _isProcessing() {
-      return (this._status.processingStatus & PROCESSING) > 0;
-    };
-
-    _proto._isLoading = function _isLoading() {
-      return this._getLoadingStatus() > 0;
-    };
-
-    _proto._getLoadingStatus = function _getLoadingStatus() {
-      return this._status.processingStatus & (LOADING_APPEND | LOADING_PREPEND);
-    };
-
-    _proto._process = function _process(status, isAdd) {
-      if (isAdd === void 0) {
-        isAdd = true;
-      }
-
-      if (isAdd) {
-        this._status.processingStatus |= status;
-      } else {
-        this._status.processingStatus -= this._status.processingStatus & status;
-      }
-    };
-
-    _proto._insert = function _insert(_ref) {
-      var elements = _ref.elements,
-          isAppend = _ref.isAppend,
-          isChildren = _ref.isChildren,
-          _ref$groupKey = _ref.groupKey,
-          groupKey = _ref$groupKey === void 0 ? new Date().getTime() + Math.floor(Math.random() * 1000) : _ref$groupKey;
-
-      if (this._isProcessing() || elements.length === 0) {
-        return;
-      }
-
-      var items = ItemManager.from(elements, this.options.itemSelector, {
-        isAppend: isAppend,
-        groupKey: groupKey,
-        outlines: {
-          start: [],
-          end: []
-        }
+    if (!length) {
+      this._requestAppend({
+        cache: []
       });
+    } else if (isReLayout) {
+      renderer.resize();
 
-      if (!items.length) {
-        return;
-      }
+      this._setSize(renderer.getViewportSize());
 
-      var group = {
-        groupKey: groupKey,
-        items: items,
-        outlines: {
-          start: [],
-          end: []
-        }
-      };
-      var method = isAppend ? "append" : "prepend";
-
-      this._items[method](group);
-
-      if (!isAppend) {
-        var infinite = this._infinite;
-        var startCursor = infinite.getCursor("start");
-        var endCursor = infinite.getCursor("end");
-        infinite.setCursor("start", startCursor + 1);
-        infinite.setCursor("end", endCursor + 1);
-      }
-
-      this._postLayout({
-        fromCache: NO_CACHE,
-        groups: [group],
-        items: items,
-        newItems: items,
-        isAppend: isAppend,
-        isChildren: isChildren,
-        isTrusted: NO_TRUSTED
-      });
-    }; // add items, and remove items for recycling
-
-
-    _proto._recycle = function _recycle(_ref2) {
-      var start = _ref2.start,
-          end = _ref2.end;
-
-      if (!this.options.useRecycle) {
-        return;
-      }
-
-      DOMRenderer.removeItems(this._items.pluck("items", start, end));
-    };
-    /**
-     * Returns the element of loading bar.
-     * @ko 로딩 바의 element를 반환한다.
-     * @param {Boolean} [isAppend=currentLoadingBar|true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
-     * @return {Element} The element of loading bar. <ko>로딩 바의 element</ko>
-     */
-
-
-    _proto.getLoadingBar = function getLoadingBar(isAppend) {
-      if (isAppend === void 0) {
-        isAppend = this._getLoadingStatus() !== LOADING_PREPEND;
-      }
-
-      return this._loadingBar[isAppend ? "append" : "prepend"];
-    };
-    /**
-     * Start loading for append/prepend during loading data.
-     * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 로딩을 시작한다.
-     * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
-     * @param {Object} [userStyle = {display: "block"}] custom style to apply to this loading bar for start. <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     */
-
-
-    _proto.startLoading = function startLoading(isAppend, userStyle) {
-      if (userStyle === void 0) {
-        userStyle = {
-          display: "block"
-        };
-      }
-
-      if (this._isLoading()) {
-        return this;
-      }
-
-      var type = isAppend ? "append" : "prepend";
-
-      this._process(isAppend ? LOADING_APPEND : LOADING_PREPEND);
-
-      if (!this._loadingBar[type]) {
-        return this;
-      }
-
-      this._renderLoading(userStyle);
-
-      this._status.loadingStyle = userStyle;
-
-      if (!isAppend) {
-        this._fit();
+      if (isConstantSize) {
+        this.layout(true);
       } else {
-        this._setContainerSize(this._getEdgeValue("end") + this._status.loadingSize);
-      }
+        this._items.clearOutlines();
 
-      return this;
+        this._postLayout({
+          fromCache: true,
+          groups: isEqualSize ? items.get() : infinite.getVisibleData(),
+          items: visibleItems,
+          newItems: visibleItems,
+          isAppend: true,
+          isTrusted: false
+        });
+      }
+    } else {
+      this.layout(false);
+    }
+
+    return this;
+  };
+  /**
+   * Clears added card elements and data.
+   * @ko 추가된 카드 엘리먼트와 데이터를 모두 지운다.
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   */
+
+
+  __proto.clear = function () {
+    this._items.clear();
+
+    this._renderer.clear();
+
+    this._infinite.clear();
+
+    this._reset();
+
+    this._appendLoadingBar();
+
+    return this;
+  };
+  /**
+   * Specifies the Loading Bar to use for append or prepend items.
+   * @ko 아이템을 append 또는 prepend 하기 위해 사용할 로딩 바를 지정한다.
+   * @param {String|Object} [userLoadingBar={}] The loading bar HTML markup or element or element selector <ko> 로딩 바 HTML 또는 element 또는 selector </ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   */
+
+
+  __proto.setLoadingBar = function (userLoadingBar) {
+    if (userLoadingBar === void 0) {
+      userLoadingBar = {};
+    }
+
+    var loadingBarObj = typeof userLoadingBar === "object" ? userLoadingBar : {
+      append: userLoadingBar,
+      prepend: userLoadingBar
     };
+    this._status.loadingSize = 0;
+    this._status.loadingStyle = {};
+    var loadingBar = this._loadingBar;
 
-    _proto._renderLoading = function _renderLoading(userStyle) {
-      if (userStyle === void 0) {
-        userStyle = this._status.loadingStyle;
-      }
+    for (var type in loadingBarObj) {
+      loadingBar[type] = $(loadingBarObj[type]);
+      loadingBar[type].className += " " + IGNORE_CLASSNAME;
+    }
 
-      if (!this._isLoading()) {
-        return;
-      }
+    this._appendLoadingBar();
 
-      var isAppend = this._getLoadingStatus() === LOADING_APPEND;
-      var el = this._loadingBar[isAppend ? "append" : "prepend"];
+    return this;
+  };
+  /**
+   * Checks whether a card element or data is being added.
+   * @ko 카드 엘리먼트 추가 또는 데이터 로딩이 진행 중인지 확인한다
+   * @return {Boolean} Indicates whether a card element or data is being added <ko>카드 엘리먼트 추가 또는 데이터 로딩 진행 중 여부</ko>
+   */
 
-      if (!el) {
-        return;
-      }
 
-      var style = _extends({
-        position: "absolute"
-      }, userStyle);
+  __proto.isProcessing = function () {
+    return this._isProcessing() || this._isLoading();
+  };
+  /**
+   * Returns the element of loading bar.
+   * @ko 로딩 바의 element를 반환한다.
+   * @param {Boolean} [isAppend=currentLoadingBar|true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
+   * @return {Element} The element of loading bar. <ko>로딩 바의 element</ko>
+   */
+
+
+  __proto.getLoadingBar = function (isAppend) {
+    if (isAppend === void 0) {
+      isAppend = this._getLoadingStatus() !== LOADING_PREPEND;
+    }
+
+    return this._loadingBar[isAppend ? "append" : "prepend"];
+  };
+  /**
+   * Start loading for append/prepend during loading data.
+   * @ko 데이터가 로딩되는 동안 append/prepend하길 위해 로딩을 시작한다.
+   * @param {Boolean} [isAppend=true] Checks whether the card element is added to the append () method. <ko>카드 엘리먼트가 append() 메서드로 추가 할 것인지 확인한다.</ko>
+   * @param {Object} [userStyle = {display: "block"}] custom style to apply to this loading bar for start. <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   */
+
+
+  __proto.startLoading = function (isAppend, userStyle) {
+    if (userStyle === void 0) {
+      userStyle = {
+        display: "block"
+      };
+    }
+
+    if (this._isLoading()) {
+      return this;
+    }
+
+    var type = isAppend ? "append" : "prepend";
+
+    this._process(isAppend ? LOADING_APPEND : LOADING_PREPEND);
+
+    if (!this._loadingBar[type]) {
+      return this;
+    }
+
+    this._renderLoading(userStyle);
+
+    this._status.loadingStyle = userStyle;
+
+    if (!isAppend) {
+      this._fit();
+    } else {
+      this._setContainerSize(this._getEdgeValue("end") + this._status.loadingSize);
+    }
+
+    return this;
+  };
+  /**
+   * End loading after startLoading() for append/prepend
+   * @ko  append/prepend하길 위해 startLoading() 호출해선 걸었던 로딩을 끝낸다.
+   * @param {Object} [userStyle = {display: "none"}] custom style to apply to this loading bar for end <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   */
+
+
+  __proto.endLoading = function (userStyle) {
+    if (userStyle === void 0) {
+      userStyle = {
+        display: "none"
+      };
+    }
+
+    var _a;
+
+    if (!this._isLoading()) {
+      return this;
+    }
+
+    var isAppend = this._getLoadingStatus() === LOADING_APPEND;
+    var type = isAppend ? "append" : "prepend";
+    var el = this._loadingBar[type];
+    var status = this._status;
+    var size = status.loadingSize;
+
+    this._process(LOADING_APPEND | LOADING_PREPEND, false);
+
+    status.loadingSize = 0;
+    status.loadingStyle = {};
+
+    if (el) {
+      var style = assign((_a = {}, _a[this.options.horizontal ? "left" : "top"] = -size + "px", _a), userStyle);
 
       for (var property in style) {
         el.style[property] = style[property];
       }
 
-      this._status.loadingSize = this.options.horizontal ? outerWidth(el) : outerHeight(el);
-      var posName = this.options.horizontal ? "left" : "top";
-
-      if (!(posName in style)) {
-        var pos = isAppend ? this._getEdgeValue("end") : this._getEdgeValue("start") - this._status.loadingSize;
-        el.style[posName] = pos + "px";
+      if (!isAppend) {
+        this._fitItems(size);
+      } else {
+        this._setContainerSize(this._getEdgeValue("end"));
       }
-    };
-    /**
-     * End loading after startLoading() for append/prepend
-     * @ko  append/prepend하길 위해 startLoading() 호출해선 걸었던 로딩을 끝낸다.
-     * @param {Object} [userStyle = {display: "none"}] custom style to apply to this loading bar for end <ko> 로딩 시작을 위한 로딩 바에 적용할 커스텀 스타일 </ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     */
+    }
+
+    if (this.options.useRecycle && !this.isProcessing()) {
+      this._infinite.recycle(this._watcher.getScrollPos(), isAppend);
+    }
+
+    return this;
+  };
+  /**
+   * Retrieves the item via index or the element.
+   * @ko index 또는 element를 통해 아이템을 가져온다.
+   * @param {number | HTMLElement} [groupIndex=0] The element corresponding to item or the index of the group where the item is in position <ko> item에 해당하는 element 또는 해당 item이 있는 group의 index</ko>
+   * @param {number} [itemIndex] If groupIndex is used, the index of the item in the group <ko> groupIndex를 사용할 경우 해당 group에 있는 Item의 index </ko>
+   * @return The item containing the content, size and position,etc<ko>content, size, position 등이 담겨있는 item 정보</ko>
+   * @example
+    ig.getItem(0, 0);
+   ig.getItem(element);
+    {
+    el: HTMLElement,
+    content: "<div>...</div>",
+    size: {width: ..., height: ...},
+    rect: {top: ..., left: ..., width: ..., height: ...},
+   }
+   */
 
 
-    _proto.endLoading = function endLoading(userStyle) {
-      if (userStyle === void 0) {
-        userStyle = {
-          display: "none"
-        };
+  __proto.getItem = function (groupIndex, itemIndex) {
+    if (groupIndex === void 0) {
+      groupIndex = 0;
+    }
+
+    if (itemIndex == null && typeof groupIndex === "object") {
+      if (!groupIndex) {
+        return undefined;
       }
 
-      if (!this._isLoading()) {
+      var items = this.getItems();
+      var length = items.length;
+
+      for (var i = 0; i < length; ++i) {
+        if (items[i].el === groupIndex) {
+          return items[i];
+        }
+      }
+
+      return undefined;
+    } else {
+      var group = this._items.getData(groupIndex);
+
+      return group && group.items[itemIndex || 0];
+    }
+  };
+  /**
+   * Updates the item via index or the element.
+   * @ko index 또는 element를 통해 아이템을 업데이트한다.
+   * @param {number | HTMLElement} [groupIndex=0] The element corresponding to item or the index of the group where the item is in position <ko> item에 해당하는 element 또는 해당 item이 있는 group의 index</ko>
+   * @param {number} [itemIndex] If groupIndex is used, the index of the item in the group <ko> groupIndex를 사용할 경우 해당 group에 있는 Item의 index </ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+  element.innerHTML = "2";
+  element.style.height = "400px";
+  ig.updateItem(element);
+  ig.updateItem(0, 0);
+   */
+
+
+  __proto.updateItem = function (groupIndex, itemIndex) {
+    var item = this.getItem(groupIndex, itemIndex);
+    this._updateItem(item) && this.layout(false);
+    return this;
+  };
+  /**
+   * Update the currently displayed items.
+   * @ko 현재보여주는 아이템들을 업데이트한다.
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+  element.innerHTML = "2";
+  element.style.height = "400px";
+   element2.innerHTML = "2";
+  element2.style.height = "400px";
+   ig.updateItems();
+   */
+
+
+  __proto.updateItems = function () {
+    var _this = this;
+
+    this.getItems().forEach(function (item) {
+      _this._updateItem(item);
+    });
+    this.layout(false);
+    return this;
+  };
+  /**
+   * Move to some group or item position.
+   * @ko 해당하는 그룹 또는 아이템의 위치로 이동한다.
+   * @param {Number} [index] group's index <ko> 그룹의 index</ko>
+   * @param {Number} [itemIndex=-1] item's index <ko> 그룹의 index</ko>
+   * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   */
+
+
+  __proto.moveTo = function (index, itemIndex) {
+    if (itemIndex === void 0) {
+      itemIndex = 0;
+    }
+
+    if (this.isProcessing()) {
+      return this;
+    }
+
+    var data = this._items.getData(index);
+
+    if (!data) {
+      return this;
+    }
+
+    var infinite = this._infinite;
+    var outlines = data.outlines;
+    var items = data.items;
+    var item = items[itemIndex];
+    var isResize = outlines.start && outlines.start.length === 0;
+    var startCursor = infinite.getCursor("start");
+    var endCursor = infinite.getCursor("end");
+    var isInCursor = startCursor <= index && index <= endCursor;
+    var _a = this.options,
+        useRecycle = _a.useRecycle,
+        horizontal = _a.horizontal;
+
+    if (isInCursor || !useRecycle || !isResize) {
+      var pos = item ? item.rect[horizontal ? "left" : "top"] : Math.max.apply(Math, outlines.start);
+      var fit = Math.min.apply(Math, outlines.start);
+
+      if (fit < 0) {
+        // base < 0
+        this._fitItems(fit, 0);
+
+        pos -= fit;
+      }
+
+      var isAppend = index > startCursor;
+
+      if (isInCursor || isAppend) {
+        this._scrollTo(pos);
+
         return this;
       }
 
-      var isAppend = this._getLoadingStatus() === LOADING_APPEND;
-      var type = isAppend ? "append" : "prepend";
-      var el = this._loadingBar[type];
-      var status = this._status;
-      var size = status.loadingSize;
-
-      this._process(LOADING_APPEND | LOADING_PREPEND, false);
-
-      status.loadingSize = 0;
-      status.loadingStyle = {};
-
-      if (el) {
-        var _extends2;
-
-        var style = _extends((_extends2 = {}, _extends2[this.options.horizontal ? "left" : "top"] = -size + "px", _extends2), userStyle);
-
-        for (var property in style) {
-          el.style[property] = style[property];
-        }
-
-        if (!isAppend) {
-          this._fitItems(size);
-        } else {
-          this._setContainerSize(this._getEdgeValue("end"));
-        }
-      }
-
-      if (this.options.useRecycle && !this.isProcessing()) {
-        this._infinite.recycle(this._watcher.getScrollPos(), isAppend);
-      }
+      this._postLayout({
+        fromCache: true,
+        groups: [data],
+        items: items,
+        newItems: [],
+        isAppend: isAppend,
+        isTrusted: false,
+        moveCache: true,
+        moveItem: itemIndex
+      });
 
       return this;
-    };
+    } else {
+      var isAppend = index > endCursor || index < startCursor - 1;
 
-    _proto._setContainerSize = function _setContainerSize(size) {
-      this._renderer.setContainerSize(Math.max(this._items.getMaxEdgeValue(), size));
+      this._postCache({
+        isAppend: isAppend,
+        cache: [data],
+        isTrusted: false,
+        moveItem: itemIndex
+      });
+    }
+
+    return this;
+  };
+  /**
+  * Destroys elements, properties, and events used on a grid layout.
+  * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
+  */
+
+
+  __proto.destroy = function () {
+    this._infinite.clear();
+
+    this._watcher.destroy();
+
+    this._manager.destroy();
+
+    this._reset();
+
+    this._items.clear();
+
+    this._renderer.destroy();
+  };
+
+  __proto._setContainerSize = function (size) {
+    this._renderer.setContainerSize(Math.max(this._items.getMaxEdgeValue(), size));
+  };
+
+  __proto._appendLoadingBar = function () {
+    var loadingBar = this._loadingBar;
+    var container = this._renderer.container;
+
+    for (var type in loadingBar) {
+      container.appendChild(loadingBar[type]);
+    }
+  };
+
+  __proto._setSize = function (size) {
+    this._infinite.setSize(this._renderer.getViewSize());
+
+    this._manager.setSize(size);
+  };
+
+  __proto._fitItems = function (base, margin) {
+    if (margin === void 0) {
+      margin = 0;
+    }
+
+    base > 0 && this._watcher.scrollBy(-base);
+
+    this._items.fit(base, this.options.horizontal);
+
+    DOMRenderer.renderItems(this.getItems());
+
+    this._setContainerSize(this._getEdgeValue("end") || margin);
+
+    base < 0 && this._watcher.scrollBy(-base);
+  }; // called by visible
+
+
+  __proto._fit = function (useFit) {
+    if (useFit === void 0) {
+      useFit = this.options.useFit;
+    }
+
+    var base = this._getEdgeValue("start");
+
+    var margin = this._getLoadingStatus() === LOADING_PREPEND && this._status.loadingSize || 0;
+    var _a = this.options,
+        isConstantSize = _a.isConstantSize,
+        isEqualSize = _a.isEqualSize,
+        useRecycle = _a.useRecycle;
+
+    if (!useRecycle || !useFit || isConstantSize || isEqualSize) {
+      if (base < margin) {
+        this._fitItems(base - margin, margin);
+      }
+
+      base = 0;
+    } else if (base !== 0 || margin) {
+      this._fitItems(base - margin, margin);
+    } else {
+      return 0;
+    }
+
+    this._isLoading() && this._renderLoading();
+    return base;
+  };
+
+  __proto._getEdgeValue = function (cursor) {
+    return this._infinite.getEdgeValue(cursor);
+  };
+
+  __proto._isProcessing = function () {
+    return (this._status.processingStatus & PROCESSING) > 0;
+  };
+
+  __proto._isLoading = function () {
+    return this._getLoadingStatus() > 0;
+  };
+
+  __proto._getLoadingStatus = function () {
+    return this._status.processingStatus & (LOADING_APPEND | LOADING_PREPEND);
+  };
+
+  __proto._process = function (status, isAdd) {
+    if (isAdd === void 0) {
+      isAdd = true;
+    }
+
+    if (isAdd) {
+      this._status.processingStatus |= status;
+    } else {
+      this._status.processingStatus -= this._status.processingStatus & status;
+    }
+  };
+
+  __proto._insert = function (_a) {
+    var elements = _a.elements,
+        isAppend = _a.isAppend,
+        isChildren = _a.isChildren,
+        _b = _a.groupKey,
+        groupKey = _b === void 0 ? new Date().getTime() + Math.floor(Math.random() * 1000) : _b;
+
+    if (this._isProcessing() || elements.length === 0) {
+      return;
+    }
+
+    var items = ItemManager.from(elements, this.options.itemSelector, {
+      groupKey: groupKey
+    });
+
+    if (!items.length) {
+      return;
+    }
+
+    var group = {
+      groupKey: groupKey,
+      items: items,
+      outlines: {
+        start: [],
+        end: []
+      }
     };
+    var method = isAppend ? "append" : "prepend";
+
+    this._items[method](group);
+
+    if (!isAppend) {
+      var infinite = this._infinite;
+      var startCursor = infinite.getCursor("start");
+      var endCursor = infinite.getCursor("end");
+      infinite.setCursor("start", startCursor + 1);
+      infinite.setCursor("end", endCursor + 1);
+    }
+
+    this._postLayout({
+      fromCache: NO_CACHE,
+      groups: [group],
+      items: items,
+      newItems: items,
+      isAppend: isAppend,
+      isChildren: isChildren,
+      isTrusted: NO_TRUSTED
+    });
+  }; // add items, and remove items for recycling
+
+
+  __proto._recycle = function (_a) {
+    var start = _a.start,
+        end = _a.end;
+
+    if (!this.options.useRecycle) {
+      return;
+    }
+
+    DOMRenderer.removeItems(this._items.pluck("items", start, end));
+  };
+
+  __proto._renderLoading = function (userStyle) {
+    if (userStyle === void 0) {
+      userStyle = this._status.loadingStyle;
+    }
+
+    if (!this._isLoading()) {
+      return;
+    }
+
+    var isAppend = this._getLoadingStatus() === LOADING_APPEND;
+    var el = this._loadingBar[isAppend ? "append" : "prepend"];
+
+    if (!el) {
+      return;
+    }
+
+    var style = assign({
+      position: "absolute"
+    }, userStyle);
+
+    for (var property in style) {
+      el.style[property] = style[property];
+    }
+
+    this._status.loadingSize = this.options.horizontal ? outerWidth(el) : outerHeight(el);
+    var posName = this.options.horizontal ? "left" : "top";
+
+    if (!(posName in style)) {
+      var pos = isAppend ? this._getEdgeValue("end") : this._getEdgeValue("start") - this._status.loadingSize;
+      el.style[posName] = pos + "px";
+    }
+  };
+
+  __proto._updateItem = function (item) {
+    if (item && item.el) {
+      item.content = item.el.outerHTML;
+      !this.options.isEqualSize && resetSize(item);
+
+      this._renderer.updateSize([item]);
+
+      return true;
+    }
+
+    return false;
+  };
+
+  __proto._setScrollPos = function (pos) {
+    this._watcher.setScrollPos(this._watcher.getContainerOffset() + pos);
+  };
+
+  __proto._scrollTo = function (pos) {
+    this._watcher.scrollTo(this._watcher.getContainerOffset() + pos);
+  };
+
+  __proto._onImageError = function (e) {
     /**
-     * Retrieves the item via index or the element.
-     * @ko index 또는 element를 통해 아이템을 가져온다.
-     * @param {number | HTMLElement} [groupIndex=0] The element corresponding to item or the index of the group where the item is in position <ko> item에 해당하는 element 또는 해당 item이 있는 group의 index</ko>
-     * @param {number} [itemIndex] If groupIndex is used, the index of the item in the group <ko> groupIndex를 사용할 경우 해당 group에 있는 Item의 index </ko>
-     * @return {object} The item containing the content, size and position,etc<ko>content, size, position 등이 담겨있는 item 정보</ko>
+     * This event is fired when an error occurs in the image.
+     * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
+     * @event eg.InfiniteGrid#imageError
+     * @param {eg.InfiniteGrid.IErrorCallbackOptions} e The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
      * @example
-    	 ig.getItem(0, 0);
-     ig.getItem(element);
-    	 {
-    	el: HTMLElement,
-    	content: "<div>...</div>",
-    	size: {width: ..., height: ...},
-    	rect: {top: ..., left: ..., width: ..., height: ...},
-     }
+    ig.on("imageError", e => {
+    e.remove();
+    e.removeItem();
+    e.replace("http://...jpg");
+    e.replace(imageElement);
+    e.replaceItem("item html");
+    });
      */
+    this.trigger("imageError", assign(e, {
+      element: e.item.el
+    }));
+  };
 
-
-    _proto.getItem = function getItem(groupIndex, itemIndex) {
-      if (groupIndex === void 0) {
-        groupIndex = 0;
-      }
-
-      if (itemIndex == null && typeof groupIndex === "object") {
-        if (!groupIndex) {
-          return undefined;
-        }
-
-        var items = this.getItems();
-        var length = items.length;
-
-        for (var i = 0; i < length; ++i) {
-          if (items[i].el === groupIndex) {
-            return items[i];
-          }
-        }
-
-        return undefined;
-      } else {
-        var group = this._items.getData(groupIndex);
-
-        return group && group.items[itemIndex || 0];
-      }
-    };
-
-    _proto._updateItem = function _updateItem(item) {
-      if (item && item.el) {
-        item.content = item.el.outerHTML;
-        !this.options.isEqualSize && resetSize(item);
-
-        this._renderer.updateSize([item]);
-
+  __proto._postCache = function (_a) {
+    var cache = _a.cache,
+        isAppend = _a.isAppend,
+        _b = _a.isTrusted,
+        isTrusted = _b === void 0 ? true : _b,
+        _c = _a.moveItem,
+        moveItem = _c === void 0 ? -1 : _c;
+    var isConstantSize = this.options.isConstantSize;
+    var items = ItemManager.pluck(cache, "items");
+    var fromCache = true;
+    var newItems = items.filter(function (item) {
+      if (!item.orgSize) {
+        fromCache = false;
         return true;
       }
 
-      return false;
-    };
-    /**
-     * Updates the item via index or the element.
-     * @ko index 또는 element를 통해 아이템을 업데이트한다.
-     * @param {number | HTMLElement} [groupIndex=0] The element corresponding to item or the index of the group where the item is in position <ko> item에 해당하는 element 또는 해당 item이 있는 group의 index</ko>
-     * @param {number} [itemIndex] If groupIndex is used, the index of the item in the group <ko> groupIndex를 사용할 경우 해당 group에 있는 Item의 index </ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     * @example
-    element.innerHTML = "2";
-    element.style.height = "400px";
-    ig.updateItem(element);
-    ig.updateItem(0, 0);
-     */
+      return !isConstantSize && item.rect.top < DUMMY_POSITION / 10;
+    });
 
+    this._postLayout({
+      fromCache: fromCache,
+      groups: cache,
+      items: items,
+      newItems: newItems,
+      isAppend: isAppend,
+      isTrusted: isTrusted,
+      moveItem: moveItem
+    });
+  };
 
-    _proto.updateItem = function updateItem(groupIndex, itemIndex) {
-      var item = this.getItem(groupIndex, itemIndex);
-      this._updateItem(item) && this.layout(false);
-      return this;
-    };
-    /**
-     * Update the currently displayed items.
-     * 현재보여주는 아이템들을 업데이트한다.
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     * @example
-    element.innerHTML = "2";
-    element.style.height = "400px";
-    	element2.innerHTML = "2";
-    element2.style.height = "400px";
-    	ig.updateItems();
-     */
+  __proto._postLayout = function (_a) {
+    var _this = this;
 
+    var fromCache = _a.fromCache,
+        groups = _a.groups,
+        _b = _a.items,
+        items = _b === void 0 ? ItemManager.pluck(groups, "items") : _b,
+        newItems = _a.newItems,
+        isAppend = _a.isAppend,
+        isChildren = _a.isChildren,
+        isTrusted = _a.isTrusted,
+        moveCache = _a.moveCache,
+        _c = _a.moveItem,
+        moveItem = _c === void 0 ? -2 : _c;
 
-    _proto.updateItems = function updateItems() {
-      var _this2 = this;
+    this._process(PROCESSING);
 
-      this.getItems().forEach(function (item) {
-        _this2._updateItem(item);
-      });
-      this.layout(false);
-      return this;
-    };
-    /**
-     * Move to some group or item position.
-     * @ko 해당하는 그룹 또는 아이템의 위치로 이동한다.
-     * @param {Number} [index] group's index <ko> 그룹의 index</ko>
-     * @param {Number} [itemIndex=-1] item's index <ko> 그룹의 index</ko>
-     * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-     */
+    var method = isAppend ? "append" : "prepend";
+    var itemManager = this._items;
+    var horizontal = this.options.horizontal; // If container has children, it does not render first.
 
+    if (!isChildren) {
+      DOMRenderer.createElements(items);
 
-    _proto.moveTo = function moveTo(index, itemIndex) {
-      if (itemIndex === void 0) {
-        itemIndex = 0;
-      }
+      this._renderer[method](items);
+    }
 
-      if (this.isProcessing()) {
-        return this;
-      }
+    this._manager[method]({
+      groups: groups,
+      items: newItems
+    }, {
+      complete: function () {
+        var infinite = _this._infinite;
+        var startCursor = Math.max(infinite.getCursor("start"), 0);
+        var endCursor = Math.max(infinite.getCursor("end"), 0);
+        var requestStartCursor = itemManager.indexOf(groups[0].groupKey);
+        var requestEndCursor = itemManager.indexOf(groups[groups.length - 1].groupKey);
+        var isInCursor = true;
 
-      var data = this._items.getData(index);
-
-      if (!data) {
-        return this;
-      }
-
-      var infinite = this._infinite;
-      var outlines = data.outlines;
-      var items = data.items;
-      var item = items[itemIndex];
-      var isResize = outlines.start && outlines.start.length === 0;
-      var startCursor = infinite.getCursor("start");
-      var endCursor = infinite.getCursor("end");
-      var isInCursor = startCursor <= index && index <= endCursor;
-      var _this$options6 = this.options,
-          useRecycle = _this$options6.useRecycle,
-          horizontal = _this$options6.horizontal;
-
-      if (isInCursor || !useRecycle || !isResize) {
-        var pos = item ? item.rect[horizontal ? "left" : "top"] : Math.max.apply(Math, outlines.start);
-        var fit = Math.min.apply(Math, outlines.start);
-
-        if (fit < 0) {
-          // base < 0
-          this._fitItems(fit, 0);
-
-          pos -= fit;
+        if (requestStartCursor > endCursor + 1 || requestEndCursor < startCursor - 1) {
+          isInCursor = false;
         }
 
-        var isAppend = index > startCursor;
-
-        if (isInCursor || isAppend) {
-          this._scrollTo(pos);
-
-          return this;
+        if (isInCursor) {
+          if (isAppend) {
+            requestStartCursor = startCursor;
+            requestEndCursor = Math.max(endCursor, requestEndCursor);
+          } else {
+            requestStartCursor = Math.max(Math.min(startCursor, requestStartCursor), 0);
+            requestEndCursor = endCursor;
+          }
         }
 
-        this._postLayout({
-          fromCache: true,
-          groups: [data],
+        !isInCursor && _this._recycle({
+          start: startCursor,
+          end: endCursor
+        });
+        infinite.setCursor("start", requestStartCursor);
+        infinite.setCursor("end", requestEndCursor);
+
+        if (moveItem > -1) {
+          var pos = items[moveItem].rect[horizontal ? "left" : "top"];
+
+          if (!isInCursor && !moveCache) {
+            itemManager.clearOutlines(requestStartCursor, requestEndCursor);
+          }
+
+          _this._scrollTo(pos);
+
+          _this._setScrollPos(pos);
+        }
+
+        _this._onLayoutComplete({
           items: items,
-          newItems: [],
           isAppend: isAppend,
-          isTrusted: false,
-          moveCache: true,
-          moveItem: itemIndex
+          fromCache: fromCache,
+          isTrusted: isTrusted,
+          useRecycle: false
+        });
+      },
+      error: function (e) {
+        return _this._onImageError(e);
+      },
+      end: function (_a) {
+        var remove = _a.remove,
+            layout = _a.layout;
+        remove.forEach(function (el) {
+          return _this.remove(el, false);
         });
 
-        return this;
-      } else {
-        var _isAppend = index > endCursor || index < startCursor - 1;
+        if (layout) {
+          _this.layout(false);
+        } else if (!_this.isProcessing() && _this.options.useRecycle) {
+          var watcher = _this._watcher;
+          var scrollPos = watcher.getScrollPos();
 
-        this._postCache({
-          isAppend: _isAppend,
-          cache: [data],
-          isTrusted: false,
-          moveItem: itemIndex
-        });
-      }
-
-      return this;
-    };
-
-    _proto._setScrollPos = function _setScrollPos(pos) {
-      this._watcher.setScrollPos(this._watcher.getContainerOffset() + pos);
-    };
-
-    _proto._scrollTo = function _scrollTo(pos) {
-      this._watcher.scrollTo(this._watcher.getContainerOffset() + pos);
-    };
-
-    _proto._onImageError = function _onImageError(e) {
-      /**
-       * This event is fired when an error occurs in the image.
-       * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
-       * @event eg.InfiniteGrid#imageError
-       * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-       * @param {Element} param.target Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
-       * @param {Element} param.elememt The item's element with error images.<ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트</ko>
-       * @param {Object} param.items The items being added.<ko>화면에 추가중인 아이템들</ko>
-       * @param {Object} param.item The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
-       * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
-       * @param {Function} param.remove In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
-       * @param {Function} param.removeItem In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
-       * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
-       * @param {Function} param.replaceItem In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
-       * @example
-      ig.on("imageError", e => {
-      e.remove();
-      e.removeItem();
-      e.replace("http://...jpg");
-      e.replace(imageElement);
-      e.replaceItem("item html");
-      });
-       */
-      this.trigger("imageError", _extends(e, {
-        element: e.item.el
-      }));
-    };
-
-    _proto._postCache = function _postCache(_ref3) {
-      var cache = _ref3.cache,
-          isAppend = _ref3.isAppend,
-          _ref3$isTrusted = _ref3.isTrusted,
-          isTrusted = _ref3$isTrusted === void 0 ? true : _ref3$isTrusted,
-          _ref3$moveItem = _ref3.moveItem,
-          moveItem = _ref3$moveItem === void 0 ? -1 : _ref3$moveItem;
-      var isConstantSize = this.options.isConstantSize;
-      var items = ItemManager.pluck(cache, "items");
-      var fromCache = true;
-      var newItems = items.filter(function (item) {
-        if (!item.orgSize) {
-          fromCache = false;
-          return true;
+          _this._infinite.recycle(scrollPos, isAppend);
         }
+      }
+    });
 
-        return !isConstantSize && item.rect.top < DUMMY_POSITION / 10;
+    return this;
+  }; // called by visible
+
+
+  __proto._requestAppend = function (_a) {
+    var _this = this;
+
+    var cache = _a.cache;
+
+    if (this._isProcessing()) {
+      return;
+    }
+
+    if (cache && cache.length) {
+      this._postCache({
+        cache: cache,
+        isAppend: APPEND
       });
-
-      this._postLayout({
-        fromCache: fromCache,
-        groups: cache,
-        items: items,
-        newItems: newItems,
-        isAppend: isAppend,
-        isTrusted: isTrusted,
-        moveItem: moveItem
-      });
-    };
-
-    _proto._postLayout = function _postLayout(_ref4) {
-      var _this3 = this;
-
-      var fromCache = _ref4.fromCache,
-          groups = _ref4.groups,
-          _ref4$items = _ref4.items,
-          items = _ref4$items === void 0 ? ItemManager.pluck(groups, "items") : _ref4$items,
-          newItems = _ref4.newItems,
-          isAppend = _ref4.isAppend,
-          isChildren = _ref4.isChildren,
-          isTrusted = _ref4.isTrusted,
-          moveCache = _ref4.moveCache,
-          _ref4$moveItem = _ref4.moveItem,
-          moveItem = _ref4$moveItem === void 0 ? -2 : _ref4$moveItem;
-
-      this._process(PROCESSING);
-
-      var method = isAppend ? "append" : "prepend";
-      var itemManager = this._items;
-      var horizontal = this.options.horizontal; // If container has children, it does not render first.
-
-      if (!isChildren) {
-        DOMRenderer.createElements(items);
-
-        this._renderer[method](items);
-      }
-
-      this._manager[method]({
-        groups: groups,
-        items: newItems,
-        isAppend: isAppend
-      }, {
-        complete: function complete() {
-          var infinite = _this3._infinite;
-          var startCursor = Math.max(infinite.getCursor("start"), 0);
-          var endCursor = Math.max(infinite.getCursor("end"), 0);
-          var requestStartCursor = itemManager.indexOf(groups[0].groupKey);
-          var requestEndCursor = itemManager.indexOf(groups[groups.length - 1].groupKey);
-          var isInCursor = true;
-
-          if (requestStartCursor > endCursor + 1 || requestEndCursor < startCursor - 1) {
-            isInCursor = false;
-          }
-
-          if (isInCursor) {
-            if (isAppend) {
-              requestStartCursor = startCursor;
-              requestEndCursor = Math.max(endCursor, requestEndCursor);
-            } else {
-              requestStartCursor = Math.max(Math.min(startCursor, requestStartCursor), 0);
-              requestEndCursor = endCursor;
-            }
-          }
-
-          !isInCursor && _this3._recycle({
-            start: startCursor,
-            end: endCursor
-          });
-          infinite.setCursor("start", requestStartCursor);
-          infinite.setCursor("end", requestEndCursor);
-
-          if (moveItem > -1) {
-            var pos = items[moveItem].rect[horizontal ? "left" : "top"];
-
-            if (!isInCursor && !moveCache) {
-              itemManager.clearOutlines(requestStartCursor, requestEndCursor);
-            }
-
-            _this3._scrollTo(pos);
-
-            _this3._setScrollPos(pos);
-          }
-
-          _this3._onLayoutComplete({
-            groups: groups,
-            items: items,
-            isAppend: isAppend,
-            fromCache: fromCache,
-            isTrusted: isTrusted,
-            useRecycle: false
-          });
-        },
-        error: function error(e) {
-          return _this3._onImageError(e);
-        },
-        end: function end(_ref5) {
-          var remove = _ref5.remove,
-              layout = _ref5.layout;
-          remove.forEach(function (el) {
-            return _this3.remove(el, false);
-          });
-
-          if (layout) {
-            _this3.layout(false);
-          } else if (!_this3.isProcessing() && _this3.options.useRecycle) {
-            var watcher = _this3._watcher;
-            var scrollPos = watcher.getScrollPos();
-
-            _this3._infinite.recycle(scrollPos, isAppend);
-          }
-        }
-      });
-
-      return this;
-    }; // called by visible
-
-
-    _proto._requestAppend = function _requestAppend(_ref6) {
-      var _this4 = this;
-
-      var cache = _ref6.cache;
-
-      if (this._isProcessing()) {
-        return;
-      }
-
-      if (cache && cache.length) {
-        this._postCache({
-          cache: cache,
-          isAppend: APPEND
-        });
-      } else {
-        /**
-         * This event is fired when a card element must be added at the bottom or right of a layout because there is no card to be displayed on screen when a user scrolls near bottom or right.
-         * @ko 카드 엘리먼트가 레이아웃의 아래나 오른쪽에 추가돼야 할 때 발생하는 이벤트. 사용자가 아래나 오른쪽으로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다
-         * @event eg.InfiniteGrid#append
-         * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-         * @param {String|Number} groupKey The group key of the first group visible on the screen <ko>화면에 보여지는 마지막 그룹의 그룹키</ko>
-         * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
-         * @param {Function} param.startLoading Start loading for append loading data. <ko> 뒷쪽에 추가되는 데이터 로딩을 시작한다. </ko>
-         * @param {Object} param.startLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩을 시작할 때 로딩 바에 적용될 사용자 스타일 </ko>
-         * @param {Function} param.endLoading End loading after startLoading() for append/prepend loading data. <ko>데이터 로딩을 위해 append/prepend startLoading() 호출 이후 로딩을 끝낸다.</ko>
-         * @param {Object} param.endLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩이 끝날 때 로딩 바에 적용될 사용자 스타일 </ko>
-         */
-        this.trigger("append", {
-          isTrusted: TRUSTED,
-          groupKey: this.getGroupKeys().pop() || "",
-          startLoading: function startLoading(userStyle) {
-            _this4.startLoading(true, userStyle);
-          },
-          endLoading: function endLoading(userStyle) {
-            _this4.endLoading(userStyle);
-          }
-        });
-      }
-    }; // called by visible
-
-
-    _proto._requestPrepend = function _requestPrepend(_ref7) {
-      var _this5 = this;
-
-      var cache = _ref7.cache;
-
-      this._fit(this.options.useFit || !cache.length);
-
-      if (this._isProcessing()) {
-        return;
-      }
-
-      if (cache && cache.length) {
-        this._postCache({
-          cache: cache,
-          isAppend: PREPEND
-        });
-      } else {
-        /**
-         * This event is fired when a card element must be added at the top or left of a layout because there is no card to be displayed on screen when a user scrolls near top or left.
-         * @ko 카드가 레이아웃의 위나 왼쪽에 추가돼야 할 때 발생하는 이벤트. 사용자가 위나 왼쪽으로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다.
-         * @event eg.InfiniteGrid#prepend
-         * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-         * @param {String|Number} groupKey The group key of the first group visible on the screen <ko>화면에 보여지는 첫번째 그룹의 그룹키</ko>
-         * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
-         * @param {Function} param.startLoading Start loading for prepend loading data. <ko> 앞쪽에 추가되는 데이터 로딩을 시작한다. </ko>
-         * @param {Object} param.startLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩을 시작할 때 로딩 바에 적용될 사용자 스타일 </ko>
-         * @param {Function} param.endLoading End loading after startLoading() for append/prepend loading data. <ko>데이터 로딩을 위해 append/prepend startLoading() 호출 이후 로딩을 끝낸다.</ko>
-         * @param {Object} param.endLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩이 끝날 때 로딩 바에 적용될 사용자 스타일 </ko>
-         */
-        this.trigger("prepend", {
-          isTrusted: TRUSTED,
-          groupKey: this.getGroupKeys().shift(),
-          startLoading: function startLoading(userStyle) {
-            _this5.startLoading(false, userStyle);
-          },
-          endLoading: function endLoading(userStyle) {
-            _this5.endLoading(userStyle);
-          }
-        });
-      }
-    };
-
-    _proto._onResize = function _onResize() {
-      this.layout(true);
-    };
-
-    _proto._onCheck = function _onCheck(_ref8) {
-      var isForward = _ref8.isForward,
-          scrollPos = _ref8.scrollPos,
-          horizontal = _ref8.horizontal,
-          orgScrollPos = _ref8.orgScrollPos;
-
+    } else {
       /**
-       * This event is fired when the user scrolls.
-       * @ko 사용자가 스크롤 할 경우 발생하는 이벤트.
-       * @event eg.InfiniteGrid#change
+       * This event is fired when a card element must be added at the bottom or right of a layout because there is no card to be displayed on screen when a user scrolls near bottom or right.
+       * @ko 카드 엘리먼트가 레이아웃의 아래나 오른쪽에 추가돼야 할 때 발생하는 이벤트. 사용자가 아래나 오른쪽으로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다
+       * @event eg.InfiniteGrid#append
        * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-       * @param {Boolean} param.isForward Indicates whether the scroll progression direction is forward or backword. <ko>스크롤 진행방향이 앞쪽으로 진행하는 지, 뒤쪽으로 진행하는지를 나타낸다.</ko>
-       * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
-       * @param {Boolean} param.orgScrollPos Current position of the scroll <ko>현재 스크롤 위치값</ko>
+       * @param {String|Number} groupKey The group key of the first group visible on the screen <ko>화면에 보여지는 마지막 그룹의 그룹키</ko>
        * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
-       * @param {Boolean} options.horizontal Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향</ko>
-       */
-      this.trigger("change", {
-        isForward: isForward,
-        horizontal: horizontal,
-        scrollPos: scrollPos,
-        orgScrollPos: orgScrollPos
-      });
-
-      this._infinite.scroll(scrollPos);
-    };
-
-    _proto._onLayoutComplete = function _onLayoutComplete(_ref9) {
-      var _this6 = this;
-
-      var items = _ref9.items,
-          isAppend = _ref9.isAppend,
-          _ref9$isTrusted = _ref9.isTrusted,
-          isTrusted = _ref9$isTrusted === void 0 ? false : _ref9$isTrusted,
-          _ref9$useRecycle = _ref9.useRecycle,
-          useRecycle = _ref9$useRecycle === void 0 ? this.options.useRecycle : _ref9$useRecycle,
-          _ref9$fromCache = _ref9.fromCache,
-          fromCache = _ref9$fromCache === void 0 ? false : _ref9$fromCache,
-          _ref9$isLayout = _ref9.isLayout,
-          isLayout = _ref9$isLayout === void 0 ? false : _ref9$isLayout;
-
-      var viewSize = this._renderer.getViewSize();
-
-      if (!isAppend) {
-        this._fit();
-      } else {
-        this._isLoading() && this._renderLoading();
-      }
-
-      var watcher = this._watcher;
-      var scrollPos = watcher.getScrollPos(); // recycle after _fit beacause prepend and append are occured simultaneously by scroll.
-
-      if (!isLayout && useRecycle && !this._isLoading()) {
-        this._infinite.recycle(scrollPos, isAppend);
-      }
-
-      var size = this._getEdgeValue("end");
-
-      if (isAppend) {
-        this._setContainerSize(size + this._status.loadingSize || 0);
-
-        if (scrollPos > 0) {
-          !IS_IOS && this._scrollTo(scrollPos);
-        }
-      }
-
-      !isLayout && this._process(PROCESSING, false);
-      /**
-       * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
-       * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
-       * @event eg.InfiniteGrid#layoutComplete
-       *
-       * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-       * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
-       * @param {Boolean} param.fromCache Check whether these items are cache or not <ko>해당 아이템들이 캐시인지 아닌지 확인한다.</ko>
-       * @param {Boolean} param.isLayout Returns true if this is an event called by resize event or layout method. Returns false if this is an event called by adding an item. <ko>해당 이벤트가 리사이즈 이벤트 또는 layout() 메서드를 통해 호출됐으면 true, 아이템 추가로 호출됐으면 false를 반환한다.</ko>
-       * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
-       * @param {Boolean} param.isScroll Checks whether scrolling has occurred after the append(), prepend(), ..., etc method is called <ko>append, prend 등 호출 후 스크롤이 생겼는지 확인한다.</ko>
-       * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
-       * @param {Number} param.orgScrollPos Current position of the scroll <ko>현재 스크롤 위치값</ko>
-       * @param {Number} param.size The size of container element <ko>컨테이너 엘리먼트의 크기</ko>
-       * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+       * @param {Function} param.startLoading Start loading for append loading data. <ko> 뒷쪽에 추가되는 데이터 로딩을 시작한다. </ko>
+       * @param {Object} param.startLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩을 시작할 때 로딩 바에 적용될 사용자 스타일 </ko>
        * @param {Function} param.endLoading End loading after startLoading() for append/prepend loading data. <ko>데이터 로딩을 위해 append/prepend startLoading() 호출 이후 로딩을 끝낸다.</ko>
        * @param {Object} param.endLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩이 끝날 때 로딩 바에 적용될 사용자 스타일 </ko>
        */
-
-      this.trigger("layoutComplete", {
-        target: items.concat(),
-        isAppend: isAppend,
-        isTrusted: isTrusted,
-        fromCache: fromCache,
-        isLayout: isLayout,
-        isScroll: viewSize < watcher.getContainerOffset() + size,
-        scrollPos: scrollPos,
-        orgScrollPos: watcher.getOrgScrollPos(),
-        size: size,
-        endLoading: function endLoading(userStyle) {
-          _this6.endLoading(userStyle);
+      this.trigger("append", {
+        isTrusted: TRUSTED,
+        groupKey: this.getGroupKeys().pop() || "",
+        startLoading: function (userStyle) {
+          _this.startLoading(true, userStyle);
+        },
+        endLoading: function (userStyle) {
+          _this.endLoading(userStyle);
         }
       });
+    }
+  }; // called by visible
 
-      this._infinite.scroll(scrollPos, isAppend);
-    };
 
-    _proto._reset = function _reset() {
-      this._status = {
-        processingStatus: IDLE,
-        loadingSize: 0
-      };
-    };
+  __proto._requestPrepend = function (_a) {
+    var _this = this;
+
+    var cache = _a.cache;
+
+    this._fit(this.options.useFit || !cache.length);
+
+    if (this._isProcessing()) {
+      return;
+    }
+
+    if (cache && cache.length) {
+      this._postCache({
+        cache: cache,
+        isAppend: PREPEND
+      });
+    } else {
+      /**
+       * This event is fired when a card element must be added at the top or left of a layout because there is no card to be displayed on screen when a user scrolls near top or left.
+       * @ko 카드가 레이아웃의 위나 왼쪽에 추가돼야 할 때 발생하는 이벤트. 사용자가 위나 왼쪽으로 스크롤해서 화면에 표시될 카드가 없을 때 발생한다.
+       * @event eg.InfiniteGrid#prepend
+       * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+       * @param {String|Number} groupKey The group key of the first group visible on the screen <ko>화면에 보여지는 첫번째 그룹의 그룹키</ko>
+       * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+       * @param {Function} param.startLoading Start loading for prepend loading data. <ko> 앞쪽에 추가되는 데이터 로딩을 시작한다. </ko>
+       * @param {Object} param.startLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩을 시작할 때 로딩 바에 적용될 사용자 스타일 </ko>
+       * @param {Function} param.endLoading End loading after startLoading() for append/prepend loading data. <ko>데이터 로딩을 위해 append/prepend startLoading() 호출 이후 로딩을 끝낸다.</ko>
+       * @param {Object} param.endLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩이 끝날 때 로딩 바에 적용될 사용자 스타일 </ko>
+       */
+      this.trigger("prepend", {
+        isTrusted: TRUSTED,
+        groupKey: this.getGroupKeys().shift(),
+        startLoading: function (userStyle) {
+          _this.startLoading(false, userStyle);
+        },
+        endLoading: function (userStyle) {
+          _this.endLoading(userStyle);
+        }
+      });
+    }
+  };
+
+  __proto._onResize = function () {
+    this.layout(true);
+  };
+
+  __proto._onCheck = function (_a) {
+    var isForward = _a.isForward,
+        scrollPos = _a.scrollPos,
+        horizontal = _a.horizontal,
+        orgScrollPos = _a.orgScrollPos;
     /**
-     * Destroys elements, properties, and events used on a grid layout.
-     * @ko 그리드 레이아웃에 사용한 엘리먼트와 속성, 이벤트를 해제한다
+     * This event is fired when the user scrolls.
+     * @ko 사용자가 스크롤 할 경우 발생하는 이벤트.
+     * @event eg.InfiniteGrid#change
+     * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+     * @param {Boolean} param.isForward Indicates whether the scroll progression direction is forward or backword. <ko>스크롤 진행방향이 앞쪽으로 진행하는 지, 뒤쪽으로 진행하는지를 나타낸다.</ko>
+     * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
+     * @param {Boolean} param.orgScrollPos Current position of the scroll <ko>현재 스크롤 위치값</ko>
+     * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+     * @param {Boolean} options.horizontal Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향</ko>
      */
 
+    this.trigger("change", {
+      isForward: isForward,
+      horizontal: horizontal,
+      scrollPos: scrollPos,
+      orgScrollPos: orgScrollPos
+    });
 
-    _proto.destroy = function destroy() {
-      this._infinite.clear();
+    this._infinite.scroll(scrollPos);
+  };
 
-      this._watcher.destroy();
+  __proto._onLayoutComplete = function (_a) {
+    var _this = this;
 
-      this._manager.destroy();
+    var items = _a.items,
+        isAppend = _a.isAppend,
+        _b = _a.isTrusted,
+        isTrusted = _b === void 0 ? false : _b,
+        _c = _a.useRecycle,
+        useRecycle = _c === void 0 ? this.options.useRecycle : _c,
+        _d = _a.fromCache,
+        fromCache = _d === void 0 ? false : _d,
+        _e = _a.isLayout,
+        isLayout = _e === void 0 ? false : _e;
 
-      this._reset();
+    var viewSize = this._renderer.getViewSize();
 
-      this._items.clear();
+    if (!isAppend) {
+      this._fit();
+    } else {
+      this._isLoading() && this._renderLoading();
+    }
 
-      this._renderer.destroy();
+    var watcher = this._watcher;
+    var scrollPos = watcher.getScrollPos(); // recycle after _fit beacause prepend and append are occured simultaneously by scroll.
+
+    if (!isLayout && useRecycle && !this._isLoading()) {
+      this._infinite.recycle(scrollPos, isAppend);
+    }
+
+    var size = this._getEdgeValue("end");
+
+    if (isAppend) {
+      this._setContainerSize(size + this._status.loadingSize || 0);
+
+      if (scrollPos > 0) {
+        !IS_IOS && this._scrollTo(scrollPos);
+      }
+    }
+
+    !isLayout && this._process(PROCESSING, false);
+    /**
+     * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
+     * @ko 레이아웃 배치가 완료됐을 때 발생하는 이벤트. append() 메서드나 prepend() 메서드, layout() 메서드 호출 후 카드의 배치가 완료됐을 때 발생한다
+     * @event eg.InfiniteGrid#layoutComplete
+     *
+     * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+     * @param {Array} param.target Rearranged card elements<ko>재배치된 카드 엘리먼트들</ko>
+     * @param {Boolean} param.fromCache Check whether these items are cache or not <ko>해당 아이템들이 캐시인지 아닌지 확인한다.</ko>
+     * @param {Boolean} param.isLayout Returns true if this is an event called by resize event or layout method. Returns false if this is an event called by adding an item. <ko>해당 이벤트가 리사이즈 이벤트 또는 layout() 메서드를 통해 호출됐으면 true, 아이템 추가로 호출됐으면 false를 반환한다.</ko>
+     * @param {Boolean} param.isAppend Checks whether the append() method is used to add a card element. It returns true even though the layoutComplete event is fired after the layout() method is called. <ko>카드 엘리먼트가 append() 메서드로 추가됐는지 확인한다. layout() 메서드가 호출된 후 layoutComplete 이벤트가 발생해도 'true'를 반환한다.</ko>
+     * @param {Boolean} param.isScroll Checks whether scrolling has occurred after the append(), prepend(), ..., etc method is called <ko>append, prend 등 호출 후 스크롤이 생겼는지 확인한다.</ko>
+     * @param {Number} param.scrollPos Current scroll position value relative to the infiniteGrid container element. <ko>infiniteGrid 컨테이너 엘리먼트 기준의 현재 스크롤 위치값</ko>
+     * @param {Number} param.orgScrollPos Current position of the scroll <ko>현재 스크롤 위치값</ko>
+     * @param {Number} param.size The size of container element <ko>컨테이너 엘리먼트의 크기</ko>
+     * @param {Boolean} param.isTrusted Returns true if an event was generated by the user action, or false if it was caused by a script or API call <ko>사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.</ko>
+     * @param {Function} param.endLoading End loading after startLoading() for append/prepend loading data. <ko>데이터 로딩을 위해 append/prepend startLoading() 호출 이후 로딩을 끝낸다.</ko>
+     * @param {Object} param.endLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩이 끝날 때 로딩 바에 적용될 사용자 스타일 </ko>
+     */
+
+    this.trigger("layoutComplete", {
+      target: items.concat(),
+      isAppend: isAppend,
+      isTrusted: isTrusted,
+      fromCache: fromCache,
+      isLayout: isLayout,
+      isScroll: viewSize < watcher.getContainerOffset() + size,
+      scrollPos: scrollPos,
+      orgScrollPos: watcher.getOrgScrollPos(),
+      size: size,
+      endLoading: function (userStyle) {
+        _this.endLoading(userStyle);
+      }
+    });
+
+    this._infinite.scroll(scrollPos);
+  };
+
+  __proto._reset = function () {
+    this._status = {
+      processingStatus: IDLE,
+      loadingSize: 0,
+      loadingStyle: {}
     };
+  };
+  /**
+   * Version info string
+   * @ko 버전정보 문자열
+   * @name VERSION
+   * @static
+   * @type {String}
+   * @example
+   * eg.InfiniteGrid.VERSION;  // ex) 3.3.3
+   * @memberof eg.InfiniteGrid
+   */
 
-    return InfiniteGrid;
-  }(Component);
 
   InfiniteGrid.VERSION = "3.5.0";
   return InfiniteGrid;
-}();
+}(Component);
 
 var START = ALIGN.START,
     CENTER = ALIGN.CENTER,
@@ -3362,22 +3376,22 @@ var START = ALIGN.START,
 ```
 <script>
 var ig = new eg.InfiniteGrid("#grid". {
-	horizontal: true,
+  horizontal: true,
 });
 
 ig.setLayout(eg.InfiniteGrid.GridLayout, {
-	margin: 10,
-	align: "start",
-	itemSize: 200
+  margin: 10,
+  align: "start",
+  itemSize: 200
 });
 
 // or
 
 var layout = new eg.InfiniteGrid.GridLayout({
-	margin: 10,
-	align: "center",
-	itemSize: 200,
-	horizontal: true,
+  margin: 10,
+  align: "center",
+  itemSize: 200,
+  horizontal: true,
 });
 
 </script>
@@ -3403,128 +3417,6 @@ function () {
     this._columnLength = 0;
     this._style = getStyleNames(this.options.horizontal);
   }
-
-  var _proto = GridLayout.prototype;
-
-  _proto.checkColumn = function checkColumn(item) {
-    var _this$options = this.options,
-        itemSize = _this$options.itemSize,
-        margin = _this$options.margin,
-        horizontal = _this$options.horizontal;
-    var sizeName = horizontal ? "height" : "width";
-    var columnSize = parseInt(itemSize || item && item.size[sizeName], 10) || 0;
-    this._columnSize = columnSize;
-
-    if (!columnSize) {
-      this._columnLength = 1;
-      return;
-    }
-
-    this._columnLength = Math.max(parseInt((this._size + margin) / (columnSize + margin), 10), 1);
-  };
-
-  _proto._layout = function _layout(items, outline, isAppend) {
-    var length = items.length;
-    var margin = this.options.margin;
-    var align = this.options.align;
-    var style = this._style;
-    var size1Name = style.size1;
-    var size2Name = style.size2;
-    var pos1Name = style.pos1;
-    var pos2Name = style.pos2;
-    var columnSize = this._columnSize;
-    var columnLength = this._columnLength;
-    var size = this._size;
-    var viewDist = size - (columnSize + margin) * columnLength + margin;
-    var pointCaculateName = isAppend ? "min" : "max";
-    var startOutline = outline.slice();
-    var endOutline = outline.slice();
-
-    for (var i = 0; i < length; ++i) {
-      var _item$rect;
-
-      var point = Math[pointCaculateName].apply(Math, endOutline) || 0;
-      var index = endOutline.indexOf(point);
-      var item = items[isAppend ? i : length - 1 - i];
-      var size1 = item.size[size1Name];
-      var size2 = item.size[size2Name];
-      var pos1 = isAppend ? point : point - margin - size1;
-      var endPos1 = pos1 + size1 + margin;
-
-      if (index === -1) {
-        index = 0;
-      }
-
-      var pos2 = (columnSize + margin) * index; // ALIGN
-
-      if (align === CENTER) {
-        pos2 += viewDist / 2;
-      } else if (align === END) {
-        pos2 += viewDist + columnSize - size2;
-      } else if (align === JUSTIFY) {
-        if (columnLength <= 1) {
-          pos2 += viewDist / 2;
-        } else {
-          pos2 = (size - columnSize) / (columnLength - 1) * index;
-        }
-      } // tetris
-
-
-      item.rect = (_item$rect = {}, _item$rect[pos1Name] = pos1, _item$rect[pos2Name] = pos2, _item$rect);
-      item.column = index;
-      endOutline[index] = isAppend ? endPos1 : pos1;
-    }
-
-    if (!isAppend) {
-      items.sort(function (a, b) {
-        var item1pos1 = a.rect[pos1Name];
-        var item1pos2 = a.rect[pos2Name];
-        var item2pos1 = b.rect[pos1Name];
-        var item2pos2 = b.rect[pos2Name];
-
-        if (item1pos1 - item2pos1) {
-          return item1pos1 - item2pos1;
-        }
-
-        return item1pos2 - item2pos2;
-      });
-    } // if append items, startOutline is low, endOutline is high
-    // if prepend items, startOutline is high, endOutline is low
-
-
-    return {
-      start: isAppend ? startOutline : endOutline,
-      end: isAppend ? endOutline : startOutline
-    };
-  };
-
-  _proto._insert = function _insert(items, outline, type, cache) {
-    if (items === void 0) {
-      items = [];
-    }
-
-    if (outline === void 0) {
-      outline = [];
-    }
-
-    var clone = cache ? items : cloneItems(items);
-    var startOutline = outline;
-
-    if (!this._columnLength) {
-      this.checkColumn(items[0]);
-    }
-
-    if (outline.length !== this._columnLength) {
-      startOutline = fill(new Array(this._columnLength), outline.length === 0 ? 0 : Math[type === APPEND ? "min" : "max"].apply(Math, outline) || 0);
-    }
-
-    var result = this._layout(clone, startOutline, type);
-
-    return {
-      items: clone,
-      outlines: result
-    };
-  };
   /**
    * Adds items at the bottom of a outline.
    * @ko 아이템들을 아웃라인 아래에 추가한다.
@@ -3537,7 +3429,9 @@ function () {
    */
 
 
-  _proto.append = function append(items, outline, cache) {
+  var __proto = GridLayout.prototype;
+
+  __proto.append = function (items, outline, cache) {
     return this._insert(items, outline, APPEND, cache);
   };
   /**
@@ -3552,7 +3446,7 @@ function () {
    */
 
 
-  _proto.prepend = function prepend(items, outline, cache) {
+  __proto.prepend = function (items, outline, cache) {
     return this._insert(items, outline, PREPEND, cache);
   };
   /**
@@ -3567,7 +3461,7 @@ function () {
    */
 
 
-  _proto.layout = function layout(groups, outline) {
+  __proto.layout = function (groups, outline) {
     var _this = this;
 
     if (groups === void 0) {
@@ -3578,7 +3472,7 @@ function () {
       outline = [];
     }
 
-    var firstItem = groups.length && groups[0].items.length && groups[0].items[0] || 0;
+    var firstItem = groups.length && groups[0].items.length && groups[0].items[0];
     this.checkColumn(firstItem); // if outlines' length and columns' length are now same, re-caculate outlines.
 
     var startOutline;
@@ -3612,9 +3506,129 @@ function () {
    */
 
 
-  _proto.setSize = function setSize(size) {
+  __proto.setSize = function (size) {
     this._size = size;
     return this;
+  };
+
+  __proto.checkColumn = function (item) {
+    var _a = this.options,
+        itemSize = _a.itemSize,
+        margin = _a.margin,
+        horizontal = _a.horizontal;
+    var sizeName = horizontal ? "height" : "width";
+    var columnSize = Math.floor(itemSize || item && item.size[sizeName] || 0) || 0;
+    this._columnSize = columnSize;
+
+    if (!columnSize) {
+      this._columnLength = 1;
+      return;
+    }
+
+    this._columnLength = Math.max(Math.floor((this._size + margin) / (columnSize + margin)), 1);
+  };
+
+  __proto._layout = function (items, outline, isAppend) {
+    var _a;
+
+    var length = items.length;
+    var margin = this.options.margin;
+    var align = this.options.align;
+    var style = this._style;
+    var size1Name = style.size1;
+    var size2Name = style.size2;
+    var pos1Name = style.startPos1;
+    var pos2Name = style.startPos2;
+    var columnSize = this._columnSize;
+    var columnLength = this._columnLength;
+    var size = this._size;
+    var viewDist = size - (columnSize + margin) * columnLength + margin;
+    var pointCaculateName = isAppend ? "min" : "max";
+    var startOutline = outline.slice();
+    var endOutline = outline.slice();
+
+    for (var i = 0; i < length; ++i) {
+      var point = Math[pointCaculateName].apply(Math, endOutline) || 0;
+      var index = endOutline.indexOf(point);
+      var item = items[isAppend ? i : length - 1 - i];
+      var size1 = item.size[size1Name];
+      var size2 = item.size[size2Name];
+      var pos1 = isAppend ? point : point - margin - size1;
+      var endPos1 = pos1 + size1 + margin;
+
+      if (index === -1) {
+        index = 0;
+      }
+
+      var pos2 = (columnSize + margin) * index; // ALIGN
+
+      if (align === CENTER) {
+        pos2 += viewDist / 2;
+      } else if (align === END) {
+        pos2 += viewDist + columnSize - size2;
+      } else if (align === JUSTIFY) {
+        if (columnLength <= 1) {
+          pos2 += viewDist / 2;
+        } else {
+          pos2 = (size - columnSize) / (columnLength - 1) * index;
+        }
+      } // tetris
+
+
+      item.rect = (_a = {}, _a[pos1Name] = pos1, _a[pos2Name] = pos2, _a);
+      item.column = index;
+      endOutline[index] = isAppend ? endPos1 : pos1;
+    }
+
+    if (!isAppend) {
+      items.sort(function (a, b) {
+        var item1pos1 = a.rect[pos1Name];
+        var item1pos2 = a.rect[pos2Name];
+        var item2pos1 = b.rect[pos1Name];
+        var item2pos2 = b.rect[pos2Name];
+
+        if (item1pos1 - item2pos1) {
+          return item1pos1 - item2pos1;
+        }
+
+        return item1pos2 - item2pos2;
+      });
+    } // if append items, startOutline is low, endOutline is high
+    // if prepend items, startOutline is high, endOutline is low
+
+
+    return {
+      start: isAppend ? startOutline : endOutline,
+      end: isAppend ? endOutline : startOutline
+    };
+  };
+
+  __proto._insert = function (items, outline, isAppend, cache) {
+    if (items === void 0) {
+      items = [];
+    }
+
+    if (outline === void 0) {
+      outline = [];
+    }
+
+    var clone = cache ? items : cloneItems(items);
+    var startOutline = outline;
+
+    if (!this._columnLength) {
+      this.checkColumn(items[0]);
+    }
+
+    if (outline.length !== this._columnLength) {
+      startOutline = fill(new Array(this._columnLength), outline.length ? Math[isAppend ? "min" : "max"].apply(Math, outline) || 0 : 0);
+    }
+
+    var result = this._layout(clone, startOutline, isAppend);
+
+    return {
+      items: clone,
+      outlines: result
+    };
   };
 
   return GridLayout;
@@ -3630,9 +3644,9 @@ Frame
 ]
 */
 
-function disableFrame(frame, type, x, y, width, height) {
-  for (var i = y; i < y + height; ++i) {
-    for (var j = x; j < x + width; ++j) {
+function disableFrame(frame, type, top, left, width, height) {
+  for (var i = top; i < top + height; ++i) {
+    for (var j = left; j < left + width; ++j) {
       if (type !== frame[i][j]) {
         continue;
       }
@@ -3660,9 +3674,9 @@ function searchShapeInFrame(frame, type, top, left, width, height) {
     break;
   }
 
-  for (var _i = top; _i < height; ++_i) {
-    if (frame[_i][left] === type) {
-      size.height = _i - top + 1;
+  for (var i = top; i < height; ++i) {
+    if (frame[i][left] === type) {
+      size.height = i - top + 1;
       continue;
     }
 
@@ -3670,7 +3684,7 @@ function searchShapeInFrame(frame, type, top, left, width, height) {
   } // After finding the shape, it will not find again.
 
 
-  disableFrame(frame, type, left, top, size.width, size.height);
+  disableFrame(frame, type, top, left, size.width, size.height);
   return size;
 }
 
@@ -3715,32 +3729,32 @@ function getShapes(frame) {
 ```
 <script>
 var ig = new eg.InfiniteGrid("#grid". {
-	horizontal: true,
+  horizontal: true,
 });
 
 ig.setLayout(eg.InfiniteGrid.FrameLayout, {
-	margin: 10,
-	itemSize: 200,
-	frame: [
-		[1, 1, 1, 1, 1],
-		[0, 0, 2, 2, 2],
-		[0, 0, 2, 2, 2],
-		[3, 4, 5, 5, 5],
-	],
+  margin: 10,
+  itemSize: 200,
+  frame: [
+    [1, 1, 1, 1, 1],
+    [0, 0, 2, 2, 2],
+    [0, 0, 2, 2, 2],
+    [3, 4, 5, 5, 5],
+  ],
 });
 
 // or
 
 var layout = new eg.InfiniteGrid.FrameLayout({
-	margin: 10,
-	itemSize: 200,
-	horizontal: true,
-	frame: [
-		[1, 1, 1, 1, 1],
-		[0, 0, 2, 2, 2],
-		[0, 0, 2, 2, 2],
-		[3, 4, 5, 5, 5],
-	],
+  margin: 10,
+  itemSize: 200,
+  horizontal: true,
+  frame: [
+    [1, 1, 1, 1, 1],
+    [0, 0, 2, 2, 2],
+    [0, 0, 2, 2, 2],
+    [3, 4, 5, 5, 5],
+  ],
 });
 
 </script>
@@ -3772,16 +3786,96 @@ function () {
     this._size = 0;
     this._style = getStyleNames(this.options.horizontal);
   }
+  /**
+   * Adds items of groups at the bottom of a outline.
+   * @ko 그룹들의 아이템들을 아웃라인 아래에 추가한다.
+   * @method eg.InfiniteGrid.FrameLayout#layout
+   * @param {Array} groups Array of groups to be layouted <ko>레이아웃할 그룹들의 배열</ko>
+   * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+   * @return {eg.InfiniteGrid.FrameLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * layout.layout(groups, [100, 200, 300, 400]);
+   */
 
-  var _proto = FrameLayout.prototype;
 
-  _proto._getItemSize = function _getItemSize() {
+  var __proto = FrameLayout.prototype;
+
+  __proto.layout = function (groups, outline) {
+    if (groups === void 0) {
+      groups = [];
+    }
+
+    if (outline === void 0) {
+      outline = [];
+    }
+
+    var length = groups.length;
+    var point = outline;
+
+    for (var i = 0; i < length; ++i) {
+      var group = groups[i];
+
+      var outlines = this._layout(group.items, point, APPEND);
+
+      group.outlines = outlines;
+      point = outlines.end;
+    }
+
+    return this;
+  };
+  /**
+   * Set the viewport size of the layout.
+   * @ko 레이아웃의 가시 사이즈를 설정한다.
+   * @method eg.InfiniteGrid.FrameLayout#setSize
+   * @param {Number} size The viewport size of container area where items are added to a layout <ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</ko>
+   * @return {eg.InfiniteGrid.FrameLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * layout.setSize(800);
+   */
+
+
+  __proto.setSize = function (size) {
+    this._size = size;
+    return this;
+  };
+  /**
+   * Adds items at the bottom of a outline.
+   * @ko 아이템들을 아웃라인 아래에 추가한다.
+   * @method eg.InfiniteGrid.FrameLayout#append
+   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+   * @example
+   * layout.prepend(items, [100]);
+   */
+
+
+  __proto.append = function (items, outline, cache) {
+    return this._insert(items, outline, APPEND, cache);
+  };
+  /**
+   * Adds items at the top of a outline.
+   * @ko 아이템을 아웃라인 위에 추가한다.
+   * @method eg.InfiniteGrid.FrameLayout#prepend
+   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+   * @example
+   * layout.prepend(items, [100]);
+   */
+
+
+  __proto.prepend = function (items, outline, cache) {
+    return this._insert(items, outline, PREPEND, cache);
+  };
+
+  __proto._getItemSize = function () {
     this._checkItemSize();
 
     return this._itemSize;
   };
 
-  _proto._checkItemSize = function _checkItemSize() {
+  __proto._checkItemSize = function () {
     if (this.options.itemSize) {
       this._itemSize = this.options.itemSize;
       return;
@@ -3794,20 +3888,22 @@ function () {
     this._itemSize = (this._size + margin) / this._shapes[size] - margin;
   };
 
-  _proto._layout = function _layout(items, outline, isAppend) {
+  __proto._layout = function (items, outline, isAppend) {
     if (outline === void 0) {
       outline = [];
     }
 
+    var _a;
+
     var length = items.length;
     var style = this._style;
-    var _this$options = this.options,
-        margin = _this$options.margin,
-        frameFill = _this$options.frameFill;
+    var _b = this.options,
+        margin = _b.margin,
+        frameFill = _b.frameFill;
     var size1Name = style.size1;
     var size2Name = style.size2;
-    var pos1Name = style.pos1;
-    var pos2Name = style.pos2;
+    var pos1Name = style.startPos1;
+    var pos2Name = style.startPos2;
 
     var itemSize = this._getItemSize();
 
@@ -3831,8 +3927,6 @@ function () {
 
     for (var i = 0; i < length; i += shapesLength) {
       for (var j = 0; j < shapesLength && i + j < length; ++j) {
-        var _item$rect;
-
         var item = items[i + j];
         var shape = shapes[j];
         var shapePos1 = shape[pos1Name];
@@ -3853,7 +3947,7 @@ function () {
           endOutline[k] = Math.max(endOutline[k], pos1 + size1 + margin);
         }
 
-        item.rect = (_item$rect = {}, _item$rect[pos1Name] = pos1, _item$rect[pos2Name] = pos2, _item$rect[size1Name] = size1, _item$rect[size2Name] = size2, _item$rect);
+        item.rect = (_a = {}, _a[pos1Name] = pos1, _a[pos2Name] = pos2, _a[size1Name] = size1, _a[size2Name] = size2, _a);
       }
 
       end = Math.max.apply(Math, endOutline); // check dist once
@@ -3870,24 +3964,24 @@ function () {
 
       dist = end;
 
-      for (var _j = 0; _j < shapesSize; ++_j) {
-        if (startOutline[_j] === DUMMY_POSITION) {
+      for (var j = 0; j < shapesSize; ++j) {
+        if (startOutline[j] === DUMMY_POSITION) {
           continue;
         } // the dist between frame's end outline and next frame's start outline
         // expect that next frame's start outline is startOutline[j] + end
 
 
-        dist = Math.min(startOutline[_j] + end - endOutline[_j], dist);
+        dist = Math.min(startOutline[j] + end - endOutline[j], dist);
       }
     }
 
-    for (var _i2 = 0; _i2 < shapesSize; ++_i2) {
-      if (startOutline[_i2] !== DUMMY_POSITION) {
+    for (var i = 0; i < shapesSize; ++i) {
+      if (startOutline[i] !== DUMMY_POSITION) {
         continue;
       }
 
-      startOutline[_i2] = Math.max.apply(Math, startOutline);
-      endOutline[_i2] = startOutline[_i2];
+      startOutline[i] = Math.max.apply(Math, startOutline);
+      endOutline[i] = startOutline[i];
     } // The target outline is start outline when type is APPENDING
 
 
@@ -3898,19 +3992,19 @@ function () {
     if (frameFill && outline.length === shapesSize) {
       prevOutlineDist = -DUMMY_POSITION;
 
-      for (var _i3 = 0; _i3 < shapesSize; ++_i3) {
-        if (startOutline[_i3] === endOutline[_i3]) {
+      for (var i = 0; i < shapesSize; ++i) {
+        if (startOutline[i] === endOutline[i]) {
           continue;
         } // if appending type is PREPEND, subtract dist from appending group's height.
 
 
-        prevOutlineDist = Math.min(targetOutline[_i3] + prevOutlineEnd - outline[_i3], prevOutlineDist);
+        prevOutlineDist = Math.min(targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
       }
     }
 
-    for (var _i4 = 0; _i4 < shapesSize; ++_i4) {
-      startOutline[_i4] += prevOutlineEnd - prevOutlineDist;
-      endOutline[_i4] += prevOutlineEnd - prevOutlineDist;
+    for (var i = 0; i < shapesSize; ++i) {
+      startOutline[i] += prevOutlineEnd - prevOutlineDist;
+      endOutline[i] += prevOutlineEnd - prevOutlineDist;
     }
 
     items.forEach(function (item) {
@@ -3926,99 +4020,21 @@ function () {
     };
   };
 
-  _proto._insert = function _insert(items, outline, type, cache) {
+  __proto._insert = function (items, outline, isAppend, cache) {
     if (items === void 0) {
       items = [];
     }
 
     if (outline === void 0) {
       outline = [];
-    }
+    } // this only needs the size of the item.
 
-    // this only needs the size of the item.
+
     var clone = cache ? items : cloneItems(items);
     return {
       items: clone,
-      outlines: this._layout(clone, outline, type)
+      outlines: this._layout(clone, outline, isAppend)
     };
-  };
-  /**
-   * Adds items of groups at the bottom of a outline.
-   * @ko 그룹들의 아이템들을 아웃라인 아래에 추가한다.
-   * @method eg.InfiniteGrid.FrameLayout#layout
-   * @param {Array} groups Array of groups to be layouted <ko>레이아웃할 그룹들의 배열</ko>
-   * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
-   * @return {eg.InfiniteGrid.FrameLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-   * @example
-   * layout.layout(groups, [100, 200, 300, 400]);
-   */
-
-
-  _proto.layout = function layout(groups, outline) {
-    if (groups === void 0) {
-      groups = [];
-    }
-
-    if (outline === void 0) {
-      outline = [];
-    }
-
-    var length = groups.length;
-    var point = outline;
-
-    for (var i = 0; i < length; ++i) {
-      var group = groups[i];
-      point = this._layout(group.items, point, APPEND);
-      group.outlines = point;
-      point = point.end;
-    }
-
-    return this;
-  };
-  /**
-   * Set the viewport size of the layout.
-   * @ko 레이아웃의 가시 사이즈를 설정한다.
-   * @method eg.InfiniteGrid.FrameLayout#setSize
-   * @param {Number} size The viewport size of container area where items are added to a layout <ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</ko>
-   * @return {eg.InfiniteGrid.FrameLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-   * @example
-   * layout.setSize(800);
-   */
-
-
-  _proto.setSize = function setSize(size) {
-    this._size = size;
-    return this;
-  };
-  /**
-   * Adds items at the bottom of a outline.
-   * @ko 아이템들을 아웃라인 아래에 추가한다.
-   * @method eg.InfiniteGrid.FrameLayout#append
-   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
-   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
-   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
-   * @example
-   * layout.prepend(items, [100]);
-   */
-
-
-  _proto.append = function append(items, outline, cache) {
-    return this._insert(items, outline, APPEND, cache);
-  };
-  /**
-   * Adds items at the top of a outline.
-   * @ko 아이템을 아웃라인 위에 추가한다.
-   * @method eg.InfiniteGrid.FrameLayout#prepend
-   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
-   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
-   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
-   * @example
-   * layout.prepend(items, [100]);
-   */
-
-
-  _proto.prepend = function prepend(items, outline, cache) {
-    return this._insert(items, outline, PREPEND, cache);
   };
 
   return FrameLayout;
@@ -4032,7 +4048,7 @@ function makeShapeOutline(outline, itemSize, columnLength, isAppend) {
   }
 
   return outline.map(function (l) {
-    return parseInt((l - point) / itemSize, 10);
+    return Math.floor((l - point) / itemSize);
   });
 }
 
@@ -4047,9 +4063,9 @@ function getColumn(item) {
     var dataset = item.el.dataset;
 
     if (dataset) {
-      column = dataset.column || 1;
+      column = parseInt(dataset.column, 10) || 1;
     } else {
-      column = item.el.getAttribute("column") || 1;
+      column = parseInt(item.el.getAttribute("column"), 10) || 1;
     }
   } else {
     column = 1;
@@ -4071,22 +4087,21 @@ function getColumn(item) {
 ```
 <script>
 var ig = new eg.InfiniteGrid("#grid". {
-	horizontal: true,
+    horizontal: true,
 });
 
 ig.setLayout(eg.InfiniteGrid.SquareLayout, {
-	margin: 10,
-	itemSize: 200,
+    margin: 10,
+    itemSize: 200,
 });
 
 // or
 
 var layout = new eg.InfiniteGrid.SquareLayout({
-	margin: 10,
-	itemSize: 200,
-	horizontal: true,
+    margin: 10,
+    itemSize: 200,
+    horizontal: true,
 });
-
 
 var item1 = '<div data-column="2"></div>';
 var item2 = "<div></div>"
@@ -4098,20 +4113,24 @@ layout.append([item1, item2]);
 
 var SquareLayout =
 /*#__PURE__*/
-function (_FrameLayout) {
-  _inheritsLoose(SquareLayout, _FrameLayout);
+function (_super) {
+  __extends(SquareLayout, _super);
 
-  function SquareLayout() {
-    return _FrameLayout.apply(this, arguments) || this;
+  function SquareLayout(options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return _super.call(this, options) || this;
   }
 
-  var _proto = SquareLayout.prototype;
+  var __proto = SquareLayout.prototype;
 
-  _proto._checkItemSize = function _checkItemSize() {
+  __proto._checkItemSize = function () {
     var column = this.options.column;
 
     if (!column) {
-      _FrameLayout.prototype._checkItemSize.call(this);
+      _super.prototype._checkItemSize.call(this);
 
       return;
     }
@@ -4121,29 +4140,27 @@ function (_FrameLayout) {
     this._itemSize = (this._size + margin) / column - margin;
   };
 
-  _proto._layout = function _layout(items, outline, isAppend) {
-    var _this$_shapes;
-
+  __proto._layout = function (items, outline, isAppend) {
     if (outline === void 0) {
       outline = [];
     }
 
+    var _a, _b;
+
     var itemSize = this._getItemSize();
 
     var margin = this.options.margin;
-    var columnLength = this.options.column || parseInt((this._size + margin) / (itemSize + margin), 10) || 1;
+    var columnLength = this.options.column || Math.floor((this._size + margin) / (itemSize + margin)) || 1;
     var length = items.length;
     var endOutline = makeShapeOutline(outline, itemSize, columnLength, isAppend);
     var pointCaculateName = isAppend ? "min" : "max";
     var shapes = [];
     var sign = isAppend ? 1 : -1;
     var style = this._style;
-    var pos1Name = style.pos1;
-    var pos2Name = style.pos2;
+    var pos1Name = style.startPos1;
+    var pos2Name = style.startPos2;
 
     for (var i = 0; i < length; ++i) {
-      var _shapes$push;
-
       var point = Math[pointCaculateName].apply(Math, endOutline);
       var index = endOutline[isAppend ? "indexOf" : "lastIndexOf"](point);
       var item = items[i];
@@ -4167,21 +4184,21 @@ function (_FrameLayout) {
       }
 
       item.columnWidth = [columnLength, columnCount];
-      shapes.push((_shapes$push = {
+      shapes.push((_a = {
         width: columnCount,
         height: columnCount
-      }, _shapes$push[pos1Name] = point - (!isAppend ? columnCount : 0), _shapes$push[pos2Name] = index, _shapes$push.index = i, _shapes$push));
+      }, _a[pos1Name] = point - (!isAppend ? columnCount : 0), _a[pos2Name] = index, _a.type = i + 1, _a.index = i, _a));
 
-      for (var _j = 0; _j < columnCount; ++_j) {
-        endOutline[index + _j] = point + sign * columnCount;
+      for (var j = 0; j < columnCount; ++j) {
+        endOutline[index + j] = point + sign * columnCount;
       }
     }
 
-    this._shapes = (_this$_shapes = {
+    this._shapes = (_b = {
       shapes: shapes
-    }, _this$_shapes[style.size2] = columnLength, _this$_shapes);
+    }, _b[style.size2] = columnLength, _b);
 
-    var result = _FrameLayout.prototype._layout.call(this, items, outline, isAppend);
+    var result = _super.prototype._layout.call(this, items, outline, isAppend);
 
     if (!isAppend) {
       shapes.sort(function (shape1, shape2) {
@@ -4220,7 +4237,7 @@ var BoxModel =
 /*#__PURE__*/
 function () {
   function BoxModel(options) {
-    _extends(this, {
+    assign(this, {
       originWidth: 0,
       originHeight: 0,
       width: 0,
@@ -4231,9 +4248,9 @@ function () {
     }, options);
   }
 
-  var _proto = BoxModel.prototype;
+  var __proto = BoxModel.prototype;
 
-  _proto.scaleTo = function scaleTo(width, height) {
+  __proto.scaleTo = function (width, height) {
     var scaleX = this.width ? width / this.width : 0;
     var scaleY = this.height ? height / this.height : 0;
     this.items.forEach(function (v) {
@@ -4251,23 +4268,23 @@ function () {
     this.height = height;
   };
 
-  _proto.push = function push(item) {
+  __proto.push = function (item) {
     this.items.push(item);
   };
 
-  _proto.getOriginSize = function getOriginSize() {
+  __proto.getOriginSize = function () {
     return this.originWidth * this.originHeight;
   };
 
-  _proto.getSize = function getSize() {
+  __proto.getSize = function () {
     return this.width * this.height;
   };
 
-  _proto.getOriginRatio = function getOriginRatio() {
+  __proto.getOriginRatio = function () {
     return this.originHeight === 0 ? 0 : this.originWidth / this.originHeight;
   };
 
-  _proto.getRatio = function getRatio() {
+  __proto.getRatio = function () {
     return this.height === 0 ? 0 : this.width / this.height;
   };
 
@@ -4312,24 +4329,24 @@ function fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertica
 ```
 <script>
 var ig = new eg.InfiniteGrid("#grid". {
-	horizontal: true,
+  horizontal: true,
 });
 
 ig.setLayout(eg.InfiniteGrid.PackingLayout, {
-	margin: 10,
-	aspectRatio: 1,
-	sizeWeight: 1,
-	ratioWeight: 2,
+  margin: 10,
+  aspectRatio: 1,
+  sizeWeight: 1,
+  ratioWeight: 2,
 });
 
 // or
 
 var layout = new eg.InfiniteGrid.PackingLayout({
-	horizontal: true,
-	margin: 10,
-	aspectRatio: 1,
-	sizeWeight: 1,
-	ratioWeight: 2,
+  horizontal: true,
+  margin: 10,
+  aspectRatio: 1,
+  sizeWeight: 1,
+  ratioWeight: 2,
 });
 
 </script>
@@ -4355,10 +4372,90 @@ function () {
     this._size = 0;
     this._style = getStyleNames(this.options.horizontal);
   }
+  /**
+   * Adds items at the bottom of a outline.
+   * @ko 아이템들을 아웃라인 아래에 추가한다.
+   * @method eg.InfiniteGrid.PackingLayout#append
+   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+   * @example
+   * layout.prepend(items, [100]);
+   */
 
-  var _proto = PackingLayout.prototype;
 
-  _proto._findBestFitArea = function _findBestFitArea(container, item) {
+  var __proto = PackingLayout.prototype;
+
+  __proto.append = function (items, outline, cache) {
+    return this._insert(items, outline, APPEND, cache);
+  };
+  /**
+   * Adds items at the top of a outline.
+   * @ko 아이템을 아웃라인 위에 추가한다.
+   * @method eg.InfiniteGrid.PackingLayout#prepend
+   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+   * @example
+   * layout.prepend(items, [100]);
+   */
+
+
+  __proto.prepend = function (items, outline, cache) {
+    return this._insert(items, outline, PREPEND, cache);
+  };
+  /**
+   * Adds items of groups at the bottom of a outline.
+   * @ko 그룹들의 아이템들을 아웃라인 아래에 추가한다.
+   * @method eg.InfiniteGrid.PackingLayout#layout
+   * @param {Array} groups Array of groups to be layouted <ko>레이아웃할 그룹들의 배열</ko>
+   * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+   * @return {eg.InfiniteGrid.PackingLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * layout.layout(groups, [100, 200, 300, 400]);
+   */
+
+
+  __proto.layout = function (groups, outline) {
+    if (groups === void 0) {
+      groups = [];
+    }
+
+    if (outline === void 0) {
+      outline = [];
+    }
+
+    var length = groups.length;
+    var point = outline;
+
+    for (var i = 0; i < length; ++i) {
+      var group = groups[i];
+
+      var outlines = this._layout(group.items, point, APPEND);
+
+      group.outlines = outlines;
+      point = outlines.end;
+    }
+
+    return this;
+  };
+  /**
+   * Set the viewport size of the layout.
+   * @ko 레이아웃의 가시 사이즈를 설정한다.
+   * @method eg.InfiniteGrid.PackingLayout#setSize
+   * @param {Number} size The viewport size of container area where items are added to a layout <ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</ko>
+   * @return {eg.InfiniteGrid.PackingLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * layout.setSize(800);
+   */
+
+
+  __proto.setSize = function (size) {
+    this._size = size;
+    return this;
+  };
+
+  __proto._findBestFitArea = function (container, item) {
     if (container.getRatio() === 0) {
       // 아이템 최초 삽입시 전체영역 지정
       container.originWidth = item.width;
@@ -4379,9 +4476,9 @@ function () {
       width: 0,
       height: 0
     };
-    var _this$options = this.options,
-        sizeWeight = _this$options.sizeWeight,
-        ratioWeight = _this$options.ratioWeight;
+    var _a = this.options,
+        sizeWeight = _a.sizeWeight,
+        ratioWeight = _a.ratioWeight;
     container.items.forEach(function (v) {
       var containerSizeCost = getCost(v.getOriginSize(), v.getSize()) * sizeWeight;
       var containerRatioCost = getCost(v.getOriginRatio(), v.getRatio()) * ratioWeight;
@@ -4432,7 +4529,7 @@ function () {
     fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertical);
   };
 
-  _proto._layout = function _layout(items, outline, isAppend) {
+  __proto._layout = function (items, outline, isAppend) {
     var _this = this;
 
     if (outline === void 0) {
@@ -4440,11 +4537,11 @@ function () {
     }
 
     var style = this._style;
-    var _this$options2 = this.options,
-        horizontal = _this$options2.horizontal,
-        aspectRatio = _this$options2.aspectRatio,
-        margin = _this$options2.margin;
-    var pos1Name = style.pos1;
+    var _a = this.options,
+        horizontal = _a.horizontal,
+        aspectRatio = _a.aspectRatio,
+        margin = _a.margin;
+    var pos1Name = style.startPos1;
     var containerWidth = this._size * (horizontal ? aspectRatio : 1);
     var containerHeight = this._size / (horizontal ? 1 : aspectRatio);
     var containerSize1 = horizontal ? containerWidth : containerHeight;
@@ -4453,9 +4550,9 @@ function () {
     var end = start + containerSize1 + margin;
     var container = new BoxModel({});
     items.forEach(function (item) {
-      var _item$orgSize = item.orgSize,
-          width = _item$orgSize.width,
-          height = _item$orgSize.height;
+      var _a = item.orgSize,
+          width = _a.width,
+          height = _a.height;
       var model = new BoxModel({
         width: width,
         height: height,
@@ -4488,99 +4585,21 @@ function () {
     };
   };
 
-  _proto._insert = function _insert(items, outline, type, cache) {
+  __proto._insert = function (items, outline, isAppend, cache) {
     if (items === void 0) {
       items = [];
     }
 
     if (outline === void 0) {
       outline = [];
-    }
+    } // this only needs the size of the item.
 
-    // this only needs the size of the item.
+
     var clone = cache ? items : cloneItems(items);
     return {
       items: clone,
-      outlines: this._layout(clone, outline, type)
+      outlines: this._layout(clone, outline, isAppend)
     };
-  };
-  /**
-   * Adds items at the bottom of a outline.
-   * @ko 아이템들을 아웃라인 아래에 추가한다.
-   * @method eg.InfiniteGrid.PackingLayout#append
-   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
-   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
-   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
-   * @example
-   * layout.prepend(items, [100]);
-   */
-
-
-  _proto.append = function append(items, outline, cache) {
-    return this._insert(items, outline, APPEND, cache);
-  };
-  /**
-   * Adds items at the top of a outline.
-   * @ko 아이템을 아웃라인 위에 추가한다.
-   * @method eg.InfiniteGrid.PackingLayout#prepend
-   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
-   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
-   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
-   * @example
-   * layout.prepend(items, [100]);
-   */
-
-
-  _proto.prepend = function prepend(items, outline, cache) {
-    return this._insert(items, outline, PREPEND, cache);
-  };
-  /**
-   * Adds items of groups at the bottom of a outline.
-   * @ko 그룹들의 아이템들을 아웃라인 아래에 추가한다.
-   * @method eg.InfiniteGrid.PackingLayout#layout
-   * @param {Array} groups Array of groups to be layouted <ko>레이아웃할 그룹들의 배열</ko>
-   * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
-   * @return {eg.InfiniteGrid.PackingLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-   * @example
-   * layout.layout(groups, [100, 200, 300, 400]);
-   */
-
-
-  _proto.layout = function layout(groups, outline) {
-    if (groups === void 0) {
-      groups = [];
-    }
-
-    if (outline === void 0) {
-      outline = [];
-    }
-
-    var length = groups.length;
-    var point = outline;
-
-    for (var i = 0; i < length; ++i) {
-      var group = groups[i];
-      point = this._layout(group.items, point, APPEND);
-      group.outlines = point;
-      point = point.end;
-    }
-
-    return this;
-  };
-  /**
-   * Set the viewport size of the layout.
-   * @ko 레이아웃의 가시 사이즈를 설정한다.
-   * @method eg.InfiniteGrid.PackingLayout#setSize
-   * @param {Number} size The viewport size of container area where items are added to a layout <ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</ko>
-   * @return {eg.InfiniteGrid.PackingLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-   * @example
-   * layout.setSize(800);
-   */
-
-
-  _proto.setSize = function setSize(size) {
-    this._size = size;
-    return this;
   };
 
   return PackingLayout;
@@ -4609,90 +4628,95 @@ function () {
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *****************************************************************************/
-var dijkstra = {
-  single_source_shortest_paths: function single_source_shortest_paths(graph, s, d) {
-    // Predecessor map for each node that has been encountered.
-    // node ID => predecessor node ID
-    var predecessors = {}; // Costs of shortest paths from s to all nodes encountered.
-    // node ID => cost
+function single_source_shortest_paths(graph, s, d) {
+  // Predecessor map for each node that has been encountered.
+  // node ID => predecessor node ID
+  var predecessors = {}; // Costs of shortest paths from s to all nodes encountered.
+  // node ID => cost
 
-    var costs = {};
-    costs[s] = 0; // Costs of shortest paths from s to all nodes encountered; differs from
-    // `costs` in that it provides easy access to the node that currently has
-    // the known shortest path from s.
-    // XXX: Do we actually need both `costs` and `open`?
+  var costs = {};
+  costs[s] = 0; // Costs of shortest paths from s to all nodes encountered; differs from
+  // `costs` in that it provides easy access to the node that currently has
+  // the known shortest path from s.
+  // XXX: Do we actually need both `costs` and `open`?
 
-    var open = new BinaryHeap(function (x) {
-      return x.cost;
-    });
-    open.push({
-      value: s,
-      cost: 0
-    });
-    var closest, u, cost_of_s_to_u, adjacent_nodes, cost_of_e, cost_of_s_to_u_plus_cost_of_e, cost_of_s_to_v, first_visit;
+  var open = new BinaryHeap(function (x) {
+    return x.cost;
+  });
+  open.push({
+    value: s,
+    cost: 0
+  });
+  var closest;
+  var u;
+  var cost_of_s_to_u;
+  var adjacent_nodes;
+  var cost_of_e;
+  var cost_of_s_to_u_plus_cost_of_e;
+  var cost_of_s_to_v;
+  var first_visit;
 
-    while (open.size()) {
-      // In the nodes remaining in graph that have a known cost from s,
-      // find the node, u, that currently has the shortest path from s.
-      closest = open.pop();
-      u = closest.value;
-      cost_of_s_to_u = closest.cost; // Get nodes adjacent to u...
+  while (open.size()) {
+    // In the nodes remaining in graph that have a known cost from s,
+    // find the node, u, that currently has the shortest path from s.
+    closest = open.pop();
+    u = closest.value;
+    cost_of_s_to_u = closest.cost; // Get nodes adjacent to u...
 
-      adjacent_nodes = graph(u) || {}; // ...and explore the edges that connect u to those nodes, updating
-      // the cost of the shortest paths to any or all of those nodes as
-      // necessary. v is the node across the current edge from u.
+    adjacent_nodes = graph(u) || {}; // ...and explore the edges that connect u to those nodes, updating
+    // the cost of the shortest paths to any or all of those nodes as
+    // necessary. v is the node across the current edge from u.
 
-      for (var v in adjacent_nodes) {
-        // Get the cost of the edge running from u to v.
-        cost_of_e = adjacent_nodes[v]; // Cost of s to u plus the cost of u to v across e--this is *a*
-        // cost from s to v that may or may not be less than the current
-        // known cost to v.
+    for (var v in adjacent_nodes) {
+      // Get the cost of the edge running from u to v.
+      cost_of_e = adjacent_nodes[v]; // Cost of s to u plus the cost of u to v across e--this is *a*
+      // cost from s to v that may or may not be less than the current
+      // known cost to v.
 
-        cost_of_s_to_u_plus_cost_of_e = cost_of_s_to_u + cost_of_e; // If we haven't visited v yet OR if the current known cost from s to
-        // v is greater than the new cost we just found (cost of s to u plus
-        // cost of u to v across e), update v's cost in the cost list and
-        // update v's predecessor in the predecessor list (it's now u).
+      cost_of_s_to_u_plus_cost_of_e = cost_of_s_to_u + cost_of_e; // If we haven't visited v yet OR if the current known cost from s to
+      // v is greater than the new cost we just found (cost of s to u plus
+      // cost of u to v across e), update v's cost in the cost list and
+      // update v's predecessor in the predecessor list (it's now u).
 
-        cost_of_s_to_v = costs[v];
-        first_visit = typeof costs[v] === 'undefined';
+      cost_of_s_to_v = costs[v];
+      first_visit = typeof costs[v] === "undefined";
 
-        if (first_visit || cost_of_s_to_v > cost_of_s_to_u_plus_cost_of_e) {
-          costs[v] = cost_of_s_to_u_plus_cost_of_e;
-          open.push({
-            value: v,
-            cost: cost_of_s_to_u_plus_cost_of_e
-          });
-          predecessors[v] = u;
-        }
+      if (first_visit || cost_of_s_to_v > cost_of_s_to_u_plus_cost_of_e) {
+        costs[v] = cost_of_s_to_u_plus_cost_of_e;
+        open.push({
+          value: v,
+          cost: cost_of_s_to_u_plus_cost_of_e
+        });
+        predecessors[v] = u;
       }
     }
-
-    if (typeof costs[d] === 'undefined') {
-      var msg = ['Could not find a path from ', s, ' to ', d, '.'].join('');
-      throw new Error(msg);
-    }
-
-    return predecessors;
-  },
-  extract_shortest_path_from_predecessor_list: function extract_shortest_path_from_predecessor_list(predecessors, d) {
-    var nodes = [];
-    var u = d;
-    var predecessor;
-
-    while (u) {
-      nodes.push(u);
-      predecessor = predecessors[u];
-      u = predecessors[u];
-    }
-
-    nodes.reverse();
-    return nodes;
-  },
-  find_path: function find_path(graph, s, d) {
-    var predecessors = dijkstra.single_source_shortest_paths(graph, s, d);
-    return dijkstra.extract_shortest_path_from_predecessor_list(predecessors, d);
   }
-};
+
+  if (typeof costs[d] === "undefined") {
+    var msg = ["Could not find a path from ", s, " to ", d, "."].join("");
+    throw new Error(msg);
+  }
+
+  return predecessors;
+}
+
+function extract_shortest_path_from_predecessor_list(predecessors, d) {
+  var nodes = [];
+  var u = d;
+
+  while (u) {
+    nodes.push(u);
+    u = predecessors[u];
+  }
+
+  nodes.reverse();
+  return nodes;
+}
+
+function find_path(graph, s, d) {
+  var predecessors = single_source_shortest_paths(graph, s, d);
+  return extract_shortest_path_from_predecessor_list(predecessors, d);
+}
 
 var BinaryHeap =
 /*#__PURE__*/
@@ -4702,16 +4726,16 @@ function () {
     this.scoreFunction = scoreFunction;
   }
 
-  var _proto = BinaryHeap.prototype;
+  var __proto = BinaryHeap.prototype;
 
-  _proto.push = function push(element) {
+  __proto.push = function (element) {
     // Add the new element to the end of the array.
     this.content.push(element); // Allow it to bubble up.
 
     this.bubbleUp(this.content.length - 1);
   };
 
-  _proto.pop = function pop() {
+  __proto.pop = function () {
     // Store the first element so we can return it later.
     var result = this.content[0]; // Get the element at the end of the array.
 
@@ -4726,49 +4750,51 @@ function () {
     return result;
   };
 
-  _proto.size = function size() {
+  __proto.size = function () {
     return this.content.length;
   };
 
-  _proto.bubbleUp = function bubbleUp(n) {
-    // Fetch the element that has to be moved.
+  __proto.bubbleUp = function (_n) {
+    var n = _n; // Fetch the element that has to be moved.
+
     var element = this.content[n]; // When at 0, an element can not go up any further.
 
     while (n > 0) {
       // Compute the parent element's index, and fetch it.
-      var parentN = Math.floor((n + 1) / 2) - 1,
-          parent = this.content[parentN]; // Swap the elements if the parent is greater.
+      var parentN = Math.floor((n + 1) / 2) - 1;
+      var parent = this.content[parentN]; // Swap the elements if the parent is greater.
 
       if (this.scoreFunction(element) < this.scoreFunction(parent)) {
         this.content[parentN] = element;
         this.content[n] = parent; // Update 'n' to continue at the new position.
 
         n = parentN;
-      } // Found a parent that is less, no need to move it further.
-      else {
-          break;
-        }
+      } else {
+        // Found a parent that is less, no need to move it further.
+        break;
+      }
     }
   };
 
-  _proto.sinkDown = function sinkDown(n) {
+  __proto.sinkDown = function (n) {
     // Look up the target element and its score.
-    var length = this.content.length,
-        element = this.content[n],
-        elemScore = this.scoreFunction(element);
+    var length = this.content.length;
+    var element = this.content[n];
+    var elemScore = this.scoreFunction(element);
+    var child1Score;
 
     while (true) {
       // Compute the indices of the child elements.
-      var child2N = (n + 1) * 2,
-          child1N = child2N - 1; // This is used to store the new position of the element,
+      var child2N = (n + 1) * 2;
+      var child1N = child2N - 1; // This is used to store the new position of the element,
       // if any.
 
       var swap = null; // If the first child exists (is inside the array)...
 
       if (child1N < length) {
         // Look it up and compute its score.
-        var child1 = this.content[child1N],
-            child1Score = this.scoreFunction(child1); // If the score is less than our element's, we need to swap.
+        var child1 = this.content[child1N];
+        child1Score = this.scoreFunction(child1); // If the score is less than our element's, we need to swap.
 
         if (child1Score < elemScore) {
           swap = child1N;
@@ -4777,8 +4803,8 @@ function () {
 
 
       if (child2N < length) {
-        var child2 = this.content[child2N],
-            child2Score = this.scoreFunction(child2);
+        var child2 = this.content[child2N];
+        var child2Score = this.scoreFunction(child2);
 
         if (child2Score < (swap == null ? elemScore : child1Score)) {
           swap = child2N;
@@ -4790,10 +4816,10 @@ function () {
         this.content[n] = this.content[swap];
         this.content[swap] = element;
         n = swap;
-      } // Otherwise, we are done.
-      else {
-          break;
-        }
+      } else {
+        // Otherwise, we are done.
+        break;
+      }
     }
   };
 
@@ -4814,23 +4840,23 @@ function () {
 ```
 <script>
 var ig = new eg.InfiniteGrid("#grid". {
-	horizontal: true,
+  horizontal: true,
 });
 
 ig.setLayout(eg.InfiniteGrid.JustifiedLayout, {
-	margin: 10,
-	minSize: 100,
-	maxSize: 300,
+  margin: 10,
+  minSize: 100,
+  maxSize: 300,
 });
 
 // or
 
 var layout = new eg.InfiniteGrid.JustifiedLayout({
-	margin: 10,
-	minSize: 100,
-	maxSize: 300,
-	column: 5,
-	horizontal: true,
+  margin: 10,
+  minSize: 100,
+  maxSize: 300,
+  column: 5,
+  horizontal: true,
 });
 
 </script>
@@ -4855,10 +4881,90 @@ function () {
     this._style = getStyleNames(this.options.horizontal);
     this._size = 0;
   }
+  /**
+   * Set the viewport size of the layout.
+   * @ko 레이아웃의 가시 사이즈를 설정한다.
+   * @method eg.InfiniteGrid.JustifiedLayout#setSize
+   * @param {Number} size The viewport size of container area where items are added to a layout <ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</ko>
+   * @return {eg.InfiniteGrid.JustifiedLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * layout.setSize(800);
+   */
 
-  var _proto = JustifiedLayout.prototype;
 
-  _proto._layout = function _layout(items, outline, isAppend) {
+  var __proto = JustifiedLayout.prototype;
+
+  __proto.setSize = function (size) {
+    this._size = size;
+    return this;
+  };
+  /**
+   * Adds items at the bottom of a outline.
+   * @ko 아이템들을 아웃라인 아래에 추가한다.
+   * @method eg.InfiniteGrid.JustifiedLayout#append
+   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+   * @example
+   * layout.prepend(items, [100]);
+   */
+
+
+  __proto.append = function (items, outline, cache) {
+    return this._insert(items, outline, APPEND, cache);
+  };
+  /**
+   * Adds items at the top of a outline.
+   * @ko 아이템을 아웃라인 위에 추가한다.
+   * @method eg.InfiniteGrid.JustifiedLayout#prepend
+   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
+   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
+   * @example
+   * layout.prepend(items, [100]);
+   */
+
+
+  __proto.prepend = function (items, outline, cache) {
+    return this._insert(items, outline, PREPEND, cache);
+  };
+  /**
+   * Adds items of groups at the bottom of a outline.
+   * @ko 그룹들의 아이템들을 아웃라인 아래에 추가한다.
+   * @method eg.InfiniteGrid.JustifiedLayout#layout
+   * @param {Array} groups Array of groups to be layouted <ko>레이아웃할 그룹들의 배열</ko>
+   * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
+   * @return {eg.InfiniteGrid.JustifiedLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * layout.layout(groups, [100]);
+   */
+
+
+  __proto.layout = function (groups, outline) {
+    if (groups === void 0) {
+      groups = [];
+    }
+
+    if (outline === void 0) {
+      outline = [];
+    }
+
+    var length = groups.length;
+    var point = outline;
+
+    for (var i = 0; i < length; ++i) {
+      var group = groups[i];
+
+      var outlines = this._layout(group.items, point, APPEND);
+
+      group.outlines = outlines;
+      point = outlines.end;
+    }
+
+    return this;
+  };
+
+  __proto._layout = function (items, outline, isAppend) {
     var _this = this;
 
     var style = this._style;
@@ -4867,18 +4973,15 @@ function () {
     var startIndex = 0;
     var endIndex = items.length;
     var column = this.options.column;
+    var columns = typeof column === "object" ? column : [column, column];
 
-    if (typeof column !== "object") {
-      column = [column, column];
-    }
-
-    var graph = function graph(_start) {
+    var graph = function (_start) {
       var results = {};
       var start = +_start.replace(/[^0-9]/g, "");
       var length = endIndex + 1;
 
-      for (var i = Math.min(start + column[0], length - 1); i < length; ++i) {
-        if (i - start > column[1]) {
+      for (var i = Math.min(start + columns[0], length - 1); i < length; ++i) {
+        if (i - start > columns[1]) {
           break;
         }
 
@@ -4899,11 +5002,11 @@ function () {
     }; // shortest path for items' total height.
 
 
-    var path = dijkstra.find_path(graph, "" + startIndex, "" + endIndex);
+    var path = find_path(graph, "" + startIndex, "" + endIndex);
     return this._setStyle(items, path, outline, isAppend);
   };
 
-  _proto._getSize = function _getSize(items, size1Name, size2Name) {
+  __proto._getSize = function (items, size1Name, size2Name) {
     var margin = this.options.margin;
     var size = items.reduce(function (sum, item) {
       return sum + item.orgSize[size2Name] / item.orgSize[size1Name];
@@ -4911,7 +5014,7 @@ function () {
     return (this._size - margin * (items.length - 1)) / size;
   };
 
-  _proto._getCost = function _getCost(items, i, j, size1Name, size2Name) {
+  __proto._getCost = function (items, i, j, size1Name, size2Name) {
     var size = this._getSize(items.slice(i, j), size1Name, size2Name);
 
     var min = this.options.minSize || 0;
@@ -4937,25 +5040,27 @@ function () {
     return size - min;
   };
 
-  _proto._setStyle = function _setStyle(items, path, outline, isAppend) {
+  __proto._setStyle = function (items, path, outline, isAppend) {
     if (outline === void 0) {
       outline = [];
     }
 
+    var _a;
+
     var style = this._style; // if direction is vertical
-    // pos1 : top, pos11 : bottom
+    // startPos1 : top, endPos1 : bottom
     // size1 : height
-    // pos2 : left, pos22 : right
+    // startPos2 : left, endPos2 : right
     // size2 : width
     // if direction is horizontal
-    // pos1 : left, pos11 : right
+    // startPos1 : left, endPos1 : right
     // size1 : width
-    // pos2 : top, pos22 : bottom
+    // startPos2 : top, endPos2 : bottom
     // size2 : height
 
-    var pos1Name = style.pos1;
+    var pos1Name = style.startPos1;
     var size1Name = style.size1;
-    var pos2Name = style.pos2;
+    var pos2Name = style.startPos2;
     var size2Name = style.size2;
     var length = path.length;
     var margin = this.options.margin;
@@ -4975,15 +5080,13 @@ function () {
       var pos1 = endPoint;
 
       for (var j = 0; j < pathItemsLength; ++j) {
-        var _item$rect;
-
         var item = pathItems[j];
         var size2 = item.orgSize[size2Name] / item.orgSize[size1Name] * size1; // item has margin bottom and right.
         // first item has not margin.
 
         var prevItemRect = j === 0 ? 0 : pathItems[j - 1].rect;
         var pos2 = prevItemRect ? prevItemRect[pos2Name] + prevItemRect[size2Name] + margin : 0;
-        item.rect = (_item$rect = {}, _item$rect[pos1Name] = pos1, _item$rect[pos2Name] = pos2, _item$rect[size1Name] = size1, _item$rect[size2Name] = size2, _item$rect);
+        item.rect = (_a = {}, _a[pos1Name] = pos1, _a[pos2Name] = pos2, _a[size1Name] = size1, _a[size2Name] = size2, _a);
       }
 
       height += margin + size1;
@@ -5002,112 +5105,33 @@ function () {
     // always start is lower than end.
 
 
-    for (var _i = 0; _i < itemsLength; ++_i) {
-      var _item = items[_i]; // move items as long as height for prepend
+    for (var i = 0; i < itemsLength; ++i) {
+      var item = items[i]; // move items as long as height for prepend
 
-      _item.rect[pos1Name] -= height;
+      item.rect[pos1Name] -= height;
     }
 
     return {
       start: [startPoint - height],
-      end: [startPoint] // endPoint - height = startPoint
-
+      end: [startPoint]
     };
   };
 
-  _proto._insert = function _insert(items, outline, type, cache) {
+  __proto._insert = function (items, outline, isAppend, cache) {
     if (items === void 0) {
       items = [];
     }
 
     if (outline === void 0) {
       outline = [];
-    }
+    } // this only needs the size of the item.
 
-    // this only needs the size of the item.
+
     var clone = cache ? items : cloneItems(items);
     return {
       items: clone,
-      outlines: this._layout(clone, outline, type)
+      outlines: this._layout(clone, outline, isAppend)
     };
-  };
-  /**
-   * Set the viewport size of the layout.
-   * @ko 레이아웃의 가시 사이즈를 설정한다.
-   * @method eg.InfiniteGrid.JustifiedLayout#setSize
-   * @param {Number} size The viewport size of container area where items are added to a layout <ko>레이아웃에 아이템을 추가하는 컨테이너 영역의 가시 사이즈</ko>
-   * @return {eg.InfiniteGrid.JustifiedLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-   * @example
-   * layout.setSize(800);
-   */
-
-
-  _proto.setSize = function setSize(size) {
-    this._size = size;
-    return this;
-  };
-  /**
-   * Adds items at the bottom of a outline.
-   * @ko 아이템들을 아웃라인 아래에 추가한다.
-   * @method eg.InfiniteGrid.JustifiedLayout#append
-   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
-   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
-   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
-   * @example
-   * layout.prepend(items, [100]);
-   */
-
-
-  _proto.append = function append(items, outline, cache) {
-    return this._insert(items, outline, APPEND, cache);
-  };
-  /**
-   * Adds items at the top of a outline.
-   * @ko 아이템을 아웃라인 위에 추가한다.
-   * @method eg.InfiniteGrid.JustifiedLayout#prepend
-   * @param {Array} items Array of items to be layouted <ko>레이아웃할 아이템들의 배열</ko>
-   * @param {Array} [outline=[]] Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
-   * @return {Object} Layouted items and outline of start and end <ko> 레이아웃이 된 아이템과 시작과 끝의 아웃라인이 담긴 정보</ko>
-   * @example
-   * layout.prepend(items, [100]);
-   */
-
-
-  _proto.prepend = function prepend(items, outline, cache) {
-    return this._insert(items, outline, PREPEND, cache);
-  };
-  /**
-   * Adds items of groups at the bottom of a outline.
-   * @ko 그룹들의 아이템들을 아웃라인 아래에 추가한다.
-   * @method eg.InfiniteGrid.JustifiedLayout#layout
-   * @param {Array} groups Array of groups to be layouted <ko>레이아웃할 그룹들의 배열</ko>
-   * @param {Array} outline Array of outline points to be reference points <ko>기준점이 되는 아웃라인 점들의 배열</ko>
-   * @return {eg.InfiniteGrid.JustifiedLayout} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
-   * @example
-   * layout.layout(groups, [100]);
-   */
-
-
-  _proto.layout = function layout(groups, outline) {
-    if (groups === void 0) {
-      groups = [];
-    }
-
-    if (outline === void 0) {
-      outline = [];
-    }
-
-    var length = groups.length;
-    var point = outline;
-
-    for (var i = 0; i < length; ++i) {
-      var group = groups[i];
-      point = this._layout(group.items, point, APPEND);
-      group.outlines = point;
-      point = point.end;
-    }
-
-    return this;
   };
 
   return JustifiedLayout;
