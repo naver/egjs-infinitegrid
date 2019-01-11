@@ -103,7 +103,7 @@ export default class Watcher {
 		return this._containerOffset;
 	}
 	public resize() {
-		this._containerOffset = this._getOffset();
+		this._containerOffset = this.options.isOverflowScroll ? 0 : this._getOffset();
 	}
 	public detachEvent() {
 		removeEvent(this._view, "scroll", this._onCheck);
