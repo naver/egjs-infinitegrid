@@ -65,6 +65,8 @@ describe(`test layout`, function () {
 			<div style={{width: "120px", height: "130px"}}></div>
 			<div style={{width: "120px", height: "100px"}}></div>
 		</GridLayout>, this.el);
+		expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+
 		setTimeout(() => {
 			const status = rendered.getStatus();
 			const html = this.el.innerHTML;

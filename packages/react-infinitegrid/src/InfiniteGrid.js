@@ -73,6 +73,7 @@ export default class InfiniteGrid extends Component {
 		const LayoutType = this.props.type;
 
 		this.clear();
+		this.state.isFirstRender = true;
 		const options = {};
 		const layoutProps = this.constructor.layoutProps;
 
@@ -316,7 +317,8 @@ export default class InfiniteGrid extends Component {
 			processing: DONE,
 			layout: false,
 			datas: {},
-			isFirstRender: true,
+			// Set isFirstRender to false when calling clear dynamically.
+			isFirstRender: false,
 			isUpdate: false,
 		};
 		if (this._infinite) {
@@ -989,7 +991,11 @@ export default class InfiniteGrid extends Component {
 
 		const items = this._getVisibleItems();
 		const status = this.props.status;
+		const length = items.length;
 
+		if (!length) {
+			this.state.isFirstRender = false;
+		}
 		if (status) {
 			this.setStatus(status);
 		} else if (items.length) {
