@@ -1,8 +1,7 @@
 import BoxModel from "./lib/BoxModel";
 import { APPEND, PREPEND } from "../consts";
 import { getStyleNames, assignOptions, toZeroArray, cloneItems } from "../utils";
-import { ILayout, IRectlProperties, ISize } from "../types";
-import { IInfiniteGridItem, IInfiniteGridGroup } from "../ItemManager";
+import { ILayout, IRectlProperties, ISize, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
 
 function getCost(originLength: number, length: number) {
 	let cost = originLength / length;

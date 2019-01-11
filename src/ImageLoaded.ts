@@ -2,26 +2,25 @@ import { IS_IE } from "./consts";
 import { addEvent, removeEvent, toArray } from "./utils";
 import AutoSizer from "./AutoSizer";
 
-export type CHECK_ALL = 1;
-export type CHECK_ONLY_ERROR = 2;
-export interface IImageLoadedOptions {
+export const CHECK_ALL: 1 = 1;
+export const CHECK_ONLY_ERROR: 2 = 2;
+
+interface IImageLoadedOptions {
 	prefix?: string;
 	length?: number;
-	type?: CHECK_ALL | CHECK_ONLY_ERROR;
+	type?: 1 | 2;
 	complete?: () => void;
 	end?: () => void;
 	error?: (e: { target: LoadingImageElement, itemIndex: number }) => void;
 }
-export const CHECK_ALL: CHECK_ALL = 1;
-export const CHECK_ONLY_ERROR: CHECK_ONLY_ERROR = 2;
+interface LoadingImageElement extends HTMLImageElement {
+	__ITEM_INDEX__?: number;
+}
 
 function isDataAttribute(target: HTMLElement, prefix: string) {
 	return !!target.getAttribute(`${prefix}width`);
 }
 
-interface LoadingImageElement extends HTMLImageElement {
-	__ITEM_INDEX__?: number;
-}
 class ImageLoaded {
 	public static CHECK_ALL = 1;
 	public static CHECK_ONLY_ERROR = 2;

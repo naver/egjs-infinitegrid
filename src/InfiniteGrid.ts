@@ -3,9 +3,9 @@
  * egjs projects are licensed under the MIT license
 */
 import Component from "@egjs/component";
-import ItemManager, { IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus } from "./ItemManager";
-import DOMRenderer, { resetSize, IDOMRendererStatus } from "./DOMRenderer";
-import Watcher, { IWatchStatus } from "./Watcher";
+import ItemManager from "./ItemManager";
+import DOMRenderer, { resetSize } from "./DOMRenderer";
+import Watcher from "./Watcher";
 import {
 	APPEND,
 	PREPEND,
@@ -23,10 +23,15 @@ import {
 	DUMMY_POSITION,
 	IS_IOS,
 } from "./consts";
-import Infinite, { IInfiniteStatus } from "./Infinite";
+import Infinite from "./Infinite";
 import { toArray, $, outerHeight, outerWidth, assign } from "./utils";
-import LayoutMananger, { ILayoutManagerErrorCallbackOptions } from "./LayoutManager";
-import { IJQuery, ILayout, CursorType, StyleType } from "./types";
+import LayoutMananger from "./LayoutManager";
+import {
+	IJQuery, ILayout,
+	CursorType, StyleType,
+	IItemManagerStatus, IInfiniteGridItem,
+	IInfiniteGridGroup, IErrorCallbackOptions, IDOMRendererStatus, IWatchStatus, IInfiniteStatus
+} from "./types";
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -47,7 +52,7 @@ import { IJQuery, ILayout, CursorType, StyleType } from "./types";
 // }
 /* eslint-enable */
 
-export interface IInfiniteGridOptions {
+interface IInfiniteGridOptions {
 	itemSelector: string;
 	isOverflowScroll: boolean;
 	threshold: number;
@@ -59,7 +64,7 @@ export interface IInfiniteGridOptions {
 	useFit: boolean;
 	attributePrefix: string;
 }
-export interface IInfiniteGridStatus {
+interface IInfiniteGridStatus {
 	_status: {
 		processingStatus: number,
 		loadingSize: number,
@@ -308,9 +313,9 @@ class InfiniteGrid extends Component {
 	 * Returns the layouted items.
 	 * @ko 레이아웃된 아이템들을 반환한다.
 	 * @param {Boolean} includeCached Indicates whether to include the cached items. <ko>캐싱된 아이템을 포함할지 여부를 나타낸다.</ko>
-	 * @returns {Array} List of items <ko>아이템의 목록</ko>
+	 * @returns List of items <ko>아이템의 목록</ko>
 	 */
-	public getItems(includeCached = false) {
+	public getItems(includeCached = false): IInfiniteGridItem[] {
 		return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
 	}
 	/**
@@ -613,7 +618,7 @@ class InfiniteGrid extends Component {
 	 * @ko index 또는 element를 통해 아이템을 가져온다.
 	 * @param {number | HTMLElement} [groupIndex=0] The element corresponding to item or the index of the group where the item is in position <ko> item에 해당하는 element 또는 해당 item이 있는 group의 index</ko>
 	 * @param {number} [itemIndex] If groupIndex is used, the index of the item in the group <ko> groupIndex를 사용할 경우 해당 group에 있는 Item의 index </ko>
-	 * @return {object} The item containing the content, size and position,etc<ko>content, size, position 등이 담겨있는 item 정보</ko>
+	 * @return The item containing the content, size and position,etc<ko>content, size, position 등이 담겨있는 item 정보</ko>
 	 * @example
 
 	 ig.getItem(0, 0);
@@ -626,7 +631,7 @@ class InfiniteGrid extends Component {
 	  rect: {top: ..., left: ..., width: ..., height: ...},
 	 }
 	 */
-	public getItem(groupIndex = 0, itemIndex?: number) {
+	public getItem(groupIndex = 0, itemIndex?: number): IInfiniteGridItem {
 		if (itemIndex == null && typeof groupIndex === "object") {
 			if (!groupIndex) {
 				return undefined;
@@ -667,7 +672,7 @@ class InfiniteGrid extends Component {
 	}
 	/**
 	 * Update the currently displayed items.
-	 * 현재보여주는 아이템들을 업데이트한다.
+	 * @ko 현재보여주는 아이템들을 업데이트한다.
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 * @example
 	element.innerHTML = "2";
@@ -919,21 +924,12 @@ class InfiniteGrid extends Component {
 	private _scrollTo(pos: number) {
 		this._watcher.scrollTo(this._watcher.getContainerOffset() + pos);
 	}
-	private _onImageError(e: ILayoutManagerErrorCallbackOptions) {
+	private _onImageError(e: IErrorCallbackOptions) {
 		/**
 		 * This event is fired when an error occurs in the image.
 		 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
 		 * @event eg.InfiniteGrid#imageError
-		 * @param {Object} param The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-		 * @param {Element} param.target Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
-		 * @param {Element} param.elememt The item's element with error images.<ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트</ko>
-		 * @param {Object} param.items The items being added.<ko>화면에 추가중인 아이템들</ko>
-		 * @param {Object} param.item The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
-		 * @param {Number} param.itemIndex The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
-		 * @param {Function} param.remove In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
-		 * @param {Function} param.removeItem In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
-		 * @param {Function} param.replace In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
-		 * @param {Function} param.replaceItem In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
+		 * @param {eg.InfiniteGrid.IErrorCallbackOptions} e The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
 		 * @example
 	ig.on("imageError", e => {
 	  e.remove();

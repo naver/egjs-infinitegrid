@@ -10,7 +10,7 @@ import {
 	TRANSITION_END,
 	TRANSFORM,
 } from "./consts";
-import { window, document, WindowMockType } from "./browser";
+import { window, document } from "./browser";
 import {
 	$,
 	innerHeight,
@@ -20,34 +20,25 @@ import {
 	addOnceEvent,
 	assign,
 } from "./utils";
-import { IInfiniteGridItem } from "./ItemManager";
-import { RectType, IPosition, ISize, IJQuery } from "./types";
+import { RectType, IPosition, ISize, IJQuery, IInfiniteGridItem, WindowMockType, IDOMRendererStatus, IDOMRendererSize } from "./types";
 
-export interface IDOMRendererOptions {
+export function resetSize(item: IInfiniteGridItem) {
+	item.orgSize = null;
+	item.size = null;
+}
+interface IDOMRendererOptions {
 	isEqualSize: boolean;
 	isConstantSize: boolean;
 	horizontal: boolean;
 	container: boolean | HTMLElement;
 }
-export interface IDOMRendererSize {
-	container?: number;
-	view?: number;
-	viewport?: number;
-	item?: ISize;
-}
-export interface IDOMRendererStatus {
-	cssText: string;
-	_size: IDOMRendererSize;
-}
-export interface IDOMRendererOrgStyle {
+
+interface IDOMRendererOrgStyle {
 	position?: CSSStyleDeclaration["position"];
 	overflowX?: CSSStyleDeclaration["overflowX"];
 	overflowY?: CSSStyleDeclaration["overflowY"];
 }
-export function resetSize(item: IInfiniteGridItem) {
-	item.orgSize = null;
-	item.size = null;
-}
+
 function createContainer(element: HTMLElement) {
 	const container = document.createElement("div");
 

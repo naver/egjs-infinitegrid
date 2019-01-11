@@ -1,26 +1,6 @@
 import { MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME, DUMMY_POSITION } from "./consts";
 import { $, toArray, isUndefined, assign } from "./utils";
-import { CursorType, IInfiniteGridItemElement, ISize, IPosition, IJQuery } from "./types";
-
-export interface IInfiniteGridItem {
-	groupKey: string | number;
-	content: string;
-	el?: IInfiniteGridItemElement;
-	orgSize?: ISize;
-	size?: ISize;
-	rect?: Partial<ISize & IPosition>;
-	prevRect?: Partial<ISize & IPosition>;
-	[key: string]: any;
-}
-export interface IInfiniteGridGroup {
-	groupKey: string | number;
-	items: IInfiniteGridItem[];
-	outlines: { start: number[], end: number[] };
-}
-
-export interface IItemManagerStatus {
-	_data: IInfiniteGridGroup[];
-}
+import { CursorType, IJQuery, IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus } from "./types";
 
 export default class ItemManager {
 	public static from(

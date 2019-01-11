@@ -1,6 +1,6 @@
 import FrameLayout, { IFrameLayoutInterface, IFrameShape } from "./FrameLayout";
 import { fill } from "../utils";
-import { IInfiniteGridItem } from "../ItemManager";
+import { IInfiniteGridItem } from "../types";
 
 function makeShapeOutline(
 	outline: number[],

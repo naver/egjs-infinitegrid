@@ -1,44 +1,35 @@
 import AutoSizer from "./AutoSizer";
 import ImageLoaded, { CHECK_ALL, CHECK_ONLY_ERROR } from "./ImageLoaded";
-import ItemManager, { IInfiniteGridGroup, IInfiniteGridItem } from "./ItemManager";
+import ItemManager from "./ItemManager";
 import { matchHTML, $, assign } from "./utils";
 import { DUMMY_POSITION } from "./consts";
 import DOMRenderer from "./DOMRenderer";
-import { ILayout, ILayoutResult } from "./types";
+import { ILayout, ILayoutResult, IInfiniteGridItem, IInfiniteGridGroup, IErrorCallbackOptions } from "./types";
 
 function hasTarget<T>(target: T[], value: T) {
 	return ~target.indexOf(value);
 }
-export interface ILayoutManagerOptions {
+
+interface ILayoutManagerOptions {
 	attributePrefix?: string;
 	isEqualSize?: boolean;
 	isConstantSize?: boolean;
 	horizontal?: boolean;
 }
-export interface ILayoutManagerErrorCallbackOptions {
-	target: HTMLImageElement;
-	element: HTMLElement;
-	items: IInfiniteGridItem[];
-	item: IInfiniteGridItem;
-	itemIndex?: number;
-	replace: (src: string) => void;
-	replaceItem: (content: string) => void;
-	remove: () => void;
-	removeItem: () => void;
-}
-export interface ILayoutManagerCompleteCallbackOptions {
+
+interface ICompleteCallbackOptions {
 	groups?: ILayoutResult[];
 	items?: IInfiniteGridItem[];
 	isAppend?: boolean;
 }
-export interface ILayoutManagerEndCallbackOptions {
+interface IEndCallbackOptions {
 	remove: HTMLElement[];
 	layout?: boolean;
 }
-export interface ILayoutManagerCallbacks {
-	complete: (e?: ILayoutManagerCompleteCallbackOptions) => void;
-	error: (e?: ILayoutManagerErrorCallbackOptions) => void;
-	end: (e?: ILayoutManagerEndCallbackOptions) => void;
+interface ILayoutManagerCallbacks {
+	complete: (e: ICompleteCallbackOptions) => void;
+	error: (e: IErrorCallbackOptions) => void;
+	end: (e: IEndCallbackOptions) => void;
 }
 
 export default class LayoutMananger {

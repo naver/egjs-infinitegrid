@@ -1,7 +1,6 @@
 import { APPEND, PREPEND, DUMMY_POSITION } from "../consts";
 import { getStyleNames, assignOptions, fill, cloneItems } from "../utils";
-import { ILayout, IRectlProperties, ISize } from "../types";
-import { IInfiniteGridGroup, IInfiniteGridItem } from "../ItemManager";
+import { ILayout, IRectlProperties, ISize, IInfiniteGridGroup, IInfiniteGridItem } from "../types";
 
 export type FrameType = number[][];
 export interface IFrameShape {

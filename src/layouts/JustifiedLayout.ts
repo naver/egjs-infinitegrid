@@ -1,8 +1,7 @@
 import { find_path } from "./lib/dijkstra";
 import { APPEND, PREPEND } from "../consts";
 import { getStyleNames, assignOptions, cloneItems } from "../utils";
-import { ILayout, IRectlProperties, SizeType } from "../types";
-import { IInfiniteGridItem, IInfiniteGridGroup } from "../ItemManager";
+import { ILayout, IRectlProperties, SizeType, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
 
 /**
  * @classdesc 'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout that the card is filled up on the basis of a line given a size.
