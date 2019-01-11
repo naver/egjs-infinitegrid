@@ -869,7 +869,12 @@ function () {
     return this._size.viewport;
   };
 
+  __proto.getContainerSize = function () {
+    return this._size.container;
+  };
+
   __proto.setContainerSize = function (size) {
+    this._size.container = size;
     this.container.style[this.options.horizontal ? "width" : "height"] = size + "px";
   };
 
@@ -2264,6 +2269,10 @@ function (_super) {
           isChildren: true
         });
       } else {
+        if (renderer.getContainerSize()) {
+          renderer.setContainerSize(0);
+        }
+
         this._requestAppend({});
       }
 

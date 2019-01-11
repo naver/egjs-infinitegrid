@@ -1146,7 +1146,12 @@ NOTE: This is not an official distribution file and is only for user convenience
         return this._size.viewport;
       };
 
+      __proto.getContainerSize = function () {
+        return this._size.container;
+      };
+
       __proto.setContainerSize = function (size) {
+        this._size.container = size;
         this.container.style[this.options.horizontal ? "width" : "height"] = size + "px";
       };
 
@@ -2541,6 +2546,10 @@ NOTE: This is not an official distribution file and is only for user convenience
               isChildren: true
             });
           } else {
+            if (renderer.getContainerSize()) {
+              renderer.setContainerSize(0);
+            }
+
             this._requestAppend({});
           }
 
