@@ -1359,11 +1359,9 @@ https://github.com/naver/egjs-infinitegrid
             startCursor = _a.startCursor,
             endCursor = _a.endCursor;
 
-        var _b = this._items.remove(element, startCursor, endCursor),
-            items = _b.items,
-            groups = _b.groups;
+        var result = this._items.remove(element, startCursor, endCursor);
 
-        if (groups.length) {
+        if (result.groups.length) {
           this.setCursor("end", endCursor - 1);
         }
 
@@ -1372,7 +1370,7 @@ https://github.com/naver/egjs-infinitegrid
           this._status.endCursor = -1;
         }
 
-        return items;
+        return result;
       };
 
       __proto.clear = function () {
@@ -2317,10 +2315,12 @@ https://github.com/naver/egjs-infinitegrid
         }
 
         if (element) {
-          var items = this._infinite.remove(element);
+          var _a = this._infinite.remove(element),
+              items = _a.items,
+              groups = _a.groups;
 
           items && DOMRenderer.removeElement(element);
-          isLayout && this.layout(false);
+          isLayout && this.layout(groups.length > 0);
           return items;
         }
 
