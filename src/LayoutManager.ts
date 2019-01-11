@@ -15,30 +15,54 @@ export interface ILayoutManagerOptions {
 	isConstantSize?: boolean;
 	horizontal?: boolean;
 }
-export interface ILayoutManagerErrorCallbackOptions {
+/**
+ * The object of data to be sent to an event
+ * @ko 이벤트에 전달되는 데이터 객체
+ * @memberof eg.InfiniteGrid
+ * @typedef
+ * @property - Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
+ * @property - The item's element with error images.<ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트</ko>
+ * @property - The items being added.<ko>화면에 추가중인 아이템들</ko>
+ * @property - The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
+ * @property - The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
+ * @property - In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
+ * @property - In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
+ * @property - In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
+ * @property - In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
+ * @example
+	ig.on("imageError", e => {
+	  e.remove();
+	  e.removeItem();
+	  e.replace("http://...jpg");
+	  e.replace(imageElement);
+	  e.replaceItem("item html");
+	});
+ */
+export interface IErrorCallbackOptions {
 	target: HTMLImageElement;
 	element: HTMLElement;
 	items: IInfiniteGridItem[];
 	item: IInfiniteGridItem;
-	itemIndex?: number;
+	itemIndex: number;
 	replace: (src: string) => void;
 	replaceItem: (content: string) => void;
 	remove: () => void;
 	removeItem: () => void;
 }
-export interface ILayoutManagerCompleteCallbackOptions {
+
+export interface ICompleteCallbackOptions {
 	groups?: ILayoutResult[];
 	items?: IInfiniteGridItem[];
 	isAppend?: boolean;
 }
-export interface ILayoutManagerEndCallbackOptions {
+export interface IEndCallbackOptions {
 	remove: HTMLElement[];
 	layout?: boolean;
 }
 export interface ILayoutManagerCallbacks {
-	complete: (e?: ILayoutManagerCompleteCallbackOptions) => void;
-	error: (e?: ILayoutManagerErrorCallbackOptions) => void;
-	end: (e?: ILayoutManagerEndCallbackOptions) => void;
+	complete: (e?: ICompleteCallbackOptions) => void;
+	error: (e?: IErrorCallbackOptions) => void;
+	end: (e?: IEndCallbackOptions) => void;
 }
 
 export default class LayoutMananger {

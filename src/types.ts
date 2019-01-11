@@ -10,9 +10,7 @@ export type ClientSizeType = "clientWidth" | "clientHeight";
 export type OffsetSizeType = "offsetWidth" | "offsetHeight";
 export type ScrollSizeType = "scrollWidth" | "scrollHeight";
 
-/**
- * @see {@link https://github.com/Microsoft/TypeScript/issues/27024#issuecomment-421529650}
- */
+// see https://github.com/Microsoft/TypeScript/issues/27024#issuecomment-421529650
 export type Equals<X, Y, A, B = never> =
 	(<T>() => T extends X ? 1 : 2) extends
 	(<T>() => T extends Y ? 1 : 2) ? A : B;
@@ -50,10 +48,22 @@ export interface IAlign {
 	END: "end";
 	JUSTIFY: "justify";
 }
+/**
+ * Position Interface
+ * @ko Position Interface
+ * @memberof eg.InfiniteGrid
+ * @typedef
+ */
 export interface IPosition {
 	top: number;
 	left: number;
 }
+/**
+ * Size Interface
+ * @ko Size Interface
+ * @memberof eg.InfiniteGrid
+ * @typedef
+ */
 export interface ISize {
 	width: number;
 	height: number;

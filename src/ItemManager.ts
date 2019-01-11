@@ -2,6 +2,17 @@ import { MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME, DUMMY_POSITION } from "./consts"
 import { $, toArray, isUndefined, assign } from "./utils";
 import { CursorType, IInfiniteGridItemElement, ISize, IPosition, IJQuery } from "./types";
 
+/**
+ * @memberof eg.InfiniteGrid
+ * @typedef
+ * @property - item을 포함하고 있는 group의 key
+ * @property - item의 element의 html
+ * @property {HTMLElement} - item의 Element
+ * @property - 처음 렌더링시 저장되는 사이즈
+ * @property - 현재 보여지는 Element의 사이즈
+ * @property - 레이아웃할 때 보여지는 포지션과 사이즈
+ * @property - 레이아웃하기전에 보여지는 포지션과 사이즈
+ */
 export interface IInfiniteGridItem {
 	groupKey: string | number;
 	content: string;
