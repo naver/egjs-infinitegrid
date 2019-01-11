@@ -209,7 +209,11 @@ export default class DOMRenderer {
 	public getViewportSize() {
 		return this._size.viewport;
 	}
+	public getContainerSize() {
+		return this._size.container;
+	}
 	public setContainerSize(size: number) {
+		this._size.container = size;
 		this.container.style[this.options.horizontal ? "width" : "height"] = `${size}px`;
 	}
 	public resize() {

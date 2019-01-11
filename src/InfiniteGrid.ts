@@ -354,6 +354,9 @@ class InfiniteGrid extends Component {
 					isChildren: true,
 				});
 			} else {
+				if (renderer.getContainerSize()) {
+					renderer.setContainerSize(0);
+				}
 				this._requestAppend({});
 			}
 			return this;
