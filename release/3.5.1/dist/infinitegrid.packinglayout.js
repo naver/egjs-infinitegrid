@@ -361,7 +361,6 @@ NOTE: This is not an official distribution file and is only for user convenience
     }
     var document = win.document;
 
-    var _a;
     var ua = win.navigator.userAgent;
     var SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in win);
     var SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
@@ -432,6 +431,8 @@ NOTE: This is not an official distribution file and is only for user convenience
     }(), _a[0]),
         TRANSITION = _a[1],
         TRANSITION_END = _a[2];
+
+    var _a;
 
     function toArray(nodes) {
       // SCRIPT5014 in IE8
@@ -2852,8 +2853,6 @@ NOTE: This is not an official distribution file and is only for user convenience
           };
         }
 
-        var _a;
-
         if (!this._isLoading()) {
           return this;
         }
@@ -2888,6 +2887,8 @@ NOTE: This is not an official distribution file and is only for user convenience
         }
 
         return this;
+
+        var _a;
       };
       /**
        * Retrieves the item via index or the element.

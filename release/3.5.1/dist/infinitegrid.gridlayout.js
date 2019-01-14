@@ -361,7 +361,6 @@ NOTE: This is not an official distribution file and is only for user convenience
     }
     var document = win.document;
 
-    var _a;
     var ua = win.navigator.userAgent;
     var SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in win);
     var SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
@@ -438,6 +437,8 @@ NOTE: This is not an official distribution file and is only for user convenience
     }(), _a[0]),
         TRANSITION = _a[1],
         TRANSITION_END = _a[2];
+
+    var _a;
 
     function toArray(nodes) {
       // SCRIPT5014 in IE8
@@ -2860,8 +2861,6 @@ NOTE: This is not an official distribution file and is only for user convenience
           };
         }
 
-        var _a;
-
         if (!this._isLoading()) {
           return this;
         }
@@ -2896,6 +2895,8 @@ NOTE: This is not an official distribution file and is only for user convenience
         }
 
         return this;
+
+        var _a;
       };
       /**
        * Retrieves the item via index or the element.
@@ -3830,8 +3831,6 @@ NOTE: This is not an official distribution file and is only for user convenience
       };
 
       __proto._layout = function (items, outline, isAppend) {
-        var _a;
-
         var length = items.length;
         var margin = this.options.margin;
         var align = this.options.align;
@@ -3902,6 +3901,8 @@ NOTE: This is not an official distribution file and is only for user convenience
           start: isAppend ? startOutline : endOutline,
           end: isAppend ? endOutline : startOutline
         };
+
+        var _a;
       };
 
       __proto._insert = function (items, outline, isAppend, cache) {

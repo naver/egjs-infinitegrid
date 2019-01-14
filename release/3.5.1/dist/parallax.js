@@ -28,7 +28,6 @@ https://github.com/naver/egjs-infinitegrid
 	}
 	var document$1 = win.document;
 
-	var _a;
 	var ua = win.navigator.userAgent;
 	var SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document$1);
 	var SUPPORT_PASSIVE = function () {
@@ -81,6 +80,8 @@ https://github.com/naver/egjs-infinitegrid
 	}(), _a[0]),
 	    TRANSITION = _a[1],
 	    TRANSITION_END = _a[2];
+
+	var _a;
 
 	function toArray(nodes) {
 	  // SCRIPT5014 in IE8

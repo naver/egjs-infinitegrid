@@ -361,7 +361,6 @@ NOTE: This is not an official distribution file and is only for user convenience
     }
     var document = win.document;
 
-    var _a;
     var ua = win.navigator.userAgent;
     var SUPPORT_COMPUTEDSTYLE = !!("getComputedStyle" in win);
     var SUPPORT_ADDEVENTLISTENER = !!("addEventListener" in document);
@@ -432,6 +431,8 @@ NOTE: This is not an official distribution file and is only for user convenience
     }(), _a[0]),
         TRANSITION = _a[1],
         TRANSITION_END = _a[2];
+
+    var _a;
 
     function toArray(nodes) {
       // SCRIPT5014 in IE8
@@ -2854,8 +2855,6 @@ NOTE: This is not an official distribution file and is only for user convenience
           };
         }
 
-        var _a;
-
         if (!this._isLoading()) {
           return this;
         }
@@ -2890,6 +2889,8 @@ NOTE: This is not an official distribution file and is only for user convenience
         }
 
         return this;
+
+        var _a;
       };
       /**
        * Retrieves the item via index or the element.
@@ -3913,13 +3914,11 @@ NOTE: This is not an official distribution file and is only for user convenience
           outline = [];
         }
 
-        var _a;
-
         var length = items.length;
         var style = this._style;
-        var _b = this.options,
-            margin = _b.margin,
-            frameFill = _b.frameFill;
+        var _a = this.options,
+            margin = _a.margin,
+            frameFill = _a.frameFill;
         var size1Name = style.size1;
         var size2Name = style.size2;
         var pos1Name = style.startPos1;
@@ -3967,7 +3966,7 @@ NOTE: This is not an official distribution file and is only for user convenience
               endOutline[k] = Math.max(endOutline[k], pos1 + size1 + margin);
             }
 
-            item.rect = (_a = {}, _a[pos1Name] = pos1, _a[pos2Name] = pos2, _a[size1Name] = size1, _a[size2Name] = size2, _a);
+            item.rect = (_b = {}, _b[pos1Name] = pos1, _b[pos2Name] = pos2, _b[size1Name] = size1, _b[size2Name] = size2, _b);
           }
 
           end = Math.max.apply(Math, endOutline); // check dist once
@@ -4038,6 +4037,8 @@ NOTE: This is not an official distribution file and is only for user convenience
             return parseInt(point, 10);
           })
         };
+
+        var _b;
       };
 
       __proto._insert = function (items, outline, isAppend, cache) {
@@ -4165,8 +4166,6 @@ NOTE: This is not an official distribution file and is only for user convenience
           outline = [];
         }
 
-        var _a, _b;
-
         var itemSize = this._getItemSize();
 
         var margin = this.options.margin;
@@ -4248,6 +4247,8 @@ NOTE: This is not an official distribution file and is only for user convenience
         }
 
         return result;
+
+        var _a, _b;
       };
 
       return SquareLayout;
