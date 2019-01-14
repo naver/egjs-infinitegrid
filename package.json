@@ -1,6 +1,6 @@
 {
 	"name": "@egjs/infinitegrid",
-	"version": "3.5.0",
+	"version": "3.5.1",
 	"description": "A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
 	"sideEffects": false,
 	"module": "dist/infinitegrid.esm.js",
@@ -116,7 +116,7 @@
 		"string-replace-webpack-plugin": "0.1.3",
 		"sync-exec": "^0.6.2",
 		"tslint": "^5.12.0",
-		"typescript": "^3.2.2",
+		"typescript": "^2.8.4",
 		"uglifyjs-webpack-plugin": "^1.1.2",
 		"webpack": "^3.12.0",
 		"webpack-dev-server": "^2.9.5",

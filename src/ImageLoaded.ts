@@ -5,7 +5,7 @@ import AutoSizer from "./AutoSizer";
 export const CHECK_ALL: 1 = 1;
 export const CHECK_ONLY_ERROR: 2 = 2;
 
-interface IImageLoadedOptions {
+export interface IImageLoadedOptions {
 	prefix?: string;
 	length?: number;
 	type?: 1 | 2;
@@ -13,7 +13,7 @@ interface IImageLoadedOptions {
 	end?: () => void;
 	error?: (e: { target: LoadingImageElement, itemIndex: number }) => void;
 }
-interface LoadingImageElement extends HTMLImageElement {
+export interface LoadingImageElement extends HTMLImageElement {
 	__ITEM_INDEX__?: number;
 }
 

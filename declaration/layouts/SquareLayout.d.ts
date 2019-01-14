@@ -1,6 +1,6 @@
 import FrameLayout, { IFrameLayoutInterface } from "./FrameLayout";
-import { IInfiniteGridItem } from "../ItemManager";
-interface ISquareLayoutOptions extends IFrameLayoutInterface {
+import { IInfiniteGridItem } from "../types";
+export interface ISquareLayoutOptions extends IFrameLayoutInterface {
     column: number;
 }
 export default class SquareLayout extends FrameLayout {
@@ -12,4 +12,3 @@ export default class SquareLayout extends FrameLayout {
         end: number[];
     };
 }
-export {};

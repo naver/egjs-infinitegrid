@@ -1,5 +1,5 @@
-import ItemManager, { IInfiniteGridGroup } from "./ItemManager";
-import { CursorType } from "./types";
+import ItemManager from "./ItemManager";
+import { CursorType, IInfiniteGridItem, IInfiniteGridGroup, IInfiniteStatus } from "./types";
 export interface IInfiniteOptions {
     useRecycle?: boolean;
     threshold?: number;
@@ -14,11 +14,6 @@ export interface IInfiniteOptions {
         end: number;
     }) => void;
 }
-export interface IInfiniteStatus {
-    startCursor: number;
-    endCursor: number;
-    size: number;
-}
 declare class Infinite {
     options: Required<IInfiniteOptions>;
     private _items;
@@ -32,10 +27,13 @@ declare class Infinite {
     getStatus(startKey: string | number, endKey: string | number): IInfiniteStatus;
     getEdgeOutline(cursor: CursorType): number[];
     getEdgeValue(cursor: CursorType): number;
-    getVisibleItems(): import("./ItemManager").IInfiniteGridItem[];
+    getVisibleItems(): IInfiniteGridItem[];
     getCursor(cursor: CursorType): number;
     getVisibleData(): IInfiniteGridGroup[];
-    remove(element: HTMLElement): import("./ItemManager").IInfiniteGridItem[];
+    remove(element: HTMLElement): {
+        items: IInfiniteGridItem[];
+        groups: IInfiniteGridGroup[];
+    };
     clear(): void;
 }
 export default Infinite;

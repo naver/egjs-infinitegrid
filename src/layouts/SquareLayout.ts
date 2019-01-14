@@ -35,7 +35,7 @@ function getColumn(item: IInfiniteGridItem) {
 	item.column = column;
 	return column;
 }
-interface ISquareLayoutOptions extends IFrameLayoutInterface {
+export interface ISquareLayoutOptions extends IFrameLayoutInterface {
 	column: number;
 }
 /**

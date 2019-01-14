@@ -30,7 +30,7 @@ import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
 	IItemManagerStatus, IInfiniteGridItem,
-	IInfiniteGridGroup, IErrorCallbackOptions, IDOMRendererStatus, IWatchStatus, IInfiniteStatus
+	IInfiniteGridGroup, IErrorCallbackOptions, IDOMRendererStatus, IWatchStatus, IInfiniteStatus, IInfiniteGridStatus
 } from "./types";
 
 // IE8
@@ -52,7 +52,7 @@ import {
 // }
 /* eslint-enable */
 
-interface IInfiniteGridOptions {
+export interface IInfiniteGridOptions {
 	itemSelector: string;
 	isOverflowScroll: boolean;
 	threshold: number;
@@ -64,17 +64,7 @@ interface IInfiniteGridOptions {
 	useFit: boolean;
 	attributePrefix: string;
 }
-interface IInfiniteGridStatus {
-	_status: {
-		processingStatus: number,
-		loadingSize: number,
-		loadingStyle: StyleType,
-	};
-	_items: IItemManagerStatus;
-	_renderer: IDOMRendererStatus;
-	_watcher: IWatchStatus;
-	_infinite: IInfiniteStatus;
-}
+
 /**
  * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
  * @ko 콘텐츠가 있는 카드 엘리먼트를 레이아웃 타입에 따라 무한으로 배치하는 모듈. 다양한 크기의 카드 엘리먼트를 다양한 레이아웃으로 배치할 수 있다. 카드 엘리먼트의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
@@ -1094,7 +1084,7 @@ class InfiniteGrid extends Component {
 				startLoading: (userStyle: StyleType) => {
 					this.startLoading(true, userStyle);
 				},
-				endLoading: (userStyle: Partial<CSSStyleDeclaration>) => {
+				endLoading: (userStyle: StyleType) => {
 					this.endLoading(userStyle);
 				},
 			});

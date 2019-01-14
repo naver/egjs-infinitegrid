@@ -1,4 +1,4 @@
-interface IBoxModel {
+export interface IBoxModel {
     originWidth: number;
     originHeight: number;
     width: number;
@@ -15,7 +15,7 @@ export default class BoxModel implements IBoxModel {
     left: number;
     top: number;
     items: BoxModel[];
-    constructor(options: Partial<BoxModel>);
+    constructor(options: Partial<IBoxModel>);
     scaleTo(width: number, height: number): void;
     push(item: BoxModel): void;
     getOriginSize(): number;
@@ -23,4 +23,3 @@ export default class BoxModel implements IBoxModel {
     getOriginRatio(): number;
     getRatio(): number;
 }
-export {};

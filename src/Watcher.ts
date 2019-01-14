@@ -14,7 +14,7 @@ import {
 } from "./utils";
 import { WindowMockType, IWatchStatus } from "./types";
 
-interface IWatcherOptions {
+export interface IWatcherOptions {
 	container: HTMLElement;
 	isOverflowScroll: boolean;
 	horizontal: boolean;

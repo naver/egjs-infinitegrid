@@ -1,5 +1,4 @@
-import { ILayout, IAlign } from "../types";
-import { IInfiniteGridItem, IInfiniteGridGroup } from "../ItemManager";
+import { ILayout, IAlign, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
 declare class GridLayout implements ILayout {
     options: {
         horizontal: boolean;
@@ -28,8 +27,8 @@ declare class GridLayout implements ILayout {
     };
     layout(groups?: IInfiniteGridGroup[], outline?: number[]): this;
     setSize(size: number): this;
-    private checkColumn;
-    private _layout;
-    private _insert;
+    private checkColumn(item);
+    private _layout(items, outline, isAppend?);
+    private _insert(items?, outline?, isAppend?, cache?);
 }
 export default GridLayout;

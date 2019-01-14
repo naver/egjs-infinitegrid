@@ -1,28 +1,16 @@
-import { WindowMockType } from "./browser";
-import { IInfiniteGridItem } from "./ItemManager";
-import { ISize, IJQuery } from "./types";
+import { IJQuery, IInfiniteGridItem, WindowMockType, IDOMRendererStatus, IDOMRendererSize } from "./types";
+export declare function resetSize(item: IInfiniteGridItem): void;
 export interface IDOMRendererOptions {
     isEqualSize: boolean;
     isConstantSize: boolean;
     horizontal: boolean;
     container: boolean | HTMLElement;
 }
-export interface IDOMRendererSize {
-    container?: number;
-    view?: number;
-    viewport?: number;
-    item?: ISize;
-}
-export interface IDOMRendererStatus {
-    cssText: string;
-    _size: IDOMRendererSize;
-}
 export interface IDOMRendererOrgStyle {
     position?: CSSStyleDeclaration["position"];
     overflowX?: CSSStyleDeclaration["overflowX"];
     overflowY?: CSSStyleDeclaration["overflowY"];
 }
-export declare function resetSize(item: IInfiniteGridItem): void;
 export default class DOMRenderer {
     static renderItem(item: IInfiniteGridItem, rect: IInfiniteGridItem["rect"], transitionDuration?: number): void;
     static renderItems(items: IInfiniteGridItem[], transitionDuration?: number): void;
@@ -46,12 +34,13 @@ export default class DOMRenderer {
     createAndInsert(items: IInfiniteGridItem[], isAppend?: boolean): void;
     getViewSize(): number;
     getViewportSize(): number;
+    getContainerSize(): number;
     setContainerSize(size: number): void;
     resize(): boolean;
     isNeededResize(): boolean;
     clear(): void;
     destroy(): void;
-    private _init;
-    private _insert;
-    private _calcSize;
+    private _init(el);
+    private _insert(items, isAppend?, styles?);
+    private _calcSize();
 }

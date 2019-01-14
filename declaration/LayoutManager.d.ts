@@ -1,36 +1,25 @@
-import ItemManager, { IInfiniteGridGroup, IInfiniteGridItem } from "./ItemManager";
+import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
-import { ILayout, ILayoutResult } from "./types";
+import { ILayout, ILayoutResult, IInfiniteGridItem, IInfiniteGridGroup, IErrorCallbackOptions } from "./types";
 export interface ILayoutManagerOptions {
     attributePrefix?: string;
     isEqualSize?: boolean;
     isConstantSize?: boolean;
     horizontal?: boolean;
 }
-export interface ILayoutManagerErrorCallbackOptions {
-    target: HTMLImageElement;
-    element: HTMLElement;
-    items: IInfiniteGridItem[];
-    item: IInfiniteGridItem;
-    itemIndex?: number;
-    replace: (src: string) => void;
-    replaceItem: (content: string) => void;
-    remove: () => void;
-    removeItem: () => void;
-}
-export interface ILayoutManagerCompleteCallbackOptions {
+export interface ICompleteCallbackOptions {
     groups?: ILayoutResult[];
     items?: IInfiniteGridItem[];
     isAppend?: boolean;
 }
-export interface ILayoutManagerEndCallbackOptions {
+export interface IEndCallbackOptions {
     remove: HTMLElement[];
     layout?: boolean;
 }
 export interface ILayoutManagerCallbacks {
-    complete: (e?: ILayoutManagerCompleteCallbackOptions) => void;
-    error: (e?: ILayoutManagerErrorCallbackOptions) => void;
-    end: (e?: ILayoutManagerEndCallbackOptions) => void;
+    complete: (e: ICompleteCallbackOptions) => void;
+    error: (e: IErrorCallbackOptions) => void;
+    end: (e: IEndCallbackOptions) => void;
 }
 export default class LayoutMananger {
     options: Required<ILayoutManagerOptions>;
@@ -40,20 +29,20 @@ export default class LayoutMananger {
     constructor(items: ItemManager, renderer: DOMRenderer, options?: ILayoutManagerOptions);
     setLayout(layout: ILayout): void;
     setSize(size: number): void;
-    append({ groups, items, isUpdate, }: {
+    append({groups, items, isUpdate}: {
         groups: IInfiniteGridGroup[];
         items: IInfiniteGridItem[];
         isUpdate?: boolean;
     }, callbacks: Partial<ILayoutManagerCallbacks>): void;
-    prepend({ groups, items, isUpdate, }: {
+    prepend({groups, items, isUpdate}: {
         groups: IInfiniteGridGroup[];
         items: IInfiniteGridItem[];
         isUpdate?: boolean;
     }, callbacks: Partial<ILayoutManagerCallbacks>): void;
     layout(isRelayout: boolean, groups: IInfiniteGridGroup[], items: IInfiniteGridItem[]): IInfiniteGridGroup[];
     destroy(): void;
-    private _complete;
-    private _error;
-    private _end;
-    private _insert;
+    private _complete(groups, items, isAppend, isUpdate, callback);
+    private _error(removeTarget, replaceTarget, target, items, errorIndex, callback);
+    private _end(removeTarget, replaceTarget, items, callback);
+    private _insert({groups, items, isAppend, isUpdate}, {error, complete, end});
 }

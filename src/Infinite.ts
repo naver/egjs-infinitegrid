@@ -1,6 +1,6 @@
 import ItemManager from "./ItemManager";
 import { assign } from "./utils";
-import { CursorType, IInfiniteGridGroup, IInfiniteStatus } from "./types";
+import { CursorType, IInfiniteGridItem, IInfiniteGridGroup, IInfiniteStatus } from "./types";
 
 function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: number, endScrollPos: number) {
 	const { items, outlines } = group;
@@ -21,7 +21,7 @@ function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: numb
 	return 0;
 }
 
-interface IInfiniteOptions {
+export interface IInfiniteOptions {
 	useRecycle?: boolean;
 	threshold?: number;
 	append?: (e?: { cache: IInfiniteGridGroup[] }) => void;
@@ -182,7 +182,10 @@ class Infinite {
 	public getVisibleData() {
 		return this._items.get(this._status.startCursor, this._status.endCursor);
 	}
-	public remove(element: HTMLElement) {
+	public remove(element: HTMLElement): {
+		items: IInfiniteGridItem[],
+		groups: IInfiniteGridGroup[],
+	} {
 		const { startCursor, endCursor } = this._status;
 		const result =
 			this._items.remove(element, startCursor, endCursor);

@@ -1,6 +1,6 @@
 import { assign } from "../../utils";
 
-interface IBoxModel {
+export interface IBoxModel {
 	originWidth: number;
 	originHeight: number;
 	width: number;
@@ -18,7 +18,7 @@ export default class BoxModel implements IBoxModel {
 	public left: number;
 	public top: number;
 	public items: BoxModel[];
-	constructor(options: Partial<BoxModel>) {
+	constructor(options: Partial<IBoxModel>) {
 		assign(this, {
 			originWidth: 0,
 			originHeight: 0,

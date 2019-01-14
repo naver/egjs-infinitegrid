@@ -16,6 +16,7 @@ import ItemManager from "./ItemManager";
 import Infinite from "./Infinite";
 import LayoutManager from "./LayoutManager";
 
+export * from "./types";
 export {
 	GridLayout,
 	FrameLayout,

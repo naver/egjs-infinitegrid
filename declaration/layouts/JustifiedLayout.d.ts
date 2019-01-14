@@ -1,5 +1,4 @@
-import { ILayout } from "../types";
-import { IInfiniteGridItem, IInfiniteGridGroup } from "../ItemManager";
+import { ILayout, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
 declare class JustifiedLayout implements ILayout {
     options: {
         margin: number;
@@ -27,10 +26,10 @@ declare class JustifiedLayout implements ILayout {
         };
     };
     layout(groups?: IInfiniteGridGroup[], outline?: number[]): this;
-    private _layout;
-    private _getSize;
-    private _getCost;
-    private _setStyle;
-    private _insert;
+    private _layout(items, outline, isAppend?);
+    private _getSize(items, size1Name, size2Name);
+    private _getCost(items, i, j, size1Name, size2Name);
+    private _setStyle(items, path, outline?, isAppend?);
+    private _insert(items?, outline?, isAppend?, cache?);
 }
 export default JustifiedLayout;

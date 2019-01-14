@@ -1,9 +1,5 @@
 import Component from "@egjs/component";
-import { IInfiniteGridItem, IItemManagerStatus } from "./ItemManager";
-import { IDOMRendererStatus } from "./DOMRenderer";
-import { IWatchStatus } from "./Watcher";
-import { IInfiniteStatus } from "./Infinite";
-import { IJQuery, ILayout, StyleType } from "./types";
+import { IJQuery, ILayout, StyleType, IInfiniteGridItem, IInfiniteGridStatus } from "./types";
 export interface IInfiniteGridOptions {
     itemSelector: string;
     isOverflowScroll: boolean;
@@ -15,17 +11,6 @@ export interface IInfiniteGridOptions {
     transitionDuration: number;
     useFit: boolean;
     attributePrefix: string;
-}
-export interface IInfiniteGridStatus {
-    _status: {
-        processingStatus: number;
-        loadingSize: number;
-        loadingStyle: StyleType;
-    };
-    _items: IItemManagerStatus;
-    _renderer: IDOMRendererStatus;
-    _watcher: IWatchStatus;
-    _infinite: IInfiniteStatus;
 }
 declare class InfiniteGrid extends Component {
     static VERSION: string;
@@ -61,30 +46,30 @@ declare class InfiniteGrid extends Component {
     updateItems(): this;
     moveTo(index?: number, itemIndex?: number): this;
     destroy(): void;
-    private _setContainerSize;
-    private _appendLoadingBar;
-    private _setSize;
-    private _fitItems;
-    private _fit;
-    private _getEdgeValue;
-    private _isProcessing;
-    private _isLoading;
-    private _getLoadingStatus;
-    private _process;
-    private _insert;
-    private _recycle;
-    private _renderLoading;
-    private _updateItem;
-    private _setScrollPos;
-    private _scrollTo;
-    private _onImageError;
-    private _postCache;
-    private _postLayout;
-    private _requestAppend;
-    private _requestPrepend;
-    private _onResize;
-    private _onCheck;
-    private _onLayoutComplete;
-    private _reset;
+    private _setContainerSize(size);
+    private _appendLoadingBar();
+    private _setSize(size);
+    private _fitItems(base, margin?);
+    private _fit(useFit?);
+    private _getEdgeValue(cursor);
+    private _isProcessing();
+    private _isLoading();
+    private _getLoadingStatus();
+    private _process(status, isAdd?);
+    private _insert({elements, isAppend, isChildren, groupKey});
+    private _recycle({start, end});
+    private _renderLoading(userStyle?);
+    private _updateItem(item);
+    private _setScrollPos(pos);
+    private _scrollTo(pos);
+    private _onImageError(e);
+    private _postCache({cache, isAppend, isTrusted, moveItem});
+    private _postLayout({fromCache, groups, items, newItems, isAppend, isChildren, isTrusted, moveCache, moveItem});
+    private _requestAppend({cache});
+    private _requestPrepend({cache});
+    private _onResize();
+    private _onCheck({isForward, scrollPos, horizontal, orgScrollPos});
+    private _onLayoutComplete({items, isAppend, isTrusted, useRecycle, fromCache, isLayout});
+    private _reset();
 }
 export default InfiniteGrid;

@@ -26,14 +26,14 @@ export function resetSize(item: IInfiniteGridItem) {
 	item.orgSize = null;
 	item.size = null;
 }
-interface IDOMRendererOptions {
+export interface IDOMRendererOptions {
 	isEqualSize: boolean;
 	isConstantSize: boolean;
 	horizontal: boolean;
 	container: boolean | HTMLElement;
 }
 
-interface IDOMRendererOrgStyle {
+export interface IDOMRendererOrgStyle {
 	position?: CSSStyleDeclaration["position"];
 	overflowX?: CSSStyleDeclaration["overflowX"];
 	overflowY?: CSSStyleDeclaration["overflowY"];

@@ -1,4 +1,4 @@
-import { WindowMockType } from "./browser";
+import { WindowMockType, IWatchStatus } from "./types";
 export interface IWatcherOptions {
     container: HTMLElement;
     isOverflowScroll: boolean;
@@ -10,10 +10,6 @@ export interface IWatcherOptions {
         orgScrollPos: number;
         horizontal: boolean;
     }) => void;
-}
-export interface IWatchStatus {
-    _prevPos: number;
-    scrollPos: number;
 }
 export default class Watcher {
     options: IWatcherOptions;
@@ -36,7 +32,7 @@ export default class Watcher {
     resize(): void;
     detachEvent(): void;
     destroy(): void;
-    private _onCheck;
-    private _getOffset;
-    private _onResize;
+    private _onCheck();
+    private _getOffset();
+    private _onResize();
 }

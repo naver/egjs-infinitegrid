@@ -11,4 +11,5 @@ import Watcher from "./Watcher";
 import ItemManager from "./ItemManager";
 import Infinite from "./Infinite";
 import LayoutManager from "./LayoutManager";
-export { GridLayout, FrameLayout, SquareLayout, PackingLayout, JustifiedLayout, Infinite, ImageLoaded, AutoSizer, DOMRenderer, Watcher, ItemManager, LayoutManager, InfiniteGrid as default, };
+export * from "./types";
+export { GridLayout, FrameLayout, SquareLayout, PackingLayout, JustifiedLayout, Infinite, ImageLoaded, AutoSizer, DOMRenderer, Watcher, ItemManager, LayoutManager, InfiniteGrid as default };

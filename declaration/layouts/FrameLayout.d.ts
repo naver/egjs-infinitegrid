@@ -1,5 +1,4 @@
-import { ILayout, IRectlProperties, ISize } from "../types";
-import { IInfiniteGridGroup, IInfiniteGridItem } from "../ItemManager";
+import { ILayout, IRectlProperties, ISize, IInfiniteGridGroup, IInfiniteGridItem } from "../types";
 export declare type FrameType = number[][];
 export interface IFrameShape {
     left?: number;
@@ -50,6 +49,6 @@ declare class FrameLayout implements ILayout {
         start: number[];
         end: number[];
     };
-    private _insert;
+    private _insert(items?, outline?, isAppend?, cache?);
 }
 export default FrameLayout;

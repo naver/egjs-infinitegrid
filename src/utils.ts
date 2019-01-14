@@ -44,6 +44,10 @@ export function $(
 	multi?: false,
 ): HTMLElement;
 export function $(
+	param: string | HTMLElement | WindowMockType | IJQuery,
+	multi?: false,
+): HTMLElement | WindowMockType;
+export function $(
 	param: string | WindowMockType | HTMLElement | Array<string | HTMLElement> | IJQuery,
 	multi = false,
 ): HTMLElement | WindowMockType | HTMLElement[] {

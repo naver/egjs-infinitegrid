@@ -1,6 +1,4 @@
-import { IAlign, IJQuery } from "./types";
-import { WindowMockType } from "./browser";
-import { IInfiniteGridItem } from "./ItemManager";
+import { IAlign, IJQuery, WindowMockType, IInfiniteGridItem } from "./types";
 declare class Parallax {
     options: {
         container: HTMLElement;
@@ -19,6 +17,6 @@ declare class Parallax {
     constructor(root?: WindowMockType | HTMLElement | IJQuery | string, options?: Partial<Parallax["options"]>);
     resize(items?: IInfiniteGridItem[]): this;
     refresh(items?: IInfiniteGridItem[], scrollPositionStart?: number): this;
-    private _checkParallaxItem;
+    private _checkParallaxItem(element);
 }
 export default Parallax;

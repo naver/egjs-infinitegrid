@@ -1,5 +1,4 @@
-import { ILayout } from "../types";
-import { IInfiniteGridItem, IInfiniteGridGroup } from "../ItemManager";
+import { ILayout, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
 declare class PackingLayout implements ILayout {
     options: {
         horizontal: boolean;
@@ -27,8 +26,8 @@ declare class PackingLayout implements ILayout {
     };
     layout(groups?: IInfiniteGridGroup[], outline?: number[]): this;
     setSize(size: number): this;
-    private _findBestFitArea;
-    private _layout;
-    private _insert;
+    private _findBestFitArea(container, item);
+    private _layout(items, outline?, isAppend?);
+    private _insert(items?, outline?, isAppend?, cache?);
 }
 export default PackingLayout;

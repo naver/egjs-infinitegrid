@@ -1,12 +1,12 @@
-import { WindowMockType } from "./browser";
 import { DEFAULT_OPTIONS } from "./consts";
-import { IJQuery, IRectlProperties } from "./types";
+import { IJQuery, IRectlProperties, WindowMockType } from "./types";
 export declare function toArray(nodes: HTMLCollection): HTMLElement[];
 export declare function toArray<T extends Node>(nodes: T[] | NodeListOf<T>): T[];
 export declare function matchHTML(html: string): RegExpMatchArray;
 export declare function $(param: WindowMockType, multi?: false): WindowMockType;
 export declare function $(param: string | HTMLElement | Array<string | HTMLElement> | IJQuery, multi: true): HTMLElement[];
 export declare function $(param: string | HTMLElement | Array<string | HTMLElement> | IJQuery, multi?: false): HTMLElement;
+export declare function $(param: string | HTMLElement | WindowMockType | IJQuery, multi?: false): HTMLElement | WindowMockType;
 export declare function addEvent(element: Element | WindowMockType, type: string, handler: (...args: any[]) => any, eventListenerOptions?: boolean | {
     [key: string]: any;
 }): void;
@@ -49,7 +49,7 @@ export declare function assignOptions<A extends {
 export declare function toZeroArray(outline?: number[]): number[];
 export declare function cloneItems<T extends {
     [key: string]: any;
-}>(items: T[]): ({} & T)[];
+}>(items: T[]): (T & {})[];
 export declare function isJQuery(el: any): el is IJQuery;
 export declare function isWindow(el: any): el is WindowMockType;
 export declare function isDocument(el: Node): el is Document;

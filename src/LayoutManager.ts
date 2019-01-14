@@ -10,23 +10,23 @@ function hasTarget<T>(target: T[], value: T) {
 	return ~target.indexOf(value);
 }
 
-interface ILayoutManagerOptions {
+export interface ILayoutManagerOptions {
 	attributePrefix?: string;
 	isEqualSize?: boolean;
 	isConstantSize?: boolean;
 	horizontal?: boolean;
 }
 
-interface ICompleteCallbackOptions {
+export interface ICompleteCallbackOptions {
 	groups?: ILayoutResult[];
 	items?: IInfiniteGridItem[];
 	isAppend?: boolean;
 }
-interface IEndCallbackOptions {
+export interface IEndCallbackOptions {
 	remove: HTMLElement[];
 	layout?: boolean;
 }
-interface ILayoutManagerCallbacks {
+export interface ILayoutManagerCallbacks {
 	complete: (e: ICompleteCallbackOptions) => void;
 	error: (e: IErrorCallbackOptions) => void;
 	end: (e: IEndCallbackOptions) => void;

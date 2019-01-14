@@ -14,6 +14,18 @@ export interface IInfiniteGridGroup {
 	outlines: { start: number[], end: number[] };
 }
 
+export interface IInfiniteGridStatus {
+	_status: {
+		processingStatus: number,
+		loadingSize: number,
+		loadingStyle: StyleType,
+	};
+	_items: IItemManagerStatus;
+	_renderer: IDOMRendererStatus;
+	_watcher: IWatchStatus;
+	_infinite: IInfiniteStatus;
+}
+
 export interface IItemManagerStatus {
 	_data: IInfiniteGridGroup[];
 }
@@ -104,7 +116,7 @@ export type Equals<X, Y, A, B = never> =
 	(<T>() => T extends X ? 1 : 2) extends
 	(<T>() => T extends Y ? 1 : 2) ? A : B;
 
-type ExcludeReadOnly<T> = Pick<T, {
+export type ExcludeReadOnly<T> = Pick<T, {
 	[K in keyof T]?: (Equals<{ -readonly [P in K]: T[K] }, { [P in K]: T[K] }, K>)
 }[string & keyof T]>;
 
