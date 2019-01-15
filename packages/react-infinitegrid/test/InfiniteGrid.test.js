@@ -304,6 +304,50 @@ describe(`test layout`, function () {
 		expect(state3.startIndex).to.be.equals(-1);
 		expect(state3.endIndex).to.be.equals(-1);
 	});
+	it ("should check test useFirstRender = true", async() => {
+		// Given
+		this.el.style.width = "300px";
+		let rendered = ReactDOM.render(<GridLayout>
+			<div className="item" style={{width: "200px", height: "200px"}} data-groupkey="1">1</div>
+		</GridLayout>, this.el);
+
+		// When
+		const isFirstRender1 = rendered.state.isFirstRender;
+		const top1 = this.el.querySelector(".item").style.top;
+
+		await wait();
+
+		const isFirstRender2 = rendered.state.isFirstRender;
+		const top2 = this.el.querySelector(".item").style.top;
+
+		// Then
+		expect(isFirstRender1).to.be.equals(true);
+		expect(isFirstRender2).to.be.equals(false);
+		expect(top1).to.be.not.ok;
+		expect(top2).to.be.equals("0px");
+	});
+	it ("should check test useFirstRender = false", async() => {
+		// Given
+		this.el.style.width = "300px";
+		let rendered = ReactDOM.render(<GridLayout useFirstRender={false}>
+			<div className="item" style={{width: "200px", height: "200px"}} data-groupkey="1">1</div>
+		</GridLayout>, this.el);
+
+		// When
+		const isFirstRender1 = rendered.state.isFirstRender;
+		const top1 = this.el.querySelector(".item").style.top;
+
+		await wait();
+
+		const isFirstRender2 = rendered.state.isFirstRender;
+		const top2 = this.el.querySelector(".item").style.top;
+
+		// Then
+		expect(isFirstRender1).to.be.equals(false);
+		expect(isFirstRender2).to.be.equals(false);
+		expect(parseInt(top1)).to.be.below(-9999);
+		expect(top2).to.be.equals("0px");
+	});
 	it ("should check test one item", async () => {
 		// Given
 		this.el.style.width = "300px";
