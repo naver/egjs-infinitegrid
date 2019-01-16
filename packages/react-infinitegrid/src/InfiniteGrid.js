@@ -46,6 +46,7 @@ export default class InfiniteGrid extends Component {
 		onChange: PropTypes.func,
 		containerTag: PropTypes.string,
 		transitionDuration: PropTypes.number,
+		useFirstRender: PropTypes.bool,
 	};
 	static defaultProps = {
 		tag: "div",
@@ -61,6 +62,7 @@ export default class InfiniteGrid extends Component {
 		useFit: true,
 		horizontal: false,
 		isConstantSize: false,
+		useFirstRender: true,
 		onAppend: () => {},
 		onPrepend: () => {},
 		onLayoutComplete: () => {},
@@ -73,7 +75,7 @@ export default class InfiniteGrid extends Component {
 		const LayoutType = this.props.type;
 
 		this.clear();
-		this.state.isFirstRender = true;
+		this.state.isFirstRender = this.props.useFirstRender;
 		const options = {};
 		const layoutProps = this.constructor.layoutProps;
 

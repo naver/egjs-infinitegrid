@@ -27,6 +27,7 @@ import {GridLayout} from "@egjs/react-infinitegrid";
 	isConstantSize = {false}
 	useFit = {true}
 	useRecycle = {true}
+	useFirstRender = {true}
 	horizontal = {false}
 	percentage = {false}
 	onAppend = {e => append}

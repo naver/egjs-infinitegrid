@@ -63,6 +63,7 @@ Object {
   },
   "_renderer": Object {
     "_size": Object {
+      "container": 740,
       "item": null,
       "view": 500,
       "viewport": 300,
@@ -655,6 +656,7 @@ Object {
   },
   "_renderer": Object {
     "_size": Object {
+      "container": 740,
       "item": null,
       "view": 500,
       "viewport": 300,
