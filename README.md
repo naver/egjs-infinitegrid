@@ -55,6 +55,7 @@ Download dist files from repo directly or install it via npm.
 |FrameLayout| [infinitegrid.framelayout.js (131kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.framelayout.js) | [infinitegrid.framelayout.min.js (37.6kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.framelayout.min.js) |
 |SquareLayout| [infinitegrid.squarelayout.js (137.3kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.squarelayout.js) | [infinitegrid.squarelayout.min.js (39kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.squarelayout.min.js) |
 |PackingLayout| [infinitegrid.packinglayout.js (130.4kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.packinglayout.js) | [infinitegrid.packinglayout.min.js (37.8kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.packinglayout.min.js) |
+|Parallax| [parallax.js ()](https://naver.github.io/egjs-infinitegrid/release/latest/dist/parallax.js) |[parallax.min.js ()](https://naver.github.io/egjs-infinitegrid/release/latest/dist/parallax.min.js)|
 
 - **Specific version**
     * https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/[FILE_NAME]
@@ -68,6 +69,12 @@ The following command shows how to install egjs-infinitegrid using npm.
 $ npm install @egjs/infinitegrid
 ```
 
+The following code shows how to import InfiniteGrid, Parallax.
+
+```js
+import InfiniteGrid, {GridLayout, JustifiedLayout, ...} from "@egjs/infinitegrid";
+import Parallax from "@egjs/infinitegrid/dist/parallax";
+```
 
 ## Supported Browsers
 The following are the supported browsers.
