@@ -1,4 +1,5 @@
 import * as React from "react";
+import {IInfiniteGridItem} from "@egjs/infinitegrid";
 
 interface InfiniteGridProps {
 	tag?: string,
@@ -28,6 +29,7 @@ declare class InfiniteGrid extends React.Component<InfiniteGridProps> {
 	resize(): this;
 	setStatus(status: object, applyScrollPos?: boolean): this;
 	getStatus(): object;
+	getItems(includeCached?: boolean): IInfiniteGridItem[];
 	clear(): this;
 }
 declare class GridLayout extends InfiniteGrid {}
