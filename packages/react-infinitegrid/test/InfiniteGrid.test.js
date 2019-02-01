@@ -128,6 +128,45 @@ describe(`test layout`, function () {
 			});
 		}, 100);
 	});
+	it (`should check getItems method`, async() => {
+		// Given
+		this.el.style.width = "300px";
+		const rendered = ReactDOM.render(<GridLayout className="test1" align="center" isOverflowScroll={true} style={{height: "500px"}}>
+			<div style={{width: "120px", height: "100px"}}></div>
+			<div style={{width: "120px", height: "100px"}}></div>
+			<div style={{width: "120px", height: "200px"}}></div>
+			<div style={{width: "120px", height: "100px"}}></div>
+			<div style={{width: "120px", height: "400px"}}></div>
+			<div style={{width: "120px", height: "440px"}}></div>
+			<div style={{width: "120px", height: "130px"}}></div>
+			<div style={{width: "120px", height: "100px"}}></div>
+
+			<div data-groupkey="1" style={{width: "120px", height: "200px"}}></div>
+			<div data-groupkey="1" style={{width: "120px", height: "100px"}}></div>
+			<div data-groupkey="1" style={{width: "120px", height: "400px"}}></div>
+			<div data-groupkey="1" style={{width: "120px", height: "440px"}}></div>
+			<div data-groupkey="1" style={{width: "120px", height: "130px"}}></div>
+			<div data-groupkey="1" style={{width: "120px", height: "100px"}}></div>
+		</GridLayout>, this.el);
+
+		await wait();
+		// When
+		// all items
+		const items = rendered.getItems(true);
+
+		// group 0's items
+		const items2 = rendered.getItems();
+
+		// group 1's items
+		rendered._infinite.setCursor("start", 1);
+		rendered._infinite.setCursor("end", 1);
+		const items3 = rendered.getItems();
+
+		// Then
+		expect(items.length).to.be.equals(14);
+		expect(items2.length).to.be.equals(8);
+		expect(items3.length).to.be.equals(6);
+	});
 	it (`should check getStatus(startKey, endKey)`, async () => {
 		// Given
 		this.el.style.width = "300px";

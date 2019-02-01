@@ -3,9 +3,11 @@
 A react component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
 
 * [GridLayout Demo](https://codesandbox.io/s/030opyqkvw)
+* [GridLayout with Parallax Demo](https://codesandbox.io/s/v3y0jr2ony)
 * [JustifiedLayout Demo(typescript)](https://codesandbox.io/s/5w7vrr0kwk)
 * [Youtube Demo](https://codesandbox.io/s/935xz7zy8r)
 * [API Documentation](https://github.com/naver/egjs-infinitegrid/wiki/react-infinitegrid-API-documentation)
+
 
 ## Install
 ```bash

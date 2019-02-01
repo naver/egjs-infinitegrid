@@ -193,6 +193,9 @@ export default class InfiniteGrid extends Component {
 		this._renderer && this._renderer.destroy();
 		this._manager && this._manager.destroy();
 	}
+	getItems(includeCached) {
+		return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
+	}
 	getStatus(startKey = "", endKey = "") {
 		const state = Object.assign({}, this.state);
 		const datas = {};
@@ -654,6 +657,7 @@ export default class InfiniteGrid extends Component {
 			return;
 		}
 		this.props.onAppend({
+			currentTarget: this,
 			groupKey: this.state.endKey,
 			startLoading: loadingStyle => {
 				this.startLoading(true, loadingStyle);
@@ -701,6 +705,7 @@ export default class InfiniteGrid extends Component {
 			this._fit(true);
 		}
 		this.props.onPrepend({
+			currentTarget: this,
 			groupKey: this.state.startKey,
 			startLoading: loadingStyle => {
 				this.startLoading(false, loadingStyle);
@@ -797,12 +802,16 @@ export default class InfiniteGrid extends Component {
 				const component = group ? group.children[index] : -1;
 				const componentIndex = this.state.children.indexOf(component);
 
-				this.props.onImageError({target, element, item, itemIndex: componentIndex});
+				this.props.onImageError({
+					currentTarget: this, target, element, item, itemIndex: componentIndex,
+				});
 			},
 		});
 	}
 	_onCheck({isForward, scrollPos, horizontal, orgScrollPos}) {
-		this.props.onChange({isForward, horizontal, scrollPos, orgScrollPos});
+		this.props.onChange({
+			currentTarget: this, isForward, horizontal, scrollPos, orgScrollPos,
+		});
 		if (this._isProcessing()) {
 			return;
 		}
@@ -882,6 +891,7 @@ export default class InfiniteGrid extends Component {
 			this._infinite.recycle(scrollPos, isAppend);
 		}
 		this.props.onLayoutComplete({
+			currentTarget: this,
 			target: items,
 			fromCache,
 			isAppend,

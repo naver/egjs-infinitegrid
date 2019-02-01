@@ -1,4 +1,5 @@
 import * as React from "react";
+import {IInfiniteGridItem} from "@egjs/infinitegrid";
 
 interface InfiniteGridProps {
 	tag?: string,
@@ -13,14 +14,55 @@ interface InfiniteGridProps {
 	horizontal?: boolean,
 	loading?: object | boolean,
 	transitionDuration?: number,
-	onAppend?: (param?: any) => void,
-	onPrepend?: (param?: any) => void,
-	onLayoutComplete?: (param?: any) => void,
-	onImageError?: (param?: any) => void,
-	onChange?: (param?: any) => void,
+	onAppend?: (param: OnAppendParameter) => void,
+	onPrepend?: (param: OnPrependParameter) => void,
+	onLayoutComplete?: (param: OnLayoutCompleteParameter) => void,
+	onImageError?: (param: any) => void,
+	onChange?: (param: OnChangeParameter) => void,
 	status?: object,
 	useFit?: boolean,
 	[others: string]: any,
+}
+
+interface OnAppendParameter {
+	currentTarget?: InfiniteGrid;
+	groupKey?: number | string;
+	startLoading?: (loadingStyle: object) => void;
+	endLoading?: (loadingStyle: object) => void;
+}
+interface OnPrependParameter {
+	currentTarget?: InfiniteGrid;
+	groupKey?: number | string;
+	startLoading?: (loadingStyle: object) => void;
+	endLoading?: (loadingStyle: object) => void;
+}
+interface OnChangeParameter {
+	currentTarget?: InfiniteGrid;
+	groupKey?: number | string;
+	isForward?: boolean;
+	horizontal?: boolean;
+	scrollPos?: number;
+	orgScrollPos?: number;
+}
+interface OnImageErrorParameter {
+	currentTarget?: InfiniteGrid;
+	target?: HTMLElement;
+	element?: HTMLElement;
+	item?: IInfiniteGridItem;
+	itemIndex?: number;
+}
+interface OnLayoutCompleteParameter {
+	currentTarget?: InfiniteGrid;
+	fromCache?: boolean;
+	target?: IInfiniteGridItem[];
+	isAppend?: boolean;
+	isTrusted?: boolean;
+	isLayout?: boolean;
+	isScroll?: boolean;
+	scrollPos?: number;
+	orgScrollPos?: number;
+	size?: number;
+	endLoading?: (loadginStyle: object) => void;
 }
 
 declare class InfiniteGrid extends React.Component<InfiniteGridProps> {
@@ -28,6 +70,7 @@ declare class InfiniteGrid extends React.Component<InfiniteGridProps> {
 	resize(): this;
 	setStatus(status: object, applyScrollPos?: boolean): this;
 	getStatus(): object;
+	getItems(includeCached?: boolean): IInfiniteGridItem[];
 	clear(): this;
 }
 declare class GridLayout extends InfiniteGrid {}
