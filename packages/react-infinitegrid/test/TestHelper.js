@@ -1,4 +1,4 @@
-export function cleanHTML(html) {
+export function prettifyHTML(html) {
 	return html.replace(/(>)(<[^/])/g, "$1\n$2");
 }
 export function wait(time = 100) {

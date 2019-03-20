@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import {GridLayout} from "../src/index";
 import {use, expect, assert} from "chai";
 import { matchSnapshot } from "chai-karma-snapshot";
-import {cleanHTML, concatItems, wait, toArray} from "./TestHelper";
+import {prettifyHTML, concatItems, wait, toArray} from "./TestHelper";
 import Example from "./Example";
 import NoItemExample from "./NoItemExample";
 import EqualSizeExample from "./EqualSizeExample";
@@ -33,9 +33,9 @@ describe(`test layout`, function () {
 			<div style={{width: "100px", height: "100px"}}></div>
 			<div style={{width: "100px", height: "100px"}}></div>
 		</GridLayout>, this.el);
-		expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+		expect(prettifyHTML(this.el.innerHTML)).to.matchSnapshot();
 		setTimeout(() => {
-			expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+			expect(prettifyHTML(this.el.innerHTML)).to.matchSnapshot();
 			done();
 		}, 100);
 	});
@@ -48,9 +48,9 @@ describe(`test layout`, function () {
 			<div style={{width: "120px", height: "400px"}}></div>
 			<div style={{width: "120px", height: "100px"}}></div>
 		</GridLayout>, this.el);
-		expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+		expect(prettifyHTML(this.el.innerHTML)).to.matchSnapshot();
 		setTimeout(() => {
-			expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+			expect(prettifyHTML(this.el.innerHTML)).to.matchSnapshot();
 			done();
 		}, 100);
 	});
@@ -65,7 +65,7 @@ describe(`test layout`, function () {
 			<div style={{width: "120px", height: "130px"}}></div>
 			<div style={{width: "120px", height: "100px"}}></div>
 		</GridLayout>, this.el);
-		expect(cleanHTML(this.el.innerHTML)).to.matchSnapshot();
+		expect(prettifyHTML(this.el.innerHTML)).to.matchSnapshot();
 
 		setTimeout(() => {
 			const status = rendered.getStatus();
@@ -75,7 +75,7 @@ describe(`test layout`, function () {
 
 
 			expect(status).to.matchSnapshot();
-			expect(cleanHTML(html)).to.matchSnapshot();
+			expect(prettifyHTML(html)).to.matchSnapshot();
 
 
 			rendered.setStatus(status, true);
@@ -105,7 +105,7 @@ describe(`test layout`, function () {
 			const html = this.el.innerHTML;
 
 			expect(status).to.matchSnapshot();
-			expect(cleanHTML(html)).to.matchSnapshot();
+			expect(prettifyHTML(html)).to.matchSnapshot();
 
 			this.el = sandbox({
 				id: "__react-content",
@@ -183,7 +183,7 @@ describe(`test layout`, function () {
 		// When
 		await wait();
 		const status = rendered.getStatus("2", "3");
-		const html = cleanHTML(this.el.innerHTML);
+		const html = prettifyHTML(this.el.innerHTML);
 
 
 		this.el = sandbox({
@@ -202,7 +202,7 @@ describe(`test layout`, function () {
 
 		await wait();
 		const status2 = rendered2.getStatus("2", "3");
-		const html2 = cleanHTML(this.el.innerHTML);
+		const html2 = prettifyHTML(this.el.innerHTML);
 
 		this.el = sandbox({
 			id: "__react-content",
@@ -217,7 +217,7 @@ describe(`test layout`, function () {
 
 		await wait();
 		const status3 = rendered3.getStatus("2", "3");
-		const html3 = cleanHTML(this.el.innerHTML);
+		const html3 = prettifyHTML(this.el.innerHTML);
 
 		// Then
 		try {
@@ -249,7 +249,7 @@ describe(`test layout`, function () {
 		rendered.grid._container.scrollTop = 0;
 
 		await wait();
-		const html = cleanHTML(this.el.innerHTML);
+		const html = prettifyHTML(this.el.innerHTML);
 		const groups = rendered.grid.state.groups.length;
 		const startIndex = rendered.grid.state.startIndex;
 		const endIndex = rendered.grid.state.endIndex;
@@ -257,7 +257,7 @@ describe(`test layout`, function () {
 
 		rendered.grid._container.scrollTop = 1000;
 		await wait(600);
-		const html2 = cleanHTML(this.el.innerHTML);
+		const html2 = prettifyHTML(this.el.innerHTML);
 
 		expect(groups).to.be.equals(5);
 		expect(startIndex).to.be.equals(0);
@@ -275,7 +275,7 @@ describe(`test layout`, function () {
 			onLayoutComplete = {e => {
 				// Then
 				if (e.isLayout) {
-					html2 = cleanHTML(this.el.innerHTML);
+					html2 = prettifyHTML(this.el.innerHTML);
 					expect(html2).to.matchSnapshot();
 					expect(html1).to.be.equals(html2);
 					done();
@@ -292,7 +292,7 @@ describe(`test layout`, function () {
 		</GridLayout>, this.el);
 
 		setTimeout(() => {
-			html1 = cleanHTML(this.el.innerHTML);
+			html1 = prettifyHTML(this.el.innerHTML);
 			expect(html1).to.matchSnapshot();
 			// When
 			rendered.layout(true);
@@ -304,20 +304,20 @@ describe(`test layout`, function () {
 
 
 		// When
-		const html = cleanHTML(this.el.innerHTML);
+		const html = prettifyHTML(this.el.innerHTML);
 
 		const state1 = Object.assign({}, rendered.grid.state);
 
 		rendered.setState({mount: true});
 
 		await wait();
-		const html2 = cleanHTML(this.el.innerHTML);
+		const html2 = prettifyHTML(this.el.innerHTML);
 		const state2 = Object.assign({}, rendered.grid.state);
 
 		rendered.setState({mount: false});
 
 		await wait();
-		const html3 = cleanHTML(this.el.innerHTML);
+		const html3 = prettifyHTML(this.el.innerHTML);
 		const state3 = Object.assign({}, rendered.grid.state);
 
 		// Then
@@ -393,7 +393,7 @@ describe(`test layout`, function () {
 		const rendered = ReactDOM.render(<GridLayout>
 			<div style={{width: "200px", height: "200px"}} data-groupkey="1">1</div>
 		</GridLayout>, this.el);
-		const html = cleanHTML(this.el.innerHTML);
+		const html = prettifyHTML(this.el.innerHTML);
 		const state = Object.assign({}, rendered.state);
 
 		// Then
@@ -411,18 +411,18 @@ describe(`test layout`, function () {
 		const rendered = ReactDOM.render(<Example onAppend={onAppend}/>, this.el);
 
 		const callCount = onAppend.callCount;
-		const html = cleanHTML(this.el.innerHTML);
+		const html = prettifyHTML(this.el.innerHTML);
 		// styles not check styles...
 
 		await wait();
 		const callCount2 = onAppend.callCount;
-		const html2 = cleanHTML(this.el.innerHTML);
+		const html2 = prettifyHTML(this.el.innerHTML);
 		const styles2 = Array.prototype.slice.call(this.el.children).map(el => el.style.cssText);
 		rendered.setState({list: []});
 
 		await wait();
 		const callCount3 = onAppend.callCount;
-		const html3 = cleanHTML(this.el.innerHTML);
+		const html3 = prettifyHTML(this.el.innerHTML);
 		const styles3 = Array.prototype.slice.call(this.el.children).map(el => el.style.cssText);
 
 		expect(callCount < callCount2).to.be.true;
@@ -458,7 +458,7 @@ describe(`test layout`, function () {
 
 		await wait();
 
-		const html = cleanHTML(this.el.innerHTML);
+		const html = prettifyHTML(this.el.innerHTML);
 		const sizes = rendered.grid.state.groups[0].items.map(item => Object.assign({}, item.size));
 		// When
 		rendered.setState({mount: true});
@@ -467,7 +467,7 @@ describe(`test layout`, function () {
 
 		await wait();
 		const sizes2 = rendered.grid.state.groups[0].items.map(item => Object.assign({}, item.size));
-		const html2 = cleanHTML(this.el.innerHTML);
+		const html2 = prettifyHTML(this.el.innerHTML);
 
 
 		expect(html).to.matchSnapshot();
@@ -481,22 +481,22 @@ describe(`test layout`, function () {
 	});
 	it("should check one groupKey", async () => {
 		const rendered = ReactDOM.render(<OneGroupExample/>, this.el);
-		const html = cleanHTML(this.el.innerHTML);
+		const html = prettifyHTML(this.el.innerHTML);
 
 
 		// when
 		const height = 0;
 		rendered.append();
 		await wait();
-		const html2 = cleanHTML(this.el.innerHTML);
+		const html2 = prettifyHTML(this.el.innerHTML);
 		const height2 = Math.max(...rendered.grid.state.groups[0].outlines.end);
 		rendered.append();
 		await wait();
-		const html3 = cleanHTML(this.el.innerHTML);
+		const html3 = prettifyHTML(this.el.innerHTML);
 		const height3 = Math.max(...rendered.grid.state.groups[0].outlines.end);
 		rendered.append();
 		await wait();
-		const html4 = cleanHTML(this.el.innerHTML);
+		const html4 = prettifyHTML(this.el.innerHTML);
 		const height4 = Math.max(...rendered.grid.state.groups[0].outlines.end);
 
 		// then
