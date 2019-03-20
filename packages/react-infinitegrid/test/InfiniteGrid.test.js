@@ -9,6 +9,8 @@ import Example from "./Example";
 import NoItemExample from "./NoItemExample";
 import EqualSizeExample from "./EqualSizeExample";
 import OneGroupExample from "./OneGroupExample";
+import RefreshExample from "./RefreshExample";
+
 use(matchSnapshot);
 
 
@@ -585,8 +587,37 @@ describe(`test layout`, function () {
 		// changed
 		const positions4 = getPositions(wrapper);
 
+		// Then
 		expect(positions).to.be.eql(positions2);
 		expect(positions2).to.be.not.eql(positions3);
 		expect(positions3).to.be.not.eql(positions4);
+	});
+	it ("should check refreshGroup", async () => {
+		// Given
+		this.el.style.width = "300px";
+		const rendered = ReactDOM.render(<RefreshExample/>, this.el);
+
+
+		// When
+		await wait(300);
+
+		// 1, 2, 3, 4, 5, "100", 6 , 7, 8, ...
+		const arr = toArray(this.el.querySelector(".wrapper").children).map(el => el.dataset.groupkey);
+		const pos = toArray(this.el.querySelector(".wrapper").children).map(el => el.style.top);
+
+
+		rendered.setState({count: 30, j: 3});
+		await wait(300);
+		// change groups' order
+		// 1, 2, 3, "100", 4, 5, 6, 7, 8, ...
+		const arr2 = toArray(this.el.querySelector(".wrapper").children).map(el => el.dataset.groupkey);
+		const pos2 = toArray(this.el.querySelector(".wrapper").children).map(el => el.style.top);
+		// Then
+		// 5 => 3
+		expect(arr[5]).to.be.equals("100");
+		expect(arr[5]).to.be.equals(arr2[3]);
+		expect(arr).to.be.not.eql(arr2);
+		expect(pos[5]).to.be.not.eql(pos2[3]);
+		expect(pos).to.be.not.eql(pos2);
 	});
 });
