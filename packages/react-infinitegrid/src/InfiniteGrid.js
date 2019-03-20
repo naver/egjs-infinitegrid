@@ -556,6 +556,40 @@ export default class InfiniteGrid extends Component {
 			this.layout(true);
 		}
 	}
+	getItem(groupIndex = 0, itemIndex) {
+		if (itemIndex == null && typeof groupIndex === "object") {
+			if (!groupIndex) {
+				return undefined;
+			}
+			const items = this.getItems();
+			const length = items.length;
+
+			for (let i = 0; i < length; ++i) {
+				if (items[i].el === groupIndex) {
+					return items[i];
+				}
+			}
+			return undefined;
+		} else {
+			const group = this._items.getData(groupIndex);
+
+			return group && group.items[itemIndex || 0];
+		}
+	}
+	updateItem(groupIndex, itemIndex) {
+		const item = this.getItem(groupIndex, itemIndex);
+
+		this._updateItem(item) && this.layout(false);
+
+		return this;
+	}
+	updateItems() {
+		this.getItems().forEach(item => {
+			this._updateItem(item);
+		});
+		this.layout(false);
+		return this;
+	}
 	layout(isRelayout = true) {
 		if (!this._layout) {
 			return this;
@@ -606,6 +640,19 @@ export default class InfiniteGrid extends Component {
 			isLayout: true,
 		});
 		return this;
+	}
+	_updateItem(item) {
+		if (item && item.el) {
+			item.content = item.el.outerHTML;
+
+			if (!this.props.isEqualSize) {
+				item.orgSize = null;
+				item.size = null;
+			}
+			this._renderer.updateSize([item]);
+			return true;
+		}
+		return false;
 	}
 	_isProcessing() {
 		return !!(this.state.processing & (APPEND | PREPEND));

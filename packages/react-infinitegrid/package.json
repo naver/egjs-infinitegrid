@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-infinitegrid",
-  "version": "1.4.0",
+  "version": "1.5.0-rc",
   "description": "A react component that can easily use egjs-infinitegrid",
   "types": "declaration/index.d.ts",
   "module": "dist/esm/index.js",
@@ -12,7 +12,7 @@
   "license": "MIT",
   "homepage": "https://github.com/naver/egjs-infinitegrid",
   "dependencies": {
-    "@egjs/infinitegrid": "^3.5.2"
+    "@egjs/infinitegrid": "3.5.x"
   },
   "peerDependencies": {
     "react": "^15.4.2 || ^16.0.0 || ^17.0.0",
@@ -75,6 +75,7 @@
     "s": "^0.1.1",
     "sinon": "^5.0.10",
     "style-loader": "^0.21.0",
+    "typescript": "^3.3.3333",
     "url-loader": "^1.0.1",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.2",

@@ -1,5 +1,5 @@
-export function cleanHTML(html) {
-	return html.replace(/(\>)(\<[^\/])/g, "$1\n$2");
+export function prettifyHTML(html) {
+	return html.replace(/(>)(<[^/])/g, "$1\n$2");
 }
 export function wait(time = 100) {
 	return new Promise(resolve => {
@@ -13,4 +13,8 @@ export function itemToArray(item) {
 }
 export function concatItems(items) {
 	return items.reduce((arr, item) => arr.concat(itemToArray(item)), []);
+}
+
+export function toArray(arr) {
+	return [].slice.call(arr);
 }
