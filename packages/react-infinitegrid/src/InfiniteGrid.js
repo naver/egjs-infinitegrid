@@ -526,6 +526,16 @@ export default class InfiniteGrid extends Component {
 			// update group
 			state.isUpdate = true;
 		}
+		if (!state.layout && !state.isUpdate) {
+			const length = Math.min(prevLength, groups.length);
+
+			for (let i = 0; i < length; ++i) {
+				if (prevGroups[i].groupKey !== groups[i].groupKey) {
+					state.isUpdate = true;
+					break;
+				}
+			}
+		}
 		state.children = propsChildren;
 		state.groupKeys = groupKeys;
 		state.groups = groups;
