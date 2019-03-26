@@ -594,10 +594,12 @@ export default class InfiniteGrid extends Component {
 		return this;
 	}
 	updateItems() {
-		this.getItems().forEach(item => {
+		const items = this.getItems();
+
+		items.forEach(item => {
 			this._updateItem(item);
 		});
-		this.layout(false);
+		items.length && this.layout(false);
 		return this;
 	}
 	layout(isRelayout = true) {
