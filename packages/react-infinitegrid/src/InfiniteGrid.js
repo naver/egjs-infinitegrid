@@ -194,7 +194,7 @@ export default class InfiniteGrid extends Component {
 		this._manager && this._manager.destroy();
 	}
 	getItems(includeCached) {
-		return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
+		return includeCached ? this._items.pluck("items") : this._getVisibleItems();
 	}
 	getStatus(startKey = "", endKey = "") {
 		const state = Object.assign({}, this.state);
@@ -594,12 +594,10 @@ export default class InfiniteGrid extends Component {
 		return this;
 	}
 	updateItems() {
-		const items = this.getItems();
-
-		items.forEach(item => {
+		this.getItems().forEach(item => {
 			this._updateItem(item);
 		});
-		items.length && this.layout(false);
+		this.layout(false);
 		return this;
 	}
 	layout(isRelayout = true) {
