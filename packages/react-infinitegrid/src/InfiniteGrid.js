@@ -194,7 +194,7 @@ export default class InfiniteGrid extends Component {
 		this._manager && this._manager.destroy();
 	}
 	getItems(includeCached) {
-		return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
+		return includeCached ? this._items.pluck("items") : this._getVisibleItems();
 	}
 	getStatus(startKey = "", endKey = "") {
 		const state = Object.assign({}, this.state);

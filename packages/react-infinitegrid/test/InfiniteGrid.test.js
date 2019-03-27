@@ -160,8 +160,8 @@ describe(`test layout`, function () {
 		const items2 = rendered.getItems();
 
 		// group 1's items
-		rendered._infinite.setCursor("start", 1);
-		rendered._infinite.setCursor("end", 1);
+		rendered.state.startIndex = 1;
+		rendered.state.endIndex = 1;
 		const items3 = rendered.getItems();
 
 		// Then
