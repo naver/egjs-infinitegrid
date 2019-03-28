@@ -5,10 +5,10 @@ import FrameLayout from "../../src/layouts/FrameLayout";
 import SquareLayout from "../../src/layouts/SquareLayout";
 import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
-import { getItems, insert, wait, waitInsert, waitEvent } from "./helper/TestHelper";
-import { APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER, IDLE, PROCESSING, DUMMY_POSITION } from "../../src/consts";
-import { scroll, innerHeight, innerWidth } from "../../src/utils";
-import { expectConnectGroupsOutline } from "./helper/common";
+import {getItems, insert, wait, waitInsert, waitEvent} from "./helper/TestHelper";
+import {APPEND, PREPEND, LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER, IDLE} from "../../src/consts";
+import {scroll, innerHeight, innerWidth} from "../../src/utils";
+import {expectConnectGroupsOutline} from "./helper/common";
 
 /* eslint-disable */
 describe("InfiniteGrid Test", function () {
@@ -156,7 +156,6 @@ describe("InfiniteGrid Test", function () {
         const status = this.inst.getStatus();
         this.inst.clear();
         status._renderer._size.viewport = 300;
-        
         this.inst.setStatus(status);
 
         // Then
@@ -362,7 +361,7 @@ describe("InfiniteGrid Test", function () {
     describe(`When scrolling append event isScroll Test (isOverflowScroll: ${isOverflowScroll})`, function () {
       beforeEach(() => {
         this.el = sandbox();
-        this.el.innerHTML = "<div id='infinite' style='height: 250px;position:absolute;top:0;left:0;'></div>";
+        this.el.innerHTML = "<div id='infinite' style='width:100%;height: 250px;position:absolute;top:0;left:0;'></div>";
         this.inst = new InfiniteGrid("#infinite", {
           useRecycle: true,
           isOverflowScroll,
@@ -505,7 +504,7 @@ describe("InfiniteGrid Test", function () {
       expect(scrollPos).to.be.below(-100);
       expect(scroll(window)).to.be.equals(0);
       expect(this.inst._watcher.getScrollPos()).to.be.equals(scrollPos);
-      
+
     });
     it (`should check scroll attached to the bottom`, async () => {
       // Given
@@ -518,7 +517,7 @@ describe("InfiniteGrid Test", function () {
 
       // Then
       expect(Math.max(document.body.scrollTop, document.documentElement.scrollTop)).to.be.equals(scrollPos);
-      
+
     });
   });
   describe(`When appending, image test`, function () {
@@ -670,7 +669,7 @@ describe("InfiniteGrid Test", function () {
 
       this.inst.append(`<div>HEADER<img src="/base/test/unit/image/3.jpg" />FOOTER</div><div>HEADER<img src="/1.jpg">FOOTER</div>`);
     });
-  });
+	});
   describe(`When image processing, fit test`, function () {
     beforeEach(() => {
       this.el = sandbox();
@@ -1088,7 +1087,7 @@ describe("InfiniteGrid Test", function () {
 
       // When
       // no layout and no items
-      inst.layout(true);  
+      inst.layout(true);
       const layout1 = inst._layout;
       // layout and no items
       inst.setLayout(GridLayout);
@@ -1106,7 +1105,7 @@ describe("InfiniteGrid Test", function () {
       // Given
       this.inst.layout(true);
       await waitInsert(this.inst, true, 5, 4);
-      
+
       const datas = this.inst._items._data;
       const rects = datas.map(data => data.items.map(item => Object.assign(item.rect)));
       const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
@@ -1148,7 +1147,7 @@ describe("InfiniteGrid Test", function () {
       const datas = this.inst._items._data;
       const rects = datas.map(data => data.items.map(item => Object.assign({}, item.rect)));
       const prevRects = datas.map(data => data.items.map(item => Object.assign({}, item.prevRect)));
-      
+
       // When
       const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
       const container = this.el.querySelector("#infinite");
@@ -1164,7 +1163,7 @@ describe("InfiniteGrid Test", function () {
       // Then
       const layoutCompleteRects =  this.inst._items._data.map(data => data.items.map(item => item.rect));
       const layoutCompletePrevRects =  this.inst._items._data.map(data => data.items.map(item => item.prevRect));
-      
+
       expect(rects).to.be.deep.equals(prevRects);
       expect(layoutCompleteRects).to.be.not.deep.equals(layoutCompletePrevRects);
       expect(rects).to.be.deep.equals(layoutCompletePrevRects);
@@ -1176,7 +1175,7 @@ describe("InfiniteGrid Test", function () {
       expect(transitionEndPrevRects).to.be.deep.equals(layoutCompleteRects);
     });
   });
- 
+
   describe(`resize Test`, function () {
     beforeEach(() => {
       document.body.style.marginBottom = "0px";
@@ -1658,5 +1657,36 @@ describe("InfiniteGrid Test", function () {
         this.inst.append(testcase[v]());
       });
     });
-  });
+	});
+	describe("Test size if display is none", function () {
+		beforeEach(() => {
+      this.el = sandbox();
+      this.el.innerHTML = `<div id='infinite' style="width:100%"></div>`;
+			this.inst = new InfiniteGrid("#infinite");
+			this.inst.setLayout(GridLayout);
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+		});
+		it("should check size if display is none", async () => {
+			// Given
+			await waitInsert(this.inst, true, 10, 1);
+			const container = this.el.querySelector("#infinite");
+			const html = container.innerHTML;
+			const height = container.style.height;
+			const width = this.inst._renderer.getViewportSize();
+			// When
+			this.el.querySelector("#infinite").style.display = "none";
+			this.inst.layout(true);
+
+			// Then
+			// no changes
+			expect(container.innerHTML).to.be.equals(html);
+			expect(container.style.height).to.be.equals(height);
+		});
+	});
 });
