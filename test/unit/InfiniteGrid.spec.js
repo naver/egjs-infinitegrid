@@ -1679,7 +1679,7 @@ describe("InfiniteGrid Test", function () {
       const html = container.innerHTML;
       const height = container.style.height;
       // When
-      this.el.querySelector("#infinite").style.display = "none";
+      container.style.display = "none";
       this.inst.layout(true);
 
       // Then
