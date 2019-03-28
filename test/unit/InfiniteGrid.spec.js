@@ -169,7 +169,7 @@ describe("InfiniteGrid Test", function () {
           expect(outline).to.be.equals(outlines[0]);
         });
       });
-      it(`should check no children and call 'append' event`, async() => {
+      it(`should check no children and call 'append' event`, async () => {
         // Given
         const waitAppend = waitEvent(this.inst, "append");
 
@@ -181,7 +181,7 @@ describe("InfiniteGrid Test", function () {
         // Then
         expect(rv.groupKey).to.be.equals("");
       })
-      it(`should check children`, async() => {
+      it(`should check children`, async () => {
         // Given
         const container = this.inst._renderer.container;
         container.innerHTML = `<div class="item">1</div><div class="item">2</div><div class="item">3</div>`;
@@ -191,7 +191,7 @@ describe("InfiniteGrid Test", function () {
         // When
         this.inst.layout();
 
-        const positions = children.map(el => ({position: el.style.position, left: el.style.left}));
+        const positions = children.map(el => ({ position: el.style.position, left: el.style.left }));
         const rv = await waitLayoutComplete;
 
         // Then
@@ -490,7 +490,7 @@ describe("InfiniteGrid Test", function () {
       }
       cleanup();
     });
-    it (`should check scroll attached to the top`, async () => {
+    it(`should check scroll attached to the top`, async () => {
       // Given
       const scrollPos = this.inst._watcher.getScrollPos();
 
@@ -506,7 +506,7 @@ describe("InfiniteGrid Test", function () {
       expect(this.inst._watcher.getScrollPos()).to.be.equals(scrollPos);
 
     });
-    it (`should check scroll attached to the bottom`, async () => {
+    it(`should check scroll attached to the bottom`, async () => {
       // Given
       const scrollPos = document.body.offsetHeight - window.innerHeight;
 
@@ -669,7 +669,7 @@ describe("InfiniteGrid Test", function () {
 
       this.inst.append(`<div>HEADER<img src="/base/test/unit/image/3.jpg" />FOOTER</div><div>HEADER<img src="/1.jpg">FOOTER</div>`);
     });
-	});
+  });
   describe(`When image processing, fit test`, function () {
     beforeEach(() => {
       this.el = sandbox();
@@ -836,7 +836,7 @@ describe("InfiniteGrid Test", function () {
           expect(this.inst._getLoadingStatus()).to.be.equal(0);
           expect(this.inst._status.loadingSize).to.be.equal(0);
         });
-        it (`should check startLoading / endLoading parameter method when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll})`, async() => {
+        it(`should check startLoading / endLoading parameter method when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll})`, async () => {
           await waitInsert(this.inst, true, 5, 4);
 
           const waitAppend = waitEvent(this.inst, isAppend ? "append" : "prepend");
@@ -1101,7 +1101,7 @@ describe("InfiniteGrid Test", function () {
 
       inst.destroy();
     });
-    it(`should check layout method`, async() => {
+    it(`should check layout method`, async () => {
       // Given
       this.inst.layout(true);
       await waitInsert(this.inst, true, 5, 4);
@@ -1119,7 +1119,7 @@ describe("InfiniteGrid Test", function () {
       // Then
       expect(rects).to.be.deep.equals(rects2);
     });
-    it(`should check layout method in cursor`, async() => {
+    it(`should check layout method in cursor`, async () => {
       // Given
       this.inst.layout(true);
 
@@ -1135,14 +1135,14 @@ describe("InfiniteGrid Test", function () {
       await waitLayoutComplete;
 
       // Then
-      const rects2 = datas.map(data => data.items.map(item =>item.rect.top));
+      const rects2 = datas.map(data => data.items.map(item => item.rect.top));
       expect(rects).to.be.deep.equals(rects2.map(data => data.map(top => top - rects2[0][0])));
     });
-    it(`should check resize and layout method with transition`, async() => {
+    it(`should check resize and layout method with transition`, async () => {
       // Given
       this.inst.options.transitionDuration = 0.1;
 
-      await waitInsert(this.inst, true, 5,4);
+      await waitInsert(this.inst, true, 5, 4);
 
       const datas = this.inst._items._data;
       const rects = datas.map(data => data.items.map(item => Object.assign({}, item.rect)));
@@ -1161,8 +1161,8 @@ describe("InfiniteGrid Test", function () {
       await waitLayoutComplete;
 
       // Then
-      const layoutCompleteRects =  this.inst._items._data.map(data => data.items.map(item => item.rect));
-      const layoutCompletePrevRects =  this.inst._items._data.map(data => data.items.map(item => item.prevRect));
+      const layoutCompleteRects = this.inst._items._data.map(data => data.items.map(item => item.rect));
+      const layoutCompletePrevRects = this.inst._items._data.map(data => data.items.map(item => item.prevRect));
 
       expect(rects).to.be.deep.equals(prevRects);
       expect(layoutCompleteRects).to.be.not.deep.equals(layoutCompletePrevRects);
@@ -1444,7 +1444,7 @@ describe("InfiniteGrid Test", function () {
       }
       cleanup();
     });
-    it (`should check "getItem" method`, async () => {
+    it(`should check "getItem" method`, async () => {
       // Given, When
       // group 1 ~ 40
       await waitInsert(this.inst, true, 30, 40);
@@ -1464,7 +1464,7 @@ describe("InfiniteGrid Test", function () {
       expect(item3.el).to.be.not.ok;
       expect(item4).to.be.not.ok;
     });
-    it (`should check "updateItem(el)" method`, async () => {
+    it(`should check "updateItem(el)" method`, async () => {
       // Given
       // group 1 ~ 40
       await waitInsert(this.inst, true, 30, 40);
@@ -1473,7 +1473,7 @@ describe("InfiniteGrid Test", function () {
 
       const item1 = this.inst.getItem(0, 0);
       // group2 is below group1
-      const {outlines: {start}} = this.inst._items.getData(1);
+      const { outlines: { start } } = this.inst._items.getData(1);
 
       // When
       // change content
@@ -1486,14 +1486,14 @@ describe("InfiniteGrid Test", function () {
 
       this.inst.updateItem(item1.el);
 
-      const {outlines: {start: start2}} = this.inst._items.getData(1);
+      const { outlines: { start: start2 } } = this.inst._items.getData(1);
       // Then
       expect(item1.content).to.have.string("updateItem1");
       expect(height1).to.be.not.equal(item1.size.height);
       expect(start.length).to.be.equal(start2.length);
       expect(start).to.be.not.deep.equal(start2);
     });
-    it (`should check "updateItem(groupIndex, itemIndex)" method`, async () => {
+    it(`should check "updateItem(groupIndex, itemIndex)" method`, async () => {
       // Given
       // group 1 ~ 40
       await waitInsert(this.inst, true, 30, 40);
@@ -1502,7 +1502,7 @@ describe("InfiniteGrid Test", function () {
 
       const item1 = this.inst.getItem(0, 0);
       // group2 is below group1
-      const {outlines: {start}} = this.inst._items.getData(1);
+      const { outlines: { start } } = this.inst._items.getData(1);
 
       // When
       // change content
@@ -1515,14 +1515,14 @@ describe("InfiniteGrid Test", function () {
 
       this.inst.updateItem(0, 0);
 
-      const {outlines: {start: start2}} = this.inst._items.getData(1);
+      const { outlines: { start: start2 } } = this.inst._items.getData(1);
       // Then
       expect(item1.content).to.have.string("updateItem1");
       expect(height1).to.be.not.equal(item1.size.height);
       expect(start.length).to.be.equal(start2.length);
       expect(start).to.be.not.deep.equal(start2);
     });
-    it (`should check "updateItems" method`, async () => {
+    it(`should check "updateItems" method`, async () => {
       // Given
       // group 1 ~ 40
       await waitInsert(this.inst, true, 30, 40);
@@ -1532,7 +1532,7 @@ describe("InfiniteGrid Test", function () {
       const item1 = this.inst.getItem(0, 0);
       const item2 = this.inst.getItem(0, 1);
       // group2 is below group1
-      const {outlines: {start}} = this.inst._items.getData(1);
+      const { outlines: { start } } = this.inst._items.getData(1);
 
       // When
       // change content
@@ -1549,7 +1549,7 @@ describe("InfiniteGrid Test", function () {
 
       this.inst.updateItems();
 
-      const {outlines: {start: start3}} = this.inst._items.getData(1);
+      const { outlines: { start: start3 } } = this.inst._items.getData(1);
       // Then
       expect(item1.content).to.have.string("updateItem1");
       expect(item2.content).to.have.string("updateItem2");
@@ -1657,13 +1657,13 @@ describe("InfiniteGrid Test", function () {
         this.inst.append(testcase[v]());
       });
     });
-	});
-	describe("Test size if display is none", function () {
-		beforeEach(() => {
+  });
+  describe("Test size if display is none", function () {
+    beforeEach(() => {
       this.el = sandbox();
       this.el.innerHTML = `<div id='infinite' style="width:100%"></div>`;
-			this.inst = new InfiniteGrid("#infinite");
-			this.inst.setLayout(GridLayout);
+      this.inst = new InfiniteGrid("#infinite");
+      this.inst.setLayout(GridLayout);
     });
     afterEach(() => {
       if (this.inst) {
@@ -1671,22 +1671,22 @@ describe("InfiniteGrid Test", function () {
         this.inst = null;
       }
       cleanup();
-		});
-		it("should check size if display is none", async () => {
-			// Given
-			await waitInsert(this.inst, true, 10, 1);
-			const container = this.el.querySelector("#infinite");
-			const html = container.innerHTML;
-			const height = container.style.height;
-			const width = this.inst._renderer.getViewportSize();
-			// When
-			this.el.querySelector("#infinite").style.display = "none";
-			this.inst.layout(true);
+    });
+    it("should check size if display is none", async () => {
+      // Given
+      await waitInsert(this.inst, true, 10, 1);
+      const container = this.el.querySelector("#infinite");
+      const html = container.innerHTML;
+      const height = container.style.height;
+      const width = this.inst._renderer.getViewportSize();
+      // When
+      this.el.querySelector("#infinite").style.display = "none";
+      this.inst.layout(true);
 
-			// Then
-			// no changes
-			expect(container.innerHTML).to.be.equals(html);
-			expect(container.style.height).to.be.equals(height);
-		});
-	});
+      // Then
+      // no changes
+      expect(container.innerHTML).to.be.equals(html);
+      expect(container.style.height).to.be.equals(height);
+    });
+  });
 });
