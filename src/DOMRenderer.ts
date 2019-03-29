@@ -219,11 +219,16 @@ export default class DOMRenderer {
 	public resize() {
 		const horizontal = this.options.horizontal;
 		const view = this.view;
-		const isResize = this.isNeededResize();
+		const size = this._calcSize();
+
+		if (size === 0) {
+			return;
+		}
+		const isResize = size !== this._size.viewport;
 
 		if (isResize) {
 			this._size = {
-				viewport: this._calcSize(),
+				viewport: size,
 				item: null,
 			};
 		}

@@ -183,7 +183,12 @@ function _getSize(el: WindowMockType | Document | HTMLElement, name: "Width" | "
 		} else {
 			size = el[`client${name}` as ClientSizeType] || el[`offset${name}` as OffsetSizeType];
 		}
-		return parseFloat(size || getStyles(el)[name.toLowerCase()]) || 0;
+		if (size) {
+			return size;
+		}
+		const cssSize = getStyles(el)[name.toLowerCase()];
+
+		return (~cssSize.indexOf("px") && parseFloat(cssSize)) || 0;
 	}
 }
 
