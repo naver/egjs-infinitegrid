@@ -116,10 +116,20 @@ class Infinite {
 			prepend({ cache: datas.slice(startIndex, Math.min(startCursor, endIndex + 1)) });
 		} else if (endCursor < endIndex) {
 			append({ cache: datas.slice(Math.max(startIndex, endCursor + 1), endIndex + 1) });
-		} else if (endScrollPos >= endEdgePos - threshold) {
-			append({ cache: datas.slice(endCursor + 1, endCursor + 2) });
-		} else if (scrollPos <= startEdgePos + threshold) {
-			prepend({ cache: datas.slice(startCursor - 1, startCursor) });
+		} else {
+			// if you have data(no cachedAppendData, has cachedPrependData) to pepend, request it.
+			const cachedAppendData = datas.slice(endCursor + 1, endCursor + 2);
+			const cachedPrependData = datas.slice(startCursor - 1, startCursor);
+			const isPrepend = scrollPos <= startEdgePos + threshold;
+
+			if (
+				endScrollPos >= endEdgePos - threshold
+				&& (!isPrepend || cachedAppendData.length || !cachedPrependData.length)
+			) {
+				append({ cache: cachedAppendData });
+			} else if (isPrepend) {
+				prepend({ cache: cachedPrependData });
+			}
 		}
 	}
 	public setCursor(cursor: CursorType, index: number) {
