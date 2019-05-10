@@ -60,7 +60,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					},
 				});
 				this.items.append({
-					groupKey: 0,
+					groupKey: 1,
 					items: [],
 					outlines: {
 						start: [1000],
@@ -88,7 +88,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				this.infinite.options.prepend = spy;
 				// Given
 				this.items.prepend({
-					groupKey: 0,
+					groupKey: 1,
 					items: [],
 					outlines: {
 						start: [1000],
@@ -135,7 +135,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				// Given
 				this.items.prepend({
-					groupKey: 0,
+					groupKey: 1,
 					items: [],
 					outlines: {
 						start: [1000],
@@ -175,15 +175,15 @@ import {wait, createElement} from "./helper/TestHelper";
 				this.infinite.options.append = sinon.spy();
 				this.infinite.options.prepend = sinon.spy(({cache}) => {
 					if (useRecycle) {
-						expect(cache.length).to.be.ok;
+						expect(cache.length).to.be.not.equal(0)
 						expect(cache[0].outlines.start[0]).to.be.equal(0);
 					} else {
-						expect(cache.length).to.be.not.ok;
+						expect(cache.length).to.be.equal(0);
 					}
 				});
 				// Given
 				this.items.prepend({
-					groupKey: 0,
+					groupKey: 1,
 					items: [],
 					outlines: {
 						start: [1000],
@@ -327,7 +327,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					},
 				});
 				this.items.append({
-					groupKey: 0,
+					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {
 						start: [1000, 1100],
@@ -335,7 +335,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					},
 				});
 				this.items.append({
-					groupKey: 0,
+					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {
 						start: [2000, 2100],
@@ -451,7 +451,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					},
 				});
 				this.items.append({
-					groupKey: 0,
+					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {
 						start: [1000, 1100],
@@ -459,7 +459,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					},
 				});
 				this.items.append({
-					groupKey: 0,
+					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {
 						start: [2000, 2100],
@@ -489,7 +489,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					},
 				});
 				this.items.append({
-					groupKey: 0,
+					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {
 						start: [1000, 1100],
@@ -497,7 +497,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					},
 				});
 				this.items.append({
-					groupKey: 0,
+					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {
 						start: [2000, 2100],
@@ -542,7 +542,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					},
 				});
 				this.items.append({
-					groupKey: 0,
+					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {
 						start: [1000, 1100],
@@ -550,7 +550,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					},
 				});
 				this.items.append({
-					groupKey: 0,
+					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {
 						start: [2000, 2100],
