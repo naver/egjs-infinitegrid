@@ -90,8 +90,8 @@
         </div> -->
         <h2 class="title">
             <span class="highlight">InfiniteGrid</span>
-            <a href="https://github.com/naver/egjs-infinitegrid/releases/tag/3.5.4">
-                <span class="version">v3.5.4</span>
+            <a href="https://github.com/naver/egjs-infinitegrid/releases/tag/3.5.5">
+                <span class="version">v3.5.5</span>
             </a>
         </h2>
         <p class="intro">A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -445,11 +445,11 @@
 <span class="kd">var</span> <span class="nx">GridLayout</span> <span class="o">=</span> <span class="nx">InfiniteGrid</span><span class="p">.</span><span class="nx">GridLayout</span><span class="p">;</span>
 </code></pre></div></div>
 <h5 id="es6">ES6+</h5>
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">InfiniteGrid</span><span class="p">,</span> <span class="p">{</span><span class="nx">GridLayout</span><span class="p">}</span> <span class="k">from</span> <span class="s2">"@egjs/infinitegrid"</span><span class="p">;</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">InfiniteGrid</span><span class="p">,</span> <span class="p">{</span><span class="nx">GridLayout</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@egjs/infinitegrid</span><span class="dl">"</span><span class="p">;</span>
 </code></pre></div></div>
 
 <h3 id="initialize">Initialize</h3>
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">"#grid"</span><span class="p">,</span> <span class="p">{</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">InfiniteGrid</span><span class="p">(</span><span class="dl">"</span><span class="s2">#grid</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span>
     <span class="na">horizontal</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
 <span class="p">});</span>
 
@@ -720,11 +720,11 @@
     <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"item"</span><span class="nt">&gt;</span>item5<span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div></div>
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="s2">".app"</span><span class="p">,</span> <span class="p">{</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">ig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">(</span><span class="dl">"</span><span class="s2">.app</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span>
     <span class="na">isConstantSize</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
     <span class="na">transitionDuration</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
 <span class="p">});</span>
-<span class="nx">ig</span><span class="p">.</span><span class="nx">setLayout</span><span class="p">(</span><span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">.</span><span class="nx">GridLayout</span><span class="p">,</span> <span class="p">{</span><span class="na">align</span><span class="p">:</span> <span class="s2">"center"</span><span class="p">,</span> <span class="na">margin</span><span class="p">:</span> <span class="mi">3</span><span class="p">});</span>
+<span class="nx">ig</span><span class="p">.</span><span class="nx">setLayout</span><span class="p">(</span><span class="nx">eg</span><span class="p">.</span><span class="nx">InfiniteGrid</span><span class="p">.</span><span class="nx">GridLayout</span><span class="p">,</span> <span class="p">{</span><span class="na">align</span><span class="p">:</span> <span class="dl">"</span><span class="s2">center</span><span class="dl">"</span><span class="p">,</span> <span class="na">margin</span><span class="p">:</span> <span class="mi">3</span><span class="p">});</span>
 <span class="nx">ig</span><span class="p">.</span><span class="nx">layout</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
 </code></pre></div></div>
 
@@ -855,7 +855,7 @@
 </code></pre></div></div>
 
 <h3 id="how-to-use">How to use</h3>
-<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">GridLayout</span><span class="p">,</span> <span class="nx">JustifiedLayout</span><span class="p">,</span> <span class="nx">FrameLayout</span><span class="p">,</span> <span class="nx">SquareLayout</span><span class="p">,</span> <span class="nx">PackingLayout</span><span class="p">}</span> <span class="k">from</span> <span class="s2">"@egjs/react-layout"</span><span class="p">;</span>
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">GridLayout</span><span class="p">,</span> <span class="nx">JustifiedLayout</span><span class="p">,</span> <span class="nx">FrameLayout</span><span class="p">,</span> <span class="nx">SquareLayout</span><span class="p">,</span> <span class="nx">PackingLayout</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@egjs/react-layout</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="p">&lt;</span><span class="nc">GridLayout</span> <span class="na">tag=</span><span class="s2">"div"</span> <span class="na">size=</span><span class="s2">"1000"</span> <span class="na">horizontal=</span><span class="si">{</span><span class="kc">true</span><span class="si">}</span> <span class="na">margin=</span><span class="s2">"10"</span> <span class="na">isEqualSize=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span> <span class="na">outline=</span><span class="si">{</span><span class="p">[]</span><span class="si">}</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className=</span><span class="s2">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
@@ -884,7 +884,7 @@
 
 <h3 id="how-to-use-1">How to use</h3>
 <div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout</span>
-<span class="k">import</span> <span class="p">{</span><span class="nx">GridLayout</span><span class="p">,</span> <span class="nx">JustifiedLayout</span><span class="p">,</span> <span class="nx">FrameLayout</span><span class="p">,</span> <span class="nx">SquareLayout</span><span class="p">,</span> <span class="nx">PackingLayout</span><span class="p">}</span> <span class="k">from</span> <span class="s2">"@egjs/react-layout"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">GridLayout</span><span class="p">,</span> <span class="nx">JustifiedLayout</span><span class="p">,</span> <span class="nx">FrameLayout</span><span class="p">,</span> <span class="nx">SquareLayout</span><span class="p">,</span> <span class="nx">PackingLayout</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@egjs/react-layout</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="p">&lt;</span><span class="nc">GridLayout</span>
 	<span class="na">tag=</span><span class="s2">"div"</span>
