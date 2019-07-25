@@ -95,7 +95,9 @@ class ImageLoaded {
 		});
 	}
 	public static checkImageLoaded(el: HTMLElement) {
-		if (el.tagName === "IMG") {
+		if (!el) {
+			return [];
+		} else if (el.tagName === "IMG") {
 			return (el as HTMLImageElement).complete ? [] : [(el as HTMLImageElement)];
 		} else {
 			return toArray(el.querySelectorAll("img"));
