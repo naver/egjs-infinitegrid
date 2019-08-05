@@ -566,10 +566,27 @@ export default class InfiniteGrid extends Component {
 			this.layout(true);
 		}
 	}
+	isCached(groupIndex = 0, itemIndex) {
+		const item = this.getItem(groupIndex, itemIndex);
+
+		return !!(item && item.size && item.size.width);
+	}
 	getItem(groupIndex = 0, itemIndex) {
 		if (itemIndex == null && typeof groupIndex === "object") {
 			if (!groupIndex) {
 				return undefined;
+			}
+			if ("itemKey" in groupIndex) {
+				const propsChildren = this.state.children;
+				const itemKey = groupIndex.itemKey;
+				let item;
+
+				[].concat.call(this.props.children).forEach((child, i) => {
+					if (!item && itemKey == child.key) {
+						item = this.state.datas[propsChildren[i].key];
+					}
+				});
+				return item;
 			}
 			const items = this.getItems();
 			const length = items.length;
