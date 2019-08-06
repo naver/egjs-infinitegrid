@@ -387,7 +387,7 @@ export default class InfiniteGrid extends Component {
 		const { horizontal, loading } = this.props;
 		const { processing, loadingStyle, isFirstRender } = this.state;
 
-		if (!loading)
+		if (loading) {
 			components.push(
 				<LoadingBar
 					key="LOADINGBAR"
@@ -399,7 +399,7 @@ export default class InfiniteGrid extends Component {
 					{isFirstRender ? null : loading}
 				</LoadingBar>
 			);
-
+		}
 		return components;
 	}
 	_getVisibleItems() {
