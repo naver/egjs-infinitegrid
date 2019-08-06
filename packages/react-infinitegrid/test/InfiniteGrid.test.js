@@ -625,12 +625,13 @@ describe(`test layout`, function () {
 		// Given
 		const rendered = ReactDOM.render(<CachedExample/>, this.el);
 
-		// When
 		await wait(300);
 
 		// not cached
 		const notCachedHTML = this.el.querySelector(".item").innerHTML;
 
+
+		// When
 		rendered.forceUpdate();
 
 		// cached
