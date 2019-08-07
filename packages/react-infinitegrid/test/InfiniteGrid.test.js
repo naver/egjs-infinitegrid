@@ -10,6 +10,7 @@ import NoItemExample from "./NoItemExample";
 import EqualSizeExample from "./EqualSizeExample";
 import OneGroupExample from "./OneGroupExample";
 import RefreshExample from "./RefreshExample";
+import CachedExample from "./CachedExample";
 
 use(matchSnapshot);
 
@@ -619,5 +620,27 @@ describe(`test layout`, function () {
 		expect(arr).to.be.not.eql(arr2);
 		expect(pos[5]).to.be.not.eql(pos2[3]);
 		expect(pos).to.be.not.eql(pos2);
+	});
+	it ("should check isCached", async() => {
+		// Given
+		const rendered = ReactDOM.render(<CachedExample/>, this.el);
+
+		await wait(300);
+
+		// not cached
+		const notCachedHTML = this.el.querySelector(".item").innerHTML;
+
+
+		// When
+		rendered.forceUpdate();
+
+		// cached
+		await wait(300);
+
+		const cachedHTML = this.el.querySelector(".item").innerHTML;
+
+		// Then
+		expect(notCachedHTML).to.be.equals("no");
+		expect(cachedHTML).to.be.equals("cached");
 	});
 });

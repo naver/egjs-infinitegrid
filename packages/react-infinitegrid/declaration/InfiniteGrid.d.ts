@@ -71,8 +71,12 @@ declare class InfiniteGrid extends React.Component<InfiniteGridProps> {
 	setStatus(status: object, applyScrollPos?: boolean): this;
 	getStatus(): object;
 	getItems(includeCached?: boolean): IInfiniteGridItem[];
+	isCached(element: HTMLElement): boolean;
+	isCached(groupIndex?: number, itemIndex?: number): boolean;
+	isCached(groupIndex: { itemKey: any }): boolean;
 	getItem(element: HTMLElement): IInfiniteGridItem;
 	getItem(groupIndex?: number, itemIndex?: number): IInfiniteGridItem;
+	getItem(groupIndex: { itemKey: any }): IInfiniteGridItem;
 	updateItem(element: HTMLElement): this;
 	updateItem(groupIndex?: number, itemIndex?: number): this;
 	updateItems(): this;
