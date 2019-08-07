@@ -12,7 +12,7 @@ interface InfiniteGridProps {
 	useRecycle?: boolean,
 	isConstantSize?: boolean,
 	horizontal?: boolean,
-	loading?: object | boolean,
+	loading?: React.ReactNode,
 	transitionDuration?: number,
 	onAppend?: (param: OnAppendParameter) => void,
 	onPrepend?: (param: OnPrependParameter) => void,
