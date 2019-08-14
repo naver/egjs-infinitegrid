@@ -644,7 +644,7 @@ describe(`test layout`, function () {
 		expect(notCachedHTML).to.be.equals("no");
 		expect(cachedHTML).to.be.equals("cached");
 	});
-	it ("should check remove group's last item", async() => {
+	it ("should check position when group's last item removed", async() => {
 		// Given
 		// group 0 - 0, 1
 		// group 1 - 2, 3
@@ -666,9 +666,6 @@ describe(`test layout`, function () {
 		const item2 = this.el.querySelector(".item:nth-child(2)");
 
 		// Then
-		console.log(item0.style.top, item0.style.height, item2.style.top);
-
-		parseFloat
 		expect(parseInt(item2.style.top)).to.be.equals(parseInt(item0.style.top) + parseInt(item0.style.height));
 	});
 });

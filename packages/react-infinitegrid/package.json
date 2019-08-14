@@ -83,7 +83,7 @@
     "write-file-webpack-plugin": "^4.2.0"
   },
   "scripts": {
-    "start": "BABEL_ENV=common NODE_ENV=production webpack-dev-server --host=0.0.0.0 --env production",
+    "start": "BABEL_ENV=common webpack-dev-server --host=0.0.0.0",
     "test": "BABEL_ENV=common karma start",
     "lint": "eslint src",
     "lint:examples": "eslint examples/js",
