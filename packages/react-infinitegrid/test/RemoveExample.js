@@ -21,10 +21,15 @@ export default class Exmaple extends Component {
 	renderList() {
 		const arr = [];
 
+		// group: 0 key: 0
+		// group: 0 key: 1
+		// group: 1 key: 2
+		// group: 1 key: 3
 		for (let i = 0; i < 4; ++i) {
 			if (this.state.isRemoved) {
 				if (i === 1) {
-					// remove 1 item
+					// remove group's last item
+					// remove group: 0, key: 1 item
 					continue;
 				}
 			}
