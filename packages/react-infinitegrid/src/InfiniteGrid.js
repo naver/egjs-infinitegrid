@@ -1,6 +1,7 @@
 import React, { Component, Children } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
+import { diff } from "@egjs/list-differ";
 import { GridLayout, DOMRenderer, ItemManager, Infinite, Watcher, LayoutManager } from "@egjs/infinitegrid";
 import { DONE, APPEND, PREPEND, PROCESS, DUMMY_POSITION, LOADING_APPEND, LOADING_PREPEND, CONTAINER_CLASSNAME } from "./consts";
 import ItemWrapper from "./ItemWrapper";
@@ -125,11 +126,23 @@ export default class InfiniteGrid extends Component {
 		return true;
 	}
 	renderContainer() {
-		const props = this.props;
-		const ContainerTag = props.containerTag;
-		const isOverflowScroll = props.isOverflowScroll;
+		const { containerTag: ContainerTag, isOverflowScroll, loading, horizontal } = this.props;
+		const { processing, loadingStyle, isFirstRender } = this.state;
 		const components = this._getVisibleComponents();
 
+		if (loading) {
+			components.push(
+				<LoadingBar
+					key="LOADINGBAR"
+					horizontal={horizontal}
+					loading={processing & (LOADING_APPEND | LOADING_PREPEND)}
+					loadingStyle={loadingStyle}
+					ref={bar => { bar && (this._loading = bar); }}
+				>
+					{isFirstRender ? null : loading}
+				</LoadingBar>
+			);
+		}
 		if (!isOverflowScroll) {
 			return components;
 		}
@@ -372,8 +385,8 @@ export default class InfiniteGrid extends Component {
 		}
 		);
 	}
-	_getVisibleGroups() {
-		const { groups, startIndex, endIndex } = this.state;
+	_getVisibleGroups(state = this.state) {
+		const { groups, startIndex, endIndex } = state;
 
 		if (!groups.length) {
 			return [];
@@ -381,26 +394,8 @@ export default class InfiniteGrid extends Component {
 		return groups.slice(startIndex, endIndex + 1);
 	}
 	_getVisibleComponents() {
-		const components = this._getVisibleGroups().map(group => this._getItemWrapper(group))
+		return this._getVisibleGroups().map(group => this._getItemWrapper(group))
 			.reduce((arr, children) => arr.concat(children), []);
-
-		const { horizontal, loading } = this.props;
-		const { processing, loadingStyle, isFirstRender } = this.state;
-
-		if (loading) {
-			components.push(
-				<LoadingBar
-					key="LOADINGBAR"
-					horizontal={horizontal}
-					loading={processing & (LOADING_APPEND | LOADING_PREPEND)}
-					loadingStyle={loadingStyle}
-					ref={bar => { bar && (this._loading = bar); }}
-				>
-					{isFirstRender ? null : loading}
-				</LoadingBar>
-			);
-		}
-		return components;
 	}
 	_getVisibleItems() {
 		return ItemManager.pluck(this._getVisibleGroups(), "items");
@@ -428,6 +423,7 @@ export default class InfiniteGrid extends Component {
 		if (!propsChildren) {
 			return;
 		}
+		const prevVisibleChildren = ItemManager.pluck(this._getVisibleGroups(this.state), "children");
 		const prevGroupKeys = state.groupKeys;
 		const prevGroups = state.groups;
 		const prevDatas = state.datas;
@@ -547,8 +543,17 @@ export default class InfiniteGrid extends Component {
 		state.datas = datas;
 		// synchronize
 		this._updateGroups(groups);
+
 		if (!this._isProcessing() || !groups.length || !state.isUpdate) {
 			this._updateCursor(state);
+		}
+		if (!this._isProcessing() && !state.layout && !state.isUpdate) {
+			const { removed } = diff(
+				prevVisibleChildren,
+				ItemManager.pluck(this._getVisibleGroups(state), "children"),
+				({ key }) => key,
+			);
+			state.isUpdate = !!removed.length;
 		}
 	}
 	_updateLayout() {

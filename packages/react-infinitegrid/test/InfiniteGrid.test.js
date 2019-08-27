@@ -11,6 +11,7 @@ import EqualSizeExample from "./EqualSizeExample";
 import OneGroupExample from "./OneGroupExample";
 import RefreshExample from "./RefreshExample";
 import CachedExample from "./CachedExample";
+import RemoveExample from "./RemoveExample";
 
 use(matchSnapshot);
 
@@ -642,5 +643,29 @@ describe(`test layout`, function () {
 		// Then
 		expect(notCachedHTML).to.be.equals("no");
 		expect(cachedHTML).to.be.equals("cached");
+	});
+	it ("should check position when group's last item removed", async() => {
+		// Given
+		// group 0 - 0, 1
+		// group 1 - 2, 3
+		const rendered = ReactDOM.render(<RemoveExample/>, this.el);
+
+		await wait(300);
+
+		// When
+		// group 0 - 0, delete(1)
+		// group 1 - 2, 3
+		rendered.setState({ isRemoved: true })
+
+		// removed
+		await wait(300);
+
+		// group 0 - 0,
+		const item0 = this.el.querySelector(".item:nth-child(1)");
+		// group 1 - 2, 3
+		const item2 = this.el.querySelector(".item:nth-child(2)");
+
+		// Then
+		expect(parseInt(item2.style.top)).to.be.equals(parseInt(item0.style.top) + parseInt(item0.style.height));
 	});
 });
