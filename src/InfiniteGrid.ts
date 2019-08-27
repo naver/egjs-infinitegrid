@@ -377,20 +377,36 @@ class InfiniteGrid extends Component {
 		return this;
 	}
 	/**
+	 * Removes a item corresponding to an index on a grid layout.
+	 * @ko 그리드 레이아웃에서 인덱스에 해당하는 아이템 삭제한다.
+	 * @param - Index of group corresponding to item to remove <ko>삭제할 아이템에 해당하는 그룹의 인덱스</ko>
+	 * @param - Index of item to remove on group <ko>그룹에서 삭제할 아이템의 인덱스</ko>
+	 * @return {Object}  Removed items information <ko>삭제된 아이템들 정보</ko>
+	 */
+	public removeByIndex(groupIndex: number, itemIndex: number, isLayout = true) {
+		const { items, groups } = this._infinite.remove(groupIndex, itemIndex);
+
+		items.forEach(item => {
+			DOMRenderer.removeElement(item.el);
+		});
+
+		if (items.length) {
+			isLayout && this.layout(groups.length > 0);
+
+			return items;
+		}
+		return [];
+	}
+	/**
 	 * Removes a item element on a grid layout.
 	 * @ko 그리드 레이아웃의 카드 엘리먼트를 삭제한다.
 	 * @param {HTMLElement} item element to be removed <ko>삭제될 아이템 엘리먼트</ko>
-	 * @return {Object}  Removed item element <ko>삭제된 아이템 엘리먼트 정보</ko>
+	 * @return {Object}  Removed items information <ko>삭제된 아이템들 정보</ko>
 	 */
 	public remove(element: HTMLElement, isLayout = true) {
-		if (element) {
-			const {items, groups} = this._infinite.remove(element);
+		const { groupIndex, itemIndex } = this._items.indexOfElement(element);
 
-			items && DOMRenderer.removeElement(element);
-			isLayout && this.layout(groups.length > 0);
-			return items;
-		}
-		return null;
+		return this.removeByIndex(groupIndex, itemIndex, isLayout);
 	}
 	/**
 	 * Returns the list of group keys which belongs to card elements currently being maintained. You can use the append() or prepend() method to configure group keys so that multiple card elements can be managed at once. If you do not use these methods to configure group keys, groupkey is automatically generated.
@@ -624,7 +640,7 @@ class InfiniteGrid extends Component {
 	  rect: {top: ..., left: ..., width: ..., height: ...},
 	 }
 	 */
-	public getItem(groupIndex = 0, itemIndex?: number): IInfiniteGridItem {
+	public getItem(groupIndex: HTMLElement | number = 0, itemIndex?: number): IInfiniteGridItem {
 		if (itemIndex == null && typeof groupIndex === "object") {
 			if (!groupIndex) {
 				return undefined;
@@ -639,7 +655,7 @@ class InfiniteGrid extends Component {
 			}
 			return undefined;
 		} else {
-			const group = this._items.getData(groupIndex);
+			const group = this._items.getData(groupIndex as number);
 
 			return group && group.items[itemIndex || 0];
 		}

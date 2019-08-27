@@ -1,6 +1,6 @@
 import ItemManager from "./ItemManager";
 import { assign } from "./utils";
-import { CursorType, IInfiniteGridItem, IInfiniteGridGroup, IInfiniteStatus } from "./types";
+import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult } from "./types";
 
 function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: number, endScrollPos: number) {
 	const { items, outlines } = group;
@@ -192,20 +192,24 @@ class Infinite {
 	public getVisibleData() {
 		return this._items.get(this._status.startCursor, this._status.endCursor);
 	}
-	public remove(element: HTMLElement): {
-		items: IInfiniteGridItem[],
-		groups: IInfiniteGridGroup[],
-	} {
-		const { startCursor, endCursor } = this._status;
-		const result =
-			this._items.remove(element, startCursor, endCursor);
+
+	public remove(groupIndex: number, itemIndex: number) {
+		const status = this._status;
+		const items = this._items;
+		const { startCursor, endCursor } = status;
+		const result = items.remove(groupIndex, itemIndex);
 
 		if (result.groups.length) {
-			this.setCursor("end", endCursor - 1);
+			if (groupIndex < startCursor) {
+				this.setCursor("start", startCursor - 1);
+			}
+			if (groupIndex <= endCursor) {
+				this.setCursor("end", endCursor - 1);
+			}
 		}
-		if (!this._items.size()) {
-			this._status.startCursor = -1;
-			this._status.endCursor = -1;
+		if (!items.size()) {
+			status.startCursor = -1;
+			status.endCursor = -1;
 		}
 		return result;
 	}

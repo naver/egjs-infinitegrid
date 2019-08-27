@@ -161,7 +161,7 @@ describe("ItemManager Test", function() {
       const item = initItems(1);
       const item2 = initItems(2);
       // When
-      
+
       const index = this.inst.indexOf(item);
 
       this.inst.append(item);
@@ -179,7 +179,7 @@ describe("ItemManager Test", function() {
       expect(index3).to.be.equals(0);
       expect(index4).to.be.equals(0);
       expect(index5).to.be.equals(1);
-      expect(index6).to.be.equals(1);      
+      expect(index6).to.be.equals(1);
     });
     it("should check append and remove", () => {
       // Given
@@ -194,7 +194,8 @@ describe("ItemManager Test", function() {
       const length = group1.items.length;
       // remove all items1
       for (let i = 0; i < length; ++i) {
-        this.inst.remove(group1.items[0].el);
+				const indexes = this.inst.indexOfElement(group1.items[0].el);
+        this.inst.remove(indexes.groupIndex, indexes.itemIndex);
       }
       const groupsLength2 = this.inst.size();
 
@@ -202,7 +203,8 @@ describe("ItemManager Test", function() {
       const length2 = group2.items.length;
       // remove all items2
       for (let i = 0; i < length2; ++i) {
-        this.inst.remove(group2.items[0].el);
+				const indexes = this.inst.indexOfElement(group2.items[0].el);
+				this.inst.remove(indexes.groupIndex, indexes.itemIndex);
       }
       const groupsLength3 = this.inst.size();
 

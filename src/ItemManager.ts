@@ -1,6 +1,6 @@
 import { MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME, DUMMY_POSITION } from "./consts";
 import { $, toArray, isUndefined, assign } from "./utils";
-import { CursorType, IJQuery, IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus } from "./types";
+import { CursorType, IJQuery, IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus, IRemoveResult } from "./types";
 
 export default class ItemManager {
 	public static from(
@@ -160,51 +160,52 @@ export default class ItemManager {
 	public clear() {
 		this._data = [];
 	}
-	public remove(element: HTMLElement, start: number, end: number) {
+	public remove(groupIndex: number, itemIndex: number): IRemoveResult {
+		const data = this.getData(groupIndex);
 		let items: IInfiniteGridItem[] = [];
 		let groups: IInfiniteGridGroup[] = [];
-		const key = element.getAttribute(GROUPKEY_ATT);
-		const datas = this.get(start, end)
-			.filter(v => String(v.groupKey) === key);
 
-		if (!datas.length) {
+		if (!data) {
 			return { items, groups };
 		}
-		const data = datas[0];
+		// remove item information
+		items = data.items.splice(itemIndex, 1);
 
-		const length = data.items.length;
-		let idx = -1;
-
-		for (let i = 0; i < length; i++) {
-			if (data.items[i].el === element) {
-				idx = i;
-				break;
-			}
-		}
-		if (idx >= 0) {
-			// remove item information
-			items = data.items.splice(idx, 1);
-
-			if (!data.items.length) {
-				this._data.splice(this.indexOf(data), 1);
-				groups = [data];
-			} else {
-				this.set(data, key);
-			}
+		if (!data.items.length) {
+			groups = this._data.splice(groupIndex, 1);
 		}
 		return { items, groups };
 	}
-	public indexOf(data: IInfiniteGridGroup | string | number) {
-		const groupKey = typeof data === "object" ? data.groupKey : data;
+	public indexOf(data: { groupKey: string | number } | string | number) {
+		const groupKey = `${typeof data === "object" ? data.groupKey : data}`;
 		const datas = this._data;
 		const length = datas.length;
 
 		for (let i = 0; i < length; ++i) {
-			if (groupKey === datas[i].groupKey) {
+			if (groupKey === `${datas[i].groupKey}`) {
 				return i;
 			}
 		}
 		return -1;
+	}
+	public indexOfElement(element: HTMLElement) {
+		const groupKey = element.getAttribute(GROUPKEY_ATT);
+		const groupIndex = this.indexOf({ groupKey });
+		let itemIndex = -1;
+
+		if (groupIndex > -1) {
+			const data = this.getData(groupIndex);
+
+			const length = data.items.length;
+
+			for (let i = 0; i < length; i++) {
+				if (data.items[i].el === element) {
+					itemIndex = i;
+					break;
+				}
+			}
+		}
+		return { groupIndex, itemIndex };
 	}
 	public get(start?: number, end?: number) {
 		return isUndefined(start) ? this._data :
