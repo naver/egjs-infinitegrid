@@ -396,11 +396,12 @@ import {wait, createElement} from "./helper/TestHelper";
 
 				// remove group0 item0
 				const group0 = this.items.getData(0);
-				this.infinite.remove(group0.items[0].el);
+				const indexes0 = this.items.indexOfElement(group0.items[0].el);
+				this.infinite.remove(indexes0.groupIndex, indexes0.itemIndex);
 				const length1 = group0.items.length; // 1
 
 				// remove group0 item1
-				this.infinite.remove(group0.items[0].el);
+				this.infinite.remove(indexes0.groupIndex, indexes0.itemIndex);
 				const length2 = group0.items.length; // 0
 
 				const startCursor1 = this.infinite.getCursor("start");
@@ -410,11 +411,12 @@ import {wait, createElement} from "./helper/TestHelper";
 				const group1 = this.items.getData(0);
 
 				// remove group1 item0
-				this.infinite.remove(group1.items[0].el);
+				const indexes1 = this.items.indexOfElement(group1.items[0].el)
+				this.infinite.remove(indexes1.groupIndex, indexes1.itemIndex);
 				const length3 = group1.items.length; // 1
 
 				// remove group1 item1
-				this.infinite.remove(group1.items[0].el);
+				this.infinite.remove(indexes1.groupIndex, indexes1.itemIndex);
 				const length4 = group1.items.length; // 0
 
 				const startCursor2 = this.infinite.getCursor("start");

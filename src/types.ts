@@ -53,6 +53,10 @@ export interface IWatchStatus {
 	scrollPos: number;
 }
 
+export interface IRemoveResult {
+	items: IInfiniteGridItem[];
+	groups: IInfiniteGridGroup[];
+}
 /**
  * The object of data to be sent to an event
  * @ko 이벤트에 전달되는 데이터 객체
