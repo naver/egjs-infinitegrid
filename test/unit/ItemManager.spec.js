@@ -98,9 +98,9 @@ describe("ItemManager Test", function () {
 				this.inst = null;
 			}
 		});
-		it("sholud have IGNORE CLASS ITEM", () => {
+		it("should have IGNORE CLASS ITEM", () => {
 			// Given
-			const elements = `<div></div><div class="${IGNORE_CLASSNAME}"></div><div></div>`;
+			const elements = `<div></div><div class="item ${IGNORE_CLASSNAME}"></div><div></div>`;
 
 			// When
 			const items = ItemManager.from(elements, "*", { groupKey: 10, isAppend: true });
@@ -109,9 +109,9 @@ describe("ItemManager Test", function () {
 			expect(items).to.have.lengthOf(2);
 			expect(items[0].groupKey).to.be.equals(10);
 		});
-		it("sholud have item selector", () => {
+		it("should has an item except IGNORE_CLASSNAME", () => {
 			// Given
-			const elements = `<div class="item"></div><div class="item item2"></div><div class="item2"></div><div class="${IGNORE_CLASSNAME}"></div><div></div>`;
+			const elements = `<div class="item"></div><div class="item item2"></div><div class="item2"></div><div class="item ${IGNORE_CLASSNAME}"></div><div></div>`;
 
 			// When
 			const items = ItemManager.from(elements, "item", { groupKey: 10, isAppend: true });
@@ -203,17 +203,24 @@ describe("ItemManager Test", function () {
 
 			const length2 = group2.items.length;
 			// remove all items2
+
+			const groupsLengths = [];
 			for (let i = 0; i < length2; ++i) {
 				const indexes = this.inst.indexOfElement(group2.items[0].el);
 				this.inst.remove(indexes.groupIndex, indexes.itemIndex);
+				groupsLengths.push(this.inst.size());
 			}
-			const groupsLength3 = this.inst.size();
+
 
 			// Then
 			expect(groupsLength1).to.be.equals(2);
 			expect(groupsLength2).to.be.equals(1);
-			expect(groupsLength3).to.be.equals(0);
-		})
+
+			for (let i = 0; i < groupsLengths.length - 1; ++i) {
+				expect(groupsLengths[i]).to.be.equals(1);
+			}
+			expect(groupsLengths[groupsLengths.length - 1]).to.be.equals(0);
+		});
 	});
 	[true, false].forEach(horizontal => {
 		describe(`fit Test(horizontal: ${horizontal})`, function () {
