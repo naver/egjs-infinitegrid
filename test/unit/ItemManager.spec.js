@@ -98,7 +98,7 @@ describe("ItemManager Test", function () {
 				this.inst = null;
 			}
 		});
-		it("should have IGNORE CLASS ITEM", () => {
+		it("should have all items except IGNORE_CLASSNAME", () => {
 			// Given
 			const elements = `<div></div><div class="item ${IGNORE_CLASSNAME}"></div><div></div>`;
 
@@ -109,7 +109,7 @@ describe("ItemManager Test", function () {
 			expect(items).to.have.lengthOf(2);
 			expect(items[0].groupKey).to.be.equals(10);
 		});
-		it("should has an item except IGNORE_CLASSNAME", () => {
+		it("should have 'item' selector items except IGNORE_CLASSNAME", () => {
 			// Given
 			const elements = `<div class="item"></div><div class="item item2"></div><div class="item2"></div><div class="item ${IGNORE_CLASSNAME}"></div><div></div>`;
 
