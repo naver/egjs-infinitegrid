@@ -25,7 +25,15 @@ export function makeGroup(items, isAppend, groupKey) {
 		outlines: {start: [], end: []},
 	};
 }
-export function insert(instance, isAppend, callback, count = 30, retry = 1) {
+export async function insert(instance, isAppend, count = 30, retry = 1, time = 100) {
+	const method = isAppend ? "append" : "prepend";
+
+	for (let i = 1; i <= retry; ++i) {
+		instance[method](getItems(count), i);
+	}
+	await wait(time);
+}
+export function insertCallback(instance, isAppend, callback, count = 30, retry = 1) {
 	let idx = 1;
 	// const oldHandler = instance.callback.layoutComplete;
 	const method = isAppend ? "append" : "prepend";
@@ -33,11 +41,11 @@ export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 		// oldHandler && oldHandler(e);
 		// Then: check layout property
 		checkLayoutComplete(layoutHandler, {
-			isAppend, 
+			isAppend,
 			count,
 			isTrusted: false
 		});
-		
+
 		if (idx <= retry) {
 			instance[method](getItems(count), idx++);
 		} else {
@@ -61,7 +69,7 @@ export function waitInsert(instance, isAppend, count, retry) {
 	return new Promise(resolve => {
 		let handler;
 
-		handler = insert(instance, isAppend, () => {resolve(handler)}, count, retry);
+		handler = insertCallback(instance, isAppend, () => {resolve(handler)}, count, retry);
 	});
 }
 export function waitEvent(instance, eventName) {
@@ -89,67 +97,3 @@ export function createElement(groupKey) {
   div.setAttribute("data-groupkey", groupKey);
   return div;
 }
-
-// function parseCssText(str) {
-// 	const ht = {};
-// 	str.split(";").map(v => v.trim())
-// 		.filter(v => !utils.isEmptyObject(v))
-// 		.forEach(v => {
-// 			const a = v.split(":");
-// 			const val = a[1].trim();
-
-// 			if (!utils.isEmptyObject(val)) {
-// 				ht[a[0]] = a[1].trim();
-// 			}
-// 		});
-// 	return ht;
-// }
-
-// export function checkGetStatus(infinite, beforeStatus) {
-// 	const beforeLayoutStatus = beforeStatus.layoutManager;
-// 	const target = infinite.view === window ? infinite.el : infinite.view;
-
-// 	// Then
-// 	expect(beforeStatus.html).to.be.equal(target.innerHTML);
-// 	expect(beforeStatus.cssText).to.be.equal(target.style.cssText);
-
-// 	beforeLayoutStatus.items.forEach((v, i) => {
-// 		expect(v.position).to.be.deep.equal(infinite.layoutManager.items[i].position);
-// 		expect(v.size).to.be.deep.equal(infinite.layoutManager.items[i].size);
-// 	});
-// 	for (let v in beforeStatus.status) {
-// 		expect(infinite._status[v]).to.be.equal(beforeStatus.status[v]);
-// 	}
-// 	expect(utils.scrollTop(infinite.view)).to.be.equal(beforeStatus.scrollPos);
-// }
-
-// export function compareStatus(infinite, beforeStatus, beforeScrollPos) {
-// 	const beforeLayoutStatus = beforeStatus.layoutManager;
-// 	const target = infinite.view === window ? infinite.el : infinite.view;
-
-// 	// Then (check infiniteGrid)
-// 	expect(infinite.options).to.be.deep.equal(beforeStatus.options);
-// 	for(let v in beforeStatus.prop) {
-// 		expect(infinite._status[v]).to.be.equal(beforeStatus.prop[v]); // check infiniteGrid properties
-// 	};
-// 	expect(parseCssText(target.style.cssText)).to.be.deep.equal(parseCssText(beforeStatus.cssText));
-
-// 	// Then (check layoutManager)
-// 	for (let v in beforeLayoutStatus.prop) {
-// 		if (v !== "items") {
-// 			expect(infinite.layoutManager[v]).to.be.deep.equal(beforeLayoutStatus.prop[v]); // check LayoutManager properties
-// 		}
-// 	};
-// 	infinite.layoutManager.items.forEach((v, i) => {
-// 		expect(v.position).to.be.deep.equal(beforeLayoutStatus.items[i].position); // check html and position information
-// 		expect(v.size).to.be.deep.equal(beforeLayoutStatus.items[i].size); // check html and size information
-// 		expect(v.position).to.be.deep.equal({
-// 			"x": parseInt(v.el.style.left, 10),
-// 			"y": parseInt(v.el.style.top, 10),
-// 		});
-// 	});
-
-// 	// Then (check scrollPosotion)
-// 	typeof beforeScrollPos !== "undefined" &&
-// 		expect(beforeStatus.scrollPos).to.be.equal(beforeScrollPos);
-// }
