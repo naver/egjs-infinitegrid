@@ -1,33 +1,7 @@
 import ItemManager from "./ItemManager";
-import { assign } from "./utils";
-import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult } from "./types";
+import { assign, findIndex, findLastIndex } from "./utils";
+import { CursorType, IInfiniteStatus, IRemoveResult, IItem, IInfiniteGridItem, IInfiniteOptions, IInfiniteGridGroup } from "./types";
 
-function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: number, endScrollPos: number) {
-	const { items, outlines } = group;
-	const start = outlines.start;
-	const end = outlines.end;
-
-	if (start.length === 0 || end.length === 0 || !items.length || !items[0].el) {
-		return 2;
-	}
-	const min = Math.min(...start);
-	const max = Math.max(...end);
-
-	if ((endScrollPos + threshold < min)) {
-		return +1;
-	} else if ((scrollPos - threshold > max)) {
-		return -1;
-	}
-	return 0;
-}
-
-export interface IInfiniteOptions {
-	useRecycle?: boolean;
-	threshold?: number;
-	append?: (e?: { cache: IInfiniteGridGroup[] }) => void;
-	prepend?: (e?: { cache: IInfiniteGridGroup[] }) => void;
-	recycle?: (e?: { start: number, end: number }) => void;
-}
 class Infinite {
 	public options: Required<IInfiniteOptions>;
 	private _items: ItemManager;
@@ -36,9 +10,8 @@ class Infinite {
 		this.options = assign({
 			useRecycle: true,
 			threshold: 100,
-			append: () => void 0,
-			prepend: () => void 0,
-			recycle: () => void 0,
+			request: () => void 0,
+			change: () => void 0,
 		}, options);
 
 		this._items = itemManger;
@@ -47,55 +20,29 @@ class Infinite {
 	public setSize(size: number) {
 		this._status.size = size;
 	}
-	public recycle(scrollPos: number, isForward?: boolean) {
-		if (!this.options.useRecycle) {
-			return;
-		}
-		const { startCursor, endCursor, size } = this._status;
-
-		if (startCursor === -1 || endCursor === -1) {
-			return;
-		}
-		const endScrollPos = scrollPos + size;
-		const { threshold, recycle } = this.options;
-		const visibles = this._items.get(startCursor, endCursor)
-			.map(group => isVisible(group, threshold, scrollPos, endScrollPos));
-		const length = visibles.length;
-		let start = isForward ? 0 : visibles.lastIndexOf(0);
-		let end = isForward ? visibles.indexOf(0) - 1 : visibles.length - 1;
-
-		if (!isForward && start !== -1) {
-			start += 1;
-		}
-		if (start < 0 || end < 0 || start > end || end - start + 1 >= length) {
-			return;
-		}
-		start = startCursor + start;
-		end = startCursor + end;
-
-		recycle({ start, end });
-		if (isForward) {
-			this.setCursor("start", end + 1);
-		} else {
-			this.setCursor("end", start - 1);
-		}
-	}
-	public scroll(scrollPos: number) {
+	public scroll(scrollPos: number, isTrusted: boolean = true) {
 		const startCursor = this.getCursor("start");
 		const endCursor = this.getCursor("end");
-		const items = this._items;
+		const { threshold, request, change, useRecycle } = this.options;
+		const itemManager = this._items;
+		const length = itemManager.size();
 
-		if (typeof scrollPos !== "number" || startCursor === -1 ||
-			endCursor === -1 || !items.size()) {
+		if (!length) {
+			return;
+		} else if (startCursor === -1 || endCursor === -1) {
+			change(true, { start: 0, end: 0 }, isTrusted);
+			return;
+		}
+		if (typeof scrollPos !== "number") {
 			return;
 		}
 		const size = this._status.size;
-		const { threshold, append, prepend } = this.options;
-		const datas = items.get();
+		const groups = itemManager.getGroups();
 		const endScrollPos = scrollPos + size;
-		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
-		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
-		const visibles = datas.map((group, i) => {
+		const startEdgePos = Math.max(...groups[startCursor].outlines.start);
+		const endEdgePos = Math.min(...groups[endCursor].outlines.end);
+
+		const visibles = groups.map(group => {
 			const { start, end } = group.outlines;
 
 			if (!start.length || !end.length) {
@@ -109,55 +56,124 @@ class Infinite {
 			}
 			return false;
 		});
-		const startIndex = visibles.indexOf(true);
-		const endIndex = visibles.lastIndexOf(true);
 
-		if (~startIndex && startIndex < startCursor) {
-			prepend({ cache: datas.slice(startIndex, Math.min(startCursor, endIndex + 1)) });
-		} else if (endCursor < endIndex) {
-			append({ cache: datas.slice(Math.max(startIndex, endCursor + 1), endIndex + 1) });
-		} else {
-			// if you have data(no cachedAppendData, has cachedPrependData) to pepend, request it.
-			const cachedAppendData = datas.slice(endCursor + 1, endCursor + 2);
-			const cachedPrependData = datas.slice(startCursor - 1, startCursor);
-			const isPrepend = scrollPos <= startEdgePos + threshold;
+		let startIndex = visibles.indexOf(true);
+		let endIndex = visibles.lastIndexOf(true);
 
-			if (
-				endScrollPos >= endEdgePos - threshold
-				&& (!isPrepend || cachedAppendData.length || !cachedPrependData.length)
-			) {
-				append({ cache: cachedAppendData });
-			} else if (isPrepend) {
-				prepend({ cache: cachedPrependData });
+		if (!useRecycle) {
+			startIndex = startIndex < 0 ? startCursor : Math.min(startCursor, startIndex);
+			endIndex = endIndex < 0 ? endCursor : Math.max(endCursor, endIndex);
+
+			for (; endIndex < length - 1; ++endIndex) {
+				const outline = groups[endIndex + 1].outlines.end;
+
+				if (!outline.length || scrollPos <= Math.max(...outline) + threshold) {
+					break;
+				}
+			}
+			for (startIndex; startIndex >= 1; --startIndex) {
+				const outline = groups[startIndex - 1].outlines.start;
+
+				if (!outline.length || Math.min(...outline) - threshold <= endScrollPos) {
+					break;
+				}
 			}
 		}
+		const isAppend = endScrollPos >= endEdgePos - threshold;
+		const isPrepend = scrollPos <= startEdgePos + threshold;
+
+		if (~startIndex && ~endIndex) {
+			if (startIndex < startCursor) {
+				// prepend prev item
+				change(false, { start: startIndex, end: endIndex }, isTrusted);
+				return;
+			} else if (endCursor < endIndex) {
+				// append next item
+				change(true, { start: startIndex, end: endIndex }, isTrusted);
+				return;
+			} else if (isAppend && endCursor < endIndex + 1 && endIndex + 1 < length) {
+				// append next item(no outline)
+				change(true, { start: startIndex, end: endIndex + 1 }, isTrusted);
+				return;
+			} else if (isPrepend && startIndex - 1 < startCursor && startIndex > 0) {
+				// prepend prev item(no outline)
+				change(false, { start: startIndex - 1, end: endIndex }, isTrusted);
+				return;
+			} else if (
+				(startCursor !== startIndex || endCursor !== endIndex)
+				&& startCursor <= startIndex && endIndex <= endCursor
+			) {
+				// only some items are shown as they are recycled.
+				change(true, { start: startIndex, end: endIndex }, isTrusted);
+				return;
+			}
+		}
+		// if you have data(no cachedAppendData, has cachedPrependData) to pepend, request it.
+		for (endIndex = endCursor + 1; endIndex < length - 1; ++endIndex) {
+			const outline = groups[endIndex + 1].outlines.end;
+
+			if (!outline.length) {
+				break;
+			}
+		}
+		for (startIndex = startCursor - 1; startIndex >= 1; --startIndex) {
+			const outline = groups[startIndex - 1].outlines.start;
+
+			if (!outline.length) {
+				break;
+			}
+		}
+		endIndex = Math.max(endIndex, endCursor + 1);
+		startIndex = Math.min(startCursor - 1, startIndex);
+
+		const hasAppendData = endIndex < length;
+		const hasPrependData = startIndex >= 0;
+
+		if (isAppend && (!isPrepend || hasAppendData || !hasPrependData)) {
+			if (hasAppendData) {
+				change(true, { start: useRecycle ? endIndex : startIndex, end: endIndex }, isTrusted);
+			} else {
+				request(true, isTrusted);
+			}
+		} else if (isPrepend) {
+			if (hasPrependData) {
+				change(false, { start: startIndex, end: useRecycle ? startIndex : endIndex }, isTrusted);
+			} else {
+				request(false, isTrusted);
+			}
+		}
+	}
+	public prependCursor() {
+		const status = this._status;
+
+		++status.startCursor;
+		++status.endCursor;
 	}
 	public setCursor(cursor: CursorType, index: number) {
 		const status = this._status;
 		const items = this._items;
 		const size = items.size();
 
+		let { startCursor, endCursor } = status;
+
 		if (!this.options.useRecycle) {
-			status.startCursor = 0;
-			if (items.getOutline(size - 1, "end").length) {
-				status.endCursor = size - 1;
-				return;
-			}
-			if (cursor !== "end") {
-				return;
-			}
-		}
-		if (cursor === "start") {
-			status.startCursor = index;
+			startCursor = startCursor > -1 ? Math.min(index, startCursor) : index;
+			endCursor = endCursor > - 1 ? Math.max(index, endCursor) : index;
 		} else {
-			status.endCursor = Math.min(size - 1, index);
+			if (cursor === "start") {
+				startCursor = index;
+			} else {
+				endCursor = index;
+			}
 		}
-		status.startCursor = Math.max(0, status.startCursor);
+
+		status.startCursor = Math.max(0, startCursor);
+		status.endCursor = Math.min(size - 1, endCursor);
 	}
 	public setStatus(status: IInfiniteStatus) {
 		this._status = assign(this._status, status);
 	}
-	public getStatus(startKey: string | number, endKey: string | number): IInfiniteStatus {
+	public getStatus(startKey?: string | number, endKey?: string | number): IInfiniteStatus {
 		const { startCursor, endCursor, size } = this._status;
 		const startIndex = Math.max(this._items.indexOf(startKey), 0);
 		const endIndex = (this._items.indexOf(endKey) + 1 || this._items.size()) - 1;
@@ -183,17 +199,51 @@ class Infinite {
 
 		return outlines.length ? Math[cursor === "start" ? "min" : "max"](...outlines) : 0;
 	}
-	public getVisibleItems() {
+	public getVisibleItems(): IInfiniteGridItem[] {
 		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
 	}
 	public getCursor(cursor: CursorType) {
 		return this._status[cursor === "start" ? "startCursor" : "endCursor"];
 	}
-	public getVisibleData() {
-		return this._items.get(this._status.startCursor, this._status.endCursor);
-	}
+	public getVisibleGroups(): IInfiniteGridGroup[] {
+		const { startCursor, endCursor } = this._status;
 
-	public remove(groupIndex: number, itemIndex: number) {
+		return this._items.sliceGroups(startCursor, endCursor + 1);
+	}
+	public sync(items: IItem[]) {
+		const status = this._status;
+		const { startCursor, endCursor } = status;
+		const itemManager = this._items;
+		const prevVisisbleGroups = itemManager.sliceGroups(startCursor, endCursor + 1);
+
+		this._items.sync(items);
+		let nextStartCursor = findIndex(
+			prevVisisbleGroups,
+			({ groupKey }) => itemManager.getGroupByKey(groupKey),
+		);
+		let nextEndCursor = findLastIndex(
+			prevVisisbleGroups,
+			({ groupKey }) => itemManager.getGroupByKey(groupKey),
+		);
+		if (nextStartCursor > -1 && nextEndCursor > -1) {
+			nextStartCursor = Math.min(nextStartCursor, nextEndCursor);
+			nextEndCursor = Math.max(nextStartCursor, nextEndCursor);
+		} else if (nextEndCursor > -1) {
+			nextStartCursor = nextEndCursor;
+		} else if (nextStartCursor > -1) {
+			nextEndCursor = nextStartCursor;
+		} else {
+			const size = itemManager.size();
+
+			if (size > 0) {
+				nextStartCursor = 0;
+				nextEndCursor = 0;
+			}
+		}
+		status.startCursor = nextStartCursor;
+		status.endCursor = nextEndCursor;
+	}
+	public remove(groupIndex: number, itemIndex: number): IRemoveResult {
 		const status = this._status;
 		const items = this._items;
 		const { startCursor, endCursor } = status;
