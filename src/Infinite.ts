@@ -251,10 +251,10 @@ class Infinite {
 
 		if (result.groups.length) {
 			if (groupIndex < startCursor) {
-				this.setCursor("start", startCursor - 1);
-			}
-			if (groupIndex <= endCursor) {
-				this.setCursor("end", endCursor - 1);
+				--status.startCursor;
+				--status.endCursor;
+			} else if (groupIndex <= endCursor) {
+				--status.endCursor;
 			}
 		}
 		if (!items.size()) {

@@ -1,10 +1,10 @@
 import Infinite from "../../src/Infinite";
 import ItemManager from "../../src/ItemManager";
-import {wait, createElement} from "./helper/TestHelper";
+import { wait, createElement } from "./helper/TestHelper";
 /* eslint-disable */
 [true, false].forEach(useRecycle => {
 	[0, 50, 100, 200, 1000].forEach(threshold => {
-		describe(`Infinite Test(useRecycle=${useRecycle}, threshold=${threshold})`, function() {
+		describe(`Infinite Test(useRecycle=${useRecycle}, threshold=${threshold})`, function () {
 			beforeEach(() => {
 				this.changeSpy = sinon.spy();
 				this.requestSpy = sinon.spy();
@@ -21,7 +21,7 @@ import {wait, createElement} from "./helper/TestHelper";
 			afterEach(() => {
 				this.infinite = null;
 			});
-			it (`should call request callback that item's length is 1 and cursor is {start: 0, end: 0}`, async () => {
+			it(`should call request callback that item's length is 1 and cursor is {start: 0, end: 0}`, async () => {
 				// Given
 				this.items.appendGroup({
 					groupKey: 0,
@@ -134,16 +134,16 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(0);
 
 						expect(this.changeSpy.args[0][0]).to.be.true;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[1][0]).to.be.true;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 1, end: 1 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 1, end: 1 });
 
 						expect(this.changeSpy.args[2][0]).to.be.true;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 1, end: 1 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 1, end: 1 });
 
 						expect(this.changeSpy.args[3][0]).to.be.true;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 1, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 1, end: 1 });
 					} else if (threshold === 100 || threshold === 200) {
 						// request(prepend)
 						// request(prepend)
@@ -156,16 +156,16 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(2);
 
 						expect(this.changeSpy.args[0][0]).to.be.true;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[1][0]).to.be.true;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 1, end: 1 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 1, end: 1 });
 
 						expect(this.changeSpy.args[2][0]).to.be.true;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 1, end: 1 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 1, end: 1 });
 
 						expect(this.changeSpy.args[3][0]).to.be.true;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 1, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 1, end: 1 });
 
 						expect(this.requestSpy.args[0][0]).to.be.false;
 						expect(this.requestSpy.args[1][0]).to.be.false;
@@ -182,25 +182,25 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(0);
 
 						expect(this.changeSpy.args[0][0]).to.be.true;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[1][0]).to.be.true;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[2][0]).to.be.true;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[3][0]).to.be.true;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[4][0]).to.be.true;
-						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[5][0]).to.be.true;
-						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[6][0]).to.be.true;
-						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start : 1, end: 1 });
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 1, end: 1 });
 					}
 				} else {
 					// useRecycle: false
@@ -216,16 +216,16 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(0);
 
 						expect(this.changeSpy.args[0][0]).to.be.true;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[1][0]).to.be.true;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[2][0]).to.be.true;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[3][0]).to.be.true;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
 					} else if (threshold === 100 || threshold === 200) {
 						// request(prepend)
 						// request(prepend)
@@ -238,16 +238,16 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(2);
 
 						expect(this.changeSpy.args[0][0]).to.be.true;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[1][0]).to.be.true;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[2][0]).to.be.true;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[3][0]).to.be.true;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.requestSpy.args[0][0]).to.be.false;
 						expect(this.requestSpy.args[1][0]).to.be.false;
@@ -264,25 +264,25 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(0);
 
 						expect(this.changeSpy.args[0][0]).to.be.true;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[1][0]).to.be.true;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[2][0]).to.be.true;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[3][0]).to.be.true;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[4][0]).to.be.true;
-						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[5][0]).to.be.true;
-						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[6][0]).to.be.true;
-						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 0, end: 1 });
 					}
 				}
 			});
@@ -335,16 +335,16 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(2);
 
 						expect(this.changeSpy.args[0][0]).to.be.false;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 0 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 0 });
 
 						expect(this.changeSpy.args[1][0]).to.be.false;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 0, end: 0 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 0 });
 
 						expect(this.changeSpy.args[2][0]).to.be.false;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 0, end: 0 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 0 });
 
 						expect(this.changeSpy.args[3][0]).to.be.false;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.requestSpy.args[0][0]).to.be.true;
 						expect(this.requestSpy.args[1][0]).to.be.true;
@@ -361,22 +361,22 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(1);
 
 						expect(this.changeSpy.args[0][0]).to.be.false;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[1][0]).to.be.false;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[2][0]).to.be.false;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[3][0]).to.be.false;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[4][0]).to.be.false;
-						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[5][0]).to.be.false;
-						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.requestSpy.args[0][0]).to.be.true;
 					}
@@ -394,16 +394,16 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(2);
 
 						expect(this.changeSpy.args[0][0]).to.be.false;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[1][0]).to.be.false;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[2][0]).to.be.false;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[3][0]).to.be.false;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.requestSpy.args[0][0]).to.be.true;
 						expect(this.requestSpy.args[1][0]).to.be.true;
@@ -420,22 +420,22 @@ import {wait, createElement} from "./helper/TestHelper";
 						expect(this.requestSpy.callCount).to.be.equal(1);
 
 						expect(this.changeSpy.args[0][0]).to.be.false;
-						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[1][0]).to.be.false;
-						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[2][0]).to.be.false;
-						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[3][0]).to.be.false;
-						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[4][0]).to.be.false;
-						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.changeSpy.args[5][0]).to.be.false;
-						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start : 0, end: 1 });
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 1 });
 
 						expect(this.requestSpy.args[0][0]).to.be.true;
 					}
@@ -492,7 +492,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				this.infinite.scroll(300);
 				this.infinite.scroll(900);
 
-				this.items.getGroup(3).outlines = {start:[400], end:[800]};
+				this.items.getGroup(3).outlines = { start: [400], end: [800] };
 
 
 				this.infinite.scroll(0);
@@ -779,7 +779,40 @@ import {wait, createElement} from "./helper/TestHelper";
 					}
 				}
 			});
+			it(`should call change(prepend), no outline`, async () => {
+				// Given
+				this.items.prependGroup({
+					groupKey: 1,
+					items: [],
+					outlines: {
+						start: [1000],
+						end: [2000],
+					},
+				});
+				this.items.prependGroup({
+					groupKey: 0,
+					items: [],
+					outlines: {
+						start: [],
+						end: [],
+					},
+				});
 
+				// When
+				this.infinite.setCursor("start", 1);
+				this.infinite.setCursor("end", 1);
+				this.infinite.scroll(0);
+
+				// Then
+				expect(this.infinite)
+				expect(this.changeSpy.args[0][0]).to.be.false;
+
+				if (useRecycle && threshold !== 1000) {
+					expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 0 });
+				} else {
+					expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+				}
+			});
 			it(`should check getEdgeOutline method`, () => {
 
 				// Given
@@ -788,18 +821,18 @@ import {wait, createElement} from "./helper/TestHelper";
 
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {start: [0, 0], end: [1000, 1100]},
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 2}],
-					outlines: {start: [1000, 1100], end: [2000, 2100]},
+					items: [{ el: 2 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 3}],
-					outlines: {start: [2000, 2100], end: [3000, 3100]},
+					items: [{ el: 3 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
 				});
 
 				// When
@@ -821,18 +854,18 @@ import {wait, createElement} from "./helper/TestHelper";
 
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {start: [0, 0], end: [1000, 1100]},
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}],
-					outlines: {start: [1000, 1100], end: [2000, 2100]},
+					items: [{ el: 1 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {start: [2000, 2100], end: [3000, 3100]},
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
 				});
 
 				// When
@@ -852,18 +885,18 @@ import {wait, createElement} from "./helper/TestHelper";
 
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {start: [0, 0], end: [1000, 1100]},
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}, {el: 2}],
-					outlines: {start: [1000, 1100], end: [2000, 2100]},
+					items: [{ el: 1 }, { el: 2 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {start: [2000, 2100], end: [3000, 3100]},
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
 				});
 
 				// When
@@ -874,6 +907,82 @@ import {wait, createElement} from "./helper/TestHelper";
 				expect(visibleData).to.have.lengthOf(0);
 				expect(this.infinite.getVisibleItems()).to.have.lengthOf(4);
 				expect(this.infinite.getVisibleGroups()).to.have.lengthOf(3);
+			});
+			it(`should check remove method(groupIndex < startCursor)`, () => {
+				// Given
+				this.items.appendGroup({
+					groupKey: 0,
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
+				});
+				this.items.appendGroup({
+					groupKey: 1,
+					items: [{ el: 1 }, { el: 2 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
+				});
+				this.items.appendGroup({
+					groupKey: 2,
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
+				});
+				this.infinite.setCursor("start", 2);
+				this.infinite.setCursor("end", 2);
+
+				// When
+				// remove group 1
+				this.infinite.remove(1, 0);
+				this.infinite.remove(1, 0);
+
+				// Then
+				expect(this.infinite.getCursor("start")).to.be.equals(1);
+				expect(this.infinite.getCursor("end")).to.be.equals(1);
+			});
+			it(`should check remove method(groupIndex <= endIndex)`, () => {
+				// Given
+				this.items.appendGroup({
+					groupKey: 0,
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
+				});
+				this.items.appendGroup({
+					groupKey: 1,
+					items: [{ el: 1 }, { el: 2 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
+				});
+				this.items.appendGroup({
+					groupKey: 2,
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
+				});
+				this.infinite.setCursor("start", 1);
+				this.infinite.setCursor("end", 2);
+
+				// When
+				// remove group 1
+				this.infinite.remove(1, 0);
+				this.infinite.remove(1, 0);
+
+				// Then
+				expect(this.infinite.getCursor("start")).to.be.equals(1);
+				expect(this.infinite.getCursor("end")).to.be.equals(1);
+			});
+			it(`should check remove method(no items)`, () => {
+				// Given
+				this.items.appendGroup({
+					groupKey: 0,
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
+				});
+				this.infinite.setCursor("start", 0);
+				this.infinite.setCursor("end", 0);
+
+				// When
+				// remove all
+				this.infinite.remove(0, 0);
+
+				// Then
+				expect(this.infinite.getCursor("start")).to.be.equals(-1);
+				expect(this.infinite.getCursor("end")).to.be.equals(-1);
 			});
 		});
 	});
