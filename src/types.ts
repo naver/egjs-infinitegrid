@@ -1,3 +1,5 @@
+import { ITEM_STATE, GROUP_STATE } from "./consts";
+
 export type CursorType = "start" | "end";
 export type SizeType = "width" | "height";
 export type PositionType = "left" | "top";
@@ -10,8 +12,41 @@ export type ScrollSizeType = "scrollWidth" | "scrollHeight";
 
 export interface IInfiniteGridGroup {
 	groupKey: string | number;
+	state: GROUP_STATE;
 	items: IInfiniteGridItem[];
 	outlines: { start: number[], end: number[] };
+}
+
+export interface IWatcherOptions {
+	container: HTMLElement;
+	isOverflowScroll: boolean;
+	horizontal: boolean;
+	resize: () => void;
+	check: (e?: {
+		isForward: boolean,
+		scrollPos: number,
+		orgScrollPos: number,
+		horizontal: boolean,
+	}) => void;
+}
+
+export interface IInfiniteGridOptions {
+	itemSelector: string;
+	isOverflowScroll: boolean;
+	threshold: number;
+	isEqualSize: boolean;
+	isConstantSize: boolean;
+	useRecycle: boolean;
+	horizontal: boolean;
+	transitionDuration: number;
+	useFit: boolean;
+	attributePrefix: string;
+}
+export interface IInfiniteOptions {
+	useRecycle?: boolean;
+	threshold?: number;
+	change?: (isAppend: boolean, indexes: { start: number, end: number }, isTrusted: boolean) => void;
+	request?: (isAppend: boolean, isTrusted: boolean) => void;
 }
 
 export interface IInfiniteGridStatus {
@@ -40,7 +75,7 @@ export interface IDOMRendererSize {
 	container?: number;
 	view?: number;
 	viewport?: number;
-	item?: ISize;
+	item?: ISize | null;
 }
 
 export interface IDOMRendererStatus {
@@ -49,7 +84,7 @@ export interface IDOMRendererStatus {
 }
 
 export interface IWatchStatus {
-	_prevPos: number;
+	_prevPos: number | null;
 	scrollPos: number;
 }
 
@@ -57,6 +92,7 @@ export interface IRemoveResult {
 	items: IInfiniteGridItem[];
 	groups: IInfiniteGridGroup[];
 }
+
 /**
  * The object of data to be sent to an event
  * @ko 이벤트에 전달되는 데이터 객체
@@ -106,26 +142,41 @@ export interface IErrorCallbackOptions {
  */
 export interface IInfiniteGridItem {
 	groupKey: string | number;
+	itemKey?: string | number;
 	content: string;
-	el?: IInfiniteGridItemElement;
-	orgSize?: ISize;
-	size?: ISize;
-	rect?: Partial<ISize & IPosition>;
-	prevRect?: Partial<ISize & IPosition>;
+	mounted: boolean;
+	state: ITEM_STATE;
+	el?: IInfiniteGridItemElement | null;
+	orgSize?: ISize | null;
+	size?: ISize | null;
+	rect: IPosition & Partial<ISize>;
+	prevRect?: Partial<ISize & IPosition> | null;
 	[key: string]: any;
 }
 
+export interface IIndexes {
+	groupIndex?: number;
+	itemIndex?: number;
+}
+export interface IGroup {
+	groupKey: string | number;
+	[key: string]: any;
+}
+export interface IItem {
+	groupKey: string | number;
+	itemKey?: string | number;
+	[key: string]: any;
+}
 // see https://github.com/Microsoft/TypeScript/issues/27024#issuecomment-421529650
 export type Equals<X, Y, A, B = never> =
 	(<T>() => T extends X ? 1 : 2) extends
 	(<T>() => T extends Y ? 1 : 2) ? A : B;
 
 export type ExcludeReadOnly<T> = Pick<T, {
-	[K in keyof T]?: (Equals<{ -readonly [P in K]: T[K] }, { [P in K]: T[K] }, K>)
+	[K in keyof T]: (Equals<{ -readonly [P in K]: T[K] }, { [P in K]: T[K] }, K>)
 }[string & keyof T]>;
 
 export type StyleType = Partial<ExcludeReadOnly<CSSStyleDeclaration>>;
-
 export interface IInfiniteGridItemElement extends HTMLElement {
 	_INFINITEGRID_TRANSITION?: boolean;
 	__IMAGE__?: -1 | IInfiniteGridItemElement;
@@ -199,6 +250,27 @@ export interface ILayout {
 	layout(groups: IInfiniteGridGroup[], outline: number[]): this;
 }
 
-export type WindowMockType = {
-	[P in keyof Window]?: Window[P] extends (...args: any[]) => any ? Window[P] : Partial<Window[P]>
-};
+export interface IImageLoadedOptions {
+	prefix?: string;
+	length?: number;
+	type?: 1 | 2;
+	complete?: () => void;
+	end?: () => void;
+	error?: (e: { target: LoadingImageElement, itemIndex: number }) => void;
+}
+export interface LoadingImageElement extends HTMLImageElement {
+	__ITEM_INDEX__?: number;
+}
+
+export interface IDOMRendererOptions {
+	isEqualSize: boolean;
+	isConstantSize: boolean;
+	horizontal: boolean;
+	container: boolean | HTMLElement;
+}
+
+export interface IDOMRendererOrgStyle {
+	position?: CSSStyleDeclaration["position"];
+	overflowX?: CSSStyleDeclaration["overflowX"];
+	overflowY?: CSSStyleDeclaration["overflowY"];
+}
