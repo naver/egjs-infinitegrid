@@ -1193,18 +1193,15 @@ describe("InfiniteGrid Test", function () {
 				cleanup();
 			});
 			[0, 1, 2].forEach(itemIndex => {
-				it.only(`should moveTo in cursor inside(isAppend = true, itemIndex=${itemIndex})`, async () => {
+				it(`should moveTo in cursor inside(isAppend = true, itemIndex=${itemIndex})`, async () => {
 					// Given
 					await insert(this.inst, true, 3, 10, 300);
 
-					const scrollPos = Math.max(...this.inst._items._groups[3].outlines.start);
-					let moveTo = this.inst._items._groups[5].items[itemIndex].rect.top;
+					let moveTo = this.inst._items._groups[4].items[itemIndex].rect.top;
 
-					this.inst._setScrollPos(scrollPos);
-					this.inst._scrollTo(scrollPos);
 
 					// When
-					this.inst.moveTo(5, itemIndex);
+					this.inst.moveTo(4, itemIndex);
 					await wait(300);
 
 					// Then
