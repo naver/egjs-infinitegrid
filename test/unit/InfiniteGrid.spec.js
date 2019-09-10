@@ -1178,7 +1178,7 @@ describe("InfiniteGrid Test", function () {
 				document.body.removeChild(scrollDiv);
 
 				this.el = sandbox();
-				this.el.innerHTML = "<div id='infinite' style='height: 500px; border: 0;'></div>";
+				this.el.innerHTML = "<div id='infinite' style='height: 500px; width: 550px; border: 0;'></div>";
 				this.inst = new InfiniteGrid("#infinite", {
 					useRecycle,
 				});
@@ -1207,6 +1207,7 @@ describe("InfiniteGrid Test", function () {
 					const view = this.inst._renderer.getViewSize();
 					const size = this.inst._getEdgeValue("end");
 
+					console.log(moveTo, end, size, view, this.scrollHeight, this.inst._watcher.getScrollPos());
 					expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
 				});
 				it(`should moveTo in cursor inside(isAppend = false, itemIndex=${itemIndex})`, async () => {
