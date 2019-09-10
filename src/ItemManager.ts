@@ -1,47 +1,40 @@
-import { MULTI, GROUPKEY_ATT, IGNORE_CLASSNAME, DUMMY_POSITION } from "./consts";
-import { $, toArray, isUndefined, assign } from "./utils";
-import { CursorType, IJQuery, IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus, IRemoveResult } from "./types";
+import { diff } from "@egjs/list-differ";
+import { GROUPKEY_ATT, DUMMY_POSITION, ITEM_STATE, GROUP_STATE } from "./consts";
+import { isUndefined, assign, categorize } from "./utils";
+import { CursorType, IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus, IItem, IGroup } from "./types";
 
 export default class ItemManager {
-	public static from(
-		elements: HTMLElement[] | string | string[] | IJQuery, selector: string,
-		{ groupKey }: { groupKey: string | number }) {
-		const filted = ItemManager.selectItems($(elements, MULTI), selector);
-
-		// Item Structure
-		return toArray(filted).map(el => ({
+	public static toItems(elements: HTMLElement[], groupKey: string | number): IInfiniteGridItem[] {
+		return elements.map(el => ({
 			el,
 			groupKey,
+			mounted: false,
 			content: el.outerHTML,
+			state: ITEM_STATE.NOT_LOADED,
 			rect: {
 				top: DUMMY_POSITION,
 				left: DUMMY_POSITION,
 			},
 		}));
 	}
-	public static selectItems(elements: HTMLElement[], selector?: string) {
-		return elements.filter(v => {
-			const classNames = v.className.split(" ");
-
-			if (classNames.some(c => c === IGNORE_CLASSNAME)) {
-				return false;
-			} else if (!selector || selector === "*") {
-				return v;
-			} else {
-				return classNames.some(c => c === selector);
-			}
-		});
-	}
 	public static pluck<A extends { [key: string]: any }, B extends keyof A>(data: A[], property: B):
 		A[B] extends any[] ? A[B] : Array<A[B]> {
 		return data.reduce((acc, v) => acc.concat(v[property]), []) as any;
 	}
-	public _data: IInfiniteGridGroup[];
+	// groups
+	private _groups: IInfiniteGridGroup[] = [];
+	// group keys
+	private _groupKeys: { [key: string]: IInfiniteGridGroup } = {};
+
 	constructor() {
 		this.clear();
 	}
+	public clear() {
+		this._groups = [];
+		this._groupKeys = {};
+	}
 	public getStatus(startKey?: string | number, endKey?: string | number): IItemManagerStatus {
-		const datas = this._data;
+		const datas = this._groups;
 		const startIndex = Math.max(this.indexOf(startKey), 0);
 		const endIndex = this.indexOf(endKey) + 1 || datas.length;
 
@@ -63,37 +56,41 @@ export default class ItemManager {
 	public setStatus(status: IItemManagerStatus) {
 		const data = status._data;
 
-		this.set(data);
+		this.clear();
+
+		data.forEach((group, i) => {
+			this.insertGroup(group, i);
+		});
 	}
 	public size() {
-		return this._data.length;
+		return this._groups.length;
 	}
 	public fit(base: number, horizontal: boolean) {
-		if (!this._data.length) {
+		const groups = this._groups;
+		if (!groups.length) {
 			return;
 		}
 		const property = horizontal ? "left" : "top";
 
 		if (base !== 0) {
-			this._data = this._data.map(v => {
-				v.items = v.items.map(item => {
+			groups.forEach(group => {
+				const { items, outlines } = group;
+
+				items.forEach(item => {
 					item.rect[property] -= base;
-					return item;
 				});
-				v.outlines.start = v.outlines.start.map(start => start - base);
-				v.outlines.end = v.outlines.end.map(end => end - base);
-				return v;
+				outlines.start = outlines.start.map(start => start - base);
+				outlines.end = outlines.end.map(end => end - base);
 			});
 		}
 	}
 	public pluck<T extends keyof IInfiniteGridGroup>(property: T, start?: number, end?: number) {
-		const data = isUndefined(start) ? this._data :
-			this._data.slice(start, (isUndefined(end) ? start : end) + 1);
+		const data = isUndefined(start) ? this._groups : this.sliceGroups(start, (isUndefined(end) ? start : end) + 1);
 
 		return ItemManager.pluck(data, property);
 	}
 	public getOutline(index: number, property: keyof IInfiniteGridGroup["outlines"]) {
-		const data = this._data[index];
+		const data = this._groups[index];
 
 		return data ? data.outlines[property] : [];
 	}
@@ -114,28 +111,25 @@ export default class ItemManager {
 		return index;
 	}
 	public getEdgeValue(cursor: CursorType, start: number, end: number) {
-		const outlines = this.pluck("outlines", this.getEdgeIndex(cursor, start, end))
-			.reduce<number[]>((acc, v) => acc.concat(v[cursor]), []);
+		const group = this.getGroup(this.getEdgeIndex(cursor, start, end));
 
-		return outlines.length ? Math[cursor === "start" ? "min" : "max"](...outlines) : 0;
-	}
-	public clearOutlines(startCursor = -1, endCursor = -1) {
-		const datas = this.get();
+		if (group) {
+			const outlines = group.outlines[cursor];
 
-		datas.forEach((group, cursor) => {
-			if (startCursor <= cursor && cursor <= endCursor) {
-				return;
+			if (outlines.length) {
+				return Math[cursor === "start" ? "min" : "max"](...outlines);
 			}
-			group.items.forEach(item => {
-				item.rect.top = DUMMY_POSITION;
-				item.rect.left = DUMMY_POSITION;
-			});
+		}
+		return 0;
+	}
+	public clearOutlines() {
+		this._groups.forEach(group => {
 			group.outlines.start = [];
 			group.outlines.end = [];
 		});
 	}
 	public getMaxEdgeValue() {
-		const groups = this.get();
+		const groups = this._groups;
 		const length = groups.length;
 
 		for (let i = length - 1; i >= 0; --i) {
@@ -149,21 +143,102 @@ export default class ItemManager {
 		}
 		return 0;
 	}
-	public append(layouted: IInfiniteGridGroup) {
-		this._data.push(layouted);
-		return layouted.items;
+	public prependGroup(group: IGroup): IInfiniteGridGroup | null {
+		return this.insertGroup(group, 0);
 	}
-	public prepend(layouted: IInfiniteGridGroup) {
-		this._data.unshift(layouted);
-		return layouted.items;
+	public appendGroup(group: IGroup): IInfiniteGridGroup | null {
+		return this.insertGroup(group, this._groups.length);
 	}
-	public clear() {
-		this._data = [];
+	public insertGroup(group: IGroup, groupIndex: number): IInfiniteGridGroup | null {
+		if (groupIndex < 0) {
+			return null;
+		}
+		const prevItems: IItem[] = group.items || [];
+		const newGroup: IInfiniteGridGroup = {
+			state: GROUP_STATE.NOT_CACHED,
+			outlines: {
+				start: [],
+				end: [],
+			},
+			...group,
+			items: [],
+		};
+		this._groups.splice(groupIndex, 0, newGroup);
+		this._groupKeys[newGroup.groupKey] = newGroup;
+
+		prevItems.forEach((item, i) => {
+			this.insert(item, groupIndex, i);
+		});
+		return newGroup;
 	}
-	public remove(groupIndex: number, itemIndex: number): IRemoveResult {
-		const data = this.getData(groupIndex);
-		let items: IInfiniteGridItem[] = [];
+	public sync(newItems: IItem[]) {
+		const groups = this._groups;
+		const newGroups = categorize(newItems);
+		const {
+			removed,
+			added,
+			ordered,
+			pureChanged,
+		} = diff(groups, newGroups, group => group.groupKey);
+
+		removed.forEach(removedIndex => {
+			this.removeGroup(removedIndex);
+		});
+
+		ordered.forEach(([prevIndex, nextIndex], i) => {
+			const group = groups.splice(prevIndex, 1)[0];
+
+			groups.splice(nextIndex, 0, group);
+			this.syncItems(group.items, newGroups[pureChanged[i][1]].items, nextIndex);
+		});
+		added.forEach(addedIndex => {
+			this.insertGroup(newGroups[addedIndex], addedIndex);
+		});
+	}
+	public insert(newItem: IItem, groupIndex = -1, itemIndex = -1): IInfiniteGridItem | null {
+		const { groupKey } = newItem;
+		const groups = this._groups;
+		const groupKeys = this._groupKeys;
+		const group = (groupIndex > -1 ? groups[groupIndex] : groupKeys[groupKey])
+			|| this.insertGroup({ groupKey }, groupIndex);
+
+		if (!group) {
+			return null;
+		}
+		const groupItem: IInfiniteGridItem = {
+			content: "",
+			state: ITEM_STATE.NOT_LOADED,
+			mounted: false,
+			rect: {
+				top: DUMMY_POSITION,
+				left: DUMMY_POSITION,
+			},
+			...newItem,
+		};
+		const groupItems = group.items;
+
+		if (itemIndex === -1) {
+			groupItems.push(groupItem);
+		} else {
+			group.items.splice(itemIndex, 0, groupItem);
+		}
+
+		return groupItem;
+	}
+	public removeGroup(groupIndex: number): IInfiniteGridGroup | null {
+		const group = this._groups.splice(groupIndex, 1)[0];
+
+		if (!group) {
+			return null;
+		}
+		delete this._groupKeys[group.groupKey];
+
+		return group;
+	}
+	public remove(groupIndex: number, itemIndex: number) {
+		const data = this.getGroup(groupIndex);
 		let groups: IInfiniteGridGroup[] = [];
+		let items: IInfiniteGridItem[] = [];
 
 		if (!data) {
 			return { items, groups };
@@ -172,13 +247,15 @@ export default class ItemManager {
 		items = data.items.splice(itemIndex, 1);
 
 		if (!data.items.length) {
-			groups = this._data.splice(groupIndex, 1);
+			const group = this.removeGroup(groupIndex);
+
+			group && (groups = [group]);
 		}
 		return { items, groups };
 	}
-	public indexOf(data: { groupKey: string | number } | string | number) {
+	public indexOf(data?: { groupKey: string | number } | string | number) {
 		const groupKey = `${typeof data === "object" ? data.groupKey : data}`;
-		const datas = this._data;
+		const datas = this._groups;
 		const length = datas.length;
 
 		for (let i = 0; i < length; ++i) {
@@ -189,12 +266,12 @@ export default class ItemManager {
 		return -1;
 	}
 	public indexOfElement(element: HTMLElement) {
-		const groupKey = element.getAttribute(GROUPKEY_ATT);
+		const groupKey = element.getAttribute(GROUPKEY_ATT)!;
 		const groupIndex = this.indexOf({ groupKey });
 		let itemIndex = -1;
 
 		if (groupIndex > -1) {
-			const data = this.getData(groupIndex);
+			const data = this.getGroup(groupIndex);
 
 			const length = data.items.length;
 
@@ -207,29 +284,41 @@ export default class ItemManager {
 		}
 		return { groupIndex, itemIndex };
 	}
-	public get(start?: number, end?: number) {
-		return isUndefined(start) ? this._data :
-			this._data.slice(start, (isUndefined(end) ? start : end) + 1);
+	public sliceGroups(start?: number, end?: number) {
+		return this._groups.slice(start, end);
 	}
-	public set(data: IInfiniteGridGroup | IInfiniteGridGroup[], key?: string | number) {
-		if (!Array.isArray(data)) {
-			if (!isUndefined(key)) {
-				const len = this._data.length;
-				let idx = -1;
+	public getGroups() {
+		return this._groups;
+	}
+	public getGroupByKey(key: number | string) {
+		return this._groupKeys[key];
+	}
+	public getGroup(index: number) {
+		return this._groups[index];
+	}
+	public getLastGroup() {
+		return this._groups[this.size() - 1];
+	}
+	public getFirstGroup() {
+		return this._groups[0];
+	}
+	private syncItems(items: IItem[], newItems: IItem[], groupIndex: number) {
+		const {
+			removed,
+			added,
+			ordered,
+		} = diff(items, newItems, item => item.itemKey);
 
-				for (let i = 0; i < len; i++) {
-					if (this._data[i].groupKey === key) {
-						idx = i;
-						break;
-					}
-				}
-				idx > 0 && (this._data[idx] = data);
-			}
-		} else {
-			this._data = data.concat();
-		}
-	}
-	public getData(index: number) {
-		return this._data[index];
+		removed.forEach(removedIndex => {
+			this.remove(groupIndex, removedIndex);
+		});
+		ordered.forEach(([prevIndex, nextIndex]) => {
+			const item = items.splice(prevIndex, 1)[0];
+
+			items.splice(nextIndex, 0, item);
+		});
+		added.forEach(addedIndex => {
+			this.insert(newItems[addedIndex], groupIndex, addedIndex);
+		});
 	}
 }
