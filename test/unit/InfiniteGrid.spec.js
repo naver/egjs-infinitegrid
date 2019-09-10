@@ -1197,17 +1197,17 @@ describe("InfiniteGrid Test", function () {
 					// Given
 					await insert(this.inst, true, 3, 10, 300);
 
-					let moveTo = this.inst._items._groups[4].items[itemIndex].rect.top;
-
-
 					// When
 					this.inst.moveTo(4, itemIndex);
 					await wait(300);
 
 					// Then
-					const end = this.inst._getEdgeValue("end");
-					console.log(moveTo, end, this.inst._renderer.getViewSize(), this.scrollHeight);
-					expect([moveTo, end - this.inst._renderer.getViewSize()]).to.include(this.inst._watcher.getScrollPos());
+					const moveTo = this.inst._items._groups[4].items[itemIndex].rect.top;
+					const end = Math.max(...this.inst._items._groups[4].outlines.end);
+					const view = this.inst._renderer.getViewSize();
+					const size = this.inst._getEdgeValue("end");
+
+					expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
 				});
 				it(`should moveTo in cursor inside(isAppend = false, itemIndex=${itemIndex})`, async () => {
 					// Given
