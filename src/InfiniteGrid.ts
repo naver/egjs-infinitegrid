@@ -740,8 +740,8 @@ class InfiniteGrid extends Component {
 				cache: [group],
 				isTrusted: false,
 			}).on("complete", () => {
-				this._scrollTo(pos);
 				this._setScrollPos(pos);
+				this._scrollTo(pos);
 				this._recycle({ start: startCursor, end: endCursor });
 			});
 			return this;
@@ -761,8 +761,8 @@ class InfiniteGrid extends Component {
 			}).on("complete", () => {
 				const pos = item.rect[horizontal ? "left" : "top"];
 
-				this._scrollTo(pos);
 				this._setScrollPos(pos);
+				this._scrollTo(pos);
 				this._recycle({ start: startCursor, end: endCursor });
 			});
 		}

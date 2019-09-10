@@ -1193,7 +1193,7 @@ describe("InfiniteGrid Test", function () {
 				cleanup();
 			});
 			[0, 1, 2].forEach(itemIndex => {
-				it(`should moveTo in cursor inside(isAppend = true, itemIndex=${itemIndex})`, async () => {
+				it.only(`should moveTo in cursor inside(isAppend = true, itemIndex=${itemIndex})`, async () => {
 					// Given
 					await insert(this.inst, true, 3, 10, 300);
 
@@ -1206,6 +1206,7 @@ describe("InfiniteGrid Test", function () {
 
 					// Then
 					const end = this.inst._getEdgeValue("end");
+					console.log(moveTo, end, this.inst._renderer.getViewSize(), this.scrollHeight);
 					expect([moveTo, end - this.inst._renderer.getViewSize()]).to.include(this.inst._watcher.getScrollPos());
 				});
 				it(`should moveTo in cursor inside(isAppend = false, itemIndex=${itemIndex})`, async () => {
