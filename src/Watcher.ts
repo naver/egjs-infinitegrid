@@ -12,20 +12,7 @@ import {
 	scrollBy,
 	assign,
 } from "./utils";
-import { WindowMockType, IWatchStatus } from "./types";
-
-export interface IWatcherOptions {
-	container: HTMLElement;
-	isOverflowScroll: boolean;
-	horizontal: boolean;
-	resize: () => void;
-	check: (e?: {
-		isForward: boolean,
-		scrollPos: number,
-		orgScrollPos: number,
-		horizontal: boolean,
-	}) => void;
-}
+import { IWatchStatus, IWatcherOptions } from "./types";
 
 export default class Watcher {
 	public options: IWatcherOptions;
@@ -33,10 +20,10 @@ export default class Watcher {
 		resize: any;
 	};
 	private _containerOffset: number;
-	private _view: WindowMockType | HTMLElement;
+	private _view: Window | HTMLElement;
 	private _isScrollIssue: boolean;
-	private _prevPos: number;
-	constructor(view: WindowMockType | HTMLElement, options: Partial<IWatcherOptions> = {}) {
+	private _prevPos: number | null;
+	constructor(view: Window | HTMLElement, options: Partial<IWatcherOptions> = {}) {
 		assign(this.options = {
 			container: view as HTMLElement,
 			resize: () => void 0,
@@ -79,7 +66,7 @@ export default class Watcher {
 		scrollTo(this._view, arrPos[0], arrPos[1]);
 	}
 	public getScrollPos() {
-		return this._prevPos;
+		return this._prevPos!;
 	}
 	public setScrollPos(pos = this.getOrgScrollPos()) {
 		let rawPos = pos;
@@ -118,7 +105,7 @@ export default class Watcher {
 		const orgScrollPos = this.getOrgScrollPos();
 
 		this.setScrollPos(orgScrollPos);
-		const scrollPos = this.getScrollPos();
+		const scrollPos = this.getScrollPos()!;
 
 		if (prevPos === null || (this._isScrollIssue && orgScrollPos === 0) || prevPos === scrollPos) {
 			orgScrollPos && (this._isScrollIssue = false);
@@ -146,7 +133,6 @@ export default class Watcher {
 			this.resize();
 			this.options.resize();
 			this._timer.resize = null;
-			this.reset();
 		}, 100);
 	}
 
