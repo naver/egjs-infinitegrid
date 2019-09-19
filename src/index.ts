@@ -8,10 +8,6 @@ import FrameLayout from "./layouts/FrameLayout";
 import SquareLayout from "./layouts/SquareLayout";
 import PackingLayout from "./layouts/PackingLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
-import DOMRenderer from "./DOMRenderer";
-import Watcher from "./Watcher";
-import ItemManager from "./ItemManager";
-import Infinite from "./Infinite";
 
 export * from "./types";
 export {
@@ -20,9 +16,5 @@ export {
 	SquareLayout,
 	PackingLayout,
 	JustifiedLayout,
-	Infinite,
-	DOMRenderer,
-	Watcher,
-	ItemManager,
 	InfiniteGrid as default,
 };

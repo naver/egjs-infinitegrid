@@ -340,19 +340,19 @@ describe("InfiniteGrid Test", function () {
 					// When
 					if (isAppend) {
 						// INNER CHANGE {start: 0, end: 0} to { start: 0, end: 1}
-						this.inst._watcher.scrollTo(this.inst._getEdgeValue("end"));
+						this.inst._scroller.scrollTo(this.inst._getEdgeValue("end"));
 						await wait();
 
 						// REQUEST
-						this.inst._watcher.scrollTo(this.inst._getEdgeValue("end"));
+						this.inst._scroller.scrollTo(this.inst._getEdgeValue("end"));
 						await wait();
 					} else {
 						// INNER CHANGE {start: 1, end: 1} to { start: 0, end: 0}
-						this.inst._watcher.scrollTo(0);
+						this.inst._scroller.scrollTo(0);
 						await wait();
 
 						// REQUEST
-						this.inst._watcher.scrollTo(0);
+						this.inst._scroller.scrollTo(0);
 						await wait();
 					}
 					// Then
@@ -499,7 +499,7 @@ describe("InfiniteGrid Test", function () {
 		});
 		it(`should check scroll attached to the top`, async () => {
 			// Given
-			const scrollPos = this.inst._watcher.getScrollPos();
+			const scrollPos = this.inst._scroller.getScrollPos();
 
 			// When
 			window.scrollTo(0, 0);
@@ -511,7 +511,7 @@ describe("InfiniteGrid Test", function () {
 			// Then
 			expect(scrollPos).to.be.below(-100);
 			expect(scroll(window)).to.be.equals(0);
-			expect(this.inst._watcher.getScrollPos()).to.be.equals(scrollPos);
+			expect(this.inst._scroller.getScrollPos()).to.be.equals(scrollPos);
 
 		});
 		it(`should check scroll attached to the bottom`, async () => {
@@ -704,9 +704,9 @@ describe("InfiniteGrid Test", function () {
 			await wait();
 
 			// When
-			this.inst._watcher.scrollTo(500000);
+			this.inst._scroller.scrollTo(500000);
 
-			const pos = this.inst._watcher.getScrollPos();
+			const pos = this.inst._scroller.getScrollPos();
 
 			this.inst._infinite.scroll(pos, true);
 			const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
@@ -838,13 +838,13 @@ describe("InfiniteGrid Test", function () {
 					const waitRequestInsert = waitEvent(this.inst, isAppend ? "append" : "prepend");
 
 					if (isAppend) {
-						this.inst._watcher.scrollTo(this.inst._getEdgeValue("end"));
+						this.inst._scroller.scrollTo(this.inst._getEdgeValue("end"));
 						await wait();
-						this.inst._watcher.scrollTo(this.inst._getEdgeValue("end"));
+						this.inst._scroller.scrollTo(this.inst._getEdgeValue("end"));
 					} else {
-						this.inst._watcher.scrollTo(0);
+						this.inst._scroller.scrollTo(0);
 						await wait();
-						this.inst._watcher.scrollTo(0);
+						this.inst._scroller.scrollTo(0);
 					}
 					await waitRequestInsert;
 
@@ -861,9 +861,9 @@ describe("InfiniteGrid Test", function () {
 					const waitAppend = waitEvent(this.inst, isAppend ? "append" : "prepend");
 					const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
 
-					this.inst._watcher.scrollTo(this.inst._getEdgeValue("end") / 2);
+					this.inst._scroller.scrollTo(this.inst._getEdgeValue("end") / 2);
 					await wait();
-					this.inst._watcher.scrollTo(isAppend ? this.inst._getEdgeValue("end") : 0);
+					this.inst._scroller.scrollTo(isAppend ? this.inst._getEdgeValue("end") : 0);
 
 					const param1 = await waitAppend;
 
@@ -941,7 +941,7 @@ describe("InfiniteGrid Test", function () {
 			const waitLayout = waitEvent(this.inst, "layoutComplete");
 			this.inst._infinite.setCursor("start", 1);
 			this.inst._renderer._size.viewport = 0;
-			this.inst._watcher._onResize();
+			this.inst._scroller._onResize();
 			await waitLayout;
 
 			const rects2 = datas.map(data => data.items.map(item => item.rect.top));
@@ -1009,7 +1009,7 @@ describe("InfiniteGrid Test", function () {
 
 			this.inst._infinite.setCursor("start", 1);
 			this.inst._renderer._size.viewport = 0;
-			this.inst._watcher._onResize();
+			this.inst._scroller._onResize();
 
 			await waitLayout;
 
@@ -1207,15 +1207,15 @@ describe("InfiniteGrid Test", function () {
 					const view = this.inst._renderer.getViewSize();
 					const size = this.inst._getEdgeValue("end");
 
-					expect([moveTo, size - view, end - view, size - view + this.scrollHeight, end - view + this.scrollHeight]).to.include(this.inst._watcher.getScrollPos());
+					expect([moveTo, size - view, end - view, size - view + this.scrollHeight, end - view + this.scrollHeight]).to.include(this.inst._scroller.getScrollPos());
 				});
 				it(`should moveTo in cursor inside(isAppend = false, itemIndex=${itemIndex})`, async () => {
 					// Given
 					await insert(this.inst, true, 3, 10);
 					const scrollPos = Math.max(...this.inst._items._groups[5].outlines.start);
 
-					this.inst._watcher.setScrollPos(scrollPos);
-					this.inst._watcher.scrollTo(scrollPos);
+					this.inst._scroller.setScrollPos(scrollPos);
+					this.inst._scroller.scrollTo(scrollPos);
 
 					// When
 					this.inst.moveTo(3, itemIndex);
@@ -1226,7 +1226,7 @@ describe("InfiniteGrid Test", function () {
 					// Then
 					const end = this.inst._getEdgeValue("end");
 
-					expect([moveTo, end - this.inst._renderer.getViewSize()]).to.include(this.inst._watcher.getScrollPos());
+					expect([moveTo, end - this.inst._renderer.getViewSize()]).to.include(this.inst._scroller.getScrollPos());
 				});
 				it(`should moveTo in cursor outside(isAppend = true, itemIndex = ${itemIndex})`, async () => {
 					// Given
@@ -1234,7 +1234,7 @@ describe("InfiniteGrid Test", function () {
 					await insert(this.inst, true, 3, 10);
 
 					// load cursor: (start: 6, end: 9)
-					this.inst._watcher.scrollTo(this.inst._getEdgeValue("end"));
+					this.inst._scroller.scrollTo(this.inst._getEdgeValue("end"));
 
 					await wait();
 
@@ -1254,7 +1254,7 @@ describe("InfiniteGrid Test", function () {
 					const size = this.inst._getEdgeValue("end");
 
 					// Then
-					expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
+					expect([moveTo, size - view, end - view]).to.include(this.inst._scroller.getScrollPos());
 				});
 				it(`should moveTo in cursor outside(isAppend = false, itemIndex = ${itemIndex})`, async () => {
 					/// Given
@@ -1262,7 +1262,7 @@ describe("InfiniteGrid Test", function () {
 					await insert(this.inst, true, 3, 10);
 
 					// load cursor: (start: 6, end: 9)
-					this.inst._watcher.scrollTo(this.inst._getEdgeValue("end"));
+					this.inst._scroller.scrollTo(this.inst._getEdgeValue("end"));
 
 					await wait();
 
@@ -1275,7 +1275,7 @@ describe("InfiniteGrid Test", function () {
 					const size = this.inst._getEdgeValue("end");
 
 					// Then
-					expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
+					expect([moveTo, size - view, end - view]).to.include(this.inst._scroller.getScrollPos());
 				});
 
 				it(`should moveTo in cursor outside(no outlines, isAppend = true, itemIndex = ${itemIndex})`, async () => {
@@ -1294,7 +1294,7 @@ describe("InfiniteGrid Test", function () {
 					const view = this.inst._renderer.getViewSize();
 					const size = this.inst._getEdgeValue("end");
 
-					expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
+					expect([moveTo, size - view, end - view]).to.include(this.inst._scroller.getScrollPos());
 				});
 				it(`should resize and moveTo in cursor outside(no outlines, isAppend = false, itemIndex = ${itemIndex})`, async () => {
 					// Given
@@ -1312,7 +1312,7 @@ describe("InfiniteGrid Test", function () {
 					const view = this.inst._renderer.getViewSize();
 					const size = this.inst._getEdgeValue("end");
 
-					expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
+					expect([moveTo, size - view, end - view]).to.include(this.inst._scroller.getScrollPos());
 				});
 			});
 			it(`should moveTo in cursor end(isAppend = true)`, async () => {
@@ -1321,7 +1321,7 @@ describe("InfiniteGrid Test", function () {
 				await insert(this.inst, true, 3, 10);
 
 				// load cursor: (start: 6, end: 9)
-				this.inst._watcher.scrollTo(this.inst._getEdgeValue("end"));
+				this.inst._scroller.scrollTo(this.inst._getEdgeValue("end"));
 
 				await wait();
 
@@ -1342,7 +1342,7 @@ describe("InfiniteGrid Test", function () {
 				const viewSize = view.clientHeight;
 				const size = this.inst._getEdgeValue("end");
 
-				expect([moveTo, size - viewSize, end - viewSize, end - viewSize - this.scrollHeight]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
+				expect([moveTo, size - viewSize, end - viewSize, end - viewSize - this.scrollHeight]).to.include(Math.max(this.inst._scroller.getScrollPos(), 0));
 			});
 			it(`should moveTo in cursor end(no outlines, isAppend = true)`, async () => {
 				// Given
@@ -1361,7 +1361,7 @@ describe("InfiniteGrid Test", function () {
 				const viewSize = view.clientHeight;
 				const size = this.inst._getEdgeValue("end");
 
-				expect([moveTo, size - viewSize, end - viewSize, end - viewSize - this.scrollHeight]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
+				expect([moveTo, size - viewSize, end - viewSize, end - viewSize - this.scrollHeight]).to.include(Math.max(this.inst._scroller.getScrollPos(), 0));
 			});
 		});
 	});

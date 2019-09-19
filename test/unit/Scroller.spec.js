@@ -1,12 +1,12 @@
-import Watcher from "../../src/Watcher";
+import Scroller from "../../src/Scroller";
 import { scrollTo, scroll } from "../../src/utils";
-import WatcherInjection from "inject-loader!../../src/Watcher";
+import ScrollerInjection from "inject-loader!../../src/Scroller";
 import { wait } from "./helper/TestHelper";
 
 /* eslint-disable */
 
 [true, false].forEach(horizontal => {
-	describe(`Watcher Test(horizontal: ${horizontal})`, function() {
+	describe(`Scroller Test(horizontal: ${horizontal})`, function() {
 		beforeEach(() => {
 			this.el = sandbox();
 			this.el.innerHTML = `
@@ -40,35 +40,35 @@ import { wait } from "./helper/TestHelper";
 			this.container = this.el.querySelector(".container");
 		});
 		afterEach(() => {
-			this.watcher && this.watcher.destroy();
+			this.scroller && this.scroller.destroy();
 			cleanup();
 		  });
 		it (`should check containeroffset with no offset`, () => {
 			// Given
-			this.watcher = new Watcher(window, {
+			this.scroller = new Scroller(window, {
 				container: this.view,
 				horizontal,
 			});
-			
+
 			// When, Then
-			expect(this.watcher._getOffset()).to.be.equals(0);
+			expect(this.scroller._getOffset()).to.be.equals(0);
 		});
 		it (`should check containeroffset with offset`, () => {
 			// Given
 			this.wrapper.style[horizontal ? "left" : "top"] = "1000px";
-			this.watcher = new Watcher(window, {
+			this.scroller = new Scroller(window, {
 				container: this.el.querySelector(".view"),
 				horizontal,
 			});
 
 			// When, Then
-			expect(this.watcher._getOffset()).to.be.equals(1000);
+			expect(this.scroller._getOffset()).to.be.equals(1000);
 		});
 		it (`should check containeroffset with offset and scroll`, () => {
 
 			// Given
 			this.wrapper.style[horizontal ? "left" : "top"] = "4000.25px";
-			this.watcher = new Watcher(window, {
+			this.scroller = new Scroller(window, {
 				container: this.el.querySelector(".view"),
 				horizontal,
 			});
@@ -79,7 +79,7 @@ import { wait } from "./helper/TestHelper";
 
 			// Then
 			expect(scroll(window, horizontal)).to.be.equals(545);
-			expect(this.watcher._getOffset()).to.be.equals(4000.25);
+			expect(this.scroller._getOffset()).to.be.equals(4000.25);
 		});
 		it (`should check containeroffset with offset and scroll`, (done) => {
 
@@ -87,23 +87,23 @@ import { wait } from "./helper/TestHelper";
 			// Given
 			this.wrapper.style[horizontal ? "left" : "top"] = "4000.25px";
 			scrollTo(window, horizontal ? 545 : 0, horizontal ? 0 : 545);
-			this.watcher = new Watcher(window, {
+			this.scroller = new Scroller(window, {
 				container: this.view,
 				horizontal,
 			});
-			
+
 			// When
 			this.wrapper.style[horizontal ? "left" : "top"] = "2000.25px";
 
 			// Then
 			expect(scroll(window, horizontal)).to.be.equals(545);
-			expect(this.watcher.getContainerOffset()).to.be.equals(4000.25);
+			expect(this.scroller.getContainerOffset()).to.be.equals(4000.25);
 
 			window.dispatchEvent(new Event("resize"));
 
 			setTimeout(() => {
 				expect(scroll(window, horizontal)).to.be.equals(545);
-				expect(this.watcher.getContainerOffset()).to.be.equals(2000.25);
+				expect(this.scroller.getContainerOffset()).to.be.equals(2000.25);
 				done();
 			}, 100);
 		});
@@ -111,7 +111,7 @@ import { wait } from "./helper/TestHelper";
 			it(`should check scroll test(IS_IOS: ${IS_IOS})`, async () => {
 				// Given
 				this.view.style[horizontal ? "width" : "height"] = "4000.25px";
-				const Watcher2 = WatcherInjection({
+				const Scroller2 = ScrollerInjection({
 					"./consts": {
 						IS_IOS,
 					},
@@ -120,24 +120,24 @@ import { wait } from "./helper/TestHelper";
 
 				const spy = sinon.spy();
 				scrollTo(window, 0, 0);
-				this.watcher = new Watcher2(window, {
+				this.scroller = new Scroller2(window, {
 					container: this.view,
 					horizontal,
 					check: spy
 				});
 
-				const issue1 = this.watcher._isScrollIssue;
-				
+				const issue1 = this.scroller._isScrollIssue;
+
 				// When
-				this.watcher._prevPos = -1;
+				this.scroller._prevPos = -1;
 				window.dispatchEvent(new Event("scroll"));
 
-				const issue2 = this.watcher._isScrollIssue;
+				const issue2 = this.scroller._isScrollIssue;
 
 				scrollTo(window, horizontal ? 545 : 0, horizontal ? 0 : 545);
 				await wait(500);
 
-				const issue3 = this.watcher._isScrollIssue;
+				const issue3 = this.scroller._isScrollIssue;
 				// Then
 
 

@@ -12,10 +12,10 @@ import {
 	scrollBy,
 	assign,
 } from "./utils";
-import { IWatchStatus, IWatcherOptions } from "./types";
+import { IWatchStatus, IScrollerOptions } from "./types";
 
-export default class Watcher {
-	public options: IWatcherOptions;
+export default class Scroller {
+	public options: IScrollerOptions;
 	private _timer: {
 		resize: any;
 	};
@@ -23,7 +23,7 @@ export default class Watcher {
 	private _view: Window | HTMLElement;
 	private _isScrollIssue: boolean;
 	private _prevPos: number | null;
-	constructor(view: Window | HTMLElement, options: Partial<IWatcherOptions> = {}) {
+	constructor(view: Window | HTMLElement, options: Partial<IScrollerOptions> = {}) {
 		assign(this.options = {
 			container: view as HTMLElement,
 			resize: () => void 0,

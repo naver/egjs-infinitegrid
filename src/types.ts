@@ -17,7 +17,7 @@ export interface IInfiniteGridGroup {
 	outlines: { start: number[], end: number[] };
 }
 
-export interface IWatcherOptions {
+export interface IScrollerOptions {
 	container: HTMLElement;
 	isOverflowScroll: boolean;
 	horizontal: boolean;
@@ -58,7 +58,7 @@ export interface IInfiniteGridStatus {
 	};
 	_items: IItemManagerStatus;
 	_renderer: IDOMRendererStatus;
-	_watcher: IWatchStatus;
+	_scroller: IWatchStatus;
 	_infinite: IInfiniteStatus;
 }
 
