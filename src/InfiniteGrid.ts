@@ -1043,9 +1043,16 @@ class InfiniteGrid extends Component {
 	}
 	private _setCursor(start: number, end: number) {
 		const infinite = this._infinite;
+		const isVisibleChange
+			= start !== infinite.getCursor("start")
+			|| end !== infinite.getCursor("end");
 
 		infinite.setCursor("start", start);
 		infinite.setCursor("end", end);
+
+		if (isVisibleChange) {
+			this.trigger("visibleChange");
+		}
 	}
 	private _registerComplete(callback: () => void) {
 		this._renderComplete.once("complete", callback);
