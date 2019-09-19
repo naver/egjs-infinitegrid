@@ -753,7 +753,7 @@ class InfiniteGrid extends Component {
 		const startCursor = infinite.getCursor("start");
 		const endCursor = infinite.getCursor("end");
 		const isInCursor = startCursor <= groupIndex && groupIndex <= endCursor;
-		const { horizontal } = this.options;
+		const { horizontal, renderExternal } = this.options;
 
 		if (isInCursor || hasOutline) {
 			let pos = item ? item.rect[horizontal ? "left" : "top"] : Math.max(...outlines.start);
@@ -771,11 +771,14 @@ class InfiniteGrid extends Component {
 				return this;
 			}
 			this._setCursor(groupIndex, groupIndex);
-			this._render({
-				isAppend,
-				cache: [group],
-				isTrusted: false,
-			});
+
+			if (!renderExternal) {
+				this._render({
+					isAppend,
+					cache: [group],
+					isTrusted: false,
+				});
+			}
 			this._registerComplete(() => {
 				this._setScrollPos(pos);
 				this._scrollTo(pos);
@@ -788,11 +791,14 @@ class InfiniteGrid extends Component {
 
 			const isAppend = groupIndex > endCursor || groupIndex < startCursor;
 			this._setCursor(groupIndex, groupIndex);
-			this._render({
-				isAppend,
-				cache: [group],
-				isTrusted: false,
-			});
+
+			if (!renderExternal) {
+				this._render({
+					isAppend,
+					cache: [group],
+					isTrusted: false,
+				});
+			}
 			this._registerComplete(() => {
 				const pos = item.rect[horizontal ? "left" : "top"];
 
@@ -964,10 +970,9 @@ class InfiniteGrid extends Component {
 	}
 	// add items, and remove items for recycling
 	private _recycle({ start, end }: { start: number, end: number }) {
-		if (!this.options.useRecycle) {
-			return;
-		}
-		if (start < 0 || end < 0 || end < start) {
+		const { renderExternal, useRecycle } = this.options;
+
+		if (!useRecycle || renderExternal || start < 0 || end < 0 || end < start) {
 			return;
 		}
 		const items = this._items.pluck("items", start, end);
@@ -1304,11 +1309,13 @@ class InfiniteGrid extends Component {
 		const cache = itemManager.sliceGroups(start, end + 1);
 
 		this._setCursor(start, end);
-		this._render({
-			cache,
-			isAppend,
-			isTrusted,
-		});
+		if (!this.options.renderExternal) {
+			this._render({
+				cache,
+				isAppend,
+				isTrusted,
+			});
+		}
 		this._registerComplete(() => {
 			this._recycle({ start: startCursor, end: start - 1 });
 			this._recycle({ start: end + 1, end: endCursor });
