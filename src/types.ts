@@ -41,6 +41,7 @@ export interface IInfiniteGridOptions {
 	transitionDuration: number;
 	useFit: boolean;
 	attributePrefix: string;
+	renderExternal: boolean;
 }
 export interface IInfiniteOptions {
 	useRecycle?: boolean;

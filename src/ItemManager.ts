@@ -171,9 +171,9 @@ export default class ItemManager {
 		});
 		return newGroup;
 	}
-	public sync(newItems: IItem[]) {
+	public sync(items: IItem[]) {
 		const groups = this._groups;
-		const newGroups = categorize(newItems);
+		const newGroups = categorize(items);
 		const {
 			removed,
 			added,
@@ -265,7 +265,7 @@ export default class ItemManager {
 		}
 		return -1;
 	}
-	public indexOfElement(element: HTMLElement) {
+	public indexesOfElement(element: HTMLElement) {
 		const groupKey = element.getAttribute(GROUPKEY_ATT)!;
 		const groupIndex = this.indexOf({ groupKey });
 		let itemIndex = -1;
