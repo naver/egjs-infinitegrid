@@ -162,7 +162,7 @@ describe("ItemManager Test", function () {
 			const length = group1.items.length;
 			// remove all items1
 			for (let i = 0; i < length; ++i) {
-				const indexes = this.inst.indexOfElement(group1.items[0].el);
+				const indexes = this.inst.indexesOfElement(group1.items[0].el);
 				this.inst.remove(indexes.groupIndex, indexes.itemIndex);
 			}
 			const groupsLength2 = this.inst.size();
@@ -173,7 +173,7 @@ describe("ItemManager Test", function () {
 
 			const groupsLengths = [];
 			for (let i = 0; i < length2; ++i) {
-				const indexes = this.inst.indexOfElement(group2.items[0].el);
+				const indexes = this.inst.indexesOfElement(group2.items[0].el);
 				this.inst.remove(indexes.groupIndex, indexes.itemIndex);
 				groupsLengths.push(this.inst.size());
 			}
