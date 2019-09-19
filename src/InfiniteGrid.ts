@@ -482,7 +482,7 @@ class InfiniteGrid extends Component {
 				this.layout(true);
 			} else {
 				this._items.clearOutlines();
-				this._renderCache({
+				this._render({
 					cache: isEqualSize ? items.getGroups() : infinite.getVisibleGroups(),
 					isAppend: true,
 					isTrusted: false,
@@ -573,7 +573,7 @@ class InfiniteGrid extends Component {
 			item.el = elements[i];
 		});
 
-		this._renderCache({
+		this._render({
 			cache: this._infinite.getVisibleGroups(),
 			isAppend: !items[0].mounted,
 			isTrusted,
@@ -771,7 +771,7 @@ class InfiniteGrid extends Component {
 				return this;
 			}
 			this._setCursor(groupIndex, groupIndex);
-			this._renderCache({
+			this._render({
 				isAppend,
 				cache: [group],
 				isTrusted: false,
@@ -788,7 +788,7 @@ class InfiniteGrid extends Component {
 
 			const isAppend = groupIndex > endCursor || groupIndex < startCursor;
 			this._setCursor(groupIndex, groupIndex);
-			this._renderCache({
+			this._render({
 				isAppend,
 				cache: [group],
 				isTrusted: false,
@@ -1045,7 +1045,7 @@ class InfiniteGrid extends Component {
 	private _registerComplete(callback: () => void) {
 		this._renderComplete.once("complete", callback);
 	}
-	private _renderCache({
+	private _render({
 		cache,
 		isAppend,
 		fromCache = cache.every(group => group.state === GROUP_STATE.CACHED),
@@ -1304,7 +1304,7 @@ class InfiniteGrid extends Component {
 		const cache = itemManager.sliceGroups(start, end + 1);
 
 		this._setCursor(start, end);
-		this._renderCache({
+		this._render({
 			cache,
 			isAppend,
 			isTrusted,
