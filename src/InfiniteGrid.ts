@@ -543,6 +543,23 @@ class InfiniteGrid extends Component {
 	public isProcessing() {
 		return this._isProcessing() || this._isLoading();
 	}
+	public getRenderingIndexes() {
+		const visibleGroups = this._infinite.getVisibleGroups();
+		const length = visibleGroups.length;
+
+		if (!length) {
+			return { start: -1, end: -1 };
+		}
+		const lastGroupItems = visibleGroups[length - 1].items;
+		const firstItem = visibleGroups[0].items[0];
+		const lastItem = lastGroupItems[lastGroupItems.length - 1];
+		const items = this.getItems(true);
+
+		return {
+			start: items.indexOf(firstItem),
+			end: items.lastIndexOf(lastItem),
+		};
+	}
 	public beforeSync(items: IItem[]) {
 		this._infinite.sync(items);
 	}
