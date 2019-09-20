@@ -17,8 +17,7 @@ import {
 	addOnceEvent,
 	assign,
 } from "./utils";
-import { RectType, IPosition, ISize, IJQuery, IInfiniteGridItem, IDOMRendererStatus, IDOMRendererSize, IDOMRendererOrgStyle, IDOMRendererOptions } from "./types";
-
+import { RectType, IPosition, IJQuery, IInfiniteGridItem, IDOMRendererStatus, IDOMRendererSize, IDOMRendererOrgStyle, IDOMRendererOptions } from "./types";
 
 function createContainer(element: HTMLElement) {
 	const container = document.createElement("div");
@@ -61,7 +60,7 @@ export default class DOMRenderer {
 		styles.position = "absolute";
 		render(["width", "height"], rect, styles);
 		if (transitionDuration && TRANSITION && prevRect) {
-			setTransition(styles, transitionDuration, rect as IPosition, prevRect as IPosition);
+			setTransition(styles, transitionDuration, rect, prevRect);
 			if ((el as any)[TRANSITION_NAME]) {
 				return;
 			}

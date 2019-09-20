@@ -151,7 +151,7 @@ export interface IInfiniteGridItem {
 	orgSize?: ISize | null;
 	size?: ISize | null;
 	rect: IPosition & Partial<ISize>;
-	prevRect?: Partial<ISize & IPosition> | null;
+	prevRect?: IPosition & Partial<ISize> | null;
 	[key: string]: any;
 }
 
