@@ -178,8 +178,8 @@ class GridLayout implements ILayout {
 			if (!itemSize) {
 				continue;
 			}
-			const size1 = itemSize![size1Name];
-			const size2 = itemSize![size2Name];
+			const size1 = itemSize[size1Name];
+			const size2 = itemSize[size2Name];
 			const pos1 = isAppend ? point : point - margin - size1;
 			const endPos1 = pos1 + size1 + margin;
 

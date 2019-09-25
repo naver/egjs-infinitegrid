@@ -6,7 +6,7 @@ function makeShapeOutline(
 	outline: number[],
 	itemSize: number,
 	columnLength: number,
-	isAppend: boolean | undefined,
+	isAppend?: boolean,
 ) {
 	const point = Math[isAppend ? "min" : "max"](...outline) || 0;
 

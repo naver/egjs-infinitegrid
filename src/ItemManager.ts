@@ -26,9 +26,6 @@ export default class ItemManager {
 	// group keys
 	private _groupKeys: { [key: string]: IInfiniteGridGroup } = {};
 
-	constructor() {
-		this.clear();
-	}
 	public clear() {
 		this._groups = [];
 		this._groupKeys = {};
@@ -237,21 +234,19 @@ export default class ItemManager {
 	}
 	public remove(groupIndex: number, itemIndex: number) {
 		const data = this.getGroup(groupIndex);
-		let groups: IInfiniteGridGroup[] = [];
+		let group: IInfiniteGridGroup | null = null;
 		let items: IInfiniteGridItem[] = [];
 
 		if (!data) {
-			return { items, groups };
+			return { items, group };
 		}
 		// remove item information
 		items = data.items.splice(itemIndex, 1);
 
 		if (!data.items.length) {
-			const group = this.removeGroup(groupIndex);
-
-			group && (groups = [group]);
+			group = this.removeGroup(groupIndex);
 		}
-		return { items, groups };
+		return { items, group };
 	}
 	public indexOf(data?: { groupKey: string | number } | string | number) {
 		const groupKey = `${typeof data === "object" ? data.groupKey : data}`;

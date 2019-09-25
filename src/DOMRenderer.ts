@@ -40,11 +40,21 @@ function render(properties: RectType[], rect: IInfiniteGridItem["rect"], styles:
 		(p in rect) && (styles[p] = `${rect[p]}px`);
 	});
 }
-function setTransition(styles: HTMLElement["style"], transitionDuration?: number, pos1?: IPosition, pos2?: IPosition) {
-	styles[`${TRANSITION}-property`] = transitionDuration ? `${TRANSFORM},width,height` : "";
-	styles[`${TRANSITION}-duration`] = transitionDuration ? `${transitionDuration}s` : "";
-	styles[`${TRANSITION}-delay`] = transitionDuration ? `0s` : "";
-	styles[TRANSFORM] = transitionDuration ? `translate(${pos1!.left - pos2!.left}px,${pos1!.top - pos2!.top}px)` : "";
+function removeTransition(styles: HTMLElement["style"]) {
+	styles[`${TRANSITION}-property`] = "";
+	styles[`${TRANSITION}-duration`] = "";
+	styles[`${TRANSITION}-delay`] = "";
+	styles[TRANSFORM] = "";
+}
+function setTransition(styles: HTMLElement["style"], transitionDuration: number, pos1: IPosition, pos2: IPosition) {
+	if (!transitionDuration) {
+		removeTransition(styles);
+		return;
+	}
+	styles[`${TRANSITION}-property`] = `${TRANSFORM},width,height`;
+	styles[`${TRANSITION}-duration`] = `${transitionDuration}s`;
+	styles[`${TRANSITION}-delay`] = transitionDuration;
+	styles[TRANSFORM] = `translate(${pos1.left - pos2.left}px,${pos1.top - pos2.top}px)`;
 }
 
 export default class DOMRenderer {
@@ -68,7 +78,7 @@ export default class DOMRenderer {
 			addOnceEvent(el, TRANSITION_END, () => {
 				const itemRect = item.rect;
 
-				setTransition(styles);
+				removeTransition(styles);
 				render(["left", "top"], itemRect, styles);
 				item.prevRect = itemRect;
 				el[TRANSITION_NAME] = false;
@@ -187,10 +197,10 @@ export default class DOMRenderer {
 		return this._size.view!;
 	}
 	public getViewportSize(): number {
-		return this._size.viewport!;
+		return this._size.viewport;
 	}
 	public getContainerSize(): number {
-		return this._size.container!;
+		return this._size.container;
 	}
 	public setContainerSize(size: number) {
 		this._size.container = size;
@@ -208,6 +218,8 @@ export default class DOMRenderer {
 
 		if (isResize) {
 			this._size = {
+				view: -1,
+				container: -1,
 				viewport: size,
 				item: null,
 			};

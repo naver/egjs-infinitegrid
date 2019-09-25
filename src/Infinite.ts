@@ -20,14 +20,14 @@ class Infinite {
 	public setSize(size: number) {
 		this._status.size = size;
 	}
-	public scroll(scrollPos: number, isTrusted: boolean = true) {
+	public scroll(scrollPos: number | null, isTrusted: boolean = true) {
 		const startCursor = this.getCursor("start");
 		const endCursor = this.getCursor("end");
 		const { threshold, request, change, useRecycle } = this.options;
 		const itemManager = this._items;
-		const length = itemManager.size();
+		const groupLength = itemManager.size();
 
-		if (!length) {
+		if (!groupLength) {
 			return;
 		} else if (startCursor === -1 || endCursor === -1) {
 			change(true, { start: 0, end: 0 }, isTrusted);
@@ -64,19 +64,21 @@ class Infinite {
 			startIndex = startIndex < 0 ? startCursor : Math.min(startCursor, startIndex);
 			endIndex = endIndex < 0 ? endCursor : Math.max(endCursor, endIndex);
 
-			for (; endIndex < length - 1; ++endIndex) {
+			while (endIndex < groupLength - 1) {
 				const outline = groups[endIndex + 1].outlines.end;
 
 				if (!outline.length || scrollPos <= Math.max(...outline) + threshold) {
 					break;
 				}
+				++endIndex;
 			}
-			for (startIndex; startIndex >= 1; --startIndex) {
+			while (startIndex >= 1) {
 				const outline = groups[startIndex - 1].outlines.start;
 
 				if (!outline.length || Math.min(...outline) - threshold <= endScrollPos) {
 					break;
 				}
+				--startIndex;
 			}
 		}
 		const isAppend = endScrollPos >= endEdgePos - threshold;
@@ -91,7 +93,7 @@ class Infinite {
 				// append next item
 				change(true, { start: startIndex, end: endIndex }, isTrusted);
 				return;
-			} else if (isAppend && endCursor < endIndex + 1 && endIndex + 1 < length) {
+			} else if (isAppend && endCursor < endIndex + 1 && endIndex + 1 < groupLength) {
 				// append next item(no outline)
 				change(true, { start: startIndex, end: endIndex + 1 }, isTrusted);
 				return;
@@ -108,8 +110,8 @@ class Infinite {
 				return;
 			}
 		}
-		// if you have data(no cachedAppendData, has cachedPrependData) to pepend, request it.
-		for (endIndex = endCursor + 1; endIndex < length - 1; ++endIndex) {
+		// if you have data(no cachedAppendData, has cachedPrependData) to prepend, request it.
+		for (endIndex = endCursor + 1; endIndex < groupLength - 1; ++endIndex) {
 			const outline = groups[endIndex + 1].outlines.end;
 
 			if (!outline.length) {
@@ -123,12 +125,15 @@ class Infinite {
 				break;
 			}
 		}
-		endIndex = Math.max(endIndex, endCursor + 1);
-		startIndex = Math.min(startCursor - 1, startIndex);
 
-		const hasAppendData = endIndex < length;
+		const hasAppendData = endIndex < groupLength;
 		const hasPrependData = startIndex >= 0;
 
+		// Priority (Check if next item exists.)
+		// 1. Append Cached Data (isAppend && hasAppendData)
+		// 2. Prepend Cached Data (isPrepend && hasPrependData)
+		// 3. Reqeust Append (isAppend)
+		// 4. Reqeust Prepend (isPrepend)
 		if (isAppend && (!isPrepend || hasAppendData || !hasPrependData)) {
 			if (hasAppendData) {
 				change(true, { start: useRecycle ? endIndex : startIndex, end: endIndex }, isTrusted);
@@ -226,6 +231,10 @@ class Infinite {
 			({ groupKey }) => itemManager.getGroupByKey(groupKey),
 		);
 		if (nextStartCursor > -1 && nextEndCursor > -1) {
+			// This is when the arrangement is inverted.
+			// prevVisisbleGroups is [0, 1, 2, 3]
+			// but currentGroups is [3, 2, 1, 0]
+			// so, nextStartCursor is 3, and nextEndCursor is 0
 			nextStartCursor = Math.min(nextStartCursor, nextEndCursor);
 			nextEndCursor = Math.max(nextStartCursor, nextEndCursor);
 		} else if (nextEndCursor > -1) {
@@ -249,7 +258,7 @@ class Infinite {
 		const { startCursor, endCursor } = status;
 		const result = items.remove(groupIndex, itemIndex);
 
-		if (result.groups.length) {
+		if (result.group) {
 			if (groupIndex < startCursor) {
 				--status.startCursor;
 				--status.endCursor;

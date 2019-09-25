@@ -331,7 +331,7 @@ class FrameLayout implements ILayout {
 			startOutline[i] = Math.max(...startOutline);
 			endOutline[i] = startOutline[i];
 		}
-		// The target outline is start outline when type is trueING
+		// The target outline is start outline when type is appending
 		const targetOutline = isAppend ? startOutline : endOutline;
 		const prevOutlineEnd = outline.length === 0 ? 0 : Math[isAppend ? "max" : "min"](...outline);
 		let prevOutlineDist = isAppend ? 0 : end;
@@ -342,7 +342,7 @@ class FrameLayout implements ILayout {
 				if (startOutline[i] === endOutline[i]) {
 					continue;
 				}
-				// if appending type is false, subtract dist from appending group's height.
+				// if appending type is prepend(false), subtract dist from appending group's height.
 
 				prevOutlineDist = Math.min(targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
 			}

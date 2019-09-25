@@ -19,10 +19,12 @@ export default class Scroller {
 	private _timer: {
 		resize: any;
 	};
-	private _containerOffset: number;
+	private _containerOffset: number = 0;
 	private _view: Window | HTMLElement;
-	private _isScrollIssue: boolean;
-	private _prevPos: number | null;
+	private _isScrollIssue: boolean = IS_IOS;
+	//  When InfiniteGrid is initialized.
+	// The initial value is null to block the scroll event when returning from browser behavior.
+	private _prevPos: number | null = null;
 	constructor(view: Window | HTMLElement, options: Partial<IScrollerOptions> = {}) {
 		assign(this.options = {
 			container: view as HTMLElement,
@@ -34,12 +36,7 @@ export default class Scroller {
 		this._timer = {
 			resize: null,
 		};
-		this.reset();
-		this._containerOffset = 0;
 		this._view = view;
-		this._isScrollIssue = IS_IOS;
-		this._onCheck = this._onCheck.bind(this);
-		this._onResize = this._onResize.bind(this);
 		this.attachEvent();
 		this.resize();
 		this.setScrollPos();
@@ -66,15 +63,10 @@ export default class Scroller {
 		scrollTo(this._view, arrPos[0], arrPos[1]);
 	}
 	public getScrollPos() {
-		return this._prevPos!;
+		return this._prevPos;
 	}
 	public setScrollPos(pos = this.getOrgScrollPos()) {
-		let rawPos = pos;
-
-		if (typeof pos === "undefined") {
-			rawPos = this.getOrgScrollPos();
-		}
-		this._prevPos = rawPos - this.getContainerOffset();
+		this._prevPos = pos - this.getContainerOffset();
 	}
 	public attachEvent() {
 		addEvent(this._view, "scroll", this._onCheck);
@@ -100,7 +92,13 @@ export default class Scroller {
 		this.detachEvent();
 		this.reset();
 	}
-	private _onCheck() {
+	private _getOffset() {
+		const { container, horizontal } = this.options;
+		const rect = container.getBoundingClientRect();
+
+		return rect[horizontal ? "left" : "top"] + this.getOrgScrollPos();
+	}
+	private _onCheck = () => {
 		const prevPos = this.getScrollPos();
 		const orgScrollPos = this.getOrgScrollPos();
 
@@ -119,13 +117,7 @@ export default class Scroller {
 			horizontal: this.options.horizontal,
 		});
 	}
-	private _getOffset() {
-		const { container, horizontal } = this.options;
-		const rect = container.getBoundingClientRect();
-
-		return rect[horizontal ? "left" : "top"] + this.getOrgScrollPos();
-	}
-	private _onResize() {
+	private _onResize = () => {
 		if (this._timer.resize) {
 			clearTimeout(this._timer.resize);
 		}

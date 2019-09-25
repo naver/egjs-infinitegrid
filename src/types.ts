@@ -73,9 +73,9 @@ export interface IInfiniteStatus {
 }
 
 export interface IDOMRendererSize {
-	container?: number;
-	view?: number;
-	viewport?: number;
+	container: number;
+	view: number;
+	viewport: number;
 	item?: ISize | null;
 }
 
@@ -90,8 +90,8 @@ export interface IWatchStatus {
 }
 
 export interface IRemoveResult {
+	group: IInfiniteGridGroup | null;
 	items: IInfiniteGridItem[];
-	groups: IInfiniteGridGroup[];
 }
 
 /**

@@ -386,14 +386,14 @@ class InfiniteGrid extends Component {
 	 */
 	public remove(element: HTMLElement, isLayout = true) {
 		const { groupIndex, itemIndex } = this._items.indexesOfElement(element);
-		const { items, groups } = this._infinite.remove(groupIndex, itemIndex);
+		const { items, group } = this._infinite.remove(groupIndex, itemIndex);
 
 		items.forEach(item => {
 			DOMRenderer.removeElement(item.el);
 		});
 
 		if (items.length) {
-			isLayout && this.layout(groups.length > 0);
+			isLayout && this.layout(!!group);
 
 			return items;
 		}
@@ -1388,7 +1388,7 @@ class InfiniteGrid extends Component {
 
 		if (isAppend) {
 			this._setContainerSize(size + this._status.loadingSize || 0);
-			if (scrollPos > 0) {
+			if (typeof scrollPos === "number" && scrollPos > 0) {
 				!IS_IOS && this._scrollTo(scrollPos);
 			}
 		}
