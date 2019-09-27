@@ -235,8 +235,11 @@ class Infinite {
 			// prevVisisbleGroups is [0, 1, 2, 3]
 			// but currentGroups is [3, 2, 1, 0]
 			// so, nextStartCursor is 3, and nextEndCursor is 0
-			nextStartCursor = Math.min(nextStartCursor, nextEndCursor);
-			nextEndCursor = Math.max(nextStartCursor, nextEndCursor);
+			const minCursor = Math.min(nextStartCursor, nextEndCursor);
+			const maxCursor = Math.max(nextStartCursor, nextEndCursor);
+
+			nextStartCursor = minCursor;
+			nextEndCursor = maxCursor;
 		} else if (nextEndCursor > -1) {
 			nextStartCursor = nextEndCursor;
 		} else if (nextStartCursor > -1) {
