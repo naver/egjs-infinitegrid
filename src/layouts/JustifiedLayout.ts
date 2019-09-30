@@ -1,5 +1,4 @@
 import { find_path } from "./lib/dijkstra";
-import { APPEND, PREPEND } from "../consts";
 import { getStyleNames, assignOptions, cloneItems } from "../utils";
 import { ILayout, IRectlProperties, SizeType, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
 
@@ -86,7 +85,7 @@ class JustifiedLayout implements ILayout {
 	 * layout.prepend(items, [100]);
 	 */
 	public append(items: IInfiniteGridItem[], outline?: number[], cache?: boolean) {
-		return this._insert(items, outline, APPEND, cache);
+		return this._insert(items, outline, true, cache);
 	}
 	/**
 	 * Adds items at the top of a outline.
@@ -99,7 +98,7 @@ class JustifiedLayout implements ILayout {
 	 * layout.prepend(items, [100]);
 	 */
 	public prepend(items: IInfiniteGridItem[], outline?: number[], cache?: boolean) {
-		return this._insert(items, outline, PREPEND, cache);
+		return this._insert(items, outline, false, cache);
 	}
 	/**
 	 * Adds items of groups at the bottom of a outline.
@@ -117,7 +116,7 @@ class JustifiedLayout implements ILayout {
 
 		for (let i = 0; i < length; ++i) {
 			const group = groups[i];
-			const outlines = this._layout(group.items, point, APPEND);
+			const outlines = this._layout(group.items, point, true);
 
 			group.outlines = outlines;
 			point = outlines.end;
@@ -162,7 +161,7 @@ class JustifiedLayout implements ILayout {
 	private _getSize(items: IInfiniteGridItem[], size1Name: SizeType, size2Name: SizeType) {
 		const margin = this.options.margin;
 		const size = items.reduce((sum, item) => sum +
-			(item.orgSize[size2Name]) / item.orgSize[size1Name], 0);
+			(item.orgSize![size2Name]) / item.orgSize![size1Name], 0);
 
 		return (this._size - margin * (items.length - 1)) / size;
 	}
@@ -233,18 +232,18 @@ class JustifiedLayout implements ILayout {
 
 			for (let j = 0; j < pathItemsLength; ++j) {
 				const item = pathItems[j];
-				const size2 = item.orgSize[size2Name] / item.orgSize[size1Name] * size1;
+				const size2 = item.orgSize![size2Name] / item.orgSize![size1Name] * size1;
 				// item has margin bottom and right.
 				// first item has not margin.
 				const prevItemRect = j === 0 ? 0 : pathItems[j - 1].rect;
-				const pos2 = (prevItemRect ? prevItemRect[pos2Name] + prevItemRect[size2Name] + margin : 0);
+				const pos2 = (prevItemRect ? prevItemRect[pos2Name] + prevItemRect[size2Name]! + margin : 0);
 
 				item.rect = {
 					[pos1Name]: pos1,
 					[pos2Name]: pos2,
 					[size1Name]: size1,
 					[size2Name]: size2,
-				};
+				} as any;
 			}
 			height += margin + size1;
 			endPoint = startPoint + height;

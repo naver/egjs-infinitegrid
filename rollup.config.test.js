@@ -62,28 +62,4 @@ export default buildHelper([
 		uglify: true,
 		format: "umd",
 	},
-	{
-		name,
-		input: "./src/Parallax.ts",
-		output: "./dist/parallax.js",
-		resolve: true,
-		format: "umd",
-	},
-	{
-		name: "eg.Parallax",
-		input: "./src/Parallax.ts",
-		output: "./dist/parallax.min.js",
-		resolve: true,
-		uglify: true,
-		format: "umd",
-	},
-	{
-		name,
-		input: "./src/index.umd.ts",
-		output: "./dist/infinitegrid.esm.js",
-		format: "esm",
-		external,
-	},
-	...entries,
 ]);
-

@@ -10,7 +10,8 @@ export const SUPPORT_PASSIVE = (() => {
 
 	try {
 		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
-			document.addEventListener("test", null, Object.defineProperty({},
+			// tslint:disable-next-line: no-empty
+			document.addEventListener("test", () => {}, Object.defineProperty({},
 				"passive", {
 					get() {
 						supportsPassiveOption = true;
@@ -30,16 +31,8 @@ export const CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
 export const IGNORE_CLASSNAME = "_eg-infinitegrid-ignore_";
 export const TRANSITION_NAME = "_INFINITEGRID_TRANSITION";
 
-export const APPEND = true;
-export const PREPEND = false;
 export const VERTICAL = "vertical";
 export const HORIZONTAL = "horizontal";
-export const CACHE = true;
-export const NO_CACHE = false;
-export const TRUSTED = true;
-export const NO_TRUSTED = false;
-export const MULTI = true;
-export const SINGLE = false;
 export const DUMMY_POSITION = -100000;
 export const GROUPKEY_ATT = "data-groupkey";
 
@@ -62,6 +55,17 @@ export const IDLE = 0;
 export const LOADING_APPEND = 1;
 export const LOADING_PREPEND = 2;
 export const PROCESSING = 4;
+
+export enum ITEM_STATE {
+	NOT_LOADED = 0,
+	LOADING  = 1,
+	LOADED = 2,
+	COMPLETE = 3,
+}
+export enum GROUP_STATE {
+	NOT_CACHED = 0,
+	CACHED = 1,
+}
 
 const webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
 

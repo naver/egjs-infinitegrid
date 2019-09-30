@@ -37,9 +37,9 @@ function createGrid() {
 		threshold: 50,
 		isOverflowScroll: _overflow,
 		useFit: _useFit,
-		transitionDuration: _transitionDuration
-		// useRecycle: false,
-		
+		transitionDuration: _transitionDuration,
+		useRecycle: false,
+
 	});
 	ig.setLoadingBar("<div class=\"loading_bar\">LOADING</div>");
 	ig.on({
@@ -47,16 +47,17 @@ function createGrid() {
 			if (ig.isProcessing()) {
 				return;
 			}
-			console.log("append");
+			console.log("append", e.groupKey);
 			var groupKey = e.groupKey + 1;
-				
+
 			ig.startLoading(true);
 			setTimeout(function () {
 				ig.append(getItems(groupKey, num), groupKey);
 			}, 200);
 		},
 		"layoutComplete": function (e) {
-			ig.endLoading();
+			!e.isLayout && !e.fromCache && ig.endLoading();
+			console.log("벌써", e);
 			// console.log("layoutComplete");
 			if (!isParallax) {
 				return;

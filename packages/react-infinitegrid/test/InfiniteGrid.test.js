@@ -515,7 +515,7 @@ describe(`test layout`, function () {
 		expect(height3).to.be.above(height2);
 		expect(height4).to.be.above(height3);
 	});
-	it("should check watcher offset", async () => {
+	it("should check scroller offset", async () => {
 		// Given
 		let grid;
 		const rendered = ReactDOM.render(
@@ -528,13 +528,13 @@ describe(`test layout`, function () {
 		await wait();
 
 		// When
-		const offset1 = grid._watcher.getContainerOffset();
+		const offset1 = grid._scroller.getContainerOffset();
 
 		rendered.style.top = "200px";
-		const offset2 = grid._watcher.getContainerOffset();
+		const offset2 = grid._scroller.getContainerOffset();
 
 		grid.resize();
-		const offset3 = grid._watcher.getContainerOffset();
+		const offset3 = grid._scroller.getContainerOffset();
 
 		// Then
 		expect(offset1).to.be.equals(400);

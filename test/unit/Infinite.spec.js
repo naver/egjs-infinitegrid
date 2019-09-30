@@ -1,26 +1,29 @@
 import Infinite from "../../src/Infinite";
 import ItemManager from "../../src/ItemManager";
-import {wait, createElement} from "./helper/TestHelper";
+import { wait, createElement } from "./helper/TestHelper";
 /* eslint-disable */
 [true, false].forEach(useRecycle => {
-	[0, 50, 100, 200].forEach(threshold => {
-		describe(`Infinite Test(useRecycle=${useRecycle}, threshold=${threshold})`, function() {
+	[0, 50, 100, 200, 1000].forEach(threshold => {
+		describe(`Infinite Test(useRecycle=${useRecycle}, threshold=${threshold})`, function () {
 			beforeEach(() => {
+				this.changeSpy = sinon.spy();
+				this.requestSpy = sinon.spy();
 				this.items = new ItemManager();
 				this.infinite = new Infinite(this.items, {
 					useRecycle,
 					threshold,
+					change: this.changeSpy,
+					request: this.requestSpy,
 				});
-				this.infinite.setSize(400);
+				this.size = 400;
+				this.infinite.setSize(this.size);
 			});
 			afterEach(() => {
 				this.infinite = null;
 			});
-			it (`should check infinite append`, async () => {
-				const spy = sinon.spy();
-				this.infinite.options.append = spy;
+			it(`should call request callback that item's length is 1 and cursor is {start: 0, end: 0}`, async () => {
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [],
 					outlines: {
@@ -34,24 +37,54 @@ import {wait, createElement} from "./helper/TestHelper";
 				// When
 				this.infinite.scroll(80);
 				this.infinite.scroll(100);
-				this.infinite.scroll(1000 - this.infinite._status.size - threshold - 10, true);
-				this.infinite.scroll(1000 - this.infinite._status.size - threshold + 1, true);
+				this.infinite.scroll(Math.max(1000 - this.size - threshold - 10, 0));
+				this.infinite.scroll(Math.max(1000 - this.size - threshold + 1, 0));
+				this.infinite.scroll(1000 + threshold + 1);
 
 				await wait();
-				expect(spy.callCount).to.be.equal(1);
+
+				// Then
+				if (threshold === 0 || threshold === 50) {
+					// -
+					// -
+					// -
+					// append
+					// append
+					expect(this.changeSpy.callCount).to.be.equal(0);
+					expect(this.requestSpy.callCount).to.be.equal(2);
+					expect(this.requestSpy.args[0][0]).to.be.true;
+					expect(this.requestSpy.args[1][0]).to.be.true;
+				} else if (threshold === 100 || threshold === 200) {
+					// prepend
+					// prepend
+					// -
+					// append
+					// append
+					expect(this.changeSpy.callCount).to.be.equal(0);
+					expect(this.requestSpy.callCount).to.be.equal(4);
+					expect(this.requestSpy.args[0][0]).to.be.false;
+					expect(this.requestSpy.args[1][0]).to.be.false;
+					expect(this.requestSpy.args[2][0]).to.be.true;
+					expect(this.requestSpy.args[3][0]).to.be.true;
+				} else if (threshold === 1000) {
+					// append
+					// append
+					// append
+					// append
+					// append
+					expect(this.changeSpy.callCount).to.be.equal(0);
+					expect(this.requestSpy.callCount).to.be.equal(5);
+					expect(this.requestSpy.args[0][0]).to.be.true;
+					expect(this.requestSpy.args[1][0]).to.be.true;
+					expect(this.requestSpy.args[2][0]).to.be.true;
+					expect(this.requestSpy.args[3][0]).to.be.true;
+					expect(this.requestSpy.args[4][0]).to.be.true;
+				}
+
 			});
-			it(`should check infinite append(cache)`, async () => {
-				const spy = sinon.spy(({cache}) => {
-					if (useRecycle) {
-						expect(cache.length).to.be.ok;
-						expect(cache[0].outlines.start[0]).to.be.equal(1000);
-					} else {
-						expect(cache.length).to.be.not.ok;
-					}
-				});
-				this.infinite.options.append = spy;
+			it(`should call change(append), request that item's length is 2 and cursor is {start: 0, end: 0}`, async () => {
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [],
 					outlines: {
@@ -59,7 +92,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [1000],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [],
 					outlines: {
@@ -72,22 +105,198 @@ import {wait, createElement} from "./helper/TestHelper";
 				// When
 				this.infinite.scroll(80);
 				this.infinite.scroll(100);
-				this.infinite.scroll(1000 - this.infinite._status.size - threshold - 10);
-				this.infinite.scroll(1000 - this.infinite._status.size - threshold + 1);
+
+				this.infinite.scroll(Math.max(1000 - this.infinite._status.size - threshold - 10, 0));
+				this.infinite.scroll(Math.max(1000 - this.infinite._status.size - threshold + 1, 0));
+
 				this.infinite.scroll(2000 - this.infinite._status.size - threshold - 20);
 				this.infinite.scroll(2000 - this.infinite._status.size);
 
-				// Then
-				expect(this.infinite.getCursor("end")).to.be.equal(useRecycle ? 0 : 1);
+				this.infinite.scroll(2001);
 
 				await wait();
-				expect(spy.callCount).to.be.equal(useRecycle ? 3 : 1);
+
+				// Then
+				expect(this.infinite.getCursor("end")).to.be.equals(0);
+
+				if (useRecycle === true) {
+					expect(this.infinite.getCursor("end")).to.be.equals(0);
+
+					if (threshold === 0 || threshold === 50) {
+						// -
+						// -
+						// -
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 1, end: 1 } (range out)
+						// change(append) { start: 1, end: 1 } (range out)
+						// change(append) { start: 1, end: 1 } (range out)
+						expect(this.changeSpy.callCount).to.be.equal(4);
+						expect(this.requestSpy.callCount).to.be.equal(0);
+
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 1, end: 1 });
+
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 1, end: 1 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 1, end: 1 });
+					} else if (threshold === 100 || threshold === 200) {
+						// request(prepend)
+						// request(prepend)
+						// -
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 1, end: 1 } (range out)
+						// change(append) { start: 1, end: 1 } (range out)
+						// change(append) { start: 1, end: 1 } (range out)
+						expect(this.changeSpy.callCount).to.be.equal(4);
+						expect(this.requestSpy.callCount).to.be.equal(2);
+
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 1, end: 1 });
+
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 1, end: 1 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 1, end: 1 });
+
+						expect(this.requestSpy.args[0][0]).to.be.false;
+						expect(this.requestSpy.args[1][0]).to.be.false;
+					} else if (threshold === 1000) {
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 1, end: 1 } (range out)
+
+						expect(this.changeSpy.callCount).to.be.equal(7);
+						expect(this.requestSpy.callCount).to.be.equal(0);
+
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[4][0]).to.be.true;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[5][0]).to.be.true;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[6][0]).to.be.true;
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 1, end: 1 });
+					}
+				} else {
+					// useRecycle: false
+					if (threshold === 0 || threshold === 50) {
+						// -
+						// -
+						// -
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						expect(this.changeSpy.callCount).to.be.equal(4);
+						expect(this.requestSpy.callCount).to.be.equal(0);
+
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
+					} else if (threshold === 100 || threshold === 200) {
+						// request(prepend)
+						// request(prepend)
+						// -
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 } (range out)
+						// change(append) { start: 0, end: 1 } (range out)
+						// change(append) { start: 0, end: 1 } (range out)
+						expect(this.changeSpy.callCount).to.be.equal(4);
+						expect(this.requestSpy.callCount).to.be.equal(2);
+
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.requestSpy.args[0][0]).to.be.false;
+						expect(this.requestSpy.args[1][0]).to.be.false;
+					} else if (threshold === 1000) {
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+						// change(append) { start: 0, end: 1 }
+
+						expect(this.changeSpy.callCount).to.be.equal(7);
+						expect(this.requestSpy.callCount).to.be.equal(0);
+
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[4][0]).to.be.true;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[5][0]).to.be.true;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[6][0]).to.be.true;
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 0, end: 1 });
+					}
+				}
 			});
-			it (`should check infinite prepend`, async () => {
-				const spy = sinon.spy();
-				this.infinite.options.prepend = spy;
+			it(`should call change(prepend), request that item's length is 2 and cursor is {start: 1, end: 1}`, async () => {
 				// Given
-				this.items.prepend({
+				this.items.appendGroup({
+					groupKey: 0,
+					items: [],
+					outlines: {
+						start: [0],
+						end: [1000],
+					},
+				});
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [],
 					outlines: {
@@ -95,145 +304,146 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [2000],
 					},
 				});
-				this.items.prepend({
-					groupKey: 0,
-					items: [],
-					outlines: {
-						start: [0],
-						end: [1000],
-					},
-				});
-
-				this.infinite.setCursor("start", 0);
+				this.infinite.setCursor("start", 1)
 				this.infinite.setCursor("end", 1);
-
 				// When
-				this.infinite.scroll(2000);
-				this.infinite.scroll(1000);
-				this.infinite.scroll(500);
-				this.infinite.scroll(400);
-				this.infinite.scroll(threshold + 2);
-				this.infinite.scroll(threshold);
-				this.infinite.scroll(threshold - 50);
-				this.infinite.scroll(0);
+				this.infinite.scroll(80);
+				this.infinite.scroll(100);
 
+				this.infinite.scroll(Math.max(1000 - this.infinite._status.size - threshold - 10, 0));
+				this.infinite.scroll(Math.max(1000 - this.infinite._status.size - threshold + 1, 0));
+
+				this.infinite.scroll(2000 - this.infinite._status.size - threshold - 20);
+				this.infinite.scroll(2000 - this.infinite._status.size);
+
+				this.infinite.scroll(2001);
 
 				await wait();
-				expect(this.infinite.getCursor("start")).to.be.equal(0);
-				expect(this.infinite.getCursor("end")).to.be.equal(1);
-				expect(spy.callCount).to.be.equal(3);
-			});
-			it(`should check infinite prepend(cache)`, async () => {
-				this.infinite.options.append = sinon.spy();
-				this.infinite.options.prepend = sinon.spy(({cache}) => {
-					if (useRecycle) {
-						expect(cache.length).to.be.ok;
-						expect(cache[0].outlines.start[0]).to.be.equal(0);
-					} else {
-						expect(cache.length).to.be.not.ok;
-					}
-				});
-				// Given
-				this.items.prepend({
-					groupKey: 1,
-					items: [],
-					outlines: {
-						start: [1000],
-						end: [2000],
-					},
-				});
-				this.items.prepend({
-					groupKey: 0,
-					items: [],
-					outlines: {
-						start: [0],
-						end: [1000],
-					},
-				});
-
-				this.infinite.setCursor("start", 1);
-				this.infinite.setCursor("end", 1);
-
-				// When
-				this.infinite.scroll(2000);
-				this.infinite.scroll(1000);
-				this.infinite.scroll(500);
-				this.infinite.scroll(400);
-				this.infinite.scroll(threshold + 2);
-				this.infinite.scroll(threshold);
-				this.infinite.scroll(threshold - 50);
-				this.infinite.scroll(0);
 
 				// Then
-				expect(this.infinite.getCursor("start")).to.be.equal(useRecycle ? 1 : 0);
-				expect(this.infinite.getCursor("end")).to.be.equal(1);
-				await wait();
-				expect(this.infinite.options.append.callCount).to.be.equal(1);
-				expect(this.infinite.options.prepend.callCount).to.be.equal(useRecycle ? 7 : 3);
-			});
-			it(`should check infinite prepend for small size(cache)`, async () => {
-				this.infinite.options.append = sinon.spy();
-				this.infinite.options.prepend = sinon.spy(({cache}) => {
-					if (useRecycle) {
-						expect(cache.length).to.be.not.equal(0)
-						expect(cache[0].outlines.start[0]).to.be.equal(0);
-					} else {
-						expect(cache.length).to.be.equal(0);
+				expect(this.infinite.getCursor("start")).to.be.equals(1);
+				if (useRecycle === true) {
+					if (threshold === 0 || threshold === 50 || threshold === 100 || threshold === 200) {
+						// change(prepend) { start: 0, end: 0 } (range out)
+						// change(prepend) { start: 0, end: 0 } (range out)
+						// change(prepend) { start: 0, end: 0 } (range out)
+						// change(prepend) { start: 0, end: 1 }
+						// -
+						// request(append)
+						// request(append)
+						expect(this.changeSpy.callCount).to.be.equal(4);
+						expect(this.requestSpy.callCount).to.be.equal(2);
+
+						expect(this.changeSpy.args[0][0]).to.be.false;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 0 });
+
+						expect(this.changeSpy.args[1][0]).to.be.false;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 0 });
+
+						expect(this.changeSpy.args[2][0]).to.be.false;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 0 });
+
+						expect(this.changeSpy.args[3][0]).to.be.false;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.requestSpy.args[0][0]).to.be.true;
+						expect(this.requestSpy.args[1][0]).to.be.true;
+					} else if (threshold === 1000) {
+						// change(prepend) { start: 0, end: 0 } (range out)
+						// change(prepend) { start: 0, end: 0 } (range out)
+						// change(prepend) { start: 0, end: 0 } (range out)
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// request(append)
+
+						expect(this.changeSpy.callCount).to.be.equal(6);
+						expect(this.requestSpy.callCount).to.be.equal(1);
+
+						expect(this.changeSpy.args[0][0]).to.be.false;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[1][0]).to.be.false;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[2][0]).to.be.false;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[3][0]).to.be.false;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[4][0]).to.be.false;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[5][0]).to.be.false;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.requestSpy.args[0][0]).to.be.true;
 					}
-				});
-				// Given
-				this.items.prepend({
-					groupKey: 1,
-					items: [],
-					outlines: {
-						start: [1000],
-						end: [1100],
-					},
-				});
-				this.items.prepend({
-					groupKey: 0,
-					items: [],
-					outlines: {
-						start: [0],
-						end: [1000],
-					},
-				});
+				} else {
+					// useRecycle: false
+					if (threshold === 0 || threshold === 50 || threshold === 100 || threshold === 200) {
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// -
+						// request(append)
+						// request(append)
+						expect(this.changeSpy.callCount).to.be.equal(4);
+						expect(this.requestSpy.callCount).to.be.equal(2);
 
-				this.infinite.setCursor("start", 1);
-				this.infinite.setCursor("end", 1);
+						expect(this.changeSpy.args[0][0]).to.be.false;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
 
-				// When
-				// request append
-				this.infinite.scroll(2000);
-				// useRecycle: true, request prepend
-				// useRecycle: false, request append
-				this.infinite.scroll(1000);
-				// useRecycle: true, request prepend
-				// useRecycle: false request append
-				this.infinite.scroll(400);
-				// useRecycle: true, request prepend
-				// useRecycle: false
-				this.infinite.scroll(threshold + 2);
-				// useRecycle: true, request prepend
-				// useRecycle: false, request prepend
-				this.infinite.scroll(threshold);
-				// useRecycle: true, request prepend
-				// useRecycle: false, request prepend
-				this.infinite.scroll(threshold - 50);
-				// useRecycle: true, request prepend
-				// useRecycle: false, request prepend
-				this.infinite.scroll(0);
+						expect(this.changeSpy.args[1][0]).to.be.false;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
 
-				// Then
-				expect(this.infinite.getCursor("start")).to.be.equal(useRecycle ? 1 : 0);
-				expect(this.infinite.getCursor("end")).to.be.equal(1);
-				await wait();
-				expect(this.infinite.options.append.callCount).to.be.equal(useRecycle ? 1: 2);
-				expect(this.infinite.options.prepend.callCount).to.be.equal(useRecycle ? 6 : 3);
+						expect(this.changeSpy.args[2][0]).to.be.false;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[3][0]).to.be.false;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.requestSpy.args[0][0]).to.be.true;
+						expect(this.requestSpy.args[1][0]).to.be.true;
+					} else if (threshold === 1000) {
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// change(prepend) { start: 0, end: 1 }
+						// request(append)
+
+						expect(this.changeSpy.callCount).to.be.equal(6);
+						expect(this.requestSpy.callCount).to.be.equal(1);
+
+						expect(this.changeSpy.args[0][0]).to.be.false;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[1][0]).to.be.false;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[2][0]).to.be.false;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[3][0]).to.be.false;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[4][0]).to.be.false;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.changeSpy.args[5][0]).to.be.false;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 1 });
+
+						expect(this.requestSpy.args[0][0]).to.be.true;
+					}
+				}
 			});
-			it("should check scroll append multiple", async () => {
+			it("should call change multiple", async () => {
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [],
 					outlines: {
@@ -241,7 +451,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [200],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [],
 					outlines: {
@@ -249,7 +459,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [300],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
 					items: [],
 					outlines: {
@@ -257,10 +467,8 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [400],
 					},
 				});
-				this.infinite.setCursor("start", 0);
-				this.infinite.setCursor("end", 0);
 
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 3,
 					items: [],
 					outlines: {
@@ -270,306 +478,340 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 
 				// When
-				this.infinite.options.append = sinon.spy(({cache}) => {
-					// Then
-					if (!useRecycle) {
-						expect(cache.length).to.be.equals(1);
-						expect(cache[0].groupKey).to.be.equals(3);
-						return;
-					}
-					expect(cache.length).to.be.equals(2);
-					expect(cache[0].groupKey).to.be.equals(1);
-					expect(cache[1].groupKey).to.be.equals(2);
-				});
-				this.infinite.scroll(0);
+				this.infinite.setCursor("start", 0);
+				this.infinite.setCursor("end", 0);
 
-				this.infinite.options.append = sinon.spy(({cache}) => {
-					// Then
-					expect(cache.length).to.be.equals(1);
-					expect(cache[0].groupKey).to.be.equals(3);
-				});
+				this.infinite.scroll(0);
+				this.infinite.scroll(300);
+				this.infinite.scroll(900);
+
 				this.infinite.setCursor("start", 0);
 				this.infinite.setCursor("end", 2);
+
 				this.infinite.scroll(0);
+				this.infinite.scroll(300);
+				this.infinite.scroll(900);
+
+				this.items.getGroup(3).outlines = { start: [400], end: [800] };
 
 
-				this.items.get(3).outlines = {start:[400], end:[800]};
-
-				this.infinite.options.append = () => {};
-				this.infinite.options.prepend = sinon.spy(({cache}) => {
-					// Then
-					if (!useRecycle) {
-						expect(cache.length).to.be.equals(0);
-						return;
-					}
-					expect(cache.length).to.be.equals(3);
-					expect(cache[0].groupKey).to.be.equals(0);
-					expect(cache[1].groupKey).to.be.equals(1);
-					expect(cache[2].groupKey).to.be.equals(2);
-				});
+				this.infinite.scroll(0);
+				this.infinite.scroll(300);
+				this.infinite.scroll(900);
 
 				this.infinite.setCursor("start", 3);
 				this.infinite.setCursor("end", 3);
-				this.infinite.scroll(0);
-			});
-			it(`should check recycle method (append)`, () => {
-				this.infinite.options.recycle = sinon.spy(({start, end}) => {
-					expect(start).to.be.equal(0);
-					expect(end).to.be.equal(0);
-				});
-				// Given
-				this.items.append({
-					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {
-						start: [0, 0],
-						end: [1000, 1100],
-					},
-				});
-				this.items.append({
-					groupKey: 1,
-					items: [{el: 1}],
-					outlines: {
-						start: [1000, 1100],
-						end: [2000, 2100],
-					},
-				});
-				this.items.append({
-					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {
-						start: [2000, 2100],
-						end: [3000, 3100],
-					},
-				});
-				this.infinite.setCursor("start", 0);
-				this.infinite.setCursor("end", 2);
-				this.infinite.recycle(0, true);
-				this.infinite.recycle(500, true);
-				this.infinite.recycle(1000 - threshold, true);
-				this.infinite.recycle(1000 - threshold / 2, true);
-				this.infinite.recycle(1000, true);
-				this.infinite.recycle(1100 + threshold, true);
-				this.infinite.recycle(1100 + threshold + 1, true);
 
-				expect(this.infinite.getCursor("start")).to.be.equal(useRecycle ? 1 : 0);
-				expect(this.infinite.getCursor("end")).to.be.equal(2);
-				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
+
+				this.infinite.scroll(0);
+				this.infinite.scroll(300);
+				this.infinite.scroll(900);
+
+
+				// Then
+				if (useRecycle) {
+					if (threshold === 0 || threshold === 50) {
+						// { start: 0, end: 0 }
+						// 0 change(true, { start: 0, end: 2})
+						// 300 change(true, { start: 1, end: 2})
+						// 900 change(true, { start: 2, end: 2})
+
+						// { start: 0, end: 2 }
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 1, end: 3})
+						// 900 change(true, {start: 3, end: 3})
+
+						// Add group 3's outline
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 1, end: 3})
+						// 900 change(true, {start: 3, end: 3})
+
+						// { start: 3 end: 3}
+						// 0 change(false, { start: 0, end: 3 })
+						// 300 change(false, { start: 1, end: 3 })
+						// 900 request
+						expect(this.changeSpy.callCount).to.be.equals(11);
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 1, end: 2 });
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 2, end: 2 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[4][0]).to.be.true;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 1, end: 3 });
+						expect(this.changeSpy.args[5][0]).to.be.true;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 3, end: 3 });
+
+						expect(this.changeSpy.args[6][0]).to.be.true;
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[7][0]).to.be.true;
+						expect(this.changeSpy.args[7][1]).to.be.deep.equals({ start: 1, end: 3 });
+						expect(this.changeSpy.args[8][0]).to.be.true;
+						expect(this.changeSpy.args[8][1]).to.be.deep.equals({ start: 3, end: 3 });
+
+						expect(this.changeSpy.args[9][0]).to.be.false;
+						expect(this.changeSpy.args[9][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[10][0]).to.be.false;
+						expect(this.changeSpy.args[10][1]).to.be.deep.equals({ start: 1, end: 3 });
+					} else if (threshold === 100 || threshold === 200) {
+						// { start: 0, end: 0 }
+						// 0 change(true, { start: 0, end: 2})
+						// 300 change(true, { start: 0, end: 2})
+						// 900 change(true, { start: 2, end: 2})
+
+						// { start: 0, end: 2 }
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 3, end: 3})
+
+						// Add group 3's outline
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 3, end: 3})
+
+						// { start: 3 end: 3}
+						// 0 change(false, { start: 0, end: 3 })
+						// 300 change(false, { start: 0, end: 3 })
+						// 900 request
+						expect(this.changeSpy.callCount).to.be.equals(11);
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 2, end: 2 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[4][0]).to.be.true;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[5][0]).to.be.true;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 3, end: 3 });
+
+						expect(this.changeSpy.args[6][0]).to.be.true;
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[7][0]).to.be.true;
+						expect(this.changeSpy.args[7][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[8][0]).to.be.true;
+						expect(this.changeSpy.args[8][1]).to.be.deep.equals({ start: 3, end: 3 });
+
+						expect(this.changeSpy.args[9][0]).to.be.false;
+						expect(this.changeSpy.args[9][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[10][0]).to.be.false;
+						expect(this.changeSpy.args[10][1]).to.be.deep.equals({ start: 0, end: 3 });
+					} else if (threshold === 1000) {
+						// { start: 0, end: 0 }
+						// 0 change(true, { start: 0, end: 2})
+						// 300 change(true, { start: 0, end: 2})
+						// 900 change(true, { start: 0, end: 2})
+
+						// { start: 0, end: 2 }
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 3, end: 3})
+
+						// Add group 3's outline
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 3, end: 3})
+
+						// { start: 3 end: 3}
+						// 0 change(false, { start: 0, end: 3 })
+						// 300 change(false, { start: 0, end: 3 })
+						// 900 change(false, { start: 0, end: 3 })
+						expect(this.changeSpy.callCount).to.be.equals(12);
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 2 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[4][0]).to.be.true;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[5][0]).to.be.true;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 3 });
+
+						expect(this.changeSpy.args[6][0]).to.be.true;
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[7][0]).to.be.true;
+						expect(this.changeSpy.args[7][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[8][0]).to.be.true;
+						expect(this.changeSpy.args[8][1]).to.be.deep.equals({ start: 0, end: 3 });
+
+						expect(this.changeSpy.args[9][0]).to.be.false;
+						expect(this.changeSpy.args[9][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[10][0]).to.be.false;
+						expect(this.changeSpy.args[10][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[11][0]).to.be.false;
+						expect(this.changeSpy.args[11][1]).to.be.deep.equals({ start: 0, end: 3 });
+					}
+
+				} else {
+					if (threshold === 0 || threshold === 50) {
+						// { start: 0, end: 0 }
+						// 0 change(true, { start: 0, end: 2})
+						// 300 change(true, { start: 0, end: 2})
+						// 900 change(true, { start: 0, end: 2})
+
+						// { start: 0, end: 2 }
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 0, end: 3})
+
+						// Add group 3's outline
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 0, end: 3})
+
+						// { start: 3 end: 3}
+						// 0 -
+						// 0 -
+						// 900 request
+						expect(this.changeSpy.callCount).to.be.equals(9);
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 2 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[4][0]).to.be.true;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[5][0]).to.be.true;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 3 });
+
+						expect(this.changeSpy.args[6][0]).to.be.true;
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[7][0]).to.be.true;
+						expect(this.changeSpy.args[7][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[8][0]).to.be.true;
+						expect(this.changeSpy.args[8][1]).to.be.deep.equals({ start: 0, end: 3 });
+					} else if (threshold === 100 || threshold === 200) {
+						// { start: 0, end: 0 }
+						// 0 change(true, { start: 0, end: 2})
+						// 300 change(true, { start: 0, end: 2})
+						// 900 change(true, { start: 0, end: 2})
+
+						// { start: 0, end: 2 }
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 0, end: 3})
+
+						// Add group 3's outline
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 0, end: 3})
+
+						// { start: 3 end: 3}
+						// 0 -
+						// 300 -
+						// 900 request
+						expect(this.changeSpy.callCount).to.be.equals(9);
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 2 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[4][0]).to.be.true;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[5][0]).to.be.true;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 3 });
+
+						expect(this.changeSpy.args[6][0]).to.be.true;
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[7][0]).to.be.true;
+						expect(this.changeSpy.args[7][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[8][0]).to.be.true;
+						expect(this.changeSpy.args[8][1]).to.be.deep.equals({ start: 0, end: 3 });
+					} else if (threshold === 1000) {
+						// { start: 0, end: 0 }
+						// 0 change(true, { start: 0, end: 2})
+						// 300 change(true, { start: 0, end: 2})
+						// 900 change(true, { start: 0, end: 2})
+
+						// { start: 0, end: 2 }
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 0, end: 3})
+
+						// Add group 3's outline
+						// 0 change(true, {start: 0, end: 3})
+						// 300 change(true, {start: 0, end: 3})
+						// 900 change(true, {start: 0, end: 3})
+
+						// { start: 3 end: 3}
+						// 0 request
+						// 300 request
+						// 900 request
+						expect(this.changeSpy.callCount).to.be.equals(9);
+						expect(this.changeSpy.args[0][0]).to.be.true;
+						expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[1][0]).to.be.true;
+						expect(this.changeSpy.args[1][1]).to.be.deep.equals({ start: 0, end: 2 });
+						expect(this.changeSpy.args[2][0]).to.be.true;
+						expect(this.changeSpy.args[2][1]).to.be.deep.equals({ start: 0, end: 2 });
+
+						expect(this.changeSpy.args[3][0]).to.be.true;
+						expect(this.changeSpy.args[3][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[4][0]).to.be.true;
+						expect(this.changeSpy.args[4][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[5][0]).to.be.true;
+						expect(this.changeSpy.args[5][1]).to.be.deep.equals({ start: 0, end: 3 });
+
+						expect(this.changeSpy.args[6][0]).to.be.true;
+						expect(this.changeSpy.args[6][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[7][0]).to.be.true;
+						expect(this.changeSpy.args[7][1]).to.be.deep.equals({ start: 0, end: 3 });
+						expect(this.changeSpy.args[8][0]).to.be.true;
+						expect(this.changeSpy.args[8][1]).to.be.deep.equals({ start: 0, end: 3 });
+					}
+				}
 			});
-			it(`should check append and remove method`, () => {
+			it(`should call change(prepend), no outline`, async () => {
 				// Given
-				this.items.append({
-					groupKey: 0,
-					items: [
-						{
-							el: createElement(0),
-						},
-						{
-							el: createElement(0),
-						},
-					],
-					outlines: {
-						start: [0],
-						end: [1000],
-					},
-				});
-				this.items.append({
+				this.items.prependGroup({
 					groupKey: 1,
-					items: [
-						{
-							el: createElement(1),
-						},
-						{
-							el: createElement(1),
-						},
-					],
+					items: [],
 					outlines: {
 						start: [1000],
 						end: [2000],
 					},
 				});
-				this.infinite.setCursor("start", 0);
+				this.items.prependGroup({
+					groupKey: 0,
+					items: [],
+					outlines: {
+						start: [],
+						end: [],
+					},
+				});
+
+				// When
+				this.infinite.setCursor("start", 1);
 				this.infinite.setCursor("end", 1);
-
-				// When
-				const size1 = this.items.size(); // 2
-
-				// remove group0 item0
-				const group0 = this.items.getData(0);
-				const indexes0 = this.items.indexOfElement(group0.items[0].el);
-				this.infinite.remove(indexes0.groupIndex, indexes0.itemIndex);
-				const length1 = group0.items.length; // 1
-
-				// remove group0 item1
-				this.infinite.remove(indexes0.groupIndex, indexes0.itemIndex);
-				const length2 = group0.items.length; // 0
-
-				const startCursor1 = this.infinite.getCursor("start");
-				const endCursor1 = this.infinite.getCursor("end");
-
-				const size2 = this.items.size(); // 1
-				const group1 = this.items.getData(0);
-
-				// remove group1 item0
-				const indexes1 = this.items.indexOfElement(group1.items[0].el)
-				this.infinite.remove(indexes1.groupIndex, indexes1.itemIndex);
-				const length3 = group1.items.length; // 1
-
-				// remove group1 item1
-				this.infinite.remove(indexes1.groupIndex, indexes1.itemIndex);
-				const length4 = group1.items.length; // 0
-
-				const startCursor2 = this.infinite.getCursor("start");
-				const endCursor2 = this.infinite.getCursor("end");
-				// no groups, no items
-				const size3 = this.items.size(); // 0
+				this.infinite.scroll(0);
 
 				// Then
-				expect(size1).to.be.equals(2);
-				expect(size2).to.be.equals(1);
-				expect(size3).to.be.equals(0);
-				expect(length1).to.be.equals(1);
-				expect(length2).to.be.equals(0);
-				expect(length3).to.be.equals(1);
-				expect(length4).to.be.equals(0);
-				expect(startCursor1).to.be.equals(0);
-				expect(endCursor1).to.be.equals(0);
-				expect(startCursor2).to.be.equals(-1);
-				expect(endCursor2).to.be.equals(-1);
+				expect(this.infinite)
+				expect(this.changeSpy.args[0][0]).to.be.false;
 
-			});
-			it(`should check recycle method (multiple/append)`, () => {
-				this.infinite.options.recycle = sinon.spy(({start, end}) => {
-					expect(start).to.be.equal(0);
-					expect(end).to.be.equal(1);
-				});
-				// Given
-				this.items.append({
-					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {
-						start: [0, 0],
-						end: [1000, 1100],
-					},
-				});
-				this.items.append({
-					groupKey: 1,
-					items: [{el: 1}],
-					outlines: {
-						start: [1000, 1100],
-						end: [2000, 2100],
-					},
-				});
-				this.items.append({
-					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {
-						start: [2000, 2100],
-						end: [3000, 3100],
-					},
-				});
-				this.infinite.setCursor("start", 0);
-				this.infinite.setCursor("end", 2);
-				this.infinite.recycle(2100 + threshold + 1, true);
-
-				expect(this.infinite.getCursor("start")).to.be.equal(useRecycle ? 2 : 0);
-				expect(this.infinite.getCursor("end")).to.be.equal(2);
-				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
-			});
-			it(`should check recycle method (prepend)`, () => {
-				this.infinite.options.recycle = sinon.spy(({start, end}) => {
-					expect(start).to.be.equal(2);
-					expect(end).to.be.equal(2);
-				});
-				// Given
-				this.items.append({
-					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {
-						start: [0, 0],
-						end: [1000, 1100],
-					},
-				});
-				this.items.append({
-					groupKey: 1,
-					items: [{el: 1}],
-					outlines: {
-						start: [1000, 1100],
-						end: [2000, 2100],
-					},
-				});
-				this.items.append({
-					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {
-						start: [2000, 2100],
-						end: [3000, 3100],
-					},
-				});
-				this.infinite.setCursor("start", 0);
-				this.infinite.setCursor("end", 2);
-
-				this.infinite.recycle(3000, false);
-				expect(this.infinite.options.recycle.callCount).to.be.equal(0);
-
-				this.infinite.recycle(2100, false);
-				expect(this.infinite.options.recycle.callCount).to.be.equal(0);
-
-				this.infinite.recycle(2000 - this.infinite._status.size, false);
-				expect(this.infinite.options.recycle.callCount).to.be.equal(0);
-
-				this.infinite.recycle(2000 - this.infinite._status.size - threshold, false);
-				expect(this.infinite.options.recycle.callCount).to.be.equal(0);
-
-				this.infinite.recycle(2000 - this.infinite._status.size - threshold - 0.5, false);
-
-
-				expect(this.infinite.getCursor("start")).to.be.equal(0);
-				expect(this.infinite.getCursor("end")).to.be.equal(useRecycle ? 1 : 2);
-				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
-			});
-			it(`should check recycle method (multiple/prepend)`, () => {
-				this.infinite.options.recycle = sinon.spy(({start, end}) => {
-					// Then
-					expect(start).to.be.equal(1);
-					expect(end).to.be.equal(2);
-				});
-				// Given
-				this.items.append({
-					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {
-						start: [0, 0],
-						end: [1000, 1100],
-					},
-				});
-				this.items.append({
-					groupKey: 1,
-					items: [{el: 1}],
-					outlines: {
-						start: [1000, 1100],
-						end: [2000, 2100],
-					},
-				});
-				this.items.append({
-					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {
-						start: [2000, 2100],
-						end: [3000, 3100],
-					},
-				});
-
-				// When
-				this.infinite.setCursor("start", 0);
-				this.infinite.setCursor("end", 2);
-				this.infinite.recycle(1000 - this.infinite._status.size - threshold - 0.5, false);
-
-
-				// Then
-				expect(this.infinite.getCursor("start")).to.be.equal(0);
-				expect(this.infinite.getCursor("end")).to.be.equal(useRecycle ? 0 : 2);
-				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
+				if (useRecycle && threshold !== 1000) {
+					expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 0 });
+				} else {
+					expect(this.changeSpy.args[0][1]).to.be.deep.equals({ start: 0, end: 1 });
+				}
 			});
 			it(`should check getEdgeOutline method`, () => {
 
@@ -577,20 +819,20 @@ import {wait, createElement} from "./helper/TestHelper";
 				const start = this.infinite.getEdgeOutline("start");
 				const end = this.infinite.getEdgeOutline("end");
 
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {start: [0, 0], end: [1000, 1100]},
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}],
-					outlines: {start: [1000, 1100], end: [2000, 2100]},
+					items: [{ el: 2 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {start: [2000, 2100], end: [3000, 3100]},
+					items: [{ el: 3 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
 				});
 
 				// When
@@ -598,8 +840,10 @@ import {wait, createElement} from "./helper/TestHelper";
 				this.infinite.setCursor("end", 2);
 
 				// Then
-				expect(start).to.be.equal(start);
-				expect(end).to.be.equal(end);
+				expect(this.infinite.getCursor("start")).to.be.equals(0);
+				expect(this.infinite.getCursor("end")).to.be.equals(2);
+				expect(start).to.be.deep.equal([]);
+				expect(end).to.be.deep.equal([]);
 				expect(this.infinite.getEdgeOutline("start")).to.be.deep.equal([0, 0]);
 				expect(this.infinite.getEdgeOutline("end")).to.be.deep.equal([3000, 3100]);
 			});
@@ -608,20 +852,20 @@ import {wait, createElement} from "./helper/TestHelper";
 				const start = this.infinite.getEdgeValue("start");
 				const end = this.infinite.getEdgeValue("end");
 
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {start: [0, 0], end: [1000, 1100]},
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}],
-					outlines: {start: [1000, 1100], end: [2000, 2100]},
+					items: [{ el: 1 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {start: [2000, 2100], end: [3000, 3100]},
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
 				});
 
 				// When
@@ -637,22 +881,22 @@ import {wait, createElement} from "./helper/TestHelper";
 			it(`should check visible method`, () => {
 				// Given
 				const visibleItems = this.infinite.getVisibleItems();
-				const visibleData = this.infinite.getVisibleData();
+				const visibleData = this.infinite.getVisibleGroups();
 
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {start: [0, 0], end: [1000, 1100]},
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}, {el: 2}],
-					outlines: {start: [1000, 1100], end: [2000, 2100]},
+					items: [{ el: 1 }, { el: 2 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {start: [2000, 2100], end: [3000, 3100]},
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
 				});
 
 				// When
@@ -662,7 +906,83 @@ import {wait, createElement} from "./helper/TestHelper";
 				expect(visibleItems).to.have.lengthOf(0);
 				expect(visibleData).to.have.lengthOf(0);
 				expect(this.infinite.getVisibleItems()).to.have.lengthOf(4);
-				expect(this.infinite.getVisibleData()).to.have.lengthOf(3);
+				expect(this.infinite.getVisibleGroups()).to.have.lengthOf(3);
+			});
+			it(`should check remove method(groupIndex < startCursor)`, () => {
+				// Given
+				this.items.appendGroup({
+					groupKey: 0,
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
+				});
+				this.items.appendGroup({
+					groupKey: 1,
+					items: [{ el: 1 }, { el: 2 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
+				});
+				this.items.appendGroup({
+					groupKey: 2,
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
+				});
+				this.infinite.setCursor("start", 2);
+				this.infinite.setCursor("end", 2);
+
+				// When
+				// remove group 1
+				this.infinite.remove(1, 0);
+				this.infinite.remove(1, 0);
+
+				// Then
+				expect(this.infinite.getCursor("start")).to.be.equals(1);
+				expect(this.infinite.getCursor("end")).to.be.equals(1);
+			});
+			it(`should check remove method(groupIndex <= endIndex)`, () => {
+				// Given
+				this.items.appendGroup({
+					groupKey: 0,
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
+				});
+				this.items.appendGroup({
+					groupKey: 1,
+					items: [{ el: 1 }, { el: 2 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
+				});
+				this.items.appendGroup({
+					groupKey: 2,
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
+				});
+				this.infinite.setCursor("start", 1);
+				this.infinite.setCursor("end", 2);
+
+				// When
+				// remove group 1
+				this.infinite.remove(1, 0);
+				this.infinite.remove(1, 0);
+
+				// Then
+				expect(this.infinite.getCursor("start")).to.be.equals(1);
+				expect(this.infinite.getCursor("end")).to.be.equals(1);
+			});
+			it(`should check remove method(no items)`, () => {
+				// Given
+				this.items.appendGroup({
+					groupKey: 0,
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
+				});
+				this.infinite.setCursor("start", 0);
+				this.infinite.setCursor("end", 0);
+
+				// When
+				// remove all
+				this.infinite.remove(0, 0);
+
+				// Then
+				expect(this.infinite.getCursor("start")).to.be.equals(-1);
+				expect(this.infinite.getCursor("end")).to.be.equals(-1);
 			});
 		});
 	});

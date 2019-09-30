@@ -24,7 +24,7 @@ describe("DOMRender Test", function() {
 
       // When
       const items = this.inst.updateSize(this.items);
-      
+
       // Then
       const baseSize = items[0].size;
       expect(items.every(v => v.size.height == baseSize.height && v.size.width == baseSize.width)).to.be.true;
@@ -38,11 +38,11 @@ describe("DOMRender Test", function() {
 
       // When
       const items = this.inst.updateSize(this.items);
-      
+
       // Then
       const baseSize = items[0].size;
       expect(items.every(v => v.size.height == baseSize.height && v.size.width == baseSize.width)).to.be.false;
       expect(items.every(v => v.orgSize)).to.be.true;
-    });    
+    });
   });
 });
