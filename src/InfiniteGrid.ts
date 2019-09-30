@@ -19,7 +19,7 @@ import {
 	GROUP_STATE,
 } from "./consts";
 import Infinite from "./Infinite";
-import { toArray, $, outerHeight, outerWidth, assign, resetSize, hasTarget, matchHTML } from "./utils";
+import { toArray, $, outerHeight, outerWidth, assign, resetSize, hasTarget, matchHTML, findLastIndex } from "./utils";
 import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
@@ -357,11 +357,21 @@ class InfiniteGrid extends Component {
 			renderer.updateSize(items);
 		}
 		// layout datas
-		const startCursor = infinite.getCursor("start");
-		const endCursor = infinite.getCursor("end");
-		const prevGroup = isLayoutAll ? null : itemManager.getGroup(startCursor - 1);
-		const groups = isLayoutAll ? itemManager.getGroups().slice() :
-			itemManager.sliceGroups(startCursor, endCursor + 1);
+		let startCursor = infinite.getCursor("start");
+		let endCursor = infinite.getCursor("end");
+
+		// Exclude groups that do not have an outline.
+		if (isLayoutAll) {
+			const startGroups = itemManager.sliceGroups(0, startCursor);
+			const endGroups = itemManager.sliceGroups(endCursor, -1);
+			const notCachedStartIndex = findLastIndex(startGroups, ({ state }) => state === GROUP_STATE.NOT_CACHED);
+			const notCachedEndIndex = findLastIndex(endGroups, ({ state }) => state === GROUP_STATE.NOT_CACHED);
+
+			startCursor = notCachedStartIndex + 1;
+			endCursor += notCachedEndIndex + 1;
+		}
+		const prevGroup = itemManager.getGroup(startCursor - 1);
+		const groups = itemManager.sliceGroups(startCursor, endCursor + 1);
 
 		this._relayout(groups, prevGroup);
 		isLayoutAll && this._fit();
@@ -560,21 +570,29 @@ class InfiniteGrid extends Component {
 		};
 	}
 	public beforeSync(items: IItem[]) {
-		this._infinite.sync(items);
+		return this._infinite.sync(items);
 	}
 	public sync(elements: HTMLElement[], isTrusted: boolean) {
+		// Call append event if item is not present at mount time.
+		if (!this._items.size()) {
+			this._request(true, false);
+			return;
+		}
 		const items = this.getItems();
 
-		if (!items.length) {
+		if (!items.length || !elements.length) {
 			return;
 		}
 		items.forEach((item, i) => {
 			item.el = elements[i];
+			if (!item.mounted) {
+				DOMRenderer.renderItem(item, item.rect);
+			}
 		});
 
 		this._render({
 			cache: this._infinite.getVisibleGroups(),
-			isAppend: !items[0].mounted,
+			isAppend: items[0].mounted || !items[items.length - 1].mounted,
 			isTrusted,
 		});
 	}
@@ -647,7 +665,7 @@ class InfiniteGrid extends Component {
 			}
 		}
 		if (this.options.useRecycle && !this.isProcessing()) {
-			// this._infinite.recycle(this._scroller.getScrollPos(), isAppend);
+			this._infinite.scroll(this._scroller.getScrollPos());
 		}
 		return this;
 	}
@@ -859,8 +877,11 @@ class InfiniteGrid extends Component {
 			const startOutline = group.outlines[startCursorName];
 
 			group.state = GROUP_STATE.CACHED;
+			const startOutlineLength = startOutline.length;
+			const endOutlineLength = endOutline.length;
 			if (
-				endOutline.length !== startOutline.length
+				!startOutlineLength || !endOutlineLength
+				|| endOutlineLength !== startOutlineLength
 				|| startOutline.some((pos, i) => pos !== endOutline[i])
 			) {
 				const groupInfo = layout[method](group.items, endOutline, true);
@@ -971,7 +992,7 @@ class InfiniteGrid extends Component {
 	private _recycle({ start, end }: { start: number, end: number }) {
 		const { renderExternal, useRecycle } = this.options;
 
-		if (!useRecycle || renderExternal || start < 0 || end < 0 || end < start) {
+		if (!useRecycle || start < 0 || end < 0 || end < start) {
 			return;
 		}
 		const items = this._items.pluck("items", start, end);
@@ -979,7 +1000,9 @@ class InfiniteGrid extends Component {
 		items.forEach(item => {
 			item.mounted = false;
 		});
-		DOMRenderer.removeItems(items);
+		if (!renderExternal) {
+			DOMRenderer.removeItems(items);
+		}
 	}
 	private _renderLoading(userStyle = this._status.loadingStyle) {
 		if (!this._isLoading()) {
@@ -1068,7 +1091,7 @@ class InfiniteGrid extends Component {
 		isTrusted?: boolean,
 	}) {
 		this._process(PROCESSING, true);
-		const prefix = this.options.attributePrefix;
+		const { renderExternal, attributePrefix } = this.options;
 		const infinite = this._infinite;
 		const renderer = this._renderer;
 		const items = infinite.getVisibleItems();
@@ -1076,7 +1099,9 @@ class InfiniteGrid extends Component {
 		// NOT MOUNTED
 		const notMountedItems = items.filter(item => !item.mounted);
 
-		renderer.createAndInsert(notMountedItems, isAppend);
+		if (!renderExternal) {
+			renderer.createAndInsert(notMountedItems, isAppend);
+		}
 
 		notMountedItems.forEach(item => {
 			item.mounted = true;
@@ -1105,8 +1130,10 @@ class InfiniteGrid extends Component {
 		};
 		result.on("ready", () => {
 			// LOADED
-			renderer.updateSize(notLoadedItems);
-			notLoadedItems.forEach(item => {
+			const mountedItems = notLoadedItems.filter(item => item.mounted);
+
+			renderer.updateSize(mountedItems);
+			mountedItems.forEach(item => {
 				item.state = ITEM_STATE.LOADED;
 			});
 
@@ -1177,10 +1204,10 @@ class InfiniteGrid extends Component {
 						item.content = itemTarget.outerHTML;
 					} else {
 						target.src = src;
-						if (target.getAttribute(`${prefix}width`)) {
-							removeAutoSizer(target, prefix);
-							target.removeAttribute(`${prefix}width`);
-							target.removeAttribute(`${prefix}height`);
+						if (target.getAttribute(`${attributePrefix}width`)) {
+							removeAutoSizer(target, attributePrefix);
+							target.removeAttribute(`${attributePrefix}width`);
+							target.removeAttribute(`${attributePrefix}height`);
 						}
 					}
 				}
@@ -1229,7 +1256,7 @@ class InfiniteGrid extends Component {
 				return;
 			}
 			// wait layoutComplete beacause of error event.
-			check(layoutedItems.map(v => v.el!), prefix).on("ready", () => {
+			check(layoutedItems.map(v => v.el!), attributePrefix).on("ready", () => {
 				this._renderer.updateSize(layoutedItems);
 				finish({ remove: removeTarget, layout: true });
 			});

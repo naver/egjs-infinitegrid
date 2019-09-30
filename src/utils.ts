@@ -326,6 +326,7 @@ export function categorize(newItems: IItem[]) {
 				items: [],
 			};
 			newGroups.push(group);
+			groupKeys[groupKey] = group;
 		}
 
 		group.items.push(item);

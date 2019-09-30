@@ -175,21 +175,22 @@ export default class ItemManager {
 			removed,
 			added,
 			ordered,
-			pureChanged,
+			maintained,
 		} = diff(groups, newGroups, group => group.groupKey);
 
 		removed.forEach(removedIndex => {
 			this.removeGroup(removedIndex);
 		});
-
 		ordered.forEach(([prevIndex, nextIndex], i) => {
 			const group = groups.splice(prevIndex, 1)[0];
 
 			groups.splice(nextIndex, 0, group);
-			this.syncItems(group.items, newGroups[pureChanged[i][1]].items, nextIndex);
 		});
 		added.forEach(addedIndex => {
 			this.insertGroup(newGroups[addedIndex], addedIndex);
+		});
+		maintained.forEach(([, toIndex]) => {
+			this.syncItems(groups[toIndex].items, newGroups[toIndex].items, toIndex);
 		});
 	}
 	public insert(newItem: IItem, groupIndex = -1, itemIndex = -1): IInfiniteGridItem | null {

@@ -1,6 +1,7 @@
 import ItemManager from "./ItemManager";
 import { assign, findIndex, findLastIndex } from "./utils";
 import { CursorType, IInfiniteStatus, IRemoveResult, IItem, IInfiniteGridItem, IInfiniteOptions, IInfiniteGridGroup } from "./types";
+import { diff } from "@egjs/list-differ";
 
 class Infinite {
 	public options: Required<IInfiniteOptions>;
@@ -220,6 +221,7 @@ class Infinite {
 		const { startCursor, endCursor } = status;
 		const itemManager = this._items;
 		const prevVisisbleGroups = itemManager.sliceGroups(startCursor, endCursor + 1);
+		const prevVisibleItems = ItemManager.pluck(prevVisisbleGroups, "items");
 
 		this._items.sync(items);
 		let nextStartCursor = findIndex(
@@ -235,8 +237,8 @@ class Infinite {
 			// prevVisisbleGroups is [0, 1, 2, 3]
 			// but currentGroups is [3, 2, 1, 0]
 			// so, nextStartCursor is 3, and nextEndCursor is 0
-			const minCursor = Math.min(nextStartCursor, nextEndCursor);
-			const maxCursor = Math.max(nextStartCursor, nextEndCursor);
+			const minCursor = startCursor + Math.min(nextStartCursor, nextEndCursor);
+			const maxCursor = startCursor + Math.max(nextStartCursor, nextEndCursor);
 
 			nextStartCursor = minCursor;
 			nextEndCursor = maxCursor;
@@ -254,6 +256,10 @@ class Infinite {
 		}
 		status.startCursor = nextStartCursor;
 		status.endCursor = nextEndCursor;
+
+		const nextVisibleItems = itemManager.pluck("items", startCursor, endCursor);
+
+		return diff(prevVisibleItems, nextVisibleItems, ({ itemKey }) => itemKey);
 	}
 	public remove(groupIndex: number, itemIndex: number): IRemoveResult {
 		const status = this._status;
