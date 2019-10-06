@@ -1,11 +1,8 @@
-import AutoSizer from "./AutoSizer";
-import ImageLoaded, { CHECK_ALL, CHECK_ONLY_ERROR } from "./ImageLoaded";
 import ItemManager from "./ItemManager";
 import { matchHTML, $, assign } from "./utils";
-import { DUMMY_POSITION } from "./consts";
 import DOMRenderer from "./DOMRenderer";
-import { ILayout, ILayoutResult, IInfiniteGridItem, IInfiniteGridGroup, IErrorCallbackOptions } from "./types";
-import { check } from "@egjs/lazyloaded";
+import { ILayout, IInfiniteGridItem, IInfiniteGridGroup } from "./types";
+import { check, removeAutoSizer } from "@egjs/lazyloaded";
 import Infinite from "./Infinite";
 import Component from "@egjs/component";
 
@@ -14,69 +11,69 @@ function hasTarget<T>(target: T[], value: T) {
 }
 
 export default class RenderManager {
-    private _layout: ILayout;
-    constructor(
-        private _infinite: Infinite,
-        private _items: ItemManager,
-        private _renderer: DOMRenderer,
-        private options: {
-            attributePrefix: string;
-            isEqualSize: boolean;
-            isConstantSize: boolean;
-            horizontal: boolean;
-        },
-    ) {}
-    public setLayout(layout: ILayout) {
-        this._layout = layout;
-    }
-    public render(
-        groups,
-        items = ItemManager.pluck(groups, "items"),
-        isAppend: boolean,
-    ) {
-        if (!groups.length) {
-            return;
-        }
-        const checkGroups = isAppend ? groups : groups.reverse();
-        const replaceTarget: number[] = [];
-        const removeTarget: HTMLElement[] = [];
-        const elements = items.map(item => item.el);
-        const prefix = this.options.attributePrefix;
-        const callbackComponent = new Component();
+	private _layout: ILayout;
+	constructor(
+		private _infinite: Infinite,
+		private _items: ItemManager,
+		private _renderer: DOMRenderer,
+		private options: {
+			attributePrefix: string;
+			isEqualSize: boolean;
+			isConstantSize: boolean;
+			horizontal: boolean;
+		},
+	) { }
+	public setLayout(layout: ILayout) {
+		this._layout = layout;
+	}
+	public render(
+		groups,
+		items = ItemManager.pluck(groups, "items"),
+		isAppend: boolean,
+	) {
+		if (!groups.length) {
+			return;
+		}
+		const checkGroups = isAppend ? groups : groups.reverse();
+		const replaceTarget: number[] = [];
+		const removeTarget: HTMLElement[] = [];
+		const elements = items.map(item => item.el);
+		const prefix = this.options.attributePrefix;
+		const callbackComponent = new Component();
 
-        check(
-            elements,
-            prefix,
-        ).on("ready", () => {
-            if (!this._items) {
-                return;
-            }
-            this._complete(callbackComponent, checkGroups, items, isAppend);
-        }).on("error", ({
-            target,
+		check(
+			elements,
+			prefix,
+		).on("ready", () => {
+			if (!this._items) {
+				return;
+			}
+			this._complete(callbackComponent, checkGroups, items, isAppend);
+		}).on("error", ({
+			target,
 			itemIndex,
 		}) => {
-            if (!this._items) {
-                return;
-            }            
-            this._error(callbackComponent, removeTarget, replaceTarget, target, items, itemIndex);
-        }).on("finish", () => {
-            if (!this._items) {
-                return;
-            }
-            this._end(callbackComponent, removeTarget, replaceTarget, items);
-        });
+			if (!this._items) {
+				return;
+			}
+			this._error(callbackComponent, removeTarget, replaceTarget, target, items, itemIndex);
+		}).on("finish", () => {
+			if (!this._items) {
+				return;
+			}
+			this._end(callbackComponent, removeTarget, replaceTarget, items);
+		});
 
-        return callbackComponent;
-    }
-    private _complete(
-        callbackComponent: Component,
+		return callbackComponent;
+	}
+	private _complete(
+		callbackComponent: Component,
 		groups: IInfiniteGridGroup[],
 		items: IInfiniteGridItem[],
 		isAppend: boolean,
 	) {
-        const infinite = this._infinite;
-        const layout = this._layout;
+		const infinite = this._infinite;
+		const layout = this._layout;
 		const itemManager = this._items;
 		const cursor = isAppend ? "end" : "start";
 		const groupIndex = itemManager.indexOf(groups[0]);
@@ -103,37 +100,37 @@ export default class RenderManager {
 			outline = groupInfo.outlines[isAppend ? "end" : "start"];
 
 			return groupInfo;
-        });
+		});
 
-        const startCursor = Math.max(infinite.getCursor("start"), 0);
-        const endCursor = Math.max(infinite.getCursor("end"), 0);
-        let requestStartCursor = itemManager.indexOf(groups[0].groupKey);
-        let requestEndCursor = itemManager.indexOf(groups[groups.length - 1].groupKey);
-        let isInCursor = true;
+		const startCursor = Math.max(infinite.getCursor("start"), 0);
+		const endCursor = Math.max(infinite.getCursor("end"), 0);
+		let requestStartCursor = itemManager.indexOf(groups[0].groupKey);
+		let requestEndCursor = itemManager.indexOf(groups[groups.length - 1].groupKey);
+		let isInCursor = true;
 
-        if (requestStartCursor > endCursor + 1 || requestEndCursor < startCursor - 1) {
-            isInCursor = false;
-        }
-        if (isInCursor) {
-            if (isAppend) {
-                requestStartCursor = startCursor;
-                requestEndCursor = Math.max(endCursor, requestEndCursor);
-            } else {
-                requestStartCursor = Math.max(Math.min(startCursor, requestStartCursor), 0);
-                requestEndCursor = endCursor;
-            }
-        }
-        callbackComponent.trigger("renderComplete", {
-            start: requestStartCursor,
-            end: requestEndCursor,
-        });
-        callbackComponent.trigger("layoutComplete", {
-            items,
-            isAppend,
-        });
-    }
-    private _error(
-        callbackComponent: Component,
+		if (requestStartCursor > endCursor + 1 || requestEndCursor < startCursor - 1) {
+			isInCursor = false;
+		}
+		if (isInCursor) {
+			if (isAppend) {
+				requestStartCursor = startCursor;
+				requestEndCursor = Math.max(endCursor, requestEndCursor);
+			} else {
+				requestStartCursor = Math.max(Math.min(startCursor, requestStartCursor), 0);
+				requestEndCursor = endCursor;
+			}
+		}
+		callbackComponent.trigger("renderComplete", {
+			start: requestStartCursor,
+			end: requestEndCursor,
+		});
+		callbackComponent.trigger("layoutComplete", {
+			items,
+			isAppend,
+		});
+	}
+	private _error(
+		callbackComponent: Component,
 		removeTarget: HTMLElement[],
 		replaceTarget: number[],
 		target: HTMLImageElement,
@@ -185,7 +182,7 @@ export default class RenderManager {
 				} else {
 					target.src = src;
 					if (target.getAttribute(`${prefix}width`)) {
-						AutoSizer.remove(target);
+						removeAutoSizer(target, prefix);
 						target.removeAttribute(`${prefix}width`);
 						target.removeAttribute(`${prefix}height`);
 					}
@@ -221,9 +218,9 @@ export default class RenderManager {
 			remove,
 			removeItem,
 		});
-    }
-    private _end(
-        callbackComponent: Component,
+	}
+	private _end(
+		callbackComponent: Component,
 		removeTarget: HTMLElement[],
 		replaceTarget: number[],
 		items: IInfiniteGridItem[],
@@ -244,8 +241,8 @@ export default class RenderManager {
 		}
 		// wait layoutComplete beacause of error event.
 		check(layoutedItems.map(v => v.el), attributePrefix).on("ready", () => {
-            this._renderer.updateSize(layoutedItems);
-            callbackComponent.trigger("finish", { remove: removeTarget, layout: true });
-        });
+			this._renderer.updateSize(layoutedItems);
+			callbackComponent.trigger("finish", { remove: removeTarget, layout: true });
+		});
 	}
 }
