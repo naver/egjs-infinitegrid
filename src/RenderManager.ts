@@ -1,7 +1,7 @@
 import ItemManager from "./ItemManager";
 import { matchHTML, $, assign } from "./utils";
 import DOMRenderer from "./DOMRenderer";
-import { ILayout, IInfiniteGridItem, IInfiniteGridGroup } from "./types";
+import { ILayout, IInfiniteGridItem, IInfiniteGridGroup, IGroup } from "./types";
 import { check, removeAutoSizer } from "@egjs/lazyloaded";
 import Infinite from "./Infinite";
 import Component from "@egjs/component";
@@ -27,16 +27,16 @@ export default class RenderManager {
 		this._layout = layout;
 	}
 	public render(
-		groups,
+		callbackComponent: Component,
+		groups: IInfiniteGridGroup[],
 		items = ItemManager.pluck(groups, "items"),
 		isAppend?: boolean,
 	) {
 		const checkGroups = isAppend ? groups : groups.reverse();
 		const replaceTarget: number[] = [];
 		const removeTarget: HTMLElement[] = [];
-		const elements = items.map(item => item.el);
+		const elements = items.map(item => item.el!);
 		const prefix = this.options.attributePrefix;
-		const callbackComponent = new Component();
 
 		check(
 			elements,

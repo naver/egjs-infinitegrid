@@ -277,3 +277,16 @@ export interface IArrayFormat<T> {
 	length: number;
 	[index: number]: T;
 }
+
+export interface IDOMRendererOptions {
+	isEqualSize: boolean;
+	isConstantSize: boolean;
+	horizontal: boolean;
+	container: boolean | HTMLElement;
+}
+
+export interface IDOMRendererOrgStyle {
+	position?: CSSStyleDeclaration["position"];
+	overflowX?: CSSStyleDeclaration["overflowX"];
+	overflowY?: CSSStyleDeclaration["overflowY"];
+}

@@ -9,7 +9,7 @@ export default class ItemManager {
 			el,
 			groupKey,
 			mounted: false,
-			content: el.outerHTML,
+			content: el ? el.outerHTML : "",
 			rect: {
 				top: DUMMY_POSITION,
 				left: DUMMY_POSITION,

@@ -4,12 +4,10 @@
 */
 import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
-import DOMRenderer, { resetSize } from "./DOMRenderer";
+import DOMRenderer from "./DOMRenderer";
 import {
 	APPEND,
 	PREPEND,
-	CACHE,
-	NO_CACHE,
 	TRUSTED,
 	NO_TRUSTED,
 	IS_ANDROID2,
@@ -23,12 +21,12 @@ import {
 	IS_IOS,
 } from "./consts";
 import Infinite from "./Infinite";
-import { toArray, $, outerHeight, outerWidth, assign } from "./utils";
+import { toArray, $, outerHeight, outerWidth, assign, resetSize, categorize } from "./utils";
 import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
 	IInfiniteGridItem,
-	IInfiniteGridGroup, IInfiniteGridStatus
+	IInfiniteGridGroup, IInfiniteGridStatus, IItem
 } from "./types";
 import RenderManager from "./RenderManager";
 import Scroller from "./Scroller";
@@ -63,6 +61,7 @@ export interface IInfiniteGridOptions {
 	transitionDuration: number;
 	useFit: boolean;
 	attributePrefix: string;
+	renderExternal: boolean;
 }
 
 /**
@@ -158,6 +157,7 @@ class InfiniteGrid extends Component {
 			transitionDuration: 0,
 			useFit: true,
 			attributePrefix: "data-",
+			renderExternal: false,
 		}, options);
 		DEFENSE_BROWSER && (this.options.useFit = false);
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);
@@ -317,6 +317,11 @@ class InfiniteGrid extends Component {
 	public getItems(includeCached = false): IInfiniteGridItem[] {
 		return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
 	}
+	public beforeSync(items: IItem[]) {
+		const groups = categorize(items);
+
+		this._infinite.sync(groups);
+	}
 	/**
 	 * Rearranges a layout.
 	 * @ko 레이아웃을 다시 배치한다.
@@ -379,7 +384,7 @@ class InfiniteGrid extends Component {
 		this._onLayoutComplete({
 			items,
 			isAppend: APPEND,
-			fromCache: CACHE,
+			fromCache: true,
 			isTrusted: NO_TRUSTED,
 			useRecycle: false,
 			isLayout: true,
@@ -927,7 +932,7 @@ class InfiniteGrid extends Component {
 			infinite.setCursor("end", endCursor + 1);
 		}
 		this._postLayout({
-			fromCache: NO_CACHE,
+			fromCache: false,
 			groups: [group],
 			items: group.items,
 			newItems: group.items,
@@ -1040,48 +1045,64 @@ class InfiniteGrid extends Component {
 		const method = isAppend ? "append" : "prepend";
 
 		// If container has children, it does not render first.
-		if (!isChildren) {
-			DOMRenderer.createElements(items);
-			this._renderer[method](items);
-		}
 		if (!groups.length) {
 			return;
 		}
 
-		items.forEach(item => {
-			item.mounted = true;
-		});
-		return this._renderManager
-			.render(groups, newItems, isAppend)
-			.on("renderComplete", ({ start, end }) => {
-				this._setCursor(start, end);
-			}).on("error", e => {
-				/**
-				 * This event is fired when an error occurs in the image.
-				 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
-				 * @event eg.InfiniteGrid#imageError
-				 * @param {eg.InfiniteGrid.IErrorCallbackOptions} e The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
-				 * @example
-				ig.on("imageError", e => {
-				e.remove();
-				e.removeItem();
-				e.replace("http://...jpg");
-				e.replace(imageElement);
-				e.replaceItem("item html");
-				});
-				*/
-				this.trigger("imageError", assign(e, { element: e.item.el }));
-			}).on("layoutComplete", ({
-				items: layoutItems,
-			}) => {
-				this._onLayoutComplete({
-					items: layoutItems,
-					isAppend,
-					fromCache,
-					isTrusted,
-					useRecycle: false,
-				});
+		const renderExternal = this.options.renderExternal;
+		const callbackComponent = new Component();
+
+		const next = () => {
+			items.forEach(item => {
+				item.mounted = true;
 			});
+			this._renderManager
+				.render(callbackComponent, groups, newItems, isAppend)
+				.on("renderComplete", ({ start, end }) => {
+					this._setCursor(start, end);
+				}).on("error", e => {
+					/**
+					 * This event is fired when an error occurs in the image.
+					 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
+					 * @event eg.InfiniteGrid#imageError
+					 * @param {eg.InfiniteGrid.IErrorCallbackOptions} e The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+					 * @example
+					ig.on("imageError", e => {
+					e.remove();
+					e.removeItem();
+					e.replace("http://...jpg");
+					e.replace(imageElement);
+					e.replaceItem("item html");
+					});
+					*/
+					this.trigger("imageError", assign(e, { element: e.item.el }));
+				}).on("layoutComplete", ({
+					items: layoutItems,
+				}) => {
+					this._onLayoutComplete({
+						items: layoutItems,
+						isAppend,
+						fromCache,
+						isTrusted,
+						useRecycle: false,
+					});
+				});
+		};
+		if (renderExternal) {
+			const renderingItems = this._getRenderingItems(items, isAppend);
+
+			this.trigger("visibleChange", {
+				next,
+				items: renderingItems,
+			});
+			return callbackComponent;
+		} else if (!isChildren) {
+			DOMRenderer.createElements(items);
+			this._renderer[method](items);
+		}
+		next();
+
+		return callbackComponent;
 	}
 	// called by visible
 	private _requestAppend({ cache }: { cache?: IInfiniteGridGroup[] }) {
@@ -1150,6 +1171,25 @@ class InfiniteGrid extends Component {
 	}
 	private _onResize() {
 		this.layout(true);
+	}
+	private _getRenderingItems(nextItems: IInfiniteGridItem[], isAppend?: boolean) {
+		const items = this.getItems();
+		const itemKeys: { [key: string]: any } = {};
+
+		items.forEach(item => {
+			itemKeys[item.itemKey!] = true;
+		});
+		const nextVisisbleItems = nextItems.filter(item => {
+			if (itemKeys[item.itemKey!]) {
+				return false;
+			}
+			itemKeys[item.itemKey!] = true;
+			return true;
+		});
+
+		return isAppend
+			? items.concat(nextVisisbleItems)
+			: nextVisisbleItems.concat(items);
 	}
 	private _setCursor(start: number, end: number) {
 		const infinite = this._infinite;

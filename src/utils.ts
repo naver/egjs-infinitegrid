@@ -8,8 +8,9 @@ import {
 	HORIZONTAL,
 	DEFAULT_OPTIONS,
 } from "./consts";
-import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType, IItem, IGroup, IArrayFormat } from "./types";
+import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType, IItem, IGroup, IArrayFormat, IInfiniteGridItem } from "./types";
 export function toArray(nodes: HTMLCollection): HTMLElement[];
+export function toArray<T extends Node>(nodes: IArrayFormat<T>): T[];
 export function toArray<T extends Node>(nodes: IArrayFormat<T>): T[] {
 	// SCRIPT5014 in IE8
 	const array: T[] = [];
@@ -291,6 +292,47 @@ export function isUndefined(target: any): target is undefined {
 	return typeof target === "undefined";
 }
 
+export function find<T>(arr: T[], callback: (target: T) => any) {
+	const length = arr.length;
+
+	for (let i = 0; i < length; ++i) {
+		if (callback(arr[i])) {
+			return arr[i];
+		}
+	}
+	return null;
+}
+export function findLast<T>(arr: T[], callback: (target: T) => any) {
+	const length = arr.length;
+
+	for (let i = length - 1; i >= 0; --i) {
+		if (callback(arr[i])) {
+			return arr[i];
+		}
+	}
+	return null;
+}
+export function findIndex<T>(arr: T[], callback: (target: T) => any) {
+	const length = arr.length;
+
+	for (let i = 0; i < length; ++i) {
+		if (callback(arr[i])) {
+			return i;
+		}
+	}
+	return -1;
+}
+export function findLastIndex<T>(arr: T[], callback: (target: T) => any) {
+	const length = arr.length;
+
+	for (let i = length - 1; i >= 0; --i) {
+		if (callback(arr[i])) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 export function categorize(newItems: IItem[]) {
 	const newGroups: IGroup[] = [];
 	const groupKeys: { [key: string]: IGroup } = {};
@@ -304,6 +346,7 @@ export function categorize(newItems: IItem[]) {
 				groupKey,
 				items: [],
 			};
+			groupKeys[groupKey] = group;
 			newGroups.push(group);
 		}
 
@@ -311,4 +354,9 @@ export function categorize(newItems: IItem[]) {
 	});
 
 	return newGroups;
+}
+
+export function resetSize(item: IInfiniteGridItem) {
+	item.orgSize = null;
+	item.size = null;
 }

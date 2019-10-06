@@ -1,6 +1,7 @@
 import ItemManager from "./ItemManager";
-import { assign } from "./utils";
-import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult } from "./types";
+import { assign, find, findLast } from "./utils";
+import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult, IItem } from "./types";
+import { diff } from "@egjs/list-differ";
 
 function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: number, endScrollPos: number) {
 	const { items, outlines } = group;
@@ -46,6 +47,54 @@ class Infinite {
 	}
 	public setSize(size: number) {
 		this._status.size = size;
+	}
+	public sync(items: IItem[]) {
+		const status = this._status;
+		const { startCursor, endCursor } = status;
+		const itemManager = this._items;
+		const prevVisisbleGroups = itemManager.sliceGroups(startCursor, endCursor + 1);
+		const prevVisibleItems = ItemManager.pluck(prevVisisbleGroups, "items");
+
+		this._items.sync(items);
+		const startGroup = find(
+			prevVisisbleGroups,
+			({ groupKey }) => itemManager.getGroupByKey(groupKey),
+		);
+		const endGroup = findLast(
+			prevVisisbleGroups,
+			({ groupKey }) => itemManager.getGroupByKey(groupKey),
+		);
+		let nextStartCursor = startGroup ? itemManager.indexOf(startGroup) : -1;
+		let nextEndCursor = endGroup ? itemManager.indexOf(endGroup) : -1;
+
+		if (nextStartCursor > -1 && nextEndCursor > -1) {
+			// This is when the arrangement is inverted.
+			// prevVisisbleGroups is [0, 1, 2, 3]
+			// but currentGroups is [3, 2, 1, 0]
+			// so, nextStartCursor is 3, and nextEndCursor is 0
+			const minCursor = Math.min(nextStartCursor, nextEndCursor);
+			const maxCursor = Math.max(nextStartCursor, nextEndCursor);
+
+			nextStartCursor = minCursor;
+			nextEndCursor = maxCursor;
+		} else if (nextEndCursor > -1) {
+			nextStartCursor = nextEndCursor;
+		} else if (nextStartCursor > -1) {
+			nextEndCursor = nextStartCursor;
+		} else {
+			const size = itemManager.size();
+
+			if (size > 0) {
+				nextStartCursor = 0;
+				nextEndCursor = 0;
+			}
+		}
+		status.startCursor = nextStartCursor;
+		status.endCursor = nextEndCursor;
+
+		const nextVisibleItems = itemManager.pluck("items", startCursor, endCursor);
+
+		return diff(prevVisibleItems, nextVisibleItems, ({ itemKey }) => itemKey);
 	}
 	public recycle(scrollPos: number | null, isForward?: boolean) {
 		if (!this.options.useRecycle || typeof scrollPos !== "number") {
