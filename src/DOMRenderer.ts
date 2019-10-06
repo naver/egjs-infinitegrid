@@ -20,7 +20,7 @@ import {
 	addOnceEvent,
 	assign,
 } from "./utils";
-import { RectType, IPosition, ISize, IJQuery, IInfiniteGridItem, WindowMockType, IDOMRendererStatus, IDOMRendererSize } from "./types";
+import { RectType, IPosition, ISize, IJQuery, IInfiniteGridItem, Window, IDOMRendererStatus, IDOMRendererSize } from "./types";
 
 export function resetSize(item: IInfiniteGridItem) {
 	item.orgSize = null;
@@ -136,7 +136,7 @@ export default class DOMRenderer {
 		});
 	}
 	public container: HTMLElement;
-	public view: WindowMockType | HTMLElement;
+	public view: Window | HTMLElement;
 	public options: IDOMRendererOptions = {
 		isEqualSize: false,
 		isConstantSize: false,
@@ -177,9 +177,9 @@ export default class DOMRenderer {
 				size.item = getSize(item.el);
 			}
 			item.size = (isEqualSize && assign({}, size.item)) ||
-				(isConstantSize && item.orgSize && assign({}, item.orgSize)) ||
+				(isConstantSize && item.orgSize && item.orgSize.width && assign({}, item.orgSize)) ||
 				getSize(item.el);
-			if (!item.orgSize) {
+			if (!item.orgSize || !item.orgSize.width) {
 				item.orgSize = assign({}, item.size);
 			}
 			return item;

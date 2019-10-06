@@ -24,9 +24,9 @@ function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: numb
 export interface IInfiniteOptions {
 	useRecycle?: boolean;
 	threshold?: number;
-	append?: (e?: { cache: IInfiniteGridGroup[] }) => void;
-	prepend?: (e?: { cache: IInfiniteGridGroup[] }) => void;
-	recycle?: (e?: { start: number, end: number }) => void;
+	append?: (e: { cache: IInfiniteGridGroup[] }) => void;
+	prepend?: (e: { cache: IInfiniteGridGroup[] }) => void;
+	recycle?: (e: { start: number, end: number }) => void;
 }
 class Infinite {
 	public options: Required<IInfiniteOptions>;
@@ -47,8 +47,8 @@ class Infinite {
 	public setSize(size: number) {
 		this._status.size = size;
 	}
-	public recycle(scrollPos: number, isForward?: boolean) {
-		if (!this.options.useRecycle) {
+	public recycle(scrollPos: number | null, isForward?: boolean) {
+		if (!this.options.useRecycle || typeof scrollPos !== "number") {
 			return;
 		}
 		const { startCursor, endCursor, size } = this._status;
@@ -58,7 +58,7 @@ class Infinite {
 		}
 		const endScrollPos = scrollPos + size;
 		const { threshold, recycle } = this.options;
-		const visibles = this._items.get(startCursor, endCursor)
+		const visibles = this._items.sliceGroups(startCursor, endCursor + 1)
 			.map(group => isVisible(group, threshold, scrollPos, endScrollPos));
 		const length = visibles.length;
 		let start = isForward ? 0 : visibles.lastIndexOf(0);
@@ -80,7 +80,7 @@ class Infinite {
 			this.setCursor("end", start - 1);
 		}
 	}
-	public scroll(scrollPos: number) {
+	public scroll(scrollPos: number | null) {
 		const startCursor = this.getCursor("start");
 		const endCursor = this.getCursor("end");
 		const items = this._items;
@@ -91,7 +91,7 @@ class Infinite {
 		}
 		const size = this._status.size;
 		const { threshold, append, prepend } = this.options;
-		const datas = items.get();
+		const datas = items.getGroups();
 		const endScrollPos = scrollPos + size;
 		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
 		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
@@ -157,7 +157,7 @@ class Infinite {
 	public setStatus(status: IInfiniteStatus) {
 		this._status = assign(this._status, status);
 	}
-	public getStatus(startKey: string | number, endKey: string | number): IInfiniteStatus {
+	public getStatus(startKey?: string | number, endKey?: string | number): IInfiniteStatus {
 		const { startCursor, endCursor, size } = this._status;
 		const startIndex = Math.max(this._items.indexOf(startKey), 0);
 		const endIndex = (this._items.indexOf(endKey) + 1 || this._items.size()) - 1;
@@ -184,22 +184,26 @@ class Infinite {
 		return outlines.length ? Math[cursor === "start" ? "min" : "max"](...outlines) : 0;
 	}
 	public getVisibleItems() {
-		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
+		const { startCursor, endCursor } = this._status;
+
+		return this._items.pluck("items", startCursor, endCursor);
 	}
 	public getCursor(cursor: CursorType) {
 		return this._status[cursor === "start" ? "startCursor" : "endCursor"];
 	}
 	public getVisibleData() {
-		return this._items.get(this._status.startCursor, this._status.endCursor);
+		const { startCursor, endCursor } = this._status;
+
+		return this._items.sliceGroups(startCursor, endCursor + 1);
 	}
 
-	public remove(groupIndex: number, itemIndex: number) {
+	public remove(groupIndex: number, itemIndex: number): IRemoveResult {
 		const status = this._status;
 		const items = this._items;
 		const { startCursor, endCursor } = status;
 		const result = items.remove(groupIndex, itemIndex);
 
-		if (result.groups.length) {
+		if (result.group) {
 			if (groupIndex < startCursor) {
 				this.setCursor("start", startCursor - 1);
 			}

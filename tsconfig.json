@@ -4,12 +4,12 @@
 		"sourceMap": true,
 		"module": "es2015",
 		"target": "es5",
-		"strictNullChecks": false,
+		"strictNullChecks": true,
 		"moduleResolution": "node",
 		"lib": [
 			"es2015",
 			"dom"
-		],
+		]
 	},
 	"include": [
 		"./src/**/*.ts"

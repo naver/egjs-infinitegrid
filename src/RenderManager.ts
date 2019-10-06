@@ -29,11 +29,8 @@ export default class RenderManager {
 	public render(
 		groups,
 		items = ItemManager.pluck(groups, "items"),
-		isAppend: boolean,
+		isAppend?: boolean,
 	) {
-		if (!groups.length) {
-			return;
-		}
 		const checkGroups = isAppend ? groups : groups.reverse();
 		const replaceTarget: number[] = [];
 		const removeTarget: HTMLElement[] = [];
@@ -70,19 +67,19 @@ export default class RenderManager {
 		callbackComponent: Component,
 		groups: IInfiniteGridGroup[],
 		items: IInfiniteGridItem[],
-		isAppend: boolean,
+		isAppend?: boolean,
 	) {
 		const infinite = this._infinite;
 		const layout = this._layout;
 		const itemManager = this._items;
 		const cursor = isAppend ? "end" : "start";
 		const groupIndex = itemManager.indexOf(groups[0]);
-		const prevGroup = itemManager.getData(groupIndex + (isAppend ? -1 : 1));
+		const prevGroup = itemManager.getGroup(groupIndex + (isAppend ? -1 : 1));
 		let outline = prevGroup ? prevGroup.outlines[cursor] : [0];
 
 		this._renderer.updateSize(items);
 
-		const groupInfos = groups.map(group => {
+		groups.forEach(group => {
 			const groupOutline = group.outlines[isAppend ? "start" : "end"];
 			const isRelayout = !outline.length || (outline.length === groupOutline.length ?
 				!outline.every((v, index) => v === groupOutline[index]) : true);
@@ -90,7 +87,7 @@ export default class RenderManager {
 			if (!isRelayout) {
 				outline = group.outlines[isAppend ? "end" : "start"];
 				DOMRenderer.renderItems(group.items);
-				return group;
+				return;
 			}
 			const groupItems = group.items;
 			const groupInfo = layout[isAppend ? "append" : "prepend"](groupItems, outline, true);
@@ -98,8 +95,6 @@ export default class RenderManager {
 			assign(group, groupInfo);
 			DOMRenderer.renderItems(groupInfo.items);
 			outline = groupInfo.outlines[isAppend ? "end" : "start"];
-
-			return groupInfo;
 		});
 
 		const startCursor = Math.max(infinite.getCursor("start"), 0);
@@ -138,7 +133,7 @@ export default class RenderManager {
 		errorIndex: number,
 	) {
 		const item = items[errorIndex];
-		const element = item.el;
+		const element = item.el!;
 		const prefix = this.options.attributePrefix;
 
 		// remove item
@@ -160,7 +155,7 @@ export default class RenderManager {
 			if (hasTarget(removeTarget, element)) {
 				return;
 			}
-			target.parentNode.removeChild(target);
+			target.parentNode!.removeChild(target);
 			item.content = element.outerHTML;
 			if (hasTarget(replaceTarget, errorIndex)) {
 				return;
@@ -174,7 +169,7 @@ export default class RenderManager {
 			}
 			if (src) {
 				if (matchHTML(src) || typeof src === "object") {
-					const parentNode = target.parentNode;
+					const parentNode = target.parentNode!;
 
 					parentNode.insertBefore($(src), target);
 					parentNode.removeChild(target);
@@ -240,7 +235,7 @@ export default class RenderManager {
 			return;
 		}
 		// wait layoutComplete beacause of error event.
-		check(layoutedItems.map(v => v.el), attributePrefix).on("ready", () => {
+		check(layoutedItems.map(v => v.el!), attributePrefix).on("ready", () => {
 			this._renderer.updateSize(layoutedItems);
 			callbackComponent.trigger("finish", { remove: removeTarget, layout: true });
 		});

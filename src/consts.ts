@@ -10,7 +10,8 @@ export const SUPPORT_PASSIVE = (() => {
 
 	try {
 		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
-			document.addEventListener("test", null, Object.defineProperty({},
+			// tslint:disable-next-line: no-empty
+			document.addEventListener("test", () => {}, Object.defineProperty({},
 				"passive", {
 					get() {
 						supportsPassiveOption = true;
