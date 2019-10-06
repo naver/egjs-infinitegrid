@@ -63,13 +63,6 @@ export default buildHelper([
 		format: "umd",
 	},
 	{
-		name,
-		input: "./src/Parallax.ts",
-		output: "./dist/parallax.js",
-		resolve: true,
-		format: "umd",
-	},
-	{
 		name: "eg.Parallax",
 		input: "./src/Parallax.ts",
 		output: "./dist/parallax.min.js",
@@ -84,5 +77,4 @@ export default buildHelper([
 		format: "esm",
 		external,
 	},
-	...entries,
 ]);
