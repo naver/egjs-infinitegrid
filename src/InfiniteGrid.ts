@@ -578,7 +578,7 @@ class InfiniteGrid extends Component {
 	 */
 	public setLoadingBar(userLoadingBar: {
 		append?: string | HTMLElement,
-		prepepnd?: string | HTMLElement,
+		prepend?: string | HTMLElement,
 	} | string = {}) {
 		const loadingBarObj: {
 			append?: string | HTMLElement,
@@ -605,7 +605,15 @@ class InfiniteGrid extends Component {
 	 * @return {Boolean} Indicates whether a card element or data is being added <ko>카드 엘리먼트 추가 또는 데이터 로딩 진행 중 여부</ko>
 	 */
 	public isProcessing() {
-		return this._isProcessing() || this._isLoading();
+		return this._isProcessing() || this.isLoading();
+	}
+	/**
+	 * Checks whether data is loading.
+	 * @ko 데이터 로딩 중인지 확인한다
+	 * @return {Boolean} Indicates whether data is loading <ko>데이터 로딩 진행 중 여부</ko>
+	 */
+	public isLoading() {
+		return this._getLoadingStatus() > 0;
 	}
 	/**
 	 * Returns the element of loading bar.
@@ -624,7 +632,7 @@ class InfiniteGrid extends Component {
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	public startLoading(isAppend?: boolean, userStyle: StyleType = { display: "block" }) {
-		if (this._isLoading()) {
+		if (this.isLoading()) {
 			return this;
 		}
 		const type = isAppend ? "append" : "prepend";
@@ -633,12 +641,22 @@ class InfiniteGrid extends Component {
 		if (!this._loadingBar[type]) {
 			return this;
 		}
-		this._renderLoading(userStyle);
-		this._status.loadingStyle = userStyle;
-		if (!isAppend) {
-			this._fit();
+
+		const next = () => {
+			this._renderLoading(userStyle);
+			this._status.loadingStyle = userStyle;
+			if (!isAppend) {
+				this._fit();
+			} else {
+				this._setContainerSize(this._getEdgeValue("end") + this._status.loadingSize);
+			}
+		};
+		if (this.options.renderExternal) {
+			this.trigger("render", {
+				next,
+			});
 		} else {
-			this._setContainerSize(this._getEdgeValue("end") + this._status.loadingSize);
+			next();
 		}
 		return this;
 	}
@@ -649,7 +667,7 @@ class InfiniteGrid extends Component {
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	public endLoading(userStyle: StyleType = { display: "none" }) {
-		if (!this._isLoading()) {
+		if (!this.isLoading()) {
 			return this;
 		}
 		const isAppend = this._getLoadingStatus() === LOADING_APPEND;
@@ -673,6 +691,11 @@ class InfiniteGrid extends Component {
 				this._fitItems(size);
 			} else {
 				this._setContainerSize(this._getEdgeValue("end"));
+			}
+			if (this.options.renderExternal) {
+				this.trigger("render", {
+					next: () => {},
+				});
 			}
 		}
 		if (this.options.useRecycle && !this.isProcessing()) {
@@ -886,11 +909,13 @@ class InfiniteGrid extends Component {
 		this._renderer.setContainerSize(Math.max(this._items.getMaxEdgeValue(), size));
 	}
 	private _appendLoadingBar() {
-		const loadingBar = this._loadingBar;
-		const container = this._renderer.container;
+		if (!this.options.renderExternal) {
+			const loadingBar = this._loadingBar;
+			const container = this._renderer.container;
 
-		for (const type in loadingBar) {
-			container.appendChild(loadingBar[type as "append" | "prepend"]!);
+			for (const type in loadingBar) {
+				container.appendChild(loadingBar[type as "append" | "prepend"]!);
+			}
 		}
 	}
 	private _setSize(size: number) {
@@ -920,7 +945,7 @@ class InfiniteGrid extends Component {
 		} else {
 			return 0;
 		}
-		this._isLoading() && this._renderLoading();
+		this.isLoading() && this._renderLoading();
 		return base;
 	}
 	private _getEdgeValue(cursor: CursorType) {
@@ -928,9 +953,6 @@ class InfiniteGrid extends Component {
 	}
 	private _isProcessing() {
 		return (this._status.processingStatus & PROCESSING) > 0;
-	}
-	private _isLoading() {
-		return this._getLoadingStatus() > 0;
 	}
 	private _getLoadingStatus() {
 		return this._status.processingStatus & (LOADING_APPEND | LOADING_PREPEND);
@@ -1025,13 +1047,13 @@ class InfiniteGrid extends Component {
 		if (isRecycle) {
 			this.trigger("render", {
 				next: () => { },
-				groups: [],
+				requestGroups: [],
 			});
 		}
 		return isRecycle;
 	}
 	private _renderLoading(userStyle = this._status.loadingStyle) {
-		if (!this._isLoading()) {
+		if (!this.isLoading()) {
 			return;
 		}
 		const isAppend = this._getLoadingStatus() === LOADING_APPEND;
@@ -1184,7 +1206,7 @@ class InfiniteGrid extends Component {
 						!hasChildren && DOMRenderer.renderItems(items);
 						next();
 					},
-					groups,
+					requestGroups: groups,
 				});
 			}
 			return callbackComponent;
@@ -1278,7 +1300,7 @@ class InfiniteGrid extends Component {
 		if (!isRecycle) {
 			this.trigger("render", {
 				next: () => { },
-				groups: [],
+				requestGroups: [],
 			});
 		}
 	}
@@ -1332,14 +1354,14 @@ class InfiniteGrid extends Component {
 		if (!isAppend) {
 			this._fit();
 		} else {
-			this._isLoading() && this._renderLoading();
+			this.isLoading() && this._renderLoading();
 		}
 
 		const watcher = this._watcher;
 		const scrollPos = watcher.getScrollPos();
 
 		// recycle after _fit beacause prepend and append are occured simultaneously by scroll.
-		if (!isLayout && useRecycle && !this._isLoading()) {
+		if (!isLayout && useRecycle && !this.isLoading()) {
 			this._infinite.recycle(scrollPos, isAppend);
 		}
 

@@ -777,7 +777,7 @@ describe("InfiniteGrid Test", function () {
         it(`should trigger startLoading/endLoading method when ${isAppend ? "appending" : "prepending"} (isOverflowScroll: ${isOverflowScroll})`, async () => {
           // Given
           // When
-          expect(this.inst._isLoading()).to.be.false;
+          expect(this.inst.isLoading()).to.be.false;
 
           // Start Loading
           this.inst.startLoading(isAppend);
@@ -785,7 +785,7 @@ describe("InfiniteGrid Test", function () {
 
           expect(this.inst.getLoadingBar()).to.be.equal(this.inst.getLoadingBar(isAppend));
           expect(this.inst.getLoadingBar(isAppend).style.display).to.be.equal("block");
-          expect(this.inst._isLoading()).to.be.true;
+          expect(this.inst.isLoading()).to.be.true;
           expect(this.inst._getLoadingStatus()).to.be.equal(isAppend ? LOADING_APPEND : LOADING_PREPEND);
           expect(this.inst._status.loadingSize).to.be.equal(isAppend ? 75 : 100);
 
@@ -793,7 +793,7 @@ describe("InfiniteGrid Test", function () {
             if (!isOverflowScroll) {
               expect(innerHeight(this.inst._renderer.container)).to.be.equal(this.inst._getEdgeValue("end") - this.inst._getEdgeValue("start") + (isAppend ? 75 : 100));
             }
-            expect(this.inst._isLoading()).to.be.true;
+            expect(this.inst.isLoading()).to.be.true;
             if (isAppend) {
               expect(parseInt(this.inst.getLoadingBar().style.top, 10)).to.be.equal(this.inst._getEdgeValue("end"));
             }
@@ -810,7 +810,7 @@ describe("InfiniteGrid Test", function () {
           if (!isAppend) {
             expect(this.inst._getEdgeValue("start")).to.be.equal(0);
           }
-          expect(this.inst._isLoading()).to.be.false;
+          expect(this.inst.isLoading()).to.be.false;
           expect(this.inst._getLoadingStatus()).to.be.equal(0);
           expect(this.inst._status.loadingSize).to.be.equal(0);
           expect(this.inst.getLoadingBar(isAppend).style.display).to.be.equal("none");
@@ -830,7 +830,7 @@ describe("InfiniteGrid Test", function () {
             this.inst._watcher.scrollTo(0);
           }
           await waitRequestInsert;
-          expect(this.inst._isLoading()).to.be.false;
+          expect(this.inst.isLoading()).to.be.false;
           expect(this.inst._getLoadingStatus()).to.be.equal(0);
           expect(this.inst._status.loadingSize).to.be.equal(0);
         });
@@ -846,18 +846,18 @@ describe("InfiniteGrid Test", function () {
           const param1 = await waitAppend;
 
           param1.startLoading();
-          const loading1 = this.inst._isLoading();
+          const loading1 = this.inst.isLoading();
           param1.endLoading();
-          const loading2 = this.inst._isLoading();
+          const loading2 = this.inst.isLoading();
           param1.startLoading();
-          const loading3 = this.inst._isLoading();
+          const loading3 = this.inst.isLoading();
 
           waitInsert(this.inst, true, 1, 1);
           const param2 = await waitLayoutComplete;
-          const loading4 = this.inst._isLoading();
+          const loading4 = this.inst.isLoading();
 
           param2.endLoading();
-          const loading5 = this.inst._isLoading();
+          const loading5 = this.inst.isLoading();
 
           expect(loading1).to.be.true;
           expect(loading2).to.be.false;
