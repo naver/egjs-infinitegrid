@@ -73,13 +73,6 @@ class Infinite {
 			nextStartCursor = nextEndCursor;
 		} else if (nextStartCursor > -1) {
 			nextEndCursor = nextStartCursor;
-		} else {
-			const size = itemManager.size();
-
-			if (size > 0) {
-				nextStartCursor = 0;
-				nextEndCursor = 0;
-			}
 		}
 		status.startCursor = nextStartCursor;
 		status.endCursor = nextEndCursor;

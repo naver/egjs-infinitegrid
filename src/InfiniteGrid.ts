@@ -376,12 +376,15 @@ class InfiniteGrid extends Component {
 			const children = toArray(renderer.container.children);
 			const hasChildren = children.length > 0;
 			if (size) {
+				// has items, no visible items
 				this._postLayout({
 					groups: [itemManager.getGroup(0)],
 					isChildren: hasChildren,
 					fromCache: false,
+					isAppend: true,
 				});
-			} else if (!size || !items.length) {
+			} else {
+				// no items, no visible items
 				if (hasChildren) {
 					this._insert({
 						elements: children,
