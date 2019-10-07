@@ -131,6 +131,7 @@ export default class RenderManager {
 		items: IInfiniteGridItem[],
 		errorIndex: number,
 	) {
+		const itemManager = this._items;
 		const item = items[errorIndex];
 		const element = item.el!;
 		const prefix = this.options.attributePrefix;
@@ -200,6 +201,7 @@ export default class RenderManager {
 			}
 			replaceTarget.push(errorIndex);
 		};
+		const totalIndex = itemManager.pluck("items").indexOf(item);
 
 		callbackComponent.trigger("imageError", {
 			target,
@@ -211,6 +213,7 @@ export default class RenderManager {
 			replaceItem,
 			remove,
 			removeItem,
+			totalIndex,
 		});
 	}
 	private _end(

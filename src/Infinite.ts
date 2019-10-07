@@ -84,7 +84,18 @@ class Infinite {
 		status.startCursor = nextStartCursor;
 		status.endCursor = nextEndCursor;
 
-		return result;
+		if (result.removed.length > 0) {
+			return "relayout";
+		} else {
+			const nextVisibleItems = itemManager.pluck("items", startCursor, endCursor);
+			const visibleDiffResult = diff(prevVisibleItems, nextVisibleItems, ({ itemKey }) => itemKey);
+
+			if (visibleDiffResult.removed.length > 0) {
+				return "layout";
+			} else {
+				return "";
+			}
+		}
 	}
 	public recycle(scrollPos: number | null, isForward?: boolean) {
 		if (!this.options.useRecycle || typeof scrollPos !== "number") {

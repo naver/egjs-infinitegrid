@@ -6,10 +6,6 @@ import Component from "@egjs/component";
 import ItemManager from "./ItemManager";
 import DOMRenderer from "./DOMRenderer";
 import {
-	APPEND,
-	PREPEND,
-	TRUSTED,
-	NO_TRUSTED,
 	IS_ANDROID2,
 	IDLE,
 	LOADING_APPEND,
@@ -21,7 +17,7 @@ import {
 	IS_IOS,
 } from "./consts";
 import Infinite from "./Infinite";
-import { toArray, $, outerHeight, outerWidth, assign, resetSize, categorize } from "./utils";
+import { toArray, $, outerHeight, outerWidth, assign, resetSize } from "./utils";
 import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
@@ -228,7 +224,7 @@ class InfiniteGrid extends Component {
 	public append(elements: HTMLElement[] | IJQuery | string[] | string, groupKey?: string | number) {
 		this._layout && this._insert({
 			elements,
-			isAppend: APPEND,
+			isAppend: true,
 			groupKey,
 		});
 		return this;
@@ -249,7 +245,7 @@ class InfiniteGrid extends Component {
 	public prepend(elements: HTMLElement[] | IJQuery | string[] | string, groupKey?: string | number) {
 		this._layout && this._insert({
 			elements,
-			isAppend: PREPEND,
+			isAppend: false,
 			groupKey,
 		});
 		return this;
@@ -334,21 +330,16 @@ class InfiniteGrid extends Component {
 
 		return items.concat(nextVisisbleItems);
 	}
-	public beforeSync(items: IItem[], isFirstRender?: boolean) {
-		const infinite = this._infinite;
-		const result = infinite.sync(items);
-
-		if (!this._isProcessing() && !isFirstRender) {
-			this._infinite.scroll(this._scroller.getScrollPos());
-		}
+	public beforeSync(items: IItem[]) {
+		return this._infinite.sync(items);
 	}
-	public sync(elements: HTMLElement[], requestGroups: IInfiniteGridGroup[]) {
+	public sync(elements: HTMLElement[], requestGroups: IInfiniteGridGroup[], isFirstRender?: boolean) {
 		const items = this.getRenderingItems(requestGroups);
 
 		items.forEach((item, i) => {
 			item.el = elements[i];
 		});
-		if (!this._isProcessing()) {
+		if (!this._isProcessing() && !isFirstRender) {
 			const newItems = items.filter(item => !item.orgSize || !item.orgSize.width);
 
 			if (newItems.length) {
@@ -359,6 +350,8 @@ class InfiniteGrid extends Component {
 					isAppend: true,
 					isTrusted: false,
 				});
+			} else {
+				this._infinite.scroll(this._scroller.getScrollPos());
 			}
 		}
 	}
@@ -396,7 +389,7 @@ class InfiniteGrid extends Component {
 					groups: [itemManager.getGroup(0)],
 					isChildren: hasChildren,
 					fromCache: false,
-				})
+				});
 			} else if (!size || !items.length) {
 				if (hasChildren) {
 					this._insert({
@@ -432,9 +425,9 @@ class InfiniteGrid extends Component {
 		isRelayout && this._scroller.setScrollPos();
 		this._onLayoutComplete({
 			items,
-			isAppend: APPEND,
+			isAppend: true,
 			fromCache: true,
-			isTrusted: NO_TRUSTED,
+			isTrusted: false,
 			useRecycle: false,
 			isLayout: true,
 		});
@@ -1011,14 +1004,14 @@ class InfiniteGrid extends Component {
 			newItems: group.items,
 			isAppend,
 			isChildren,
-			isTrusted: NO_TRUSTED,
+			isTrusted: false,
 		});
 	}
 	// add items, and remove items for recycling
 	private _recycle(ranges: Array<{ start: number, end: number }>) {
 		const { useRecycle, renderExternal } = this.options;
 		if (!useRecycle) {
-			return;
+			return false;
 		}
 		let isRecycle = false;
 		ranges.forEach(({ start, end }) => {
@@ -1031,7 +1024,7 @@ class InfiniteGrid extends Component {
 			items.forEach(item => {
 				item.mounted = false;
 			});
-			if (renderExternal) {
+			if (!renderExternal) {
 				DOMRenderer.removeItems(items);
 			}
 		});
@@ -1041,6 +1034,7 @@ class InfiniteGrid extends Component {
 				groups: [],
 			});
 		}
+		return isRecycle;
 	}
 	private _renderLoading(userStyle = this._status.loadingStyle) {
 		if (!this._isLoading()) {
@@ -1175,6 +1169,16 @@ class InfiniteGrid extends Component {
 						isTrusted,
 						useRecycle: false,
 					});
+				}).on("finish", ({ remove, layout }) => {
+					remove.forEach(el => this.remove(el, false));
+					if (layout) {
+						this.layout(false);
+					} else if (!this.isProcessing() && this.options.useRecycle) {
+						const scroller = this._scroller;
+						const scrollPos = scroller.getScrollPos();
+
+						this._infinite.recycle(scrollPos, isAppend);
+					}
 				});
 		};
 		if (renderExternal) {
@@ -1204,7 +1208,7 @@ class InfiniteGrid extends Component {
 			return;
 		}
 		if (cache && cache.length) {
-			this._postCache({ cache, isAppend: APPEND });
+			this._postCache({ cache, isAppend: true });
 		} else {
 			/**
 			 * This event is fired when a card element must be added at the bottom or right of a layout because there is no card to be displayed on screen when a user scrolls near bottom or right.
@@ -1219,7 +1223,7 @@ class InfiniteGrid extends Component {
 			 * @param {Object} param.endLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩이 끝날 때 로딩 바에 적용될 사용자 스타일 </ko>
 			 */
 			this.trigger("append", {
-				isTrusted: TRUSTED,
+				isTrusted: true,
 				groupKey: this.getGroupKeys().pop() || "",
 				startLoading: (userStyle: StyleType) => {
 					this.startLoading(true, userStyle);
@@ -1237,7 +1241,7 @@ class InfiniteGrid extends Component {
 			return;
 		}
 		if (cache && cache.length) {
-			this._postCache({ cache, isAppend: PREPEND });
+			this._postCache({ cache, isAppend: false });
 		} else {
 			/**
 			 * This event is fired when a card element must be added at the top or left of a layout because there is no card to be displayed on screen when a user scrolls near top or left.
@@ -1252,7 +1256,7 @@ class InfiniteGrid extends Component {
 			 * @param {Object} param.endLoading.userStyle The custom style to apply to this loading bar for start. <ko> 로딩이 끝날 때 로딩 바에 적용될 사용자 스타일 </ko>
 			 */
 			this.trigger("prepend", {
-				isTrusted: TRUSTED,
+				isTrusted: true,
 				groupKey: this.getGroupKeys().shift(),
 				startLoading: (userStyle: StyleType) => {
 					this.startLoading(false, userStyle);
@@ -1273,10 +1277,16 @@ class InfiniteGrid extends Component {
 		infinite.setCursor("start", start);
 		infinite.setCursor("end", end);
 
-		this._recycle([
+		const isRecycle = this._recycle([
 			{ start: startCursor, end: start - 1 },
 			{ start: end + 1, end: endCursor },
 		]);
+		if (!isRecycle) {
+			this.trigger("render", {
+				next: () => { },
+				groups: [],
+			});
+		}
 	}
 	private _onCheck({
 		isForward,

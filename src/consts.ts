@@ -31,14 +31,9 @@ export const CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
 export const IGNORE_CLASSNAME = "_eg-infinitegrid-ignore_";
 export const TRANSITION_NAME = "_INFINITEGRID_TRANSITION";
 
-export const APPEND = true;
-export const PREPEND = false;
 export const VERTICAL = "vertical";
 export const HORIZONTAL = "horizontal";
-export const TRUSTED = true;
-export const NO_TRUSTED = false;
-export const MULTI = true;
-export const SINGLE = false;
+
 export const DUMMY_POSITION = -100000;
 export const GROUPKEY_ATT = "data-groupkey";
 
@@ -67,6 +62,7 @@ const webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
 export const WEBKIT_VERSION = (webkit && parseInt(webkit[1], 10)) || 0;
 export const DEFENSE_BROWSER = (WEBKIT_VERSION && WEBKIT_VERSION < 537);
 
+export const ITEM_KEYS = ["content", "groupKey", "itemKey", "orgSize", "mounted", "prevRect", "rect", "size"] as const;
 interface ITransitionEnd {
 	transitionend: string;
 	webkitTransitionEnd: string;

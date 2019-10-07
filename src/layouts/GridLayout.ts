@@ -1,4 +1,4 @@
-import { ALIGN, APPEND, PREPEND } from "../consts";
+import { ALIGN } from "../consts";
 import { getStyleNames, assignOptions, fill, cloneItems } from "../utils";
 import { ILayout, IAlign, IRectlProperties, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
 
@@ -73,7 +73,7 @@ class GridLayout implements ILayout {
 	 * layout.prepend(items, [100, 200, 300, 400]);
 	 */
 	public append(items: IInfiniteGridItem[], outline?: number[], cache?: boolean) {
-		return this._insert(items, outline, APPEND, cache);
+		return this._insert(items, outline, true, cache);
 	}
 	/**
 	 * Adds items at the top of a outline.
@@ -86,7 +86,7 @@ class GridLayout implements ILayout {
 	 * layout.prepend(items, [100, 200, 300, 400]);
 	 */
 	public prepend(items: IInfiniteGridItem[], outline?: number[], cache?: boolean) {
-		return this._insert(items, outline, PREPEND, cache);
+		return this._insert(items, outline, false, cache);
 	}
 	/**
 	 * Adds items of groups at the bottom of a outline.
@@ -99,7 +99,7 @@ class GridLayout implements ILayout {
 	 * layout.layout(groups, [100, 200, 300, 400]);
 	 */
 	public layout(groups: IInfiniteGridGroup[] = [], outline: number[] = []) {
-		const firstItem = (groups.length && groups[0].items.length && groups[0].items[0]);
+		const firstItem = (groups.length && groups[0].items.length && groups[0].items[0]) as IInfiniteGridItem;
 
 		this.checkColumn(firstItem);
 
@@ -116,7 +116,7 @@ class GridLayout implements ILayout {
 		}
 		groups.forEach(group => {
 			const items = group.items;
-			const result = this._layout(items, startOutline, APPEND);
+			const result = this._layout(items, startOutline, true);
 
 			group.outlines = result;
 			startOutline = result.end;
@@ -140,7 +140,7 @@ class GridLayout implements ILayout {
 	private checkColumn(item: IInfiniteGridItem) {
 		const { itemSize, margin, horizontal } = this.options;
 		const sizeName = horizontal ? "height" : "width";
-		const columnSize = Math.floor(itemSize || (item && item.size[sizeName]) || 0) || 0;
+		const columnSize = Math.floor(itemSize || (item && item.size![sizeName]) || 0) || 0;
 
 		this._columnSize = columnSize;
 		if (!columnSize) {
@@ -173,8 +173,13 @@ class GridLayout implements ILayout {
 			const point = Math[pointCaculateName](...endOutline) || 0;
 			let index = endOutline.indexOf(point);
 			const item = items[isAppend ? i : length - 1 - i];
-			const size1 = item.size[size1Name];
-			const size2 = item.size[size2Name];
+			const itemSize = item.size;
+
+			if (!itemSize) {
+				continue;
+			}
+			const size1 = itemSize[size1Name];
+			const size2 = itemSize[size2Name];
 			const pos1 = isAppend ? point : point - margin - size1;
 			const endPos1 = pos1 + size1 + margin;
 

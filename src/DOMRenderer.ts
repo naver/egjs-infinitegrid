@@ -1,8 +1,5 @@
 import {
-	APPEND,
-	PREPEND,
 	DUMMY_POSITION,
-	MULTI,
 	GROUPKEY_ATT,
 	CONTAINER_CLASSNAME,
 	TRANSITION_NAME,
@@ -20,7 +17,7 @@ import {
 	addOnceEvent,
 	assign,
 } from "./utils";
-import { RectType, IPosition, ISize, IJQuery, IInfiniteGridItem, IDOMRendererStatus, IDOMRendererSize, IDOMRendererOptions, IDOMRendererOrgStyle } from "./types";
+import { RectType, IPosition, IJQuery, IInfiniteGridItem, IDOMRendererStatus, IDOMRendererSize, IDOMRendererOptions, IDOMRendererOrgStyle } from "./types";
 
 function removeTransition(styles: HTMLElement["style"]) {
 	styles[`${TRANSITION}-property`] = "";
@@ -126,8 +123,10 @@ export default class DOMRenderer {
 		if (!noElementItems.length) {
 			return;
 		}
-		const elements = $(noElementItems.map(({ content }) =>
-			content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "")).join(""), MULTI);
+		const elements = $(
+			noElementItems.map(({ content }) => content.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, "")).join(""),
+			true,
+		);
 
 		noElementItems.forEach((item, index) => {
 			item.el = elements[index];
@@ -184,13 +183,13 @@ export default class DOMRenderer {
 		});
 	}
 	public append(items: IInfiniteGridItem[]) {
-		this._insert(items, APPEND, {
+		this._insert(items, true, {
 			top: DUMMY_POSITION,
 			left: DUMMY_POSITION,
 		});
 	}
 	public prepend(items: IInfiniteGridItem[]) {
-		this._insert(items, PREPEND, {
+		this._insert(items, false, {
 			top: DUMMY_POSITION,
 			left: DUMMY_POSITION,
 		});

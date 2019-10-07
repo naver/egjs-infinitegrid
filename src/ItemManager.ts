@@ -1,5 +1,5 @@
 import { diff } from "@egjs/list-differ";
-import { GROUPKEY_ATT, DUMMY_POSITION } from "./consts";
+import { GROUPKEY_ATT, DUMMY_POSITION, ITEM_KEYS } from "./consts";
 import { isUndefined, assign, categorize, makeItem } from "./utils";
 import { CursorType, IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus, IItem, IGroup } from "./types";
 
@@ -28,9 +28,13 @@ export default class ItemManager {
 		return {
 			_data: datas.slice(startIndex, endIndex).map(data => {
 				const items = data.items.map(item => {
-					const item2 = assign({}, item);
+					const item2 = {} as IInfiniteGridItem;
 
-					delete item2.el;
+					ITEM_KEYS.forEach(key => {
+						if (key in item) {
+							item2[key as any] = item[key];
+						}
+					});
 					return item2;
 				});
 				const data2 = assign({}, data);
@@ -169,26 +173,28 @@ export default class ItemManager {
 	public sync(items: IItem[]) {
 		const groups = this._groups;
 		const newGroups = categorize(items);
+		const result = diff(groups, newGroups, group => group.groupKey);
 		const {
 			removed,
 			added,
 			ordered,
-			pureChanged,
-		} = diff(groups, newGroups, group => group.groupKey);
-
+			maintained,
+		} = result;
 		removed.forEach(removedIndex => {
 			this.removeGroup(removedIndex);
 		});
-
 		ordered.forEach(([prevIndex, nextIndex], i) => {
 			const group = groups.splice(prevIndex, 1)[0];
 
 			groups.splice(nextIndex, 0, group);
-			this.syncItems(group.items, newGroups[pureChanged[i][1]].items, nextIndex);
 		});
 		added.forEach(addedIndex => {
 			this.insertGroup(newGroups[addedIndex], addedIndex);
 		});
+		maintained.forEach(([, toIndex]) => {
+			this.syncItems(groups[toIndex].items, newGroups[toIndex].items, toIndex);
+		});
+		return result;
 	}
 	public insert(newItem: IItem, groupIndex = -1, itemIndex = -1): IInfiniteGridItem | null {
 		const { groupKey } = newItem;
