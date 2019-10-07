@@ -88,39 +88,6 @@ function initItems(groupKey = 1) {
 }
 
 describe("ItemManager Test", function () {
-	describe("from Test", function () {
-		beforeEach(() => {
-			this.inst = new ItemManager({
-			});
-		});
-		afterEach(() => {
-			if (this.inst) {
-				this.inst = null;
-			}
-		});
-		it("should have all items except IGNORE_CLASSNAME", () => {
-			// Given
-			const elements = `<div></div><div class="item ${IGNORE_CLASSNAME}"></div><div></div>`;
-
-			// When
-			const items = ItemManager.from(elements, "*", { groupKey: 10, isAppend: true });
-
-			// Then
-			expect(items).to.have.lengthOf(2);
-			expect(items[0].groupKey).to.be.equals(10);
-		});
-		it("should have 'item' selector items except IGNORE_CLASSNAME", () => {
-			// Given
-			const elements = `<div class="item"></div><div class="item item2"></div><div class="item2"></div><div class="item ${IGNORE_CLASSNAME}"></div><div></div>`;
-
-			// When
-			const items = ItemManager.from(elements, "item", { groupKey: 10, isAppend: true });
-
-			// Then
-			expect(items).to.have.lengthOf(2);
-			expect(items[0].groupKey).to.be.equals(10);
-		});
-	});
 	describe("append/prepend Test", function () {
 		beforeEach(() => {
 			this.inst = new ItemManager({
@@ -134,10 +101,10 @@ describe("ItemManager Test", function () {
 		it("should have a groupKey all items", () => {
 			// Given
 			// When
-			this.inst.append(initItems());
+			this.inst.appendGroup(initItems());
 
 			// Then
-			const items = this.inst.get(true);
+			const items = this.inst.pluck("items");
 			items.forEach(v => {
 				expect(v.groupKey).to.be.exist;
 			});
@@ -147,7 +114,7 @@ describe("ItemManager Test", function () {
 			// When
 			const outline = this.inst.getOutline(0, "start");
 			const edge = this.inst.getEdgeValue("start", 0, 1);
-			this.inst.append(initItems());
+			this.inst.appendGroup(initItems());
 			const outline2 = this.inst.getOutline(0, "start");
 			const edge2 = this.inst.getEdgeValue("start", 0, 1);
 
@@ -165,8 +132,8 @@ describe("ItemManager Test", function () {
 
 			const index = this.inst.indexOf(item);
 
-			this.inst.append(item);
-			this.inst.append(item2);
+			this.inst.appendGroup(item);
+			this.inst.appendGroup(item2);
 
 			const index2 = this.inst.indexOf({});
 			const index3 = this.inst.indexOf(item);
@@ -187,15 +154,15 @@ describe("ItemManager Test", function () {
 			const group1 = initItems(1);
 			const group2 = initItems(2);
 
-			this.inst.append(group1);
-			this.inst.append(group2);
+			this.inst.appendGroup(group1);
+			this.inst.appendGroup(group2);
 
 			// When
 			const groupsLength1 = this.inst.size();
 			const length = group1.items.length;
 			// remove all items1
 			for (let i = 0; i < length; ++i) {
-				const indexes = this.inst.indexOfElement(group1.items[0].el);
+				const indexes = this.inst.indexesOfElement(group1.items[0].el);
 				this.inst.remove(indexes.groupIndex, indexes.itemIndex);
 			}
 			const groupsLength2 = this.inst.size();
@@ -206,7 +173,7 @@ describe("ItemManager Test", function () {
 
 			const groupsLengths = [];
 			for (let i = 0; i < length2; ++i) {
-				const indexes = this.inst.indexOfElement(group2.items[0].el);
+				const indexes = this.inst.indexesOfElement(group2.items[0].el);
 				this.inst.remove(indexes.groupIndex, indexes.itemIndex);
 				groupsLengths.push(this.inst.size());
 			}
@@ -238,10 +205,10 @@ describe("ItemManager Test", function () {
 				const vertical = [0, 0, 100, 100, 200];
 				const horizontal = [0, 200, 0, 200, 0];
 				// When
-				this.inst.append(initItems());
+				this.inst.appendGroup(initItems());
 				this.inst.fit(100, horizontal);
 				// Then
-				this.inst._data[0].items.forEach((item, i) => {
+				this.inst.getGroup(0).items.forEach((item, i) => {
 					expect(item.rect[horizontal ? "left" : "top"]).to.be.equals((horizontal ? horizontal[i] : vertical[i]) - 100);
 				});
 			});
