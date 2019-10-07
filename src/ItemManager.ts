@@ -32,7 +32,7 @@ export default class ItemManager {
 
 					ITEM_KEYS.forEach(key => {
 						if (key in item) {
-							item2[key as any] = item[key];
+							item2[key] = item[key];
 						}
 					});
 					return item2;
