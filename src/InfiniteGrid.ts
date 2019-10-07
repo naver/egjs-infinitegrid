@@ -196,7 +196,7 @@ class InfiniteGrid extends Component {
 			threshold,
 			append: param => this._requestAppend(param),
 			prepend: param => this._requestPrepend(param),
-			recycle: param => this._recycle(param),
+			recycle: param => this._recycle([param]),
 		});
 
 		this._renderManager = new RenderManager(
@@ -321,6 +321,11 @@ class InfiniteGrid extends Component {
 		const groups = categorize(items);
 
 		this._infinite.sync(groups);
+	}
+	public sync(items: IInfiniteGridItem[], elements: HTMLElement[]) {
+		items.forEach((item, i) => {
+			item.el = elements[i];
+		});
 	}
 	/**
 	 * Rearranges a layout.
@@ -942,16 +947,29 @@ class InfiniteGrid extends Component {
 		});
 	}
 	// add items, and remove items for recycling
-	private _recycle({ start, end }: { start: number, end: number }) {
+	private _recycle(ranges: Array<{ start: number, end: number }>) {
 		if (!this.options.useRecycle) {
 			return;
 		}
-		const items = this._items.pluck("items", start, end);
+		let isRecycle = false;
+		ranges.forEach(({ start, end }) => {
+			if (start === -1 || end === -1 || end < start) {
+				return;
+			}
+			const items = this._items.pluck("items", start, end);
 
-		items.forEach(item => {
-			item.mounted = false;
+			isRecycle = isRecycle || items.some(item => item.mounted);
+			items.forEach(item => {
+				item.mounted = false;
+			});
+			DOMRenderer.removeItems(items);
 		});
-		DOMRenderer.removeItems(items);
+		if (isRecycle) {
+			this.trigger("render", {
+				next: () => { },
+				items: this.getItems(),
+			});
+		}
 	}
 	private _renderLoading(userStyle = this._status.loadingStyle) {
 		if (!this._isLoading()) {
@@ -1042,9 +1060,7 @@ class InfiniteGrid extends Component {
 		isTrusted?: boolean,
 	}) {
 		this._process(PROCESSING);
-		const method = isAppend ? "append" : "prepend";
 
-		// If container has children, it does not render first.
 		if (!groups.length) {
 			return;
 		}
@@ -1060,7 +1076,7 @@ class InfiniteGrid extends Component {
 				.render(callbackComponent, groups, newItems, isAppend)
 				.on("renderComplete", ({ start, end }) => {
 					this._setCursor(start, end);
-				}).on("error", e => {
+				}).on("imageError", e => {
 					/**
 					 * This event is fired when an error occurs in the image.
 					 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
@@ -1079,6 +1095,7 @@ class InfiniteGrid extends Component {
 				}).on("layoutComplete", ({
 					items: layoutItems,
 				}) => {
+					this._process(PROCESSING, false);
 					this._onLayoutComplete({
 						items: layoutItems,
 						isAppend,
@@ -1091,14 +1108,18 @@ class InfiniteGrid extends Component {
 		if (renderExternal) {
 			const renderingItems = this._getRenderingItems(items, isAppend);
 
-			this.trigger("visibleChange", {
-				next,
-				items: renderingItems,
-			});
+			if (items.every(item => item.mounted)) {
+				next();
+			} else {
+				this.trigger("render", {
+					next,
+					items: renderingItems,
+				});
+			}
 			return callbackComponent;
 		} else if (!isChildren) {
-			DOMRenderer.createElements(items);
-			this._renderer[method](items);
+			// If container has children, it does not render first.
+			this._renderer.createAndInsert(items, isAppend);
 		}
 		next();
 
@@ -1198,8 +1219,10 @@ class InfiniteGrid extends Component {
 		infinite.setCursor("start", start);
 		infinite.setCursor("end", end);
 
-		this._recycle({ start: startCursor, end: start - 1 });
-		this._recycle({ start: end + 1, end: endCursor });
+		this._recycle([
+			{ start: startCursor, end: start - 1 },
+			{ start: end + 1, end: endCursor },
+		]);
 	}
 	private _onCheck({
 		isForward,
@@ -1270,7 +1293,6 @@ class InfiniteGrid extends Component {
 				!IS_IOS && this._scrollTo(scrollPos);
 			}
 		}
-		!isLayout && this._process(PROCESSING, false);
 
 		/**
 		 * This event is fired when layout is successfully arranged through a call to the append(), prepend(), or layout() method.
