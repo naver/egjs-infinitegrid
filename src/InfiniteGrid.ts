@@ -140,6 +140,7 @@ class InfiniteGrid extends Component {
 	 * @param {Number} [options.transitionDruation=0] Indicates how many seconds a transition effect takes to complete. <ko>트랜지션 효과를 완료하는데 걸리는 시간을 나타낸다.</ko>
 	 * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
 	 * @param {String} [options.attributePrefix="data-"] The prefix to use element's data attribute.<ko>엘리먼트의 데이타 속성에 사용할 접두사.</ko>
+	 * @param {boolean} [options.renderExternal] Whether to use external rendering. It will delegate DOM manipulation and can synchronize the rendered state by calling `sync()` method. You can use this option to use in frameworks like React, Vue, Angular, which has its states and rendering methods.<ko>외부 렌더링을 사용할 지의 여부. 이 옵션을 사용시 렌더링을 외부에 위임할 수 있고, `sync()`를 호출하여 그 상태를 동기화할 수 있다. 이 옵션을 사용하여, React, Vue, Angular 등 자체적인 상태와 렌더링 방법을 갖는 프레임워크에 대응할 수 있다.</ko>
 	 */
 	constructor(element: HTMLElement | string | IJQuery, options?: Partial<IInfiniteGridOptions>) {
 		super();
@@ -304,7 +305,14 @@ class InfiniteGrid extends Component {
 	public getItems(includeCached = false): IInfiniteGridItem[] {
 		return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
 	}
-	public getRenderingItems(requestGroups: IInfiniteGridGroup[]) {
+	/**
+	 * @param - Get items to render on screen.
+     * @ko 화면에 렌더될 아이템들 가져온다.
+     * @private
+	 * @param - The groups currently being added by request.<ko>요청에 의해 지금 추가중인 그룹들.</ko>
+	 * @return - The items to be rendered on screen. <ko>화면레 렌더될 아이템들.</ko>
+     */
+	public getRenderingItems(requestGroups: IInfiniteGridGroup[]): IInfiniteGridItem[] {
 		const items = this.getItems();
 		const itemKeys: { [key: string]: any } = {};
 
@@ -321,16 +329,29 @@ class InfiniteGrid extends Component {
 
 		return items.concat(nextVisisbleItems);
 	}
+	/**
+     * Synchronize info of items with info given by external rendering.
+     * @ko 외부 렌더링 방식에 의해 아이템의 정보들을 동기화한다.
+     * @private
+     * @param - all item infos to synchronize <ko>동기화할 전체 아이템 정보들.</ko>
+     */
 	public beforeSync(items: IItem[]) {
 		return this._infinite.sync(items);
 	}
-	public sync(elements: HTMLElement[], requestGroups: IInfiniteGridGroup[], isFirstRender?: boolean) {
+	/**
+	 * Synchronize info of items with DOM info given by external rendering.
+	 * @ko 외부 렌더링 방식에 의해 입력받은 DOM의 정보와 현재 아이템 정보를 동기화 한다.
+	 * @private
+	 * @param - The DOM elements that are currently visible.<ko>현재 보여지고 있는 DOM 엘리먼트들.</ko>
+	 * @param - The groups currently being added by request.<ko>요청에 의해 지금 추가중인 그룹들.</ko>
+	 */
+	public sync(elements: HTMLElement[], requestGroups: IInfiniteGridGroup[]) {
 		const items = this.getRenderingItems(requestGroups);
 
 		items.forEach((item, i) => {
 			item.el = elements[i];
 		});
-		if (!this._isProcessing() && !isFirstRender) {
+		if (!this._isProcessing()) {
 			const newItems = items.filter(item => !item.orgSize || !item.orgSize.width);
 
 			if (newItems.length) {
@@ -375,10 +396,18 @@ class InfiniteGrid extends Component {
 		if (!items.length) {
 			const children = toArray(renderer.container.children);
 			const hasChildren = children.length > 0;
+
 			if (size) {
+				const firstGroup = itemManager.getGroup(0);
+
+				if (hasChildren) {
+					firstGroup.items.forEach((item, i) => {
+						item.el = children[i];
+					});
+				}
 				// has items, no visible items
 				this._postLayout({
-					groups: [itemManager.getGroup(0)],
+					groups: [firstGroup],
 					hasChildren,
 					fromCache: false,
 					isAppend: true,
@@ -397,8 +426,8 @@ class InfiniteGrid extends Component {
 					}
 					this._requestAppend({});
 				}
-				return this;
 			}
+			return this;
 		}
 
 		// layout datas
@@ -694,7 +723,7 @@ class InfiniteGrid extends Component {
 			}
 			if (this.options.renderExternal) {
 				this.trigger("render", {
-					next: () => {},
+					next: () => { },
 				});
 			}
 		}
@@ -1197,22 +1226,25 @@ class InfiniteGrid extends Component {
 					}
 				});
 		};
-		if (renderExternal) {
-			if (items.every(item => item.mounted)) {
-				next();
+
+		if (!hasChildren) {
+			if (renderExternal) {
+				if (items.every(item => item.mounted)) {
+					next();
+				} else {
+					this.trigger("render", {
+						next: () => {
+							!hasChildren && DOMRenderer.renderItems(items);
+							next();
+						},
+						requestGroups: groups,
+					});
+				}
+				return callbackComponent;
 			} else {
-				this.trigger("render", {
-					next: () => {
-						!hasChildren && DOMRenderer.renderItems(items);
-						next();
-					},
-					requestGroups: groups,
-				});
+				// If container has children, it does not render first.
+				renderer.createAndInsert(items, isAppend);
 			}
-			return callbackComponent;
-		} else if (!hasChildren) {
-			// If container has children, it does not render first.
-			renderer.createAndInsert(items, isAppend);
 		}
 		next();
 

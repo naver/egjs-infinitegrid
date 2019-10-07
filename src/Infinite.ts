@@ -47,7 +47,7 @@ class Infinite {
 		const itemManager = this._items;
 		const prevVisisbleGroups = itemManager.sliceGroups(startCursor, endCursor + 1);
 		const prevVisibleItems = ItemManager.pluck(prevVisisbleGroups, "items");
-		const result = this._items.sync(items);
+		const result = itemManager.sync(items);
 		const startGroup = find(
 			prevVisisbleGroups,
 			({ groupKey }) => itemManager.getGroupByKey(groupKey),
@@ -74,6 +74,7 @@ class Infinite {
 		} else if (nextStartCursor > -1) {
 			nextEndCursor = nextStartCursor;
 		}
+
 		status.startCursor = nextStartCursor;
 		status.endCursor = nextEndCursor;
 

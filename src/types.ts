@@ -104,6 +104,7 @@ export interface IRemoveResult {
  * @property - The items being added.<ko>화면에 추가중인 아이템들</ko>
  * @property - The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
  * @property - The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
+ * @property - The item's index with error images in all items.<ko>전체 아이템중 에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
  * @property - In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
  * @property - In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
  * @property - In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
@@ -123,6 +124,7 @@ export interface IErrorCallbackOptions {
 	items: IInfiniteGridItem[];
 	item: IInfiniteGridItem;
 	itemIndex: number;
+	totalIndex: number;
 	replace: (src: string) => void;
 	replaceItem: (content: string) => void;
 	remove: () => void;
