@@ -1333,7 +1333,13 @@ describe("InfiniteGrid Test", function () {
           const size = this.inst._getEdgeValue("end");
 
           // Then
-          expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
+          expect([
+						moveTo,
+						size - view,
+						end - view,
+						size - view + this.scrollHeight,
+						end - view + this.scrollHeight,
+					]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
         });
 
         it(`should resize and moveTo in cursor outside(isAppend = true, itemIndex = ${itemIndex})`, done => {
@@ -1383,7 +1389,14 @@ describe("InfiniteGrid Test", function () {
                 const view = this.inst._renderer.getViewSize();
                 const size = this.inst._getEdgeValue("end");
 
-                expect([moveTo, size - view, end - view, 0]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
+                expect([
+									0,
+									moveTo,
+									size - view,
+									end - view,
+									size - view + this.scrollHeight,
+									end - view + this.scrollHeight,
+								]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
                 done();
               }, 30);
             }, 30);
