@@ -41,6 +41,14 @@ function setTransition(styles: HTMLElement["style"], transitionDuration: number,
 }
 
 function createContainer(element: HTMLElement) {
+	const selectContainer = element.querySelector<HTMLElement>(`.${CONTAINER_CLASSNAME}`);
+
+	if (selectContainer) {
+		selectContainer.style.position = "relative";
+		selectContainer.style.height = "100%";
+
+		return selectContainer;
+	}
 	const container = document.createElement("div");
 
 	container.className = CONTAINER_CLASSNAME;
