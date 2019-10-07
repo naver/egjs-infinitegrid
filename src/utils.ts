@@ -7,6 +7,7 @@ import {
 	VERTICAL,
 	HORIZONTAL,
 	DEFAULT_OPTIONS,
+	DUMMY_POSITION,
 } from "./consts";
 import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType, IItem, IGroup, IArrayFormat, IInfiniteGridItem } from "./types";
 export function toArray(nodes: HTMLCollection): HTMLElement[];
@@ -359,4 +360,17 @@ export function categorize(newItems: IItem[]) {
 export function resetSize(item: IInfiniteGridItem) {
 	item.orgSize = null;
 	item.size = null;
+}
+
+export function makeItem(groupKey: string | number, el?: HTMLElement) {
+	return {
+		el,
+		groupKey,
+		mounted: false,
+		content: el ? el.outerHTML : "",
+		rect: {
+			top: DUMMY_POSITION,
+			left: DUMMY_POSITION,
+		},
+	};
 }

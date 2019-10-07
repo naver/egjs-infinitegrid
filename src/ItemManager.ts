@@ -1,20 +1,11 @@
 import { diff } from "@egjs/list-differ";
 import { GROUPKEY_ATT, DUMMY_POSITION } from "./consts";
-import { isUndefined, assign, categorize } from "./utils";
+import { isUndefined, assign, categorize, makeItem } from "./utils";
 import { CursorType, IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus, IItem, IGroup } from "./types";
 
 export default class ItemManager {
 	public static toItems(elements: HTMLElement[], groupKey: string | number): IInfiniteGridItem[] {
-		return elements.map(el => ({
-			el,
-			groupKey,
-			mounted: false,
-			content: el ? el.outerHTML : "",
-			rect: {
-				top: DUMMY_POSITION,
-				left: DUMMY_POSITION,
-			},
-		}));
+		return elements.map(el => makeItem(groupKey, el));
 	}
 	public static pluck<A extends { [key: string]: any }, B extends keyof A>(data: A[], property: B):
 		A[B] extends any[] ? A[B] : Array<A[B]> {
@@ -308,6 +299,7 @@ export default class ItemManager {
 			removed,
 			added,
 			ordered,
+			maintained,
 		} = diff(items, newItems, item => item.itemKey);
 
 		removed.forEach(removedIndex => {
@@ -320,6 +312,12 @@ export default class ItemManager {
 		});
 		added.forEach(addedIndex => {
 			this.insert(newItems[addedIndex], groupIndex, addedIndex);
+		});
+		maintained.forEach(([, nextIndex]) => {
+			const item = items[nextIndex];
+			const newItem = newItems[nextIndex];
+
+			assign(item, newItem);
 		});
 	}
 }

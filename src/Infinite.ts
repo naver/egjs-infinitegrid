@@ -1,6 +1,6 @@
 import ItemManager from "./ItemManager";
 import { assign, find, findLast } from "./utils";
-import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult, IItem } from "./types";
+import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult, IItem, IInfiniteOptions } from "./types";
 import { diff } from "@egjs/list-differ";
 
 function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: number, endScrollPos: number) {
@@ -22,13 +22,6 @@ function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: numb
 	return 0;
 }
 
-export interface IInfiniteOptions {
-	useRecycle?: boolean;
-	threshold?: number;
-	append?: (e: { cache: IInfiniteGridGroup[] }) => void;
-	prepend?: (e: { cache: IInfiniteGridGroup[] }) => void;
-	recycle?: (e: { start: number, end: number }) => void;
-}
 class Infinite {
 	public options: Required<IInfiniteOptions>;
 	private _items: ItemManager;
@@ -54,8 +47,7 @@ class Infinite {
 		const itemManager = this._items;
 		const prevVisisbleGroups = itemManager.sliceGroups(startCursor, endCursor + 1);
 		const prevVisibleItems = ItemManager.pluck(prevVisisbleGroups, "items");
-
-		this._items.sync(items);
+		const result = this._items.sync(items);
 		const startGroup = find(
 			prevVisisbleGroups,
 			({ groupKey }) => itemManager.getGroupByKey(groupKey),
@@ -92,9 +84,7 @@ class Infinite {
 		status.startCursor = nextStartCursor;
 		status.endCursor = nextEndCursor;
 
-		const nextVisibleItems = itemManager.pluck("items", startCursor, endCursor);
-
-		return diff(prevVisibleItems, nextVisibleItems, ({ itemKey }) => itemKey);
+		return result;
 	}
 	public recycle(scrollPos: number | null, isForward?: boolean) {
 		if (!this.options.useRecycle || typeof scrollPos !== "number") {

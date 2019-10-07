@@ -28,6 +28,14 @@ export interface IScrollerOptions {
 	}) => void;
 }
 
+export interface IInfiniteOptions {
+	useRecycle: boolean;
+	threshold: number;
+	append: (e: { cache: IInfiniteGridGroup[] }) => void;
+	prepend: (e: { cache: IInfiniteGridGroup[] }) => void;
+	recycle: (e: { start: number, end: number }) => void;
+}
+
 export interface IInfiniteGridOptions {
 	itemSelector: string;
 	isOverflowScroll: boolean;
@@ -40,12 +48,6 @@ export interface IInfiniteGridOptions {
 	useFit: boolean;
 	attributePrefix: string;
 	renderExternal: boolean;
-}
-export interface IInfiniteOptions {
-	useRecycle?: boolean;
-	threshold?: number;
-	change?: (isAppend: boolean, indexes: { start: number, end: number }, isTrusted: boolean) => void;
-	request?: (isAppend: boolean, isTrusted: boolean) => void;
 }
 
 export interface IInfiniteGridStatus {

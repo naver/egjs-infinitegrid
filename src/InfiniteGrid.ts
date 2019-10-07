@@ -317,15 +317,50 @@ class InfiniteGrid extends Component {
 	public getItems(includeCached = false): IInfiniteGridItem[] {
 		return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
 	}
-	public beforeSync(items: IItem[]) {
-		const groups = categorize(items);
+	public getRenderingItems(requestGroups: IInfiniteGridGroup[]) {
+		const items = this.getItems();
+		const itemKeys: { [key: string]: any } = {};
 
-		this._infinite.sync(groups);
+		items.forEach(item => {
+			itemKeys[item.itemKey!] = true;
+		});
+		const nextVisisbleItems = ItemManager.pluck(requestGroups, "items").filter(item => {
+			if (itemKeys[item.itemKey!]) {
+				return false;
+			}
+			itemKeys[item.itemKey!] = true;
+			return true;
+		});
+
+		return items.concat(nextVisisbleItems);
 	}
-	public sync(items: IInfiniteGridItem[], elements: HTMLElement[]) {
+	public beforeSync(items: IItem[], isFirstRender?: boolean) {
+		const infinite = this._infinite;
+		const result = infinite.sync(items);
+
+		if (!this._isProcessing() && !isFirstRender) {
+			this._infinite.scroll(this._scroller.getScrollPos());
+		}
+	}
+	public sync(elements: HTMLElement[], requestGroups: IInfiniteGridGroup[]) {
+		const items = this.getRenderingItems(requestGroups);
+
 		items.forEach((item, i) => {
 			item.el = elements[i];
 		});
+		if (!this._isProcessing()) {
+			const newItems = items.filter(item => !item.orgSize || !item.orgSize.width);
+
+			if (newItems.length) {
+				this._postLayout({
+					fromCache: false,
+					groups: this._infinite.getVisibleData(),
+					newItems,
+					isAppend: true,
+					isTrusted: false,
+				});
+			}
+		}
 	}
 	/**
 	 * Rearranges a layout.
@@ -353,23 +388,32 @@ class InfiniteGrid extends Component {
 			}
 		}
 		// check childElement
-		if (!size || !items.length) {
+		if (!items.length) {
 			const children = toArray(renderer.container.children);
-
-			if (children.length) {
-				this._insert({
-					elements: children,
-					isAppend: true,
-					isChildren: true,
-				});
-			} else {
-				if (renderer.getContainerSize()) {
-					renderer.setContainerSize(0);
+			const hasChildren = children.length > 0;
+			if (size) {
+				this._postLayout({
+					groups: [itemManager.getGroup(0)],
+					isChildren: hasChildren,
+					fromCache: false,
+				})
+			} else if (!size || !items.length) {
+				if (hasChildren) {
+					this._insert({
+						elements: children,
+						isAppend: true,
+						isChildren: true,
+					});
+				} else {
+					if (renderer.getContainerSize()) {
+						renderer.setContainerSize(0);
+					}
+					this._requestAppend({});
 				}
-				this._requestAppend({});
+				return this;
 			}
-			return this;
 		}
+
 		// layout datas
 		const startCursor = infinite.getCursor("start");
 		const endCursor = infinite.getCursor("end");
@@ -461,7 +505,7 @@ class InfiniteGrid extends Component {
 	 * @param {boolean} [applyScrollPos=true] Checks whether to scroll<ko>스크롤의 위치를 복원할지 결정한다.</ko>
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
-	public setStatus(status: IInfiniteGridStatus, applyScrollPos = true) {
+	public setStatus(status: IInfiniteGridStatus, applyScrollPos = true, syncElements?: HTMLElement[]) {
 		if (!status) {
 			return this;
 		}
@@ -471,6 +515,7 @@ class InfiniteGrid extends Component {
 			!_renderer || !_items || !_scroller || !_infinite) {
 			return this;
 		}
+		const renderExternal = this.options.renderExternal;
 		const items = this._items;
 		const renderer = this._renderer;
 		const watcher = this._scroller;
@@ -486,8 +531,14 @@ class InfiniteGrid extends Component {
 		const visibleItems = this.getItems();
 		const length = visibleItems.length;
 
-		renderer.createAndInsert(visibleItems, true);
-
+		if (renderExternal) {
+			visibleItems.forEach((item, i) => {
+				item.el = syncElements![i];
+			});
+			DOMRenderer.renderItems(visibleItems);
+		} else {
+			renderer.createAndInsert(visibleItems, true);
+		}
 		const isReLayout = renderer.isNeededResize();
 
 		watcher.setStatus(_scroller, applyScrollPos);
@@ -920,10 +971,27 @@ class InfiniteGrid extends Component {
 		}
 		const items = ItemManager.toItems($(elements, true), groupKey);
 
+		this._insertItems({
+			items,
+			isAppend,
+			isChildren,
+			groupKey,
+		});
+	}
+	private _insertItems({
+		items,
+		isAppend,
+		isChildren,
+		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
+	}: {
+		items: IInfiniteGridItem[],
+		isAppend?: boolean,
+		isChildren?: boolean,
+		groupKey?: string | number,
+	}) {
 		if (!items.length) {
 			return;
 		}
-
 		const group = this._items[isAppend ? "appendGroup" : "prependGroup"]({
 			groupKey,
 			items,
@@ -948,7 +1016,8 @@ class InfiniteGrid extends Component {
 	}
 	// add items, and remove items for recycling
 	private _recycle(ranges: Array<{ start: number, end: number }>) {
-		if (!this.options.useRecycle) {
+		const { useRecycle, renderExternal } = this.options;
+		if (!useRecycle) {
 			return;
 		}
 		let isRecycle = false;
@@ -962,12 +1031,14 @@ class InfiniteGrid extends Component {
 			items.forEach(item => {
 				item.mounted = false;
 			});
-			DOMRenderer.removeItems(items);
+			if (renderExternal) {
+				DOMRenderer.removeItems(items);
+			}
 		});
 		if (isRecycle) {
 			this.trigger("render", {
 				next: () => { },
-				items: this.getItems(),
+				groups: [],
 			});
 		}
 	}
@@ -1053,7 +1124,7 @@ class InfiniteGrid extends Component {
 	}: {
 		fromCache: boolean,
 		groups: IInfiniteGridGroup[],
-		items: IInfiniteGridItem[],
+		items?: IInfiniteGridItem[],
 		newItems?: IInfiniteGridItem[],
 		isAppend?: boolean,
 		isChildren?: boolean,
@@ -1066,6 +1137,7 @@ class InfiniteGrid extends Component {
 		}
 
 		const renderExternal = this.options.renderExternal;
+		const renderer = this._renderer;
 		const callbackComponent = new Component();
 
 		const next = () => {
@@ -1106,20 +1178,21 @@ class InfiniteGrid extends Component {
 				});
 		};
 		if (renderExternal) {
-			const renderingItems = this._getRenderingItems(items, isAppend);
-
 			if (items.every(item => item.mounted)) {
 				next();
 			} else {
 				this.trigger("render", {
-					next,
-					items: renderingItems,
+					next: () => {
+						DOMRenderer.renderItems(items);
+						next();
+					},
+					groups,
 				});
 			}
 			return callbackComponent;
 		} else if (!isChildren) {
 			// If container has children, it does not render first.
-			this._renderer.createAndInsert(items, isAppend);
+			renderer.createAndInsert(items, isAppend);
 		}
 		next();
 
@@ -1192,25 +1265,6 @@ class InfiniteGrid extends Component {
 	}
 	private _onResize() {
 		this.layout(true);
-	}
-	private _getRenderingItems(nextItems: IInfiniteGridItem[], isAppend?: boolean) {
-		const items = this.getItems();
-		const itemKeys: { [key: string]: any } = {};
-
-		items.forEach(item => {
-			itemKeys[item.itemKey!] = true;
-		});
-		const nextVisisbleItems = nextItems.filter(item => {
-			if (itemKeys[item.itemKey!]) {
-				return false;
-			}
-			itemKeys[item.itemKey!] = true;
-			return true;
-		});
-
-		return isAppend
-			? items.concat(nextVisisbleItems)
-			: nextVisisbleItems.concat(items);
 	}
 	private _setCursor(start: number, end: number) {
 		const infinite = this._infinite;

@@ -78,7 +78,6 @@ export default class RenderManager {
 		let outline = prevGroup ? prevGroup.outlines[cursor] : [0];
 
 		this._renderer.updateSize(items);
-
 		groups.forEach(group => {
 			const groupOutline = group.outlines[isAppend ? "start" : "end"];
 			const isRelayout = !outline.length || (outline.length === groupOutline.length ?
