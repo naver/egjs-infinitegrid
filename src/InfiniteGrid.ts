@@ -26,7 +26,7 @@ import {
 	IInfiniteGridGroup, IInfiniteGridStatus, IItem
 } from "./types";
 import RenderManager from "./RenderManager";
-import Scroller from "./Scroller";
+import Watcher from "./Watcher";
 
 // IE8
 // https://stackoverflow.com/questions/43216659/babel-ie8-inherit-issue-with-object-create
@@ -123,7 +123,7 @@ class InfiniteGrid extends Component {
 	private _renderer: DOMRenderer;
 	private _renderManager: RenderManager;
 	private _layout: ILayout;
-	private _scroller: Scroller;
+	private _watcher: Watcher;
 	private _infinite: Infinite;
 	private _status: IInfiniteGridStatus["_status"];
 
@@ -168,7 +168,7 @@ class InfiniteGrid extends Component {
 			horizontal,
 			container: isOverflowScroll,
 		});
-		this._scroller = new Scroller(
+		this._watcher = new Watcher(
 			this._renderer.view,
 			{
 				isOverflowScroll,
@@ -342,7 +342,7 @@ class InfiniteGrid extends Component {
 					isTrusted: false,
 				});
 			} else {
-				this._infinite.scroll(this._scroller.getScrollPos());
+				this._infinite.scroll(this._watcher.getScrollPos());
 			}
 		}
 	}
@@ -366,7 +366,7 @@ class InfiniteGrid extends Component {
 		const size = itemManager.size();
 
 		if (isRelayout) {
-			this._scroller.resize();
+			this._watcher.resize();
 			if (isResize) {
 				this._setSize(renderer.getViewportSize());
 			}
@@ -416,7 +416,7 @@ class InfiniteGrid extends Component {
 			itemManager.clearOutlines(startCursor, endCursor);
 		}
 		DOMRenderer.renderItems(items, transitionDuration);
-		isRelayout && this._scroller.setScrollPos();
+		isRelayout && this._watcher.setScrollPos();
 		this._onLayoutComplete({
 			items,
 			isAppend: true,
@@ -481,7 +481,7 @@ class InfiniteGrid extends Component {
 			_status: assign({}, this._status),
 			_items: this._items.getStatus(startKey, endKey),
 			_renderer: this._renderer.getStatus(),
-			_scroller: this._scroller.getStatus(),
+			_watcher: this._watcher.getStatus(),
 			_infinite: this._infinite.getStatus(startKey, endKey),
 		};
 	}
@@ -496,16 +496,16 @@ class InfiniteGrid extends Component {
 		if (!status) {
 			return this;
 		}
-		const { _status, _renderer, _items, _scroller, _infinite } = status;
+		const { _status, _renderer, _items, _watcher, _infinite } = status;
 
 		if (!_status ||
-			!_renderer || !_items || !_scroller || !_infinite) {
+			!_renderer || !_items || !_watcher || !_infinite) {
 			return this;
 		}
 		const renderExternal = this.options.renderExternal;
 		const items = this._items;
 		const renderer = this._renderer;
-		const watcher = this._scroller;
+		const watcher = this._watcher;
 		const infinite = this._infinite;
 
 		watcher.detachEvent();
@@ -528,7 +528,7 @@ class InfiniteGrid extends Component {
 		}
 		const isReLayout = renderer.isNeededResize();
 
-		watcher.setStatus(_scroller, applyScrollPos);
+		watcher.setStatus(_watcher, applyScrollPos);
 		watcher.attachEvent();
 
 		const { isConstantSize, isEqualSize } = this.options;
@@ -676,7 +676,7 @@ class InfiniteGrid extends Component {
 			}
 		}
 		if (this.options.useRecycle && !this.isProcessing()) {
-			this._infinite.recycle(this._scroller.getScrollPos(), isAppend);
+			this._infinite.recycle(this._watcher.getScrollPos(), isAppend);
 		}
 		return this;
 	}
@@ -848,7 +848,7 @@ class InfiniteGrid extends Component {
    */
 	public destroy() {
 		this._infinite.clear();
-		this._scroller.destroy();
+		this._watcher.destroy();
 		this._reset();
 		this._items.clear();
 		this._renderer.destroy();
@@ -898,11 +898,11 @@ class InfiniteGrid extends Component {
 		this._layout.setSize(size);
 	}
 	private _fitItems(base: number, margin = 0) {
-		base > 0 && this._scroller.scrollBy(-base);
+		base > 0 && this._watcher.scrollBy(-base);
 		this._items.fit(base, this.options.horizontal);
 		DOMRenderer.renderItems(this.getItems());
 		this._setContainerSize(this._getEdgeValue("end") || margin);
-		base < 0 && this._scroller.scrollBy(-base);
+		base < 0 && this._watcher.scrollBy(-base);
 	}
 	// called by visible
 	private _fit(useFit = this.options.useFit) {
@@ -1067,10 +1067,10 @@ class InfiniteGrid extends Component {
 		return false;
 	}
 	private _setScrollPos(pos: number) {
-		this._scroller.setScrollPos(this._scroller.getContainerOffset() + pos);
+		this._watcher.setScrollPos(this._watcher.getContainerOffset() + pos);
 	}
 	private _scrollTo(pos: number) {
-		this._scroller.scrollTo(this._scroller.getContainerOffset() + pos);
+		this._watcher.scrollTo(this._watcher.getContainerOffset() + pos);
 	}
 	private _postCache({
 		cache,
@@ -1168,7 +1168,7 @@ class InfiniteGrid extends Component {
 					if (layout) {
 						this.layout(false);
 					} else if (!this.isProcessing() && this.options.useRecycle) {
-						const scroller = this._scroller;
+						const scroller = this._watcher;
 						const scrollPos = scroller.getScrollPos();
 
 						this._infinite.recycle(scrollPos, isAppend);
@@ -1335,7 +1335,7 @@ class InfiniteGrid extends Component {
 			this._isLoading() && this._renderLoading();
 		}
 
-		const watcher = this._scroller;
+		const watcher = this._watcher;
 		const scrollPos = watcher.getScrollPos();
 
 		// recycle after _fit beacause prepend and append are occured simultaneously by scroll.

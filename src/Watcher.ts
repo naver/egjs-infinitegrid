@@ -12,10 +12,10 @@ import {
 	scrollBy,
 	assign,
 } from "./utils";
-import { IWatchStatus, IScrollerOptions } from "./types";
+import { IWatchStatus, IWatcherOptions } from "./types";
 
-export default class Scroller {
-	public options: IScrollerOptions;
+export default class Watcher {
+	public options: IWatcherOptions;
 	private _timer: {
 		resize: any;
 	};
@@ -25,7 +25,7 @@ export default class Scroller {
 	//  When InfiniteGrid is initialized.
 	// The initial value is null to block the scroll event when returning from browser behavior.
 	private _prevPos: number | null = null;
-	constructor(view: Window | HTMLElement, options: Partial<IScrollerOptions> = {}) {
+	constructor(view: Window | HTMLElement, options: Partial<IWatcherOptions> = {}) {
 		assign(this.options = {
 			container: view as HTMLElement,
 			resize: () => void 0,
