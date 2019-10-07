@@ -1307,7 +1307,13 @@ describe("InfiniteGrid Test", function () {
           const view = this.inst._renderer.getViewSize();
           const size = this.inst._getEdgeValue("end");
 
-          expect([moveTo, size - view, end - view]).to.include(this.inst._watcher.getScrollPos());
+					expect([
+						moveTo,
+						size - view,
+						end - view,
+						size - view + this.scrollHeight,
+						end - view + this.scrollHeight,
+					]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
         });
         it(`should moveTo in cursor outside(isAppend = false, itemIndex = ${itemIndex})`, async () => {
           // Given, When
@@ -1346,7 +1352,13 @@ describe("InfiniteGrid Test", function () {
                 const view = this.inst._renderer.getViewSize();
                 const size = this.inst._getEdgeValue("end");
 
-                expect([moveTo, size - view, end - view]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
+								expect([
+									moveTo,
+									size - view,
+									end - view,
+									size - view + this.scrollHeight,
+									end - view + this.scrollHeight,
+								]).to.include(Math.max(this.inst._watcher.getScrollPos(), 0));
                 done();
               }, 30);
             }, 30);
