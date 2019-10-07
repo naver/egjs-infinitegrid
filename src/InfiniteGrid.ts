@@ -15,6 +15,7 @@ import {
 	IGNORE_CLASSNAME,
 	DUMMY_POSITION,
 	IS_IOS,
+	DEFAULT_OPTIONS,
 } from "./consts";
 import Infinite from "./Infinite";
 import { toArray, $, outerHeight, outerWidth, assign, resetSize } from "./utils";
@@ -143,17 +144,7 @@ class InfiniteGrid extends Component {
 	constructor(element: HTMLElement | string | IJQuery, options?: Partial<IInfiniteGridOptions>) {
 		super();
 		assign(this.options = {
-			itemSelector: "*",
-			isOverflowScroll: false,
-			threshold: 100,
-			isEqualSize: false,
-			isConstantSize: false,
-			useRecycle: true,
-			horizontal: false,
-			transitionDuration: 0,
-			useFit: true,
-			attributePrefix: "data-",
-			renderExternal: false,
+			...DEFAULT_OPTIONS,
 		}, options);
 		DEFENSE_BROWSER && (this.options.useFit = false);
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);

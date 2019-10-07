@@ -6,7 +6,7 @@ import {
 	SUPPORT_PASSIVE,
 	VERTICAL,
 	HORIZONTAL,
-	DEFAULT_OPTIONS,
+	DEFAULT_LAYOUT_OPTIONS,
 	DUMMY_POSITION,
 } from "./consts";
 import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType, IItem, IGroup, IArrayFormat, IInfiniteGridItem } from "./types";
@@ -252,9 +252,9 @@ export function assign(target: { [key: string]: any }, ...sources: Array<{ [key:
 	return target;
 }
 export function assignOptions<A extends { [key: string]: any }, B extends { [key: string]: any }>(
-	defaultOptions: A, options: B): typeof DEFAULT_OPTIONS & A & B {
+	defaultOptions: A, options: B): typeof DEFAULT_LAYOUT_OPTIONS & A & B {
 	return assign({},
-		DEFAULT_OPTIONS,
+		DEFAULT_LAYOUT_OPTIONS,
 		defaultOptions,
 		options);
 }

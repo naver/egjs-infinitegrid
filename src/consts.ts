@@ -38,6 +38,20 @@ export const DUMMY_POSITION = -100000;
 export const GROUPKEY_ATT = "data-groupkey";
 
 export const DEFAULT_OPTIONS = {
+	itemSelector: "*",
+	isOverflowScroll: false,
+	threshold: 100,
+	isEqualSize: false,
+	isConstantSize: false,
+	useRecycle: true,
+	horizontal: false,
+	transitionDuration: 0,
+	useFit: true,
+	attributePrefix: "data-",
+	renderExternal: false,
+};
+
+export const DEFAULT_LAYOUT_OPTIONS = {
 	horizontal: false,
 	margin: 0,
 };
@@ -62,7 +76,7 @@ const webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
 export const WEBKIT_VERSION = (webkit && parseInt(webkit[1], 10)) || 0;
 export const DEFENSE_BROWSER = (WEBKIT_VERSION && WEBKIT_VERSION < 537);
 
-export const ITEM_KEYS = ["content", "groupKey", "itemKey", "orgSize", "mounted", "prevRect", "rect", "size"] as const;
+export const ITEM_KEYS = ["content", "groupKey", "itemKey", "orgSize", "mounted", "prevRect", "rect", "size"];
 interface ITransitionEnd {
 	transitionend: string;
 	webkitTransitionEnd: string;

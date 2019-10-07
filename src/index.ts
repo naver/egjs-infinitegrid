@@ -11,6 +11,8 @@ import JustifiedLayout from "./layouts/JustifiedLayout";
 import DOMRenderer from "./DOMRenderer";
 import ItemManager from "./ItemManager";
 import Infinite from "./Infinite";
+export { CONTAINER_CLASSNAME, DEFAULT_OPTIONS } from "./consts";
+export { categorize } from "./utils";
 
 export * from "./types";
 export {
