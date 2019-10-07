@@ -1,7 +1,7 @@
 import ItemManager from "./ItemManager";
 import { matchHTML, $, assign } from "./utils";
 import DOMRenderer from "./DOMRenderer";
-import { ILayout, IInfiniteGridItem, IInfiniteGridGroup } from "./types";
+import { ILayout, IInfiniteGridItem, IInfiniteGridGroup, IGroup } from "./types";
 import { check, removeAutoSizer } from "@egjs/lazyloaded";
 import Infinite from "./Infinite";
 import Component from "@egjs/component";
@@ -113,6 +113,12 @@ export default class RenderManager {
 				requestStartCursor = Math.max(Math.min(startCursor, requestStartCursor), 0);
 				requestEndCursor = endCursor;
 			}
+		}
+		if (requestStartCursor > requestEndCursor) {
+			const tempCursor = requestStartCursor;
+
+			requestStartCursor = requestEndCursor;
+			requestEndCursor = tempCursor;
 		}
 		callbackComponent.trigger("renderComplete", {
 			start: requestStartCursor,
