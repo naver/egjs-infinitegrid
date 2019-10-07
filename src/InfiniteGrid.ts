@@ -379,7 +379,7 @@ class InfiniteGrid extends Component {
 				// has items, no visible items
 				this._postLayout({
 					groups: [itemManager.getGroup(0)],
-					isChildren: hasChildren,
+					hasChildren,
 					fromCache: false,
 					isAppend: true,
 				});
@@ -389,7 +389,7 @@ class InfiniteGrid extends Component {
 					this._insert({
 						elements: children,
 						isAppend: true,
-						isChildren: true,
+						hasChildren: true,
 					});
 				} else {
 					if (renderer.getContainerSize()) {
@@ -945,12 +945,12 @@ class InfiniteGrid extends Component {
 	private _insert({
 		elements,
 		isAppend,
-		isChildren,
+		hasChildren,
 		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
 	}: {
 		elements: string | string[] | HTMLElement[] | IJQuery,
 		isAppend?: boolean,
-		isChildren?: boolean,
+		hasChildren?: boolean,
 		groupKey?: string | number,
 	}) {
 		if (this._isProcessing() || elements.length === 0) {
@@ -961,19 +961,19 @@ class InfiniteGrid extends Component {
 		this._insertItems({
 			items,
 			isAppend,
-			isChildren,
+			hasChildren,
 			groupKey,
 		});
 	}
 	private _insertItems({
 		items,
 		isAppend,
-		isChildren,
+		hasChildren,
 		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
 	}: {
 		items: IInfiniteGridItem[],
 		isAppend?: boolean,
-		isChildren?: boolean,
+		hasChildren?: boolean,
 		groupKey?: string | number,
 	}) {
 		if (!items.length) {
@@ -997,7 +997,7 @@ class InfiniteGrid extends Component {
 			items: group.items,
 			newItems: group.items,
 			isAppend,
-			isChildren,
+			hasChildren,
 			isTrusted: false,
 		});
 	}
@@ -1107,7 +1107,7 @@ class InfiniteGrid extends Component {
 		items = ItemManager.pluck(groups, "items"),
 		newItems,
 		isAppend,
-		isChildren,
+		hasChildren,
 		isTrusted,
 	}: {
 		fromCache: boolean,
@@ -1115,7 +1115,7 @@ class InfiniteGrid extends Component {
 		items?: IInfiniteGridItem[],
 		newItems?: IInfiniteGridItem[],
 		isAppend?: boolean,
-		isChildren?: boolean,
+		hasChildren?: boolean,
 		isTrusted?: boolean,
 	}) {
 		this._process(PROCESSING);
@@ -1181,14 +1181,14 @@ class InfiniteGrid extends Component {
 			} else {
 				this.trigger("render", {
 					next: () => {
-						DOMRenderer.renderItems(items);
+						!hasChildren && DOMRenderer.renderItems(items);
 						next();
 					},
 					groups,
 				});
 			}
 			return callbackComponent;
-		} else if (!isChildren) {
+		} else if (!hasChildren) {
 			// If container has children, it does not render first.
 			renderer.createAndInsert(items, isAppend);
 		}
