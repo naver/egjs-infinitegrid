@@ -1,5 +1,5 @@
 import { window, document } from "./browser";
-import { IAlign } from "./types";
+import { IAlign, InfiniteGridMethodsKeys } from "./types";
 
 const ua = window.navigator.userAgent;
 
@@ -11,12 +11,12 @@ export const SUPPORT_PASSIVE = (() => {
 	try {
 		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
 			// tslint:disable-next-line: no-empty
-			document.addEventListener("test", () => {}, Object.defineProperty({},
+			document.addEventListener("test", () => { }, Object.defineProperty({},
 				"passive", {
-					get() {
-						supportsPassiveOption = true;
-					},
-				}));
+				get() {
+					supportsPassiveOption = true;
+				},
+			}));
 		}
 	} catch (e) {
 		//
@@ -103,3 +103,20 @@ export const [TRANSFORM, TRANSITION, TRANSITION_END] = (() => {
 	}
 	return [];
 })() as ["transform", "transition", "transitionend"];
+
+export const INFINITEGRID_METHODS: { [key in InfiniteGridMethodsKeys]: true } = {
+	getLoadingBar: true,
+	getItem: true,
+	getItems: true,
+	layout: true,
+	getGroupKeys: true,
+	getStatus: true,
+	setStatus: true,
+	isProcessing: true,
+	startLoading: true,
+	endLoading: true,
+	isLoading: true,
+	updateItem: true,
+	updateItems: true,
+	moveTo: true,
+};

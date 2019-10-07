@@ -1,3 +1,5 @@
+import Component from "@egjs/component";
+import InfiniteGrid from "./index.squarelayout";
 
 export type CursorType = "start" | "end";
 export type SizeType = "width" | "height";
@@ -294,3 +296,10 @@ export interface IDOMRendererOrgStyle {
 	overflowX?: CSSStyleDeclaration["overflowX"];
 	overflowY?: CSSStyleDeclaration["overflowY"];
 }
+
+export type ExcludeKeys = keyof Component
+  | "clear" | "destroy" | "remove" | "prepend" | "append"
+  | "setLayout" | "removeByIndex" | "setLoadingBar"
+  | "beforeSync" | "sync" | "getRenderingItems";
+export type InfiniteGridMethodsKeys = Exclude<keyof InfiniteGrid, ExcludeKeys>;
+export type InfiniteGridMethods = Pick<InfiniteGrid, InfiniteGridMethodsKeys>;

@@ -11,11 +11,13 @@ import JustifiedLayout from "./layouts/JustifiedLayout";
 import DOMRenderer from "./DOMRenderer";
 import ItemManager from "./ItemManager";
 import Infinite from "./Infinite";
-import { CONTAINER_CLASSNAME, DEFAULT_OPTIONS } from "./consts";
-import { categorize } from "./utils";
+import { CONTAINER_CLASSNAME, DEFAULT_OPTIONS, INFINITEGRID_METHODS } from "./consts";
+import { categorize, withInfiniteGridMethods } from "./utils";
 
 // fix for IE8
 (InfiniteGrid as any).categorize = categorize;
+(InfiniteGrid as any).INFINITEGRID_METHODS = INFINITEGRID_METHODS;
+(InfiniteGrid as any).withInfiniteGridMethods = withInfiniteGridMethods;
 (InfiniteGrid as any).CONTAINER_CLASSNAME = CONTAINER_CLASSNAME;
 (InfiniteGrid as any).DEFAULT_OPTIONS = DEFAULT_OPTIONS;
 (InfiniteGrid as any).GridLayout = GridLayout;

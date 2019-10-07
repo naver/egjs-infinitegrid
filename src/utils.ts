@@ -8,7 +8,9 @@ import {
 	HORIZONTAL,
 	DEFAULT_LAYOUT_OPTIONS,
 	DUMMY_POSITION,
+	INFINITEGRID_METHODS,
 } from "./consts";
+import InfiniteGrid from "./InfiniteGrid";
 import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType, IItem, IGroup, IArrayFormat, IInfiniteGridItem } from "./types";
 export function toArray(nodes: HTMLCollection): HTMLElement[];
 export function toArray<T extends Node>(nodes: IArrayFormat<T>): T[];
@@ -373,4 +375,37 @@ export function makeItem(groupKey: string | number, el?: HTMLElement) {
 			left: DUMMY_POSITION,
 		},
 	};
+}
+
+/**
+ * Decorator that makes the method of infinitegrid available in the framework.
+ * @ko 프레임워크에서 인피니트그리드의 메소드를 사용할 수 있게 하는 데코레이터.
+ * @memberof eg.InfiniteGrid
+ * @private
+ * @example
+ * ```js
+ * import NativeInfiniteGrid, { withInfiniteGridMethods } from "@egjs/infinitegrid";
+ *
+ * class InfiniteGrid extends React.Component<Partial<InfiniteGridProps & InfiniteGridOptions>> {
+ *   &#64;withInfiniteGridMethods
+ *   private infinitegrid: NativeInfiniteGrid;
+ * }
+ * ```
+ */
+export function withInfiniteGridMethods(prototype: any, infinitegridName: string) {
+	Object.keys(INFINITEGRID_METHODS).forEach((name: keyof InfiniteGrid) => {
+		if (prototype[name]) {
+			return;
+		}
+		prototype[name] = function(...args) {
+			const result = this[infinitegridName][name](...args);
+
+			// fix `this` type to return your own `infinitegrid` instance to the instance using the decorator.
+			if (result === this[infinitegridName]) {
+				return this;
+			} else {
+				return result;
+			}
+		};
+	});
 }
