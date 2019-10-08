@@ -349,7 +349,12 @@ class InfiniteGrid extends Component {
 		const items = this.getRenderingItems(requestGroups);
 
 		items.forEach((item, i) => {
+			const isChange = item.el !== elements[i];
 			item.el = elements[i];
+
+			if (isChange) {
+				DOMRenderer.renderItem(item, item.rect);
+			}
 		});
 		if (!this._isProcessing()) {
 			const newItems = items.filter(item => !item.orgSize || !item.orgSize.width);
