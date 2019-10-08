@@ -22,7 +22,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 		layoutType: GridLayout,
 		options: {},
 		layoutOptions: {},
-		isFirstRender: true,
+		useFirstRender: true,
 		status: null,
 		loading: null,
 		onAppend: () => { },
@@ -72,7 +72,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 				const { startCursor, endCursor } = props.status._infinite;
 
 				visibleChildren = ItemManager.pluck(groups.slice(startCursor, endCursor + 1), "items").map(item => item.jsx);
-			} else if (props.isFirstRender && groups[0]) {
+			} else if (props.useFirstRender && groups[0]) {
 				visibleChildren = groups[0].items.map(item => item.jsx);
 			}
 		}

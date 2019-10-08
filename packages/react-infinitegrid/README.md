@@ -50,6 +50,7 @@ import {GridLayout} from "@egjs/react-infinitegrid";
 |---|---|---|---|
 |tag|string|"div"|The tag name of the wrapper element|
 |containerTag|string|"div"|The tag name of the container element|
+|useFirstRender|boolean||The useFirstRender option determines whether the markup will be shown on the first rendering or after loading is complete.|
 |loading|React.ReactElement||Specifies the Loading Bar to use for append or prepend items.|
 |status|IInfiniteGridStatus|null|State object of the react-infinitegrid module|
 |layoutType|Class|GridLayout|Specifies the Layout class to use.|
@@ -59,6 +60,7 @@ import {GridLayout} from "@egjs/react-infinitegrid";
 export interface InfiniteGridProps<T extends ILayout = any> {
 	tag?: string;
 	containerTag?: string;
+	useFirstRender?: boolean;
 	status?: IInfiniteGridStatus | null;
 	options?: Partial<IInfiniteGridOptions>;
 	layoutOptions?: Partial<T["options"]>;

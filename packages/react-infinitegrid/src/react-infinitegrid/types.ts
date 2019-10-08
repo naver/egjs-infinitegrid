@@ -46,6 +46,7 @@ export interface OnLayoutComplete {
 export interface InfiniteGridProps<T extends ILayout = any> {
 	tag?: string;
 	containerTag?: string;
+	useFirstRender?: boolean;
 	status?: IInfiniteGridStatus | null;
 	options?: Partial<IInfiniteGridOptions>;
 	layoutOptions?: Partial<T["options"]>;

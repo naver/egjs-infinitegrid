@@ -89,7 +89,7 @@ class App extends React.Component<{}, {
         onAppend={this.onAppend}
         onLayoutComplete={this.onLayoutComplete}
         onImageError={this.onImageError}
-        isFirstRender={true}
+        useFirstRender={true}
         loading={<div className="loading" style={{textAlign: "center", height: "100px", backgroundColor: "#f55", position: "absolute"}}>LOADING</div>}
         // status={status}
       >
