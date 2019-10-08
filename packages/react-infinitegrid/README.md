@@ -2,10 +2,6 @@
 
 A react component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
 
-* [GridLayout Demo](https://codesandbox.io/s/030opyqkvw)
-* [GridLayout with Parallax Demo](https://codesandbox.io/s/v3y0jr2ony)
-* [JustifiedLayout Demo(typescript)](https://codesandbox.io/s/5w7vrr0kwk)
-* [Youtube Demo](https://codesandbox.io/s/935xz7zy8r)
 * [API Documentation](https://github.com/naver/egjs-infinitegrid/wiki/react-infinitegrid-API-documentation)
 
 
@@ -15,23 +11,24 @@ $ npm install @egjs/react-infinitegrid  --save
 ```
 
 ## How to use
-```js
+```tsx
 // GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout
 import {GridLayout} from "@egjs/react-infinitegrid";
-```
 
-```jsx
 <GridLayout
 	tag = "div"
-	threshold = {100}
-	isOverflowScroll = {false}
-	isEqualSize = {false}
-	isConstantSize = {false}
-	useFit = {true}
-	useRecycle = {true}
-	useFirstRender = {true}
-	horizontal = {false}
-	percentage = {false}
+	options={{
+		threshold: 100,
+		isOverflowScroll: false,
+		isEqualSize: false,
+		isContantSize: false,
+		useFit: false,
+		useRecycle: false,
+		horizontal: false,
+	}}
+	layoutOptions={{
+		align: "justify",
+	}}
 	onAppend = {e => append}
 	onPrepend = {e => append}
 	onLayoutComplete = {e => layoutComplete}
@@ -46,6 +43,45 @@ import {GridLayout} from "@egjs/react-infinitegrid";
 	<Item groupKey={2} key={6}/>
 </GridLayout>
 ```
+
+### Props
+
+|name|type|default|description|
+|---|---|---|---|
+|tag|string|"div"|The tag name of the wrapper element|
+|containerTag|string|"div"|The tag name of the container element|
+|loading|React.ReactElement||Specifies the Loading Bar to use for append or prepend items.|
+|status|IInfiniteGridStatus|null|State object of the react-infinitegrid module|
+|layoutType|Class|GridLayout|Specifies the Layout class to use.|
+|...others|DOM Attributes||You can set the attribute of the wrapper element.|
+
+```tsx
+export interface InfiniteGridProps<T extends ILayout = any> {
+	tag?: string;
+	containerTag?: string;
+	status?: IInfiniteGridStatus | null;
+	options?: Partial<IInfiniteGridOptions>;
+	layoutOptions?: Partial<T["options"]>;
+	loading?: React.ReactElement | null;
+	layoutType?: new (...args: any[]) => ILayout;
+	onAppend?: (param: OnAppend) => any;
+	onPrepend?: (param: OnPrepend) => any;
+	onLayoutComplete?: (param: OnLayoutComplete) => any;
+	onImageError?: (param: OnImageError) => any;
+	onChange?: (param: OnChange) => any;
+	[others: string]: any;
+}
+```
+
+#### Options
+* [InfiniteGrid's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html)
+* [InfiniteGrid's events](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html#event:append)
+* [GridLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.GridLayout.html)
+* [JustifiedLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.JustifiedLayout.html)
+* [SquareLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.SquareLayout.html)
+* [FrameLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.FrameLayout.html)
+* [PackingLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html)
+
 
 ### More examples
 ```jsx
@@ -79,6 +115,106 @@ render() {
 	</GridLayout>);
 }
 ```
+
+
+### migration 1.x=> 3.x
+#### InfiniteGris's props are bundled into `options`, `layoutOptions`.
+* [InfiniteGrid's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html)
+* [GridLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.GridLayout.html)
+* [JustifiedLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.JustifiedLayout.html)
+* [SquareLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.SquareLayout.html)
+* [FrameLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.FrameLayout.html)
+* [PackingLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html)
+
+```tsx
+// 1.x
+<GridLayout
+	isOverflowScroll = {false}
+	isEqualSize = {false}
+	isConstantSize = {false}
+	useFit = {true}
+	useRecycle = {true}
+	useFirstRender = {true}
+	horizontal = {false}
+	align = "justify"
+/>
+// 3.x
+<GridLayout
+	useFirstRender={true}
+	options={{
+		isOverflowScroll: false,
+		isEqualSize: false,
+		isContantSize: false,
+		useFit: false,
+		useRecycle: false,
+		horizontal: true,
+	}}
+	layoutOptions={{
+		align: "justify",
+	}}
+/>
+```
+#### InfiniteGrid's event types are changed.
+```tsx
+// 1.x
+interface InfiniteGridProps {
+	tag?: string,
+	type?: (...args: any[]) => any,
+	options?: object,
+	margin?: number,
+	threshold?: number,
+	isOverflowScroll?: boolean,
+	isEqualSize?: boolean,
+	useRecycle?: boolean,
+	isConstantSize?: boolean,
+	horizontal?: boolean,
+	loading?: React.ReactNode,
+	transitionDuration?: number,
+	onAppend?: (param: OnAppendParameter) => void,
+	onPrepend?: (param: OnPrependParameter) => void,
+	onLayoutComplete?: (param: OnLayoutCompleteParameter) => void,
+	onImageError?: (param: any) => void,
+	onChange?: (param: OnChangeParameter) => void,
+	status?: object,
+	useFit?: boolean,
+	[others: string]: any,
+}
+
+// 3.x
+export interface InfiniteGridProps<T extends ILayout = any> {
+	tag?: string;
+	containerTag?: string;
+	status?: IInfiniteGridStatus | null;
+	options?: Partial<IInfiniteGridOptions>;
+	layoutOptions?: Partial<T["options"]>;
+	loading?: React.ReactElement | null;
+	layoutType?: new (...args: any[]) => ILayout;
+	onAppend?: (param: OnAppend) => any;
+	onPrepend?: (param: OnPrepend) => any;
+	onLayoutComplete?: (param: OnLayoutComplete) => any;
+	onImageError?: (param: OnImageError) => any;
+	onChange?: (param: OnChange) => any;
+	[others: string]: any;
+}
+```
+
+#### itemIndex changed totalIndex in onImageError event.
+
+```jsx
+// 1.x
+<InfiniteGrid onImageError={e => {
+	this.items.splice(e.itemIndex, 1);
+
+	this.setState({ items: [...this.items] });
+}} />
+// 3.x
+<InfiniteGrid onImageError={e => {
+	this.items.splice(e.totalIndex, 1);
+	
+	this.setState({ items: [...this.items] });
+}}>
+```
+
 
 ## Development
 
