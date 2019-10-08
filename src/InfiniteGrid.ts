@@ -400,7 +400,9 @@ class InfiniteGrid extends Component {
 		}
 		// check childElement
 		if (!items.length) {
-			const children = toArray(renderer.container.children);
+			const children = toArray(renderer.container.children).filter(el => {
+				return el.className.indexOf(IGNORE_CLASSNAME) === -1;
+			});
 			const hasChildren = children.length > 0;
 
 			if (size) {

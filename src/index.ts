@@ -11,7 +11,7 @@ import JustifiedLayout from "./layouts/JustifiedLayout";
 import DOMRenderer from "./DOMRenderer";
 import ItemManager from "./ItemManager";
 import Infinite from "./Infinite";
-export { CONTAINER_CLASSNAME, DEFAULT_OPTIONS, INFINITEGRID_METHODS } from "./consts";
+export { CONTAINER_CLASSNAME, IGNORE_CLASSNAME, DEFAULT_OPTIONS, INFINITEGRID_METHODS } from "./consts";
 export { categorize, withInfiniteGridMethods } from "./utils";
 
 export * from "./types";
