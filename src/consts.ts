@@ -104,6 +104,7 @@ export const [TRANSFORM, TRANSITION, TRANSITION_END] = (() => {
 	return [];
 })() as ["transform", "transition", "transitionend"];
 
+export const INFINITEGRID_EVENTS = ["append", "prepend", "imageError", "change", "layoutComplete"];
 export const INFINITEGRID_METHODS: { [key in InfiniteGridMethodsKeys]: true } = {
 	getLoadingBar: true,
 	getItem: true,
