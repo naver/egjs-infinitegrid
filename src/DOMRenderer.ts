@@ -190,18 +190,6 @@ export default class DOMRenderer {
 			return item;
 		});
 	}
-	public append(items: IInfiniteGridItem[]) {
-		this._insert(items, true, {
-			top: DUMMY_POSITION,
-			left: DUMMY_POSITION,
-		});
-	}
-	public prepend(items: IInfiniteGridItem[]) {
-		this._insert(items, false, {
-			top: DUMMY_POSITION,
-			left: DUMMY_POSITION,
-		});
-	}
 	public createAndInsert(items: IInfiniteGridItem[], isAppend?: boolean) {
 		DOMRenderer.createElements(items);
 

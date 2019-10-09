@@ -294,12 +294,6 @@ export default class ItemManager {
 	public getGroup(index: number) {
 		return this._groups[index];
 	}
-	public getLastGroup() {
-		return this._groups[this.size() - 1];
-	}
-	public getFirstGroup() {
-		return this._groups[0];
-	}
 	private syncItems(items: IItem[], newItems: IItem[], groupIndex: number) {
 		const {
 			removed,

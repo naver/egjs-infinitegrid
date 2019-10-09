@@ -315,27 +315,6 @@ export function findLast<T>(arr: T[], callback: (target: T) => any) {
 	}
 	return null;
 }
-export function findIndex<T>(arr: T[], callback: (target: T) => any) {
-	const length = arr.length;
-
-	for (let i = 0; i < length; ++i) {
-		if (callback(arr[i])) {
-			return i;
-		}
-	}
-	return -1;
-}
-export function findLastIndex<T>(arr: T[], callback: (target: T) => any) {
-	const length = arr.length;
-
-	for (let i = length - 1; i >= 0; --i) {
-		if (callback(arr[i])) {
-			return i;
-		}
-	}
-	return -1;
-}
-
 export function categorize(newItems: IItem[]) {
 	const newGroups: IGroup[] = [];
 	const groupKeys: { [key: string]: IGroup } = {};

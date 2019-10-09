@@ -1,6 +1,6 @@
-import InfiniteGrid, { GridLayout } from "../../src";
+import InfiniteGrid, { GridLayout, withInfiniteGridMethods } from "../../src";
 import { wait } from "./helper/TestHelper";
-import { DUMMY_POSITION } from "../../src/consts";
+import { DUMMY_POSITION, CONTAINER_CLASSNAME } from "../../src/consts";
 
 
 /* eslint-disable */
@@ -15,7 +15,47 @@ describe("InfiniteGrid CFC Test", function () {
 			this.ig.destroy();
 		}
 		cleanup();
-	})
+	});
+	it("should check initialization with already prepared container", async () => {
+		// Given
+		this.container.innerHTML = `<div class="${CONTAINER_CLASSNAME}"></div>`;
+		const container = this.container.children[0];
+
+		// When
+		this.ig = new InfiniteGrid("#infinite", {
+			renderExternal: true,
+			isOverflowScroll: true,
+		});
+
+		// Then
+		expect(this.ig._renderer.container).to.be.equals(container);
+	});
+	it("should check render children", async () => {
+		// Given
+		this.container.innerHTML = "<div>1</div><div>2</div><div>3</div>";
+		const children = [].slice.call(this.container.children);
+		this.ig = new InfiniteGrid("#infinite", {
+			renderExternal: true,
+		});
+		const ig = this.ig;
+
+		ig.setLayout(GridLayout);
+		ig.beforeSync([
+			{ groupKey: 1, itemKey: 1 },
+			{ groupKey: 1, itemKey: 2 },
+			{ groupKey: 1, itemKey: 3 },
+		]);
+		// When
+		// When rendering children, do not initially set the position.
+		ig.layout(true);
+
+		// Then
+		expect(children.length).to.be.equals(3);
+		expect(children[0].style.top).to.be.not.ok;
+
+		await wait();
+		expect(children[0].style.top).to.be.ok;
+	});
 	it("should check render children", async () => {
 		// Given
 		this.container.innerHTML = "<div>1</div><div>2</div><div>3</div>";
@@ -50,7 +90,7 @@ describe("InfiniteGrid CFC Test", function () {
 				this.container.innerHTML = "<div>1</div><div>2</div><div>3</div>";
 				children = [].slice.call(this.container.children);
 			}
-			ig.sync(children, e.requestGroups);
+			ig.sync(children);
 			e.next();
 		});
 		this.ig = new InfiniteGrid("#infinite", {
@@ -89,7 +129,7 @@ describe("InfiniteGrid CFC Test", function () {
 				this.container.innerHTML = "<div>1</div><div>2</div><div>3</div>";
 				children = [].slice.call(this.container.children);
 			}
-			ig.sync(children, e.requestGroups);
+			ig.sync(children);
 			e.next();
 		});
 		const prependRender = sinon.spy(e => {
@@ -97,14 +137,14 @@ describe("InfiniteGrid CFC Test", function () {
 				// 1 2 3 // 4 5 6
 				this.container.insertAdjacentHTML("beforeend", "<div>4</div><div>5</div><div>6</div>");
 				children = [].slice.call(this.container.children);
-			} else if (!e.requestGroups.length) {
+			} else if (!this.ig._requestGroups.length) {
 				this.container.appendChild(children[0]);
 				this.container.appendChild(children[1]);
 				this.container.appendChild(children[2]);
 				// 1 2 3 // 4 5 6 => 4 5 6 // 1 2 3
 				children = [].slice.call(this.container.children);
 			}
-			ig.sync(children, e.requestGroups);
+			ig.sync(children);
 			e.next();
 		});
 		const layoutComplete = sinon.spy();
@@ -150,5 +190,72 @@ describe("InfiniteGrid CFC Test", function () {
 		expect(prependRender.callCount).to.be.equals(2);
 		expect(layoutComplete.callCount).to.be.equals(2);
 		expect(children.length).to.be.equals(6);
+	});
+	describe("test beforeSync method", function () {
+		beforeEach(() => {
+			this.ig = new InfiniteGrid("#infinite", {
+				renderExternal: true,
+			});
+		});
+		it("should check that sync reversed list", () => {
+			const ig = this.ig;
+			// Given
+			ig.beforeSync([
+				{ groupKey: 1, itemKey: 1 },
+				{ groupKey: 2, itemKey: 2 },
+			]);
+			ig._infinite.setCursor("end", 1);
+			ig._infinite.setCursor("start", 0);
+
+			// When
+			ig.beforeSync([
+				{ groupKey: 2, itemKey: 2 },
+				{ groupKey: 1, itemKey: 1 },
+			]);
+
+			// Then
+			expect(ig._infinite.getCursors()).to.be.deep.equals([0, 1]);
+		});
+		it("should check that sync list with intermediate inserted data", () => {
+			const ig = this.ig;
+			// Given
+			ig.beforeSync([
+				{ groupKey: 1, itemKey: 1 },
+				{ groupKey: 2, itemKey: 2 },
+			]);
+			ig._infinite.setCursor("end", 1);
+			ig._infinite.setCursor("start", 0);
+
+			// When
+			ig.beforeSync([
+				{ groupKey: 1, itemKey: 1 },
+				{ groupKey: 3, itemKey: 3 },
+				{ groupKey: 2, itemKey: 2 },
+			]);
+
+			// Then
+			expect(ig._infinite.getCursors()).to.be.deep.equals([0, 2]);
+		});
+		[0, 1, 2].forEach(index => {
+			it(`should check that sync list with removed data (remove: ${index})`, () => {
+				const ig = this.ig;
+				// Given
+				const list = [
+					{ groupKey: 1, itemKey: 1 },
+					{ groupKey: 2, itemKey: 2 },
+					{ groupKey: 3, itemKey: 3 },
+				];
+				ig.beforeSync(list);
+				ig._infinite.setCursor("end", 2);
+				ig._infinite.setCursor("start", 0);
+
+				// When
+				list.splice(index, 1);
+				ig.beforeSync(list);
+
+				// Then
+				expect(ig._infinite.getCursors()).to.be.deep.equals([0, 1]);
+			});
+		});
 	});
 });

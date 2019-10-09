@@ -125,8 +125,7 @@ class Infinite {
 		}
 	}
 	public scroll(scrollPos: number | null) {
-		const startCursor = this.getCursor("start");
-		const endCursor = this.getCursor("end");
+		const [startCursor, endCursor] = this.getCursors();
 		const items = this._items;
 
 		if (typeof scrollPos !== "number" || startCursor === -1 ||
@@ -231,6 +230,14 @@ class Infinite {
 		const { startCursor, endCursor } = this._status;
 
 		return this._items.pluck("items", startCursor, endCursor);
+	}
+	public getCursors() {
+		const status = this._status;
+
+		return [
+			status.startCursor,
+			status.endCursor,
+		];
 	}
 	public getCursor(cursor: CursorType) {
 		return this._status[cursor === "start" ? "startCursor" : "endCursor"];
