@@ -23,7 +23,7 @@ import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
 	IInfiniteGridItem,
-	IInfiniteGridGroup, IInfiniteGridStatus, IItem
+	IInfiniteGridGroup, IInfiniteGridStatus, IItem, IArrayFormat
 } from "./types";
 import RenderManager from "./RenderManager";
 import Watcher from "./Watcher";
@@ -126,6 +126,7 @@ class InfiniteGrid extends Component {
 	private _watcher: Watcher;
 	private _infinite: Infinite;
 	private _status: IInfiniteGridStatus["_status"];
+	private _requestGroups: IInfiniteGridGroup[] = [];
 
 	/**
 	 * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
@@ -312,14 +313,14 @@ class InfiniteGrid extends Component {
 	 * @param - The groups currently being added by request.<ko>요청에 의해 지금 추가중인 그룹들.</ko>
 	 * @return - The items to be rendered on screen. <ko>화면레 렌더될 아이템들.</ko>
      */
-	public getRenderingItems(requestGroups: IInfiniteGridGroup[]): IInfiniteGridItem[] {
+	public getRenderingItems(): IInfiniteGridItem[] {
 		const items = this.getItems();
 		const itemKeys: { [key: string]: any } = {};
 
 		items.forEach(item => {
 			itemKeys[item.itemKey!] = true;
 		});
-		const nextVisisbleItems = ItemManager.pluck(requestGroups, "items").filter(item => {
+		const nextVisisbleItems = ItemManager.pluck(this._requestGroups, "items").filter(item => {
 			if (itemKeys[item.itemKey!]) {
 				return false;
 			}
@@ -345,8 +346,8 @@ class InfiniteGrid extends Component {
 	 * @param - The DOM elements that are currently visible.<ko>현재 보여지고 있는 DOM 엘리먼트들.</ko>
 	 * @param - The groups currently being added by request.<ko>요청에 의해 지금 추가중인 그룹들.</ko>
 	 */
-	public sync(elements: HTMLElement[], requestGroups: IInfiniteGridGroup[]) {
-		const items = this.getRenderingItems(requestGroups);
+	public sync(elements: IArrayFormat<HTMLElement>) {
+		const items = this.getRenderingItems();
 
 		items.forEach((item, i) => {
 			const isChange = item.el !== elements[i];
@@ -439,8 +440,7 @@ class InfiniteGrid extends Component {
 		}
 
 		// layout datas
-		const startCursor = infinite.getCursor("start");
-		const endCursor = infinite.getCursor("end");
+		const [startCursor, endCursor] = infinite.getCursors();
 		const data = isLayoutAll || !(isRelayout && isResize) ? itemManager.getGroups() :
 			itemManager.sliceGroups(startCursor, endCursor + 1);
 
@@ -838,8 +838,7 @@ class InfiniteGrid extends Component {
 		const items = data.items;
 		const item = items[itemIndex];
 		const isResize = outlines.start && (outlines.start.length === 0);
-		const startCursor = infinite.getCursor("start");
-		const endCursor = infinite.getCursor("end");
+		const [startCursor, endCursor] = infinite.getCursors();
 		const isInCursor = startCursor <= index && index <= endCursor;
 		const { useRecycle, horizontal } = this.options;
 
@@ -1044,8 +1043,7 @@ class InfiniteGrid extends Component {
 		})!;
 		if (!isAppend) {
 			const infinite = this._infinite;
-			const startCursor = infinite.getCursor("start");
-			const endCursor = infinite.getCursor("end");
+			const [startCursor, endCursor] = infinite.getCursors();
 
 			infinite.setCursor("start", startCursor + 1);
 			infinite.setCursor("end", endCursor + 1);
@@ -1082,9 +1080,9 @@ class InfiniteGrid extends Component {
 			}
 		});
 		if (isRecycle) {
+			this._requestGroups = [];
 			this.trigger("render", {
 				next: () => { },
-				requestGroups: [],
 			});
 		}
 		return isRecycle;
@@ -1240,12 +1238,12 @@ class InfiniteGrid extends Component {
 				if (items.every(item => item.mounted)) {
 					next();
 				} else {
+					this._requestGroups = groups;
 					this.trigger("render", {
 						next: () => {
 							!hasChildren && DOMRenderer.renderItems(items);
 							next();
 						},
-						requestGroups: groups,
 					});
 				}
 				return callbackComponent;
@@ -1328,8 +1326,7 @@ class InfiniteGrid extends Component {
 	}
 	private _setCursor(start: number, end: number) {
 		const infinite = this._infinite;
-		const startCursor = infinite.getCursor("start");
-		const endCursor = infinite.getCursor("end");
+		const [startCursor, endCursor] = infinite.getCursors();
 		infinite.setCursor("start", start);
 		infinite.setCursor("end", end);
 
@@ -1338,9 +1335,9 @@ class InfiniteGrid extends Component {
 			{ start: end + 1, end: endCursor },
 		]);
 		if (!isRecycle) {
+			this._requestGroups = [];
 			this.trigger("render", {
 				next: () => { },
-				requestGroups: [],
 			});
 		}
 	}
