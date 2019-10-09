@@ -2,7 +2,6 @@ import * as React from "react";
 import NativeInfiniteGrid, {
 	GridLayout,
 	ILayout,
-	IInfiniteGridGroup,
 	categorize,
 	CONTAINER_CLASSNAME,
 	ItemManager,
@@ -13,7 +12,6 @@ import { InfiniteGridProps } from "./types";
 import LoadingBar from "./LoadingBar";
 
 export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.Component<InfiniteGridProps<T>, {
-	groups: IInfiniteGridGroup[],
 	layout: string;
 }> {
 	public static defaultProps: Required<InfiniteGridProps> = {
@@ -32,7 +30,6 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 		onChange: () => { },
 	};
 	public state = {
-		groups: [],
 		layout: "",
 	};
 	private ig!: NativeInfiniteGrid;
@@ -61,7 +58,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 			const result = ig.beforeSync(items);
 			state.layout = result === "relayout" ? result : state.layout || result;
 
-			visibleChildren = ig.getRenderingItems(state.groups).map(item => item.jsx);
+			visibleChildren = ig.getRenderingItems().map(item => item.jsx);
 
 			if (this.props.loading && ig.isLoading()) {
 				visibleChildren.push(<LoadingBar key="loadingBar" loading={this.props.loading!} />);
@@ -92,7 +89,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 				prepend: loadingElement,
 			});
 		}
-		ig.sync(elements, state.groups);
+		ig.sync(elements);
 
 		if (layout) {
 			state.layout = "";
@@ -105,18 +102,10 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 		this.ig = new NativeInfiniteGrid(this.wrapperElement, {
 			...this.props.options,
 			renderExternal: true,
-		}).on("render", ({ next, requestGroups }) => {
-			if (requestGroups) {
-				this.setState({
-					groups: requestGroups,
-				}, () => {
-					next();
-				});
-			} else {
-				this.forceUpdate(() => {
-					next();
-				})
-			}
+		}).on("render", ({ next }) => {
+			this.forceUpdate(() => {
+				next();
+			});
 		}).on("append", e => {
 			this.props.onAppend!({ ...e, currentTarget: this });
 		}).on("prepend", e => {
