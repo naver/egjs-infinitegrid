@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { GridLayout } from './react-infinitegrid';
+import { GridLayout } from '../react-infinitegrid';
 
 class Item extends React.Component<{
   groupKey: any,
