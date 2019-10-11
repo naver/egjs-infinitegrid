@@ -1,5 +1,8 @@
 import InfiniteGrid from "./InfiniteGrid";
-import { IInfiniteGridItem, ILayout, IInfiniteGridOptions, IInfiniteGridStatus } from "@egjs/infinitegrid";
+import NativeInfiniteGrid, {
+	IInfiniteGridItem, ILayout, IInfiniteGridOptions, IInfiniteGridStatus,
+	InfiniteGridMethods,
+} from "@egjs/infinitegrid";
 
 export interface OnAppend {
 	currentTarget?: InfiniteGrid;
@@ -59,3 +62,10 @@ export interface InfiniteGridProps<T extends ILayout = any> {
 	onChange?: (param: OnChange) => any;
 	[others: string]: any;
 }
+
+export type ParametersType<T, R> = T extends (...params: infer U) => any ? (...params: U) => R : never;
+export type InfiniteGridType<T> = {
+  [key in keyof InfiniteGridMethods]:
+  InfiniteGridMethods[key] extends (...params: any[]) => NativeInfiniteGrid ?
+    ParametersType<InfiniteGridMethods[key], T> : InfiniteGridMethods[key]
+};

@@ -8,7 +8,7 @@ import NativeInfiniteGrid, {
 	InfiniteGridMethods,
 } from "@egjs/infinitegrid";
 import { findDOMNode } from "react-dom";
-import { InfiniteGridProps } from "./types";
+import { InfiniteGridProps, InfiniteGridType } from "./types";
 import LoadingBar from "./LoadingBar";
 
 export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.Component<InfiniteGridProps<T>, {
@@ -166,4 +166,4 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 	}
 }
 
-export default interface InfiniteGrid extends InfiniteGridMethods { }
+export default interface InfiniteGrid extends InfiniteGridType<InfiniteGrid> { }
