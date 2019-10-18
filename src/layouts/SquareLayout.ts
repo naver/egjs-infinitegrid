@@ -94,7 +94,7 @@ export default class SquareLayout extends FrameLayout {
 	protected _layout(
 		items: IInfiniteGridItem[],
 		outline: number[] = [],
-		isAppend?: boolean,
+		isAppend: boolean = false,
 	) {
 		const itemSize = this._getItemSize() as number;
 		const margin = this.options.margin;

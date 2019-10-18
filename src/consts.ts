@@ -105,6 +105,10 @@ export const [TRANSFORM, TRANSITION, TRANSITION_END] = (() => {
 })() as ["transform", "transition", "transitionend"];
 
 export const INFINITEGRID_EVENTS = ["append", "prepend", "imageError", "change", "layoutComplete"];
+
+// It's for making mistakes.
+// Whenever you add a public method, you must add the corresponding method name to an array or object.
+// An additional error may occur if not added.
 export const INFINITEGRID_METHODS: { [key in InfiniteGridMethodsKeys]: true } = {
 	getLoadingBar: true,
 	getItem: true,

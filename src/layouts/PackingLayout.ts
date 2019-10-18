@@ -161,7 +161,7 @@ class PackingLayout implements ILayout {
 			return;
 		}
 
-		let bestFitArea: BoxModel | null = null;
+		let bestFitArea!: BoxModel;
 		let minCost = 10000000;
 		let layoutVertical = false;
 		const itemFitSize: ISize = {
@@ -223,7 +223,7 @@ class PackingLayout implements ILayout {
 			}
 		});
 
-		fitArea(item, bestFitArea!, itemFitSize, containerFitSize, layoutVertical);
+		fitArea(item, bestFitArea, itemFitSize, containerFitSize, layoutVertical);
 	}
 	private _layout(items: IInfiniteGridItem[], outline: number[] = [], isAppend?: boolean) {
 		const style = this._style;
