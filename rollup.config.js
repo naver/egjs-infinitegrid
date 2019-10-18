@@ -63,7 +63,7 @@ export default buildHelper([
 		format: "umd",
 	},
 	{
-		name,
+		name: "eg.Parallax",
 		input: "./src/Parallax.ts",
 		output: "./dist/parallax.js",
 		resolve: true,
