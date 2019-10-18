@@ -35,7 +35,7 @@ function setTransition(styles: HTMLElement["style"], transitionDuration: number,
 	}
 	styles[`${TRANSITION}-property`] = `${TRANSFORM},width,height`;
 	styles[`${TRANSITION}-duration`] = `${transitionDuration}s`;
-	styles[`${TRANSITION}-delay`] = transitionDuration;
+	styles[`${TRANSITION}-delay`] = "0s";
 	styles[TRANSFORM] = `translate(${pos1.left - pos2.left}px,${pos1.top - pos2.top}px)`;
 	return true;
 }
@@ -247,10 +247,10 @@ export default class DOMRenderer {
 	public destroy() {
 		this.clear();
 		const container = this.options.container;
+		let property: keyof IDOMRendererOrgStyle;
 
-		for (const p in this._orgStyle) {
-			(this[container ? "view" : "container"] as HTMLElement).style[p as keyof IDOMRendererOrgStyle] =
-				this._orgStyle[p as keyof IDOMRendererOrgStyle]!;
+		for (property in this._orgStyle) {
+			(this[container ? "view" : "container"] as HTMLElement).style[property] = this._orgStyle[property]!;
 		}
 		container && this.container.parentNode!.removeChild(this.container);
 	}

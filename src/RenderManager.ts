@@ -14,7 +14,7 @@ export default class RenderManager {
 	private _layout: ILayout;
 	constructor(
 		private _infinite: Infinite,
-		private _items: ItemManager,
+		private _itemManager: ItemManager,
 		private _renderer: DOMRenderer,
 		private options: {
 			attributePrefix: string;
@@ -42,7 +42,7 @@ export default class RenderManager {
 			elements,
 			prefix,
 		).on("ready", () => {
-			if (!this._items) {
+			if (!this._itemManager) {
 				return;
 			}
 			this._complete(callbackComponent, checkGroups, items, isAppend);
@@ -50,12 +50,12 @@ export default class RenderManager {
 			target,
 			itemIndex,
 		}) => {
-			if (!this._items) {
+			if (!this._itemManager) {
 				return;
 			}
 			this._error(callbackComponent, removeTarget, replaceTarget, target, items, itemIndex);
 		}).on("finish", () => {
-			if (!this._items) {
+			if (!this._itemManager) {
 				return;
 			}
 			this._end(callbackComponent, removeTarget, replaceTarget, items);
@@ -71,7 +71,7 @@ export default class RenderManager {
 	) {
 		const infinite = this._infinite;
 		const layout = this._layout;
-		const itemManager = this._items;
+		const itemManager = this._itemManager;
 		const cursor = isAppend ? "end" : "start";
 		const groupIndex = itemManager.indexOf(groups[0]);
 		const prevGroup = itemManager.getGroup(groupIndex + (isAppend ? -1 : 1));
@@ -137,7 +137,7 @@ export default class RenderManager {
 		items: IInfiniteGridItem[],
 		errorIndex: number,
 	) {
-		const itemManager = this._items;
+		const itemManager = this._itemManager;
 		const item = items[errorIndex];
 		const element = item.el!;
 		const prefix = this.options.attributePrefix;

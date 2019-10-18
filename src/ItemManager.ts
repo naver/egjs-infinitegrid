@@ -220,7 +220,7 @@ export default class ItemManager {
 		if (itemIndex === -1) {
 			groupItems.push(groupItem);
 		} else {
-			group.items.splice(itemIndex, 0, groupItem);
+			groupItems.splice(itemIndex, 0, groupItem);
 		}
 
 		return groupItem;
@@ -251,7 +251,10 @@ export default class ItemManager {
 		}
 		return { items, group };
 	}
-	public indexOf(data?: { groupKey: string | number } | string | number) {
+	public indexOf(data: { groupKey: string | number } | string | number | undefined) {
+		if (typeof data === "undefined") {
+			return -1;
+		}
 		const groupKey = `${typeof data === "object" ? data.groupKey : data}`;
 		const datas = this._groups;
 		const length = datas.length;

@@ -83,8 +83,8 @@ describe("InfiniteGrid Test", function () {
 				inst.setLayout(layout);
 
 				const layoutCompleteHandler2 = sinon.spy(e => {
-					const item1 = inst._items.getStatus()._data[0].items;
-					const item2 = this.inst._items.getStatus()._data[0].items;
+					const item1 = inst._itemManager.getStatus()._data[0].items;
+					const item2 = this.inst._itemManager.getStatus()._data[0].items;
 
 					expect(item1.map(e1 => e1.rect))
 						.to.be.deep.equals(item2.map(e1 => e1.rect));
@@ -162,7 +162,7 @@ describe("InfiniteGrid Test", function () {
 				await wait(300);
 				expect(this.inst.isProcessing()).to.be.false;
 
-				const outlines = this.inst._items._groups[1].outlines.start;
+				const outlines = this.inst._itemManager._groups[1].outlines.start;
 				outlines.forEach(outline => {
 					expect(outline).to.be.equals(outlines[0]);
 				});
@@ -221,23 +221,23 @@ describe("InfiniteGrid Test", function () {
 				expect(this.inst._infinite.getCursor("start")).to.be.equals(0);
 				expect(this.inst._infinite.getCursor("end")).to.be.equals(9);
 
-				expect(status._items._data.length).to.be.equals(2);
-				expect(status._items._data[0].groupKey).to.be.equals(2);
-				expect(status._items._data[1].groupKey).to.be.equals(3);
+				expect(status._itemManager._data.length).to.be.equals(2);
+				expect(status._itemManager._data[0].groupKey).to.be.equals(2);
+				expect(status._itemManager._data[1].groupKey).to.be.equals(3);
 				expect(status._infinite.startCursor).to.be.equals(0);
 				expect(status._infinite.endCursor).to.be.equals(1);
 
-				expect(status2._items._data.length).to.be.equals(10);
+				expect(status2._itemManager._data.length).to.be.equals(10);
 				expect(status2._infinite.startCursor).to.be.equals(0);
 				expect(status2._infinite.endCursor).to.be.equals(9);
 
-				expect(status3._items._data.length).to.be.equals(9);
-				expect(status3._items._data[0].groupKey).to.be.equals(2);
-				expect(status3._items._data[8].groupKey).to.be.equals(10);
+				expect(status3._itemManager._data.length).to.be.equals(9);
+				expect(status3._itemManager._data[0].groupKey).to.be.equals(2);
+				expect(status3._itemManager._data[8].groupKey).to.be.equals(10);
 
-				expect(status4._items._data.length).to.be.equals(8);
-				expect(status4._items._data[0].groupKey).to.be.equals(1);
-				expect(status4._items._data[7].groupKey).to.be.equals(8);
+				expect(status4._itemManager._data.length).to.be.equals(8);
+				expect(status4._itemManager._data[0].groupKey).to.be.equals(1);
+				expect(status4._itemManager._data[7].groupKey).to.be.equals(8);
 			});
 			it(`should check getStatus outside(startCursor, endCursor)`, async () => {
 				// Given
@@ -255,27 +255,27 @@ describe("InfiniteGrid Test", function () {
 				expect(this.inst._infinite.getCursor("start")).to.be.equals(5);
 				expect(this.inst._infinite.getCursor("end")).to.be.equals(7);
 
-				expect(status._items._data.length).to.be.equals(3);
-				expect(status._items._data[0].groupKey).to.be.equals(6);
-				expect(status._items._data[2].groupKey).to.be.equal(8);
+				expect(status._itemManager._data.length).to.be.equals(3);
+				expect(status._itemManager._data[0].groupKey).to.be.equals(6);
+				expect(status._itemManager._data[2].groupKey).to.be.equal(8);
 				expect(status._infinite.startCursor).to.be.equals(0);
 				expect(status._infinite.endCursor).to.be.equals(2);
 
-				expect(status2._items._data.length).to.be.equals(5);
-				expect(status2._items._data[0].groupKey).to.be.equals(3);
-				expect(status2._items._data[4].groupKey).to.be.equal(7);
+				expect(status2._itemManager._data.length).to.be.equals(5);
+				expect(status2._itemManager._data[0].groupKey).to.be.equals(3);
+				expect(status2._itemManager._data[4].groupKey).to.be.equal(7);
 				expect(status2._infinite.startCursor).to.be.equals(3);
 				expect(status2._infinite.endCursor).to.be.equals(4);
 
-				expect(status3._items._data.length).to.be.equals(7);
-				expect(status3._items._data[0].groupKey).to.be.equals(3);
-				expect(status3._items._data[6].groupKey).to.be.equal(9);
+				expect(status3._itemManager._data.length).to.be.equals(7);
+				expect(status3._itemManager._data[0].groupKey).to.be.equals(3);
+				expect(status3._itemManager._data[6].groupKey).to.be.equal(9);
 				expect(status3._infinite.startCursor).to.be.equals(3);
 				expect(status3._infinite.endCursor).to.be.equals(5);
 
-				expect(status4._items._data.length).to.be.equals(3);
-				expect(status4._items._data[0].groupKey).to.be.equals(7);
-				expect(status4._items._data[2].groupKey).to.be.equal(9);
+				expect(status4._itemManager._data.length).to.be.equals(3);
+				expect(status4._itemManager._data[0].groupKey).to.be.equals(7);
+				expect(status4._itemManager._data[2].groupKey).to.be.equal(9);
 				expect(status4._infinite.startCursor).to.be.equals(0);
 				expect(status4._infinite.endCursor).to.be.equals(1);
 			});
@@ -418,7 +418,7 @@ describe("InfiniteGrid Test", function () {
 				// Then
 				this.inst.on("layoutComplete", e => {
 					expect(e.target[0].rect.top).to.be.equals(0);
-					this.inst._items.fit(-100, false);
+					this.inst._itemManager.fit(-100, false);
 					expect(e.target[0].rect.top).to.be.equals(100);
 					expect(this.inst._getEdgeValue("start")).to.be.equals(100);
 
@@ -445,7 +445,7 @@ describe("InfiniteGrid Test", function () {
 
 				// Then
 				this.inst.on("layoutComplete", e => {
-					this.inst._items.fit(-50, false);
+					this.inst._itemManager.fit(-50, false);
 					this.inst.startLoading(false);
 					expect(e.target[0].rect.top).to.be.equals(100);
 					expect(this.inst._getEdgeValue("start")).to.be.equals(100);
@@ -565,8 +565,8 @@ describe("InfiniteGrid Test", function () {
 			});
 			const complete2 = e => {
 				expect(error.callCount).to.be.equals(2);
-				expect(this.inst._items._groups[0].items[1].content).to.not.have.string("img");
-				expect(this.inst._items._groups[0].items).to.be.lengthOf(2);
+				expect(this.inst._itemManager._groups[0].items[1].content).to.not.have.string("img");
+				expect(this.inst._itemManager._groups[0].items).to.be.lengthOf(2);
 				done();
 			};
 			const complete1 = e => {
@@ -594,7 +594,7 @@ describe("InfiniteGrid Test", function () {
 			});
 			const complete2 = e => {
 				expect(error.callCount).to.be.equals(2);
-				expect(this.inst._items._groups[0].items).to.be.lengthOf(1);
+				expect(this.inst._itemManager._groups[0].items).to.be.lengthOf(1);
 				done();
 			};
 			const complete1 = e => {
@@ -612,8 +612,8 @@ describe("InfiniteGrid Test", function () {
 			});
 			const complete2 = e => {
 				expect(error.calledOnce).to.be.true;
-				expect(this.inst._items._groups[0].items[1].content).to.have.string("error.png");
-				expect(this.inst._items._groups[0].items[1].el.src).to.have.string("error.png");
+				expect(this.inst._itemManager._groups[0].items[1].content).to.have.string("error.png");
+				expect(this.inst._itemManager._groups[0].items[1].el.src).to.have.string("error.png");
 				done();
 			};
 			const complete1 = e => {
@@ -631,10 +631,10 @@ describe("InfiniteGrid Test", function () {
 			});
 			const complete2 = e => {
 				expect(error.calledOnce).to.be.true;
-				expect(this.inst._items._groups[0].items[1].content).to.have.string("it's error");
-				expect(this.inst._items._groups[0].items[1].content).to.have.string("HEADER");
-				expect(this.inst._items._groups[0].items[1].content).to.have.string("FOOTER");
-				expect(this.inst._items._groups[0].items[1].el.innerHTML).to.have.string("it's error");
+				expect(this.inst._itemManager._groups[0].items[1].content).to.have.string("it's error");
+				expect(this.inst._itemManager._groups[0].items[1].content).to.have.string("HEADER");
+				expect(this.inst._itemManager._groups[0].items[1].content).to.have.string("FOOTER");
+				expect(this.inst._itemManager._groups[0].items[1].el.innerHTML).to.have.string("it's error");
 				done();
 			};
 			const complete1 = e => {
@@ -652,10 +652,10 @@ describe("InfiniteGrid Test", function () {
 			});
 			const complete2 = e => {
 				expect(error.calledOnce).to.be.true;
-				expect(this.inst._items._groups[0].items[1].content).to.have.string("it's error");
-				expect(this.inst._items._groups[0].items[1].content).to.not.have.string("HEADER");
-				expect(this.inst._items._groups[0].items[1].content).to.not.have.string("FOOTER");
-				expect(this.inst._items._groups[0].items[1].el.innerHTML).to.have.string("it's error");
+				expect(this.inst._itemManager._groups[0].items[1].content).to.have.string("it's error");
+				expect(this.inst._itemManager._groups[0].items[1].content).to.not.have.string("HEADER");
+				expect(this.inst._itemManager._groups[0].items[1].content).to.not.have.string("FOOTER");
+				expect(this.inst._itemManager._groups[0].items[1].el.innerHTML).to.have.string("it's error");
 				done();
 			};
 			const complete1 = e => {
@@ -688,10 +688,10 @@ describe("InfiniteGrid Test", function () {
 		it(`should check outline when image processing and fit occur at the same time`, done => {
 			const item1 = `<div style="height:100px">HEADER<img src="/base/test/unit/image/3.jpg" />FOOTER</div><div>HEADER<img src="/1.jpg">FOOTER</div>`;
 			const layoutComplete2 = sinon.spy(e => {
-				const length = this.inst._items._groups.length;
+				const length = this.inst._itemManager._groups.length;
 
-				const group1 = this.inst._items._groups[length - 2];
-				const group2 = this.inst._items._groups[length - 1];
+				const group1 = this.inst._itemManager._groups[length - 2];
+				const group2 = this.inst._itemManager._groups[length - 1];
 				expectConnectGroupsOutline(group1, group2);
 				done();
 			});
@@ -901,7 +901,7 @@ describe("InfiniteGrid Test", function () {
 						expect(this.inst.getGroupKeys()).to.have.lengthOf(RETRY);
 
 						// Given
-						const centerEndValue = this.inst._items
+						const centerEndValue = this.inst._itemManager
 							.getEdgeValue(isAppend ? "end" : "start", this.inst._infinite._status.startCursor, 3);
 
 						// When
@@ -936,7 +936,7 @@ describe("InfiniteGrid Test", function () {
 		it(`should check isConstantSize option`, async () => {
 			// Given
 			await waitInsert(this.inst, true, 5, 4);
-			const datas = this.inst._items._groups;
+			const datas = this.inst._itemManager._groups;
 
 
 			// When
@@ -962,7 +962,7 @@ describe("InfiniteGrid Test", function () {
 			await waitInsert(this.inst, true, 5, 4);
 
 			// When
-			const datas = this.inst._items._groups;
+			const datas = this.inst._itemManager._groups;
 			const rects = datas.map(data => data.items.map(item => item.rect.top));
 			const waitLayout = waitEvent(this.inst, "layoutComplete");
 			this.inst._infinite.setCursor("start", 1);
@@ -984,7 +984,7 @@ describe("InfiniteGrid Test", function () {
 			await waitInsert(this.inst, true, 5, 4);
 
 			// When
-			const datas = this.inst._items._groups;
+			const datas = this.inst._itemManager._groups;
 			const size = datas.map(data => data.items.map(item => Object.assign(item.size)));
 			const waitLayout = waitEvent(this.inst, "layoutComplete");
 			const container = this.el.querySelector("#infinite");
@@ -1012,7 +1012,7 @@ describe("InfiniteGrid Test", function () {
 
 			// When
 			await waitInsert(this.inst, true, 5, 4);
-			const datas = this.inst._items._groups;
+			const datas = this.inst._itemManager._groups;
 
 			// Then
 			const standardSize = datas[0].items[0].size;
@@ -1030,7 +1030,7 @@ describe("InfiniteGrid Test", function () {
 			await waitInsert(this.inst, true, 5, 4);
 
 			// When
-			const datas = this.inst._items._groups;
+			const datas = this.inst._itemManager._groups;
 			const standardSize = Object.assign(datas[0].items[0].size);
 			const waitLayout = waitEvent(this.inst, "layoutComplete");
 
@@ -1068,7 +1068,7 @@ describe("InfiniteGrid Test", function () {
 			// Given
 			// When
 			await waitInsert(this.inst, true, 5, 4);
-			const datas = this.inst._items._groups;
+			const datas = this.inst._itemManager._groups;
 
 			const standardSize = datas[0].items[0].size;
 			datas.forEach(({ items }) => {
@@ -1104,7 +1104,7 @@ describe("InfiniteGrid Test", function () {
 			this.inst.layout(true);
 			await waitInsert(this.inst, true, 5, 4);
 
-			const datas = this.inst._items._groups;
+			const datas = this.inst._itemManager._groups;
 			const rects = datas.map(data => data.items.map(item => Object.assign(item.rect)));
 			const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
 
@@ -1124,7 +1124,7 @@ describe("InfiniteGrid Test", function () {
 			await waitInsert(this.inst, true, 5, 4);
 
 			// When
-			const datas = this.inst._items._groups;
+			const datas = this.inst._itemManager._groups;
 			const rects = datas.map(data => data.items.map(item => item.rect.top));
 			const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
 
@@ -1142,7 +1142,7 @@ describe("InfiniteGrid Test", function () {
 
 			await waitInsert(this.inst, true, 5, 4);
 
-			const datas = this.inst._items._groups;
+			const datas = this.inst._itemManager._groups;
 			const rects = datas.map(data => data.items.map(item => Object.assign({}, item.rect)));
 			const prevRects = datas.map(data => data.items.map(item => Object.assign({}, item.prevRect)));
 
@@ -1159,8 +1159,8 @@ describe("InfiniteGrid Test", function () {
 			await waitLayoutComplete;
 
 			// Then
-			const layoutCompleteRects = this.inst._items._groups.map(data => data.items.map(item => item.rect));
-			const layoutCompletePrevRects = this.inst._items._groups.map(data => data.items.map(item => item.prevRect));
+			const layoutCompleteRects = this.inst._itemManager._groups.map(data => data.items.map(item => item.rect));
+			const layoutCompletePrevRects = this.inst._itemManager._groups.map(data => data.items.map(item => item.prevRect));
 
 			expect(rects).to.be.deep.equals(prevRects);
 			expect(layoutCompleteRects).to.be.not.deep.equals(layoutCompletePrevRects);
@@ -1168,7 +1168,7 @@ describe("InfiniteGrid Test", function () {
 			expect(rects).to.be.not.deep.equals(layoutCompleteRects);
 
 			await wait(300);
-			const transitionEndPrevRects = this.inst._items._groups.map(data => data.items.map(item => item.prevRect));
+			const transitionEndPrevRects = this.inst._itemManager._groups.map(data => data.items.map(item => item.prevRect));
 
 			expect(transitionEndPrevRects).to.be.deep.equals(layoutCompleteRects);
 		});
@@ -1207,8 +1207,8 @@ describe("InfiniteGrid Test", function () {
 
 			// Then
 			await wait();
-			expect(this.inst._items._groups[this.inst._items._groups.length - 1].outlines.start.length).to.be.equals(0);
-			expect(this.inst._items._groups[this.inst._items._groups.length - 1].items[0].rect.top).to.be.below(0);
+			expect(this.inst._itemManager._groups[this.inst._itemManager._groups.length - 1].outlines.start.length).to.be.equals(0);
+			expect(this.inst._itemManager._groups[this.inst._itemManager._groups.length - 1].items[0].rect.top).to.be.below(0);
 		});
 	});
 	[true, false].forEach(useRecycle => {
@@ -1262,8 +1262,8 @@ describe("InfiniteGrid Test", function () {
 					// Given, When
 					await waitInsert(this.inst, true, 10, 10);
 
-					const scrollPos = Math.max(...this.inst._items._groups[5].outlines.start);
-					let moveTo = this.inst._items._groups[8].items[itemIndex].rect.top;
+					const scrollPos = Math.max(...this.inst._itemManager._groups[5].outlines.start);
+					let moveTo = this.inst._itemManager._groups[8].items[itemIndex].rect.top;
 
 					this.inst._setScrollPos(scrollPos);
 					this.inst._scrollTo(scrollPos);
@@ -1277,7 +1277,7 @@ describe("InfiniteGrid Test", function () {
 				it(`should moveTo in cursor inside(isAppend = false, itemIndex=${itemIndex})`, async () => {
 					// Given, When
 					await waitInsert(this.inst, true, 10, 10);
-					const scrollPos = Math.max(...this.inst._items._groups[6].outlines.start);
+					const scrollPos = Math.max(...this.inst._itemManager._groups[6].outlines.start);
 
 					this.inst._watcher.setScrollPos(scrollPos);
 					this.inst._watcher.scrollTo(scrollPos);
@@ -1287,7 +1287,7 @@ describe("InfiniteGrid Test", function () {
 					this.inst.moveTo(5, itemIndex);
 
 					await wait(100);
-					const moveTo = this.inst._items._groups[5].items[itemIndex].rect.top;
+					const moveTo = this.inst._itemManager._groups[5].items[itemIndex].rect.top;
 
 					// Then
 					const end = this.inst._getEdgeValue("end");
@@ -1298,12 +1298,12 @@ describe("InfiniteGrid Test", function () {
 					// Given, When
 					await waitInsert(this.inst, true, 10, 10);
 					this.inst._infinite.setCursor("end", 0);
-					this.inst._recycle([{ start: 1, end: this.inst._items.size() - 1 }]);
+					this.inst._recycle([{ start: 1, end: this.inst._itemManager.size() - 1 }]);
 					this.inst.moveTo(5, itemIndex);
 
 					await wait(100);
-					const moveTo = this.inst._items._groups[5].items[itemIndex].rect.top;
-					const end = Math.max(...this.inst._items._groups[5].outlines.end);
+					const moveTo = this.inst._itemManager._groups[5].items[itemIndex].rect.top;
+					const end = Math.max(...this.inst._itemManager._groups[5].outlines.end);
 					const view = this.inst._renderer.getViewSize();
 					const size = this.inst._getEdgeValue("end");
 
@@ -1318,7 +1318,7 @@ describe("InfiniteGrid Test", function () {
 				it(`should moveTo in cursor outside(isAppend = false, itemIndex = ${itemIndex})`, async () => {
 					// Given, When
 					await waitInsert(this.inst, true, 10, 10);
-					const scrollPos = Math.max(...this.inst._items._groups[6].outlines.start);
+					const scrollPos = Math.max(...this.inst._itemManager._groups[6].outlines.start);
 
 					this.inst._watcher.setScrollPos(scrollPos);
 					this.inst._watcher.scrollTo(scrollPos);
@@ -1327,8 +1327,8 @@ describe("InfiniteGrid Test", function () {
 					this.inst.moveTo(1, itemIndex);
 
 					await wait();
-					let moveTo = this.inst._items._groups[1].items[itemIndex].rect.top;
-					const end = Math.max(...this.inst._items._groups[1].outlines.end);
+					let moveTo = this.inst._itemManager._groups[1].items[itemIndex].rect.top;
+					const end = Math.max(...this.inst._itemManager._groups[1].outlines.end);
 					const view = this.inst._renderer.getViewSize();
 					const size = this.inst._getEdgeValue("end");
 
@@ -1350,11 +1350,11 @@ describe("InfiniteGrid Test", function () {
 						setTimeout(() => {
 							this.inst.moveTo(7, itemIndex);
 							setTimeout(() => {
-								let moveTo = itemIndex > -1 ? this.inst._items._groups[7].items[itemIndex].rect.top :
-									Math.max(...this.inst._items._groups[7].outlines.start);
+								let moveTo = itemIndex > -1 ? this.inst._itemManager._groups[7].items[itemIndex].rect.top :
+									Math.max(...this.inst._itemManager._groups[7].outlines.start);
 
 
-								const end = Math.max(...this.inst._items._groups[7].outlines.end);
+								const end = Math.max(...this.inst._itemManager._groups[7].outlines.end);
 								const view = this.inst._renderer.getViewSize();
 								const size = this.inst._getEdgeValue("end");
 
@@ -1372,7 +1372,7 @@ describe("InfiniteGrid Test", function () {
 				});
 				it(`should resize and moveTo in cursor outside(isAppend = false, itemIndex = ${itemIndex})`, done => {
 					insert(this.inst, true, () => {
-						const scrollPos = Math.max(...this.inst._items._groups[7].outlines.start);
+						const scrollPos = Math.max(...this.inst._itemManager._groups[7].outlines.start);
 
 						this.inst._watcher.setScrollPos(scrollPos);
 						this.inst._watcher.scrollTo(scrollPos);
@@ -1383,9 +1383,9 @@ describe("InfiniteGrid Test", function () {
 						setTimeout(() => {
 							this.inst.moveTo(3, itemIndex);
 							setTimeout(() => {
-								let moveTo = itemIndex > -1 ? this.inst._items._groups[3].items[itemIndex].rect.top :
-									Math.max(...this.inst._items._groups[3].outlines.start);
-								const end = Math.max(...this.inst._items._groups[3].outlines.end);
+								let moveTo = itemIndex > -1 ? this.inst._itemManager._groups[3].items[itemIndex].rect.top :
+									Math.max(...this.inst._itemManager._groups[3].outlines.start);
+								const end = Math.max(...this.inst._itemManager._groups[3].outlines.end);
 								const view = this.inst._renderer.getViewSize();
 								const size = this.inst._getEdgeValue("end");
 
@@ -1416,8 +1416,8 @@ describe("InfiniteGrid Test", function () {
 				// When
 				this.inst.moveTo(10);
 				await wait(20);
-				const moveTo = Math.max(...this.inst._items._groups[10].outlines.start);
-				const end = Math.max(...this.inst._items._groups[10].outlines.end);
+				const moveTo = Math.max(...this.inst._itemManager._groups[10].outlines.start);
+				const end = Math.max(...this.inst._itemManager._groups[10].outlines.end);
 				const view = this.inst._renderer.view === window ? document.body : this.inst._renderer.view;
 				const viewSize = view.clientHeight;
 				const size = this.inst._getEdgeValue("end");
@@ -1442,8 +1442,8 @@ describe("InfiniteGrid Test", function () {
 				await wait(30);
 				this.inst.moveTo(10);
 				await wait(20);
-				const moveTo = Math.max(...this.inst._items._groups[10].outlines.start);
-				const end = Math.max(...this.inst._items._groups[10].outlines.end);
+				const moveTo = Math.max(...this.inst._itemManager._groups[10].outlines.start);
+				const end = Math.max(...this.inst._itemManager._groups[10].outlines.end);
 				const view = this.inst._renderer.view === window ? document.body : this.inst._renderer.view;
 				const viewSize = view.clientHeight;
 				const size = this.inst._getEdgeValue("end");
@@ -1496,7 +1496,7 @@ describe("InfiniteGrid Test", function () {
 
 			const item1 = this.inst.getItem(0, 0);
 			// group2 is below group1
-			const { outlines: { start } } = this.inst._items.getGroup(1);
+			const { outlines: { start } } = this.inst._itemManager.getGroup(1);
 
 			// When
 			// change content
@@ -1509,7 +1509,7 @@ describe("InfiniteGrid Test", function () {
 
 			this.inst.updateItem(item1.el);
 
-			const { outlines: { start: start2 } } = this.inst._items.getGroup(1);
+			const { outlines: { start: start2 } } = this.inst._itemManager.getGroup(1);
 			// Then
 			expect(item1.content).to.have.string("updateItem1");
 			expect(height1).to.be.not.equal(item1.size.height);
@@ -1525,7 +1525,7 @@ describe("InfiniteGrid Test", function () {
 
 			const item1 = this.inst.getItem(0, 0);
 			// group2 is below group1
-			const { outlines: { start } } = this.inst._items.getGroup(1);
+			const { outlines: { start } } = this.inst._itemManager.getGroup(1);
 
 			// When
 			// change content
@@ -1538,7 +1538,7 @@ describe("InfiniteGrid Test", function () {
 
 			this.inst.updateItem(0, 0);
 
-			const { outlines: { start: start2 } } = this.inst._items.getGroup(1);
+			const { outlines: { start: start2 } } = this.inst._itemManager.getGroup(1);
 			// Then
 			expect(item1.content).to.have.string("updateItem1");
 			expect(height1).to.be.not.equal(item1.size.height);
@@ -1555,7 +1555,7 @@ describe("InfiniteGrid Test", function () {
 			const item1 = this.inst.getItem(0, 0);
 			const item2 = this.inst.getItem(0, 1);
 			// group2 is below group1
-			const { outlines: { start } } = this.inst._items.getGroup(1);
+			const { outlines: { start } } = this.inst._itemManager.getGroup(1);
 
 			// When
 			// change content
@@ -1572,7 +1572,7 @@ describe("InfiniteGrid Test", function () {
 
 			this.inst.updateItems();
 
-			const { outlines: { start: start3 } } = this.inst._items.getGroup(1);
+			const { outlines: { start: start3 } } = this.inst._itemManager.getGroup(1);
 			// Then
 			expect(item1.content).to.have.string("updateItem1");
 			expect(item2.content).to.have.string("updateItem2");

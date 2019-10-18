@@ -58,7 +58,7 @@ export interface IInfiniteGridStatus {
 		loadingSize: number,
 		loadingStyle: StyleType,
 	};
-	_items: IItemManagerStatus;
+	_itemManager: IItemManagerStatus;
 	_renderer: IDOMRendererStatus;
 	_watcher: IWatchStatus;
 	_infinite: IInfiniteStatus;

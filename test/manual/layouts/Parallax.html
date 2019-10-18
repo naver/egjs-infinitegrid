@@ -100,9 +100,9 @@
 	window.addEventListener("scroll", e => {
 		const position = document.body.scrollTop;
 
-		parallax.refresh(position, _items[0].items);
-		parallax.refresh(position, _items[1].items);
-		parallax.refresh(position, _items[2].items);
+		parallax.refresh(position, _itemManager[0].items);
+		parallax.refresh(position, _itemManager[1].items);
+		parallax.refresh(position, _itemManager[2].items);
 	});
 </script>
 </body>

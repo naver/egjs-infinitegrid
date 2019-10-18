@@ -119,7 +119,7 @@ class InfiniteGrid extends Component {
 		append?: HTMLElement,
 		prepend?: HTMLElement,
 	};
-	private _items: ItemManager;
+	private _itemManager: ItemManager;
 	private _renderer: DOMRenderer;
 	private _renderManager: RenderManager;
 	private _layout: ILayout;
@@ -163,7 +163,7 @@ class InfiniteGrid extends Component {
 			attributePrefix,
 		} = this.options;
 
-		this._items = new ItemManager();
+		this._itemManager = new ItemManager();
 		this._renderer = new DOMRenderer(element, {
 			isEqualSize,
 			isConstantSize,
@@ -180,7 +180,7 @@ class InfiniteGrid extends Component {
 				check: param => this._onCheck(param),
 			});
 
-		this._infinite = new Infinite(this._items, {
+		this._infinite = new Infinite(this._itemManager, {
 			useRecycle,
 			threshold,
 			append: param => this._requestAppend(param),
@@ -190,7 +190,7 @@ class InfiniteGrid extends Component {
 
 		this._renderManager = new RenderManager(
 			this._infinite,
-			this._items,
+			this._itemManager,
 			this._renderer,
 			{
 				attributePrefix,
@@ -304,7 +304,7 @@ class InfiniteGrid extends Component {
 	 * @returns List of items <ko>아이템의 목록</ko>
 	 */
 	public getItems(includeCached = false): IInfiniteGridItem[] {
-		return includeCached ? this._items.pluck("items") : this._infinite.getVisibleItems();
+		return includeCached ? this._itemManager.pluck("items") : this._infinite.getVisibleItems();
 	}
 	/**
 	 * @param - Get items to render on screen.
@@ -384,7 +384,7 @@ class InfiniteGrid extends Component {
 			return this;
 		}
 		const renderer = this._renderer;
-		const itemManager = this._items;
+		const itemManager = this._itemManager;
 		const infinite = this._infinite;
 		const isResize = renderer.resize();
 		const items = this.getItems();
@@ -492,7 +492,7 @@ class InfiniteGrid extends Component {
 	 * @return {Object}  Removed items information <ko>삭제된 아이템들 정보</ko>
 	 */
 	public remove(element: HTMLElement, isLayout = true) {
-		const { groupIndex, itemIndex } = this._items.indexesOfElement(element);
+		const { groupIndex, itemIndex } = this._itemManager.indexesOfElement(element);
 
 		return this.removeByIndex(groupIndex, itemIndex, isLayout);
 	}
@@ -504,7 +504,7 @@ class InfiniteGrid extends Component {
 	 */
 	public getGroupKeys(includeCached?: boolean) {
 		const data = includeCached ?
-			this._items.getGroups() : this._infinite.getVisibleData();
+			this._itemManager.getGroups() : this._infinite.getVisibleData();
 
 		return data.map(v => v.groupKey);
 	}
@@ -516,7 +516,7 @@ class InfiniteGrid extends Component {
 	public getStatus(startKey?: string | number, endKey?: string | number): IInfiniteGridStatus {
 		return {
 			_status: assign({}, this._status),
-			_items: this._items.getStatus(startKey, endKey),
+			_itemManager: this._itemManager.getStatus(startKey, endKey),
 			_renderer: this._renderer.getStatus(),
 			_watcher: this._watcher.getStatus(),
 			_infinite: this._infinite.getStatus(startKey, endKey),
@@ -533,14 +533,14 @@ class InfiniteGrid extends Component {
 		if (!status) {
 			return this;
 		}
-		const { _status, _renderer, _items, _watcher, _infinite } = status;
+		const { _status, _renderer, _itemManager, _watcher, _infinite } = status;
 
 		if (!_status ||
-			!_renderer || !_items || !_watcher || !_infinite) {
+			!_renderer || !_itemManager || !_watcher || !_infinite) {
 			return this;
 		}
 		const renderExternal = this.options.renderExternal;
-		const items = this._items;
+		const items = this._itemManager;
 		const renderer = this._renderer;
 		const watcher = this._watcher;
 		const infinite = this._infinite;
@@ -548,7 +548,7 @@ class InfiniteGrid extends Component {
 		watcher.detachEvent();
 		assign(this._status, _status);
 		this._status.processingStatus = IDLE;
-		items.setStatus(_items);
+		items.setStatus(_itemManager);
 		renderer.setStatus(_renderer);
 		infinite.setStatus(_infinite);
 
@@ -579,7 +579,7 @@ class InfiniteGrid extends Component {
 			if (isConstantSize) {
 				this.layout(true);
 			} else {
-				this._items.clearOutlines();
+				this._itemManager.clearOutlines();
 				this._postLayout({
 					fromCache: true,
 					groups: isEqualSize ? items.getGroups() : infinite.getVisibleData(),
@@ -600,7 +600,7 @@ class InfiniteGrid extends Component {
 	 * @return {eg.InfiniteGrid} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	public clear() {
-		this._items.clear();
+		this._itemManager.clear();
 		this._renderer.clear();
 		this._infinite.clear();
 		this._reset();
@@ -773,7 +773,7 @@ class InfiniteGrid extends Component {
 			}
 			return undefined;
 		} else {
-			const group = this._items.getGroup(groupIndex);
+			const group = this._itemManager.getGroup(groupIndex);
 
 			return group && group.items[itemIndex || 0];
 		}
@@ -828,7 +828,7 @@ class InfiniteGrid extends Component {
 		if (this.isProcessing()) {
 			return this;
 		}
-		const data = this._items.getGroup(index);
+		const data = this._itemManager.getGroup(index);
 
 		if (!data) {
 			return this;
@@ -865,7 +865,7 @@ class InfiniteGrid extends Component {
 				isAppend,
 				isTrusted: false,
 			})!.on("renderComplete", ({ start, end }) => {
-				const itemManager = this._items;
+				const itemManager = this._itemManager;
 
 				if (!itemManager) {
 					return;
@@ -887,7 +887,7 @@ class InfiniteGrid extends Component {
 				cache: [data],
 				isTrusted: false,
 			})!.on("renderComplete", ({ start, end }) => {
-				const itemManager = this._items;
+				const itemManager = this._itemManager;
 
 				if (!itemManager) {
 					return;
@@ -909,7 +909,7 @@ class InfiniteGrid extends Component {
 		this._infinite.clear();
 		this._watcher.destroy();
 		this._reset();
-		this._items.clear();
+		this._itemManager.clear();
 		this._renderer.destroy();
 	}
 	private _relayout(isRelayout: boolean, groups: IInfiniteGridGroup[], items: IInfiniteGridItem[]) {
@@ -942,7 +942,7 @@ class InfiniteGrid extends Component {
 		this._layout.layout(layoutGroups, outline);
 	}
 	private _setContainerSize(size: number) {
-		this._renderer.setContainerSize(Math.max(this._items.getMaxEdgeValue(), size));
+		this._renderer.setContainerSize(Math.max(this._itemManager.getMaxEdgeValue(), size));
 	}
 	private _appendLoadingBar() {
 		if (!this.options.renderExternal) {
@@ -960,7 +960,7 @@ class InfiniteGrid extends Component {
 	}
 	private _fitItems(base: number, margin = 0) {
 		base > 0 && this._watcher.scrollBy(-base);
-		this._items.fit(base, this.options.horizontal);
+		this._itemManager.fit(base, this.options.horizontal);
 		DOMRenderer.renderItems(this.getItems());
 		this._setContainerSize(this._getEdgeValue("end") || margin);
 		base < 0 && this._watcher.scrollBy(-base);
@@ -1037,7 +1037,7 @@ class InfiniteGrid extends Component {
 		if (!items.length) {
 			return;
 		}
-		const group = this._items[isAppend ? "appendGroup" : "prependGroup"]({
+		const group = this._itemManager[isAppend ? "appendGroup" : "prependGroup"]({
 			groupKey,
 			items,
 		})!;
@@ -1069,7 +1069,7 @@ class InfiniteGrid extends Component {
 			if (start === -1 || end === -1 || end < start) {
 				return;
 			}
-			const items = this._items.pluck("items", start, end);
+			const items = this._itemManager.pluck("items", start, end);
 
 			isRecycle = isRecycle || items.some(item => item.mounted);
 			items.forEach(item => {
