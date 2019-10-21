@@ -1,0 +1,23 @@
+{
+  "name": "vue-infinitegrid",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@egjs/infinitegrid": "^3.6.0-beta",
+    "@egjs/list-differ": "^1.0.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-typescript": "^4.0.0",
+    "@vue/cli-service": "^4.0.0",
+    "rollup-plugin-vue": "^5.0.1",
+    "typescript": "~3.5.3",
+    "vue": "^2.6.10",
+    "vue-template-compiler": "^2.6.10",
+    "vue-property-decorator": "^8.3.0"
+  }
+}
