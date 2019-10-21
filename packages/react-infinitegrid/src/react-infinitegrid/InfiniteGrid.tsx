@@ -5,11 +5,13 @@ import NativeInfiniteGrid, {
 	categorize,
 	CONTAINER_CLASSNAME,
 	ItemManager,
-	InfiniteGridMethods,
+	IItem,
+	INFINITEGRID_EVENTS,
 } from "@egjs/infinitegrid";
 import { findDOMNode } from "react-dom";
 import { InfiniteGridProps, InfiniteGridType } from "./types";
 import LoadingBar from "./LoadingBar";
+import { camelize } from "./utils";
 
 export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.Component<InfiniteGridProps<T>, {
 	layout: string;
@@ -23,6 +25,17 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 		useFirstRender: true,
 		status: null,
 		loading: null,
+		groupBy: (item: any, index: number) => {
+			const props = item.props;
+
+			if ("data-groupkey" in props) {
+				return props["data-groupkey"];
+			} else if ("groupKey" in props) {
+				return props.groupKey;
+			} else {
+				return "";
+			}
+		},
 		onAppend: () => { },
 		onPrepend: () => { },
 		onLayoutComplete: () => { },
@@ -39,8 +52,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 	public render() {
 		const props = this.props;
 		const attributes = {};
-		const children = React.Children.toArray(props.children) as React.ReactElement[];
-		const items = this.toItems(children);
+		const items = this.toItems();
 		const Tag = this.props.tag as any;
 
 		for (const name in props) {
@@ -58,7 +70,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 			const result = ig.beforeSync(items);
 			state.layout = result === "relayout" ? result : state.layout || result;
 
-			visibleChildren = ig.getRenderingItems().map(item => item.jsx);
+			visibleChildren = ig.getRenderingItems().map((item: IItem) => item.jsx);
 
 			if (this.props.loading && ig.isLoading()) {
 				visibleChildren.push(<LoadingBar key="loadingBar" loading={this.props.loading!} />);
@@ -68,9 +80,12 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 			if (props.status) {
 				const { startCursor, endCursor } = props.status._infinite;
 
-				visibleChildren = ItemManager.pluck(groups.slice(startCursor, endCursor + 1), "items").map(item => item.jsx);
+				visibleChildren = ItemManager.pluck(
+					groups.slice(startCursor, endCursor + 1),
+					"items",
+				).map((item: IItem) => item.jsx);
 			} else if (props.useFirstRender && groups[0]) {
-				visibleChildren = groups[0].items.map(item => item.jsx);
+				visibleChildren = groups[0].items.map((item: IItem) => item.jsx);
 			}
 		}
 		return <Tag {...attributes}>{this.renderContainer(visibleChildren)}</Tag>;
@@ -106,20 +121,15 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 			this.forceUpdate(() => {
 				next();
 			});
-		}).on("append", e => {
-			this.props.onAppend!({ ...e, currentTarget: this });
-		}).on("prepend", e => {
-			this.props.onPrepend!({ ...e, currentTarget: this });
-		}).on("imageError", e => {
-			this.props.onImageError!({ ...e, currentTarget: this });
-		}).on("change", e => {
-			this.props.onChange!({ ...e, currentTarget: this });
-		}).on("layoutComplete", e => {
-			this.props.onLayoutComplete!({ ...e, currentTarget: this });
 		});
-
 		const ig = this.ig;
 
+		INFINITEGRID_EVENTS.forEach((name: string) => {
+			const eventName = camelize(`on ${name}`);
+			ig.on(name, (e: any) => {
+				this.props[eventName]!({ ...e, currentTarget: this });
+			});
+		});
 
 		ig.setLayout(this.props.layoutType, this.props.layoutOptions);
 
@@ -147,7 +157,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 		}
 		const ContainerTag = props.containerTag as any;
 
-		return <ContainerTag className={CONTAINER_CLASSNAME} ref={e => {
+		return <ContainerTag className={CONTAINER_CLASSNAME} ref={(e: any) => {
 			e && (this.containerElement = e);
 		}}>
 			{children}
@@ -156,13 +166,18 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 	private getElements(): HTMLElement[] {
 		return [].slice.call((this.containerElement || this.wrapperElement).children);
 	}
-	private toItems(children = React.Children.toArray(this.props.children)) {
-		return children.map((child: React.ReactElement, i) => {
-			const groupKey = child.props["data-groupkey"] || child.props["groupKey"] || "";
+	private toItems() {
+		const {
+			children,
+			groupBy,
+		} = this.props;
+		const reactChildren = React.Children.toArray(children);
+		return reactChildren.map((child: React.ReactElement, i) => {
+			const groupKey = groupBy(child, i);
 			const itemKey = child.key;
 
 			return { groupKey, itemKey, jsx: child };
-		})
+		});
 	}
 }
 
