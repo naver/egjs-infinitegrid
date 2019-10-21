@@ -150,7 +150,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 	}
 	private renderContainer(children: React.ReactElement[]) {
 		const props = this.props;
-		const { isOverflowScroll } = props;
+		const { isOverflowScroll } = props.options;
 
 		if (!isOverflowScroll) {
 			return children;

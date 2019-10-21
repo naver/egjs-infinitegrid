@@ -1,18 +1,21 @@
 const buildHelper = require("@egjs/build-helper");
 
 const defaultOptions = {
-  input: "./src/react-infinitegrid/index.ts",
-  tsconfig: "tsconfig.build.json",
+    tsconfig: "tsconfig.build.json",
   sourcemap: true,
 };
 export default buildHelper([
   {
     ...defaultOptions,
-    format: "es",
+		input: "./src/react-infinitegrid/index.ts",
+		exports: "named",
+		format: "es",
     output: "./dist/infinitegrid.esm.js",
   },
   {
-    ...defaultOptions,
+		...defaultOptions,
+		input: "./src/react-infinitegrid/index.umd.ts",
+		exports: "default",
     format: "cjs",
     output: "./dist/infinitegrid.cjs.js",
   },

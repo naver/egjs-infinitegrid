@@ -9,6 +9,8 @@
 		"ordered-imports": false,
 		"no-unused-expression": false,
 		"interface-name": false,
-		"indent": [true, "tabs"]
+		"indent": [true, "tabs"],
+		"guard-for-in": false,
+		"forin": false
 	}
 }
