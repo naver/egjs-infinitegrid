@@ -1,6 +1,6 @@
 import ItemManager from "./ItemManager";
 import { assign, find, findLast } from "./utils";
-import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult, IItem, IInfiniteOptions } from "./types";
+import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult, IItem, IInfiniteOptions, IInfiniteGridItem } from "./types";
 import { diff } from "@egjs/list-differ";
 
 function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: number, endScrollPos: number) {
@@ -226,7 +226,7 @@ class Infinite {
 
 		return outlines.length ? Math[cursor === "start" ? "min" : "max"](...outlines) : 0;
 	}
-	public getVisibleItems() {
+	public getVisibleItems(): IInfiniteGridItem[] {
 		const { startCursor, endCursor } = this._status;
 
 		return this._itemManager.pluck("items", startCursor, endCursor);

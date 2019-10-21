@@ -1,4 +1,4 @@
-import { diff } from "@egjs/list-differ";
+import { diff, DiffResult } from "@egjs/list-differ";
 import { GROUPKEY_ATT, DUMMY_POSITION, ITEM_KEYS } from "./consts";
 import { isUndefined, assign, categorize, makeItem } from "./utils";
 import { CursorType, IInfiniteGridGroup, IInfiniteGridItem, IItemManagerStatus, IItem, IGroup } from "./types";
@@ -170,7 +170,7 @@ export default class ItemManager {
 		});
 		return newGroup;
 	}
-	public sync(items: IItem[]) {
+	public sync(items: IItem[]): DiffResult<IGroup> {
 		const groups = this._groups;
 		const newGroups = categorize(items);
 		const result = diff(groups, newGroups, group => group.groupKey);
