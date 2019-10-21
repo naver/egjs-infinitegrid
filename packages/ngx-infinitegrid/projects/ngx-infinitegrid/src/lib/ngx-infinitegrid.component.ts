@@ -7,19 +7,19 @@ import {
 import NativeInfiniteGrid, {
   GridLayout,
   ILayout,
-  IInfiniteGridGroup,
   categorize,
   ItemManager,
-  InfiniteGridMethods,
   IItem,
   IInfiniteGridStatus,
   IInfiniteGridItem,
   StyleType,
   IGNORE_CLASSNAME,
   IInfiniteGridOptions,
+  INFINITEGRID_EVENTS,
 } from '@egjs/infinitegrid';
 import ListDiffer from '@egjs/list-differ';
 import { TEMPLATE } from './consts';
+import { InfiniteGridType } from './types';
 
 @Component({
   selector: 'ngx-infinitegrid, [NgxInfiniteGrid]',
@@ -28,9 +28,11 @@ import { TEMPLATE } from './consts';
 })
 export class NgxInfinitegridComponent
   implements OnInit, AfterViewInit, AfterViewChecked,
-  OnDestroy, OnChanges, InfiniteGridMethods {
+  OnDestroy, OnChanges, InfiniteGridType<NgxInfinitegridComponent> {
   private ig!: NativeInfiniteGrid;
 
+  @Input() public trackBy: ((index: number, item: any) => any) = ((_, item) => item.key);
+  @Input() public groupBy: ((index: number, item: any) => any) = ((_, item) => item.groupKey);
   @Input() public items: IItem[] = [];
   @Input() public status!: IInfiniteGridStatus;
   @Input() public loading!: HTMLElement;
@@ -54,7 +56,6 @@ export class NgxInfinitegridComponent
 
   private layoutState = '';
   private isChange = false;
-  private requestGroups: IInfiniteGridGroup[] = [];
   private visibleDiffer: ListDiffer<IItem> = new ListDiffer<IItem>([], item => item.itemKey);
   private nextFunction = () => { };
 
@@ -93,7 +94,7 @@ export class NgxInfinitegridComponent
       return;
     }
     this.isChange = false;
-    this.ig.sync(this.getElements(), this.requestGroups);
+    this.ig.sync(this.getElements());
 
     const layoutState = this.layoutState;
     if (layoutState) {
@@ -109,33 +110,23 @@ export class NgxInfinitegridComponent
     this.ig = new NativeInfiniteGrid(ref.nativeElement, {
       ...this.options,
       renderExternal: true,
-    }).on('render', ({ next, requestGroups }) => {
-      if (requestGroups) {
-        setTimeout(() => {
-          this.nextFunction = next;
-          this.requestGroups = requestGroups;
-          this.updateVisibleItems(this.getVisibleItems());
-          this.isChange = true;
-        });
-      } else {
-        setTimeout(() => {
-          this.nextFunction = next;
-          this.isChange = true;
-        });
-      }
-    }).on('append', e => {
-      this.append.emit({ ...e, currentTarget: this });
-    }).on('prepend', e => {
-      this.prepend.emit({ ...e, currentTarget: this });
-    }).on('imageError', e => {
-      this.imageError.emit({ ...e, currentTarget: this });
-    }).on('change', e => {
-      this.change.emit({ ...e, currentTarget: this });
-    }).on('layoutComplete', e => {
-      this.layoutComplete.emit({ ...e, currentTarget: this });
+    }).on('render', ({ next }) => {
+      setTimeout(() => {
+        this.nextFunction = next;
+        this.updateVisibleItems(this.getVisibleItems());
+        this.isChange = true;
+      });
     });
     const ig = this.ig;
 
+    INFINITEGRID_EVENTS.forEach(name => {
+      if (!this[name]) {
+        return;
+      }
+      ig.on(name, e => {
+        this[name].emit({ ...e, currentTarget: this });
+      });
+    });
     ig.setLayout(GridLayout, { ...this.layoutOptions });
 
 
@@ -163,31 +154,38 @@ export class NgxInfinitegridComponent
     return this.ig.isProcessing();
   }
   public startLoading(isAppend?: boolean, userStyle: StyleType = { display: 'block' }) {
-    return this.ig.startLoading(isAppend, userStyle);
+    this.ig.startLoading(isAppend, userStyle);
+    return this;
   }
   public endLoading(userStyle: StyleType = { display: 'none' }) {
-    return this.ig.endLoading(userStyle);
+    this.ig.endLoading(userStyle);
+    return this;
   }
   public getItem(groupIndex: HTMLElement | number = 0, itemIndex?: number): IInfiniteGridItem | undefined {
     return this.ig.getItem(groupIndex, itemIndex);
   }
   public updateItem(groupIndex?: number, itemIndex?: number) {
-    return this.ig.updateItem(groupIndex, itemIndex);
+    this.ig.updateItem(groupIndex, itemIndex);
+    return this;
   }
   public updateItems() {
-    return this.ig.updateItems();
+    this.ig.updateItems();
+    return this;
   }
   public moveTo(index: number, itemIndex = 0) {
-    return this.ig.moveTo(index, itemIndex);
+    this.ig.moveTo(index, itemIndex);
+    return this;
   }
   public layout(isRelayout = true) {
-    return this.ig.layout(isRelayout);
+    this.ig.layout(isRelayout);
+    return this;
   }
   public getStatus(startKey?: string | number, endKey?: string | number): IInfiniteGridStatus {
     return this.ig.getStatus(startKey, endKey);
   }
   public setStatus(status: IInfiniteGridStatus, applyScrollPos = true, syncElements?: HTMLElement[]) {
-    return this.ig.setStatus(status, applyScrollPos, syncElements);
+    this.ig.setStatus(status, applyScrollPos, syncElements);
+    return this;
   }
   public getItems(includeCached = false): IInfiniteGridItem[] {
     return this.ig.getItems(includeCached);
@@ -211,12 +209,14 @@ export class NgxInfinitegridComponent
     return elements;
   }
   private getVisibleItems() {
-    return this.ig.getRenderingItems(this.requestGroups).map(item => item.data);
+    return this.ig.getRenderingItems().map(item => item.data);
   }
   private toItems() {
-    return this.items.map(item => ({
-      groupKey: item.groupKey,
-      itemKey: item.itemKey,
+    const groupBy = this.groupBy;
+    const trackBy = this.trackBy;
+    return this.items.map((item, i) => ({
+      groupKey: groupBy(i, item),
+      itemKey: trackBy(i, item),
       data: item,
     }));
   }

@@ -16,6 +16,7 @@
     "@angular/core": "^8.0.3"
   },
   "dependencies": {
+    "@egjs/infinitegrid": "^3.6.0-beta2",
     "@egjs/list-differ": "^1.0.0"
   }
 }
