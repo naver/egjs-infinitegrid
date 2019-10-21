@@ -16,6 +16,7 @@
     "url": "https://github.com/naver/egjs-infinitegrid"
   },
   "dependencies": {
+    "@egjs/infinitegrid": "^3.6.0-beta2",
     "@egjs/list-differ": "^1.0.0"
   },
   "devDependencies": {
@@ -27,6 +28,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.2",
+    "tslint": "^5.20.0",
     "typescript": "3.6.3"
   },
   "scripts": {

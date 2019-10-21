@@ -55,6 +55,7 @@ export interface InfiniteGridProps<T extends ILayout = any> {
 	layoutOptions?: Partial<T["options"]>;
 	loading?: React.ReactElement | null;
 	layoutType?: new (...args: any[]) => ILayout;
+	groupBy?: (item: any, index: number) => any;
 	onAppend?: (param: OnAppend) => any;
 	onPrepend?: (param: OnPrepend) => any;
 	onLayoutComplete?: (param: OnLayoutComplete) => any;
@@ -65,7 +66,7 @@ export interface InfiniteGridProps<T extends ILayout = any> {
 
 export type ParametersType<T, R> = T extends (...params: infer U) => any ? (...params: U) => R : never;
 export type InfiniteGridType<T> = {
-  [key in keyof InfiniteGridMethods]:
-  InfiniteGridMethods[key] extends (...params: any[]) => NativeInfiniteGrid ?
-    ParametersType<InfiniteGridMethods[key], T> : InfiniteGridMethods[key]
+	[key in keyof InfiniteGridMethods]:
+	InfiniteGridMethods[key] extends (...params: any[]) => NativeInfiniteGrid ?
+	ParametersType<InfiniteGridMethods[key], T> : InfiniteGridMethods[key]
 };

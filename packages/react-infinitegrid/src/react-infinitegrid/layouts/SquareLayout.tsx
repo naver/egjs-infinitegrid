@@ -3,8 +3,8 @@ import InfiniteGrid from "../InfiniteGrid";
 import { InfiniteGridProps } from "../types";
 
 export default class SquareLayout extends InfiniteGrid<LayoutType> {
-    static defaultProps: Required<InfiniteGridProps<LayoutType>> = {
-        ...InfiniteGrid.defaultProps,
-        layoutType: LayoutType,
-    };
+	public static defaultProps: Required<InfiniteGridProps<LayoutType>> = {
+		...InfiniteGrid.defaultProps,
+		layoutType: LayoutType,
+	};
 }
