@@ -79,9 +79,10 @@ export default buildHelper([
 	},
 	{
 		name,
-		input: "./src/index.umd.ts",
+		input: "./src/index.ts",
 		output: "./dist/infinitegrid.esm.js",
-		format: "esm",
+		format: "es",
+		exports: "named",
 		external,
 	},
 	...entries,
