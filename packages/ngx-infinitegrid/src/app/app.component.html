@@ -11,6 +11,8 @@
     [loading]="loading"
     [options]="{isConstantSize:true}"
     [layoutOptions]="{margin: 5, align: 'center'}"
+    [trackBy]="trackBy"
+    [groupBy]="groupBy"
     [items]="items" (append)="onAppend($event)" (layoutComplete)="onLayoutComplete($event)" (imageError)="onImageError($event)">
     <div class="loading" #loading>LOADING?</div>
     <div class="item" *ngFor ="let item of ig.visibleItems; trackBy: trackBy;">

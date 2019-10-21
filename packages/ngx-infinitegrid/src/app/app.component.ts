@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgxInfinitegridComponent } from 'projects/ngx-infinitegrid/src/public-api';
-import { IItem } from '@egjs/infinitegrid';
 
 @Component({
   selector: 'app-root',
@@ -75,7 +74,10 @@ export class AppComponent {
     this.items.splice(totalIndex, 1);
     this.items = [ ...this.items ];
   }
-  trackBy(index: number, item: IItem): any {
+  groupBy(index: number, item: any): any {
+    return item.groupKey;
+  }
+  trackBy(index: number, item: any): any {
     return item.itemKey;
   }
 }
