@@ -184,7 +184,7 @@ export default class DOMRenderer {
 			item.size = (isEqualSize && assign({}, size.item)) ||
 				(isConstantSize && item.orgSize && item.orgSize.width && assign({}, item.orgSize)) ||
 				getSize(item.el);
-			if (!item.orgSize || !item.orgSize.width) {
+			if (!item.orgSize || !item.orgSize.width || !item.orgSize.height) {
 				item.orgSize = assign({}, item.size);
 			}
 			return item;

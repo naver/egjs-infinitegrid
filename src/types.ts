@@ -11,6 +11,20 @@ export type ClientSizeType = "clientWidth" | "clientHeight";
 export type OffsetSizeType = "offsetWidth" | "offsetHeight";
 export type ScrollSizeType = "scrollWidth" | "scrollHeight";
 
+export interface IInfiniteGridOptions {
+	itemSelector: string;
+	isOverflowScroll: boolean;
+	threshold: number;
+	isEqualSize: boolean;
+	isConstantSize: boolean;
+	useRecycle: boolean;
+	horizontal: boolean;
+	transitionDuration: number;
+	useFit: boolean;
+	attributePrefix: string;
+	renderExternal: boolean;
+}
+
 export interface IInfiniteGridGroup {
 	groupKey: string | number;
 	items: IInfiniteGridItem[];
