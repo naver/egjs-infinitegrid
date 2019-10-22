@@ -1,23 +1,44 @@
 {
-  "name": "vue-infinitegrid",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@egjs/vue-infinitegrid",
+  "version": "3.0.0",
+  "description": "A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
+  "main": "dist/infinitegrid.cjs.js",
+  "module": "dist/infinitegrid.esm.js",
+  "types": "declaration/index.d.ts",
+  "sideEffects": false,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "start": "vue-cli-service serve --open demo",
+    "build": "rm -rf dist && rollup -c && npm run declaration",
+    "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
     "lint": "vue-cli-service lint"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naver/egjs-infinitegrid/tree/master/packages/vue-infinitegrid"
+  },
+  "author": {
+    "name": "NAVER Corp."
+  },
+  "namespace": {
+    "eg": "eg"
+  },
+  "homepage": "https://naver.github.io/egjs-infinitegrid",
+  "bugs": {
+    "url": "https://github.com/naver/egjs-infinitegrid/issues"
+  },
+  "license": "MIT",
   "dependencies": {
-    "@egjs/infinitegrid": "^3.6.0-beta",
+    "@egjs/infinitegrid": "^3.6.0-beta3",
     "@egjs/list-differ": "^1.0.0"
   },
   "devDependencies": {
+    "@egjs/build-helper": "0.0.5",
     "@vue/cli-plugin-typescript": "^4.0.0",
     "@vue/cli-service": "^4.0.0",
     "rollup-plugin-vue": "^5.0.1",
     "typescript": "~3.5.3",
     "vue": "^2.6.10",
-    "vue-template-compiler": "^2.6.10",
-    "vue-property-decorator": "^8.3.0"
+    "vue-property-decorator": "^8.3.0",
+    "vue-template-compiler": "^2.6.10"
   }
 }
