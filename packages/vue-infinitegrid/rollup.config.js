@@ -3,19 +3,22 @@ const VuePlugin = require("rollup-plugin-vue");
 
 
 const defaultOptions = {
-  input: "./src/index.ts",
-  sourcemap: true,
-  plugins: [VuePlugin],
+	sourcemap: true,
+	plugins: [VuePlugin],
 };
+
 export default buildHelper([
-  {
-    ...defaultOptions,
-    format: "es",
-    output: "./dist/infinitegrid.esm.js",
-  },
-  {
-    ...defaultOptions,
-    format: "cjs",
-    output: "./dist/infinitegrid.cjs.js",
-  },
+	{
+		...defaultOptions,
+		input: "./src/index.ts",
+		format: "es",
+		exports: "named",
+		output: "./dist/infinitegrid.esm.js",
+	},
+	{
+		...defaultOptions,
+		input: "./src/index.umd.ts",
+		format: "cjs",
+		output: "./dist/infinitegrid.cjs.js",
+	},
 ]);
