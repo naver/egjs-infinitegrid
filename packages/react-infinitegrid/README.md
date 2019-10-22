@@ -50,10 +50,13 @@ import {GridLayout} from "@egjs/react-infinitegrid";
 |---|---|---|---|
 |tag|string|"div"|The tag name of the wrapper element|
 |containerTag|string|"div"|The tag name of the container element|
-|useFirstRender|boolean||The useFirstRender option determines whether the markup will be shown on the first rendering or after loading is complete.|
+|groupBy|Function|get groupKey or data-groupkey|Get a unique key to distinguish between groups.|
+|useFirstRender|boolean|false|The useFirstRender option determines whether the markup will be shown on the first rendering or after loading is complete.|
 |loading|React.ReactElement||Specifies the Loading Bar to use for append or prepend items.|
 |status|IInfiniteGridStatus|null|State object of the react-infinitegrid module|
 |layoutType|Class|GridLayout|Specifies the Layout class to use.|
+|options|IInfiniteGridOptions|{}|The option object of the eg.InfiniteGrid module|
+|layoutOptions|IInfiniteGridOptions|{}|Options to apply to the Layout.|
 |...others|DOM Attributes||You can set the attribute of the wrapper element.|
 
 ```tsx
@@ -66,6 +69,7 @@ export interface InfiniteGridProps<T extends ILayout = any> {
 	layoutOptions?: Partial<T["options"]>;
 	loading?: React.ReactElement | null;
 	layoutType?: new (...args: any[]) => ILayout;
+	groupBy?: (item: any, index: number) => any;
 	onAppend?: (param: OnAppend) => any;
 	onPrepend?: (param: OnPrepend) => any;
 	onLayoutComplete?: (param: OnLayoutComplete) => any;
@@ -186,11 +190,13 @@ interface InfiniteGridProps {
 export interface InfiniteGridProps<T extends ILayout = any> {
 	tag?: string;
 	containerTag?: string;
+	useFirstRender?: boolean;
 	status?: IInfiniteGridStatus | null;
 	options?: Partial<IInfiniteGridOptions>;
 	layoutOptions?: Partial<T["options"]>;
 	loading?: React.ReactElement | null;
 	layoutType?: new (...args: any[]) => ILayout;
+	groupBy?: (item: any, index: number) => any;
 	onAppend?: (param: OnAppend) => any;
 	onPrepend?: (param: OnPrepend) => any;
 	onLayoutComplete?: (param: OnLayoutComplete) => any;
