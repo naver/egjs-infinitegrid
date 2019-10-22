@@ -7,7 +7,7 @@
   "types": "declaration/index.d.ts",
   "sideEffects": false,
   "scripts": {
-    "start": "vue-cli-service serve --open demo",
+    "start": "vue-cli-service serve --open demo/main.ts",
     "build": "rm -rf dist && rollup -c && npm run declaration",
     "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
     "lint": "vue-cli-service lint"
@@ -39,6 +39,7 @@
     "typescript": "~3.5.3",
     "vue": "^2.6.10",
     "vue-property-decorator": "^8.3.0",
+    "vue-router": "^3.1.3",
     "vue-template-compiler": "^2.6.10"
   }
 }
