@@ -106,6 +106,9 @@ export class AppComponent {
   trackBy(index: number, item: IItem): any {
     return item.itemKey;
   }
+  groupBy(index: number, item: IItem): any {
+    return item.groupKey;
+  }
 }
 
 ```
@@ -117,6 +120,8 @@ export class AppComponent {
   [options]="options"
   [layoutOptions]="layoutOptions"
   [items]="items"
+  [trackBy]="trackBy"
+  [groupBy]="groupBy"
   (append)="onAppend($event)"
   (prepend)="onPrepend($event)"
   (change)="onChange($event)"
@@ -134,28 +139,15 @@ export class AppComponent {
 
 |name|type|default|description|
 |---|---|---|---|
+|trackBy|Function|get itemKey|Get a unique key that defines how to track changes for items in the iterable.|
+|groupBy|Function|get groupKey or data-groupkey|Get a unique key to distinguish between groups.|
+|useFirstRender|boolean|false|The useFirstRender option determines whether the markup will be shown on the first rendering or after loading is complete.|
 |loading|HTMLElement||Specifies the Loading Bar to use for append or prepend items.|
 |status|IInfiniteGridStatus|null|State object of the react-infinitegrid module|
 |layoutType|Class|GridLayout|Specifies the Layout class to use.|
-|...others|DOM Attributes||You can set the attribute of the wrapper element.|
+|options|IInfiniteGridOptions|{}|The option object of the eg.InfiniteGrid module|
+|layoutOptions|IInfiniteGridOptions|{}|Options to apply to the Layout.|
 
-```tsx
-export interface InfiniteGridProps<T extends ILayout = any> {
-	tag?: string;
-	containerTag?: string;
-	status?: IInfiniteGridStatus | null;
-	options?: Partial<IInfiniteGridOptions>;
-	layoutOptions?: Partial<T["options"]>;
-	loading?: React.ReactElement | null;
-	layoutType?: new (...args: any[]) => ILayout;
-	onAppend?: (param: OnAppend) => any;
-	onPrepend?: (param: OnPrepend) => any;
-	onLayoutComplete?: (param: OnLayoutComplete) => any;
-	onImageError?: (param: OnImageError) => any;
-	onChange?: (param: OnChange) => any;
-	[others: string]: any;
-}
-```
 
 ### Options
 * [InfiniteGrid's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html)
