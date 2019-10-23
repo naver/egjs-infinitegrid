@@ -16,7 +16,7 @@
     "url": "https://github.com/naver/egjs-infinitegrid"
   },
   "dependencies": {
-    "@egjs/infinitegrid": "^3.6.0-beta2",
+    "@egjs/infinitegrid": "^3.6.0-beta4",
     "@egjs/list-differ": "^1.0.0"
   },
   "devDependencies": {
