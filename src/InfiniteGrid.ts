@@ -333,6 +333,8 @@ class InfiniteGrid extends Component {
 	 * @param - The groups currently being added by request.<ko>요청에 의해 지금 추가중인 그룹들.</ko>
 	 */
 	public sync(elements: IArrayFormat<HTMLElement>) {
+		const itemManager = this._itemManager;
+		const infinite = this._infinite;
 		const items = this.getRenderingItems();
 
 		items.forEach((item, i) => {
@@ -343,16 +345,32 @@ class InfiniteGrid extends Component {
 				DOMRenderer.renderItem(item, item.rect);
 			}
 		});
-		if (!this._isProcessing()) {
-			const newItems = items.filter(item => !item.orgSize || !item.orgSize.width);
+		if (this._isProcessing()) {
+			return;
+		}
+		const newItems = items.filter(item => !item.orgSize || !item.orgSize.width);
 
-			if (newItems.length) {
+		if (newItems.length) {
+			this._postLayout({
+				fromCache: false,
+				groups: infinite.getVisibleData(),
+				newItems,
+				isAppend: true,
+				isTrusted: false,
+			});
+		} else {
+			const size = itemManager.size();
+
+			if (!size) {
+				this._requestAppend({});
+			} else if (infinite.getCursor("start") < 0) {
+				const firstGroup = itemManager.getGroup(0);
+
 				this._postLayout({
+					groups: [firstGroup],
+					hasChildren: false,
 					fromCache: false,
-					groups: this._infinite.getVisibleData(),
-					newItems,
 					isAppend: true,
-					isTrusted: false,
 				});
 			} else {
 				this._infinite.scroll(this._watcher.getScrollPos());
