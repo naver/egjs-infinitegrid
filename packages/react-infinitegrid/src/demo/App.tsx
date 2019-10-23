@@ -30,8 +30,8 @@ class App extends React.Component<{}, {
     super(prop);
     this.state = {
       list: [
-        ...this.loadItems("1", 10).slice(1),
-        ...this.loadItems("2", 10),
+        // ...this.loadItems("1", 10).slice(1),
+        // ...this.loadItems("2", 10),
       ],
     };
   }

@@ -7,6 +7,7 @@ import NativeInfiniteGrid, {
 	ItemManager,
 	IItem,
 	INFINITEGRID_EVENTS,
+	withInfiniteGridMethods,
 } from "@egjs/infinitegrid";
 import { findDOMNode } from "react-dom";
 import { InfiniteGridProps, InfiniteGridType } from "./types";
@@ -45,6 +46,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 	public state = {
 		layout: "",
 	};
+	@withInfiniteGridMethods
 	private ig!: NativeInfiniteGrid;
 	private wrapperElement!: HTMLElement;
 	private containerElement!: HTMLElement;
