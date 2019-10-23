@@ -18,7 +18,7 @@ import {
 	DEFAULT_OPTIONS,
 } from "./consts";
 import Infinite from "./Infinite";
-import { toArray, $, outerHeight, outerWidth, assign, resetSize } from "./utils";
+import { toArray, $, outerHeight, outerWidth, assign, resetSize, hasClass, addClass } from "./utils";
 import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
@@ -104,7 +104,7 @@ class InfiniteGrid extends Component {
 	private _loadingBar: {
 		append?: HTMLElement,
 		prepend?: HTMLElement,
-	};
+	} = {};
 	private _itemManager: ItemManager;
 	private _renderer: DOMRenderer;
 	private _renderManager: RenderManager;
@@ -137,7 +137,6 @@ class InfiniteGrid extends Component {
 		DEFENSE_BROWSER && (this.options.useFit = false);
 		IS_ANDROID2 && (this.options.isOverflowScroll = false);
 		this._reset();
-		this._loadingBar = {};
 
 		const {
 			isOverflowScroll,
@@ -633,9 +632,22 @@ class InfiniteGrid extends Component {
 		this._status.loadingStyle = {};
 		const loadingBar = this._loadingBar;
 
+		let isChangeLoadingBar = false;
+
 		for (const type in loadingBarObj) {
-			loadingBar[type as "append" | "prepend"] = $(loadingBarObj[type as "append" | "prepend"]!);
-			loadingBar[type as "append" | "prepend"]!.className += ` ${IGNORE_CLASSNAME}`;
+			const loadingElement = $(loadingBarObj[type as "append" | "prepend"]!);
+
+			if (loadingBar[type as "append" | "prepend"] !== loadingElement) {
+				loadingBar[type as "append" | "prepend"] = loadingElement;
+				isChangeLoadingBar = true;
+			}
+
+			if (!hasClass(loadingElement, IGNORE_CLASSNAME)) {
+				addClass(loadingElement, IGNORE_CLASSNAME);
+			}
+		}
+		if (isChangeLoadingBar) {
+			this._renderLoading();
 		}
 		this._appendLoadingBar();
 		return this;
