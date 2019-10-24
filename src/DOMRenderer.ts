@@ -22,7 +22,6 @@ import { RectType, IPosition, IJQuery, IInfiniteGridItem, IDOMRendererStatus, ID
 function removeTransition(styles: HTMLElement["style"]) {
 	styles[`${TRANSITION}-property`] = "";
 	styles[`${TRANSITION}-duration`] = "";
-	styles[`${TRANSITION}-delay`] = "";
 	styles[TRANSFORM] = "";
 }
 function setTransition(styles: HTMLElement["style"], transitionDuration: number, pos1: IPosition, pos2: IPosition) {
@@ -35,7 +34,6 @@ function setTransition(styles: HTMLElement["style"], transitionDuration: number,
 	}
 	styles[`${TRANSITION}-property`] = `${TRANSFORM},width,height`;
 	styles[`${TRANSITION}-duration`] = `${transitionDuration}s`;
-	styles[`${TRANSITION}-delay`] = "0s";
 	styles[TRANSFORM] = `translate(${pos1.left - pos2.left}px,${pos1.top - pos2.top}px)`;
 	return true;
 }
