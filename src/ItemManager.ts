@@ -172,27 +172,34 @@ export default class ItemManager {
 	}
 	public sync(items: IItem[]): DiffResult<IGroup> {
 		const groups = this._groups;
+		const groupKeys = this._groupKeys;
 		const newGroups = categorize(items);
 		const result = diff(groups, newGroups, group => group.groupKey);
 		const {
 			removed,
 			added,
-			ordered,
 			maintained,
 		} = result;
-		removed.forEach(removedIndex => {
-			this.removeGroup(removedIndex);
-		});
-		ordered.forEach(([prevIndex, nextIndex], i) => {
-			const group = groups.splice(prevIndex, 1)[0];
 
-			groups.splice(nextIndex, 0, group);
+		removed.forEach(removedIndex => {
+			const group = groups[removedIndex];
+
+			if (!group) {
+				return;
+			}
+			delete groupKeys[group.groupKey];
 		});
+		const nextGroups: IInfiniteGridGroup[] = [];
+		maintained.forEach(([fromIndex]) => {
+			nextGroups.push(groups[fromIndex]);
+		});
+		this._groups = nextGroups;
+
 		added.forEach(addedIndex => {
 			this.insertGroup(newGroups[addedIndex], addedIndex);
 		});
-		maintained.forEach(([, toIndex]) => {
-			this.syncItems(groups[toIndex].items, newGroups[toIndex].items, toIndex);
+		maintained.reverse().forEach(([, toIndex]) => {
+			this.syncItems(toIndex, newGroups[toIndex].items);
 		});
 		return result;
 	}
@@ -297,30 +304,31 @@ export default class ItemManager {
 	public getGroup(index: number) {
 		return this._groups[index];
 	}
-	private syncItems(items: IItem[], newItems: IItem[], groupIndex: number) {
+	private syncItems(groupIndex: number, newItems: IItem[]) {
+		if (!newItems.length) {
+			this.removeGroup(groupIndex);
+			return;
+		}
+		const items = this.getGroup(groupIndex).items;
 		const {
-			removed,
 			added,
-			ordered,
 			maintained,
 		} = diff(items, newItems, item => item.itemKey);
 
-		removed.forEach(removedIndex => {
-			this.remove(groupIndex, removedIndex);
-		});
-		ordered.forEach(([prevIndex, nextIndex]) => {
-			const item = items.splice(prevIndex, 1)[0];
-
-			items.splice(nextIndex, 0, item);
-		});
-		added.forEach(addedIndex => {
-			this.insert(newItems[addedIndex], groupIndex, addedIndex);
-		});
-		maintained.forEach(([, nextIndex]) => {
-			const item = items[nextIndex];
+		const group = this._groups[groupIndex];
+		const nextItems: IInfiniteGridItem[] = [];
+		maintained.forEach(([fromIndex, nextIndex]) => {
+			const item = items[fromIndex];
 			const newItem = newItems[nextIndex];
 
 			assign(item, newItem);
+			nextItems.push(item);
 		});
+
+		group.items = nextItems;
+		added.forEach(addedIndex => {
+			this.insert(newItems[addedIndex], groupIndex, addedIndex);
+		});
+
 	}
 }
