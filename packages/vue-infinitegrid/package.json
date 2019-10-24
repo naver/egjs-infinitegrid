@@ -28,7 +28,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@egjs/infinitegrid": "^3.6.0-beta3",
+    "@egjs/infinitegrid": "^3.6.0-beta6",
     "@egjs/list-differ": "^1.0.0"
   },
   "devDependencies": {
