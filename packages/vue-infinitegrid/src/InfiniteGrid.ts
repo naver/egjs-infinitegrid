@@ -7,7 +7,8 @@ import NativeInfiniteGrid, {
 	IInfiniteGridOptions,
 	IInfiniteGridStatus,
 	CONTAINER_CLASSNAME,
-	INFINITEGRID_EVENTS
+	INFINITEGRID_EVENTS,
+	withInfiniteGridMethods
 } from "@egjs/infinitegrid";
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { InfiniteGridType } from "./types";
@@ -23,7 +24,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 	@Prop({ type: Object, default: null, required: false }) status!: IInfiniteGridStatus | null;
 	@Prop({ type: Object, default: () => ({}), required: false }) options!: Partial<IInfiniteGridOptions>;
 	@Prop({ type: Object, default: () => ({}), required: false }) layoutOptions!: Partial<T["options"]>;
-	@Prop({ type: Object, default: null, required: false }) loading!: VNode | null;
+	// @Prop({ type: HTMLElement, default: null, required: false }) loading!: HTMLElement | null;
 	@Prop({ type: Function, default: GridLayout, required: false }) layoutType!: ILayout;
 	// Data of wrapper element
 	@Prop({ type: Object, default: () => ({}), required: false }) wrapperData!: VNodeData;
@@ -49,8 +50,9 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 		}
 
 		return "";
-	}})
+	}}) groupBy!: (item: any, index: number) => number | string;
 
+	@withInfiniteGridMethods
 	private $_nativeInfiniteGrid!: NativeInfiniteGrid;
 	private $_wrapperElement!: HTMLElement;
 	private $_layout!: string;
@@ -72,7 +74,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 		if (this.status) {
 			nativeIG.setStatus(this.status, true, this.$_getElements());
 		} else {
-			nativeIG.beforeSync(this.$_toItems());
+			nativeIG.beforeSync(this.$_toItems().filter(val => !val.isLoading));
 			nativeIG.layout(true);
 		}
 	}
@@ -82,14 +84,23 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 		const layout = this.$_layout;
 		const elements = this.$_getElements();
 
-		if (this.loading && nativeIG.isLoading()) {
-			const loadingElement = elements.splice(elements.length - 1, 1)[0];
+		if (this.$slots.default) {
+			const loading = this.$slots.default
+				.map((child, index) => ({
+					child: child as any,
+					index,
+				}))
+				.filter(({ child }) => child.fnOptions && child.fnOptions.name === "Loading")[0];
+			if (loading && nativeIG.isLoading()) {
+				const loadingElement = elements.splice(elements.length - 1, 1)[0];
 
-			nativeIG.setLoadingBar({
-				append: loadingElement,
-				prepend: loadingElement,
-			});
+				nativeIG.setLoadingBar({
+					append: loadingElement,
+					prepend: loadingElement,
+				});
+			}
 		}
+
 		nativeIG.sync(elements);
 
 		if (layout) {
@@ -104,16 +115,14 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 
 		let visibleChildren: VNode[] = [];
 		if (nativeIG) {
-			const result = nativeIG.beforeSync(items);
+			const result = nativeIG.beforeSync(items.filter(val => !val.isLoading));
 			this.$_layout = result === "relayout"
 				? result
 				: (this.$_layout || result);
 
 			visibleChildren = nativeIG.getRenderingItems().map(item => item.vnode);
-
-			if (this.loading && nativeIG.isLoading()) {
-				this.loading.key = "loadingBar";
-				visibleChildren.push(this.loading);
+			if (nativeIG.isLoading()) {
+				visibleChildren.push(...items.filter(val => val.isLoading).map(val => val.vnode));
 			}
 		} else {
 			const groups = categorize(items);
@@ -128,7 +137,15 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 				visibleChildren = groups[0].items.map((item: IItem) => item.vnode);
 			}
 		}
-		return h(this.tag, this.wrapperData, this.$_getContainer(visibleChildren, h));
+
+		// To bypass
+		// [Vue warn]: Avoid using observed data object as vnode data: {}
+		const wrapperData = {};
+		for (const key in this.wrapperData) {
+			wrapperData[key] = this.wrapperData[key];
+		}
+
+		return h(this.tag, wrapperData, this.$_getContainer(visibleChildren, h));
 	}
 
 	public beforeDestroy() {
@@ -176,23 +193,29 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 	}
 
 	private $_getElements(): HTMLElement[] {
-		const container = this.$refs[CONTAINER_CLASSNAME] as HTMLElement;
+		const container = this.$refs && this.$refs[CONTAINER_CLASSNAME] as HTMLElement;
 
 		return [].slice.call((container || this.$_wrapperElement).children);
 	}
 
 	private $_toItems(): IItem[] {
-		if (!this.$slots.default) {
+		const items = this.$slots.default;
+		if (!items) {
 			return [];
 		}
-		return this.$slots.default.map((child: VNode, index: number) => {
-			const groupKey = (child.data && (child.data["data-groupkey"] || child.data["groupKey"])) || "";
-			const itemKey = child.key || `${child.tag}-${index}`;
+
+		return items.map((child: VNode, index: number) => {
+			const groupKey = this.groupBy(child, index) || "";
+			const itemKey = child.key != null
+				? child.key
+				: `${child.tag}-${index}`;
 
 			return {
 				groupKey,
 				itemKey,
 				vnode: child,
+				isLoading: (child as any).fnOptions
+					&& (child as any).fnOptions.name === "Loading",
 			};
 		});
 	}

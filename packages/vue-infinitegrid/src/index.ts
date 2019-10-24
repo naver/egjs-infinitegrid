@@ -5,6 +5,7 @@ import JustifiedLayout from "./layouts/JustifiedLayout";
 import FrameLayout from "./layouts/FrameLayout";
 import SquareLayout from "./layouts/SquareLayout";
 import PackingLayout from "./layouts/PackingLayout";
+import Loading from "./Loading";
 
 declare global {
   interface Window {
@@ -21,6 +22,7 @@ const install = (Vue: VueConstructor): void => {
   Vue.component("FrameLayout", FrameLayout);
   Vue.component("SquareLayout", SquareLayout);
   Vue.component("PackingLayout", PackingLayout);
+  Vue.component("Loading", Loading);
 };
 
 const plugin = {
