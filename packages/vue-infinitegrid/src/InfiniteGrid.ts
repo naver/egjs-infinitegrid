@@ -24,7 +24,6 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 	@Prop({ type: Object, default: null, required: false }) status!: IInfiniteGridStatus | null;
 	@Prop({ type: Object, default: () => ({}), required: false }) options!: Partial<IInfiniteGridOptions>;
 	@Prop({ type: Object, default: () => ({}), required: false }) layoutOptions!: Partial<T["options"]>;
-	// @Prop({ type: HTMLElement, default: null, required: false }) loading!: HTMLElement | null;
 	@Prop({ type: Function, default: GridLayout, required: false }) layoutType!: ILayout;
 	// Data of wrapper element
 	@Prop({ type: Object, default: () => ({}), required: false }) wrapperData!: VNodeData;
