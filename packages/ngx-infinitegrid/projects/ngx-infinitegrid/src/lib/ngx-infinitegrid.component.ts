@@ -59,7 +59,7 @@ export class NgxInfinitegridComponent
   private visibleDiffer: ListDiffer<IItem> = new ListDiffer<IItem>([], item => item.itemKey);
   private nextFunction = () => { };
 
-  constructor(private elRef: ElementRef) { }
+  constructor(public elRef: ElementRef) { }
   ngOnInit() {
     const groups = categorize(this.items);
 
