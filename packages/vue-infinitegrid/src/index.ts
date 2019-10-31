@@ -32,6 +32,7 @@ const plugin = {
 	FrameLayout,
 	SquareLayout,
 	PackingLayout,
+	Loading,
 	install,
 	version,
 };

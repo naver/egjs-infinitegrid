@@ -13,6 +13,7 @@ import NativeInfiniteGrid, {
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { InfiniteGridType } from "./types";
 import { VNode, VNodeData, CreateElement } from "vue";
+import { LOADING_COMPONENT_NAME } from "./constants";
 
 @Component({})
 export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
@@ -214,7 +215,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 				itemKey,
 				vnode: child,
 				isLoading: (child as any).fnOptions
-					&& (child as any).fnOptions.name === "Loading",
+					&& (child as any).fnOptions.name === LOADING_COMPONENT_NAME,
 			};
 		});
 	}
