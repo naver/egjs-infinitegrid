@@ -36,7 +36,8 @@ export default {
 ```
 
 ### Usage
-See [demo source]() for detailed implementation.
+See [demo source](https://github.com/naver/egjs-infinitegrid/tree/master/packages/vue-infinitegrid/demo) for detailed implementation.
+
 ```vue
 <template>
   <GridLayout
