@@ -4,7 +4,7 @@
         :options="{
             align: 'center',
             transitionDuration: 0.2,
-            isOverflowScroll: false,
+            isOverflowScroll: false
         }"
         @append="onAppend"
         @layout-complete="onLayoutComplete"
@@ -23,7 +23,14 @@
     </GridLayout>
 </template>
 <script>
+import infinitegrid from "../../src/index";
+console.log(infinitegrid)
+
 export default {
+    components: {
+        Loading: infinitegrid.Loading,
+        GridLayout: infinitegrid.GridLayout,
+    },
     data() {
         return {
             start: 0,

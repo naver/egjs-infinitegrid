@@ -1,11 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import VueInfiniteGrid from "../src/index";
+
 import App from "./Demo.vue";
 import routerOption from "./router";
 
 Vue.use(VueRouter);
-Vue.use(VueInfiniteGrid);
+// Vue.use(VueInfiniteGrid);
 
 Vue.config.productionTip = false;
 

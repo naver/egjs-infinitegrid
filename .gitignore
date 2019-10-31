@@ -214,3 +214,4 @@ build/
 packages/*/dist
 declaration/
 dist/
+declaration/
