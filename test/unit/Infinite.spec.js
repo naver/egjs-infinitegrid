@@ -20,7 +20,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				const spy = sinon.spy();
 				this.infinite.options.append = spy;
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [],
 					outlines: {
@@ -51,7 +51,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.infinite.options.append = spy;
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [],
 					outlines: {
@@ -59,7 +59,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [1000],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [],
 					outlines: {
@@ -87,7 +87,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				const spy = sinon.spy();
 				this.infinite.options.prepend = spy;
 				// Given
-				this.items.prepend({
+				this.items.prependGroup({
 					groupKey: 1,
 					items: [],
 					outlines: {
@@ -95,7 +95,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [2000],
 					},
 				});
-				this.items.prepend({
+				this.items.prependGroup({
 					groupKey: 0,
 					items: [],
 					outlines: {
@@ -134,7 +134,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					}
 				});
 				// Given
-				this.items.prepend({
+				this.items.prependGroup({
 					groupKey: 1,
 					items: [],
 					outlines: {
@@ -142,7 +142,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [2000],
 					},
 				});
-				this.items.prepend({
+				this.items.prependGroup({
 					groupKey: 0,
 					items: [],
 					outlines: {
@@ -182,7 +182,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					}
 				});
 				// Given
-				this.items.prepend({
+				this.items.prependGroup({
 					groupKey: 1,
 					items: [],
 					outlines: {
@@ -190,7 +190,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [1100],
 					},
 				});
-				this.items.prepend({
+				this.items.prependGroup({
 					groupKey: 0,
 					items: [],
 					outlines: {
@@ -233,7 +233,7 @@ import {wait, createElement} from "./helper/TestHelper";
 			});
 			it("should check scroll append multiple", async () => {
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [],
 					outlines: {
@@ -241,7 +241,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [200],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [],
 					outlines: {
@@ -249,7 +249,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [300],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
 					items: [],
 					outlines: {
@@ -260,7 +260,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				this.infinite.setCursor("start", 0);
 				this.infinite.setCursor("end", 0);
 
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 3,
 					items: [],
 					outlines: {
@@ -293,7 +293,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				this.infinite.scroll(0);
 
 
-				this.items.get(3).outlines = {start:[400], end:[800]};
+				this.items.getGroup(3).outlines = {start:[400], end:[800]};
 
 				this.infinite.options.append = () => {};
 				this.infinite.options.prepend = sinon.spy(({cache}) => {
@@ -318,7 +318,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					expect(end).to.be.equal(0);
 				});
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [{el: 1}],
 					outlines: {
@@ -326,7 +326,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [1000, 1100],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {
@@ -334,7 +334,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [2000, 2100],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {
@@ -358,7 +358,7 @@ import {wait, createElement} from "./helper/TestHelper";
 			});
 			it(`should check append and remove method`, () => {
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [
 						{
@@ -373,7 +373,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [1000],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [
 						{
@@ -395,8 +395,8 @@ import {wait, createElement} from "./helper/TestHelper";
 				const size1 = this.items.size(); // 2
 
 				// remove group0 item0
-				const group0 = this.items.getData(0);
-				const indexes0 = this.items.indexOfElement(group0.items[0].el);
+				const group0 = this.items.getGroup(0);
+				const indexes0 = this.items.indexesOfElement(group0.items[0].el);
 				this.infinite.remove(indexes0.groupIndex, indexes0.itemIndex);
 				const length1 = group0.items.length; // 1
 
@@ -408,10 +408,10 @@ import {wait, createElement} from "./helper/TestHelper";
 				const endCursor1 = this.infinite.getCursor("end");
 
 				const size2 = this.items.size(); // 1
-				const group1 = this.items.getData(0);
+				const group1 = this.items.getGroup(0);
 
 				// remove group1 item0
-				const indexes1 = this.items.indexOfElement(group1.items[0].el)
+				const indexes1 = this.items.indexesOfElement(group1.items[0].el)
 				this.infinite.remove(indexes1.groupIndex, indexes1.itemIndex);
 				const length3 = group1.items.length; // 1
 
@@ -444,7 +444,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					expect(end).to.be.equal(1);
 				});
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [{el: 1}],
 					outlines: {
@@ -452,7 +452,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [1000, 1100],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {
@@ -460,7 +460,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [2000, 2100],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {
@@ -482,7 +482,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					expect(end).to.be.equal(2);
 				});
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [{el: 1}],
 					outlines: {
@@ -490,7 +490,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [1000, 1100],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {
@@ -498,7 +498,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [2000, 2100],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {
@@ -535,7 +535,7 @@ import {wait, createElement} from "./helper/TestHelper";
 					expect(end).to.be.equal(2);
 				});
 				// Given
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [{el: 1}],
 					outlines: {
@@ -543,7 +543,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [1000, 1100],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {
@@ -551,7 +551,7 @@ import {wait, createElement} from "./helper/TestHelper";
 						end: [2000, 2100],
 					},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {
@@ -565,29 +565,27 @@ import {wait, createElement} from "./helper/TestHelper";
 				this.infinite.setCursor("end", 2);
 				this.infinite.recycle(1000 - this.infinite._status.size - threshold - 0.5, false);
 
-
 				// Then
 				expect(this.infinite.getCursor("start")).to.be.equal(0);
 				expect(this.infinite.getCursor("end")).to.be.equal(useRecycle ? 0 : 2);
 				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
 			});
 			it(`should check getEdgeOutline method`, () => {
-
 				// Given
 				const start = this.infinite.getEdgeOutline("start");
 				const end = this.infinite.getEdgeOutline("end");
 
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [{el: 1}],
 					outlines: {start: [0, 0], end: [1000, 1100]},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {start: [1000, 1100], end: [2000, 2100]},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {start: [2000, 2100], end: [3000, 3100]},
@@ -608,17 +606,17 @@ import {wait, createElement} from "./helper/TestHelper";
 				const start = this.infinite.getEdgeValue("start");
 				const end = this.infinite.getEdgeValue("end");
 
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [{el: 1}],
 					outlines: {start: [0, 0], end: [1000, 1100]},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [{el: 1}],
 					outlines: {start: [1000, 1100], end: [2000, 2100]},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {start: [2000, 2100], end: [3000, 3100]},
@@ -639,17 +637,17 @@ import {wait, createElement} from "./helper/TestHelper";
 				const visibleItems = this.infinite.getVisibleItems();
 				const visibleData = this.infinite.getVisibleData();
 
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 0,
 					items: [{el: 1}],
 					outlines: {start: [0, 0], end: [1000, 1100]},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 1,
 					items: [{el: 1}, {el: 2}],
 					outlines: {start: [1000, 1100], end: [2000, 2100]},
 				});
-				this.items.append({
+				this.items.appendGroup({
 					groupKey: 2,
 					items: [{el: 1}],
 					outlines: {start: [2000, 2100], end: [3000, 3100]},

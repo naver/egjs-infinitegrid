@@ -33,11 +33,11 @@ export function insert(instance, isAppend, callback, count = 30, retry = 1) {
 		// oldHandler && oldHandler(e);
 		// Then: check layout property
 		checkLayoutComplete(layoutHandler, {
-			isAppend, 
+			isAppend,
 			count,
 			isTrusted: false
 		});
-		
+
 		if (idx <= retry) {
 			instance[method](getItems(count), idx++);
 		} else {

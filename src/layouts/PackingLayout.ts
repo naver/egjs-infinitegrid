@@ -1,5 +1,4 @@
 import BoxModel from "./lib/BoxModel";
-import { APPEND, PREPEND } from "../consts";
 import { getStyleNames, assignOptions, toZeroArray, cloneItems } from "../utils";
 import { ILayout, IRectlProperties, ISize, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
 
@@ -102,7 +101,7 @@ class PackingLayout implements ILayout {
 	 * layout.prepend(items, [100]);
 	 */
 	public append(items: IInfiniteGridItem[], outline?: number[], cache?: boolean) {
-		return this._insert(items, outline, APPEND, cache);
+		return this._insert(items, outline, true, cache);
 	}
 	/**
 	 * Adds items at the top of a outline.
@@ -115,7 +114,7 @@ class PackingLayout implements ILayout {
 	 * layout.prepend(items, [100]);
 	 */
 	public prepend(items: IInfiniteGridItem[], outline?: number[], cache?: boolean) {
-		return this._insert(items, outline, PREPEND, cache);
+		return this._insert(items, outline, false, cache);
 	}
 	/**
 	 * Adds items of groups at the bottom of a outline.
@@ -133,7 +132,7 @@ class PackingLayout implements ILayout {
 
 		for (let i = 0; i < length; ++i) {
 			const group = groups[i];
-			const outlines = this._layout(group.items, point, APPEND);
+			const outlines = this._layout(group.items, point, true);
 
 			group.outlines = outlines;
 			point = outlines.end;
@@ -162,7 +161,7 @@ class PackingLayout implements ILayout {
 			return;
 		}
 
-		let bestFitArea = null;
+		let bestFitArea!: BoxModel;
 		let minCost = 10000000;
 		let layoutVertical = false;
 		const itemFitSize: ISize = {
@@ -240,7 +239,7 @@ class PackingLayout implements ILayout {
 		const container = new BoxModel({});
 
 		items.forEach(item => {
-			const { width, height } = item.orgSize;
+			const { width, height } = item.orgSize!;
 			const model = new BoxModel({
 				width,
 				height,

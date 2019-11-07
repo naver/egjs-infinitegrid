@@ -54,19 +54,19 @@ function getItems(num) {
 }
 
 function getTopline(defaultOutline = [0]) {
-	if (!_items.length) {
+	if (!_itemManager.length) {
 		return defaultOutline;
 	}
-	return _items[0].outlines.start;
+	return _itemManager[0].outlines.start;
 }
 function getBottomline(defaultOutline = [0]) {
-	if (!_items.length) {
+	if (!_itemManager.length) {
 		return defaultOutline;
 	}
-	return _items[_items.length - 1].outlines.end;
+	return _itemManager[_itemManager.length - 1].outlines.end;
 }
 
-let _items = [];
+let _itemManager = [];
 let _group = 0;
 function append(line, num = 22) {
 	const group = ++_group;
@@ -79,7 +79,7 @@ function append(line, num = 22) {
 		item.el.dataset.group = group;
 	});
 	result.groupKey = result.items[0].groupKey;
-	_items.push(result);
+	_itemManager.push(result);
 	render(result.items);
 }
 function prepend(line, num = 22) {
@@ -91,25 +91,25 @@ function prepend(line, num = 22) {
 		item.el.dataset.group = group;
 	});
 	result.groupKey = result.items[0].groupKey;
-	_items.splice(0, 0, result);
+	_itemManager.splice(0, 0, result);
 	render(result.items);
 }
 function _remove(index) {
-	const removed = _items[0].items.splice(index, 1);
+	const removed = _itemManager[0].items.splice(index, 1);
 	removed[0].el.remove();
 }
 function remove(index) {
-	console.log(_items);
+	console.log(_itemManager);
 	_remove(index);
-	a.layout(_items, getTopline());
-	_items.forEach(group => {
+	a.layout(_itemManager, getTopline());
+	_itemManager.forEach(group => {
 		render(group.items);
 	})
 }
 
 function layout() {
-	a.layout(_items, [400]);
-	_items.forEach(group => {
+	a.layout(_itemManager, [400]);
+	_itemManager.forEach(group => {
 		render(group.items);
 	})
 

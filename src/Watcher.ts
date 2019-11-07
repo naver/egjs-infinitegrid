@@ -12,31 +12,20 @@ import {
 	scrollBy,
 	assign,
 } from "./utils";
-import { WindowMockType, IWatchStatus } from "./types";
-
-export interface IWatcherOptions {
-	container: HTMLElement;
-	isOverflowScroll: boolean;
-	horizontal: boolean;
-	resize: () => void;
-	check: (e?: {
-		isForward: boolean,
-		scrollPos: number,
-		orgScrollPos: number,
-		horizontal: boolean,
-	}) => void;
-}
+import { IWatchStatus, IWatcherOptions } from "./types";
 
 export default class Watcher {
 	public options: IWatcherOptions;
 	private _timer: {
 		resize: any;
 	};
-	private _containerOffset: number;
-	private _view: WindowMockType | HTMLElement;
-	private _isScrollIssue: boolean;
-	private _prevPos: number;
-	constructor(view: WindowMockType | HTMLElement, options: Partial<IWatcherOptions> = {}) {
+	private _containerOffset: number = 0;
+	private _view: Window | HTMLElement;
+	private _isScrollIssue: boolean = IS_IOS;
+	//  When InfiniteGrid is initialized.
+	// The initial value is null to block the scroll event when returning from browser behavior.
+	private _prevPos: number | null = null;
+	constructor(view: Window | HTMLElement, options: Partial<IWatcherOptions> = {}) {
 		assign(this.options = {
 			container: view as HTMLElement,
 			resize: () => void 0,
@@ -47,12 +36,7 @@ export default class Watcher {
 		this._timer = {
 			resize: null,
 		};
-		this.reset();
-		this._containerOffset = 0;
 		this._view = view;
-		this._isScrollIssue = IS_IOS;
-		this._onCheck = this._onCheck.bind(this);
-		this._onResize = this._onResize.bind(this);
 		this.attachEvent();
 		this.resize();
 		this.setScrollPos();
@@ -82,12 +66,7 @@ export default class Watcher {
 		return this._prevPos;
 	}
 	public setScrollPos(pos = this.getOrgScrollPos()) {
-		let rawPos = pos;
-
-		if (typeof pos === "undefined") {
-			rawPos = this.getOrgScrollPos();
-		}
-		this._prevPos = rawPos - this.getContainerOffset();
+		this._prevPos = pos - this.getContainerOffset();
 	}
 	public attachEvent() {
 		addEvent(this._view, "scroll", this._onCheck);
@@ -113,12 +92,18 @@ export default class Watcher {
 		this.detachEvent();
 		this.reset();
 	}
-	private _onCheck() {
+	private _getOffset() {
+		const { container, horizontal } = this.options;
+		const rect = container.getBoundingClientRect();
+
+		return rect[horizontal ? "left" : "top"] + this.getOrgScrollPos();
+	}
+	private _onCheck = () => {
 		const prevPos = this.getScrollPos();
 		const orgScrollPos = this.getOrgScrollPos();
 
 		this.setScrollPos(orgScrollPos);
-		const scrollPos = this.getScrollPos();
+		const scrollPos = this.getScrollPos()!;
 
 		if (prevPos === null || (this._isScrollIssue && orgScrollPos === 0) || prevPos === scrollPos) {
 			orgScrollPos && (this._isScrollIssue = false);
@@ -132,13 +117,7 @@ export default class Watcher {
 			horizontal: this.options.horizontal,
 		});
 	}
-	private _getOffset() {
-		const { container, horizontal } = this.options;
-		const rect = container.getBoundingClientRect();
-
-		return rect[horizontal ? "left" : "top"] + this.getOrgScrollPos();
-	}
-	private _onResize() {
+	private _onResize = () => {
 		if (this._timer.resize) {
 			clearTimeout(this._timer.resize);
 		}
@@ -146,8 +125,6 @@ export default class Watcher {
 			this.resize();
 			this.options.resize();
 			this._timer.resize = null;
-			this.reset();
 		}, 100);
 	}
-
 }

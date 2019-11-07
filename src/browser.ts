@@ -1,6 +1,4 @@
-import { WindowMockType } from "./types";
-
-let win: WindowMockType;
+let win: Window;
 
 if (typeof window === "undefined") {
 	// window is undefined in node.js
@@ -9,7 +7,7 @@ if (typeof window === "undefined") {
 		navigator: {
 			userAgent: "",
 		},
-	};
+	} as Window;
 } else {
 	win = window;
 }

@@ -1,3 +1,6 @@
+import Component from "@egjs/component";
+import InfiniteGrid from "./index.squarelayout";
+
 export type CursorType = "start" | "end";
 export type SizeType = "width" | "height";
 export type PositionType = "left" | "top";
@@ -8,10 +11,59 @@ export type ClientSizeType = "clientWidth" | "clientHeight";
 export type OffsetSizeType = "offsetWidth" | "offsetHeight";
 export type ScrollSizeType = "scrollWidth" | "scrollHeight";
 
+export interface IInfiniteGridOptions {
+	itemSelector: string;
+	isOverflowScroll: boolean;
+	threshold: number;
+	isEqualSize: boolean;
+	isConstantSize: boolean;
+	useRecycle: boolean;
+	horizontal: boolean;
+	transitionDuration: number;
+	useFit: boolean;
+	attributePrefix: string;
+	renderExternal: boolean;
+}
+
 export interface IInfiniteGridGroup {
 	groupKey: string | number;
 	items: IInfiniteGridItem[];
 	outlines: { start: number[], end: number[] };
+}
+
+export interface IWatcherOptions {
+	container: HTMLElement;
+	isOverflowScroll: boolean;
+	horizontal: boolean;
+	resize: () => void;
+	check: (e: {
+		isForward: boolean,
+		scrollPos: number,
+		orgScrollPos: number,
+		horizontal: boolean,
+	}) => void;
+}
+
+export interface IInfiniteOptions {
+	useRecycle: boolean;
+	threshold: number;
+	append: (e: { cache: IInfiniteGridGroup[] }) => void;
+	prepend: (e: { cache: IInfiniteGridGroup[] }) => void;
+	recycle: (e: { start: number, end: number }) => void;
+}
+
+export interface IInfiniteGridOptions {
+	itemSelector: string;
+	isOverflowScroll: boolean;
+	threshold: number;
+	isEqualSize: boolean;
+	isConstantSize: boolean;
+	useRecycle: boolean;
+	horizontal: boolean;
+	transitionDuration: number;
+	useFit: boolean;
+	attributePrefix: string;
+	renderExternal: boolean;
 }
 
 export interface IInfiniteGridStatus {
@@ -20,7 +72,7 @@ export interface IInfiniteGridStatus {
 		loadingSize: number,
 		loadingStyle: StyleType,
 	};
-	_items: IItemManagerStatus;
+	_itemManager: IItemManagerStatus;
 	_renderer: IDOMRendererStatus;
 	_watcher: IWatchStatus;
 	_infinite: IInfiniteStatus;
@@ -37,10 +89,10 @@ export interface IInfiniteStatus {
 }
 
 export interface IDOMRendererSize {
-	container?: number;
-	view?: number;
-	viewport?: number;
-	item?: ISize;
+	container: number;
+	view: number;
+	viewport: number;
+	item?: ISize | null;
 }
 
 export interface IDOMRendererStatus {
@@ -49,14 +101,15 @@ export interface IDOMRendererStatus {
 }
 
 export interface IWatchStatus {
-	_prevPos: number;
+	_prevPos: number | null;
 	scrollPos: number;
 }
 
 export interface IRemoveResult {
+	group: IInfiniteGridGroup | null;
 	items: IInfiniteGridItem[];
-	groups: IInfiniteGridGroup[];
 }
+
 /**
  * The object of data to be sent to an event
  * @ko 이벤트에 전달되는 데이터 객체
@@ -67,6 +120,7 @@ export interface IRemoveResult {
  * @property - The items being added.<ko>화면에 추가중인 아이템들</ko>
  * @property - The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
  * @property - The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
+ * @property - The item's index with error images in all items.<ko>전체 아이템중 에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
  * @property - In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
  * @property - In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
  * @property - In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
@@ -86,6 +140,7 @@ export interface IErrorCallbackOptions {
 	items: IInfiniteGridItem[];
 	item: IInfiniteGridItem;
 	itemIndex: number;
+	totalIndex: number;
 	replace: (src: string) => void;
 	replaceItem: (content: string) => void;
 	remove: () => void;
@@ -106,26 +161,40 @@ export interface IErrorCallbackOptions {
  */
 export interface IInfiniteGridItem {
 	groupKey: string | number;
+	itemKey?: string | number;
 	content: string;
-	el?: IInfiniteGridItemElement;
-	orgSize?: ISize;
-	size?: ISize;
-	rect?: Partial<ISize & IPosition>;
-	prevRect?: Partial<ISize & IPosition>;
+	el?: IInfiniteGridItemElement | null;
+	orgSize?: ISize | null;
+	size?: ISize | null;
+	rect: IPosition & Partial<ISize>;
+	prevRect?: IPosition & Partial<ISize> | null;
+	mounted: boolean;
 	[key: string]: any;
 }
 
+export interface IIndexes {
+	groupIndex?: number;
+	itemIndex?: number;
+}
+export interface IGroup {
+	groupKey: string | number;
+	[key: string]: any;
+}
+export interface IItem {
+	groupKey: string | number;
+	itemKey?: string | number;
+	[key: string]: any;
+}
 // see https://github.com/Microsoft/TypeScript/issues/27024#issuecomment-421529650
 export type Equals<X, Y, A, B = never> =
 	(<T>() => T extends X ? 1 : 2) extends
 	(<T>() => T extends Y ? 1 : 2) ? A : B;
 
 export type ExcludeReadOnly<T> = Pick<T, {
-	[K in keyof T]?: (Equals<{ -readonly [P in K]: T[K] }, { [P in K]: T[K] }, K>)
+	[K in keyof T]: (Equals<{ -readonly [P in K]: T[K] }, { [P in K]: T[K] }, K>)
 }[string & keyof T]>;
 
 export type StyleType = Partial<ExcludeReadOnly<CSSStyleDeclaration>>;
-
 export interface IInfiniteGridItemElement extends HTMLElement {
 	_INFINITEGRID_TRANSITION?: boolean;
 	__IMAGE__?: -1 | IInfiniteGridItemElement;
@@ -199,6 +268,52 @@ export interface ILayout {
 	layout(groups: IInfiniteGridGroup[], outline: number[]): this;
 }
 
-export type WindowMockType = {
-	[P in keyof Window]?: Window[P] extends (...args: any[]) => any ? Window[P] : Partial<Window[P]>
-};
+export interface IImageLoadedOptions {
+	prefix?: string;
+	length?: number;
+	type?: 1 | 2;
+	complete?: () => void;
+	end?: () => void;
+	error?: (e: { target: LoadingImageElement, itemIndex: number }) => void;
+}
+export interface LoadingImageElement extends HTMLImageElement {
+	__ITEM_INDEX__?: number;
+}
+
+export interface IDOMRendererOptions {
+	isEqualSize: boolean;
+	isConstantSize: boolean;
+	horizontal: boolean;
+	container: boolean | HTMLElement;
+}
+
+export interface IDOMRendererOrgStyle {
+	position?: CSSStyleDeclaration["position"];
+	overflowX?: CSSStyleDeclaration["overflowX"];
+	overflowY?: CSSStyleDeclaration["overflowY"];
+}
+
+export interface IArrayFormat<T> {
+	length: number;
+	[index: number]: T;
+}
+
+export interface IDOMRendererOptions {
+	isEqualSize: boolean;
+	isConstantSize: boolean;
+	horizontal: boolean;
+	container: boolean | HTMLElement;
+}
+
+export interface IDOMRendererOrgStyle {
+	position?: CSSStyleDeclaration["position"];
+	overflowX?: CSSStyleDeclaration["overflowX"];
+	overflowY?: CSSStyleDeclaration["overflowY"];
+}
+
+export type ExcludeKeys = keyof Component
+  | "clear" | "destroy" | "remove" | "prepend" | "append"
+  | "setLayout" | "removeByIndex" | "setLoadingBar"
+  | "beforeSync" | "sync" | "getRenderingItems";
+export type InfiniteGridMethodsKeys = Exclude<keyof InfiniteGrid, ExcludeKeys>;
+export type InfiniteGridMethods = Pick<InfiniteGrid, InfiniteGridMethodsKeys>;

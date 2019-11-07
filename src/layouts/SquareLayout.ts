@@ -6,7 +6,7 @@ function makeShapeOutline(
 	outline: number[],
 	itemSize: number,
 	columnLength: number,
-	isAppend: boolean,
+	isAppend?: boolean,
 ) {
 	const point = Math[isAppend ? "min" : "max"](...outline) || 0;
 
@@ -25,9 +25,9 @@ function getColumn(item: IInfiniteGridItem) {
 		const dataset = item.el.dataset;
 
 		if (dataset) {
-			column = parseInt(dataset.column, 10) || 1;
+			column = parseInt(dataset.column!, 10) || 1;
 		} else {
-			column = parseInt(item.el.getAttribute("column"), 10) || 1;
+			column = parseInt(item.el.getAttribute("column")!, 10) || 1;
 		}
 	} else {
 		column = 1;
@@ -94,7 +94,7 @@ export default class SquareLayout extends FrameLayout {
 	protected _layout(
 		items: IInfiniteGridItem[],
 		outline: number[] = [],
-		isAppend?: boolean,
+		isAppend: boolean = false,
 	) {
 		const itemSize = this._getItemSize() as number;
 		const margin = this.options.margin;
@@ -154,10 +154,10 @@ export default class SquareLayout extends FrameLayout {
 
 		if (!isAppend) {
 			shapes.sort((shape1, shape2) => {
-				const item1pos1 = shape1[pos1Name];
-				const item1pos2 = shape1[pos2Name];
-				const item2pos1 = shape2[pos1Name];
-				const item2pos2 = shape2[pos2Name];
+				const item1pos1 = shape1[pos1Name]!;
+				const item1pos2 = shape1[pos2Name]!;
+				const item2pos1 = shape2[pos1Name]!;
+				const item2pos2 = shape2[pos2Name]!;
 
 				if (item1pos1 - item2pos1) {
 					return item1pos1 - item2pos1;

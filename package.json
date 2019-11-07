@@ -7,7 +7,7 @@
 	"main": "dist/infinitegrid.js",
 	"types": "declaration/index.d.ts",
 	"scripts": {
-		"start": "concurrently 'webpack-dev-server --host=0.0.0.0 --env.name=InfiniteGrid --env.path=./src/index.umd.ts' 'webpack --watch --env.name=Parallax --env.path=./src/Parallax.ts'",
+		"start": "rollup -c rollup.config.test.js -w",
 		"build": "rm -rf ./dist ./declaration && rollup -c && npm run declaration && npm run declaration:copy && npm run printsizes",
 		"declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
 		"declaration:copy": "cp declaration/Parallax.d.ts dist/parallax.d.ts && cp declaration/types.d.ts dist/types.d.ts",
@@ -33,6 +33,10 @@
 		"prepush": "npm run lint",
 		"commitmsg": "node config/validate-commit-msg.js"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/naver/egjs-infinitegrid"
+	},
 	"author": {
 		"name": "NAVER Corp."
 	},
@@ -42,7 +46,9 @@
 	"license": "MIT",
 	"homepage": "https://github.com/naver/egjs-infinitegrid",
 	"dependencies": {
-		"@egjs/component": "^2.1.2"
+		"@egjs/component": "^2.1.2",
+		"@egjs/lazyloaded": "0.0.2",
+		"@egjs/list-differ": "^1.0.0"
 	},
 	"keywords": [
 		"infinitegrid",
@@ -68,6 +74,7 @@
 		"@babel/plugin-transform-object-assign": "^7.0.0",
 		"@babel/preset-env": "^7.0.0",
 		"@daybrush/jsdoc": "^0.3.1",
+		"@egjs/build-helper": "0.0.5",
 		"@egjs/common-demo": "github:naver/egjs#common-demo",
 		"awesome-typescript-loader": "^3.5.0",
 		"babel-eslint": "^10.0.1",

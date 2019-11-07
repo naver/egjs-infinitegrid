@@ -1,11 +1,12 @@
 # http://editorconfig.org
 root = true
+[*]
+insert_final_newline = true
 
 [{*.js,*.ts}]
 charset = utf-8
 end_of_line = lf
 indent_style = tab
-insert_final_newline = true
 max_line_length = 80
 trim_trailing_whitespace = true
 

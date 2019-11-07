@@ -1,5 +1,5 @@
 import { window, document } from "./browser";
-import { IAlign } from "./types";
+import { IAlign, InfiniteGridMethodsKeys } from "./types";
 
 const ua = window.navigator.userAgent;
 
@@ -10,12 +10,13 @@ export const SUPPORT_PASSIVE = (() => {
 
 	try {
 		if (SUPPORT_ADDEVENTLISTENER && Object.defineProperty) {
-			document.addEventListener("test", null, Object.defineProperty({},
+			// tslint:disable-next-line: no-empty
+			document.addEventListener("test", () => { }, Object.defineProperty({},
 				"passive", {
-					get() {
-						supportsPassiveOption = true;
-					},
-				}));
+				get() {
+					supportsPassiveOption = true;
+				},
+			}));
 		}
 	} catch (e) {
 		//
@@ -30,20 +31,27 @@ export const CONTAINER_CLASSNAME = "_eg-infinitegrid-container_";
 export const IGNORE_CLASSNAME = "_eg-infinitegrid-ignore_";
 export const TRANSITION_NAME = "_INFINITEGRID_TRANSITION";
 
-export const APPEND = true;
-export const PREPEND = false;
 export const VERTICAL = "vertical";
 export const HORIZONTAL = "horizontal";
-export const CACHE = true;
-export const NO_CACHE = false;
-export const TRUSTED = true;
-export const NO_TRUSTED = false;
-export const MULTI = true;
-export const SINGLE = false;
+
 export const DUMMY_POSITION = -100000;
 export const GROUPKEY_ATT = "data-groupkey";
 
 export const DEFAULT_OPTIONS = {
+	itemSelector: "*",
+	isOverflowScroll: false,
+	threshold: 100,
+	isEqualSize: false,
+	isConstantSize: false,
+	useRecycle: true,
+	horizontal: false,
+	transitionDuration: 0,
+	useFit: true,
+	attributePrefix: "data-",
+	renderExternal: false,
+};
+
+export const DEFAULT_LAYOUT_OPTIONS = {
 	horizontal: false,
 	margin: 0,
 };
@@ -68,6 +76,7 @@ const webkit = /applewebkit\/([\d|.]*)/g.exec(agent);
 export const WEBKIT_VERSION = (webkit && parseInt(webkit[1], 10)) || 0;
 export const DEFENSE_BROWSER = (WEBKIT_VERSION && WEBKIT_VERSION < 537);
 
+export const ITEM_KEYS = ["content", "groupKey", "itemKey", "orgSize", "mounted", "prevRect", "rect", "size"];
 interface ITransitionEnd {
 	transitionend: string;
 	webkitTransitionEnd: string;
@@ -94,3 +103,25 @@ export const [TRANSFORM, TRANSITION, TRANSITION_END] = (() => {
 	}
 	return [];
 })() as ["transform", "transition", "transitionend"];
+
+export const INFINITEGRID_EVENTS = ["append", "prepend", "imageError", "change", "layoutComplete"];
+
+// It's for making mistakes.
+// Whenever you add a public method, you must add the corresponding method name to an array or object.
+// An additional error may occur if not added.
+export const INFINITEGRID_METHODS: { [key in InfiniteGridMethodsKeys]: true } = {
+	getLoadingBar: true,
+	getItem: true,
+	getItems: true,
+	layout: true,
+	getGroupKeys: true,
+	getStatus: true,
+	setStatus: true,
+	isProcessing: true,
+	startLoading: true,
+	endLoading: true,
+	isLoading: true,
+	updateItem: true,
+	updateItems: true,
+	moveTo: true,
+};

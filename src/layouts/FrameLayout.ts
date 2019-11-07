@@ -1,4 +1,4 @@
-import { APPEND, PREPEND, DUMMY_POSITION } from "../consts";
+import { DUMMY_POSITION } from "../consts";
 import { getStyleNames, assignOptions, fill, cloneItems } from "../utils";
 import { ILayout, IRectlProperties, ISize, IInfiniteGridGroup, IInfiniteGridItem } from "../types";
 
@@ -190,7 +190,7 @@ class FrameLayout implements ILayout {
 
 		for (let i = 0; i < length; ++i) {
 			const group = groups[i];
-			const outlines = this._layout(group.items, point, APPEND);
+			const outlines = this._layout(group.items, point, true);
 
 			group.outlines = outlines;
 			point = outlines.end;
@@ -221,7 +221,7 @@ class FrameLayout implements ILayout {
 	 * layout.prepend(items, [100]);
 	 */
 	public append(items: IInfiniteGridItem[], outline?: number[], cache?: boolean) {
-		return this._insert(items, outline, APPEND, cache);
+		return this._insert(items, outline, true, cache);
 	}
 	/**
 	 * Adds items at the top of a outline.
@@ -234,7 +234,7 @@ class FrameLayout implements ILayout {
 	 * layout.prepend(items, [100]);
 	 */
 	public prepend(items: IInfiniteGridItem[], outline?: number[], cache?: boolean) {
-		return this._insert(items, outline, PREPEND, cache);
+		return this._insert(items, outline, false, cache);
 	}
 	protected _getItemSize() {
 		this._checkItemSize();
@@ -251,7 +251,7 @@ class FrameLayout implements ILayout {
 		const margin = this.options.margin;
 
 		// if itemSize is not in options, caculate itemSize from size.
-		this._itemSize = (this._size + margin) / this._shapes[size] - margin;
+		this._itemSize = (this._size + margin) / this._shapes[size]! - margin;
 	}
 	protected _layout(items: IInfiniteGridItem[], outline: number[] = [], isAppend?: boolean) {
 		const length = items.length;
@@ -265,7 +265,7 @@ class FrameLayout implements ILayout {
 		const isItemObject = typeof itemSize === "object";
 		const itemSize2 = isItemObject ? (itemSize as ISize)[size2Name] : itemSize as number;
 		const itemSize1 = isItemObject ? (itemSize as ISize)[size1Name] : itemSize as number;
-		const shapesSize = this._shapes[size2Name];
+		const shapesSize = this._shapes[size2Name]!;
 		const shapes = this._shapes.shapes;
 		const shapesLength = shapes.length;
 		const startOutline = fill(new Array(shapesSize), DUMMY_POSITION);
@@ -280,10 +280,10 @@ class FrameLayout implements ILayout {
 			for (let j = 0; j < shapesLength && i + j < length; ++j) {
 				const item = items[i + j];
 				const shape = shapes[j];
-				const shapePos1 = shape[pos1Name];
-				const shapePos2 = shape[pos2Name];
-				const shapeSize1 = shape[size1Name];
-				const shapeSize2 = shape[size2Name];
+				const shapePos1 = shape[pos1Name]!;
+				const shapePos2 = shape[pos2Name]!;
+				const shapeSize1 = shape[size1Name]!;
+				const shapeSize2 = shape[size2Name]!;
 				const pos1 = end - dist + shapePos1 * (itemSize1 + margin);
 				const pos2 = shapePos2 * (itemSize2 + margin);
 				const size1 = shapeSize1 * (itemSize1 + margin) - margin;
@@ -301,7 +301,7 @@ class FrameLayout implements ILayout {
 					[pos2Name]: pos2,
 					[size1Name]: size1,
 					[size2Name]: size2,
-				};
+				} as any;
 			}
 			end = Math.max(...endOutline);
 			// check dist once
@@ -331,7 +331,7 @@ class FrameLayout implements ILayout {
 			startOutline[i] = Math.max(...startOutline);
 			endOutline[i] = startOutline[i];
 		}
-		// The target outline is start outline when type is APPENDING
+		// The target outline is start outline when type is appending
 		const targetOutline = isAppend ? startOutline : endOutline;
 		const prevOutlineEnd = outline.length === 0 ? 0 : Math[isAppend ? "max" : "min"](...outline);
 		let prevOutlineDist = isAppend ? 0 : end;
@@ -342,7 +342,7 @@ class FrameLayout implements ILayout {
 				if (startOutline[i] === endOutline[i]) {
 					continue;
 				}
-				// if appending type is PREPEND, subtract dist from appending group's height.
+				// if appending type is prepend(false), subtract dist from appending group's height.
 
 				prevOutlineDist = Math.min(targetOutline[i] + prevOutlineEnd - outline[i], prevOutlineDist);
 			}

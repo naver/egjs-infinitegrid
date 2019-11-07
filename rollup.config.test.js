@@ -1,28 +1,5 @@
 const buildHelper = require("@egjs/build-helper");
-const layouts = ["gridlayout", "justifiedlayout", "squarelayout", "framelayout", "packinglayout"];
 const name = "eg.InfiniteGrid";
-const entries = layouts.reduce((arr, layout) => arr.concat([
-	{
-		name,
-		input: `./src/index.${layout}.ts`,
-		name: "eg.InfiniteGrid",
-		output: `./dist/infinitegrid.${layout}.js`,
-		format: "umd",
-		resolve: true,
-		uglify: false,
-	},
-	{
-		name,
-		input: `./src/index.${layout}.ts`,
-		name: "eg.InfiniteGrid",
-		output: `./dist/infinitegrid.${layout}.min.js`,
-		format: "umd",
-		resolve: true,
-		uglify: true,
-	},
-]), []);
-
-
 const external = {
 	"@egjs/component": "eg.Component",
 	"@egjs/list-differ": "eg.ListDiffer",
@@ -65,25 +42,9 @@ export default buildHelper([
 	{
 		name: "eg.Parallax",
 		input: "./src/Parallax.ts",
-		output: "./dist/parallax.js",
-		resolve: true,
-		format: "umd",
-	},
-	{
-		name: "eg.Parallax",
-		input: "./src/Parallax.ts",
 		output: "./dist/parallax.min.js",
 		resolve: true,
 		uglify: true,
 		format: "umd",
 	},
-	{
-		name,
-		input: "./src/index.ts",
-		output: "./dist/infinitegrid.esm.js",
-		format: "es",
-		exports: "named",
-		external,
-	},
-	...entries,
 ]);

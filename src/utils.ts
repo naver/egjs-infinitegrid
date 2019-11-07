@@ -6,18 +6,22 @@ import {
 	SUPPORT_PASSIVE,
 	VERTICAL,
 	HORIZONTAL,
-	DEFAULT_OPTIONS,
+	DEFAULT_LAYOUT_OPTIONS,
+	DUMMY_POSITION,
+	INFINITEGRID_METHODS,
 } from "./consts";
-import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType, WindowMockType } from "./types";
-
+import InfiniteGrid from "./InfiniteGrid";
+import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType, IItem, IGroup, IArrayFormat, IInfiniteGridItem } from "./types";
 export function toArray(nodes: HTMLCollection): HTMLElement[];
-export function toArray<T extends Node>(nodes: T[] | NodeListOf<T>): T[];
-export function toArray<T extends Node>(nodes: T[] | NodeListOf<T> | HTMLCollection) {
+export function toArray<T extends Node>(nodes: IArrayFormat<T>): T[];
+export function toArray<T extends Node>(nodes: IArrayFormat<T>): T[] {
 	// SCRIPT5014 in IE8
-	const array = [];
+	const array: T[] = [];
 
 	if (nodes) {
-		for (let i = 0, len = nodes.length; i < len; i++) {
+		const length = nodes.length;
+
+		for (let i = 0; i < length; i++) {
 			array.push(nodes[i]);
 		}
 	}
@@ -34,7 +38,7 @@ export function matchHTML(html: string) {
  * @param {Boolean} multi
  * @returns {HTMLElement}
  */
-export function $(param: WindowMockType, multi?: false): WindowMockType;
+export function $(param: Window, multi?: false): Window;
 export function $(
 	param: string | HTMLElement | Array<string | HTMLElement> | IJQuery,
 	multi: true,
@@ -44,14 +48,14 @@ export function $(
 	multi?: false,
 ): HTMLElement;
 export function $(
-	param: string | HTMLElement | WindowMockType | IJQuery,
+	param: string | HTMLElement | Window | IJQuery,
 	multi?: false,
-): HTMLElement | WindowMockType;
+): HTMLElement | Window;
 export function $(
-	param: string | WindowMockType | HTMLElement | Array<string | HTMLElement> | IJQuery,
+	param: string | Window | HTMLElement | Array<string | HTMLElement> | IJQuery,
 	multi = false,
-): HTMLElement | WindowMockType | HTMLElement[] {
-	let el: WindowMockType | HTMLElement | HTMLElement[] | NodeListOf<HTMLElement>;
+): HTMLElement | Window | HTMLElement[] {
+	let el: Window | HTMLElement | HTMLElement[] | NodeListOf<HTMLElement> | undefined;
 
 	if (typeof param === "string") { // String (HTML, Selector)
 		// check if string is HTML tag format
@@ -64,7 +68,7 @@ export function $(
 			dummy.innerHTML = param;
 			el = dummy.childNodes as NodeListOf<HTMLElement>;
 		} else { // Selector
-			el = document.querySelectorAll(param);
+			el = document.querySelectorAll<HTMLElement>(param);
 		}
 		if (multi) {
 			return toArray(el as NodeListOf<HTMLElement>);
@@ -84,11 +88,13 @@ export function $(
 	} else if (param.nodeName &&
 		(param.nodeType === 1 || param.nodeType === 9)) { // HTMLElement, Document
 		el = param;
+	} else {
+		el = [].slice.call(el);
 	}
-	return el;
+	return el as Window | HTMLElement | HTMLElement[];
 }
 export function addEvent(
-	element: Element | WindowMockType,
+	element: Element | Window,
 	type: string,
 	handler: (...args: any[]) => any,
 	eventListenerOptions?: boolean | { [key: string]: any },
@@ -107,7 +113,7 @@ export function addEvent(
 	}
 }
 export function removeEvent(
-	element: Element | WindowMockType,
+	element: Element | Window,
 	type: string,
 	handler: (...args: any[]) => any,
 ) {
@@ -132,7 +138,7 @@ export function addOnceEvent(
 
 	addEvent(element, type, callback, eventListenerOptions);
 }
-export function scroll(el: HTMLElement | WindowMockType, horizontal = false) {
+export function scroll(el: HTMLElement | Window, horizontal = false) {
 	const prop = `scroll${horizontal ? "Left" : "Top"}` as "scrollLeft" | "scrollTop";
 
 	if (isWindow(el)) {
@@ -141,7 +147,7 @@ export function scroll(el: HTMLElement | WindowMockType, horizontal = false) {
 		return el[prop];
 	}
 }
-export function scrollTo(el: WindowMockType | Element, x: number, y: number) {
+export function scrollTo(el: Window | Element, x: number, y: number) {
 	if (isWindow(el)) {
 		el.scroll(x, y);
 	} else {
@@ -149,7 +155,7 @@ export function scrollTo(el: WindowMockType | Element, x: number, y: number) {
 		el.scrollTop = y;
 	}
 }
-export function scrollBy(el: WindowMockType | Element, x: number, y: number) {
+export function scrollBy(el: Window | Element, x: number, y: number) {
 	if (isWindow(el)) {
 		el.scrollBy(x, y);
 	} else {
@@ -161,7 +167,7 @@ export function getStyles(el: Element) {
 	return (SUPPORT_COMPUTEDSTYLE ?
 		window.getComputedStyle(el) : (el as any).currentStyle) || {};
 }
-function _getSize(el: WindowMockType | Document | HTMLElement, name: "Width" | "Height", isOffset?: boolean) {
+function _getSize(el: Window | Document | HTMLElement, name: "Width" | "Height", isOffset?: boolean) {
 	if (isWindow(el)) { // WINDOW
 		return window[`inner${name}` as InnerSizeType] || document.body[`client${name}` as ClientSizeType];
 	} else if (isDocument(el)) { // DOCUMENT_NODE
@@ -192,16 +198,16 @@ function _getSize(el: WindowMockType | Document | HTMLElement, name: "Width" | "
 	}
 }
 
-export function innerWidth(el: WindowMockType | Document | HTMLElement) {
+export function innerWidth(el: Window | Document | HTMLElement) {
 	return _getSize(el, "Width", false);
 }
-export function innerHeight(el: WindowMockType | Document | HTMLElement) {
+export function innerHeight(el: Window | Document | HTMLElement) {
 	return _getSize(el, "Height", false);
 }
-export function outerWidth(el: WindowMockType | Document | HTMLElement) {
+export function outerWidth(el: Window | Document | HTMLElement) {
 	return _getSize(el, "Width", true);
 }
-export function outerHeight(el: WindowMockType | Document | HTMLElement) {
+export function outerHeight(el: Window | Document | HTMLElement) {
 	return _getSize(el, "Height", true);
 }
 export function getSize(el: HTMLElement) {
@@ -248,9 +254,9 @@ export function assign(target: { [key: string]: any }, ...sources: Array<{ [key:
 	return target;
 }
 export function assignOptions<A extends { [key: string]: any }, B extends { [key: string]: any }>(
-	defaultOptions: A, options: B): typeof DEFAULT_OPTIONS & A & B {
+	defaultOptions: A, options: B): typeof DEFAULT_LAYOUT_OPTIONS & A & B {
 	return assign({},
-		DEFAULT_OPTIONS,
+		DEFAULT_LAYOUT_OPTIONS,
 		defaultOptions,
 		options);
 }
@@ -268,7 +274,7 @@ export function isJQuery(el: any): el is IJQuery {
 	return (typeof (window as any).jQuery === "function" && el instanceof (window as any).jQuery) ||
 		el.constructor.prototype.jquery && el.toArray;
 }
-export function isWindow(el: any): el is WindowMockType {
+export function isWindow(el: any): el is Window {
 	return el === window;
 }
 export function isDocument(el: Node): el is Document {
@@ -287,4 +293,113 @@ export function fill<T>(arr: T[], value: T) {
 
 export function isUndefined(target: any): target is undefined {
 	return typeof target === "undefined";
+}
+
+export function find<T>(arr: T[], callback: (target: T) => any) {
+	const length = arr.length;
+
+	for (let i = 0; i < length; ++i) {
+		if (callback(arr[i])) {
+			return arr[i];
+		}
+	}
+	return null;
+}
+export function findLast<T>(arr: T[], callback: (target: T) => any) {
+	const length = arr.length;
+
+	for (let i = length - 1; i >= 0; --i) {
+		if (callback(arr[i])) {
+			return arr[i];
+		}
+	}
+	return null;
+}
+export function categorize(newItems: IItem[]) {
+	const newGroups: IGroup[] = [];
+	const groupKeys: { [key: string]: IGroup } = {};
+
+	newItems.forEach(item => {
+		const { groupKey } = item;
+		let group = groupKeys[groupKey];
+
+		if (!group) {
+			group = {
+				groupKey,
+				items: [],
+			};
+			groupKeys[groupKey] = group;
+			newGroups.push(group);
+		}
+
+		group.items.push(item);
+	});
+
+	return newGroups;
+}
+
+export function resetSize(item: IInfiniteGridItem) {
+	item.orgSize = null;
+	item.size = null;
+}
+
+export function makeItem(groupKey: string | number, el?: HTMLElement) {
+	return {
+		el,
+		groupKey,
+		mounted: false,
+		content: el ? el.outerHTML : "",
+		rect: {
+			top: DUMMY_POSITION,
+			left: DUMMY_POSITION,
+		},
+	};
+}
+
+/**
+ * Decorator that makes the method of infinitegrid available in the framework.
+ * @ko 프레임워크에서 인피니트그리드의 메소드를 사용할 수 있게 하는 데코레이터.
+ * @memberof eg.InfiniteGrid
+ * @private
+ * @example
+ * ```js
+ * import NativeInfiniteGrid, { withInfiniteGridMethods } from "@egjs/infinitegrid";
+ *
+ * class InfiniteGrid extends React.Component<Partial<InfiniteGridProps & InfiniteGridOptions>> {
+ *   &#64;withInfiniteGridMethods
+ *   private infinitegrid: NativeInfiniteGrid;
+ * }
+ * ```
+ */
+export function withInfiniteGridMethods(prototype: any, infinitegridName: string) {
+	Object.keys(INFINITEGRID_METHODS).forEach((name: keyof InfiniteGrid) => {
+		if (prototype[name]) {
+			return;
+		}
+		prototype[name] = function(...args) {
+			const result = this[infinitegridName][name](...args);
+
+			// fix `this` type to return your own `infinitegrid` instance to the instance using the decorator.
+			if (result === this[infinitegridName]) {
+				return this;
+			} else {
+				return result;
+			}
+		};
+	});
+}
+
+export function hasClass(element: HTMLElement, className: string) {
+	if (element.classList) {
+		return element.classList.contains(className);
+	}
+	return !!element.className.match(new RegExp(`(\\s|^)${className}(\\s|$)`));
+}
+
+export function addClass(element: HTMLElement, className: string) {
+	if (element.classList) {
+		element.classList.add(className);
+	} else {
+		element.className += ` ${className}`;
+	}
 }

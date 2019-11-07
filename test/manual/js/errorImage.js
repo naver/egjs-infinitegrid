@@ -50,7 +50,7 @@ ig.on({
         }
     },
     "imageError": function(e) {
-        // console.log("imageERR");
+        console.log("imageERR");
         // e.remove();
         e.replace("../unit/image/error.png");
         // e.replaceItem("에러를 받아라!!!!");
@@ -75,30 +75,35 @@ function none() {
 function remove() {
     ig.off("imageError");
     ig.on("imageError", function (e) {
+		console.log("imageERR");
         e.remove();
     });
 }
 function removeItem() {
     ig.off("imageError");
     ig.on("imageError", function (e) {
+		console.log("imageERR");
         e.removeItem();
     });
 }
 function replace() {
     ig.off("imageError");
     ig.on("imageError", function (e) {
+		console.log("imageERR");
         e.replace("../unit/image/error.png");
     });
 }
 function replaceElement() {
     ig.off("imageError");
     ig.on("imageError", function (e) {
+		console.log("imageERR");
         e.replace("<div class=\"replaceElement\">REPLACE ELEMENT</div>");
     });
 }
 function replaceItem() {
     ig.off("imageError");
     ig.on("imageError", function (e) {
+		console.log("imageERR");
         e.replaceItem("<div class=\"replaceItem\">REPLACE Item</div>");
     });
 }

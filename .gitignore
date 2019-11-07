@@ -213,3 +213,4 @@ CHANGELOG.md
 build/
 packages/*/dist
 dist/
+declaration/

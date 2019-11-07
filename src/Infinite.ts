@@ -1,6 +1,7 @@
 import ItemManager from "./ItemManager";
-import { assign } from "./utils";
-import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult } from "./types";
+import { assign, find, findLast } from "./utils";
+import { CursorType, IInfiniteGridGroup, IInfiniteStatus, IRemoveResult, IItem, IInfiniteOptions, IInfiniteGridItem } from "./types";
+import { diff } from "@egjs/list-differ";
 
 function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: number, endScrollPos: number) {
 	const { items, outlines } = group;
@@ -21,16 +22,9 @@ function isVisible(group: IInfiniteGridGroup, threshold: number, scrollPos: numb
 	return 0;
 }
 
-export interface IInfiniteOptions {
-	useRecycle?: boolean;
-	threshold?: number;
-	append?: (e?: { cache: IInfiniteGridGroup[] }) => void;
-	prepend?: (e?: { cache: IInfiniteGridGroup[] }) => void;
-	recycle?: (e?: { start: number, end: number }) => void;
-}
 class Infinite {
 	public options: Required<IInfiniteOptions>;
-	private _items: ItemManager;
+	private _itemManager: ItemManager;
 	private _status: IInfiniteStatus;
 	constructor(itemManger: ItemManager, options: IInfiniteOptions) {
 		this.options = assign({
@@ -41,14 +35,64 @@ class Infinite {
 			recycle: () => void 0,
 		}, options);
 
-		this._items = itemManger;
+		this._itemManager = itemManger;
 		this.clear();
 	}
 	public setSize(size: number) {
 		this._status.size = size;
 	}
-	public recycle(scrollPos: number, isForward?: boolean) {
-		if (!this.options.useRecycle) {
+	public sync(items: IItem[]) {
+		const status = this._status;
+		const { startCursor, endCursor } = status;
+		const itemManager = this._itemManager;
+		const prevVisisbleGroups = itemManager.sliceGroups(startCursor, endCursor + 1);
+		const prevVisibleItems = ItemManager.pluck(prevVisisbleGroups, "items");
+		const result = itemManager.sync(items);
+		const startGroup = find(
+			prevVisisbleGroups,
+			({ groupKey }) => itemManager.getGroupByKey(groupKey),
+		);
+		const endGroup = findLast(
+			prevVisisbleGroups,
+			({ groupKey }) => itemManager.getGroupByKey(groupKey),
+		);
+		let nextStartCursor = startGroup ? itemManager.indexOf(startGroup) : -1;
+		let nextEndCursor = endGroup ? itemManager.indexOf(endGroup) : -1;
+
+		if (nextStartCursor > -1 && nextEndCursor > -1) {
+			// This is when the arrangement is inverted.
+			// prevVisisbleGroups is [0, 1, 2, 3]
+			// but currentGroups is [3, 2, 1, 0]
+			// so, nextStartCursor is 3, and nextEndCursor is 0
+			const minCursor = Math.min(nextStartCursor, nextEndCursor);
+			const maxCursor = Math.max(nextStartCursor, nextEndCursor);
+
+			nextStartCursor = minCursor;
+			nextEndCursor = maxCursor;
+		} else if (nextEndCursor > -1) {
+			nextStartCursor = nextEndCursor;
+		} else if (nextStartCursor > -1) {
+			nextEndCursor = nextStartCursor;
+		}
+
+		status.startCursor = nextStartCursor;
+		status.endCursor = nextEndCursor;
+
+		if (result.removed.length > 0) {
+			return "relayout";
+		} else {
+			const nextVisibleItems = itemManager.pluck("items", startCursor, endCursor);
+			const visibleDiffResult = diff(prevVisibleItems, nextVisibleItems, ({ itemKey }) => itemKey);
+
+			if (visibleDiffResult.removed.length > 0) {
+				return "layout";
+			} else {
+				return "";
+			}
+		}
+	}
+	public recycle(scrollPos: number | null, isForward?: boolean) {
+		if (!this.options.useRecycle || typeof scrollPos !== "number") {
 			return;
 		}
 		const { startCursor, endCursor, size } = this._status;
@@ -58,7 +102,7 @@ class Infinite {
 		}
 		const endScrollPos = scrollPos + size;
 		const { threshold, recycle } = this.options;
-		const visibles = this._items.get(startCursor, endCursor)
+		const visibles = this._itemManager.sliceGroups(startCursor, endCursor + 1)
 			.map(group => isVisible(group, threshold, scrollPos, endScrollPos));
 		const length = visibles.length;
 		let start = isForward ? 0 : visibles.lastIndexOf(0);
@@ -80,10 +124,9 @@ class Infinite {
 			this.setCursor("end", start - 1);
 		}
 	}
-	public scroll(scrollPos: number) {
-		const startCursor = this.getCursor("start");
-		const endCursor = this.getCursor("end");
-		const items = this._items;
+	public scroll(scrollPos: number | null) {
+		const [startCursor, endCursor] = this.getCursors();
+		const items = this._itemManager;
 
 		if (typeof scrollPos !== "number" || startCursor === -1 ||
 			endCursor === -1 || !items.size()) {
@@ -91,7 +134,7 @@ class Infinite {
 		}
 		const size = this._status.size;
 		const { threshold, append, prepend } = this.options;
-		const datas = items.get();
+		const datas = items.getGroups();
 		const endScrollPos = scrollPos + size;
 		const startEdgePos = Math.max(...datas[startCursor].outlines.start);
 		const endEdgePos = Math.min(...datas[endCursor].outlines.end);
@@ -134,7 +177,7 @@ class Infinite {
 	}
 	public setCursor(cursor: CursorType, index: number) {
 		const status = this._status;
-		const items = this._items;
+		const items = this._itemManager;
 		const size = items.size();
 
 		if (!this.options.useRecycle) {
@@ -157,10 +200,10 @@ class Infinite {
 	public setStatus(status: IInfiniteStatus) {
 		this._status = assign(this._status, status);
 	}
-	public getStatus(startKey: string | number, endKey: string | number): IInfiniteStatus {
+	public getStatus(startKey?: string | number, endKey?: string | number): IInfiniteStatus {
 		const { startCursor, endCursor, size } = this._status;
-		const startIndex = Math.max(this._items.indexOf(startKey), 0);
-		const endIndex = (this._items.indexOf(endKey) + 1 || this._items.size()) - 1;
+		const startIndex = Math.max(this._itemManager.indexOf(startKey), 0);
+		const endIndex = (this._itemManager.indexOf(endKey) + 1 || this._itemManager.size()) - 1;
 		const start = Math.max(startCursor - startIndex, ~startCursor ? 0 : -1);
 		const end = Math.max(Math.min(endCursor - startIndex, endIndex - startIndex), start);
 
@@ -176,30 +219,42 @@ class Infinite {
 		if (startCursor === -1 || endCursor === -1) {
 			return [];
 		}
-		return this._items.getOutline(cursor === "start" ? startCursor : endCursor, cursor);
+		return this._itemManager.getOutline(cursor === "start" ? startCursor : endCursor, cursor);
 	}
 	public getEdgeValue(cursor: CursorType) {
 		const outlines = this.getEdgeOutline(cursor);
 
 		return outlines.length ? Math[cursor === "start" ? "min" : "max"](...outlines) : 0;
 	}
-	public getVisibleItems() {
-		return this._items.pluck("items", this._status.startCursor, this._status.endCursor);
+	public getVisibleItems(): IInfiniteGridItem[] {
+		const { startCursor, endCursor } = this._status;
+
+		return this._itemManager.pluck("items", startCursor, endCursor);
+	}
+	public getCursors() {
+		const status = this._status;
+
+		return [
+			status.startCursor,
+			status.endCursor,
+		];
 	}
 	public getCursor(cursor: CursorType) {
 		return this._status[cursor === "start" ? "startCursor" : "endCursor"];
 	}
 	public getVisibleData() {
-		return this._items.get(this._status.startCursor, this._status.endCursor);
+		const { startCursor, endCursor } = this._status;
+
+		return this._itemManager.sliceGroups(startCursor, endCursor + 1);
 	}
 
-	public remove(groupIndex: number, itemIndex: number) {
+	public remove(groupIndex: number, itemIndex: number): IRemoveResult {
 		const status = this._status;
-		const items = this._items;
+		const items = this._itemManager;
 		const { startCursor, endCursor } = status;
 		const result = items.remove(groupIndex, itemIndex);
 
-		if (result.groups.length) {
+		if (result.group) {
 			if (groupIndex < startCursor) {
 				this.setCursor("start", startCursor - 1);
 			}

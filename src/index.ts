@@ -8,13 +8,15 @@ import FrameLayout from "./layouts/FrameLayout";
 import SquareLayout from "./layouts/SquareLayout";
 import PackingLayout from "./layouts/PackingLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
-import ImageLoaded from "./ImageLoaded";
-import AutoSizer from "./AutoSizer";
 import DOMRenderer from "./DOMRenderer";
-import Watcher from "./Watcher";
 import ItemManager from "./ItemManager";
 import Infinite from "./Infinite";
-import LayoutManager from "./LayoutManager";
+export {
+	CONTAINER_CLASSNAME, IGNORE_CLASSNAME,
+	DEFAULT_OPTIONS, INFINITEGRID_METHODS,
+	INFINITEGRID_EVENTS,
+} from "./consts";
+export { categorize, withInfiniteGridMethods } from "./utils";
 
 export * from "./types";
 export {
@@ -24,11 +26,7 @@ export {
 	PackingLayout,
 	JustifiedLayout,
 	Infinite,
-	ImageLoaded,
-	AutoSizer,
 	DOMRenderer,
-	Watcher,
 	ItemManager,
-	LayoutManager,
 	InfiniteGrid as default,
 };

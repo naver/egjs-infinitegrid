@@ -1,8 +1,8 @@
 import { ALIGN, isMobile, TRANSFORM } from "./consts";
 import { $, isWindow, assign } from "./utils";
-import { IAlign, IJQuery, PositionType, SizeType, InnerSizeType, ClientSizeType, IInfiniteGridItemElement, OffsetSizeType, WindowMockType, IInfiniteGridItem } from "./types";
+import { IAlign, IJQuery, PositionType, SizeType, InnerSizeType, ClientSizeType, IInfiniteGridItemElement, OffsetSizeType, IInfiniteGridItem } from "./types";
 
-interface IParallaxStyle {
+export interface IParallaxStyle {
 	position: PositionType;
 	size: SizeType;
 	cammelSize: string;
@@ -82,13 +82,13 @@ class Parallax {
 		align: IAlign[keyof IAlign];
 		horizontal: boolean;
 	};
-	private _root: WindowMockType | HTMLElement;
+	private _root: Window | HTMLElement;
 	private _container: HTMLElement;
 	private _rootSize: number;
 	private _containerPosition: number;
 	private _style: IParallaxStyle;
 	constructor(
-		root: WindowMockType | HTMLElement | IJQuery | string = window,
+		root: Window | HTMLElement | IJQuery | string = window,
 		options: Partial<Parallax["options"]> = {}) {
 		this.options = assign({
 			container: null,
@@ -145,7 +145,7 @@ class Parallax {
 			this._rootSize = this._rootSize / (bodyWidth / windowWidth);
 		}
 		items.forEach(item => {
-			this._checkParallaxItem(item.el);
+			this._checkParallaxItem(item.el!);
 		});
 
 		return this;
@@ -195,10 +195,10 @@ class Parallax {
 			if (el.__IMAGE__ === -1) {
 				return;
 			}
-			const imageElement = el.__IMAGE__;
-			const boxElement = el.__BOX__;
-			const boxSize = boxElement.__SIZE__;
-			const imageSize = imageElement.__SIZE__;
+			const imageElement = el.__IMAGE__!;
+			const boxElement = el.__BOX__!;
+			const boxSize = boxElement.__SIZE__!;
+			const imageSize = imageElement.__SIZE__!;
 
 			// no parallax
 			if (boxSize >= imageSize) {
@@ -242,7 +242,7 @@ class Parallax {
 			const img = element.querySelector<IInfiniteGridItemElement>(selector);
 
 			element.__IMAGE__ = img || -1;
-			if (element.__IMAGE__ === -1) {
+			if (!img) {
 				return;
 			}
 			element.__BOX__ = img.parentNode as IInfiniteGridItemElement;
@@ -253,7 +253,7 @@ class Parallax {
 		const sizeName = this._style.cammelSize;
 
 		element.__IMAGE__.__SIZE__ = element.__IMAGE__[`offset${sizeName}` as OffsetSizeType];
-		element.__BOX__.__SIZE__ = element.__BOX__[`offset${sizeName}` as OffsetSizeType];
+		element.__BOX__!.__SIZE__ = element.__BOX__![`offset${sizeName}` as OffsetSizeType];
 	}
 }
 
