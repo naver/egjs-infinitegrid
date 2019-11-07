@@ -1737,7 +1737,7 @@ function () {
       end: requestEndCursor
     });
     callbackComponent.trigger("layoutComplete", {
-      items: items,
+      items: ItemManager.pluck(groups, "items"),
       isAppend: isAppend
     });
   };

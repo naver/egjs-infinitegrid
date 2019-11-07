@@ -2620,7 +2620,7 @@ version: 3.6.0
           end: requestEndCursor
         });
         callbackComponent.trigger("layoutComplete", {
-          items: items,
+          items: ItemManager.pluck(groups, "items"),
           isAppend: isAppend
         });
       };
