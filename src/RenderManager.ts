@@ -125,7 +125,7 @@ export default class RenderManager {
 			end: requestEndCursor,
 		});
 		callbackComponent.trigger("layoutComplete", {
-			items,
+			items: ItemManager.pluck(groups, "items"),
 			isAppend,
 		});
 	}
