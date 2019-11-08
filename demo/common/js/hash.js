@@ -1,6 +1,6 @@
 (function() {
 	var headers = $("h1[id], h2[id], h3[id]");
-	
+
 	headers.html(function (index, html) {
 		return "<a href=\"#" + headers.eq(index).attr("id") + "\">" + html + "</a>";
 	});
@@ -16,7 +16,4 @@
 
 	document.querySelector(".tabs li[data-tab='" + tabName +"']").setAttribute("class", "checked");
 	Tab.open(tabName);
-
-
-
 })();

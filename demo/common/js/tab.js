@@ -1,9 +1,10 @@
 /* eslint-disable */
-var Watcher = eg.InfiniteGrid.Watcher;
 var items = [];
+var contents = document.querySelector(".contents");
 var innerHeight = window.innerHeight || document.body.clientHeight;
+var offset = 0;
 var onScroll = function(e) {
-	var scrollPos = e.scrollPos;
+	var scrollPos = getScrollTop() - offset;
 	if (scrollPos === null) {
 		return;
 	}
@@ -16,19 +17,22 @@ var onScroll = function(e) {
 
 	$(visibleItems).addClass("appear");
 };
-var watcher = new Watcher(window, {
-	container: document.querySelector(".contents"),
-	check: onScroll,
-	resize: function(e) {
-		innerHeight = window.innerHeight || document.body.clientHeight;
-		openTab(Tab.currentTab);
-	}
+window.addEventListener("scroll", onScroll);
+window.addEventListener("resize", function () {
+	refreshOffset();
+	innerHeight = window.innerHeight || document.body.clientHeight;
+	openTab(Tab.currentTab);
 });
+function getScrollTop() {
+	return window.pageYOffset || document.documentElement.scrollTop | document.body.scrollTop;
+}
+function refreshOffset() {
+	offset = contents.getBoundingClientRect().top - document.body.getBoundingClientRect().top;
+}
+
 function openTab(tab) {
 	var scrollView = $(".tab-" + tab + ".scroll-view, .tab-" + tab + " .scroll-view");
-	var scrollPos = watcher.getOrgScrollPos();
-	var offset = watcher.getContainerOffset();
-
+	var scrollPos = getScrollTop();
 	items = scrollView.map(function (index, el) {
 		var rect = el.getBoundingClientRect();
 		var start = rect.top + scrollPos - offset;
@@ -41,7 +45,7 @@ function openTab(tab) {
 		};
 	}).toArray();
 
-	onScroll({scrollPos: watcher.getScrollPos()});
+	onScroll();
 }
 function closeTab(tab) {
 	var scrollView = $(".tab-" + tab + ".scroll-view, .tab-" + tab + " .scroll-view");
@@ -56,7 +60,7 @@ Tab.currentTab = "";
 Tab.opens = {
 	"home": function () {
 		demoIg.trigger("refresh");
-	}	
+	}
 };
 Tab.closes = {};
 Tab.close = function(name) {
@@ -71,6 +75,7 @@ Tab.open = function(name) {
 	if (Tab.currentTab === name) {
 		return;
 	}
+	refreshOffset();
 	Tab.$tabs.css("display", "none");
 	var target = $(".tab-" + name);
 
@@ -78,11 +83,13 @@ Tab.open = function(name) {
 
 	var currentTab = Tab.currentTab;
 	Tab.currentTab = name;
-	
+
 	Tab.opens[name] && Tab.opens[name]();
+
 	openTab(name);
 	if (currentTab) {
 		Tab.close(currentTab);
 	}
-	
+
 };
+refreshOffset();
