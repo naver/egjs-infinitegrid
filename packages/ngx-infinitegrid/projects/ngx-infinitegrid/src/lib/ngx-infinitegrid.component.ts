@@ -127,7 +127,7 @@ export class NgxInfiniteGridComponent
         this[name].emit({ ...e, currentTarget: this });
       });
     });
-    ig.setLayout(GridLayout, { ...this.layoutOptions });
+    ig.setLayout(this.layoutType, { ...this.layoutOptions });
 
 
     if (this.loading) {
