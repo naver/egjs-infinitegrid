@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NgxInfinitegridService } from './ngx-infinitegrid.service';
+import { NgxInfiniteGridService } from './ngx-infinitegrid.service';
 
-describe('NgxInfinitegridService', () => {
+describe('NgxInfiniteGridService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: NgxInfinitegridService = TestBed.get(NgxInfinitegridService);
+    const service: NgxInfiniteGridService = TestBed.get(NgxInfiniteGridService);
     expect(service).toBeTruthy();
   });
 });

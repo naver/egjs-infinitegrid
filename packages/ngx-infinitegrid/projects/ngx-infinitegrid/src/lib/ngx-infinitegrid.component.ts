@@ -26,9 +26,9 @@ import { InfiniteGridType } from './types';
   template: TEMPLATE,
   styles: []
 })
-export class NgxInfinitegridComponent
+export class NgxInfiniteGridComponent
   implements OnInit, AfterViewInit, AfterViewChecked,
-  OnDestroy, OnChanges, InfiniteGridType<NgxInfinitegridComponent> {
+  OnDestroy, OnChanges, InfiniteGridType<NgxInfiniteGridComponent> {
   private ig!: NativeInfiniteGrid;
 
   @Input() public trackBy: ((index: number, item: any) => any) = ((_, item) => item.key);

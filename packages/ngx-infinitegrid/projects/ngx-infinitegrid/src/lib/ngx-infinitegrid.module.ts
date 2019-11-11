@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NgxInfinitegridComponent } from './ngx-infinitegrid.component';
+import { NgxInfiniteGridComponent } from './ngx-infinitegrid.component';
 import { NgxGridLayoutComponent } from './ngx-gridlayout.component';
 import { NgxJustifiedLayoutComponent } from './ngx-justifiedlayout.component';
 import { NgxSquareLayoutComponent } from './ngx-squarelayout.component';
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
-    NgxInfinitegridComponent,
+    NgxInfiniteGridComponent,
     NgxGridLayoutComponent,
     NgxJustifiedLayoutComponent,
     NgxSquareLayoutComponent,
@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
     CommonModule,
   ],
   exports: [
-    NgxInfinitegridComponent,
+    NgxInfiniteGridComponent,
     NgxGridLayoutComponent,
     NgxJustifiedLayoutComponent,
     NgxSquareLayoutComponent,
@@ -28,4 +28,4 @@ import { CommonModule } from '@angular/common';
     NgxPackingLayoutComponent,
   ],
 })
-export class NgxInfinitegridModule { }
+export class NgxInfiniteGridModule { }

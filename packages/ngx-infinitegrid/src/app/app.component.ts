@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NgxInfinitegridComponent } from 'projects/ngx-infinitegrid/src/public-api';
+import { NgxInfiniteGridComponent } from 'projects/ngx-infinitegrid/src/public-api';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +7,7 @@ import { NgxInfinitegridComponent } from 'projects/ngx-infinitegrid/src/public-a
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  @ViewChild('ig', { static: false }) ig: NgxInfinitegridComponent;
+  @ViewChild('ig', { static: false }) ig: NgxInfiniteGridComponent;
   visibleItems = [];
   title = 'ngx-infinitegrid-app';
   start = 7;
