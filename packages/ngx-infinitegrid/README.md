@@ -57,17 +57,17 @@ export class AppModule {}
 })
 export class AppComponent {
   options={
-		threshold: 100,
-		isOverflowScroll: false,
-		isEqualSize: false,
-		isContantSize: false,
-		useFit: false,
-		useRecycle: false,
-		horizontal: false,
-	};
-	layoutOptions={
-		align: "justify",
-	};
+    threshold: 100,
+    isOverflowScroll: false,
+    isEqualSize: false,
+    isContantSize: false,
+    useFit: false,
+    useRecycle: false,
+    horizontal: false,
+  };
+  layoutOptions={
+    align: "justify",
+  };
   start = 0;
   items = [];
   loadItems(groupKey: number, num: number) {
