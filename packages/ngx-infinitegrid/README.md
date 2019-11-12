@@ -2,7 +2,11 @@
 
 An Angular component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
 
-* [API Documentation](https://github.com/naver/egjs-infinitegrid/wiki/react-infinitegrid-API-documentation)
+* [GridLayout Demo](https://codesandbox.io/s/ngx-infinitegrid-demo-gridlayout-vu7pp)
+* [GridLayout with Parallax Demo](https://codesandbox.io/s/ngx-infinitegrid-parallax-demo-gridlayout-cvxg5)
+* [JustifiedLayout Demo](https://codesandbox.io/s/ngx-infinitegrid-demo-justifiedlayout-ypvf7)
+* [Youtube Demo](https://codesandbox.io/s/ngx-infinitegrid-youtube-demo-m1npy)
+* [API Documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
 
 
 ## Install
