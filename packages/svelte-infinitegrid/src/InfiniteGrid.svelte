@@ -8,7 +8,8 @@
     categorize,
     IInfiniteGridItem,
     StyleType,
-    ItemManager
+    ItemManager,
+    CONTAINER_CLASSNAME
   } from "@egjs/infinitegrid";
   import {
     onMount,
@@ -17,6 +18,7 @@
     tick,
     createEventDispatcher
   } from "svelte";
+  import { PROP_NAMES } from "./consts";
 
   export let groupBy = (item, index) => item.groupKey;
   export let itemBy = (item, index) => item.key;
@@ -37,8 +39,10 @@
   let wrapper;
   let container;
   let ig: VanillaInfiniteGrid;
+  let hasLoadingElement = true;
+  let attributes = {};
 
-  let l2;
+  declare var $$props: any;
 
   function toItems(items) {
     return items.map((item, i) => ({
@@ -50,16 +54,33 @@
   function beforeSync(items) {
     return ig.beforeSync(toItems(items));
   }
+  function getLoadingElement() {
+    if (loading) {
+      return loading;
+    } else if (hasLoadingElement) {
+      const el = container || wrapper;
+
+      return el.lastElementChild;
+    }
+  }
   function getElements() {
     const el = container || wrapper;
     const elements = [].slice.call(el.children);
 
     if (loading) {
+      hasLoadingElement = true;
       return elements.filter(el => el !== loading);
-    } else if (loading !== false) {
+    } else if (hasLoadingElement) {
       return elements.slice(0, -1);
     }
     return elements;
+  }
+  function updateAttributes() {
+    attributes = { ...$$props };
+
+    PROP_NAMES.forEach(name => {
+      delete attributes[name];
+    });
   }
 
   const groups = categorize(items);
@@ -74,6 +95,7 @@
     visibleItems = groups[0].items.map(item => item.data);
   }
   beforeUpdate(() => {
+    updateAttributes();
     if (!ig) {
       return;
     }
@@ -90,7 +112,7 @@
     } else {
       ig.setLoadingBar();
     }
-    setTimeout(() => {
+    tick().then(() => {
       const currentNextFunction = nextFunction;
       nextFunction = () => {};
       ig.sync(getElements());
@@ -107,8 +129,10 @@
       ...options,
       renderExternal: true
     }).on("render", ({ next }) => {
-      nextFunction = next;
-      ++_forceCount;
+      setTimeout(() => {
+        nextFunction = next;
+        ++_forceCount;
+      });
     });
     INFINITEGRID_EVENTS.forEach(name => {
       ig.on(name, e => {
@@ -134,7 +158,7 @@
     ig.destroy();
   });
   function clearLoadingBar() {
-    loading = false;
+    hasLoadingElement = false;
   }
 
   export function isLoading() {
@@ -201,9 +225,18 @@
   }
 </script>
 
-<div class="wrapper" bind:this={wrapper}>
-  <slot {visibleItems} />
-  {#if ig}
-    <slot name="loading">{(clearLoadingBar(), '')}</slot>
+<div {...attributes} bind:this={wrapper}>
+  {#if options.isOverflowScroll}
+    <div class={CONTAINER_CLASSNAME} bind:this={container}>
+      <slot {visibleItems} />
+      {#if ig}
+        <slot name="loading">{(clearLoadingBar(), '')}</slot>
+      {/if}
+    </div>
+  {:else}
+    <slot {visibleItems} />
+    {#if ig}
+      <slot name="loading">{(clearLoadingBar(), '')}</slot>
+    {/if}
   {/if}
 </div>
