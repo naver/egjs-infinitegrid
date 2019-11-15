@@ -1,4 +1,11 @@
 <script lang="ts">
+  import {
+    onMount,
+    onDestroy,
+    beforeUpdate,
+    tick,
+    createEventDispatcher
+  } from "svelte";
   import VanillaInfiniteGrid, {
     IInfiniteGridOptions,
     ILayout,
@@ -11,26 +18,19 @@
     ItemManager,
     CONTAINER_CLASSNAME
   } from "@egjs/infinitegrid";
-  import {
-    onMount,
-    onDestroy,
-    beforeUpdate,
-    tick,
-    createEventDispatcher
-  } from "svelte";
+  import LoadingChecker from "./LoadingChecker.svelte";
   import { PROP_NAMES } from "./consts";
 
   export let groupBy = (item, index) => item.groupKey;
   export let itemBy = (item, index) => item.key;
   export let items: any[] = [];
   export let useFirstRender = false;
-  export let loading;
   export let status: IInfiniteGridStatus = null;
   export let layoutType: new () => ILayout = GridLayout;
   export let options: Partial<IInfiniteGridOptions> = {};
   export let layoutOptions: { [key: string]: any } = {};
-  export let viewer;
-  export let container;
+  export let viewer = null;
+  export let container = null;
   export let _forceCount = 0;
 
   const dispatch = createEventDispatcher();
@@ -54,9 +54,7 @@
     return ig.beforeSync(toItems(items));
   }
   function getLoadingElement() {
-    if (loading) {
-      return loading;
-    } else if (hasLoadingElement) {
+    if (hasLoadingElement) {
       const el = container || viewer;
 
       return el.lastElementChild;
@@ -66,10 +64,7 @@
     const el = container || viewer;
     const elements = [].slice.call(el.children);
 
-    if (loading) {
-      hasLoadingElement = true;
-      return elements.filter(el => el !== loading);
-    } else if (hasLoadingElement) {
+    if (hasLoadingElement) {
       return elements.slice(0, -1);
     }
     return elements;
@@ -103,10 +98,12 @@
     layoutState = result === "relayout" ? result : layoutState || result;
     visibleItems = ig.getRenderingItems().map(item => item.data);
 
-    if (loading) {
+    const loadingElement = getLoadingElement();
+
+    if (loadingElement) {
       ig.setLoadingBar({
-        append: loading,
-        prepend: loading
+        append: loadingElement,
+        prepend: loadingElement
       });
     } else {
       ig.setLoadingBar();
@@ -140,10 +137,12 @@
     });
     ig.setLayout(layoutType, layoutOptions);
 
-    if (loading) {
+    const loadingElement = getLoadingElement();
+
+    if (loadingElement) {
       ig.setLoadingBar({
-        append: loading,
-        prepend: loading
+        append: loadingElement,
+        prepend: loadingElement
       });
     }
     if (status) {
@@ -156,9 +155,6 @@
   onDestroy(() => {
     ig.destroy();
   });
-  function clearLoadingBar() {
-    hasLoadingElement = false;
-  }
 
   export function isLoading() {
     return ig.isLoading();
@@ -228,14 +224,14 @@
   {#if options.isOverflowScroll}
     <div class={CONTAINER_CLASSNAME} bind:this={container}>
       <slot {visibleItems} />
-      {#if ig}
-        <slot name="loading">{(clearLoadingBar(), '')}</slot>
-      {/if}
+      <slot name="loading">
+        <LoadingChecker bind:hasLoading={hasLoadingElement} />
+      </slot>
     </div>
   {:else}
     <slot {visibleItems} />
-    {#if ig}
-      <slot name="loading">{(clearLoadingBar(), '')}</slot>
-    {/if}
+    <slot name="loading">
+      <LoadingChecker bind:hasLoading={hasLoadingElement} />
+    </slot>
   {/if}
 </div>
