@@ -29,15 +29,14 @@
   export let layoutType: new () => ILayout = GridLayout;
   export let options: Partial<IInfiniteGridOptions> = {};
   export let layoutOptions: { [key: string]: any } = {};
+  export let viewer;
+  export let container;
   export let _forceCount = 0;
-
-  let visibleItems = [];
 
   const dispatch = createEventDispatcher();
   let nextFunction = () => {};
   let layoutState;
-  let wrapper;
-  let container;
+  let visibleItems = [];
   let ig: VanillaInfiniteGrid;
   let hasLoadingElement = true;
   let attributes = {};
@@ -58,13 +57,13 @@
     if (loading) {
       return loading;
     } else if (hasLoadingElement) {
-      const el = container || wrapper;
+      const el = container || viewer;
 
       return el.lastElementChild;
     }
   }
   function getElements() {
-    const el = container || wrapper;
+    const el = container || viewer;
     const elements = [].slice.call(el.children);
 
     if (loading) {
@@ -125,7 +124,7 @@
     });
   });
   onMount(() => {
-    ig = new VanillaInfiniteGrid(wrapper, {
+    ig = new VanillaInfiniteGrid(viewer, {
       ...options,
       renderExternal: true
     }).on("render", ({ next }) => {
@@ -225,7 +224,7 @@
   }
 </script>
 
-<div {...attributes} bind:this={wrapper}>
+<div {...attributes} bind:this={viewer}>
   {#if options.isOverflowScroll}
     <div class={CONTAINER_CLASSNAME} bind:this={container}>
       <slot {visibleItems} />

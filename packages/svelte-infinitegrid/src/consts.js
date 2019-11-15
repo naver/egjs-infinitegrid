@@ -9,4 +9,6 @@ export const PROP_NAMES = [
 	"options",
 	"layoutOptions",
 	"_forceCount",
+	"viewer",
+	"container"
 ];
