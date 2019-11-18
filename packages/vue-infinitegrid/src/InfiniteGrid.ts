@@ -69,7 +69,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 		this.$_bindEvents();
 
 		const nativeIG = this.$_nativeInfiniteGrid;
-		nativeIG.setLayout(this.layoutType);
+		nativeIG.setLayout(this.layoutType, this.layoutOptions);
 
 		if (this.status) {
 			nativeIG.setStatus(this.status, true, this.$_getElements());
