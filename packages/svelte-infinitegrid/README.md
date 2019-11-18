@@ -2,6 +2,11 @@
 
 A Svelte component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
 
+
+* [GridLayout Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-gridlayout-7ycgd)
+* [GridLayout with Parallax Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-gridlayout-with-parallax-wnl8p)
+* [JustifiedLayout Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-justifiedlayout-e4com)
+* [Youtube Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-youtube-svrus)
 * [API Documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
 
 
@@ -47,7 +52,6 @@ $ npm install @egjs/svelte-infinitegrid  --save
     itemBy={item => item.key}
     groupBy={item => item.groupKey}
     useFirstRender={false}
-    loading={loading}
     status={null}
     options={{
         threshold: 100,
@@ -73,7 +77,7 @@ $ npm install @egjs/svelte-infinitegrid  --save
             {`item ${item.key}`}</div>
         </div>
     {/each}
-    <div bind:this={loading} slot="loading">Loading</div>
+    <div slot="loading">Loading</div>
 </GridLayout>
 ```
 
@@ -85,7 +89,6 @@ $ npm install @egjs/svelte-infinitegrid  --save
 |itemBy|Function|get itemKey|Get a unique key that defines how to track changes for items in the iterable.|
 |groupBy|Function|get groupKey or data-groupkey|Get a unique key to distinguish between groups.|
 |useFirstRender|boolean|false|The useFirstRender option determines whether the markup will be shown on the first rendering or after loading is complete.|
-|loading|HTMLElement||Specifies the Loading Bar to use for append or prepend items.|
 |status|IInfiniteGridStatus|null|State object of the react-infinitegrid module|
 |layoutType|Class|GridLayout|Specifies the Layout class to use.|
 |options|IInfiniteGridOptions|{}|The option object of the eg.InfiniteGrid module|
