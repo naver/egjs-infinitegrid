@@ -36,14 +36,3 @@ const plugin = {
 	version,
 };
 export default plugin;
-export {
-	InfiniteGrid,
-	GridLayout,
-	JustifiedLayout,
-	FrameLayout,
-	SquareLayout,
-	PackingLayout,
-	Loading,
-	install,
-	version
-};
