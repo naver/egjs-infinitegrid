@@ -30,10 +30,15 @@ eg.infiniteGrid benchmark: append item performance with [masonry](https://masonr
   - [Introducing eg.InfiniteGrid, a new library for implementing a card layout](https://github.com/naver/egjs-infinitegrid/wiki/Introducing-eg.InfiniteGrid,-a-new-library-for-implementing-a-card-layout) [[Korean](http://d2.naver.com/helloworld/4874130)]
   - [Card-based design and eg.InfiniteGrid 3.0](https://medium.com/@sculove/card-based-design-and-eg-infinitegrid-3-0-a84616496671) [[Korean](http://d2.naver.com/helloworld/0637045)]
 
-## Third party applications
-[@egjs/react-layout](https://github.com/naver/egjs-infinitegrid/tree/master/packages/react-layout): A react component that can easily use egjs-infinitegrid's layouts
 
-[@egjs/react-infinitegrid](https://github.com/naver/egjs-infinitegrid/tree/master/packages/react-infinitegrid): A react component that can easily use egjs-infinitegrid
+## Packages
+|Package|Version|Description|
+|:-----:|:-----:|:-----:|
+|[**@egjs/ngx-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/ngx-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/ngx-infinitegrid.svg?style=flat-square&color=dd0031&label=%F0%9F%94%96" alt="version" /></a>| [Angular](https://angular.io/) port of @egjs/infinitegrid|
+|[**@egjs/react-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/react-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/react-infinitegrid.svg?style=flat-square&color=00d8ff&label=%F0%9F%94%96" alt="version" /></a>|[React](https://reactjs.org/) port of @egjs/infinitegrid|
+|[**@egjs/vue-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/vue-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/vue-infinitegrid.svg?style=flat-square&color=42b883&label=%F0%9F%94%96" alt="version" /></a>| [Vue.js](https://vuejs.org/v2/guide/index.html) port of @egjs/infinitegrid|
+|[**@egjs/svelte-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/svelte-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/svelte-infinitegrid.svg?style=flat-square&color=dd0031&label=%F0%9F%94%96" alt="version" /></a>| [Svelte](https://svelte.dev/) port of @egjs/infinitegrid|
+
 
 
 ## Download and Installation
