@@ -81,8 +81,10 @@ $ npm install @egjs/svelte-infinitegrid  --save
 </GridLayout>
 ```
 
+* Add `slot = "loading"` if you want to show the loading bar when calling the `startLoading()` method.
 
 ## Props
+
 
 |name|type|default|description|
 |---|---|---|---|
