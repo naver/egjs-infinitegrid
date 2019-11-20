@@ -14,6 +14,14 @@ $ npm install @egjs/vue-infinitegrid --save
   - e.g., `layoutComplete` => **`layout-complete`**
 - You can't use methods that manipulates DOM directly
   - e.g., `append()`, `remove()`, ...
+- Loading element can be used via named slot with name "loading"
+```vue
+<template>
+  <GridLayout>
+    <div slot="loading">Loading...</div>
+  </GridLayout>
+</template>
+```
 
 ## 🏃 Quick Start
 ### Global registration
@@ -25,11 +33,10 @@ Vue.use(VueInfiniteGrid);
 ### Local registration
 ```js
 // All available layouts are in src/layouts
-import { GridLayout, Loading } from "@egjs/vue-flicking";
+import { GridLayout } from "@egjs/vue-flicking";
 
 export default {
   components: {
-    Loading: Loading,
     GridLayout: GridLayout,
   }
 }
@@ -51,7 +58,8 @@ See [demo source](https://github.com/naver/egjs-infinitegrid/tree/master/package
     @layout-complete="onLayoutComplete"
     @image-error="onImageError"
   >
-    <Loading><div>Loading</div></Loading>
+    <!-- Loading element via named slot -->
+    <div slot="loading">Loading...</div>
     <div class="item" v-for="(item, i) in list" :key="item.key"
       @click="remove(i)">
       <div class="thumbnail">
