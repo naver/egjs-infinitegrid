@@ -24,7 +24,6 @@
 </template>
 <script>
 import infinitegrid from "../../src/index";
-console.log(infinitegrid)
 
 export default {
     components: {
@@ -62,11 +61,9 @@ export default {
 			window.a = this.$refs.ig;
 
 			startLoading();
-			console.log("start")
 			this.list = list.concat(items);
         },
         onLayoutComplete({ isLayout }) {
-			console.log("complete")
             if (!isLayout) {
                 this.$refs.ig.endLoading();
             }
