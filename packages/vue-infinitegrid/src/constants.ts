@@ -1,1 +1,0 @@
-export const LOADING_COMPONENT_NAME = "IG_LOADING";

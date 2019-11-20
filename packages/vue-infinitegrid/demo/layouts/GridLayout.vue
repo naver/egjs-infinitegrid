@@ -10,7 +10,7 @@
         @layout-complete="onLayoutComplete"
         @image-error="onImageError"
     >
-        <Loading><div>Loading</div></Loading>
+        <div slot="loading">Loading...</div>
         <div class="item" v-for="(item, i) in list" :key="item.key"
             @click="remove(i)">
             <div class="thumbnail">
@@ -56,12 +56,12 @@ export default {
         remove(index) {
             this.list.splice(index, 1);
         },
-        onAppend({ groupKey }) {
+        onAppend({ groupKey, startLoading}) {
             const list = this.list;
             const items = this.loadItems(parseFloat(groupKey || 0) + 1, 5);
 			window.a = this.$refs.ig;
 
-			this.$refs.ig.startLoading();
+			startLoading();
 			console.log("start")
 			this.list = list.concat(items);
         },

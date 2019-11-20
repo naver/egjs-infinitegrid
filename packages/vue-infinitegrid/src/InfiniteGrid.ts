@@ -13,7 +13,6 @@ import NativeInfiniteGrid, {
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { InfiniteGridType } from "./types";
 import { VNode, VNodeData, CreateElement } from "vue";
-import { LOADING_COMPONENT_NAME } from "./constants";
 
 @Component({})
 export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
@@ -74,7 +73,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 		if (this.status) {
 			nativeIG.setStatus(this.status, true, this.$_getElements());
 		} else {
-			nativeIG.beforeSync(this.$_toItems().filter(val => !val.isLoading));
+			nativeIG.beforeSync(this.$_toItems());
 			nativeIG.layout(true);
 		}
 	}
@@ -84,21 +83,13 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 		const layout = this.$_layout;
 		const elements = this.$_getElements();
 
-		if (this.$slots.default) {
-			const loading = this.$slots.default
-				.map((child, index) => ({
-					child: child as any,
-					index,
-				}))
-				.filter(({ child }) => child.fnOptions && child.fnOptions.name === "Loading")[0];
-			if (loading && nativeIG.isLoading()) {
-				const loadingElement = elements.splice(elements.length - 1, 1)[0];
+		if (this.$slots.loading && nativeIG.isLoading()) {
+			const loadingElement = elements.splice(elements.length - 1, 1)[0];
 
-				nativeIG.setLoadingBar({
-					append: loadingElement,
-					prepend: loadingElement,
-				});
-			}
+			nativeIG.setLoadingBar({
+				append: loadingElement,
+				prepend: loadingElement,
+			});
 		}
 
 		nativeIG.sync(elements);
@@ -121,8 +112,8 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 				: (this.$_layout || result);
 
 			visibleChildren = nativeIG.getRenderingItems().map(item => item.vnode);
-			if (nativeIG.isLoading()) {
-				visibleChildren.push(...items.filter(val => val.isLoading).map(val => val.vnode));
+			if (this.$slots.loading && nativeIG.isLoading()) {
+				visibleChildren.push(...this.$slots.loading);
 			}
 		} else {
 			const groups = categorize(items);
@@ -214,8 +205,6 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 				groupKey,
 				itemKey,
 				vnode: child,
-				isLoading: (child as any).fnOptions
-					&& (child as any).fnOptions.name === LOADING_COMPONENT_NAME,
 			};
 		});
 	}
