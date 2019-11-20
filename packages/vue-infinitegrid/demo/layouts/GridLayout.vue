@@ -37,7 +37,7 @@ export default {
             loading: false,
             list: [],
         };
-	}, 
+	},
     methods: {
         loadItems(groupKey, num) {
             const items = [];
