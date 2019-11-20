@@ -98,16 +98,16 @@ export default {
     remove(index) {
       this.list.splice(index, 1);
     },
-    onAppend({ groupKey }) {
+    onAppend({ groupKey, startLoading }) {
       const list = this.list;
       const items = this.loadItems(parseFloat(groupKey || 0) + 1, 5);
 
-      this.$refs.ig.startLoading();
+      startLoading();
       this.list = list.concat(items);
     },
-    onLayoutComplete({ isLayout }) {
+    onLayoutComplete({ isLayout, endLoading }) {
       if (!isLayout) {
-        this.$refs.ig.endLoading();
+        endLoading();
       }
     },
     onImageError({ totalIndex }) {
