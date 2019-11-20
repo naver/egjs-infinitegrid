@@ -1,6 +1,6 @@
 {
   "name": "@egjs/svelte-infinitegrid",
-  "version": "3.0.0-beta6",
+  "version": "3.0.0",
   "description": "A Svelte component that can easily use egjs-infinitegrid",
   "sideEffects": false,
   "types": "src/index.d.ts",
