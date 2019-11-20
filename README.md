@@ -37,13 +37,13 @@ eg.infiniteGrid benchmark: append item performance with [masonry](https://masonr
 |[**@egjs/ngx-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/ngx-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/ngx-infinitegrid.svg?style=flat-square&color=dd0031&label=%F0%9F%94%96" alt="version" /></a>| [Angular](https://angular.io/) port of @egjs/infinitegrid|
 |[**@egjs/react-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/react-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/react-infinitegrid.svg?style=flat-square&color=00d8ff&label=%F0%9F%94%96" alt="version" /></a>|[React](https://reactjs.org/) port of @egjs/infinitegrid|
 |[**@egjs/vue-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/vue-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/vue-infinitegrid.svg?style=flat-square&color=42b883&label=%F0%9F%94%96" alt="version" /></a>| [Vue.js](https://vuejs.org/v2/guide/index.html) port of @egjs/infinitegrid|
-|[**@egjs/svelte-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/svelte-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/svelte-infinitegrid.svg?style=flat-square&color=dd0031&label=%F0%9F%94%96" alt="version" /></a>| [Svelte](https://svelte.dev/) port of @egjs/infinitegrid|
+|[**@egjs/svelte-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/svelte-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/svelte-infinitegrid.svg?style=flat-square&color=ff3d00&label=%F0%9F%94%96" alt="version" /></a>| [Svelte](https://svelte.dev/) port of @egjs/infinitegrid|
 
 
 
 ## Download and Installation
 
-Download dist files from repo directly or install it via npm. 
+Download dist files from repo directly or install it via npm.
 
 ### Packaged version
 > Packaged version is not an official distribution.
