@@ -1,0 +1,73 @@
+{
+  "name": "@egjs/svelte-infinitegrid",
+  "version": "3.0.0",
+  "description": "A Svelte component that can easily use egjs-infinitegrid",
+  "sideEffects": false,
+  "types": "src/index.d.ts",
+  "module": "dist/inifnitegrid.esm.js",
+  "main": "dist/infinitegrid.cjs.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naver/egjs-infinitegrid"
+  },
+  "author": {
+    "name": "NAVER Corp."
+  },
+  "namespace": {
+    "eg": "eg"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/naver/egjs-infinitegrid",
+  "peerDependencies": {
+    "react": "^15.4.2 || ^16.0.0 || ^17.0.0",
+    "react-dom": "^15.4.2 || ^16.0.0 || ^17.0.0"
+  },
+  "keywords": [
+    "svelte",
+    "virtual",
+    "virtualized",
+    "virtual-scroll",
+    "virtual-list",
+    "infinitegrid",
+    "infinite",
+    "scroll",
+    "layout",
+    "DOM",
+    "html",
+    "gallery",
+    "grid",
+    "pinterest",
+    "masonry",
+    "GridLayout",
+    "JustifiedLayout",
+    "PackingLayout",
+    "FrameLayout",
+    "SquareLayout"
+  ],
+  "devDependencies": {
+    "@egjs/build-helper": "0.0.5",
+    "@pyoner/svelte-ts-preprocess": "^1.2.1",
+    "rollup": "^1.12.0",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-svelte": "^5.0.3",
+    "rollup-plugin-terser": "^5.1.2",
+    "scenejs": "^1.1.5",
+    "sirv-cli": "^0.4.4",
+    "svelte": "^3.12.0",
+    "svelte-preprocess": "^3.2.2",
+    "tslib": "^1.10.0",
+    "typescript": "^3.6.4"
+  },
+  "dependencies": {
+    "@egjs/infinitegrid": "^3.6.0"
+  },
+  "scripts": {
+    "build": "rollup -c rollup.build.config.js",
+    "dev": "rollup -c -w",
+    "start": "sirv public --single",
+    "start:dev": "sirv public --single --dev",
+    "build:dev": "rollup -c"
+  }
+}
