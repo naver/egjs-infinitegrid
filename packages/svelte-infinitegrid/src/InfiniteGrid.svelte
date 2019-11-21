@@ -3,7 +3,7 @@
     onMount,
     onDestroy,
     beforeUpdate,
-    tick,
+    afterUpdate,
     createEventDispatcher
   } from "svelte";
   import VanillaInfiniteGrid, {
@@ -40,6 +40,7 @@
   let ig: VanillaInfiniteGrid;
   let hasLoadingElement = true;
   let attributes = {};
+  let isFirstMount = true;
 
   declare var $$props: any;
 
@@ -108,17 +109,6 @@
     } else {
       ig.setLoadingBar();
     }
-    tick().then(() => {
-      const currentNextFunction = nextFunction;
-      nextFunction = () => {};
-      ig.sync(getElements());
-
-      if (layoutState) {
-        layoutState = "";
-        ig.layout(layoutState === "relayout");
-      }
-      currentNextFunction();
-    });
   });
   onMount(() => {
     ig = new VanillaInfiniteGrid(viewer, {
@@ -151,6 +141,21 @@
       beforeSync(items);
       ig.layout(true);
     }
+  });
+  afterUpdate(() => {
+    if (isFirstMount) {
+      isFirstMount = false;
+      return;
+    }
+    const currentNextFunction = nextFunction;
+    nextFunction = () => {};
+    ig.sync(getElements());
+
+    if (layoutState) {
+      layoutState = "";
+      ig.layout(layoutState === "relayout");
+    }
+    currentNextFunction();
   });
   onDestroy(() => {
     ig.destroy();
