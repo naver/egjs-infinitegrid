@@ -33,7 +33,7 @@ Vue.use(VueInfiniteGrid);
 ### Local registration
 ```js
 // All available layouts are in src/layouts
-import { GridLayout } from "@egjs/vue-flicking";
+import { GridLayout } from "@egjs/vue-infinitegrid";
 
 export default {
   components: {
@@ -122,7 +122,7 @@ export default {
 See [CONTRIBUTING.md](https://github.com/naver/egjs-infinitegrid/blob/master/CONTRIBUTING.md)
 
 ## Feedback
-Please file an [issue](https://github.com/naver/egjs-flicking/issues).
+Please file an [issue](https://github.com/naver/egjs-infinitegrid/issues).
 
 
 ## License
