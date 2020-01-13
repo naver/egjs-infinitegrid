@@ -79,24 +79,12 @@ export default class SquareLayout extends FrameLayout {
 	constructor(options: Partial<ISquareLayoutOptions> = {}) {
 		super(options);
 	}
-	protected _checkItemSize() {
-		const column = this.options.column;
-
-		if (!column) {
-			super._checkItemSize();
-			return;
-		}
-		const margin = this.options.margin;
-
-		// if itemSize is not in options, caculate itemSize from size.
-		this._itemSize = (this._size + margin) / column - margin;
-	}
 	protected _layout(
 		items: IInfiniteGridItem[],
 		outline: number[] = [],
 		isAppend: boolean = false,
 	) {
-		const itemSize = this._getItemSize() as number;
+		const itemSize = this._getSquareSize(items[0]) as number;
 		const margin = this.options.margin;
 		const columnLength = this.options.column ||
 			Math.floor((this._size + margin) / (itemSize + margin)) || 1;
@@ -177,5 +165,25 @@ export default class SquareLayout extends FrameLayout {
 			});
 		}
 		return result;
+	}
+	private _getSquareSize(item: IInfiniteGridItem) {
+		const { column, margin, itemSize } = this.options;
+
+		if (column) {
+			// if column is in options, caculate itemSize from column.
+			this._itemSize = (this._size + margin) / column - margin;
+		} else if (itemSize) {
+			this._itemSize = this.options.itemSize;
+		} else {
+			const sizeName = this._style.size2;
+			let frameSize = this._shapes[sizeName];
+
+			if (!frameSize) {
+				// if frameSize is 0, caculate frameSize from item.size.
+				frameSize = Math.floor((this._size + margin) / (item.size![sizeName]! + margin) / getColumn(item));
+			}
+			this._itemSize = (this._size + margin) / frameSize - margin;
+		}
+		return this._itemSize;
 	}
 }
