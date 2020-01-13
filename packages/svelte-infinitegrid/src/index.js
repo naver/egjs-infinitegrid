@@ -1,4 +1,4 @@
-import InfiniteGrid from "./InfiniteGrid.svelte";
+import InfiniteGrid from "./InfiniteGrid";
 import GridLayout from "./layouts/GridLayout";
 import JustifiedLayout from "./layouts/JustifiedLayout";
 import FrameLayout from "./layouts/FrameLayout";

@@ -161,67 +161,8 @@
     ig.destroy();
   });
 
-  export function isLoading() {
-    return ig.isLoading();
-  }
-  export function isProcessing() {
-    return ig.isProcessing();
-  }
-  export function startLoading(
-    isAppend?: boolean,
-    userStyle: StyleType = { display: "block" }
-  ) {
-    ig.startLoading(isAppend, userStyle);
-    return this;
-  }
-  export function endLoading(userStyle: StyleType = { display: "none" }) {
-    ig.endLoading(userStyle);
-    return this;
-  }
-  export function getItem(
-    groupIndex: HTMLElement | number = 0,
-    itemIndex?: number
-  ): IInfiniteGridItem | undefined {
-    return ig.getItem(groupIndex, itemIndex);
-  }
-  export function updateItem(groupIndex?: number, itemIndex?: number) {
-    ig.updateItem(groupIndex, itemIndex);
-    return this;
-  }
-  export function updateItems() {
-    ig.updateItems();
-    return this;
-  }
-  export function moveTo(index: number, itemIndex = 0) {
-    ig.moveTo(index, itemIndex);
-    return this;
-  }
-  export function layout(isRelayout = true) {
-    ig.layout(isRelayout);
-    return this;
-  }
-  export function getStatus(
-    startKey?: string | number,
-    endKey?: string | number
-  ): IInfiniteGridStatus {
-    return ig.getStatus(startKey, endKey);
-  }
-  export function setStatus(
-    status: IInfiniteGridStatus,
-    applyScrollPos = true,
-    syncElements?: HTMLElement[]
-  ) {
-    ig.setStatus(status, applyScrollPos, syncElements);
-    return this;
-  }
-  export function getItems(includeCached = false): IInfiniteGridItem[] {
-    return ig.getItems(includeCached);
-  }
-  export function getGroupKeys(includeCached?: boolean) {
-    return ig.getGroupKeys(includeCached);
-  }
-  export function getLoadingBar(isAppend?: boolean) {
-    return ig.getLoadingBar(isAppend);
+  export function getInstance() {
+    return ig;
   }
 </script>
 
