@@ -27,7 +27,7 @@ function getColumn(item: IInfiniteGridItem) {
 		if (dataset) {
 			column = parseInt(dataset.column!, 10) || 1;
 		} else {
-			column = parseInt(item.el.getAttribute("column")!, 10) || 1;
+			column = parseInt(item.el.getAttribute("data-column")!, 10) || 1;
 		}
 	} else {
 		column = 1;
