@@ -22,13 +22,7 @@ function getColumn(item: IInfiniteGridItem) {
 	let column = 0;
 
 	if (item.el) {
-		const dataset = item.el.dataset;
-
-		if (dataset) {
-			column = parseInt(dataset.column!, 10) || 1;
-		} else {
-			column = parseInt(item.el.getAttribute("data-column")!, 10) || 1;
-		}
+		column = parseInt(item.el.getAttribute("data-column")!, 10) || 1;
 	} else {
 		column = 1;
 	}
