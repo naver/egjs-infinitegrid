@@ -74,7 +74,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 
 			visibleChildren = ig.getRenderingItems().map((item: IItem) => item.jsx);
 
-			if (this.props.loading && ig.isLoading()) {
+			if (this.props.loading) {
 				visibleChildren.push(<LoadingBar key="loadingBar" loading={this.props.loading!} />);
 			}
 		} else {
@@ -98,14 +98,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 		const layout = state.layout;
 		const elements = this.getElements();
 
-		if (this.props.loading && ig.isLoading()) {
-			const loadingElement = elements.splice(elements.length - 1, 1)[0];
-
-			ig.setLoadingBar({
-				append: loadingElement,
-				prepend: loadingElement,
-			});
-		}
+		this.setLoadingElement();
 		ig.sync(elements);
 
 		if (layout) {
@@ -137,6 +130,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 
 		const elements = this.getElements();
 
+		this.setLoadingElement();
 		if (this.props.status) {
 			ig.setStatus(this.props.status, true, elements);
 		} else {
@@ -165,9 +159,6 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 			{children}
 		</ContainerTag>;
 	}
-	private getElements(): HTMLElement[] {
-		return [].slice.call((this.containerElement || this.wrapperElement).children);
-	}
 	private toItems() {
 		const {
 			children,
@@ -180,6 +171,30 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 
 			return { groupKey, itemKey, jsx: child };
 		});
+	}
+	private getElements(): HTMLElement[] {
+		const elements = [].slice.call((this.containerElement || this.wrapperElement).children);
+
+		if (this.props.loading) {
+			return elements.slice(0, -1);
+		}
+		return elements;
+	}
+	private setLoadingElement() {
+		const ig = this.ig;
+
+		if (this.props.loading) {
+			const loadingElement = (this.containerElement || this.wrapperElement).lastElementChild as HTMLElement;
+
+			if (loadingElement) {
+				ig.setLoadingBar({
+					append: loadingElement,
+					prepend: loadingElement,
+				});
+				return;
+			}
+		}
+		ig.setLoadingBar();
 	}
 }
 
