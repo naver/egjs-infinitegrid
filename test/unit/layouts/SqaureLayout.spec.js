@@ -77,14 +77,17 @@ describe("SquareLayout Test", function () {
 			},
 		].forEach(({ column, dataColumn, expectSize1, expectSize2 }) => {
 			it(`test itemSize when column is ${column} and data-column is ${dataColumn}`, function () {
+				// Given
 				// VIEWPORT.width = 800
 				const layout = new Layout({
 					column: column,
 					margin: 5,
 				}).setSize(VIEWPORT.width);
 
+				// When
 				const { items } = layout.append(getSquareLayoutMockItems(dataColumn), []);
 
+				// Then
 				expect(items[0].rect.width).to.be.equals(expectSize1);
 				expect(items[1].rect.width).to.be.equals(expectSize2);
 			});
