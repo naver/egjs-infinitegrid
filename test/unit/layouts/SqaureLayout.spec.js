@@ -4,7 +4,7 @@ import { makeItems, VIEWPORT } from "../helper/data";
 import { checkMargin, checkDirection, expectConnectItems, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline } from "../helper/common";
 import Layout from "../../../src/layouts/SquareLayout";
 
-function gettMockItems(column) {
+function getMockItems(column) {
 	return [
 		{
 			size: { width: 100, height: 100 },
@@ -101,7 +101,7 @@ describe("SquareLayout Test", function () {
 				}).setSize(VIEWPORT.width);
 
 				// When
-				const { items } = layout.append(gettMockItems(dataColumn), []);
+				const { items } = layout.append(getMockItems(dataColumn), []);
 
 				// Then
 				expect(items[0].rect.width).to.be.equals(expectSize1);
@@ -145,7 +145,7 @@ describe("SquareLayout Test", function () {
 					margin: 5,
 				}).setSize(VIEWPORT.width);
 
-				const { items } = layout.append(getSquareLayoutMockItems(dataColumn), []);
+				const { items } = layout.append(getMockItems(dataColumn), []);
 
 				expect(items[0].rect.width).to.be.equals(expectSize1);
 				expect(items[1].rect.width).to.be.equals(expectSize2);
@@ -172,7 +172,7 @@ describe("SquareLayout Test", function () {
 					margin: 5,
 				}).setSize(VIEWPORT.width);
 
-				const { items } = layout.append(getSquareLayoutMockItems(dataColumn), []);
+				const { items } = layout.append(getMockItems(dataColumn), []);
 
 				expect(items[0].rect.width).to.be.equals(expectSize1);
 				expect(items[1].rect.width).to.be.equals(expectSize2);
