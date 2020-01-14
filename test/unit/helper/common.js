@@ -16,22 +16,7 @@ export function checkDirection(callback, callback2 = callback) {
 	callback(false);
 	callback2(true);
 }
-export function getSquareLayoutMockItems(column) {
-	return [
-		{
-			size: { width: 100, height: 100 },
-			el: {
-				getAttribute: () => column,
-			},
-		},
-		{
-			size: { width: 100, height: 100 },
-			el: {
-				getAttribute: () => 1,
-			},
-		},
-	];
-}
+
 export function expectOutlineIndex(layout, group) {
 	const { start, end } = group.outlines;
 	const { margin, direction } = layout.options;

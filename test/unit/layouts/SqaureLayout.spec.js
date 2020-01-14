@@ -1,9 +1,25 @@
 /* eslint-disable */
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "../helper/data";
-import { checkMargin, checkDirection, expectConnectItems, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline, getSquareLayoutMockItems} from "../helper/common";
+import { checkMargin, checkDirection, expectConnectItems, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline } from "../helper/common";
 import Layout from "../../../src/layouts/SquareLayout";
 
+function gettMockItems(column) {
+	return [
+		{
+			size: { width: 100, height: 100 },
+			el: {
+				getAttribute: () => column,
+			},
+		},
+		{
+			size: { width: 100, height: 100 },
+			el: {
+				getAttribute: () => 1,
+			},
+		},
+	];
+}
 
 describe("SquareLayout Test", function () {
 	const items = makeItems(20);
@@ -85,7 +101,7 @@ describe("SquareLayout Test", function () {
 				}).setSize(VIEWPORT.width);
 
 				// When
-				const { items } = layout.append(getSquareLayoutMockItems(dataColumn), []);
+				const { items } = layout.append(gettMockItems(dataColumn), []);
 
 				// Then
 				expect(items[0].rect.width).to.be.equals(expectSize1);
