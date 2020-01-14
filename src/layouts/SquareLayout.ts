@@ -177,12 +177,10 @@ export default class SquareLayout extends FrameLayout {
 			this._itemSize = this.options.itemSize;
 		} else {
 			const sizeName = this._style.size2;
-			let frameSize = this._shapes[sizeName];
-
-			if (!frameSize) {
-				// if frameSize is 0, caculate frameSize from item.size.
-				frameSize = Math.floor((this._size + margin) / (item.size![sizeName]! + margin) / getColumn(item));
-			}
+			// if frameSize is 0, caculate frameSize from item.size.
+			const frameSize
+				= this._shapes[sizeName]
+				|| Math.floor((this._size + margin) / (item.size![sizeName]! + margin) / getColumn(item));
 			this._itemSize = (this._size + margin) / frameSize - margin;
 		}
 		return this._itemSize;

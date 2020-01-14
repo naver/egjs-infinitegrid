@@ -110,7 +110,7 @@ describe("SquareLayout Test", function () {
 		});
 		[
 			{
-				// 7?
+				// column 7
 				itemSize: 100,
 				dataColumn: 1,
 				expectSize1: 100,
