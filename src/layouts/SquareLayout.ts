@@ -47,7 +47,7 @@ export interface ISquareLayoutOptions extends IFrameLayoutInterface {
  * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
  * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</ko>
  * @param {Boolean} [options.itemSize=0] The size of the items. If it is 0, it is calculated as the size of the first item in items. (priority: `column` > `itemSize` > element's size)<ko> 아이템의 사이즈. 만약 아이템 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. (우선순위: `column` > `itemSize` > 엘리먼트의 사이즈) </ko>
- * @param {Boolean} [options.column=0] The number of columns in the layout. If it is 0, the column is returned by `itemSize`.  (priority: `column` > `itemSize` > element's size)<ko> 레이아웃의 열의 개수 만약 column이 0이면, `itemSize`로 열을 구합니다. (우선순위: `column` > `itemSize` > 엘리먼트의 사이즈) </ko>
+ * @param {Boolean} [options.column=0] The number of columns in the layout. If it is 0, the column is returned by `itemSize`.  (priority: `column` > `itemSize` > element's size)<ko> 레이아웃의 열의 개수. 만약 column이 0이면, `itemSize`로 열을 구합니다. (우선순위: `column` > `itemSize` > 엘리먼트의 사이즈) </ko>
  * @example
 ```
 <script>
