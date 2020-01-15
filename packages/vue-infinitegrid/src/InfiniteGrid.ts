@@ -70,6 +70,8 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 		const nativeIG = this.$_nativeInfiniteGrid;
 		nativeIG.setLayout(this.layoutType, this.layoutOptions);
 
+		this.$_setLoadingElement();
+
 		if (this.status) {
 			nativeIG.setStatus(this.status, true, this.$_getElements());
 		} else {
@@ -83,15 +85,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 		const layout = this.$_layout;
 		const elements = this.$_getElements();
 
-		if (this.$slots.loading && nativeIG.isLoading()) {
-			const loadingElement = elements.splice(elements.length - 1, 1)[0];
-
-			nativeIG.setLoadingBar({
-				append: loadingElement,
-				prepend: loadingElement,
-			});
-		}
-
+		this.$_setLoadingElement();
 		nativeIG.sync(elements);
 
 		if (layout) {
@@ -185,8 +179,12 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 
 	private $_getElements(): HTMLElement[] {
 		const container = this.$refs && this.$refs[CONTAINER_CLASSNAME] as HTMLElement;
+		const elements =  [].slice.call((container || this.$_wrapperElement).children);
 
-		return [].slice.call((container || this.$_wrapperElement).children);
+		if (this.$slots.loading) {
+			return elements.slice(0, -1);
+		}
+		return elements;
 	}
 
 	private $_toItems(): IItem[] {
@@ -207,6 +205,23 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 				vnode: child,
 			};
 		});
+	}
+	private $_setLoadingElement() {
+		const ig = this.$_nativeInfiniteGrid;
+
+		if (this.$slots.loading) {
+			const container = this.$refs && this.$refs[CONTAINER_CLASSNAME] as HTMLElement;
+			const loadingElement = (container || this.$_wrapperElement).lastElementChild as HTMLElement;
+
+			if (loadingElement) {
+				ig.setLoadingBar({
+					append: loadingElement,
+					prepend: loadingElement,
+				});
+				return;
+			}
+		}
+		ig.setLoadingBar();
 	}
 }
 
