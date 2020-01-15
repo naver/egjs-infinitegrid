@@ -139,14 +139,17 @@ describe("SquareLayout Test", function () {
 			},
 		].forEach(({ itemSize, dataColumn, expectSize1, expectSize2 }) => {
 			it(`test itemSize when itemSize is ${itemSize} and data-column is ${dataColumn}`, function () {
+				// Given
 				// VIEWPORT.width = 800
 				const layout = new Layout({
 					itemSize,
 					margin: 5,
 				}).setSize(VIEWPORT.width);
 
+				// When
 				const { items } = layout.append(getMockItems(dataColumn), []);
 
+				// Then
 				expect(items[0].rect.width).to.be.equals(expectSize1);
 				expect(items[1].rect.width).to.be.equals(expectSize2);
 			});
@@ -166,14 +169,17 @@ describe("SquareLayout Test", function () {
 			},
 		].forEach(({ itemSize, dataColumn, expectSize1, expectSize2 }) => {
 			it(`test itemSize when only data-column is ${dataColumn}`, function () {
+				// Given
 				// VIEWPORT.width = 800
 				const layout = new Layout({
 					itemSize,
 					margin: 5,
 				}).setSize(VIEWPORT.width);
 
+				// When
 				const { items } = layout.append(getMockItems(dataColumn), []);
 
+				// Then
 				expect(items[0].rect.width).to.be.equals(expectSize1);
 				expect(items[1].rect.width).to.be.equals(expectSize2);
 			});
