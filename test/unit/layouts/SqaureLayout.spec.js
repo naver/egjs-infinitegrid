@@ -153,7 +153,7 @@ describe("SquareLayout Test", function () {
 		});
 		[
 			{
-				// 7?
+				// column 7
 				dataColumn: 1,
 				expectSize1: 110,
 				expectSize2: 110,
