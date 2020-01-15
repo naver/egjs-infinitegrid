@@ -19,18 +19,10 @@ function getColumn(item: IInfiniteGridItem) {
 	if (item.column) {
 		return item.column;
 	}
-	let column = 0;
+	let column = 1;
 
 	if (item.el) {
-		const dataset = item.el.dataset;
-
-		if (dataset) {
-			column = parseInt(dataset.column!, 10) || 1;
-		} else {
-			column = parseInt(item.el.getAttribute("column")!, 10) || 1;
-		}
-	} else {
-		column = 1;
+		column = parseInt(item.el.getAttribute("data-column")!, 10) || 1;
 	}
 	item.column = column;
 	return column;
