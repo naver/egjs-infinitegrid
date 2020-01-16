@@ -1,10 +1,25 @@
 /* eslint-disable */
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "../helper/data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline} from "../helper/common";
+import { checkMargin, checkDirection, expectConnectItems, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline } from "../helper/common";
 import Layout from "../../../src/layouts/SquareLayout";
-import { getStyleNames } from "../../../src/utils";
 
+function getMockItems(column) {
+	return [
+		{
+			size: { width: 100, height: 100 },
+			el: {
+				getAttribute: () => column,
+			},
+		},
+		{
+			size: { width: 100, height: 100 },
+			el: {
+				getAttribute: () => 1,
+			},
+		},
+	];
+}
 
 describe("SquareLayout Test", function () {
 	const items = makeItems(20);
@@ -47,6 +62,127 @@ describe("SquareLayout Test", function () {
 
 			// Then
 			expectSameAppendPrepend(layout, items);
+		});
+	});
+	describe("check itemSize in SquareLayout", function () {
+		[
+			{
+				column: 1,
+				dataColumn: 1,
+				expectSize1: 800,
+				expectSize2: 800,
+			},
+			{
+				column: 1,
+				dataColumn: 2,
+				expectSize1: 800,
+				expectSize2: 800,
+			},
+			{
+				column: 2,
+				dataColumn: 1,
+				// (800 - 5) / 2
+				expectSize1: 397.5,
+				expectSize2: 397.5,
+			},
+			{
+				column: 2,
+				dataColumn: 2,
+				expectSize1: 800,
+				expectSize2: 397.5,
+			},
+		].forEach(({ column, dataColumn, expectSize1, expectSize2 }) => {
+			it(`test itemSize when column is ${column} and data-column is ${dataColumn}`, function () {
+				// Given
+				// VIEWPORT.width = 800
+				const layout = new Layout({
+					column: column,
+					margin: 5,
+				}).setSize(VIEWPORT.width);
+
+				// When
+				const { items } = layout.append(getMockItems(dataColumn), []);
+
+				// Then
+				expect(items[0].rect.width).to.be.equals(expectSize1);
+				expect(items[1].rect.width).to.be.equals(expectSize2);
+			});
+		});
+		[
+			{
+				// column 7
+				itemSize: 100,
+				dataColumn: 1,
+				expectSize1: 100,
+				expectSize2: 100,
+			},
+			{
+				// column 3
+				itemSize: 200,
+				dataColumn: 2,
+				expectSize1: 405,
+				expectSize2: 200,
+			},
+			{
+				// column 3
+				itemSize: 200,
+				dataColumn: 1,
+				expectSize1: 200,
+				expectSize2: 200,
+			},
+			{
+				// column 7
+				itemSize: 100,
+				dataColumn: 2,
+				expectSize1: 205,
+				expectSize2: 100,
+			},
+		].forEach(({ itemSize, dataColumn, expectSize1, expectSize2 }) => {
+			it(`test itemSize when itemSize is ${itemSize} and data-column is ${dataColumn}`, function () {
+				// Given
+				// VIEWPORT.width = 800
+				const layout = new Layout({
+					itemSize,
+					margin: 5,
+				}).setSize(VIEWPORT.width);
+
+				// When
+				const { items } = layout.append(getMockItems(dataColumn), []);
+
+				// Then
+				expect(items[0].rect.width).to.be.equals(expectSize1);
+				expect(items[1].rect.width).to.be.equals(expectSize2);
+			});
+		});
+		[
+			{
+				// column 7
+				dataColumn: 1,
+				expectSize1: 110,
+				expectSize2: 110,
+			},
+			{
+				// column 3
+				dataColumn: 2,
+				expectSize1: (800 + 5) / 3 * 2 - 5,
+				expectSize2: (800 + 5) / 3 - 5,
+			},
+		].forEach(({ itemSize, dataColumn, expectSize1, expectSize2 }) => {
+			it(`test itemSize when only data-column is ${dataColumn}`, function () {
+				// Given
+				// VIEWPORT.width = 800
+				const layout = new Layout({
+					itemSize,
+					margin: 5,
+				}).setSize(VIEWPORT.width);
+
+				// When
+				const { items } = layout.append(getMockItems(dataColumn), []);
+
+				// Then
+				expect(items[0].rect.width).to.be.equals(expectSize1);
+				expect(items[1].rect.width).to.be.equals(expectSize2);
+			});
 		});
 	});
 	describe("append test", function () {

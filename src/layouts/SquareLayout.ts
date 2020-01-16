@@ -38,7 +38,8 @@ export interface ISquareLayoutOptions extends IFrameLayoutInterface {
  * @param {Object} [options] The option object of eg.InfiniteGrid.SquareLayout module <ko>eg.InfiniteGrid.SquareLayout 모듈의 옵션 객체</ko>
  * @param {String} [options.margin=0] Margin used to create space around items <ko>아이템들 사이의 공간</ko>
  * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (false: vertical, true: horizontal) <ko>스크롤 이동 방향 (false: 세로방향, true: 가로방향)</ko>
- * @param {Boolean} [options.itemSize=0] The size of the items. If it is 0, it is calculated as the size of the first item in items. <ko> 아이템의 사이즈. 만약 아이템 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. </ko>
+ * @param {Boolean} [options.itemSize=0] The size of the items. If it is 0, it is calculated as the size of the first item in items. (priority: `column` > `itemSize` > element's size)<ko> 아이템의 사이즈. 만약 아이템 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. (우선순위: `column` > `itemSize` > 엘리먼트의 사이즈) </ko>
+ * @param {Boolean} [options.column=0] The number of columns in the layout. If it is 0, the column is returned by `itemSize`.  (priority: `column` > `itemSize` > element's size)<ko> 레이아웃의 열의 개수. 만약 column이 0이면, `itemSize`로 열을 구합니다. (우선순위: `column` > `itemSize` > 엘리먼트의 사이즈) </ko>
  * @example
 ```
 <script>
@@ -71,24 +72,12 @@ export default class SquareLayout extends FrameLayout {
 	constructor(options: Partial<ISquareLayoutOptions> = {}) {
 		super(options);
 	}
-	protected _checkItemSize() {
-		const column = this.options.column;
-
-		if (!column) {
-			super._checkItemSize();
-			return;
-		}
-		const margin = this.options.margin;
-
-		// if itemSize is not in options, caculate itemSize from size.
-		this._itemSize = (this._size + margin) / column - margin;
-	}
 	protected _layout(
 		items: IInfiniteGridItem[],
 		outline: number[] = [],
 		isAppend: boolean = false,
 	) {
-		const itemSize = this._getItemSize() as number;
+		const itemSize = this._getSquareSize(items[0]) as number;
 		const margin = this.options.margin;
 		const columnLength = this.options.column ||
 			Math.floor((this._size + margin) / (itemSize + margin)) || 1;
@@ -169,5 +158,23 @@ export default class SquareLayout extends FrameLayout {
 			});
 		}
 		return result;
+	}
+	private _getSquareSize(item: IInfiniteGridItem) {
+		const { column, margin, itemSize } = this.options;
+
+		if (column) {
+			// if column is in options, caculate itemSize from column.
+			this._itemSize = (this._size + margin) / column - margin;
+		} else if (itemSize) {
+			this._itemSize = this.options.itemSize;
+		} else {
+			const sizeName = this._style.size2;
+			// if frameSize is 0, caculate frameSize from item.size.
+			const frameSize
+				= this._shapes[sizeName]
+				|| Math.floor((this._size + margin) / (item.size![sizeName]! + margin) / getColumn(item));
+			this._itemSize = (this._size + margin) / frameSize - margin;
+		}
+		return this._itemSize;
 	}
 }

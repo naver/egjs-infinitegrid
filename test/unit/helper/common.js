@@ -1,4 +1,4 @@
-import {getStyleNames} from "../../../src/utils";
+import { getStyleNames } from "../../../src/utils";
 
 /* global expect */
 function approximate(obj) {
@@ -16,10 +16,11 @@ export function checkDirection(callback, callback2 = callback) {
 	callback(false);
 	callback2(true);
 }
+
 export function expectOutlineIndex(layout, group) {
-	const {start, end} = group.outlines;
-	const {margin, direction} = layout.options;
-	const {startPos1, size1} = getStyleNames(direction);
+	const { start, end } = group.outlines;
+	const { margin, direction } = layout.options;
+	const { startPos1, size1 } = getStyleNames(direction);
 	const minPos = Math.min(...group.items.map(item => item.rect[startPos1]));
 	const maxPos = Math.min(...group.items.map(item => (item.rect[size1] || item.size[size1]) + item.rect[startPos1]));
 
@@ -63,7 +64,7 @@ export function expectNoOutline(layout, items) {
 	expect(group4.outlines.end).to.deep.equal(group5.outlines.end);
 	expect(group6.outlines.end).to.deep.equal(group6.outlines.end);
 }
-export function expectConnectItems({item1, item2, margin = 0, horizontal = false}) {
+export function expectConnectItems({ item1, item2, margin = 0, horizontal = false }) {
 	if (horizontal === false) {
 		expect(item1.rect.top + (item1.rect.height || item1.size.height) + margin).to.be.equal(item2.rect.top);
 	} else {
@@ -74,7 +75,7 @@ export function expectConnectGroupsOutline(group1, group2) {
 	expect(group1.outlines.end.length).to.be.equal(group2.outlines.start.length);
 	expect(group1.outlines.end).to.deep.equal(group2.outlines.start);
 }
-export function expectConnectGroups({group1, items1, group2, items2, margin = 0, isConnect = true, horizontal = false}) {
+export function expectConnectGroups({ group1, items1, group2, items2, margin = 0, isConnect = true, horizontal = false }) {
 	const end = group1.outlines.end;
 	const start = group2.outlines.start;
 	const length = end.length;
@@ -95,6 +96,6 @@ export function expectConnectGroups({group1, items1, group2, items2, margin = 0,
 			expect(end[i]).to.be.equal(start[i]);
 		} else {
 			expect(start[i]).to.be.at.least(end[i]);
-		}		
+		}
 	}
 }
