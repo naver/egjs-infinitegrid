@@ -427,10 +427,16 @@ class InfiniteGrid extends Component {
 			} else {
 				// no items, no visible items
 				if (hasChildren) {
+					let groupKey: string | null | undefined = children[0].getAttribute("data-groupkey");
+
+					if (typeof groupKey !== "string") {
+						groupKey = undefined;
+					}
 					this._insert({
 						elements: children,
 						isAppend: true,
 						hasChildren: true,
+						groupKey,
 					});
 				} else {
 					if (renderer.getContainerSize()) {
