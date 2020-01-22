@@ -209,6 +209,7 @@ temp/
 doc/
 demo/_data/version.yml
 demo/release/
+demo/.jekyll-cache
 CHANGELOG.md
 build/
 packages/*/dist
