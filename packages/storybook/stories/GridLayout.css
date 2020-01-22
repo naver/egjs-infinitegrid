@@ -1,0 +1,87 @@
+html, body {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+.header {
+    text-align: center;
+    background: #333;
+    color: #fff;
+    padding: 20px 0px;
+    margin: 0;
+    margin-bottom: 10px;
+}
+.description {
+    padding: 6px 30px;
+    margin: 0;
+    font-weight: 400;
+}
+.description li {
+    padding: 3px 0px;
+}
+.container {
+    width: 100%;
+    height: 600px;
+}
+.gridlayout .item {
+    display: inline-block;
+    width: 250px;
+    opacity: 1;
+}
+.gridlayout.horizontal .item {
+    width: auto;
+    height: 250px;
+}
+
+.gridlayout .item .thumbnail {
+    max-height: 300px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.gridlayout.equal .item .thumbnail {
+    height: 140px;
+}
+.gridlayout.equal.horizontal .item .thumbnail {
+    height: auto;
+    width: 140px;
+}
+.gridlayout .item .thumbnail img {
+    width: 100%;
+    border-radius: 8px;
+}
+.gridlayout.horizontal .item .thumbnail img {
+    width: auto;
+    height: 210px;
+}
+
+.gridlayout .item .info {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #777;
+}
+
+.gridlayout .item.animate {
+    transition: opacity ease 1s;
+    transition-delay: 0.2s;
+    opacity: 1;
+}
+
+.gridlayout .loading {
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    display: none;
+}
+.gridlayout .loading span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+}
+.gridlayout.horizontal .loading {
+    width: 200px;
+    height: 100%;
+}
+
