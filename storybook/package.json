@@ -1,12 +1,13 @@
 {
-    "name": "react-infinitegrid-storybook",
+    "name": "infinitegrid-storybook",
     "version": "0.0.0",
+    "private": true,
     "description": "Storybook for @egjs/infinitegrid",
     "main": "index.js",
     "scripts": {
         "lint": "tslint -c tslint.json 'stories/**/*.ts' 'stories/**/*.tsx'",
         "storybook": "start-storybook -p 6006",
-        "build": "build-storybook",
+        "build": "build-storybook -o ../demo/_site/storybook",
         "deploy": "gh-pages -d storybook-static --remote origin"
     },
     "author": {
