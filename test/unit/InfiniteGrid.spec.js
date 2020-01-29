@@ -225,7 +225,7 @@ describe("InfiniteGrid Test", function () {
 					expect(item.groupKey).to.be.above(100000000);
 				});
 			});
-			it(`should set to children's groupkey when children have a groupkey.`, async () => {
+			it(`should set as children's groupkey when children have a groupkey.`, async () => {
 				// Given
 				const container = this.inst._renderer.container;
 				container.innerHTML = `<div class="item" data-groupkey="1">1</div><div class="item">2</div><div class="item">3</div>`;
@@ -241,7 +241,7 @@ describe("InfiniteGrid Test", function () {
 					expect(item.groupKey).to.be.equals("1");
 				});
 			});
-			it(`should set to children's groupkey even if children have an empty string group key.`, async () => {
+			it(`should set as children's groupkey even if children have an empty string groupkey.`, async () => {
 				// Given
 				const container = this.inst._renderer.container;
 				container.innerHTML = `<div class="item" data-groupkey="">1</div><div class="item">2</div><div class="item">3</div>`;
