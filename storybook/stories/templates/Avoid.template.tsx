@@ -58,7 +58,7 @@ const ON_APPEND_TEMPLATE = previewFunction(`function onAppend(e) {
     ];
 }`);
 
-export const AVOID_SCROLL_HTML_TEMPLATE = ({ storyName, title, layout, itemCount = 10, useFirstRender }) => {
+export const AVOID_IMAGE_LOADING_HTML_TEMPLATE = ({ storyName, title, layout, itemCount = 10, useFirstRender }) => {
     const items: number[] = [];
 
     if (!useFirstRender) {
@@ -86,7 +86,7 @@ ${items.map(i => `    <div class="item" data-groupkey="0">
 `;
 };
 
-export const AVOID_SCROLL_VANILLA_TEMPLATE = ({ layoutType, layoutOptions }) => {
+export const AVOID_IMAGE_LOADING_VANILLA_TEMPLATE = ({ layoutType, layoutOptions }) => {
     return previewTemplate`
 import InfiniteGrid, { ${layoutType} } from "@egjs/infinitegrid";
 const itemCount = ${"itemCount"};
@@ -122,7 +122,7 @@ ig.layout();
     `;
 };
 
-export const AVOID_SCROLL_REACT_TEMPLATE = ({ storyName, title, layoutType, layoutOptions }) => {
+export const AVOID_IMAGE_LOADING_REACT_TEMPLATE = ({ storyName, title, layoutType, layoutOptions }) => {
     return previewTemplate`
 import * as React from "react";
 import { ${layoutType} } from "@egjs/react-infinitegrid";
@@ -171,7 +171,7 @@ export default function App() {
     `;
 };
 
-export const AVOID_SCROLL_ANGULAR_TEMPLATE = ({ layoutOptions }) => {
+export const AVOID_IMAGE_LOADING_ANGULAR_TEMPLATE = ({ layoutOptions }) => {
     return previewTemplate`
 import { Component } from "@angular/core";
 
@@ -205,7 +205,7 @@ export class AppComponent {
     ${codeIndent(ON_APPEND_TEMPLATE(CODE_TYPE.METHOD), { indent: 4 })}
 }`;
 };
-export const AVOID_SCROLL_ANGULAR_HTML_TEMPLATE = ({ storyName, title, layoutType }) => {
+export const AVOID_IMAGE_LOADING_ANGULAR_HTML_TEMPLATE = ({ storyName, title, layoutType }) => {
     return previewTemplate`
 <h1 class="header">
     ${storyName} - ${title}
@@ -231,7 +231,7 @@ export const AVOID_SCROLL_ANGULAR_HTML_TEMPLATE = ({ storyName, title, layoutTyp
 `;
 };
 
-export const AVOID_SCROLL_VUE_TEMPLATE = ({ storyName, title, layoutType, layoutOptions, cssTemplate }) => {
+export const AVOID_IMAGE_LOADING_VUE_TEMPLATE = ({ storyName, title, layoutType, layoutOptions, cssTemplate }) => {
     return previewTemplate`
 <template>
     <div class="app">
@@ -287,7 +287,7 @@ export const AVOID_SCROLL_VUE_TEMPLATE = ({ storyName, title, layoutType, layout
 `;
 };
 
-export const AVOID_SCROLL_SVELTE_SCRIPT_TEMPLATE = ({ layoutType, cssTemplate }) => {
+export const AVOID_IMAGE_LOADING_SVELTE_SCRIPT_TEMPLATE = ({ layoutType, cssTemplate }) => {
     return previewTemplate`
 <script>
     import { ${layoutType} } from "@egjs/svelte-infinitegrid";
@@ -302,7 +302,7 @@ export const AVOID_SCROLL_SVELTE_SCRIPT_TEMPLATE = ({ layoutType, cssTemplate })
 </style>`;
 };
 
-export const AVOID_SCROLL_SVELTE_JSX_TEMPLATE = ({ storyName, title, layoutType, layoutOptions }) => previewTemplate`
+export const AVOID_IMAGE_LOADING_SVELTE_JSX_TEMPLATE = ({ storyName, title, layoutType, layoutOptions }) => previewTemplate`
 <h1 class="header">
     ${storyName} - ${title}
 </h1>
