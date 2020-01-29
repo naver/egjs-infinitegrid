@@ -205,7 +205,58 @@ describe("InfiniteGrid Test", function () {
 					expect(el.style.position).to.be.equals("absolute");
 					expect(el.style.left).to.be.ok;
 				});
-			})
+			});
+			it(`should set the big random group key when children don't have a group key.`, async () => {
+				// Given
+				const container = this.inst._renderer.container;
+				container.innerHTML = `<div class="item">1</div><div class="item">2</div><div class="item">3</div>`;
+				const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+
+				// When
+				this.inst.layout();
+				const rv = await waitLayoutComplete;
+
+				// Then
+				const groupKey = rv.target[0].groupKey;
+				rv.target.forEach(item => {
+					// All items have the same group key.
+					expect(item.groupKey).to.be.equals(groupKey);
+					// very big number
+					expect(item.groupKey).to.be.above(100000000);
+				});
+			});
+			it(`should set as children's groupkey when children have a groupkey.`, async () => {
+				// Given
+				const container = this.inst._renderer.container;
+				container.innerHTML = `<div class="item" data-groupkey="1">1</div><div class="item">2</div><div class="item">3</div>`;
+				const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+
+				// When
+				this.inst.layout();
+				const rv = await waitLayoutComplete;
+
+				// Then
+				rv.target.forEach(item => {
+					// All items have the same group key.
+					expect(item.groupKey).to.be.equals("1");
+				});
+			});
+			it(`should set as children's groupkey even if children have an empty string groupkey.`, async () => {
+				// Given
+				const container = this.inst._renderer.container;
+				container.innerHTML = `<div class="item" data-groupkey="">1</div><div class="item">2</div><div class="item">3</div>`;
+				const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+
+				// When
+				this.inst.layout();
+				const rv = await waitLayoutComplete;
+
+				// Then
+				rv.target.forEach(item => {
+					// All items have the same group key.
+					expect(item.groupKey).to.be.equals("");
+				});
+			});
 			it(`should check getStatus(startCursor, endCursor)`, async () => {
 				// Given
 				await waitInsert(this.inst, true, 10, 10);
