@@ -117,12 +117,12 @@ class Infinite {
 		start = startCursor + start;
 		end = startCursor + end;
 
-		recycle({ start, end });
 		if (isForward) {
 			this.setCursor("start", end + 1);
 		} else {
 			this.setCursor("end", start - 1);
 		}
+		recycle({ start, end });
 	}
 	public scroll(scrollPos: number | null) {
 		const [startCursor, endCursor] = this.getCursors();

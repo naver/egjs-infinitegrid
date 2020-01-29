@@ -1,10 +1,10 @@
 import Infinite from "../../src/Infinite";
 import ItemManager from "../../src/ItemManager";
-import {wait, createElement} from "./helper/TestHelper";
+import { wait, createElement } from "./helper/TestHelper";
 /* eslint-disable */
 [true, false].forEach(useRecycle => {
 	[0, 50, 100, 200].forEach(threshold => {
-		describe(`Infinite Test(useRecycle=${useRecycle}, threshold=${threshold})`, function() {
+		describe(`Infinite Test(useRecycle=${useRecycle}, threshold=${threshold})`, function () {
 			beforeEach(() => {
 				this.items = new ItemManager();
 				this.infinite = new Infinite(this.items, {
@@ -16,7 +16,7 @@ import {wait, createElement} from "./helper/TestHelper";
 			afterEach(() => {
 				this.infinite = null;
 			});
-			it (`should check infinite append`, async () => {
+			it(`should check infinite append`, async () => {
 				const spy = sinon.spy();
 				this.infinite.options.append = spy;
 				// Given
@@ -41,7 +41,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				expect(spy.callCount).to.be.equal(1);
 			});
 			it(`should check infinite append(cache)`, async () => {
-				const spy = sinon.spy(({cache}) => {
+				const spy = sinon.spy(({ cache }) => {
 					if (useRecycle) {
 						expect(cache.length).to.be.ok;
 						expect(cache[0].outlines.start[0]).to.be.equal(1000);
@@ -83,7 +83,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				await wait();
 				expect(spy.callCount).to.be.equal(useRecycle ? 3 : 1);
 			});
-			it (`should check infinite prepend`, async () => {
+			it(`should check infinite prepend`, async () => {
 				const spy = sinon.spy();
 				this.infinite.options.prepend = spy;
 				// Given
@@ -125,7 +125,7 @@ import {wait, createElement} from "./helper/TestHelper";
 			});
 			it(`should check infinite prepend(cache)`, async () => {
 				this.infinite.options.append = sinon.spy();
-				this.infinite.options.prepend = sinon.spy(({cache}) => {
+				this.infinite.options.prepend = sinon.spy(({ cache }) => {
 					if (useRecycle) {
 						expect(cache.length).to.be.ok;
 						expect(cache[0].outlines.start[0]).to.be.equal(0);
@@ -173,7 +173,7 @@ import {wait, createElement} from "./helper/TestHelper";
 			});
 			it(`should check infinite prepend for small size(cache)`, async () => {
 				this.infinite.options.append = sinon.spy();
-				this.infinite.options.prepend = sinon.spy(({cache}) => {
+				this.infinite.options.prepend = sinon.spy(({ cache }) => {
 					if (useRecycle) {
 						expect(cache.length).to.be.not.equal(0)
 						expect(cache[0].outlines.start[0]).to.be.equal(0);
@@ -228,7 +228,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				expect(this.infinite.getCursor("start")).to.be.equal(useRecycle ? 1 : 0);
 				expect(this.infinite.getCursor("end")).to.be.equal(1);
 				await wait();
-				expect(this.infinite.options.append.callCount).to.be.equal(useRecycle ? 1: 2);
+				expect(this.infinite.options.append.callCount).to.be.equal(useRecycle ? 1 : 2);
 				expect(this.infinite.options.prepend.callCount).to.be.equal(useRecycle ? 6 : 3);
 			});
 			it("should check scroll append multiple", async () => {
@@ -270,7 +270,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 
 				// When
-				this.infinite.options.append = sinon.spy(({cache}) => {
+				this.infinite.options.append = sinon.spy(({ cache }) => {
 					// Then
 					if (!useRecycle) {
 						expect(cache.length).to.be.equals(1);
@@ -283,7 +283,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.infinite.scroll(0);
 
-				this.infinite.options.append = sinon.spy(({cache}) => {
+				this.infinite.options.append = sinon.spy(({ cache }) => {
 					// Then
 					expect(cache.length).to.be.equals(1);
 					expect(cache[0].groupKey).to.be.equals(3);
@@ -293,10 +293,10 @@ import {wait, createElement} from "./helper/TestHelper";
 				this.infinite.scroll(0);
 
 
-				this.items.getGroup(3).outlines = {start:[400], end:[800]};
+				this.items.getGroup(3).outlines = { start: [400], end: [800] };
 
-				this.infinite.options.append = () => {};
-				this.infinite.options.prepend = sinon.spy(({cache}) => {
+				this.infinite.options.append = () => { };
+				this.infinite.options.prepend = sinon.spy(({ cache }) => {
 					// Then
 					if (!useRecycle) {
 						expect(cache.length).to.be.equals(0);
@@ -313,14 +313,14 @@ import {wait, createElement} from "./helper/TestHelper";
 				this.infinite.scroll(0);
 			});
 			it(`should check recycle method (append)`, () => {
-				this.infinite.options.recycle = sinon.spy(({start, end}) => {
+				this.infinite.options.recycle = sinon.spy(({ start, end }) => {
 					expect(start).to.be.equal(0);
 					expect(end).to.be.equal(0);
 				});
 				// Given
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [0, 0],
 						end: [1000, 1100],
@@ -328,7 +328,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [1000, 1100],
 						end: [2000, 2100],
@@ -336,7 +336,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [2000, 2100],
 						end: [3000, 3100],
@@ -356,6 +356,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				expect(this.infinite.getCursor("end")).to.be.equal(2);
 				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
 			});
+
 			it(`should check append and remove method`, () => {
 				// Given
 				this.items.appendGroup({
@@ -439,14 +440,14 @@ import {wait, createElement} from "./helper/TestHelper";
 
 			});
 			it(`should check recycle method (multiple/append)`, () => {
-				this.infinite.options.recycle = sinon.spy(({start, end}) => {
+				this.infinite.options.recycle = sinon.spy(({ start, end }) => {
 					expect(start).to.be.equal(0);
 					expect(end).to.be.equal(1);
 				});
 				// Given
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [0, 0],
 						end: [1000, 1100],
@@ -454,7 +455,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [1000, 1100],
 						end: [2000, 2100],
@@ -462,7 +463,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [2000, 2100],
 						end: [3000, 3100],
@@ -477,14 +478,14 @@ import {wait, createElement} from "./helper/TestHelper";
 				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
 			});
 			it(`should check recycle method (prepend)`, () => {
-				this.infinite.options.recycle = sinon.spy(({start, end}) => {
+				this.infinite.options.recycle = sinon.spy(({ start, end }) => {
 					expect(start).to.be.equal(2);
 					expect(end).to.be.equal(2);
 				});
 				// Given
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [0, 0],
 						end: [1000, 1100],
@@ -492,7 +493,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [1000, 1100],
 						end: [2000, 2100],
@@ -500,7 +501,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [2000, 2100],
 						end: [3000, 3100],
@@ -529,7 +530,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				expect(this.infinite.options.recycle.callCount).to.be.equal(useRecycle ? 1 : 0);
 			});
 			it(`should check recycle method (multiple/prepend)`, () => {
-				this.infinite.options.recycle = sinon.spy(({start, end}) => {
+				this.infinite.options.recycle = sinon.spy(({ start, end }) => {
 					// Then
 					expect(start).to.be.equal(1);
 					expect(end).to.be.equal(2);
@@ -537,7 +538,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				// Given
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [0, 0],
 						end: [1000, 1100],
@@ -545,7 +546,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [1000, 1100],
 						end: [2000, 2100],
@@ -553,7 +554,7 @@ import {wait, createElement} from "./helper/TestHelper";
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
+					items: [{ el: 1 }],
 					outlines: {
 						start: [2000, 2100],
 						end: [3000, 3100],
@@ -577,18 +578,18 @@ import {wait, createElement} from "./helper/TestHelper";
 
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {start: [0, 0], end: [1000, 1100]},
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}],
-					outlines: {start: [1000, 1100], end: [2000, 2100]},
+					items: [{ el: 1 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {start: [2000, 2100], end: [3000, 3100]},
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
 				});
 
 				// When
@@ -608,18 +609,18 @@ import {wait, createElement} from "./helper/TestHelper";
 
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {start: [0, 0], end: [1000, 1100]},
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}],
-					outlines: {start: [1000, 1100], end: [2000, 2100]},
+					items: [{ el: 1 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {start: [2000, 2100], end: [3000, 3100]},
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
 				});
 
 				// When
@@ -639,18 +640,18 @@ import {wait, createElement} from "./helper/TestHelper";
 
 				this.items.appendGroup({
 					groupKey: 0,
-					items: [{el: 1}],
-					outlines: {start: [0, 0], end: [1000, 1100]},
+					items: [{ el: 1 }],
+					outlines: { start: [0, 0], end: [1000, 1100] },
 				});
 				this.items.appendGroup({
 					groupKey: 1,
-					items: [{el: 1}, {el: 2}],
-					outlines: {start: [1000, 1100], end: [2000, 2100]},
+					items: [{ el: 1 }, { el: 2 }],
+					outlines: { start: [1000, 1100], end: [2000, 2100] },
 				});
 				this.items.appendGroup({
 					groupKey: 2,
-					items: [{el: 1}],
-					outlines: {start: [2000, 2100], end: [3000, 3100]},
+					items: [{ el: 1 }],
+					outlines: { start: [2000, 2100], end: [3000, 3100] },
 				});
 
 				// When
@@ -662,6 +663,77 @@ import {wait, createElement} from "./helper/TestHelper";
 				expect(this.infinite.getVisibleItems()).to.have.lengthOf(4);
 				expect(this.infinite.getVisibleData()).to.have.lengthOf(3);
 			});
+		});
+	});
+	describe(`Infinite Recycle Test`, function () {
+		beforeEach(() => {
+			this.items = new ItemManager();
+			this.infinite = new Infinite(this.items, {
+				useRecycle: true,
+				threshold: 0,
+			});
+			this.infinite.setSize(400);
+
+			// Given
+			this.items.appendGroup({
+				groupKey: 0,
+				items: [{ el: 1 }],
+				outlines: {
+					start: [0, 0],
+					end: [1000, 1100],
+				},
+			});
+			this.items.appendGroup({
+				groupKey: 1,
+				items: [{ el: 1 }],
+				outlines: {
+					start: [1000, 1100],
+					end: [2000, 2100],
+				},
+			});
+			this.items.appendGroup({
+				groupKey: 2,
+				items: [{ el: 1 }],
+				outlines: {
+					start: [2000, 2100],
+					end: [3000, 3100],
+				},
+			});
+			this.infinite.setCursor("start", 0);
+			this.infinite.setCursor("end", 2);
+		});
+		afterEach(() => {
+			this.infinite = null;
+		});
+		it(`should check changed cursor after the recycle call. (append)`, () => {
+			// Given
+			this.infinite.options.recycle = sinon.spy();
+
+			// When
+			this.infinite.recycle(1600, true);
+
+			// Then
+			const { start, end } = this.infinite.options.recycle.args[0][0];
+
+			expect(this.infinite.getCursor("start")).to.be.equals(1);
+			expect(this.infinite.getCursor("end")).to.be.equals(2);
+			expect(start).to.be.equal(0);
+			expect(end).to.be.equal(0);
+		});
+		it(`should check changed cursor after the recycle call. (prepend)`, () => {
+			// Given
+			this.infinite.options.recycle = sinon.spy();
+
+			// When
+			this.infinite.recycle(1200, false);
+
+			// Then
+			const { start, end } = this.infinite.options.recycle.args[0][0];
+
+			expect(this.infinite.getCursor("start")).to.be.equals(0);
+			expect(this.infinite.getCursor("end")).to.be.equals(1);
+			expect(start).to.be.equal(2);
+			expect(end).to.be.equal(2);
 		});
 	});
 });
