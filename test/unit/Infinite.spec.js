@@ -707,29 +707,33 @@ import { wait, createElement } from "./helper/TestHelper";
 		});
 		it(`should check changed cursor after the recycle call. (append)`, () => {
 			// Given
-			this.infinite.options.recycle = sinon.spy(({ start, end }) => {
-				// Then
-				expect(this.infinite.getCursor("start")).to.be.equals(1);
-				expect(this.infinite.getCursor("end")).to.be.equals(2);
-				expect(start).to.be.equal(0);
-				expect(end).to.be.equal(0);
-			});
+			this.infinite.options.recycle = sinon.spy();
 
 			// When
 			this.infinite.recycle(1600, true);
+
+			// Then
+			const { start, end } = this.infinite.options.recycle.args[0][0];
+
+			expect(this.infinite.getCursor("start")).to.be.equals(1);
+			expect(this.infinite.getCursor("end")).to.be.equals(2);
+			expect(start).to.be.equal(0);
+			expect(end).to.be.equal(0);
 		});
 		it(`should check changed cursor after the recycle call. (prepend)`, () => {
 			// Given
-			this.infinite.options.recycle = sinon.spy(({ start, end }) => {
-				// Then
-				expect(this.infinite.getCursor("start")).to.be.equals(0);
-				expect(this.infinite.getCursor("end")).to.be.equals(1);
-				expect(start).to.be.equal(2);
-				expect(end).to.be.equal(2);
-			});
+			this.infinite.options.recycle = sinon.spy();
 
 			// When
 			this.infinite.recycle(1200, false);
+
+			// Then
+			const { start, end } = this.infinite.options.recycle.args[0][0];
+
+			expect(this.infinite.getCursor("start")).to.be.equals(0);
+			expect(this.infinite.getCursor("end")).to.be.equals(1);
+			expect(start).to.be.equal(2);
+			expect(end).to.be.equal(2);
 		});
 	});
 });
