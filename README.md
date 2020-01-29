@@ -1,7 +1,7 @@
 # egjs-infinitegrid
 
 [![npm version](https://img.shields.io/npm/v/@egjs/infinitegrid.svg?style=flat-square&color=007acc&label=Version)](https://badge.fury.io/js/%40egjs%2Finfinitegrid) [![Travis CI](https://img.shields.io/travis/naver/egjs-infinitegrid.svg?style=flat-square&label=Build)](https://travis-ci.org/naver/egjs-infinitegrid) [![Coverage Status](https://img.shields.io/coveralls/github/naver/egjs-infinitegrid.svg?style=flat-square&label=Coverage)](https://coveralls.io/github/naver/egjs-infinitegrid?branch=master) [![React](https://img.shields.io/static/v1.svg?label=&message=React&style=flat-square&logoColor=white&color=61aaee)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid) [![Angular](https://img.shields.io/static/v1.svg?label=&message=Angular&style=flat-square&logoColor=white&color=dd0031)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid) [![Vue](https://img.shields.io/static/v1.svg?label=&message=Vue&style=flat-square&logoColor=white&color=42b883)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid) [![Svelte](https://img.shields.io/static/v1.svg?label=&message=Svelte&style=flat-square&logoColor=white&color=ff3d00)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid)
-  
+
 
 
 
@@ -11,7 +11,7 @@ A module used to arrange card elements including content **infinitely** accordin
 
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
-- [Storybook with various framework demos](https://naver.github.io/egjs-infinitegrid/storybook)
+- [Playground with various framework demos](https://naver.github.io/egjs-infinitegrid/storybook)
 - [InfiniteGrid Options](https://github.com/naver/egjs-infinitegrid/wiki/InfiniteGrid-Options)
 - [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
 - [Migrating from v2.0 to v3.0](https://github.com/naver/egjs-infinitegrid/wiki/Migrating-from-v2.0-to-v3.0)
