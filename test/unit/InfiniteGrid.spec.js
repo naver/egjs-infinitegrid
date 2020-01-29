@@ -206,7 +206,7 @@ describe("InfiniteGrid Test", function () {
 					expect(el.style.left).to.be.ok;
 				});
 			});
-			it(`should check children that haven't a groupkey.`, async () => {
+			it(`should set the big random group key when children don't have a group key.`, async () => {
 				// Given
 				const container = this.inst._renderer.container;
 				container.innerHTML = `<div class="item">1</div><div class="item">2</div><div class="item">3</div>`;
@@ -225,23 +225,7 @@ describe("InfiniteGrid Test", function () {
 					expect(item.groupKey).to.be.above(100000000);
 				});
 			});
-			it(`should check children that have a empty string groupkey.`, async () => {
-				// Given
-				const container = this.inst._renderer.container;
-				container.innerHTML = `<div class="item" data-groupkey="">1</div><div class="item">2</div><div class="item">3</div>`;
-				const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
-
-				// When
-				this.inst.layout();
-				const rv = await waitLayoutComplete;
-
-				// Then
-				rv.target.forEach(item => {
-					// All items have the same group key.
-					expect(item.groupKey).to.be.equals("");
-				});
-			});
-			it(`should check children that have a groupkey.`, async () => {
+			it(`should set to groupkey when children have a groupkey.`, async () => {
 				// Given
 				const container = this.inst._renderer.container;
 				container.innerHTML = `<div class="item" data-groupkey="1">1</div><div class="item">2</div><div class="item">3</div>`;
@@ -255,6 +239,22 @@ describe("InfiniteGrid Test", function () {
 				rv.target.forEach(item => {
 					// All items have the same group key.
 					expect(item.groupKey).to.be.equals("1");
+				});
+			});
+			it(`should set to groupkey even if children have an empty string group key.`, async () => {
+				// Given
+				const container = this.inst._renderer.container;
+				container.innerHTML = `<div class="item" data-groupkey="">1</div><div class="item">2</div><div class="item">3</div>`;
+				const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
+
+				// When
+				this.inst.layout();
+				const rv = await waitLayoutComplete;
+
+				// Then
+				rv.target.forEach(item => {
+					// All items have the same group key.
+					expect(item.groupKey).to.be.equals("");
 				});
 			});
 			it(`should check getStatus(startCursor, endCursor)`, async () => {
