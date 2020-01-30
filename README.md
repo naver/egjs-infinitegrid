@@ -11,7 +11,7 @@ A module used to arrange card elements including content **infinitely** accordin
 
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
-- [Playground with various framework demos](https://naver.github.io/egjs-infinitegrid/storybook)
+- [Playground with various framework demos](https://naver.github.io/egjs-infinitegrid/storybook/)
 - [InfiniteGrid Options](https://github.com/naver/egjs-infinitegrid/wiki/InfiniteGrid-Options)
 - [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
 - [Migrating from v2.0 to v3.0](https://github.com/naver/egjs-infinitegrid/wiki/Migrating-from-v2.0-to-v3.0)

@@ -2,7 +2,7 @@
 
 A react component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
 
-* [Playground with Various Demos](https://naver.github.io/egjs-infinitegrid/storybook)
+* [Playground with Various Demos](https://naver.github.io/egjs-infinitegrid/storybook/)
 * [GridLayout Demo](https://codesandbox.io/s/030opyqkvw)
 * [GridLayout with Parallax Demo](https://codesandbox.io/s/v3y0jr2ony)
 * [JustifiedLayout Demo](https://codesandbox.io/s/5w7vrr0kwk)

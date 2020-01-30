@@ -2,7 +2,7 @@
 
 A Vue.js wrapper of [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
 
-[Storybook](https://naver.github.io/egjs-infinitegrid/storybook) /
+[Storybook](https://naver.github.io/egjs-infinitegrid/storybook/) /
 [Demo](https://codesandbox.io/s/egjsvue-infinitegrid-examples-itlw2) / [Documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/) / [Other Components](https://naver.github.io/egjs/)
 
 ## Installation
