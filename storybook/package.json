@@ -7,7 +7,7 @@
     "scripts": {
         "lint": "tslint -c tslint.json 'stories/**/*.ts' 'stories/**/*.tsx'",
         "storybook": "start-storybook -p 6006",
-        "build": "build-storybook -o ../demo/_site/storybook",
+        "build": "npm i && npm i @egjs/react-infinitegrid@latest && build-storybook -o ../demo/_site/storybook",
         "deploy": "gh-pages -d storybook-static --remote origin"
     },
     "author": {
@@ -20,7 +20,7 @@
     "homepage": "https://github.com/naver/egjs-infinitegrid",
     "devDependencies": {
         "@babel/core": "^7.7.2",
-        "@egjs/react-infinitegrid": "^3.0.1",
+        "@egjs/react-infinitegrid": "latest",
         "@storybook/addon-actions": "^5.2.6",
         "@storybook/addon-info": "^5.2.6",
         "@storybook/addon-knobs": "^5.2.6",

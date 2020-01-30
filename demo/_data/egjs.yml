@@ -18,22 +18,22 @@ css:
 files:
 - name: All (Packaged)
   file: infinitegrid.pkgd.min.js
-  size: 55.5kb
+  size: 55.6kb
 - name: GridLayout
   file: infinitegrid.gridlayout.min.js
   size: 44.3kb
 - name: JustifiedLayout
   file: infinitegrid.justifiedlayout.min.js
-  size: 45.5kb
+  size: 45.6kb
 - name: FrameLayout
   file: infinitegrid.framelayout.min.js
-  size: 44.9kb
+  size: 45kb
 - name: SquareLayout
   file: infinitegrid.squarelayout.min.js
-  size: 46.5kb
+  size: 46.6kb
 - name: PackingLayout
   file: infinitegrid.packinglayout.min.js
-  size: 45.1kb
+  size: 45.2kb
 layouts:
 - name: GridLayout
   image: ./assets/image/GridLayout.svg

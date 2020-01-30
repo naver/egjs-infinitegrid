@@ -32,3 +32,4 @@ node_modules/
 mocha.opts
 demo/
 packages/
+storybook/
