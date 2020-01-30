@@ -1,7 +1,7 @@
 # ngx-infinitegrid [![npm version](https://badge.fury.io/js/%40egjs%2Fngx-infinitegrid.svg)](https://badge.fury.io/js/%40egjs%2Fngx-infinitegrid)
 
 An Angular component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
-
+* [Playground with Various Demos](https://naver.github.io/egjs-infinitegrid/storybook)
 * [GridLayout Demo](https://codesandbox.io/s/ngx-infinitegrid-demo-gridlayout-vu7pp)
 * [GridLayout with Parallax Demo](https://codesandbox.io/s/ngx-infinitegrid-parallax-demo-gridlayout-cvxg5)
 * [JustifiedLayout Demo](https://codesandbox.io/s/ngx-infinitegrid-demo-justifiedlayout-ypvf7)

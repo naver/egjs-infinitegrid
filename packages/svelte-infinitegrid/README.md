@@ -2,7 +2,7 @@
 
 A Svelte component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
 
-
+* [Playground with Various Demos](https://naver.github.io/egjs-infinitegrid/storybook)
 * [GridLayout Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-gridlayout-7ycgd)
 * [GridLayout with Parallax Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-gridlayout-with-parallax-wnl8p)
 * [JustifiedLayout Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-justifiedlayout-e4com)

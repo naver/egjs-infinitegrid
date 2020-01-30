@@ -1,8 +1,24 @@
-# egjs-infinitegrid [![npm version](https://badge.fury.io/js/%40egjs%2Finfinitegrid.svg)](https://badge.fury.io/js/%40egjs%2Finfinitegrid) [![Build Status](https://travis-ci.org/naver/egjs-infinitegrid.svg?branch=master)](https://travis-ci.org/naver/egjs-infinitegrid) [![Coverage Status](https://coveralls.io/repos/github/naver/egjs-infinitegrid/badge.svg?branch=master)](https://coveralls.io/github/naver/egjs-infinitegrid?branch=master)
+# egjs-infinitegrid
+
+[![npm version](https://img.shields.io/npm/v/@egjs/infinitegrid.svg?style=flat-square&color=007acc&label=Version)](https://badge.fury.io/js/%40egjs%2Finfinitegrid) [![Travis CI](https://img.shields.io/travis/naver/egjs-infinitegrid.svg?style=flat-square&label=Build)](https://travis-ci.org/naver/egjs-infinitegrid) [![Coverage Status](https://img.shields.io/coveralls/github/naver/egjs-infinitegrid.svg?style=flat-square&label=Coverage)](https://coveralls.io/github/naver/egjs-infinitegrid?branch=master) [![React](https://img.shields.io/static/v1.svg?label=&message=React&style=flat-square&logoColor=white&color=61aaee)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid) [![Angular](https://img.shields.io/static/v1.svg?label=&message=Angular&style=flat-square&logoColor=white&color=dd0031)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid) [![Vue](https://img.shields.io/static/v1.svg?label=&message=Vue&style=flat-square&logoColor=white&color=42b883)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid) [![Svelte](https://img.shields.io/static/v1.svg?label=&message=Svelte&style=flat-square&logoColor=white&color=ff3d00)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid)
+
+
+
 
 A module used to arrange card elements including content **infinitely** according to layout type. With this module, you can implement **various layouts** composed of different card elements whose sizes vary. It guarantees **performance** by maintaining the number of DOMs the module is handling under any circumstance
 
 ![infinitegrid](https://github.com/naver/egjs-infinitegrid/raw/master/demo/assets/image/infinitegrid.gif)
+
+## Documents
+- [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
+- [Playground with various framework demos](https://naver.github.io/egjs-infinitegrid/storybook)
+- [InfiniteGrid Options](https://github.com/naver/egjs-infinitegrid/wiki/InfiniteGrid-Options)
+- [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
+- [Migrating from v2.0 to v3.0](https://github.com/naver/egjs-infinitegrid/wiki/Migrating-from-v2.0-to-v3.0)
+- Articles
+  - [Introducing eg.InfiniteGrid, a new library for implementing a card layout](https://github.com/naver/egjs-infinitegrid/wiki/Introducing-eg.InfiniteGrid,-a-new-library-for-implementing-a-card-layout) [[Korean](http://d2.naver.com/helloworld/4874130)]
+  - [Card-based design and eg.InfiniteGrid 3.0](https://medium.com/@sculove/card-based-design-and-eg-infinitegrid-3-0-a84616496671) [[Korean](http://d2.naver.com/helloworld/0637045)]
+
 
 ## Layouts
 The InfiniteGrid can use various layouts.
@@ -21,14 +37,6 @@ The InfiniteGrid can use various layouts.
 eg.infiniteGrid benchmark: append item performance with [masonry](https://masonry.desandro.com/)
 
 
-## Documents
-- [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
-- [InfiniteGrid Options](https://github.com/naver/egjs-infinitegrid/wiki/InfiniteGrid-Options)
-- [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
-- [Migrating from v2.0 to v3.0](https://github.com/naver/egjs-infinitegrid/wiki/Migrating-from-v2.0-to-v3.0)
-- Articles
-  - [Introducing eg.InfiniteGrid, a new library for implementing a card layout](https://github.com/naver/egjs-infinitegrid/wiki/Introducing-eg.InfiniteGrid,-a-new-library-for-implementing-a-card-layout) [[Korean](http://d2.naver.com/helloworld/4874130)]
-  - [Card-based design and eg.InfiniteGrid 3.0](https://medium.com/@sculove/card-based-design-and-eg-infinitegrid-3-0-a84616496671) [[Korean](http://d2.naver.com/helloworld/0637045)]
 
 
 ## Packages
