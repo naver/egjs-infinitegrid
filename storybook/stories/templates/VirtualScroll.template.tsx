@@ -16,7 +16,7 @@ export default function VirtualScroll({ storyName, title, description, itemCount
     const [items, setItems] = React.useState(getItems(0, 0, itemCount));
     return <div className="app">
         <h1 className="header">
-            {storyName} - {title}
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">{storyName} - {title}</a>
         </h1>
         {description}
         <LayoutType
@@ -51,7 +51,7 @@ const ON_APPEND_TEMPLATE = previewFunction(`function onAppend(e) {
 }`);
 export const VIRTUAL_SCROLL_HTML_TEMPLATE = ({ storyName, title, description, layoutType }) => `
 <h1 class="header">
-    ${storyName} - ${title}
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
 </h1>
 ${description}
 <div class="container ${layoutType}">
@@ -103,7 +103,7 @@ export default function App() {
 
     return <div className="app">
         <h1 className="header">
-            ${storyName} - ${title}
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
         </h1>
         ${codeIndent(description.replace("class", "className"), { indent: 8, endIndet: 8 })}
         <${layoutType}
@@ -164,7 +164,7 @@ export class AppComponent {
 export const VIRTUAL_SCROLL_ANGULAR_HTML_TEMPLATE = ({ storyName, title, description, layoutType }) => {
     return previewTemplate`
 <h1 class="header">
-    ${storyName} - ${title}
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
 </h1>
 ${description}
 <div
@@ -188,7 +188,7 @@ export const VIRTUAL_SCROLL_VUE_TEMPLATE = ({ storyName, title, description, lay
 <template>
     <div class="app">
         <h1 class="header">
-            ${storyName} - ${title}
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
         </h1>
         ${codeIndent(description, { indent: 8, endIndet: 8 })}
         <${layoutType}
@@ -247,7 +247,7 @@ export const VIRTUAL_SCROLL_SVELTE_SCRIPT_TEMPLATE = ({ layoutType, cssTemplate 
 
 export const VIRTUAL_SCROLL_SVELTE_JSX_TEMPLATE = ({ storyName, title, description, layoutType, options, layoutOptions }) => previewTemplate`
 <h1 class="header">
-    ${storyName} - ${title}
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
 </h1>
 ${description}
 <${layoutType}

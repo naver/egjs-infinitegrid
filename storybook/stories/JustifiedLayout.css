@@ -4,6 +4,10 @@ html, body {
     padding: 0;
     height: 100%;
 }
+a {
+    color: unset;
+    text-decoration: none;
+}
 .header {
     text-align: center;
     background: #333;

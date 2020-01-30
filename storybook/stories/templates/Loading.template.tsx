@@ -37,7 +37,7 @@ export default function Loading({
     const [items, setItems] = React.useState(getItems(0, 0, itemCount));
     return <div className="app">
     <h1 className="header">
-        {storyName} - {title}
+        <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">{storyName} - {title}</a>
     </h1>
     <LayoutType
         useFirstRender={useFirstRender}
@@ -89,7 +89,10 @@ const ON_APPEND_TEMPLATE = previewFunction(`function onAppend(e) {
 const ON_LAYOUT_COMPLETE_TEMPLATE = previewFunction(`function onLayoutComplete(e) {
     !e.isLayout && e.endLoading();
 }`);
-export const LOADING_HTML_TEMPLATE = ({ layoutType }) => `
+export const LOADING_HTML_TEMPLATE = ({ storyName, title, layoutType }) => `
+<h1 class="header">
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
+</h1>
 <div class="container ${layoutType}">
 </div>
 `;
@@ -135,7 +138,7 @@ ig.layout();
     `;
 };
 
-export const LOADING_REACT_TEMPLATE = ({ layoutType, layoutOptions }) => {
+export const LOADING_REACT_TEMPLATE = ({ storyName, title, layoutType, layoutOptions }) => {
     return previewTemplate`
 import * as React from "react";
 import { ${layoutType} } from "@egjs/react-infinitegrid";
@@ -149,24 +152,29 @@ ${GET_ITEMS_TEMPLATE}
 export default function App() {
     const [items, setItems] = React.useState(getItems(0, 0, itemCount));
 
-    return <${layoutType}
-        className="${layoutType.toLowerCase()} container"
-        loading={<div className="loading">Loading...</div>}
-        groupBy={item => item.props["data-groupkey"]}
-        options={{
-            isOverflowScroll: ${"isOverflowScroll"},
-            useRecycle: ${"useRecycle"},
-            horizontal: ${"horizontal"},
-            useFit: ${"useFit"},
-        }}
-        layoutOptions={${previewTemplate.object(layoutOptions, {
-        indent: 12,
-    })}}
-        onAppend={${codeIndent(ON_APPEND_TEMPLATE(CODE_TYPE.ARROW, "react"), { indent: 8 })}}
-        onLayoutComplete={${codeIndent(ON_LAYOUT_COMPLETE_TEMPLATE(CODE_TYPE.ARROW), { indent: 8 })}}
-    >
-        {items.map(item => <Item data-groupkey={item.groupKey} key={item.key} num={item.key} />)}
-    </${layoutType}>;
+    return <div className="app">
+        <h1 className="header">
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
+        </h1>
+        <${layoutType}
+            className="${layoutType.toLowerCase()} container"
+            loading={<div className="loading">Loading...</div>}
+            groupBy={item => item.props["data-groupkey"]}
+            options={{
+                isOverflowScroll: ${"isOverflowScroll"},
+                useRecycle: ${"useRecycle"},
+                horizontal: ${"horizontal"},
+                useFit: ${"useFit"},
+            }}
+            layoutOptions={${previewTemplate.object(layoutOptions, {
+                indent: 16,
+            })}}
+            onAppend={${codeIndent(ON_APPEND_TEMPLATE(CODE_TYPE.ARROW, "react"), { indent: 12 })}}
+            onLayoutComplete={${codeIndent(ON_LAYOUT_COMPLETE_TEMPLATE(CODE_TYPE.ARROW), { indent: 12 })}}
+        >
+            {items.map(item => <Item data-groupkey={item.groupKey} key={item.key} num={item.key} />)}
+        </${layoutType}>
+    </div>;
 }
     `;
 };
@@ -206,8 +214,11 @@ export class AppComponent {
     ${codeIndent(ON_LAYOUT_COMPLETE_TEMPLATE(CODE_TYPE.METHOD), { indent: 4 })}
 }`;
 };
-export const LOADING_ANGULAR_HTML_TEMPLATE = ({ layoutType }) => {
+export const LOADING_ANGULAR_HTML_TEMPLATE = ({ storyName, title, layoutType }) => {
     return previewTemplate`
+<h1 class="header">
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
+</h1>
 <div
     class="container ${layoutType.toLowerCase()}"
     Ngx${layoutType}
@@ -227,19 +238,24 @@ export const LOADING_ANGULAR_HTML_TEMPLATE = ({ layoutType }) => {
 `;
 };
 
-export const LOADING_VUE_TEMPLATE = ({ layoutType, layoutOptions, cssTemplate }) => {
+export const LOADING_VUE_TEMPLATE = ({ storyName, title, layoutType, layoutOptions, cssTemplate }) => {
     return previewTemplate`
 <template>
-    <${layoutType}
-        class="container ${layoutType.toLowerCase()}"
-        :options="options"
-        :layoutOptions="layoutOptions"
-        @append="onAppend"
-        @layout-complete="onLayoutComplete"
-    >
-        ${codeIndent(layoutType === "SquareLayout" ? VUE_SQUARE_MARKUP_TEMPLATE : VUE_MARKUP_TEMPLATE, { indent: 8 })}
-        <div class="loading" slot="loading">Loading...</div>
-    </${layoutType}>
+    <div class="app">
+        <h1 class="header">
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
+        </h1>
+        <${layoutType}
+            class="container ${layoutType.toLowerCase()}"
+            :options="options"
+            :layoutOptions="layoutOptions"
+            @append="onAppend"
+            @layout-complete="onLayoutComplete"
+        >
+            ${codeIndent(layoutType === "SquareLayout" ? VUE_SQUARE_MARKUP_TEMPLATE : VUE_MARKUP_TEMPLATE, { indent: 12 })}
+            <div class="loading" slot="loading">Loading...</div>
+        </${layoutType}>
+    </div>
 </template>
 <script>
     import { ${layoutType} } from "@egjs/vue-infinitegrid";
@@ -291,7 +307,10 @@ export const LOADING_SVELTE_SCRIPT_TEMPLATE = ({ layoutType, cssTemplate }) => {
 </style>`;
 };
 
-export const LOADING_SVELTE_JSX_TEMPLATE = ({ layoutType, layoutOptions }) => previewTemplate`
+export const LOADING_SVELTE_JSX_TEMPLATE = ({ storyName, title, layoutType, layoutOptions }) => previewTemplate`
+<h1 class="header">
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
+</h1>
 <${layoutType}
     class="container ${layoutType.toLowerCase()}"
     items={items}

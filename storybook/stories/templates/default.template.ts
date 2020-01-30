@@ -15,7 +15,7 @@ export const HTML_TEMPLATE = ({ storyName, title, layoutType, itemCount = 10 }) 
         items.push(i);
     }
     return `<h1 class="header">
-    ${storyName} - ${title}
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
 </h1>
 <div class="${layoutType} container">
 ${items.map(i => `    <div class="item" data-groupkey="0">

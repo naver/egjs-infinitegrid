@@ -17,7 +17,7 @@ export default function InitialScroll({ storyName, itemCount, title, LayoutType,
 
     return <div className="app">
         <h1 className="header">
-            {storyName} - {title}
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">{storyName} - {title}</a>
         </h1>
         <ol className="description">
             <li>Open the Performance tab of Chrome Dev Tools to test it. Change the CPU to 6x slow down</li>
@@ -66,7 +66,7 @@ export const INITIAL_SCROLL_HTML_TEMPLATE = ({ storyName, title, layout, itemCou
         items.push(i);
     }
     return `<h1 class="header">
-    ${storyName} - ${title}
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
 </h1>
 <ol class="description">
     <li>Open the Performance tab of Chrome Dev Tools to test it. Change the CPU to 6x slow down</li>
@@ -133,7 +133,7 @@ export default function App() {
 
     return <div className="app">
         <h1 className="header">
-            ${storyName} - ${title}
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
         </h1>
         <ol className="description">
             <li>Open the Performance tab of Chrome Dev Tools to test it. Change the CPU to 6x slow down</li>
@@ -205,7 +205,7 @@ export class AppComponent {
 export const INITIAL_SCROLL_ANGULAR_HTML_TEMPLATE = ({ storyName, title, layoutType }) => {
     return previewTemplate`
 <h1 class="header">
-    ${storyName} - ${title}
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
 </h1>
 <ol class="description">
     <li>Open the Performance tab of Chrome Dev Tools to test it. Change the CPU to 6x slow down</li>
@@ -234,7 +234,7 @@ export const INITIAL_SCROLL_VUE_TEMPLATE = ({ storyName, title, layoutType, layo
 <template>
     <div class="app">
         <h1 class="header">
-            ${storyName} - ${title}
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
         </h1>
         <ol class="description">
             <li>Open the Performance tab of Chrome Dev Tools to test it. Change the CPU to 6x slow down</li>
@@ -301,7 +301,7 @@ export const INITIAL_SCROLL_SVELTE_SCRIPT_TEMPLATE = ({ layoutType, cssTemplate 
 
 export const INITIAL_SCROLL_SVELTE_JSX_TEMPLATE = ({ storyName, title, layoutType, layoutOptions }) => previewTemplate`
 <h1 class="header">
-    ${storyName} - ${title}
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
 </h1>
 <ol class="description">
     <li>Open the Performance tab of Chrome Dev Tools to test it. Change the CPU to 6x slow down</li>

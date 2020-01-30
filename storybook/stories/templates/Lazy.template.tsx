@@ -20,7 +20,7 @@ export default function LazyLoading({ storyName, itemCount, title, LayoutType, c
 
     return <div className="app">
         <h1 className="header">
-            {storyName} - {title}
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">{storyName} - {title}</a>
         </h1>
         <ol className="description">
             <li>Open the Network tab of Chrome Dev Tools to test it.</li>

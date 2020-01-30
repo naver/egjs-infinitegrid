@@ -6,7 +6,7 @@ import { GET_ITEMS_TEMPLATE } from "./default.template";
 export default function NoVirtualScroll({ storyName, title, LayoutType, className, options, layoutOptions, useFirstRender }) {
     return <div className="app">
         <h1 className="header">
-            {storyName} - {title}
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">{storyName} - {title}</a>
         </h1>
         <LayoutType
             key={Math.random()}
@@ -36,7 +36,7 @@ ig.setLayout(${layoutType}, ${previewTemplate.object(layoutOptions, {
 })});
 ig.layout();
 `;
-export const NO_VIRTUAL_SCROLL_REACT_TEMPLATE = ({ layoutType, layoutOptions }) => {
+export const NO_VIRTUAL_SCROLL_REACT_TEMPLATE = ({ title, storyName, layoutType, layoutOptions }) => {
     return previewTemplate`
 import * as React from "react";
 import { ${layoutType} } from "@egjs/react-infinitegrid";
@@ -44,19 +44,24 @@ import { ${layoutType} } from "@egjs/react-infinitegrid";
 const Item = ({ num }) => ${REACT_MARKUP_TEMPLATE};
 
 export default function App() {
-    return <${layoutType}
-        className="${layoutType.toLowerCase()} container"
-        options={{
-            horizontal: ${"horizontal"},
-            isOverflowScroll: ${"isOverflowScroll"},
-        }}
-        layoutOptions={${previewTemplate.object(layoutOptions, {
-        indent: 12,
-    })}}>
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => {
-            return <Item num={i} key={i}/>
-        })}
-    </${layoutType}>;
+    return <div className="app">
+        <h1 className="header">
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
+        </h1>
+        <${layoutType}
+            className="${layoutType.toLowerCase()} container"
+            options={{
+                horizontal: ${"horizontal"},
+                isOverflowScroll: ${"isOverflowScroll"},
+            }}
+            layoutOptions={${previewTemplate.object(layoutOptions, {
+                indent: 16,
+            })}}>
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => {
+                return <Item num={i} key={i}/>
+            })}
+        </${layoutType}>
+    </div>;
 }
         `;
 };
@@ -88,8 +93,11 @@ export class AppComponent {
     }
 }`;
 };
-export const NO_VIRTUAL_SCROLL_ANGULAR_HTML_TEMPLATE = ({ layoutType }) => {
+export const NO_VIRTUAL_SCROLL_ANGULAR_HTML_TEMPLATE = ({ storyName, title, layoutType }) => {
     return previewTemplate`
+<h1 class="header">
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
+</h1>
 <div
     class="container ${layoutType.toLowerCase()}"
     Ngx${layoutType}
@@ -105,16 +113,21 @@ export const NO_VIRTUAL_SCROLL_ANGULAR_HTML_TEMPLATE = ({ layoutType }) => {
 `;
 };
 
-export const NO_VIRTUAL_SCROLL_VUE_TEMPLATE = ({ layoutType, layoutOptions, cssTemplate }) => {
+export const NO_VIRTUAL_SCROLL_VUE_TEMPLATE = ({ storyName, title, layoutType, layoutOptions, cssTemplate }) => {
     return previewTemplate`
 <template>
-    <${layoutType}
-        class="container ${layoutType.toLowerCase()}"
-        :options="options"
-        :layoutOptions="layoutOptions"
-    >
-        ${codeIndent(VUE_MARKUP_TEMPLATE, { indent: 8 })}
-    </${layoutType}>
+    <div class="app">
+        <h1 class="header">
+            <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
+        </h1>
+        <${layoutType}
+            class="container ${layoutType.toLowerCase()}"
+            :options="options"
+            :layoutOptions="layoutOptions"
+        >
+            ${codeIndent(VUE_MARKUP_TEMPLATE, { indent: 12 })}
+        </${layoutType}>
+    </div>
 </template>
 <script>
     import { ${layoutType} } from "@egjs/vue-infinitegrid";
@@ -157,7 +170,10 @@ export const NO_VIRTUAL_SCROLL_SVELTE_SCRIPT_TEMPLATE = ({ layoutType, cssTempla
 </style>`;
 };
 
-export const NO_VIRTUAL_SCROLL_SVELTE_JSX_TEMPLATE = ({ layoutType, layoutOptions }) => previewTemplate`
+export const NO_VIRTUAL_SCROLL_SVELTE_JSX_TEMPLATE = ({ storyName, title, layoutType, layoutOptions }) => previewTemplate`
+<h1 class="header">
+    <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">${storyName} - ${title}</a>
+</h1>
 <${layoutType}
     class="container ${layoutType.toLowerCase()}"
     items={items}
