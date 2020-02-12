@@ -52,6 +52,9 @@ export default class LoadingBar extends Component {
 	getSize(isAppend) {
 		const loading = this.props.loading;
 
+		if (!this.el || !this.props.children) {
+			return 0;
+		}
 		if ((isAppend && (loading & LOADING_APPEND)) || (!isAppend && (loading & LOADING_PREPEND))) {
 			return this.state.size;
 		}
