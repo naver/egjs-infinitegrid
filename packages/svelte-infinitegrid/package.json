@@ -1,10 +1,10 @@
 {
   "name": "@egjs/svelte-infinitegrid",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "A Svelte component that can easily use egjs-infinitegrid",
   "sideEffects": false,
   "types": "src/index.d.ts",
-  "module": "dist/inifnitegrid.esm.js",
+  "module": "dist/infinitegrid.esm.js",
   "main": "dist/infinitegrid.cjs.js",
   "repository": {
     "type": "git",
