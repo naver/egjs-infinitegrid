@@ -4,7 +4,7 @@ export const TEMPLATE = `
   <ng-template #content><ng-content></ng-content></ng-template>
   <ng-template #viewer>
     <ng-template [ngIf]="options.isOverflowScroll" [ngIfElse]="noContainer">
-      <div class="${CONTAINER_CLASSNAME}">
+      <div class="${CONTAINER_CLASSNAME}" #container>
         <ng-container *ngTemplateOutlet="content"></ng-container>
       </div>
     </ng-template>
@@ -20,4 +20,4 @@ export const TEMPLATE = `
   <ng-template #noWrapper>
     <ng-container *ngTemplateOutlet="viewer"></ng-container>
   </ng-template>
-  `
+  `;
