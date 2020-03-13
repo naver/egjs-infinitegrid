@@ -1,6 +1,6 @@
 {
   "name": "@egjs/ngx-infinitegrid",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "An Angular component that can easily use egjs-infinitegrid",
   "author": {
     "name": "NAVER Corp."
