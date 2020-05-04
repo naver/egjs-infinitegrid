@@ -47,7 +47,7 @@ describe("GridLayout Test", function () {
 			layout.setSize(VIEWPORT.width);
 			// Then
 			expectAppend(layout, items, [100, 100, 100, 100]);
-			
+
 		});
 		it("test outline indicies", function () {
 			// Given
@@ -125,6 +125,27 @@ describe("GridLayout Test", function () {
 						expect(gitems[i].rect[pos]).to.be.at.least(gitems[i - 1].rect[pos]);
 					}
 				});
+				it(`The last item prepend starts from the end. (margin = ${margin}, horizontal = ${horizontal})`, () => {
+					// Given
+					const lastItem = items[items.length - 1];
+					const layout = new Layout({
+						margin,
+						horizontal,
+					});
+					layout.setSize(horizontal ? VIEWPORT.height : VIEWPORT.width);
+
+					// When
+					layout.prepend(items, [], true);
+
+					// Then
+					const columnSize = layout._columnSize;
+					const columnLength = layout._columnLength;
+					const posName = horizontal ? "top" : "left";
+					const expectedPos = (columnSize + margin) * (columnLength - 1);
+
+					expect(lastItem.rect[posName]).to.be.equals(expectedPos);
+
+				});
 			});
 		});
 	});
@@ -160,7 +181,7 @@ describe("GridLayout Test", function () {
 								margin,
 								horizontal: !horizontal
 							});
-							
+
 							expect(gitems[0].rect[startPos2]).to.be.equal(layout._size - (gitems[itemLength - 1].rect[startPos2] + gitems[itemLength - 1].size[size2]));
 						} else if (align === END) {
 							expect((gitems[itemLength - 1].rect[startPos2] + gitems[itemLength - 1].size[size2])).to.be.equal(layout._size);
@@ -177,7 +198,7 @@ describe("GridLayout Test", function () {
 								}
 								expect(item.rect[startPos1]).to.be.closeTo(gitems[i - 1].rect[startPos1] + gitems[i - 1].size[size1] + margin, 1);
 							});
-							
+
 						}
 					});
 				});
