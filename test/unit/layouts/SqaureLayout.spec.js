@@ -236,7 +236,6 @@ describe("SquareLayout Test", function () {
 				// Then
 				expect(group2.items[0].rect.left).to.be.not.equal(0);
 			});
-			it
 		});
 	});
 	describe("compare group1 and group2", function () {
