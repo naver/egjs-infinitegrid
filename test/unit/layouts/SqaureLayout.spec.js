@@ -217,19 +217,26 @@ describe("SquareLayout Test", function () {
 					expect(gitems[i].rect.top).to.be.at.least(gitems[i - 1].rect.top);
 				}
 			});
-			it(`test outline indicies (margin = ${margin})`, function () {
+			it(`The outline is arranged by finding the next block. (margin = ${margin})`, function () {
 				// Given
 				const layout = new Layout({
 					margin,
+					column: 6, // 800 / 6 = 1.33333
 				});
 				layout.setSize(VIEWPORT.width);
-				const group = layout.append(items, []);
-				const group2 = layout.append(items, [100]);
+
+				// When
+				// 0 1 2 3 4 (X)
+				const group1 = layout.append(items.slice(0, 5), []);
+
+				// 0 1 2 3 4 (5)
+				// 6 7 8 9 X  X
+				const group2 = layout.append(items.slice(5, 10), group1.outlines.end);
 
 				// Then
-				expectOutlineIndex(layout, group);
-				expectOutlineIndex(layout, group2);
+				expect(group2.items[0].rect.left).to.be.not.equal(0);
 			});
+			it
 		});
 	});
 	describe("compare group1 and group2", function () {

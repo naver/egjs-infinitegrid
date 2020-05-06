@@ -82,7 +82,7 @@ export default class SquareLayout extends FrameLayout {
 		const columnLength = this.options.column ||
 			Math.floor((this._size + margin) / (itemSize + margin)) || 1;
 		const length = items.length;
-		const endOutline = makeShapeOutline(outline, itemSize, columnLength, isAppend);
+		const endOutline = makeShapeOutline(outline, Math.floor(itemSize), columnLength, isAppend);
 		const pointCaculateName = isAppend ? "min" : "max";
 		const shapes: IFrameShape[] = [];
 		const sign = isAppend ? 1 : -1;
