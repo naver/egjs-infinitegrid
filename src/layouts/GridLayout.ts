@@ -166,12 +166,13 @@ class GridLayout implements ILayout {
 		const viewDist = (size - (columnSize + margin) * columnLength + margin);
 
 		const pointCaculateName = isAppend ? "min" : "max";
+		const indexCaculateName = isAppend ? "indexOf" : "lastIndexOf";
 		const startOutline = outline.slice();
 		const endOutline = outline.slice();
 
 		for (let i = 0; i < length; ++i) {
 			const point = Math[pointCaculateName](...endOutline) || 0;
-			let index = endOutline.indexOf(point);
+			let index = endOutline[indexCaculateName](point);
 			const item = items[isAppend ? i : length - 1 - i];
 			const itemSize = item.size;
 
