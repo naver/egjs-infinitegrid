@@ -73,10 +73,6 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 			state.layout = result === "relayout" ? result : state.layout || result;
 
 			visibleChildren = ig.getRenderingItems().map((item: IItem) => item.jsx);
-
-			if (this.props.loading) {
-				visibleChildren.push(<LoadingBar key="loadingBar" loading={this.props.loading!} />);
-			}
 		} else {
 			const groups = categorize(items);
 			if (props.status) {
@@ -89,6 +85,9 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 			} else if (props.useFirstRender && groups[0]) {
 				visibleChildren = groups[0].items.map((item: IItem) => item.jsx);
 			}
+		}
+		if (this.props.loading) {
+			visibleChildren.push(<LoadingBar key="loadingBar" loading={this.props.loading!} />);
 		}
 		return <Tag {...attributes}>{this.renderContainer(visibleChildren)}</Tag>;
 	}
