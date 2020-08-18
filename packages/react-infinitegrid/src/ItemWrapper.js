@@ -17,6 +17,9 @@ export default class Item extends Component {
 	componentDidMount() {
 		this.updateElement(this);
 	}
+	componentDidUpdate() {
+		this.updateElement(this);
+	}
 	componentWillUnmount() {
 		this.props.unmount(this.props.itemKey);
 	}

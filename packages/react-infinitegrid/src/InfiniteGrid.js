@@ -351,8 +351,9 @@ export default class InfiniteGrid extends Component {
 		if (!item) {
 			return;
 		}
+		const prevElement = item.el;
 		item.el = element;
-		if (item.isWaitMount) {
+		if (item.isWaitMount || prevElement !== element) {
 			DOMRenderer.renderItems([item]);
 			delete item.isWaitMount;
 		}
