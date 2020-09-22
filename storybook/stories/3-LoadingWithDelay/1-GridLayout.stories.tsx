@@ -11,16 +11,16 @@ import Loading, {
 import "../GridLayout.css";
 import { GridLayout } from "@egjs/react-infinitegrid";
 import { GRIDLAYOUT_CSS_TEMPLATE } from "../templates/css.template";
-import { GRIDLAYOUT_OPTIONS, getGridLayoutKnobs } from "../templates/layout.template";
+import { GRIDLAYOUT_OPTIONS, getGridLayoutArgs } from "../templates/layout.template";
 import { makeStory } from "../templates/story.template";
 
-makeStory(module, {
+export default makeStory(module, exports, {
     storyName: "Loading Bar with Data Delay",
     title: "GridLayout",
     layoutName: "GridLayout",
     layoutType: GridLayout,
     component: Loading,
-    getKnobs: getGridLayoutKnobs,
+    getLayoutArgs: getGridLayoutArgs,
     layoutOptions: GRIDLAYOUT_OPTIONS,
     htmlTemplate: LOADING_HTML_TEMPLATE,
     cssTemplate: GRIDLAYOUT_CSS_TEMPLATE,

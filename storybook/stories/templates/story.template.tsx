@@ -1,6 +1,4 @@
 import * as React from "react";
-import { storiesOf } from "@storybook/react";
-import { withKnobs, boolean, number } from "@storybook/addon-knobs";
 import {
     withPreview,
     DEFAULT_VANILLA_CODESANDBOX,
@@ -14,13 +12,22 @@ import { IMAGE_SIZES } from "../consts";
 import { getDefaultOptions, getDefaultOptionKeys } from "./layout.template";
 import { ga } from "../ga";
 
-export function makeStory(module, {
+function getKeyObject(keys: string[], obj: object) {
+    return keys.reduce((prev, key) => {
+        if (key in obj) {
+            prev[key] = obj[key];
+        }
+        return prev;
+    }, {});
+}
+
+export function makeStory(module, exports, {
     component,
     storyName,
     layoutName = storyName,
     title,
     description = "",
-    getKnobs,
+    getLayoutArgs,
     layoutType,
     layoutOptions,
     htmlTemplate,
@@ -45,7 +52,7 @@ export function makeStory(module, {
     layoutName: string,
     title: string,
     layoutType: any,
-    getKnobs: Function,
+    getLayoutArgs: Function,
     layoutOptions: string[],
     htmlTemplate: any,
     cssTemplate: any,
@@ -65,7 +72,7 @@ export function makeStory(module, {
     description?: string,
     descriptionJSX?: any,
 }) {
-    const stories = storiesOf(storyName, module);
+
     const VirtualComponent = component;
     const optionParams = {
         useVirtualScroll: isVirtualScroll,
@@ -73,31 +80,32 @@ export function makeStory(module, {
         useIsConstantSize: isContantSize,
         useIsEqualSize: isEqualSize,
     };
-    const optionKeys = getDefaultOptionKeys(optionParams);
-
-    stories.addDecorator(withKnobs).addDecorator(withPreview);
-    stories.add(title, e => {
-        const itemCount = isVirtualScroll ? number("itemCount", 10) : 10;
-        const dataDelay = isDataDelay ? number("dataDelay", 1000) : 0;
-        const options = getDefaultOptions(optionParams);
-
+    const layoutArgs = getLayoutArgs();
+    const optionsKeys = getDefaultOptionKeys(optionParams);
+    const layoutOptionsKeys = Object.keys(layoutArgs);
+    const func = (props: any) => {
         React.useEffect(() => {
             ga(`${storyName} - ${title}`);
         }, []);
+
+        const layoutProps = getKeyObject(layoutOptionsKeys, props);
+
         return <VirtualComponent
             title={title}
             storyName={storyName}
             key={Math.random()}
-            className={`${layoutName.toLowerCase()} container ${options.horizontal ? "horizontal" : ""} ${options.isEqualSize ? "equal" : ""}`}
-            itemCount={itemCount}
+            className={`${layoutName.toLowerCase()} container ${props.horizontal ? "horizontal" : ""} ${props.isEqualSize ? "equal" : ""}`}
             LayoutType={layoutType}
-            useFirstRender={useFirstRender ? boolean("useFirstRender", false) : false}
-            options={options}
-            layoutOptions={getKnobs()}
-            dataDelay={dataDelay}
+            itemCount={props.itemCount}
+            dataDelay={props.dataDelay}
+            useFirstRender={props.useFirstRender}
+            options={props}
+            layoutOptions={layoutProps}
             description={descriptionJSX}
         />;
-    }, {
+    };
+    func.storyName = title;
+    func.parameters = {
         preview: [
             {
                 tab: "HTML",
@@ -122,7 +130,7 @@ export function makeStory(module, {
                 tab: "Vanilla",
                 template: vanillaTemplate({
                     layoutType: layoutName,
-                    options: optionKeys,
+                    options: optionsKeys,
                     layoutOptions,
                     storyName,
                     title,
@@ -136,7 +144,7 @@ export function makeStory(module, {
                 tab: "React",
                 template: reactTemplate({
                     layoutType: layoutName,
-                    options: optionKeys,
+                    options: optionsKeys,
                     layoutOptions,
                     storyName,
                     title,
@@ -164,7 +172,7 @@ export function makeStory(module, {
                 tab: "Angular",
                 description: "app.component.ts",
                 template: angularComponentTemplate({
-                    options: optionKeys,
+                    options: optionsKeys,
                     layoutOptions,
                 }),
                 language: "tsx",
@@ -183,7 +191,7 @@ export function makeStory(module, {
                 tab: "Vue",
                 template: vueTemplate({
                     layoutType: layoutName,
-                    options: optionKeys,
+                    options: optionsKeys,
                     layoutOptions,
                     cssTemplate,
                     storyName,
@@ -209,7 +217,7 @@ export function makeStory(module, {
                 continue: true,
                 template: svelteJSXTemplate({
                     layoutType: layoutName,
-                    options: optionKeys,
+                    options: optionsKeys,
                     layoutOptions,
                     storyName,
                     title,
@@ -219,5 +227,49 @@ export function makeStory(module, {
                 codesandbox: DEFAULT_SVELTE_CODESANDBOX(["@egjs/svelte-infinitegrid"]),
             },
         ],
+    };
+
+    const options = {
+        itemCount: {
+            type: "number", default: 10,
+            description: "Number of items to be shown at one time(group)",
+        },
+        dataDelay: {
+            type: "number", default: isDataDelay ? 1000 : 0, disable: !isDataDelay,
+            description: "Time it takes to asynchronously fetch item data",
+        },
+        useFirstRender: {
+            type: "boolean", default: false, disable: !useFirstRender,
+            description: "At the first render, the item is immediately displayed without CSS applied during image processing.",
+        },
+        ...getDefaultOptions(optionParams),
+        ...layoutArgs,
+    };
+    const argTypes = {};
+    const args = {};
+
+    Object.keys(options).forEach(name => {
+        const opt = options[name];
+
+        argTypes[name] = {
+            control: opt,
+            defaultValue: opt.default,
+            table: {
+                defaultValue: { summary: opt.default },
+            },
+            description: opt.description,
+        };
+        args[name] = opt.default;
     });
+
+    func.args = args;
+    func.argTypes = argTypes;
+
+    exports[title] = func;
+
+    return {
+        title: storyName,
+        component: func,
+        // decorators: [withPreview],
+    };
 }
