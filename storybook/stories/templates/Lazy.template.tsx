@@ -58,7 +58,7 @@ const ON_APPEND_TEMPLATE = previewFunction(`function onAppend(e) {
     ];
 }`);
 
-export const LAZY_LOADING_HTML_TEMPLATE = ({ storyName, title, layout, itemCount = 10, useFirstRender }) => {
+export const LAZY_LOADING_HTML_TEMPLATE = ({ storyName, title, layoutType, itemCount = 10, useFirstRender }) => {
     const items: number[] = [];
 
     if (!useFirstRender) {
@@ -75,7 +75,7 @@ export const LAZY_LOADING_HTML_TEMPLATE = ({ storyName, title, layout, itemCount
     <li>Disable cache and also change the Throttling to Slow 3G (or Fast 3G)</li>
     <li>If the image has data-width and data-height, it will automatically calculate the ratio even if the image is not loaded.</li>
 </ol>
-<div class="${layout} container">
+<div class="${layoutType} container">
 ${items.map(i => `    <div class="item" data-groupkey="0">
         <div class="thumbnail">
             <img src="https://naver.github.io/egjs-infinitegrid/assets/image/${i + 1}.jpg" alt="egjs">

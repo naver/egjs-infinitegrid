@@ -1,17 +1,17 @@
 import "../PackingLayout.css";
 import { PackingLayout } from "@egjs/react-infinitegrid";
 import { PACKINGLAYOUT_CSS_TEMPLATE } from "../templates/css.template";
-import { PACKINGLAYOUT_OPTIONS, getPackingLayoutKnobs } from "../templates/layout.template";
+import { PACKINGLAYOUT_OPTIONS, getPackingLayoutArgs } from "../templates/layout.template";
 import { makeStory } from "../templates/story.template";
 import VirtualScroll, { VIRTUAL_SCROLL_VANILLA_TEMPLATE, VIRTUAL_SCROLL_REACT_TEMPLATE, VIRTUAL_SCROLL_ANGULAR_HTML_TEMPLATE, VIRTUAL_SCROLL_ANGULAR_TEMPLATE, VIRTUAL_SCROLL_VUE_TEMPLATE, VIRTUAL_SCROLL_SVELTE_SCRIPT_TEMPLATE, VIRTUAL_SCROLL_SVELTE_JSX_TEMPLATE, VIRTUAL_SCROLL_HTML_TEMPLATE } from "../templates/VirtualScroll.template";
 
-makeStory(module, {
+export default makeStory(module, exports, {
     storyName: "Virtual Scroll",
     title: "PackingLayout",
     layoutName: "PackingLayout",
     layoutType: PackingLayout,
     component: VirtualScroll,
-    getKnobs: getPackingLayoutKnobs,
+    getLayoutArgs: getPackingLayoutArgs,
     layoutOptions: PACKINGLAYOUT_OPTIONS,
     htmlTemplate: VIRTUAL_SCROLL_HTML_TEMPLATE,
     cssTemplate: PACKINGLAYOUT_CSS_TEMPLATE,

@@ -11,16 +11,16 @@ import Initial, {
 import "../GridLayout.css";
 import { GridLayout } from "@egjs/react-infinitegrid";
 import { GRIDLAYOUT_CSS_TEMPLATE } from "../templates/css.template";
-import { GRIDLAYOUT_OPTIONS, getGridLayoutKnobs } from "../templates/layout.template";
+import { GRIDLAYOUT_OPTIONS, getGridLayoutArgs } from "../templates/layout.template";
 import { makeStory } from "../templates/story.template";
 
-makeStory(module, {
+export default makeStory(module, exports, {
     storyName: "Performance Improvement",
     title: "Initial item setting",
     layoutName: "GridLayout",
     layoutType: GridLayout,
     component: Initial,
-    getKnobs: getGridLayoutKnobs,
+    getLayoutArgs: getGridLayoutArgs,
     layoutOptions: GRIDLAYOUT_OPTIONS,
     htmlTemplate: INITIAL_SCROLL_HTML_TEMPLATE,
     cssTemplate: GRIDLAYOUT_CSS_TEMPLATE,

@@ -11,16 +11,16 @@ import Loading, {
 import "../PackingLayout.css";
 import { PackingLayout } from "@egjs/react-infinitegrid";
 import { PACKINGLAYOUT_CSS_TEMPLATE } from "../templates/css.template";
-import { PACKINGLAYOUT_OPTIONS, getPackingLayoutKnobs } from "../templates/layout.template";
+import { PACKINGLAYOUT_OPTIONS, getPackingLayoutArgs } from "../templates/layout.template";
 import { makeStory } from "../templates/story.template";
 
-makeStory(module, {
+export default makeStory(module, exports, {
     storyName: "Loading Bar with Data Delay",
     title: "PackingLayout",
     layoutName: "PackingLayout",
     layoutType: PackingLayout,
     component: Loading,
-    getKnobs: getPackingLayoutKnobs,
+    getLayoutArgs: getPackingLayoutArgs,
 
     layoutOptions: PACKINGLAYOUT_OPTIONS,
     htmlTemplate: LOADING_HTML_TEMPLATE,

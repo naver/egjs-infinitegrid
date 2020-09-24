@@ -11,16 +11,16 @@ import LazyLoading, {
 import "../GridLayout.css";
 import { GridLayout } from "@egjs/react-infinitegrid";
 import { GRIDLAYOUT_CSS_TEMPLATE } from "../templates/css.template";
-import { GRIDLAYOUT_OPTIONS, getGridLayoutKnobs } from "../templates/layout.template";
+import { GRIDLAYOUT_OPTIONS, getGridLayoutArgs } from "../templates/layout.template";
 import { makeStory } from "../templates/story.template";
 
-makeStory(module, {
+export default makeStory(module, exports, {
     storyName: "Performance Improvement",
     title: "Image Lazy Loading",
     layoutName: "GridLayout",
     layoutType: GridLayout,
     component: LazyLoading,
-    getKnobs: getGridLayoutKnobs,
+    getLayoutArgs: getGridLayoutArgs,
     layoutOptions: GRIDLAYOUT_OPTIONS,
     htmlTemplate: LAZY_LOADING_HTML_TEMPLATE,
     cssTemplate: GRIDLAYOUT_CSS_TEMPLATE,

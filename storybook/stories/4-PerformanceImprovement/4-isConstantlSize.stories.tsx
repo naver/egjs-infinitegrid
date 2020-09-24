@@ -3,17 +3,17 @@ import "../GridLayout.css";
 import * as React from "react";
 import { GridLayout } from "@egjs/react-infinitegrid";
 import { GRIDLAYOUT_CSS_TEMPLATE } from "../templates/css.template";
-import { GRIDLAYOUT_OPTIONS, getGridLayoutKnobs } from "../templates/layout.template";
+import { GRIDLAYOUT_OPTIONS, getGridLayoutArgs } from "../templates/layout.template";
 import { makeStory } from "../templates/story.template";
 import VirtualScroll, { VIRTUAL_SCROLL_HTML_TEMPLATE, VIRTUAL_SCROLL_VANILLA_TEMPLATE, VIRTUAL_SCROLL_REACT_TEMPLATE, VIRTUAL_SCROLL_ANGULAR_HTML_TEMPLATE, VIRTUAL_SCROLL_ANGULAR_TEMPLATE, VIRTUAL_SCROLL_VUE_TEMPLATE, VIRTUAL_SCROLL_SVELTE_SCRIPT_TEMPLATE, VIRTUAL_SCROLL_SVELTE_JSX_TEMPLATE } from "../templates/VirtualScroll.template";
 
-makeStory(module, {
+export default makeStory(module, exports, {
     storyName: "Performance Improvement",
     title: "When size does not change again (isConstantSize)",
     layoutName: "GridLayout",
     layoutType: GridLayout,
     component: VirtualScroll,
-    getKnobs: getGridLayoutKnobs,
+    getLayoutArgs: getGridLayoutArgs,
     layoutOptions: GRIDLAYOUT_OPTIONS,
     htmlTemplate: VIRTUAL_SCROLL_HTML_TEMPLATE,
     cssTemplate: GRIDLAYOUT_CSS_TEMPLATE,

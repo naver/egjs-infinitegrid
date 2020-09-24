@@ -56,7 +56,7 @@ const ON_APPEND_TEMPLATE = previewFunction(`function onAppend(e) {
     ];
 }`);
 
-export const INITIAL_SCROLL_HTML_TEMPLATE = ({ storyName, title, layout, itemCount = 10, useFirstRender }) => {
+export const INITIAL_SCROLL_HTML_TEMPLATE = ({ storyName, title, layoutType, itemCount = 10, useFirstRender }) => {
     const items: number[] = [];
 
     if (!useFirstRender) {
@@ -74,7 +74,7 @@ export const INITIAL_SCROLL_HTML_TEMPLATE = ({ storyName, title, layout, itemCou
     <li>The first render of items is before InfiniteGrid is initialized.</li>
     <li>Vanilla has no useFirstRender option. Instead, having initial children is equivalent to useFirstRender.</li>
 </ol>
-<div class="${layout} container">
+<div class="${layoutType} container">
 ${items.map(i => `    <div class="item" data-groupkey="0">
         <div class="thumbnail">
             <img src="https://naver.github.io/egjs-infinitegrid/assets/image/${i + 1}.jpg" alt="egjs">

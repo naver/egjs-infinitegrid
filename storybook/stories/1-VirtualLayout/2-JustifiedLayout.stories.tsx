@@ -12,16 +12,16 @@ import "../JustifiedLayout.css";
 import { HTML_TEMPLATE } from "../templates/default.template";
 import { JustifiedLayout } from "@egjs/react-infinitegrid";
 import { JUSTIFIEDLAYOUT_CSS_TEMPLATE } from "../templates/css.template";
-import { JUSTIFIEDLAYOUT_OPTIONS, getJustifiedLayoutKnobs } from "../templates/layout.template";
+import { JUSTIFIEDLAYOUT_OPTIONS, getJustifiedLayoutArgs } from "../templates/layout.template";
 import { makeStory } from "../templates/story.template";
 
-makeStory(module, {
+export default makeStory(module, exports, {
     storyName: "Virtual Scroll",
     title: "JustifiedLayout",
     layoutName: "JustifiedLayout",
     layoutType: JustifiedLayout,
     component: VirtualScroll,
-    getKnobs: getJustifiedLayoutKnobs,
+    getLayoutArgs: getJustifiedLayoutArgs,
     layoutOptions: JUSTIFIEDLAYOUT_OPTIONS,
     htmlTemplate: VIRTUAL_SCROLL_HTML_TEMPLATE,
     cssTemplate: JUSTIFIEDLAYOUT_CSS_TEMPLATE,
