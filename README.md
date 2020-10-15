@@ -82,13 +82,63 @@ The following command shows how to install egjs-infinitegrid using npm.
 $ npm install @egjs/infinitegrid
 ```
 
-The following code shows how to import InfiniteGrid, Parallax.
+
+## How to use
+The following code shows how to import InfiniteGrid.
+
+* [See InfiniteGrid options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html)
+* [See InfiniteGrid methods](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html#append)
 
 ```js
 import InfiniteGrid, {GridLayout, JustifiedLayout, ...} from "@egjs/infinitegrid";
-import Parallax from "@egjs/infinitegrid/dist/parallax";
+
+// eg.InfiniteGrid
+const ig = new InfiniteGrid(".container", {
+  // options
+  isOverflowScroll: true,
+});
+
+// GridLayout, JustifiedLayout, SquareLayout, FrameLayout, PackingLayout ...
+ig.setLayout(GridLayout, {
+  // layout options
+  margin: 5,
+});
+
+// If items are already inserted in children, call layout method
+ig.layout();
+
+// If you want to add items from top(left) to bottom(right), call append method
+ig.append(`<div class="item"></div>`);
+
+
+// If you want to add items from bottom(right) to top(left), call prepend method
+ig.prepend(`<div class="item"></div>`);
 ```
 
+### Events
+[See InfiniteGrid events](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html#event:append)
+```js
+
+// If you want to add items infinitely to the bottom(right), use the append event.
+ig.on("append", () => {
+  ig.append(`<div class="item"></div>`);
+});
+
+
+// If you want to add items infinitely to the top(left), use the prepend event.
+ig.on("prepend", () => {
+  ig.prepend(`<div class="item"></div>`);
+});
+
+// If you want to know when items have been added, use the layoutComplete event.
+ig.on("layoutCompete", e => {
+  if (e.isLayout) {
+    // Fired when items are relocated through the resize event or method
+  } else {
+    // Fired when items are added
+  }
+});
+```
 ## Supported Browsers
 The following are the supported browsers.
 
