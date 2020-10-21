@@ -23,7 +23,7 @@ import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
 	IInfiniteGridItem,
-	IInfiniteGridGroup, IInfiniteGridStatus, IItem, IArrayFormat, IInfiniteGridOptions
+	IInfiniteGridGroup, IInfiniteGridStatus, IItem, IArrayFormat, IInfiniteGridOptions, OnAppend, OnRender, OnLayoutComplete, OnPrepend, OnImageError, OnChnage, RenderManagerEvents
 } from "./types";
 import RenderManager from "./RenderManager";
 import Watcher from "./Watcher";
@@ -87,7 +87,14 @@ some.layout();
  *
  * @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
  **/
-class InfiniteGrid extends Component {
+class InfiniteGrid extends Component<{
+	append: OnAppend;
+	prepend: OnPrepend;
+	render: OnRender;
+	layoutComplete: OnLayoutComplete;
+	imageError: OnImageError;
+	change: OnChnage;
+}> {
 	/**
 	 * Version info string
 	 * @ko 버전정보 문자열
@@ -750,7 +757,7 @@ class InfiniteGrid extends Component {
 			}, userStyle);
 
 			for (const property in style) {
-				el.style[property as keyof StyleType] = style[property as keyof StyleType];
+				el.style[property] = style[property as keyof StyleType];
 			}
 			if (!isAppend) {
 				this._fitItems(size);
@@ -1130,7 +1137,7 @@ class InfiniteGrid extends Component {
 		}, userStyle);
 
 		for (const property in style) {
-			el.style[property as keyof StyleType] = style[property as keyof StyleType];
+			el.style[property] = style[property as keyof StyleType];
 		}
 		this._status.loadingSize = this.options.horizontal ? outerWidth(el) : outerHeight(el);
 		const posName = this.options.horizontal ? "left" : "top";
@@ -1211,7 +1218,7 @@ class InfiniteGrid extends Component {
 
 		const renderExternal = this.options.renderExternal;
 		const renderer = this._renderer;
-		const callbackComponent = new Component();
+		const callbackComponent = new Component<RenderManagerEvents>();
 
 		const next = () => {
 			items.forEach(item => {
