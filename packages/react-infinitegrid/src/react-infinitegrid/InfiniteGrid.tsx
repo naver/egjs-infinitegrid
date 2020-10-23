@@ -10,13 +10,12 @@ import NativeInfiniteGrid, {
 	withInfiniteGridMethods,
 } from "@egjs/infinitegrid";
 import { findDOMNode } from "react-dom";
-import { InfiniteGridProps, InfiniteGridType } from "./types";
+import { InfiniteGridProps, InfiniteGridState, InfiniteGridType } from "./types";
 import LoadingBar from "./LoadingBar";
 import { camelize } from "./utils";
 
-export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.Component<InfiniteGridProps<T>, {
-	layout: string;
-}> {
+export default class InfiniteGrid<T extends ILayout = GridLayout>
+	extends React.Component<InfiniteGridProps<T>, InfiniteGridState> {
 	public static defaultProps: Required<InfiniteGridProps> = {
 		tag: "div",
 		containerTag: "div",
@@ -43,8 +42,9 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 		onImageError: () => { },
 		onChange: () => { },
 	};
-	public state = {
+	public state: InfiniteGridState = {
 		layout: "",
+		nextFunction: null,
 	};
 	@withInfiniteGridMethods
 	private ig!: NativeInfiniteGrid;
@@ -95,6 +95,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 		const ig = this.ig;
 		const state = this.state;
 		const layout = state.layout;
+		const nextFunction = state.nextFunction;
 		const elements = this.getElements();
 
 		this.setLoadingElement();
@@ -104,6 +105,11 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 			state.layout = "";
 			ig.layout(layout === "relayout");
 		}
+
+		if (nextFunction) {
+			nextFunction();
+			state.nextFunction = null;
+		}
 	}
 	public componentDidMount() {
 		this.wrapperElement = findDOMNode(this) as HTMLElement;
@@ -112,8 +118,8 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends React.
 			...this.props.options,
 			renderExternal: true,
 		}).on("render", ({ next }) => {
-			this.forceUpdate(() => {
-				next();
+			this.setState({
+				nextFunction: next,
 			});
 		});
 		const ig = this.ig;

@@ -4,6 +4,10 @@ import NativeInfiniteGrid, {
 	InfiniteGridMethods,
 } from "@egjs/infinitegrid";
 
+export interface InfiniteGridState {
+	layout: string;
+	nextFunction: (() => void) | null;
+}
 export interface OnAppend {
 	currentTarget?: InfiniteGrid;
 	groupKey?: number | string;
