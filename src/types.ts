@@ -23,6 +23,8 @@ export interface IInfiniteGridOptions {
 	useFit: boolean;
 	attributePrefix: string;
 	renderExternal: boolean;
+	resizeDebounce: number;
+	maxResizeDebounce: number;
 }
 
 export interface IInfiniteGridGroup {
@@ -35,6 +37,8 @@ export interface IWatcherOptions {
 	container: HTMLElement;
 	isOverflowScroll: boolean;
 	horizontal: boolean;
+	resizeDebounce: number;
+	maxResizeDebounce: number;
 	resize: () => void;
 	check: (e: {
 		isForward: boolean,
@@ -50,20 +54,6 @@ export interface IInfiniteOptions {
 	append: (e: { cache: IInfiniteGridGroup[] }) => void;
 	prepend: (e: { cache: IInfiniteGridGroup[] }) => void;
 	recycle: (e: { start: number, end: number }) => void;
-}
-
-export interface IInfiniteGridOptions {
-	itemSelector: string;
-	isOverflowScroll: boolean;
-	threshold: number;
-	isEqualSize: boolean;
-	isConstantSize: boolean;
-	useRecycle: boolean;
-	horizontal: boolean;
-	transitionDuration: number;
-	useFit: boolean;
-	attributePrefix: string;
-	renderExternal: boolean;
 }
 
 export interface IInfiniteGridStatus {
