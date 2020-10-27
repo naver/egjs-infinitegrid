@@ -17,7 +17,7 @@ import { IWatchStatus, IWatcherOptions } from "./types";
 export default class Watcher {
 	public options: IWatcherOptions;
 	private _resizeTimer = 0;
-	private _debounceTimer = 0;
+	private _maxResizeDebounceTimer = 0;
 	private _containerOffset: number = 0;
 	private _view: Window | HTMLElement;
 	private _isScrollIssue: boolean = IS_IOS;
@@ -123,15 +123,15 @@ export default class Watcher {
 
 		const onResize = () => {
 			clearTimeout(this._resizeTimer);
-			clearTimeout(this._debounceTimer);
+			clearTimeout(this._maxResizeDebounceTimer);
 
-			this._debounceTimer = 0;
+			this._maxResizeDebounceTimer = 0;
 			this._resizeTimer = 0;
 			this.resize();
 			this.options.resize();
 		};
-		if (!this._debounceTimer && maxResizeDebounce) {
-			this._debounceTimer = window.setTimeout(onResize, maxResizeDebounce);
+		if (!this._maxResizeDebounceTimer && maxResizeDebounce >= resizeDebounce) {
+			this._maxResizeDebounceTimer = window.setTimeout(onResize, maxResizeDebounce);
 		}
 		if (this._resizeTimer) {
 			clearTimeout(this._resizeTimer);
