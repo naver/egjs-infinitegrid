@@ -348,7 +348,7 @@ export type OnRender = {
 	next: () => void;
 };
 
-export type OnChnage = {
+export type OnChange = {
 	isForward: boolean;
 	horizontal: boolean;
 	scrollPos: number;
@@ -361,4 +361,13 @@ export type RenderManagerEvents = {
 	layoutComplete: { items: IInfiniteGridItem[], isAppend: boolean };
 	imageError: OnImageError;
 	finish: { remove: HTMLElement[], layout?: boolean };
+};
+
+export type InfiniteGridEvents = {
+	append: OnAppend;
+	prepend: OnPrepend;
+	render: OnRender;
+	layoutComplete: OnLayoutComplete;
+	imageError: OnImageError;
+	change: OnChange;
 };

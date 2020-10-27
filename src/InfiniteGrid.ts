@@ -23,7 +23,7 @@ import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
 	IInfiniteGridItem,
-	IInfiniteGridGroup, IInfiniteGridStatus, IItem, IArrayFormat, IInfiniteGridOptions, OnAppend, OnRender, OnLayoutComplete, OnPrepend, OnImageError, OnChnage, RenderManagerEvents
+	IInfiniteGridGroup, IInfiniteGridStatus, IItem, IArrayFormat, IInfiniteGridOptions, RenderManagerEvents, InfiniteGridEvents
 } from "./types";
 import RenderManager from "./RenderManager";
 import Watcher from "./Watcher";
@@ -87,14 +87,7 @@ some.layout();
  *
  * @support {"ie": "8+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
  **/
-class InfiniteGrid extends Component<{
-	append: OnAppend;
-	prepend: OnPrepend;
-	render: OnRender;
-	layoutComplete: OnLayoutComplete;
-	imageError: OnImageError;
-	change: OnChnage;
-}> {
+class InfiniteGrid extends Component<InfiniteGridEvents> {
 	/**
 	 * Version info string
 	 * @ko 버전정보 문자열
