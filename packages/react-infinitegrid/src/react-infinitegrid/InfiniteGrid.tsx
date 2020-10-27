@@ -9,7 +9,6 @@ import NativeInfiniteGrid, {
 	INFINITEGRID_EVENTS,
 	withInfiniteGridMethods,
 } from "@egjs/infinitegrid";
-import { findDOMNode } from "react-dom";
 import { InfiniteGridProps, InfiniteGridState, InfiniteGridType } from "./types";
 import LoadingBar from "./LoadingBar";
 import { camelize } from "./utils";
@@ -48,8 +47,8 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 	};
 	@withInfiniteGridMethods
 	private ig!: NativeInfiniteGrid;
-	private wrapperElement!: HTMLElement;
-	private containerElement!: HTMLElement;
+	private wrapperRef = React.createRef<HTMLElement>();
+	private containerRef = React.createRef<HTMLElement>();
 
 	public render() {
 		const props = this.props;
@@ -89,7 +88,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 		if (this.props.loading) {
 			visibleChildren.push(<LoadingBar key="loadingBar" loading={this.props.loading!} />);
 		}
-		return <Tag {...attributes}>{this.renderContainer(visibleChildren)}</Tag>;
+		return <Tag {...attributes} ref={this.wrapperRef}>{this.renderContainer(visibleChildren)}</Tag>;
 	}
 	public componentDidUpdate() {
 		const ig = this.ig;
@@ -112,9 +111,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 		}
 	}
 	public componentDidMount() {
-		this.wrapperElement = findDOMNode(this) as HTMLElement;
-
-		this.ig = new NativeInfiniteGrid(this.wrapperElement, {
+		this.ig = new NativeInfiniteGrid(this.wrapperRef.current, {
 			...this.props.options,
 			renderExternal: true,
 		}).on("render", ({ next }) => {
@@ -158,9 +155,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 		}
 		const ContainerTag = props.containerTag as any;
 
-		return <ContainerTag className={CONTAINER_CLASSNAME} ref={(e: any) => {
-			e && (this.containerElement = e);
-		}}>
+		return <ContainerTag className={CONTAINER_CLASSNAME} ref={this.containerRef}>
 			{children}
 		</ContainerTag>;
 	}
@@ -178,7 +173,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 		});
 	}
 	private getElements(): HTMLElement[] {
-		const elements = [].slice.call((this.containerElement || this.wrapperElement).children);
+		const elements = [].slice.call((this.containerRef.current || this.wrapperRef.current).children);
 
 		if (this.props.loading) {
 			return elements.slice(0, -1);
@@ -189,7 +184,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 		const ig = this.ig;
 
 		if (this.props.loading) {
-			const loadingElement = (this.containerElement || this.wrapperElement).lastElementChild as HTMLElement;
+			const loadingElement = (this.containerRef.current || this.wrapperRef.current).lastElementChild as HTMLElement;
 
 			if (loadingElement) {
 				ig.setLoadingBar({
