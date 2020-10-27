@@ -16,9 +16,8 @@ import { IWatchStatus, IWatcherOptions } from "./types";
 
 export default class Watcher {
 	public options: IWatcherOptions;
-	private _timer: {
-		resize: any;
-	};
+	private _resizeTimer = 0;
+	private _maxResizeDebounceTimer = 0;
 	private _containerOffset: number = 0;
 	private _view: Window | HTMLElement;
 	private _isScrollIssue: boolean = IS_IOS;
@@ -32,10 +31,9 @@ export default class Watcher {
 			check: () => void 0,
 			isOverflowScroll: false,
 			horizontal: false,
+			resizeDebounce: 100,
+			maxResizeDebounce: 0,
 		}, options);
-		this._timer = {
-			resize: null,
-		};
 		this._view = view;
 		this.attachEvent();
 		this.resize();
@@ -118,13 +116,27 @@ export default class Watcher {
 		});
 	}
 	private _onResize = () => {
-		if (this._timer.resize) {
-			clearTimeout(this._timer.resize);
-		}
-		this._timer.resize = setTimeout(() => {
+		const {
+			resizeDebounce,
+			maxResizeDebounce,
+		} = this.options;
+
+		const onResize = () => {
+			clearTimeout(this._resizeTimer);
+			clearTimeout(this._maxResizeDebounceTimer);
+
+			this._maxResizeDebounceTimer = 0;
+			this._resizeTimer = 0;
 			this.resize();
 			this.options.resize();
-			this._timer.resize = null;
-		}, 100);
+		};
+		if (!this._maxResizeDebounceTimer && maxResizeDebounce >= resizeDebounce) {
+			this._maxResizeDebounceTimer = window.setTimeout(onResize, maxResizeDebounce);
+		}
+		if (this._resizeTimer) {
+			clearTimeout(this._resizeTimer);
+			this._resizeTimer = 0;
+		}
+		this._resizeTimer = window.setTimeout(onResize, resizeDebounce);
 	}
 }

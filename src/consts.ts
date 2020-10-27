@@ -49,6 +49,8 @@ export const DEFAULT_OPTIONS = {
 	useFit: true,
 	attributePrefix: "data-",
 	renderExternal: false,
+	resizeDebounce: 100,
+	maxResizeDebounce: 0,
 };
 
 export const DEFAULT_LAYOUT_OPTIONS = {

@@ -49,7 +49,7 @@ import { wait } from "./helper/TestHelper";
 				container: this.view,
 				horizontal,
 			});
-			
+
 			// When, Then
 			expect(this.watcher._getOffset()).to.be.equals(0);
 		});
@@ -81,6 +81,78 @@ import { wait } from "./helper/TestHelper";
 			expect(scroll(window, horizontal)).to.be.equals(545);
 			expect(this.watcher._getOffset()).to.be.equals(4000.25);
 		});
+		[50, 100, 150].forEach(resizeDebounce => {
+			it (`should check if it keeps debounce (resizeDebounce: ${resizeDebounce})`, (done) => {
+				// Given
+				const spy = sinon.spy();
+				this.watcher = new Watcher(window, {
+					container: this.el.querySelector(".view"),
+					horizontal,
+					resizeDebounce,
+					resize: spy,
+				});
+
+				// When
+				window.dispatchEvent(new Event("resize"));
+
+				// debounce
+				setTimeout(() => {
+					window.dispatchEvent(new Event("resize"));
+				}, resizeDebounce - 20);
+				// debounce
+				setTimeout(() => {
+					window.dispatchEvent(new Event("resize"));
+				}, resizeDebounce * 2 - 40);
+				// debounce
+				setTimeout(() => {
+					window.dispatchEvent(new Event("resize"));
+				}, resizeDebounce * 3 - 60);
+
+				// Then
+				// The event does not occur until the debounce is over.
+				setTimeout(() => {
+					expect(spy.callCount).to.be.equals(0);
+				}, resizeDebounce * 4 - 80);
+				// The event does occur when the debounce is over.
+				setTimeout(() => {
+					expect(spy.callCount).to.be.equals(1);
+					done();
+				}, resizeDebounce * 4);
+			});
+		});
+		it ("should check maximum debounce time.", (done) => {
+			// Given
+			const spy = sinon.spy();
+			this.watcher = new Watcher(window, {
+				container: this.el.querySelector(".view"),
+				horizontal,
+				maxResizeDebounce: 200,
+				resize: spy,
+			});
+
+			// When
+			window.dispatchEvent(new Event("resize"));
+
+			// debounce
+			setTimeout(() => {
+				window.dispatchEvent(new Event("resize"));
+			}, 60);
+			// debounce
+			setTimeout(() => {
+				window.dispatchEvent(new Event("resize"));
+			}, 120);
+			// debounce
+			setTimeout(() => {
+				window.dispatchEvent(new Event("resize"));
+			}, 180);
+
+			// Then
+			// The maximum time to debounce is 200ms.
+			setTimeout(() => {
+				expect(spy.callCount).to.be.equals(1);
+				done();
+			}, 200);
+		});
 		it (`should check containeroffset with offset and scroll`, (done) => {
 
 
@@ -91,7 +163,7 @@ import { wait } from "./helper/TestHelper";
 				container: this.view,
 				horizontal,
 			});
-			
+
 			// When
 			this.wrapper.style[horizontal ? "left" : "top"] = "2000.25px";
 
@@ -127,7 +199,7 @@ import { wait } from "./helper/TestHelper";
 				});
 
 				const issue1 = this.watcher._isScrollIssue;
-				
+
 				// When
 				this.watcher._prevPos = -1;
 				window.dispatchEvent(new Event("scroll"));

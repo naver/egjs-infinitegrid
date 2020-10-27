@@ -127,6 +127,8 @@ class InfiniteGrid extends Component {
 	 * @param {Number} [options.transitionDruation=0] Indicates how many seconds a transition effect takes to complete. <ko>트랜지션 효과를 완료하는데 걸리는 시간을 나타낸다.</ko>
 	 * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
 	 * @param {String} [options.attributePrefix="data-"] The prefix to use element's data attribute.<ko>엘리먼트의 데이타 속성에 사용할 접두사.</ko>
+	 * @param {Number} [options.resizeDebounce=100] Debounce time to set in the resize event. <ko>리사이즈 이벤트에 설정할 디바운스 시간.</ko>
+	 * @param {Number} [options.maxResizeDebounce=0] Maximum time to debounce the resize event(0 is not set). <ko>리사이즈 이벤트를 디바운스할 수 있는 최대 시간(0은 미설정이다).</ko>
 	 * @param {boolean} [options.renderExternal=false] Whether to use external rendering. It will delegate DOM manipulation and can synchronize the rendered state by calling `sync()` method. You can use this option to use in frameworks like React, Vue, Angular, which has its states and rendering methods.<ko>외부 렌더링을 사용할 지의 여부. 이 옵션을 사용시 렌더링을 외부에 위임할 수 있고, `sync()`를 호출하여 그 상태를 동기화할 수 있다. 이 옵션을 사용하여, React, Vue, Angular 등 자체적인 상태와 렌더링 방법을 갖는 프레임워크에 대응할 수 있다.</ko>
 	 */
 	constructor(element: HTMLElement | string | IJQuery, options?: Partial<IInfiniteGridOptions>) {
@@ -146,6 +148,8 @@ class InfiniteGrid extends Component {
 			threshold,
 			useRecycle,
 			attributePrefix,
+			resizeDebounce,
+			maxResizeDebounce,
 		} = this.options;
 
 		this._itemManager = new ItemManager();
@@ -158,6 +162,8 @@ class InfiniteGrid extends Component {
 		this._watcher = new Watcher(
 			this._renderer.view,
 			{
+				resizeDebounce,
+				maxResizeDebounce,
 				isOverflowScroll,
 				horizontal,
 				container: this._renderer.container,
