@@ -106,7 +106,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 				: (this.$_layout || result);
 
 			visibleChildren = nativeIG.getRenderingItems().map(item => item.vnode);
-			if (this.$slots.loading && nativeIG.isLoading()) {
+			if (this.$slots.loading) {
 				visibleChildren.push(...this.$slots.loading);
 			}
 		} else {
