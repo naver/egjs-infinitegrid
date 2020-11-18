@@ -52,7 +52,7 @@
 	"license": "MIT",
 	"homepage": "https://github.com/naver/egjs-infinitegrid",
 	"dependencies": {
-		"@egjs/component": "^2.1.2",
+		"@egjs/component": "^2.2.1",
 		"@egjs/lazyloaded": "0.0.2",
 		"@egjs/list-differ": "^1.0.0"
 	},

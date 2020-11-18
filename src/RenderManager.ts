@@ -1,7 +1,7 @@
 import ItemManager from "./ItemManager";
 import { matchHTML, $, assign } from "./utils";
 import DOMRenderer from "./DOMRenderer";
-import { ILayout, IInfiniteGridItem, IInfiniteGridGroup } from "./types";
+import { ILayout, IInfiniteGridItem, IInfiniteGridGroup, RenderManagerEvents } from "./types";
 import { check, removeAutoSizer } from "@egjs/lazyloaded";
 import Infinite from "./Infinite";
 import Component from "@egjs/component";
@@ -27,7 +27,7 @@ export default class RenderManager {
 		this._layout = layout;
 	}
 	public render(
-		callbackComponent: Component,
+		callbackComponent: Component<RenderManagerEvents>,
 		groups: IInfiniteGridGroup[],
 		items = ItemManager.pluck(groups, "items"),
 		isAppend?: boolean,
@@ -49,7 +49,7 @@ export default class RenderManager {
 		}).on("error", ({
 			target,
 			itemIndex,
-		}) => {
+		}: any) => {
 			if (!this._itemManager) {
 				return;
 			}
@@ -64,7 +64,7 @@ export default class RenderManager {
 		return callbackComponent;
 	}
 	private _complete(
-		callbackComponent: Component,
+		callbackComponent: Component<RenderManagerEvents>,
 		groups: IInfiniteGridGroup[],
 		items: IInfiniteGridItem[],
 		isAppend?: boolean,
@@ -126,11 +126,11 @@ export default class RenderManager {
 		});
 		callbackComponent.trigger("layoutComplete", {
 			items: ItemManager.pluck(groups, "items"),
-			isAppend,
+			isAppend: !!isAppend,
 		});
 	}
 	private _error(
-		callbackComponent: Component,
+		callbackComponent: Component<RenderManagerEvents>,
 		removeTarget: HTMLElement[],
 		replaceTarget: number[],
 		target: HTMLImageElement,
@@ -223,7 +223,7 @@ export default class RenderManager {
 		});
 	}
 	private _end(
-		callbackComponent: Component,
+		callbackComponent: Component<RenderManagerEvents>,
 		removeTarget: HTMLElement[],
 		replaceTarget: number[],
 		items: IInfiniteGridItem[],

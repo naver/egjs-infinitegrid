@@ -11,6 +11,7 @@
 		"variable-name": false,
 		"no-bitwise": false,
 		"no-empty": false,
+		"interface-over-type-literal": false,
 		"indent": [
 			true,
 			"tabs",

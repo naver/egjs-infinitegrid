@@ -307,3 +307,67 @@ export type ExcludeKeys = keyof Component
   | "beforeSync" | "sync" | "getRenderingItems";
 export type InfiniteGridMethodsKeys = Exclude<keyof InfiniteGrid, ExcludeKeys>;
 export type InfiniteGridMethods = Pick<InfiniteGrid, InfiniteGridMethodsKeys>;
+
+export type OnAppend = {
+	isTrusted: boolean;
+	groupKey: string | number | undefined;
+	startLoading: (userStyle: StyleType) => void;
+	endLoading: (userStyle: StyleType) => void;
+};
+export type OnPrepend = {
+	isTrusted: boolean;
+	groupKey: string | number | undefined;
+	startLoading: (userStyle: StyleType) => void;
+	endLoading: (userStyle: StyleType) => void;
+};
+export type OnLayoutComplete = {
+	target: IInfiniteGridItem[];
+	isAppend: boolean;
+	isTrusted: boolean;
+	fromCache: boolean;
+	isLayout: boolean;
+	isScroll: boolean;
+	scrollPos: number | null;
+	orgScrollPos: number;
+	size: number;
+	endLoading: (userStyle: StyleType) => void;
+};
+export type OnImageError = {
+	target: HTMLImageElement;
+	element: HTMLElement;
+	items: IInfiniteGridItem[];
+	item: IInfiniteGridItem;
+	itemIndex: number;
+	totalIndex: number;
+	replace: (src: string) => void;
+	replaceItem: (content: string) => void;
+	remove: () => void;
+	removeItem: () => void;
+};
+export type OnRender = {
+	next: () => void;
+};
+
+export type OnChange = {
+	isForward: boolean;
+	horizontal: boolean;
+	scrollPos: number;
+	orgScrollPos: number;
+};
+
+export type RenderManagerEvents = {
+	ready: void;
+	renderComplete: { start: number, end: number };
+	layoutComplete: { items: IInfiniteGridItem[], isAppend: boolean };
+	imageError: OnImageError;
+	finish: { remove: HTMLElement[], layout?: boolean };
+};
+
+export type InfiniteGridEvents = {
+	append: OnAppend;
+	prepend: OnPrepend;
+	render: OnRender;
+	layoutComplete: OnLayoutComplete;
+	imageError: OnImageError;
+	change: OnChange;
+};
