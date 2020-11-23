@@ -163,7 +163,7 @@ export function scrollBy(el: Window | Element, x: number, y: number) {
 		el.scrollTop += y;
 	}
 }
-export function getStyles(el: Element) {
+export function getStyle(el: Element) {
 	return (SUPPORT_COMPUTEDSTYLE ?
 		window.getComputedStyle(el) : (el as any).currentStyle) || {};
 }
@@ -192,7 +192,7 @@ function _getSize(el: Window | Document | HTMLElement, name: "Width" | "Height",
 		if (size) {
 			return size;
 		}
-		const cssSize = getStyles(el)[name.toLowerCase()];
+		const cssSize = getStyle(el)[name.toLowerCase()];
 
 		return (~cssSize.indexOf("px") && parseFloat(cssSize)) || 0;
 	}

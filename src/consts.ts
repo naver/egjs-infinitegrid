@@ -51,6 +51,7 @@ export const DEFAULT_OPTIONS = {
 	renderExternal: false,
 	resizeDebounce: 100,
 	maxResizeDebounce: 0,
+	percentage: false,
 };
 
 export const DEFAULT_LAYOUT_OPTIONS = {

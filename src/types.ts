@@ -25,12 +25,19 @@ export interface IInfiniteGridOptions {
 	renderExternal: boolean;
 	resizeDebounce: number;
 	maxResizeDebounce: number;
+	percentage: boolean | Array<"size" | "position">;
 }
 
 export interface IInfiniteGridGroup {
 	groupKey: string | number;
 	items: IInfiniteGridItem[];
 	outlines: { start: number[], end: number[] };
+}
+
+export interface RenderOptions {
+	transitionDuration: number;
+	sizePercentage: boolean;
+	posPercentage: boolean;
 }
 
 export interface IWatcherOptions {
@@ -275,6 +282,7 @@ export interface IDOMRendererOptions {
 	isConstantSize: boolean;
 	horizontal: boolean;
 	container: boolean | HTMLElement;
+	percentage: boolean | Array<"size" | "position">;
 }
 
 export interface IDOMRendererOrgStyle {
