@@ -304,9 +304,9 @@ export default class DOMRenderer {
 				return;
 			}
 			const horizontalPercentage
-				= horizontal && ((sizePercentage && p === "width") || (posPercentage && p === "left"));
+				= horizontal && ((sizePercentage && p === "height") || (posPercentage && p === "top"));
 			const verticalPercentage
-				= !horizontal && ((sizePercentage && p === "height") || (posPercentage && p === "top"));
+				= !horizontal && ((sizePercentage && p === "width") || (posPercentage && p === "left"));
 
 			style[p] = horizontalPercentage || verticalPercentage
 				? `${rect[p]! / viewportSize * 100}%`

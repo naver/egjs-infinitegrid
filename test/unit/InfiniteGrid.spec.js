@@ -1633,6 +1633,99 @@ describe("InfiniteGrid Test", function () {
 			expect(start).to.be.not.deep.equal(start3);
 		});
 	});
+	describe("percentage option Test", function () {
+		let inst;
+		let el;
+
+		beforeEach(() => {
+			el = sandbox();
+			el.innerHTML = `<div id="infinite" style="width: 1000px; height: 1000px"></div>`;
+		});
+		afterEach(() => {
+			if (inst) {
+				inst.destroy();
+				inst = null;
+			}
+			cleanup();
+		});
+		[true, false].forEach(horizontal => {
+			[false, ["position"], ["size"], true].forEach(percentage => {
+				it(`should set percentage to ${JSON.stringify(percentage)} (horizontal: ${horizontal})`, async () => {
+					// Given
+					inst = new InfiniteGrid("#infinite", {
+						horizontal,
+						percentage,
+					});
+
+					inst.setLayout(JustifiedLayout);
+
+					// When
+					await waitInsert(inst, true, 10, 1);
+
+					const items = inst._itemManager._groups[0].items;
+					const container = el.querySelector("#infinite");
+					const childrenRects = [].slice.call(container.children).map(child => {
+						const style = child.style;
+
+						return {
+							width: parseFloat(style.width),
+							height: parseFloat(style.height),
+							top: parseFloat(style.top),
+							left: parseFloat(style.left),
+						};
+					});
+					const viewportSize = container[horizontal ? "offsetHeight" : "offsetWidth"];
+					const itemRects = items.map(item => item.rect);
+
+					// Then
+					if (percentage === false) {
+						childrenRects.forEach((childrenRect, i) => {
+							const itemRect = itemRects[i];
+
+							// original
+							expect(childrenRect.left).to.be.closeTo(itemRect.left, 0.01);
+							expect(childrenRect.top).to.be.closeTo(itemRect.top, 0.01);
+							expect(childrenRect.width).to.be.closeTo(itemRect.width, 0.01);
+							expect(childrenRect.height).to.be.closeTo(itemRect.height, 0.01);
+						});
+					} else if (percentage === true) {
+						childrenRects.forEach((childrenRect, i) => {
+							const itemRect = itemRects[i];
+
+							// original
+							expect(childrenRect[horizontal ? "left" : "top"]).to.be.closeTo(itemRect[horizontal ? "left" : "top"], 0.01);
+							expect(childrenRect[horizontal ? "width" : "height"]).to.be.closeTo(itemRect[horizontal ? "width" : "height"], 0.01);
+							// percentage
+							expect(childrenRect[horizontal ? "top" : "left"] / 100 * viewportSize).to.be.closeTo(itemRect[horizontal ? "top" : "left"], 0.01);
+							expect(childrenRect[horizontal ? "height" : "width"] / 100 * viewportSize).to.be.closeTo(itemRect[horizontal ? "height" : "width"], 0.01);
+						});
+					} else if (percentage.indexOf("size") > -1) {
+						childrenRects.forEach((childrenRect, i) => {
+							const itemRect = itemRects[i];
+
+							// original
+							expect(childrenRect[horizontal ? "width" : "height"]).to.be.closeTo(itemRect[horizontal ? "width" : "height"], 0.01);
+							expect(childrenRect.left).to.be.closeTo(itemRect.left, 0.01);
+							expect(childrenRect.top).to.be.closeTo(itemRect.top, 0.01);
+							// percentage
+							expect(childrenRect[horizontal ? "height" : "width"] / 100 * viewportSize).to.be.closeTo(itemRect[horizontal ? "height" : "width"], 0.01);
+						});
+					} else if (percentage.indexOf("position") > -1) {
+						childrenRects.forEach((childrenRect, i) => {
+							const itemRect = itemRects[i];
+
+							// original
+							expect(childrenRect[horizontal ? "left" : "top"]).to.be.closeTo(itemRect[horizontal ? "left" : "top"], 0.01);
+							expect(childrenRect.width).to.be.closeTo(itemRect.width, 0.01);
+							expect(childrenRect.height).to.be.closeTo(itemRect.height, 0.01);
+							// percentage
+							expect(childrenRect[horizontal ? "top" : "left"] / 100 * viewportSize).to.be.closeTo(itemRect[horizontal ? "top" : "left"], 0.01);
+						});
+					}
+				});
+			});
+		});
+	});
 	describe("setLayout method Test", function () {
 		beforeEach(() => {
 			this.el = sandbox();
