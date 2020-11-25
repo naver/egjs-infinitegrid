@@ -168,7 +168,6 @@ export default class DOMRenderer {
 		const { el, prevRect } = item;
 		const style = el.style;
 
-		// for debugging
 		el.setAttribute(GROUPKEY_ATT, `${item.groupKey}`);
 		style.position = "absolute";
 		this._render(["width", "height"], rect, style);
