@@ -34,12 +34,6 @@ export interface IInfiniteGridGroup {
 	outlines: { start: number[], end: number[] };
 }
 
-export interface RenderOptions {
-	transitionDuration: number;
-	sizePercentage: boolean;
-	posPercentage: boolean;
-}
-
 export interface IWatcherOptions {
 	container: HTMLElement;
 	isOverflowScroll: boolean;

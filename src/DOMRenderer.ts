@@ -16,7 +16,7 @@ import {
 	addOnceEvent,
 	assign,
 } from "./utils";
-import { RectType, IPosition, IJQuery, IInfiniteGridItem, IDOMRendererStatus, IDOMRendererSize, IDOMRendererOptions, IDOMRendererOrgStyle, RenderOptions } from "./types";
+import { RectType, IPosition, IJQuery, IInfiniteGridItem, IDOMRendererStatus, IDOMRendererSize, IDOMRendererOptions, IDOMRendererOrgStyle } from "./types";
 
 function removeTransition(style: HTMLElement["style"]) {
 	style[`${TRANSITION}-property`] = "";
@@ -113,8 +113,8 @@ export default class DOMRenderer {
 		item: null,
 	};
 	public _orgStyle: IDOMRendererOrgStyle = {};
-	private _sizePercentage: boolean = false;
-	private _posPercentage: boolean = false;
+	private _isSizePercentage: boolean = false;
+	private _isPosPercentage: boolean = false;
 	constructor(element: string | HTMLElement | IJQuery, options: IDOMRendererOptions) {
 		assign(this.options, options);
 		this._init(element);
@@ -255,8 +255,8 @@ export default class DOMRenderer {
 		const { container, horizontal, percentage } = this.options;
 
 		if (percentage) {
-			this._sizePercentage = percentage === true || percentage.indexOf("size") > -1;
-			this._posPercentage = percentage === true || percentage.indexOf("position") > -1;
+			this._isSizePercentage = percentage === true || percentage.indexOf("size") > -1;
+			this._isPosPercentage = percentage === true || percentage.indexOf("position") > -1;
 		}
 
 		if (style.position === "static") {
@@ -294,8 +294,8 @@ export default class DOMRenderer {
 			innerHeight(this.container) : innerWidth(this.container);
 	}
 	private _render(properties: RectType[], rect: IInfiniteGridItem["rect"], style: HTMLElement["style"]) {
-		const sizePercentage = this._sizePercentage;
-		const posPercentage = this._posPercentage;
+		const isSizePercentage = this._isSizePercentage;
+		const isPosPercentage = this._isPosPercentage;
 		const viewportSize = this.getViewportSize();
 		const horizontal = this.options.horizontal;
 
@@ -303,12 +303,12 @@ export default class DOMRenderer {
 			if (!(p in rect)) {
 				return;
 			}
-			const horizontalPercentage
-				= horizontal && ((sizePercentage && p === "height") || (posPercentage && p === "top"));
-			const verticalPercentage
-				= !horizontal && ((sizePercentage && p === "width") || (posPercentage && p === "left"));
+			const isHorizontalPercentage
+				= horizontal && ((isSizePercentage && p === "height") || (isPosPercentage && p === "top"));
+			const isVerticalPercentage
+				= !horizontal && ((isSizePercentage && p === "width") || (isPosPercentage && p === "left"));
 
-			style[p] = horizontalPercentage || verticalPercentage
+			style[p] = isHorizontalPercentage || isVerticalPercentage
 				? `${rect[p]! / viewportSize * 100}%`
 				: `${rect[p]}px`;
 		});
