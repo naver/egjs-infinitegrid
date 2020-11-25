@@ -115,21 +115,22 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 	private _requestGroups: IInfiniteGridGroup[] = [];
 
 	/**
-	 * @param {HTMLElement|String|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
-	 * @param {Object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
-	 * @param {String} [options.itemSelector] A selector to select card elements that make up the layout<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)</ko>
-	 * @param {Boolean} [options.useRecycle=true] Indicates whether keep the number of DOMs is maintained. If the useRecycle value is 'true', keep the number of DOMs is maintained. If the useRecycle value is 'false', the number of DOMs will increase as card elements are added. <ko>DOM의 수를 유지할지 여부를 나타낸다. useRecycle 값이 'true'이면 DOM 개수를 일정하게 유지한다. useRecycle 값이 'false' 이면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
-	 * @param {Boolean} [options.isOverflowScroll=false] Indicates whether overflow:scroll is applied<ko>overflow:scroll 적용여부를 결정한다.</ko>
-	 * @param {Boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향)</ko>
-	 * @param {Boolean} [options.useFit=true] The useFit option scrolls upwards so that no space is visible until an item is added <ko>위로 스크롤할 시 아이템을 추가하는 동안 보이는 빈 공간을 안보이게 한다.</ko>
-	 * @param {Boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
-	 * @param {Boolean} [options.isConstantSize=false] Indicates whether sizes of all card elements does not change, the performance of layout arrangement can be improved. <ko>모든 카드 엘리먼트의 크기가 불변일 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
-	 * @param {Number} [options.transitionDruation=0] Indicates how many seconds a transition effect takes to complete. <ko>트랜지션 효과를 완료하는데 걸리는 시간을 나타낸다.</ko>
-	 * @param {Number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
-	 * @param {String} [options.attributePrefix="data-"] The prefix to use element's data attribute.<ko>엘리먼트의 데이타 속성에 사용할 접두사.</ko>
-	 * @param {Number} [options.resizeDebounce=100] Debounce time to set in the resize event. <ko>리사이즈 이벤트에 설정할 디바운스 시간.</ko>
-	 * @param {Number} [options.maxResizeDebounce=0] Maximum time to debounce the resize event(0 is not set). <ko>리사이즈 이벤트를 디바운스할 수 있는 최대 시간(0은 미설정이다).</ko>
+	 * @param {HTMLElement|string|jQuery} element A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
+	 * @param {object} [options] The option object of the eg.InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
+	 * @param {string} [options.itemSelector] A selector to select card elements that make up the layout<ko>레이아웃을 구성하는 카드 엘리먼트를 선택할 선택자(selector)</ko>
+	 * @param {boolean} [options.useRecycle=true] Indicates whether keep the number of DOMs is maintained. If the useRecycle value is 'true', keep the number of DOMs is maintained. If the useRecycle value is 'false', the number of DOMs will increase as card elements are added. <ko>DOM의 수를 유지할지 여부를 나타낸다. useRecycle 값이 'true'이면 DOM 개수를 일정하게 유지한다. useRecycle 값이 'false' 이면 카드 엘리먼트가 추가될수록 DOM 개수가 계속 증가한다.</ko>
+	 * @param {boolean} [options.isOverflowScroll=false] Indicates whether overflow:scroll is applied<ko>overflow:scroll 적용여부를 결정한다.</ko>
+	 * @param {boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향)</ko>
+	 * @param {boolean} [options.useFit=true] The useFit option scrolls upwards so that no space is visible until an item is added <ko>위로 스크롤할 시 아이템을 추가하는 동안 보이는 빈 공간을 안보이게 한다.</ko>
+	 * @param {boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
+	 * @param {boolean} [options.isConstantSize=false] Indicates whether sizes of all card elements does not change, the performance of layout arrangement can be improved. <ko>모든 카드 엘리먼트의 크기가 불변일 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
+	 * @param {number} [options.transitionDruation=0] Indicates how many seconds a transition effect takes to complete. <ko>트랜지션 효과를 완료하는데 걸리는 시간을 나타낸다.</ko>
+	 * @param {number} [options.threshold=100] The threshold size of an event area where card elements are added to a layout.<ko>레이아웃에 카드 엘리먼트를 추가하는 이벤트가 발생하는 기준 영역의 크기.</ko>
+	 * @param {string} [options.attributePrefix="data-"] The prefix to use element's data attribute.<ko>엘리먼트의 데이타 속성에 사용할 접두사.</ko>
+	 * @param {number} [options.resizeDebounce=100] Debounce time to set in the resize event. <ko>리사이즈 이벤트에 설정할 디바운스 시간.</ko>
+	 * @param {number} [options.maxResizeDebounce=0] Maximum time to debounce the resize event(0 is not set). <ko>리사이즈 이벤트를 디바운스할 수 있는 최대 시간(0은 미설정이다).</ko>
 	 * @param {boolean} [options.renderExternal=false] Whether to use external rendering. It will delegate DOM manipulation and can synchronize the rendered state by calling `sync()` method. You can use this option to use in frameworks like React, Vue, Angular, which has its states and rendering methods.<ko>외부 렌더링을 사용할 지의 여부. 이 옵션을 사용시 렌더링을 외부에 위임할 수 있고, `sync()`를 호출하여 그 상태를 동기화할 수 있다. 이 옵션을 사용하여, React, Vue, Angular 등 자체적인 상태와 렌더링 방법을 갖는 프레임워크에 대응할 수 있다.</ko>
+	 * @param {boolean | Array<"size" | "position">} [options.percentage=false] Whether to set the css size and position of the item to %.<ko>item의 css size와 position를 %로 설정할지 여부.</ko>
 	 */
 	constructor(element: HTMLElement | string | IJQuery, options?: Partial<IInfiniteGridOptions>) {
 		super();
@@ -150,6 +151,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			attributePrefix,
 			resizeDebounce,
 			maxResizeDebounce,
+			percentage,
 		} = this.options;
 
 		this._itemManager = new ItemManager();
@@ -158,6 +160,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			isConstantSize,
 			horizontal,
 			container: isOverflowScroll,
+			percentage,
 		});
 		this._watcher = new Watcher(
 			this._renderer.view,
@@ -347,7 +350,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			item.el = elements[i];
 
 			if (isChange) {
-				DOMRenderer.renderItem(item, item.rect);
+				this._renderer.renderItem(item, item.rect);
 			}
 		});
 		if (this._isProcessing()) {
@@ -467,7 +470,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		} else if (isRelayout && isResize) {
 			itemManager.clearOutlines(startCursor, endCursor);
 		}
-		DOMRenderer.renderItems(items, transitionDuration);
+		this._renderer.renderItems(items, transitionDuration);
 		isRelayout && this._watcher.setScrollPos();
 		this._onLayoutComplete({
 			items,
@@ -574,7 +577,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			visibleItems.forEach((item, i) => {
 				item.el = syncElements![i];
 			});
-			DOMRenderer.renderItems(visibleItems);
+			this._renderer.renderItems(visibleItems);
 		} else {
 			renderer.createAndInsert(visibleItems, true);
 		}
@@ -989,7 +992,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 	private _fitItems(base: number, margin = 0) {
 		base > 0 && this._watcher.scrollBy(-base);
 		this._itemManager.fit(base, this.options.horizontal);
-		DOMRenderer.renderItems(this.getItems());
+		this._renderer.renderItems(this.getItems());
 		this._setContainerSize(this._getEdgeValue("end") || margin);
 		base < 0 && this._watcher.scrollBy(-base);
 	}
@@ -1269,7 +1272,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 					this._requestGroups = groups;
 					this.trigger("render", {
 						next: () => {
-							!hasChildren && DOMRenderer.renderItems(items);
+							!hasChildren && this._renderer.renderItems(items);
 							next();
 						},
 					});

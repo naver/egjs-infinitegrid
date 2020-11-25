@@ -85,14 +85,14 @@ export default class RenderManager {
 
 			if (!isRelayout) {
 				outline = group.outlines[isAppend ? "end" : "start"];
-				DOMRenderer.renderItems(group.items);
+				this._renderer.renderItems(group.items);
 				return;
 			}
 			const groupItems = group.items;
 			const groupInfo = layout[isAppend ? "append" : "prepend"](groupItems, outline, true);
 
 			assign(group, groupInfo);
-			DOMRenderer.renderItems(groupInfo.items);
+			this._renderer.renderItems(groupInfo.items);
 			outline = groupInfo.outlines[isAppend ? "end" : "start"];
 		});
 

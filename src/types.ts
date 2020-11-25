@@ -25,6 +25,7 @@ export interface IInfiniteGridOptions {
 	renderExternal: boolean;
 	resizeDebounce: number;
 	maxResizeDebounce: number;
+	percentage: boolean | Array<"size" | "position">;
 }
 
 export interface IInfiniteGridGroup {
@@ -275,6 +276,7 @@ export interface IDOMRendererOptions {
 	isConstantSize: boolean;
 	horizontal: boolean;
 	container: boolean | HTMLElement;
+	percentage: boolean | Array<"size" | "position">;
 }
 
 export interface IDOMRendererOrgStyle {

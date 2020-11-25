@@ -79,7 +79,7 @@
 		"@babel/plugin-proposal-class-properties": "^7.1.0",
 		"@babel/plugin-transform-object-assign": "^7.0.0",
 		"@babel/preset-env": "^7.0.0",
-		"@daybrush/jsdoc": "^0.3.1",
+		"@daybrush/jsdoc": "^0.3.8",
 		"@egjs/build-helper": "0.0.5",
 		"@egjs/common-demo": "github:naver/egjs#common-demo",
 		"awesome-typescript-loader": "^3.5.0",

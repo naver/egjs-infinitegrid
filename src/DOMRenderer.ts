@@ -1,5 +1,4 @@
 import {
-	DUMMY_POSITION,
 	GROUPKEY_ATT,
 	CONTAINER_CLASSNAME,
 	TRANSITION_NAME,
@@ -13,28 +12,28 @@ import {
 	innerHeight,
 	innerWidth,
 	getSize,
-	getStyles,
+	getStyle,
 	addOnceEvent,
 	assign,
 } from "./utils";
 import { RectType, IPosition, IJQuery, IInfiniteGridItem, IDOMRendererStatus, IDOMRendererSize, IDOMRendererOptions, IDOMRendererOrgStyle } from "./types";
 
-function removeTransition(styles: HTMLElement["style"]) {
-	styles[`${TRANSITION}-property`] = "";
-	styles[`${TRANSITION}-duration`] = "";
-	styles[TRANSFORM] = "";
+function removeTransition(style: HTMLElement["style"]) {
+	style[`${TRANSITION}-property`] = "";
+	style[`${TRANSITION}-duration`] = "";
+	style[TRANSFORM] = "";
 }
-function setTransition(styles: HTMLElement["style"], transitionDuration: number, pos1: IPosition, pos2: IPosition) {
+function setTransition(style: HTMLElement["style"], transitionDuration: number, pos1: IPosition, pos2: IPosition) {
 	if (!transitionDuration) {
-		removeTransition(styles);
+		removeTransition(style);
 		return false;
 	}
 	if (pos1.left === pos2.left && pos1.top === pos2.top) {
 		return false;
 	}
-	styles[`${TRANSITION}-property`] = `${TRANSFORM},width,height`;
-	styles[`${TRANSITION}-duration`] = `${transitionDuration}s`;
-	styles[TRANSFORM] = `translate(${pos1.left - pos2.left}px,${pos1.top - pos2.top}px)`;
+	style[`${TRANSITION}-property`] = `${TRANSFORM},width,height`;
+	style[`${TRANSITION}-duration`] = `${transitionDuration}s`;
+	style[TRANSFORM] = `translate(${pos1.left - pos2.left}px,${pos1.top - pos2.top}px)`;
 	return true;
 }
 
@@ -62,48 +61,8 @@ function createContainer(element: HTMLElement) {
 	element.appendChild(container);
 	return container;
 }
-function render(properties: RectType[], rect: IInfiniteGridItem["rect"], styles: HTMLElement["style"]) {
-	properties.forEach(p => {
-		(p in rect) && (styles[p] = `${rect[p]}px`);
-	});
-}
 
 export default class DOMRenderer {
-	public static renderItem(item: IInfiniteGridItem, rect: IInfiniteGridItem["rect"], transitionDuration?: number) {
-		if (!item.el) {
-			return;
-		}
-		const { el, prevRect } = item;
-		const styles = el.style;
-
-		// for debugging
-		el.setAttribute(GROUPKEY_ATT, `${item.groupKey}`);
-		styles.position = "absolute";
-		render(["width", "height"], rect, styles);
-		if (transitionDuration && TRANSITION && prevRect) {
-			setTransition(styles, transitionDuration, rect, prevRect);
-			if ((el as any)[TRANSITION_NAME]) {
-				return;
-			}
-			el[TRANSITION_NAME] = true;
-			addOnceEvent(el, TRANSITION_END, () => {
-				const itemRect = item.rect;
-
-				removeTransition(styles);
-				render(["left", "top"], itemRect, styles);
-				item.prevRect = itemRect;
-				el[TRANSITION_NAME] = false;
-			});
-		} else {
-			render(["left", "top"], rect, styles);
-			item.prevRect = rect;
-		}
-	}
-	public static renderItems(items: IInfiniteGridItem[], transitionDuration?: number) {
-		items.forEach(item => {
-			DOMRenderer.renderItem(item, item.rect, transitionDuration);
-		});
-	}
 	public static removeItems(items: IInfiniteGridItem[]) {
 		items.forEach(item => {
 			if (item.el) {
@@ -145,6 +104,7 @@ export default class DOMRenderer {
 		isConstantSize: false,
 		horizontal: false,
 		container: false,
+		percentage: false,
 	};
 	public _size: IDOMRendererSize = {
 		container: -1,
@@ -153,6 +113,8 @@ export default class DOMRenderer {
 		item: null,
 	};
 	public _orgStyle: IDOMRendererOrgStyle = {};
+	private _isSizePercentage: boolean = false;
+	private _isPosPercentage: boolean = false;
 	constructor(element: string | HTMLElement | IJQuery, options: IDOMRendererOptions) {
 		assign(this.options, options);
 		this._init(element);
@@ -191,8 +153,42 @@ export default class DOMRenderer {
 	public createAndInsert(items: IInfiniteGridItem[], isAppend?: boolean) {
 		DOMRenderer.createElements(items);
 
-		DOMRenderer.renderItems(items);
+		this.renderItems(items);
 		this._insert(items, isAppend);
+	}
+	public renderItems(items: IInfiniteGridItem[], transitionDuration?: number) {
+		items.forEach(item => {
+			this.renderItem(item, item.rect, transitionDuration);
+		});
+	}
+	public renderItem(item: IInfiniteGridItem, rect: IInfiniteGridItem["rect"], transitionDuration?: number) {
+		if (!item.el) {
+			return;
+		}
+		const { el, prevRect } = item;
+		const style = el.style;
+
+		el.setAttribute(GROUPKEY_ATT, `${item.groupKey}`);
+		style.position = "absolute";
+		this._render(["width", "height"], rect, style);
+		if (transitionDuration && TRANSITION && prevRect) {
+			setTransition(style, transitionDuration, rect, prevRect);
+			if ((el as any)[TRANSITION_NAME]) {
+				return;
+			}
+			el[TRANSITION_NAME] = true;
+			addOnceEvent(el, TRANSITION_END, () => {
+				const itemRect = item.rect;
+
+				removeTransition(style);
+				this._render(["left", "top"], itemRect, style);
+				item.prevRect = itemRect;
+				el[TRANSITION_NAME] = false;
+			});
+		} else {
+			this._render(["left", "top"], rect, style);
+			item.prevRect = rect;
+		}
 	}
 	public getViewSize() {
 		return this._size.view;
@@ -254,8 +250,13 @@ export default class DOMRenderer {
 	}
 	private _init(el: HTMLElement | IJQuery | string) {
 		const element = $(el);
-		const style = getStyles(element);
-		const { container, horizontal } = this.options;
+		const style = getStyle(element);
+		const { container, horizontal, percentage } = this.options;
+
+		if (percentage) {
+			this._isSizePercentage = percentage === true || percentage.indexOf("size") > -1;
+			this._isPosPercentage = percentage === true || percentage.indexOf("position") > -1;
+		}
 
 		if (style.position === "static") {
 			this._orgStyle.position = element.style.position;
@@ -275,12 +276,12 @@ export default class DOMRenderer {
 			this.container = element;
 		}
 	}
-	private _insert(items: IInfiniteGridItem[], isAppend?: boolean, styles?: IInfiniteGridItem["rect"]) {
+	private _insert(items: IInfiniteGridItem[], isAppend?: boolean, style?: IInfiniteGridItem["rect"]) {
 		const container = this.container;
 		const df = document.createDocumentFragment();
 
 		items.forEach(item => {
-			styles && DOMRenderer.renderItem(item, styles);
+			style && this.renderItem(item, style);
 			isAppend ? df.appendChild(item.el!) : df.insertBefore(item.el!, df.firstChild);
 		});
 		isAppend ?
@@ -290,5 +291,25 @@ export default class DOMRenderer {
 	private _calcSize() {
 		return this.options.horizontal ?
 			innerHeight(this.container) : innerWidth(this.container);
+	}
+	private _render(properties: RectType[], rect: IInfiniteGridItem["rect"], style: HTMLElement["style"]) {
+		const isSizePercentage = this._isSizePercentage;
+		const isPosPercentage = this._isPosPercentage;
+		const viewportSize = this.getViewportSize();
+		const horizontal = this.options.horizontal;
+
+		properties.forEach(p => {
+			if (!(p in rect)) {
+				return;
+			}
+			const isHorizontalPercentage
+				= horizontal && ((isSizePercentage && p === "height") || (isPosPercentage && p === "top"));
+			const isVerticalPercentage
+				= !horizontal && ((isSizePercentage && p === "width") || (isPosPercentage && p === "left"));
+
+			style[p] = isHorizontalPercentage || isVerticalPercentage
+				? `${rect[p]! / viewportSize * 100}%`
+				: `${rect[p]}px`;
+		});
 	}
 }
