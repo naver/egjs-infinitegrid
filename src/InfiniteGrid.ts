@@ -356,7 +356,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		if (this._isProcessing()) {
 			return;
 		}
-		const newItems = items.filter(item => !item.orgSize || !item.orgSize.width);
+		const newItems = items.filter(item => item.needUpdate || !item.orgSize || !item.orgSize.width);
 
 		if (newItems.length) {
 			this._postLayout({
@@ -1222,9 +1222,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			});
 			this._renderManager
 				.render(callbackComponent, groups, newItems, isAppend)
-				.on("renderComplete", ({ start, end }) => {
-					this._setCursor(start, end);
-				}).on("imageError", e => {
+				.on("imageError", e => {
 					/**
 					 * This event is fired when an error occurs in the image.
 					 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
@@ -1240,6 +1238,8 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 					});
 					*/
 					this.trigger("imageError", assign(e, { element: e.item.el }));
+				}).on("renderComplete", ({ start, end }) => {
+					this._setCursor(start, end);
 				}).on("layoutComplete", ({
 					items: layoutItems,
 				}) => {
@@ -1251,7 +1251,9 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 						isTrusted,
 						useRecycle: false,
 					});
-				}).on("finish", ({ remove, layout }) => {
+				}).on("readyElement", e => {
+					this._updateItem(e.item) && this.layout(false);
+				}).on("ready", ({ remove, layout }) => {
 					remove.forEach(el => this.remove(el, false));
 					if (layout) {
 						this.layout(false);
