@@ -159,6 +159,7 @@ export interface IInfiniteGridItem {
 	size?: ISize | null;
 	rect: IPosition & Partial<ISize>;
 	prevRect?: IPosition & Partial<ISize> | null;
+	needUpdate: boolean;
 	mounted: boolean;
 	[key: string]: any;
 }
@@ -358,11 +359,23 @@ export type OnChange = {
 };
 
 export type RenderManagerEvents = {
-	ready: void;
+	preReady: void;
+	readyElement: { item: IInfiniteGridItem };
+	ready: { remove: HTMLElement[], layout?: boolean };
+	error: {
+		target: HTMLElement;
+		element: HTMLElement;
+		items: IInfiniteGridItem[];
+		item: IInfiniteGridItem;
+		itemIndex: number;
+		totalIndex: number;
+		replaceItem: (content: string) => void;
+		remove: () => void;
+		removeItem: () => void;
+	};
+	imageError: OnImageError;
 	renderComplete: { start: number, end: number };
 	layoutComplete: { items: IInfiniteGridItem[], isAppend: boolean };
-	imageError: OnImageError;
-	finish: { remove: HTMLElement[], layout?: boolean };
 };
 
 export type InfiniteGridEvents = {

@@ -2,7 +2,7 @@ import ItemManager from "./ItemManager";
 import { matchHTML, $, assign } from "./utils";
 import DOMRenderer from "./DOMRenderer";
 import { ILayout, IInfiniteGridItem, IInfiniteGridGroup, RenderManagerEvents } from "./types";
-import { check, removeAutoSizer } from "@egjs/lazyloaded";
+import ImReady from "@egjs/imready";
 import Infinite from "./Infinite";
 import Component from "@egjs/component";
 
@@ -38,32 +38,40 @@ export default class RenderManager {
 		const elements = items.map(item => item.el!);
 		const prefix = this.options.attributePrefix;
 
-		check(
-			elements,
+		const im = new ImReady({
 			prefix,
-		).on("ready", () => {
+		});
+		im.check(elements);
+		im.on("preReady", () => {
 			if (!this._itemManager) {
 				return;
 			}
-			this._complete(callbackComponent, checkGroups, items, isAppend);
+			this._preReady(callbackComponent, checkGroups, items, isAppend);
 		}).on("error", ({
 			target,
-			itemIndex,
-		}: any) => {
+			index,
+		}) => {
 			if (!this._itemManager) {
 				return;
 			}
-			this._error(callbackComponent, removeTarget, replaceTarget, target, items, itemIndex);
-		}).on("finish", () => {
+			this._error(callbackComponent, removeTarget, replaceTarget, target, items, index);
+		}).on("readyElement", e => {
+			const item = items[e.index];
+
+			item.needUpdate = false;
+			if (e.hasLoading && e.isPreReadyOver) {
+				this._readyElement(callbackComponent, items[e.index]);
+			}
+		}).on("ready", () => {
 			if (!this._itemManager) {
 				return;
 			}
-			this._end(callbackComponent, removeTarget, replaceTarget, items);
+			this._ready(callbackComponent, removeTarget, replaceTarget, items);
 		});
 
 		return callbackComponent;
 	}
-	private _complete(
+	private _preReady(
 		callbackComponent: Component<RenderManagerEvents>,
 		groups: IInfiniteGridGroup[],
 		items: IInfiniteGridItem[],
@@ -133,7 +141,7 @@ export default class RenderManager {
 		callbackComponent: Component<RenderManagerEvents>,
 		removeTarget: HTMLElement[],
 		replaceTarget: number[],
-		target: HTMLImageElement,
+		target: HTMLElement,
 		items: IInfiniteGridItem[],
 		errorIndex: number,
 	) {
@@ -181,9 +189,8 @@ export default class RenderManager {
 					parentNode.removeChild(target);
 					item.content = element.outerHTML;
 				} else {
-					target.src = src;
+					(target as HTMLImageElement).src = src;
 					if (target.getAttribute(`${prefix}width`)) {
-						removeAutoSizer(target, prefix);
 						target.removeAttribute(`${prefix}width`);
 						target.removeAttribute(`${prefix}height`);
 					}
@@ -209,20 +216,41 @@ export default class RenderManager {
 		};
 		const totalIndex = itemManager.pluck("items").indexOf(item);
 
-		callbackComponent.trigger("imageError", {
+		if (target instanceof HTMLImageElement) {
+			callbackComponent.trigger("imageError", {
+				target,
+				element,
+				items,
+				item,
+				itemIndex: errorIndex,
+				replace,
+				replaceItem,
+				remove,
+				removeItem,
+				totalIndex,
+			});
+		}
+		callbackComponent.trigger("error", {
 			target,
 			element,
 			items,
 			item,
 			itemIndex: errorIndex,
-			replace,
 			replaceItem,
 			remove,
 			removeItem,
 			totalIndex,
 		});
 	}
-	private _end(
+	private _readyElement(
+		callbackComponent: Component<RenderManagerEvents>,
+		item: IInfiniteGridItem,
+	) {
+		callbackComponent.trigger("readyElement", {
+			item,
+		});
+	}
+	private _ready(
 		callbackComponent: Component<RenderManagerEvents>,
 		removeTarget: HTMLElement[],
 		replaceTarget: number[],
@@ -233,19 +261,21 @@ export default class RenderManager {
 		const replaceTargetLength = replaceTarget.length;
 
 		if (!removeTargetLength && !replaceTargetLength) {
-			callbackComponent.trigger("finish", { remove: [] });
+			callbackComponent.trigger("ready", { remove: [] });
 			return;
 		}
 		const layoutedItems = replaceTarget.map(itemIndex => items[itemIndex]);
 
 		if (!replaceTargetLength) {
-			callbackComponent.trigger("finish", { remove: removeTarget, layout: true });
+			callbackComponent.trigger("ready", { remove: removeTarget, layout: true });
 			return;
 		}
 		// wait layoutComplete beacause of error event.
-		check(layoutedItems.map(v => v.el!), attributePrefix).on("ready", () => {
+		new ImReady({
+			prefix: attributePrefix,
+		}).check(layoutedItems.map(v => v.el!)).on("ready", () => {
 			this._renderer.updateSize(layoutedItems);
-			callbackComponent.trigger("finish", { remove: removeTarget, layout: true });
+			callbackComponent.trigger("ready", { remove: removeTarget, layout: true });
 		});
 	}
 }
