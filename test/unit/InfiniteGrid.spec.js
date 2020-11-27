@@ -1760,6 +1760,68 @@ describe("InfiniteGrid Test", function () {
 			});
 		});
 	});
+	describe("Native Lazy loading Test", function () {
+		let inst;
+		let el;
+
+		beforeEach(() => {
+			el = sandbox();
+			el.innerHTML = `<div id="infinite" style="width: 1000px; height: 1000px"></div>`;
+		});
+		afterEach(() => {
+			if (inst) {
+				inst.destroy();
+				inst = null;
+			}
+			cleanup();
+		});
+		it(`should test lazyloading`, async() => {
+			// Given
+			inst = new InfiniteGrid("#infinite");
+
+			inst.setLayout(GridLayout);
+
+      const item1 = document.createElement("div");
+      const item2 = document.createElement("div");
+
+      item1.style.width = "100%";
+      item2.style.width = "100%";
+			const loadingImg = document.createElement("img");
+
+			loadingImg.setAttribute("loading", "lazy");
+
+			Object.defineProperty(loadingImg, "loading", {
+				value: "lazy",
+			});
+			Object.defineProperty(loadingImg, "complete", {
+				value: false,
+			});
+
+			// When
+			item1.append(loadingImg);
+
+			inst.append([item1, item2]);
+
+			const e1 = await waitEvent(inst, "layoutComplete");
+
+      const top1 = item2.style.top;
+			const needUpdate1 = e1.target[0].needUpdate;
+
+			// loading is complete
+			loadingImg.src = "/base/test/unit/image/3.jpg";
+
+      const e2 = await waitEvent(inst, "layoutComplete");
+      const top2 = item2.style.top;
+      const needUpdate2 = e2.target[0].needUpdate;
+
+      // Then
+			expect(top1).to.be.not.equals(top2);
+      expect(e1.isLayout).to.be.equals(false);
+      expect(e2.isLayout).to.be.equals(true);
+      expect(needUpdate1).to.be.equals(true);
+      expect(needUpdate2).to.be.equals(false);
+		});
+	});
 	describe("data type Test", function () {
 		const makeData = function (isHTMLElement) {
 			const complicatedHTML = "<div class='item'><div class='thumbnail'><img class='img-rounded' src='#' /><div class='caption'><p><a href='http://www.naver.com'></a></p></div></div></div>";
