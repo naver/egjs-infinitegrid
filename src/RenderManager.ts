@@ -230,17 +230,6 @@ export default class RenderManager {
 				totalIndex,
 			});
 		}
-		callbackComponent.trigger("error", {
-			target,
-			element,
-			items,
-			item,
-			itemIndex: errorIndex,
-			replaceItem,
-			remove,
-			removeItem,
-			totalIndex,
-		});
 	}
 	private _readyElement(
 		callbackComponent: Component<RenderManagerEvents>,

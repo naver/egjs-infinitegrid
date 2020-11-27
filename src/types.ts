@@ -362,17 +362,6 @@ export type RenderManagerEvents = {
 	preReady: void;
 	readyElement: { item: IInfiniteGridItem };
 	ready: { remove: HTMLElement[], layout?: boolean };
-	error: {
-		target: HTMLElement;
-		element: HTMLElement;
-		items: IInfiniteGridItem[];
-		item: IInfiniteGridItem;
-		itemIndex: number;
-		totalIndex: number;
-		replaceItem: (content: string) => void;
-		remove: () => void;
-		removeItem: () => void;
-	};
 	imageError: OnImageError;
 	renderComplete: { start: number, end: number };
 	layoutComplete: { items: IInfiniteGridItem[], isAppend: boolean };
