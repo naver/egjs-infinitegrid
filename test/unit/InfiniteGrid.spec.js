@@ -1775,17 +1775,17 @@ describe("InfiniteGrid Test", function () {
 			}
 			cleanup();
 		});
-		it(`should test lazyloading`, async() => {
+		it(`should test lazyloading`, async () => {
 			// Given
 			inst = new InfiniteGrid("#infinite");
 
 			inst.setLayout(GridLayout);
 
-      const item1 = document.createElement("div");
-      const item2 = document.createElement("div");
+			const item1 = document.createElement("div");
+			const item2 = document.createElement("div");
 
-      item1.style.width = "100%";
-      item2.style.width = "100%";
+			item1.style.width = "100%";
+			item2.style.width = "100%";
 			const loadingImg = document.createElement("img");
 
 			loadingImg.setAttribute("loading", "lazy");
@@ -1804,22 +1804,22 @@ describe("InfiniteGrid Test", function () {
 
 			const e1 = await waitEvent(inst, "layoutComplete");
 
-      const top1 = item2.style.top;
+			const top1 = item2.style.top;
 			const needUpdate1 = e1.target[0].needUpdate;
 
 			// loading is complete
 			loadingImg.src = "/base/test/unit/image/3.jpg";
 
-      const e2 = await waitEvent(inst, "layoutComplete");
-      const top2 = item2.style.top;
-      const needUpdate2 = e2.target[0].needUpdate;
+			const e2 = await waitEvent(inst, "layoutComplete");
+			const top2 = item2.style.top;
+			const needUpdate2 = e2.target[0].needUpdate;
 
-      // Then
+			// Then
 			expect(top1).to.be.not.equals(top2);
-      expect(e1.isLayout).to.be.equals(false);
-      expect(e2.isLayout).to.be.equals(true);
-      expect(needUpdate1).to.be.equals(true);
-      expect(needUpdate2).to.be.equals(false);
+			expect(e1.isLayout).to.be.equals(false);
+			expect(e2.isLayout).to.be.equals(true);
+			expect(needUpdate1).to.be.equals(true);
+			expect(needUpdate2).to.be.equals(false);
 		});
 	});
 	describe("data type Test", function () {
