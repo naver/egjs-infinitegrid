@@ -75,7 +75,7 @@ export default class RenderManager {
 		return callbackComponent;
 	}
 	public destroy() {
-		this.im.destroy();
+		this.im && this.im.destroy();
 	}
 	private _preReady(
 		callbackComponent: Component<RenderManagerEvents>,
