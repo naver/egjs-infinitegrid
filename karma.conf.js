@@ -8,6 +8,7 @@ module.exports = config => {
 			"./node_modules/lite-fixture/index.js",
 			"./test/unit/**/*.spec.js",
 			"test/unit/image/*.jpg",
+			"test/unit/video/*.mp4",
 		],
 		client: {
 			mocha: {

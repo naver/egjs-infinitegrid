@@ -569,7 +569,7 @@ describe("InfiniteGrid Test", function () {
 
 		});
 	});
-	describe(`When appending, image test`, function () {
+	describe(`When appending, content test`, function () {
 		beforeEach(() => {
 			this.el = sandbox();
 			this.el.innerHTML = "<div id='infinite'></div>";
@@ -585,13 +585,37 @@ describe("InfiniteGrid Test", function () {
 			}
 			cleanup();
 		});
-		it(`should check append error images`, done => {
-			this.inst.on("imageError", e => {
-				expect(e.target.src).to.have.string("1.jpg");
-				expect(e.itemIndex).to.be.equals(1);
-				done();
-			});
+		it(`should check append error videos`, async () => {
+			// Given
+			const imageErrorSpy = sinon.spy();
+			this.inst.on("imageError", imageErrorSpy);
+			const waitContentErrorEvent = waitEvent(this.inst, "contentError");
+
+			// When
+			this.inst.append(`<video src="/base/test/unit/video/pano.mp4"></video><video src="/a.mp4"></video>`);
+
+			const contentErrorEvent = await waitContentErrorEvent;
+
+			// Then
+			expect(imageErrorSpy.callCount).to.be.equals(0);
+			expect(contentErrorEvent.target.src).to.have.string("a.mp4");
+			expect(contentErrorEvent.itemIndex).to.be.equals(1);
+		});
+		it(`should check append error images`, async () => {
+			// Given
+			const waitImageErrorEvent = waitEvent(this.inst, "imageError");
+			const waitContentErrorEvent = waitEvent(this.inst, "contentError");
+			// When
 			this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg">`);
+
+			const imageErrorEvent = await waitImageErrorEvent;
+			const contentErrorEvent = await waitContentErrorEvent;
+
+			// Then
+			expect(imageErrorEvent.target.src).to.have.string("1.jpg");
+			expect(imageErrorEvent.itemIndex).to.be.equals(1);
+			expect(contentErrorEvent.target.src).to.have.string("1.jpg");
+			expect(contentErrorEvent.itemIndex).to.be.equals(1);
 		});
 		it(`should check append multiple error images`, done => {
 			// Given

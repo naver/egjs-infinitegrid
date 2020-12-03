@@ -12,6 +12,7 @@ function hasTarget<T>(target: T[], value: T) {
 
 export default class RenderManager {
 	private _layout: ILayout;
+	private im: ImReady;
 	constructor(
 		private _infinite: Infinite,
 		private _itemManager: ItemManager,
@@ -41,6 +42,8 @@ export default class RenderManager {
 		const im = new ImReady({
 			prefix,
 		});
+
+		this.im = im;
 		im.check(elements);
 		im.on("preReady", () => {
 			if (!this._itemManager) {
@@ -70,6 +73,9 @@ export default class RenderManager {
 		});
 
 		return callbackComponent;
+	}
+	public destroy() {
+		this.im.destroy();
 	}
 	private _preReady(
 		callbackComponent: Component<RenderManagerEvents>,
@@ -177,7 +183,7 @@ export default class RenderManager {
 			replaceTarget.push(errorIndex);
 		};
 		// replace image
-		const replace = (src: string) => {
+		const replace = (src?: string) => {
 			if (hasTarget(removeTarget, element)) {
 				return;
 			}
@@ -188,7 +194,7 @@ export default class RenderManager {
 					parentNode.insertBefore($(src), target);
 					parentNode.removeChild(target);
 					item.content = element.outerHTML;
-				} else {
+				} else if (target instanceof HTMLImageElement) {
 					(target as HTMLImageElement).src = src;
 					if (target.getAttribute(`${prefix}width`)) {
 						target.removeAttribute(`${prefix}width`);
@@ -230,6 +236,18 @@ export default class RenderManager {
 				totalIndex,
 			});
 		}
+		callbackComponent.trigger("contentError", {
+			target,
+			element,
+			items,
+			item,
+			itemIndex: errorIndex,
+			replace,
+			replaceItem,
+			remove,
+			removeItem,
+			totalIndex,
+		});
 	}
 	private _readyElement(
 		callbackComponent: Component<RenderManagerEvents>,
