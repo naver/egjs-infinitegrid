@@ -1350,10 +1350,10 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			this.trigger("append", {
 				isTrusted: true,
 				groupKey: this.getGroupKeys().pop() || "",
-				startLoading: (userStyle: StyleType) => {
+				startLoading: (userStyle?: StyleType) => {
 					this.startLoading(true, userStyle);
 				},
-				endLoading: (userStyle: StyleType) => {
+				endLoading: (userStyle?: StyleType) => {
 					this.endLoading(userStyle);
 				},
 			});
@@ -1383,10 +1383,10 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			this.trigger("prepend", {
 				isTrusted: true,
 				groupKey: this.getGroupKeys().shift(),
-				startLoading: (userStyle: StyleType) => {
+				startLoading: (userStyle?: StyleType) => {
 					this.startLoading(false, userStyle);
 				},
-				endLoading: (userStyle: StyleType) => {
+				endLoading: (userStyle?: StyleType) => {
 					this.endLoading(userStyle);
 				},
 			});
@@ -1510,7 +1510,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			scrollPos,
 			orgScrollPos: watcher.getOrgScrollPos(),
 			size,
-			endLoading: (userStyle: StyleType) => {
+			endLoading: (userStyle?: StyleType) => {
 				this.endLoading(userStyle);
 			},
 		});
