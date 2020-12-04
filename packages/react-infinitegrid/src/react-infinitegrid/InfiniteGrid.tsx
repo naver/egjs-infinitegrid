@@ -40,6 +40,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 		onLayoutComplete: () => { },
 		onImageError: () => { },
 		onChange: () => { },
+		onContentError: () => { },
 	};
 	public state: InfiniteGridState = {
 		layout: "",
@@ -123,7 +124,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 
 		INFINITEGRID_EVENTS.forEach((name: string) => {
 			const eventName = camelize(`on ${name}`);
-			ig.on(name, (e: any) => {
+			ig.on(name as any, (e: any) => {
 				this.props[eventName]!({ ...e, currentTarget: this });
 			});
 		});

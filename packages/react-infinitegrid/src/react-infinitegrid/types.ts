@@ -2,6 +2,7 @@ import InfiniteGrid from "./InfiniteGrid";
 import NativeInfiniteGrid, {
 	IInfiniteGridItem, ILayout, IInfiniteGridOptions, IInfiniteGridStatus,
 	InfiniteGridMethods,
+	OnContentError,
 } from "@egjs/infinitegrid";
 
 export interface InfiniteGridState {
@@ -11,14 +12,14 @@ export interface InfiniteGridState {
 export interface OnAppend {
 	currentTarget?: InfiniteGrid;
 	groupKey?: number | string;
-	startLoading?: (loadingStyle: object) => void;
-	endLoading?: (loadingStyle: object) => void;
+	startLoading?: (loadingStyle?: object) => void;
+	endLoading?: (loadingStyle?: object) => void;
 }
 export interface OnPrepend {
 	currentTarget?: InfiniteGrid;
 	groupKey?: number | string;
-	startLoading?: (loadingStyle: object) => void;
-	endLoading?: (loadingStyle: object) => void;
+	startLoading?: (loadingStyle?: object) => void;
+	endLoading?: (loadingStyle?: object) => void;
 }
 export interface OnChange {
 	currentTarget?: InfiniteGrid;
@@ -47,7 +48,7 @@ export interface OnLayoutComplete {
 	scrollPos?: number;
 	orgScrollPos?: number;
 	size?: number;
-	endLoading?: (loadginStyle: object) => void;
+	endLoading?: (loadginStyle?: object) => void;
 }
 
 export interface InfiniteGridProps<T extends ILayout = any> {
@@ -65,6 +66,7 @@ export interface InfiniteGridProps<T extends ILayout = any> {
 	onLayoutComplete?: (param: OnLayoutComplete) => any;
 	onImageError?: (param: OnImageError) => any;
 	onChange?: (param: OnChange) => any;
+	onContentError?: (param: OnContentError) => any;
 	[others: string]: any;
 }
 

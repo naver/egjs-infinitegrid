@@ -44,10 +44,12 @@ export class NgxInfiniteGridComponent
   @Output() public append: EventEmitter<any> = new EventEmitter();
   @Output() public prepend: EventEmitter<any> = new EventEmitter();
   @Output() public imageError: EventEmitter<any> = new EventEmitter();
+  @Output() public contentError: EventEmitter<any> = new EventEmitter();
   // tslint:disable-next-line: no-output-native
   @Output() public change: EventEmitter<any> = new EventEmitter();
   @Output() public layoutComplete: EventEmitter<any> = new EventEmitter();
   @Output() public visibleChange: EventEmitter<any> = new EventEmitter();
+  @Output() public render: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('wrapper', { static: false }) wrapperRef: ElementRef;
   @ViewChild('container', { static: false }) containerRef: ElementRef;
@@ -123,8 +125,8 @@ export class NgxInfiniteGridComponent
       if (!this[name]) {
         return;
       }
-      ig.on(name, e => {
-        this[name].emit({ ...e, currentTarget: this });
+      ig.on(name as any, e => {
+        (this as any)[name].emit({ ...e, currentTarget: this });
       });
     });
     ig.setLayout(this.layoutType, { ...this.layoutOptions });

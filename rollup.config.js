@@ -26,7 +26,7 @@ const entries = layouts.reduce((arr, layout) => arr.concat([
 const external = {
 	"@egjs/component": "eg.Component",
 	"@egjs/list-differ": "eg.ListDiffer",
-	"@egjs/lazyloaded": "eg.LazyLoaded",
+	"@egjs/imready": "eg.ImReady",
 };
 
 

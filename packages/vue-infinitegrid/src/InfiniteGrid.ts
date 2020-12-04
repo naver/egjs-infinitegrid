@@ -145,7 +145,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 		const nativeIG = this.$_nativeInfiniteGrid;
 
 		INFINITEGRID_EVENTS.forEach(eventName => {
-			nativeIG.on(eventName, e => {
+			nativeIG.on((eventName as any), (e: any) => {
 				e.currentTarget = this;
 				// Make events from camelCase to kebab-case
 				this.$emit(eventName.replace(/([A-Z])/g, "-$1").toLowerCase(), e);

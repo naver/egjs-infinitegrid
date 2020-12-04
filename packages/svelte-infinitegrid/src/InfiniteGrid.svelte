@@ -121,7 +121,7 @@
       });
     });
     INFINITEGRID_EVENTS.forEach(name => {
-      ig.on(name, e => {
+      ig.on(name as any, (e: any) => {
         dispatch(name, e);
       });
     });

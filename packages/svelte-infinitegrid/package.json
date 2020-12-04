@@ -1,6 +1,6 @@
 {
   "name": "@egjs/svelte-infinitegrid",
-  "version": "3.0.4",
+  "version": "3.1.0",
   "description": "A Svelte component that can easily use egjs-infinitegrid",
   "sideEffects": false,
   "types": "src/index.d.ts",
@@ -61,7 +61,7 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "@egjs/infinitegrid": "^3.6.3"
+    "@egjs/infinitegrid": "^3.7.0"
   },
   "scripts": {
     "build": "rollup -c rollup.build.config.js",
