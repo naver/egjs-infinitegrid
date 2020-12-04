@@ -100,30 +100,11 @@ export interface IRemoveResult {
 	group: IInfiniteGridGroup | null;
 	items: IInfiniteGridItem[];
 }
-
 /**
- * The object of data to be sent to an event
- * @ko 이벤트에 전달되는 데이터 객체
+ * Error Interface
+ * @ko 에러 인터페이스
  * @memberof eg.InfiniteGrid
  * @typedef
- * @property - Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
- * @property - The item's element with error images.<ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트</ko>
- * @property - The items being added.<ko>화면에 추가중인 아이템들</ko>
- * @property - The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
- * @property - The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
- * @property - The item's index with error images in all items.<ko>전체 아이템중 에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
- * @property - In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
- * @property - In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
- * @property - In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
- * @property - In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
- * @example
-	ig.on("imageError", e => {
-	  e.remove();
-	  e.removeItem();
-	  e.replace("http://...jpg");
-	  e.replace(imageElement);
-	  e.replaceItem("item html");
-	});
  */
 export interface IErrorCallbackOptions {
 	target: HTMLImageElement;
@@ -132,7 +113,7 @@ export interface IErrorCallbackOptions {
 	item: IInfiniteGridItem;
 	itemIndex: number;
 	totalIndex: number;
-	replace: (src: string) => void;
+	replace: (src?: string | HTMLElement) => void;
 	replaceItem: (content: string) => void;
 	remove: () => void;
 	removeItem: () => void;
@@ -159,6 +140,7 @@ export interface IInfiniteGridItem {
 	size?: ISize | null;
 	rect: IPosition & Partial<ISize>;
 	prevRect?: IPosition & Partial<ISize> | null;
+	needUpdate: boolean;
 	mounted: boolean;
 	[key: string]: any;
 }
@@ -334,6 +316,18 @@ export type OnLayoutComplete = {
 	size: number;
 	endLoading: (userStyle: StyleType) => void;
 };
+export type OnContentError = {
+	target: HTMLElement;
+	element: HTMLElement;
+	items: IInfiniteGridItem[];
+	item: IInfiniteGridItem;
+	itemIndex: number;
+	totalIndex: number;
+	replace: (element?: string | HTMLElement) => void;
+	replaceItem: (content: string) => void;
+	remove: () => void;
+	removeItem: () => void;
+};
 export type OnImageError = {
 	target: HTMLImageElement;
 	element: HTMLElement;
@@ -341,7 +335,7 @@ export type OnImageError = {
 	item: IInfiniteGridItem;
 	itemIndex: number;
 	totalIndex: number;
-	replace: (src: string) => void;
+	replace: (src?: string | HTMLImageElement) => void;
 	replaceItem: (content: string) => void;
 	remove: () => void;
 	removeItem: () => void;
@@ -358,11 +352,13 @@ export type OnChange = {
 };
 
 export type RenderManagerEvents = {
-	ready: void;
+	preReady: void;
+	readyElement: { item: IInfiniteGridItem };
+	ready: { remove: HTMLElement[], layout?: boolean };
+	imageError: OnImageError;
+	contentError: OnContentError;
 	renderComplete: { start: number, end: number };
 	layoutComplete: { items: IInfiniteGridItem[], isAppend: boolean };
-	imageError: OnImageError;
-	finish: { remove: HTMLElement[], layout?: boolean };
 };
 
 export type InfiniteGridEvents = {
@@ -371,5 +367,6 @@ export type InfiniteGridEvents = {
 	render: OnRender;
 	layoutComplete: OnLayoutComplete;
 	imageError: OnImageError;
+	contentError: OnContentError;
 	change: OnChange;
 };

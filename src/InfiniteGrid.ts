@@ -356,7 +356,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		if (this._isProcessing()) {
 			return;
 		}
-		const newItems = items.filter(item => !item.orgSize || !item.orgSize.width);
+		const newItems = items.filter(item => item.needUpdate || !item.orgSize || !item.orgSize.width);
 
 		if (newItems.length) {
 			this._postLayout({
@@ -942,6 +942,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		this._reset();
 		this._itemManager.clear();
 		this._renderer.destroy();
+		this._renderManager.destroy();
 	}
 	private _relayout(isRelayout: boolean, groups: IInfiniteGridGroup[], items: IInfiniteGridItem[]) {
 		const renderer = this._renderer;
@@ -1222,24 +1223,61 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			});
 			this._renderManager
 				.render(callbackComponent, groups, newItems, isAppend)
-				.on("renderComplete", ({ start, end }) => {
-					this._setCursor(start, end);
-				}).on("imageError", e => {
+				.on("imageError", e => {
 					/**
 					 * This event is fired when an error occurs in the image.
 					 * @ko 이미지 로드에 에러가 날 때 발생하는 이벤트.
 					 * @event eg.InfiniteGrid#imageError
-					 * @param {eg.InfiniteGrid.IErrorCallbackOptions} e The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+					 * @param {eg.InfiniteGrid.IErrorCallbackOptions} e - The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+					 * @param {HTMLElement} [e.element] - Appending card's image element.<ko>추가 되는 카드의 이미지 엘리먼트</ko>
+					 * @param {target} [e.target] - The item's element with error images.<ko>에러난 이미지를 가지고 있는 아이템의 엘리먼트</ko>
+					 * @param {Item[]} [e.items] - The items being added.<ko>화면에 추가중인 아이템들</ko>
+					 * @param {Item} [e.item] - The item with error images.<ko>에러난 이미지를 가지고 있는 아이템</ko>
+					 * @param {number} [e.index]  - The item's index with error images.<ko>에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
+					 * @param {number} [e.totalIndex] - The item's index with error images in all items.<ko>전체 아이템중 에러난 이미지를 가지고 있는 아이템의 인덱스</ko>
+					 * @param {function} [e.remove] - In the imageError event, this method expects to remove the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 삭제한다.</ko>
+					 * @param {function} [e.removeItem] - In the imageError event, this method expects to remove the item with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템을 삭제한다.</ko>
+					 * @param {function} [e.replace] - In the imageError event, this method expects to replace the error image's source or element.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지의 주소 또는 엘리먼트를 교체한다.</ko>
+					 * @param {function} [e.replaceItem] - In the imageError event, this method expects to replace the item's contents with the error image.<ko>이미지 에러 이벤트에서 이 메서드는 에러난 이미지를 가지고 있는 아이템의 내용을 교체한다.</ko>
 					 * @example
 					ig.on("imageError", e => {
-					e.remove();
-					e.removeItem();
-					e.replace("http://...jpg");
-					e.replace(imageElement);
-					e.replaceItem("item html");
+						e.remove();
+						e.removeItem();
+						e.replace("http://...jpg");
+					 	e.replace(imageElement);
+					 	e.replaceItem("item html");
 					});
 					*/
-					this.trigger("imageError", assign(e, { element: e.item.el }));
+					this.trigger("imageError", e);
+				}).on("contentError", e => {
+					/**
+					 * This event is fired when an error occurs in the content.
+					 * @ko 콘텐츠 로드에 에러가 날 때 발생하는 이벤트.
+					 * @event eg.InfiniteGrid#contentError
+					 * @param {eg.InfiniteGrid.IErrorCallbackOptions} e - The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+					 * @param {HTMLElement} [e.element] - Appending card's image element.<ko>추가 되는 카드의 콘텐츠 엘리먼트</ko>
+					 * @param {target} [e.target] - The item's element with error images.<ko>에러난 콘텐츠를 가지고 있는 아이템의 엘리먼트</ko>
+					 * @param {Item[]} [e.items] - The items being added.<ko>화면에 추가중인 아이템들</ko>
+					 * @param {Item} [e.item] - The item with error images.<ko>에러난 콘텐츠를 가지고 있는 아이템</ko>
+					 * @param {number} [e.index]  - The item's index with error images.<ko>에러난 콘텐츠를 가지고 있는 아이템의 인덱스</ko>
+					 * @param {number} [e.totalIndex] - The item's index with error images in all items.<ko>전체 아이템중 에러난 콘텐츠를 가지고 있는 아이템의 인덱스</ko>
+					 * @param {function} [e.remove] - In the contentError event, this method expects to remove the error image.<ko>콘텐츠 에러 이벤트에서 이 메서드는 에러난 콘텐츠를 삭제한다.</ko>
+					 * @param {function} [e.removeItem] - In the contentError event, this method expects to remove the item with the error image.<ko>콘텐츠 에러 이벤트에서 이 메서드는 에러난 콘텐츠를 가지고 있는 아이템을 삭제한다.</ko>
+					 * @param {function} [e.replace] - In the contentError event, this method expects to replace the error image's source or element. If the replacement was done externally, call replace().<ko>콘텐츠 에러 이벤트에서 이 메서드는 에러난 엘리먼트를 교체한다. 외부에서 교체를 했다면 replace()로 호출해라.</ko>
+					 * @param {function} [e.replaceItem] - In the contentError event, this method expects to replace the item's contents with the error image.<ko>콘텐츠 에러 이벤트에서 이 메서드는 에러난 콘텐츠를 가지고 있는 아이템의 내용을 교체한다.</ko>
+					 * @example
+					ig.on("contentError", e => {
+						e.remove();
+						e.removeItem();
+						e.replace(imageElement);
+						// If the replacement was done externally
+						e.replace();
+					 	e.replaceItem("item html");
+					});
+					*/
+					this.trigger("contentError", e);
+				}).on("renderComplete", ({ start, end }) => {
+					this._setCursor(start, end);
 				}).on("layoutComplete", ({
 					items: layoutItems,
 				}) => {
@@ -1251,7 +1289,9 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 						isTrusted,
 						useRecycle: false,
 					});
-				}).on("finish", ({ remove, layout }) => {
+				}).on("readyElement", e => {
+					this._updateItem(e.item) && this.layout(false);
+				}).on("ready", ({ remove, layout }) => {
 					remove.forEach(el => this.remove(el, false));
 					if (layout) {
 						this.layout(false);
@@ -1310,10 +1350,10 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			this.trigger("append", {
 				isTrusted: true,
 				groupKey: this.getGroupKeys().pop() || "",
-				startLoading: (userStyle: StyleType) => {
+				startLoading: (userStyle?: StyleType) => {
 					this.startLoading(true, userStyle);
 				},
-				endLoading: (userStyle: StyleType) => {
+				endLoading: (userStyle?: StyleType) => {
 					this.endLoading(userStyle);
 				},
 			});
@@ -1343,10 +1383,10 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			this.trigger("prepend", {
 				isTrusted: true,
 				groupKey: this.getGroupKeys().shift(),
-				startLoading: (userStyle: StyleType) => {
+				startLoading: (userStyle?: StyleType) => {
 					this.startLoading(false, userStyle);
 				},
-				endLoading: (userStyle: StyleType) => {
+				endLoading: (userStyle?: StyleType) => {
 					this.endLoading(userStyle);
 				},
 			});
@@ -1470,7 +1510,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			scrollPos,
 			orgScrollPos: watcher.getOrgScrollPos(),
 			size,
-			endLoading: (userStyle: StyleType) => {
+			endLoading: (userStyle?: StyleType) => {
 				this.endLoading(userStyle);
 			},
 		});

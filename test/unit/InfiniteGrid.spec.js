@@ -569,7 +569,7 @@ describe("InfiniteGrid Test", function () {
 
 		});
 	});
-	describe(`When appending, image test`, function () {
+	describe(`When appending, content test`, function () {
 		beforeEach(() => {
 			this.el = sandbox();
 			this.el.innerHTML = "<div id='infinite'></div>";
@@ -585,13 +585,37 @@ describe("InfiniteGrid Test", function () {
 			}
 			cleanup();
 		});
-		it(`should check append error images`, done => {
-			this.inst.on("imageError", e => {
-				expect(e.target.src).to.have.string("1.jpg");
-				expect(e.itemIndex).to.be.equals(1);
-				done();
-			});
+		it(`should check append error videos`, async () => {
+			// Given
+			const imageErrorSpy = sinon.spy();
+			this.inst.on("imageError", imageErrorSpy);
+			const waitContentErrorEvent = waitEvent(this.inst, "contentError");
+
+			// When
+			this.inst.append(`<video src="/base/test/unit/video/pano.mp4"></video><video src="/a.mp4"></video>`);
+
+			const contentErrorEvent = await waitContentErrorEvent;
+
+			// Then
+			expect(imageErrorSpy.callCount).to.be.equals(0);
+			expect(contentErrorEvent.target.src).to.have.string("a.mp4");
+			expect(contentErrorEvent.itemIndex).to.be.equals(1);
+		});
+		it(`should check append error images`, async () => {
+			// Given
+			const waitImageErrorEvent = waitEvent(this.inst, "imageError");
+			const waitContentErrorEvent = waitEvent(this.inst, "contentError");
+			// When
 			this.inst.append(`<img src="/base/test/unit/image/3.jpg" /><img src="/1.jpg">`);
+
+			const imageErrorEvent = await waitImageErrorEvent;
+			const contentErrorEvent = await waitContentErrorEvent;
+
+			// Then
+			expect(imageErrorEvent.target.src).to.have.string("1.jpg");
+			expect(imageErrorEvent.itemIndex).to.be.equals(1);
+			expect(contentErrorEvent.target.src).to.have.string("1.jpg");
+			expect(contentErrorEvent.itemIndex).to.be.equals(1);
 		});
 		it(`should check append multiple error images`, done => {
 			// Given
@@ -1758,6 +1782,68 @@ describe("InfiniteGrid Test", function () {
 					expect(this.inst._layout instanceof v).to.be.true;
 				});
 			});
+		});
+	});
+	describe("Native Lazy loading Test", function () {
+		let inst;
+		let el;
+
+		beforeEach(() => {
+			el = sandbox();
+			el.innerHTML = `<div id="infinite" style="width: 1000px; height: 1000px"></div>`;
+		});
+		afterEach(() => {
+			if (inst) {
+				inst.destroy();
+				inst = null;
+			}
+			cleanup();
+		});
+		it(`should test lazyloading`, async () => {
+			// Given
+			inst = new InfiniteGrid("#infinite");
+
+			inst.setLayout(GridLayout);
+
+			const item1 = document.createElement("div");
+			const item2 = document.createElement("div");
+
+			item1.style.width = "100%";
+			item2.style.width = "100%";
+			const loadingImg = document.createElement("img");
+
+			loadingImg.setAttribute("loading", "lazy");
+
+			Object.defineProperty(loadingImg, "loading", {
+				value: "lazy",
+			});
+			Object.defineProperty(loadingImg, "complete", {
+				value: false,
+			});
+
+			// When
+			item1.append(loadingImg);
+
+			inst.append([item1, item2]);
+
+			const e1 = await waitEvent(inst, "layoutComplete");
+
+			const top1 = item2.style.top;
+			const needUpdate1 = e1.target[0].needUpdate;
+
+			// loading is complete
+			loadingImg.src = "/base/test/unit/image/3.jpg";
+
+			const e2 = await waitEvent(inst, "layoutComplete");
+			const top2 = item2.style.top;
+			const needUpdate2 = e2.target[0].needUpdate;
+
+			// Then
+			expect(top1).to.be.not.equals(top2);
+			expect(e1.isLayout).to.be.equals(false);
+			expect(e2.isLayout).to.be.equals(true);
+			expect(needUpdate1).to.be.equals(true);
+			expect(needUpdate2).to.be.equals(false);
 		});
 	});
 	describe("data type Test", function () {

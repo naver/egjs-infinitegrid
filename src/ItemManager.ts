@@ -216,6 +216,7 @@ export default class ItemManager {
 		const groupItem: IInfiniteGridItem = {
 			content: "",
 			mounted: false,
+			needUpdate: true,
 			rect: {
 				top: DUMMY_POSITION,
 				left: DUMMY_POSITION,

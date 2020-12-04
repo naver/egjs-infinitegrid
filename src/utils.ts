@@ -348,6 +348,7 @@ export function makeItem(groupKey: string | number, el?: HTMLElement) {
 		el,
 		groupKey,
 		mounted: false,
+		needUpdate: true,
 		content: el ? el.outerHTML : "",
 		rect: {
 			top: DUMMY_POSITION,

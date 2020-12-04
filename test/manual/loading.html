@@ -1,0 +1,165 @@
+<html>
+
+<head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+
+    <style>
+        html,
+        body {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #fff;
+        }
+
+        a {
+            color: unset;
+            text-decoration: none;
+        }
+
+        .header {
+            text-align: center;
+            background: #333;
+            color: #fff;
+            padding: 20px 0px;
+            margin: 0;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            padding: 6px 30px;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .description li {
+            padding: 3px 0px;
+        }
+
+        .container {
+            width: 100%;
+            height: 600px;
+        }
+
+        .gridlayout .item {
+            display: inline-block;
+            width: 250px;
+            opacity: 1;
+        }
+
+        .gridlayout.horizontal .item {
+            width: auto;
+            height: 250px;
+        }
+
+        .gridlayout .item .thumbnail {
+            max-height: 300px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .gridlayout.equal .item .thumbnail {
+            height: 140px;
+        }
+
+        .gridlayout.equal.horizontal .item .thumbnail {
+            height: auto;
+            width: 140px;
+        }
+
+        .gridlayout .item .thumbnail img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .gridlayout.horizontal .item .thumbnail img {
+            width: auto;
+            height: 210px;
+        }
+
+        .gridlayout .item .info {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #777;
+        }
+
+        .gridlayout .item.animate {
+            transition: opacity ease 1s;
+            transition-delay: 0.2s;
+            opacity: 1;
+        }
+
+        .gridlayout .loading {
+            position: absolute;
+            width: 100%;
+            height: 50px;
+            display: none;
+        }
+
+        .gridlayout .loading span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+        }
+
+        .gridlayout.horizontal .loading {
+            width: 200px;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="header">
+        <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">Virtual Scroll - GridLayout</a>
+    </h1>
+
+    <div class="container gridlayout">
+    </div>
+
+    <script src="../../dist/infinitegrid.pkgd.js"></script>
+    <script>
+        const itemCount = 10;
+
+        function getItems(nextGroupKey, count) {
+            const nextItems = [];
+
+            for (let i = 0; i < count; ++i) {
+                const num = (nextGroupKey - 1) * count + i;
+                nextItems.push(`<div class="item">
+    <div class="thumbnail">
+        <img src="https://naver.github.io/egjs-infinitegrid/assets/image/${(num % 33) + 1}.jpg" alt="egjs" loading="${num % 10 ? lazy : ""}" />
+    </div>
+    <div class="info">egjs ${num}</div>
+</div>`);
+            }
+            return nextItems.join("");
+        }
+        const ig = new eg.InfiniteGrid(".container", {
+            isOverflowScroll: false,
+            useFit: true,
+            useRecycle: true,
+            horizontal: false,
+            threshold: 1000,
+        });
+
+        ig.setLayout(eg.InfiniteGrid.GridLayout, {
+            margin: 5,
+            align: "justify",
+        });
+
+        ig.on("append", e => {
+            const nextGroupKey = (+e.groupKey || 0) + 1;
+
+            ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+        });
+
+        ig.layout();
+    </script>
+</body>
+
+</html>
