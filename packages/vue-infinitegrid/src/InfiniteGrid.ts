@@ -136,9 +136,9 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 	public beforeDestroy() {
 		this.$_nativeInfiniteGrid.destroy();
 	}
-
-	public isLoading(): boolean {
-		return this.$_nativeInfiniteGrid.isLoading();
+	public setStatus(status: IInfiniteGridStatus, applyScrollPos?: boolean, syncElements: HTMLElement[] = this.$_getElements()) {
+		this.$_nativeInfiniteGrid.setStatus(status, applyScrollPos, syncElements);
+		return this as any;
 	}
 
 	private $_bindEvents(): void {

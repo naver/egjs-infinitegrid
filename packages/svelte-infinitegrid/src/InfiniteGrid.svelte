@@ -136,7 +136,7 @@
       });
     }
     if (status) {
-      ig.setStatus(status, true, getElements());
+      setStatus(status, true);
     } else {
       beforeSync(items);
       ig.layout(true);
@@ -162,6 +162,10 @@
   });
 
   export function getInstance() {
+    return ig;
+  }
+  export function setStatus(status: IInfiniteGridStatus, applyScrollPos?: boolean, syncElements: HTMLElement[] = getElements()) {
+    ig.setStatus(status, applyScrollPos, syncElements);
     return ig;
   }
 </script>
