@@ -23,7 +23,7 @@ describe("test react-infinitegrid", () => {
       ReactDOM.unmountComponentAtNode(container);
     }
   });
-  it("should check demo's working.", async () => {
+  it("should check if setStatus method is called dynamically", async () => {
     // Given
     const ref = React.createRef<GridLayout>();
     ReactDOM.render(
