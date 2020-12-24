@@ -150,7 +150,7 @@ export class NgxInfiniteGridComponent
   }
   public setStatus = (status: IInfiniteGridStatus, applyScrollPos?: boolean, syncElements: HTMLElement[] = this.getElements()): NgxInfiniteGridComponent => {
     this.ig.setStatus(status, applyScrollPos, syncElements);
-    return this as any;
+    return this;
   }
   public ngOnDestroy() {
     this.ig.destroy();
