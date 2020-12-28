@@ -144,9 +144,6 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 	public componentWillUnmount() {
 		this.ig.destroy();
 	}
-	public isLoading() {
-		return this.ig.isLoading();
-	}
 	public setStatus(status: IInfiniteGridStatus, applyScrollPos?: boolean, syncElements: HTMLElement[] = this.getElements()): this {
 		this.ig.setStatus(status, applyScrollPos, syncElements);
 		return this;
