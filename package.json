@@ -53,7 +53,7 @@
 	"homepage": "https://github.com/naver/egjs-infinitegrid",
 	"dependencies": {
 		"@egjs/component": "^2.2.2",
-		"@egjs/imready": "^1.1.1",
+		"@egjs/imready": "^1.1.2",
 		"@egjs/list-differ": "^1.0.0"
 	},
 	"keywords": [
