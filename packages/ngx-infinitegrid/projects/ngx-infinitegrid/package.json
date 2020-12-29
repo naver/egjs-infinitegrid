@@ -1,6 +1,6 @@
 {
   "name": "@egjs/ngx-infinitegrid",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "An Angular component that can easily use egjs-infinitegrid",
   "author": {
     "name": "NAVER Corp."
@@ -16,7 +16,7 @@
     "@angular/core": "^8.0.3"
   },
   "dependencies": {
-    "@egjs/infinitegrid": "^3.7.0",
+    "@egjs/infinitegrid": "^3.7.1",
     "@egjs/list-differ": "^1.0.0"
   }
 }

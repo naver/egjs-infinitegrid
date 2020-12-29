@@ -27,10 +27,10 @@ files:
   size: 54.7kb
 - name: FrameLayout
   file: infinitegrid.framelayout.min.js
-  size: 54kb
+  size: 54.1kb
 - name: SquareLayout
   file: infinitegrid.squarelayout.min.js
-  size: 55.6kb
+  size: 55.7kb
 - name: PackingLayout
   file: infinitegrid.packinglayout.min.js
   size: 54.3kb
