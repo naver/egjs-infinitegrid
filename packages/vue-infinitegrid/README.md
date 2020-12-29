@@ -119,6 +119,56 @@ export default {
 </script>
 ```
 
+
+
+### Restore status
+
+If you want to restore the state, use the status prop.
+
+* Save Status
+```vue
+<template>
+  <GridLayout ref="ig"></GridLayout>
+</template>
+<script>
+import { GridLayout } from "@egjs/vue-infinitegrid";
+
+export default {
+  mounted() {
+    this.$refs.ig.getStatus();
+  }
+}
+</script>
+```
+
+* Restore Status (First mount)
+```vue
+<template>
+  <GridLayout ref="ig" :status="status" />
+</template>
+<script>
+import { GridLayout } from "@egjs/vue-infinitegrid";
+
+</script>
+```
+
+* Dynamically restore status
+```vue
+<template>
+  <GridLayout ref="ig"></GridLayout>
+</template>
+<script>
+import { GridLayout } from "@egjs/vue-infinitegrid";
+
+export default {
+  mounted() {
+    this.$refs.ig.setStatus(status);
+  }
+}
+</script>
+```
+
+
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/naver/egjs-infinitegrid/blob/master/CONTRIBUTING.md)
 

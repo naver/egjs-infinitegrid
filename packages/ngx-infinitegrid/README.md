@@ -164,6 +164,39 @@ export class AppComponent {
 
 
 
+### Restore status
+
+If you want to restore the state, use the status prop.
+
+* Save Status
+```html
+<GridLayout #ig></GridLayout>
+```
+```tsx
+import { NgxGridLayoutComponent } from "@egjs/ngx-infinitegrid";
+
+@ViewChild('ig', { static: false }) ig: NgxGridLayoutComponent;
+
+// Save Status
+this.ig.getStatus();
+```
+
+* Restore Status (First mount)
+```html
+
+<GridLayout
+	[status]="status"></GridLayout>
+```
+
+* Dynamically restore status
+```ts
+import { NgxGridLayoutComponent } from "@egjs/ngx-infinitegrid";
+
+@ViewChild('ig', { static: false }) ig: NgxGridLayoutComponent;
+
+this.ig.setStatus(status);
+```
+
 ## ⚙️ Development
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.1.

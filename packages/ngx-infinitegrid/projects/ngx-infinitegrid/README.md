@@ -1,7 +1,6 @@
 # ngx-infinitegrid [![npm version](https://badge.fury.io/js/%40egjs%2Fngx-infinitegrid.svg)](https://badge.fury.io/js/%40egjs%2Fngx-infinitegrid)
 
 An Angular component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
-
 * [Playground with Various Demos](https://naver.github.io/egjs-infinitegrid/storybook/)
 * [GridLayout Demo](https://codesandbox.io/s/ngx-infinitegrid-demo-gridlayout-vu7pp)
 * [GridLayout with Parallax Demo](https://codesandbox.io/s/ngx-infinitegrid-parallax-demo-gridlayout-cvxg5)
@@ -164,6 +163,39 @@ export class AppComponent {
 * [PackingLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html)
 
 
+
+### Restore status
+
+If you want to restore the state, use the status prop.
+
+* Save Status
+```html
+<GridLayout #ig></GridLayout>
+```
+```tsx
+import { NgxGridLayoutComponent } from "@egjs/ngx-infinitegrid";
+
+@ViewChild('ig', { static: false }) ig: NgxGridLayoutComponent;
+
+// Save Status
+this.ig.getStatus();
+```
+
+* Restore Status (First mount)
+```html
+
+<GridLayout
+	[status]="status"></GridLayout>
+```
+
+* Dynamically restore status
+```ts
+import { NgxGridLayoutComponent } from "@egjs/ngx-infinitegrid";
+
+@ViewChild('ig', { static: false }) ig: NgxGridLayoutComponent;
+
+this.ig.setStatus(status);
+```
 
 ## ⚙️ Development
 
