@@ -5,6 +5,9 @@ export default /*#__PURE__*/ (() => {
     const prototype = InfiniteGrid.prototype;
 
 	for (const name in INFINITEGRID_METHODS) {
+		if (prototype[name]) {
+			continue;
+		}
         prototype[name] = function (...args) {
             const self = this.getInstance();
             const result = self[name](...args);
@@ -15,6 +18,6 @@ export default /*#__PURE__*/ (() => {
                 return result;
             }
         };
-    }
+	}
     return InfiniteGrid;
 })();

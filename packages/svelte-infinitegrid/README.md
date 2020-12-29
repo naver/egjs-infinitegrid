@@ -107,6 +107,42 @@ $ npm install @egjs/svelte-infinitegrid  --save
 * [PackingLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html)
 
 
+### Restore status
+
+If you want to restore the state, use the status prop.
+
+* Save Status
+```tsx
+import { GridLayout } from "@egjs/svelte-infinitegrid";
+
+// Save Status
+let ig;
+const status = ig.getStatus();
+
+<GridLayout
+	bind:this={ig}></GridLayout>
+```
+
+* Restore Status (First mount)
+```tsx
+import { GridLayout } from "@egjs/svelte-infinitegrid";
+
+<GridLayout
+	status={status}></GridLayout>
+```
+
+* Dynamically restore status
+```tsx
+import { GridLayout } from "@egjs/svelte-infinitegrid";
+
+// Save Status
+let ig;
+ig.setStatus(status);
+
+<GridLayout
+	bind:this={ig}></GridLayout>
+```
+
 
 
 ## ⚙️ Developments

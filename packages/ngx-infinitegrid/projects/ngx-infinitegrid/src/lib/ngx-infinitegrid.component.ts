@@ -19,6 +19,7 @@ import NativeInfiniteGrid, {
 } from '@egjs/infinitegrid';
 import ListDiffer from '@egjs/list-differ';
 import { TEMPLATE } from './consts';
+import NgxinfiniteGridInterface from './ngx-infinitegrid.interface';
 import { InfiniteGridType } from './types';
 
 @Component({
@@ -27,9 +28,9 @@ import { InfiniteGridType } from './types';
   styles: []
 })
 export class NgxInfiniteGridComponent
+  extends NgxinfiniteGridInterface
   implements OnInit, AfterViewInit, AfterViewChecked,
-  OnDestroy, OnChanges, InfiniteGridType<NgxInfiniteGridComponent> {
-  private ig!: NativeInfiniteGrid;
+  OnDestroy, OnChanges {
 
   @Input() public trackBy: ((index: number, item: any) => any) = ((_, item) => item.key);
   @Input() public groupBy: ((index: number, item: any) => any) = ((_, item) => item.groupKey);
@@ -61,7 +62,9 @@ export class NgxInfiniteGridComponent
   private visibleDiffer: ListDiffer<IItem> = new ListDiffer<IItem>([], item => item.itemKey);
   private nextFunction = () => { };
 
-  constructor(public elRef: ElementRef) { }
+  constructor(public elRef: ElementRef) {
+    super();
+  }
   ngOnInit() {
     const groups = categorize(this.items);
 
@@ -139,64 +142,18 @@ export class NgxInfiniteGridComponent
       });
     }
     if (this.status) {
-      ig.setStatus(this.status, true, this.getElements());
+      this.setStatus(this.status, true);
     } else {
       ig.beforeSync(this.toItems());
       ig.layout(true);
     }
   }
-  ngOnDestroy() {
-    this.ig.destroy();
-  }
-
-  public isLoading() {
-    return this.ig.isLoading();
-  }
-  public isProcessing() {
-    return this.ig.isProcessing();
-  }
-  public startLoading(isAppend?: boolean, userStyle: StyleType = { display: 'block' }) {
-    this.ig.startLoading(isAppend, userStyle);
-    return this;
-  }
-  public endLoading(userStyle: StyleType = { display: 'none' }) {
-    this.ig.endLoading(userStyle);
-    return this;
-  }
-  public getItem(groupIndex: HTMLElement | number = 0, itemIndex?: number): IInfiniteGridItem | undefined {
-    return this.ig.getItem(groupIndex, itemIndex);
-  }
-  public updateItem(groupIndex?: number, itemIndex?: number) {
-    this.ig.updateItem(groupIndex, itemIndex);
-    return this;
-  }
-  public updateItems() {
-    this.ig.updateItems();
-    return this;
-  }
-  public moveTo(index: number, itemIndex = 0) {
-    this.ig.moveTo(index, itemIndex);
-    return this;
-  }
-  public layout(isRelayout = true) {
-    this.ig.layout(isRelayout);
-    return this;
-  }
-  public getStatus(startKey?: string | number, endKey?: string | number): IInfiniteGridStatus {
-    return this.ig.getStatus(startKey, endKey);
-  }
-  public setStatus(status: IInfiniteGridStatus, applyScrollPos = true, syncElements?: HTMLElement[]) {
+  public setStatus = (status: IInfiniteGridStatus, applyScrollPos?: boolean, syncElements: HTMLElement[] = this.getElements()): NgxInfiniteGridComponent => {
     this.ig.setStatus(status, applyScrollPos, syncElements);
     return this;
   }
-  public getItems(includeCached = false): IInfiniteGridItem[] {
-    return this.ig.getItems(includeCached);
-  }
-  public getGroupKeys(includeCached?: boolean) {
-    return this.ig.getGroupKeys(includeCached);
-  }
-  public getLoadingBar(isAppend?: boolean) {
-    return this.ig.getLoadingBar(isAppend);
+  public ngOnDestroy() {
+    this.ig.destroy();
   }
   private getElements() {
     const ref = this.containerRef || this.wrapperRef || this.elRef;

@@ -8,6 +8,7 @@ import NativeInfiniteGrid, {
 	IItem,
 	INFINITEGRID_EVENTS,
 	withInfiniteGridMethods,
+	IInfiniteGridStatus,
 } from "@egjs/infinitegrid";
 import { InfiniteGridProps, InfiniteGridState, InfiniteGridType } from "./types";
 import LoadingBar from "./LoadingBar";
@@ -131,11 +132,10 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 
 		ig.setLayout(this.props.layoutType, this.props.layoutOptions);
 
-		const elements = this.getElements();
-
 		this.setLoadingElement();
+
 		if (this.props.status) {
-			ig.setStatus(this.props.status, true, elements);
+			this.setStatus(this.props.status, true, this.getElements());
 		} else {
 			ig.beforeSync(this.toItems());
 			ig.layout(true);
@@ -144,8 +144,9 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 	public componentWillUnmount() {
 		this.ig.destroy();
 	}
-	public isLoading() {
-		return this.ig.isLoading();
+	public setStatus(status: IInfiniteGridStatus, applyScrollPos?: boolean, syncElements: HTMLElement[] = this.getElements()): this {
+		this.ig.setStatus(status, applyScrollPos, syncElements);
+		return this;
 	}
 	private renderContainer(children: React.ReactElement[]) {
 		const props = this.props;

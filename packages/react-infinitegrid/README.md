@@ -96,6 +96,43 @@ export interface InfiniteGridProps<T extends ILayout = any> {
 * [PackingLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html)
 
 
+#### Restore status
+
+If you want to restore the state, use the status prop.
+
+* Save Status
+```tsx
+import { GridLayout } from "@egjs/react-infinitegrid";
+
+// Save Status
+const status = igRef.current.getStatus();
+
+<GridLayout
+	ref={igRef}></GridLayout>
+```
+
+* Restore Status (First mount)
+```tsx
+import { GridLayout } from "@egjs/react-infinitegrid";
+
+<GridLayout
+	status={status}></GridLayout>
+```
+
+* Dynamically restore status
+```tsx
+import { GridLayout } from "@egjs/react-infinitegrid";
+
+// Save Status
+React.useEffect(() => {
+	igRef.current.setStatus(status);
+}, []);
+
+<GridLayout
+	ref={igRef}></GridLayout>
+```
+
+
 ### More examples
 ```jsx
 this.state = {
