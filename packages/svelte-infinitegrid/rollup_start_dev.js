@@ -8,5 +8,5 @@ export default {
 			running_dev_server = true;
 			child_process.spawn('npm', ['run', 'start:dev'], { stdio: ['ignore', 'inherit', 'inherit'], shell: true });
 		}
-	}
+	},
 };

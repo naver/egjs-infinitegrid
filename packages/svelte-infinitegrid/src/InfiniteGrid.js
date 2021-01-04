@@ -5,7 +5,7 @@ export default /*#__PURE__*/ (() => {
     const prototype = InfiniteGrid.prototype;
 
 	for (const name in INFINITEGRID_METHODS) {
-		if (prototype[name]) {
+		if (name in prototype) {
 			continue;
 		}
         prototype[name] = function (...args) {

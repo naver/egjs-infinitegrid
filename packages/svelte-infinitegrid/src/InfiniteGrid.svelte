@@ -7,16 +7,17 @@
     createEventDispatcher
   } from "svelte";
   import VanillaInfiniteGrid, {
-    IInfiniteGridOptions,
-    ILayout,
-    IInfiniteGridStatus,
     INFINITEGRID_EVENTS,
     GridLayout,
     categorize,
-    IInfiniteGridItem,
-    StyleType,
     ItemManager,
     CONTAINER_CLASSNAME
+  } from "@egjs/infinitegrid";
+  import type {
+    IInfiniteGridOptions,
+    ILayout,
+    IInfiniteGridStatus,
+    IInfiniteGridItem,
   } from "@egjs/infinitegrid";
   import LoadingChecker from "./LoadingChecker.svelte";
   import { PROP_NAMES } from "./consts";
@@ -25,24 +26,22 @@
   export let itemBy = (item, index) => item.key;
   export let items: any[] = [];
   export let useFirstRender = false;
-  export let status: IInfiniteGridStatus = null;
+  export let status: IInfiniteGridStatus | null = null;
   export let layoutType: new () => ILayout = GridLayout;
   export let options: Partial<IInfiniteGridOptions> = {};
   export let layoutOptions: { [key: string]: any } = {};
-  export let viewer = null;
-  export let container = null;
   export let _forceCount = 0;
 
   const dispatch = createEventDispatcher();
+  let viewer: HTMLElement;
+  let container: HTMLElement;
   let nextFunction = () => {};
   let layoutState;
-  let visibleItems = [];
+  let visibleItems: any[] = [];
   let ig: VanillaInfiniteGrid;
   let hasLoadingElement = true;
   let attributes = {};
   let isFirstMount = true;
-
-  declare var $$props: any;
 
   function toItems(items) {
     return items.map((item, i) => ({
@@ -58,12 +57,12 @@
     if (hasLoadingElement) {
       const el = container || viewer;
 
-      return el.lastElementChild;
+      return el!.lastElementChild;
     }
   }
   function getElements() {
     const el = container || viewer;
-    const elements = [].slice.call(el.children);
+    const elements = [].slice.call(el!.children);
 
     if (hasLoadingElement) {
       return elements.slice(0, -1);
@@ -111,7 +110,7 @@
     }
   });
   onMount(() => {
-    ig = new VanillaInfiniteGrid(viewer, {
+    ig = new VanillaInfiniteGrid(viewer!, {
       ...options,
       renderExternal: true
     }).on("render", ({ next }) => {
