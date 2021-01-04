@@ -55,14 +55,14 @@
   }
   function getLoadingElement() {
     if (hasLoadingElement) {
-      const el = container! || viewer!;
+      const el = container || viewer;
 
-      return el.lastElementChild;
+      return el!.lastElementChild;
     }
   }
   function getElements() {
-    const el = container! || viewer!;
-    const elements = [].slice.call(el.children);
+    const el = container || viewer;
+    const elements = [].slice.call(el!.children);
 
     if (hasLoadingElement) {
       return elements.slice(0, -1);
