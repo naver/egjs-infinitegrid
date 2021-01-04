@@ -1,10 +1,10 @@
 module.exports = {
-  presets: [
-    [
-      "@babel/preset-env",
-      {
-        modules: "cjs",  
-      }
-    ]
-  ]
+	presets: [
+		[
+			"@babel/preset-env",
+			{
+				modules: "cjs",
+			},
+		],
+	],
 };
