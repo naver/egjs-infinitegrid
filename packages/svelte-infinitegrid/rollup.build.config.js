@@ -1,6 +1,6 @@
 import buildHelper from "@egjs/build-helper";
 import svelte from 'rollup-plugin-svelte';
-import { preprocess } from "@pyoner/svelte-ts-preprocess";
+import sveltePreprocess from 'svelte-preprocess';
 
 const defaultOptions = {
 	tsconfig: "",
@@ -10,7 +10,7 @@ const defaultOptions = {
     },
     plugins: [
         svelte({
-            preprocess: preprocess(),
+            preprocess: sveltePreprocess(),
         }),
     ],
 }

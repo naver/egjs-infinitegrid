@@ -1,5 +1,5 @@
 <script lang="ts">
-  import InfinitGrid from "../index";
+  import InfinitGrid from "../index.js";
   let ig;
   let items = [];
   let loading;
