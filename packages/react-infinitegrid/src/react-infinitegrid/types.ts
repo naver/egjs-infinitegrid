@@ -48,7 +48,7 @@ export interface OnLayoutComplete {
 	scrollPos?: number;
 	orgScrollPos?: number;
 	size?: number;
-	endLoading?: (loadginStyle?: object) => void;
+	endLoading?: (loadingStyle?: object) => void;
 }
 
 export interface InfiniteGridProps<T extends ILayout = any> {
