@@ -18,7 +18,7 @@ import {
 	DEFAULT_OPTIONS,
 } from "./consts";
 import Infinite from "./Infinite";
-import { toArray, $, outerHeight, outerWidth, assign, resetSize, hasClass, addClass, getRandomKey } from "./utils";
+import { toArray, $, outerHeight, outerWidth, assign, resetSize, hasClass, addClass } from "./utils";
 import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
@@ -434,7 +434,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 					return this;
 				}
 				// no items, no visible items
-				let prevGroupKey = `${getRandomKey()}`;
+				let prevGroupKey = `${this._getRandomKey()}`;
 				children.forEach(el => {
 					let groupKey = el.getAttribute(`${attributePrefix}groupkey`);
 
@@ -1045,7 +1045,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		elements,
 		isAppend,
 		hasChildren,
-		groupKey = getRandomKey(),
+		groupKey = this._getRandomKey(),
 	}: {
 		elements: string | string[] | HTMLElement[] | IJQuery,
 		isAppend?: boolean,
@@ -1068,7 +1068,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		items,
 		isAppend,
 		hasChildren,
-		groupKey = getRandomKey(),
+		groupKey = this._getRandomKey(),
 	}: {
 		items: IInfiniteGridItem[],
 		isAppend?: boolean,
@@ -1524,6 +1524,17 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			},
 		});
 		this._infinite.scroll(scrollPos);
+	}
+	private _getRandomKey() {
+		const groups = this._itemManager.getGroups();
+
+		while (true) {
+			const groupKey = new Date().getTime() + Math.floor(Math.random() * 1000);
+
+			if (groups.every(group => group.groupKey != groupKey)) {
+				return groupKey;
+			}
+		}
 	}
 	private _reset() {
 		this._status = {
