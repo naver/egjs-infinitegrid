@@ -151,7 +151,7 @@ export default class ItemManager {
 	}
 	public insertGroup(group: IGroup, groupIndex: number): IInfiniteGridGroup | null {
 		if (groupIndex < 0) {
-			return null;
+			return this.appendGroup(group);
 		}
 		const prevItems: IItem[] = group.items || [];
 		const newGroup: IInfiniteGridGroup = {

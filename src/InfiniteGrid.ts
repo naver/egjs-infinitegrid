@@ -18,7 +18,7 @@ import {
 	DEFAULT_OPTIONS,
 } from "./consts";
 import Infinite from "./Infinite";
-import { toArray, $, outerHeight, outerWidth, assign, resetSize, hasClass, addClass } from "./utils";
+import { toArray, $, outerHeight, outerWidth, assign, resetSize, hasClass, addClass, getRandomKey } from "./utils";
 import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
@@ -399,10 +399,9 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		const itemManager = this._itemManager;
 		const infinite = this._infinite;
 		const isResize = renderer.resize();
-		const items = this.getItems();
-		const { isEqualSize, isConstantSize, transitionDuration } = this.options;
+		const visibleItems = this.getItems();
+		const { isEqualSize, isConstantSize, transitionDuration, attributePrefix } = this.options;
 		const isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
-		const size = itemManager.size();
 
 		this._watcher.resize();
 
@@ -411,49 +410,59 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 				this._setSize(renderer.getViewportSize());
 			}
 		}
-		// check childElement
-		if (!items.length) {
+		// first layout (startCursor -1 endCursor -1)
+		if (!visibleItems.length) {
 			const children = toArray(renderer.container.children).filter(el => {
 				return el.className.indexOf(IGNORE_CLASSNAME) === -1;
 			});
 			const hasChildren = children.length > 0;
 
-			if (size) {
-				const firstGroup = itemManager.getGroup(0);
-
+			if (itemManager.size()) {
+				// no visible items
 				if (hasChildren) {
-					firstGroup.items.forEach((item, i) => {
+					itemManager.pluck("items").forEach((item, i) => {
 						item.el = children[i];
 					});
 				}
-				// has items, no visible items
-				this._postLayout({
-					groups: [firstGroup],
-					hasChildren,
-					fromCache: false,
-					isAppend: true,
-				});
 			} else {
-				// no items, no visible items
-				if (hasChildren) {
-					let groupKey: string | null | undefined = children[0].getAttribute("data-groupkey");
-
-					if (typeof groupKey !== "string") {
-						groupKey = undefined;
-					}
-					this._insert({
-						elements: children,
-						isAppend: true,
-						hasChildren: true,
-						groupKey,
-					});
-				} else {
+				// no items, no visible items, no elements
+				if (!hasChildren) {
 					if (renderer.getContainerSize()) {
 						renderer.setContainerSize(0);
 					}
 					this._requestAppend({});
+					return this;
 				}
+				// no items, no visible items
+				let prevGroupKey = `${getRandomKey()}`;
+				children.forEach(el => {
+					let groupKey = el.getAttribute(`${attributePrefix}groupkey`);
+
+					if (typeof groupKey !== "string") {
+						groupKey = prevGroupKey;
+					}
+
+					prevGroupKey = groupKey;
+
+					itemManager.insert({
+						groupKey,
+						el,
+					});
+				});
 			}
+
+			// The currently displayed elements are visible groups.
+			const groups = itemManager.getGroups();
+
+			infinite.setCursor("start", 0);
+			infinite.setCursor("end", groups.length - 1);
+
+			this._postLayout({
+				groups,
+				hasChildren,
+				fromCache: false,
+				isAppend: true,
+			});
 			return this;
 		}
 
@@ -463,17 +472,17 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			itemManager.sliceGroups(startCursor, endCursor + 1);
 
 		// LayoutManger interface
-		this._relayout(isRelayout, data, isResize ? items : []);
+		this._relayout(isRelayout, data, isResize ? visibleItems : []);
 
 		if (isLayoutAll) {
 			this._fit();
 		} else if (isRelayout && isResize) {
 			itemManager.clearOutlines(startCursor, endCursor);
 		}
-		this._renderer.renderItems(items, transitionDuration);
+		this._renderer.renderItems(visibleItems, transitionDuration);
 		isRelayout && this._watcher.setScrollPos();
 		this._onLayoutComplete({
-			items,
+			items: visibleItems,
 			isAppend: true,
 			fromCache: true,
 			isTrusted: false,
@@ -1036,7 +1045,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		elements,
 		isAppend,
 		hasChildren,
-		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
+		groupKey = getRandomKey(),
 	}: {
 		elements: string | string[] | HTMLElement[] | IJQuery,
 		isAppend?: boolean,
@@ -1059,7 +1068,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		items,
 		isAppend,
 		hasChildren,
-		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
+		groupKey = getRandomKey(),
 	}: {
 		items: IInfiniteGridItem[],
 		isAppend?: boolean,

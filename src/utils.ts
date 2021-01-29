@@ -404,3 +404,7 @@ export function addClass(element: HTMLElement, className: string) {
 		element.className += ` ${className}`;
 	}
 }
+
+export function getRandomKey() {
+	return new Date().getTime() + Math.floor(Math.random() * 1000);
+}
