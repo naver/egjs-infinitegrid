@@ -1534,12 +1534,12 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		return this;
 	}
 	private _getRandomKey() {
-		const groups = this._itemManager.getGroups();
+		const itemManager = this._itemManager;
 
 		while (true) {
 			const groupKey = new Date().getTime() + Math.floor(Math.random() * 1000);
 
-			if (groups.every(group => group.groupKey != groupKey)) {
+			if (!itemManager.getGroupByKey(groupKey)) {
 				return groupKey;
 			}
 		}
