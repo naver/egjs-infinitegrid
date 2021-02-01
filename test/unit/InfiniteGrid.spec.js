@@ -206,6 +206,78 @@ describe("InfiniteGrid Test", function () {
 					expect(el.style.left).to.be.ok;
 				});
 			});
+			it(`should check if visible items change when doing first layout`, async () => {
+				// Given
+				const container = this.inst._renderer.container;
+				container.innerHTML = `<div class="item">1</div><div class="item">2</div><div class="item">3</div>`;
+
+				const visibleItems = this.inst.getItems();
+				// When
+				this.inst.layout();
+				const visibleItems2 = this.inst.getItems();
+
+				await waitEvent(this.inst, "layoutComplete");
+				const visibleItems3 = this.inst.getItems();
+
+				// Then
+				expect(visibleItems).to.have.lengthOf(0);
+				expect(visibleItems2).to.have.lengthOf(3);
+				expect(visibleItems3).to.have.lengthOf(3);
+			});
+			it(`should check if multiple groups of elements can be layout first`, async () => {
+				// Given
+				const container = this.inst._renderer.container;
+				const infinite = this.inst._infinite;
+				container.innerHTML = `<div class="item" data-groupkey="1">1</div><div class="item" data-groupkey="2">2</div><div class="item" data-groupkey="3">3</div>`;
+
+				const cursors = infinite.getCursors();
+				const visibleItems = this.inst.getItems();
+
+				// When
+				this.inst.beforeSync([
+					{ groupKey: "1", itemKey: 0 },
+					{ groupKey: "2", itemKey: 1 },
+					{ groupKey: "3", itemKey: 2 },
+				]);
+
+				this.inst.layout();
+				const cursors2 = infinite.getCursors();
+				const visibleItems2 = this.inst.getItems();
+
+
+				await waitEvent(this.inst, "layoutComplete");
+				const cursors3 = infinite.getCursors();
+				const visibleItems3 = this.inst.getItems();
+
+				// Then
+				expect(visibleItems).to.have.lengthOf(0);
+				expect(visibleItems2).to.have.lengthOf(3);
+				expect(visibleItems3).to.have.lengthOf(3);
+				expect(cursors).to.be.deep.equals([-1, -1]);
+				expect(cursors2).to.be.deep.equals([0, 2]);
+				expect(cursors3).to.be.deep.equals([0, 2]);
+			});
+			it(`should check whether the cursor changes when the item is synced first and layout`, async () => {
+				// Given
+				const container = this.inst._renderer.container;
+				const infinite = this.inst._infinite;
+				container.innerHTML = `<div class="item" data-groupkey="1">1</div><div class="item" data-groupkey="2">2</div><div class="item" data-groupkey="3">3</div>`;
+
+				const cursors = infinite.getCursors();
+
+				// When
+				this.inst.layout();
+				const cursors2 = infinite.getCursors();
+
+
+				await waitEvent(this.inst, "layoutComplete");
+				const cursors3 = infinite.getCursors();
+
+				// Then
+				expect(cursors).to.be.deep.equals([-1, -1]);
+				expect(cursors2).to.be.deep.equals([0, 2]);
+				expect(cursors3).to.be.deep.equals([0, 2]);
+			});
 			it(`should set the big random group key when children don't have a group key.`, async () => {
 				// Given
 				const container = this.inst._renderer.container;
@@ -222,7 +294,7 @@ describe("InfiniteGrid Test", function () {
 					// All items have the same group key.
 					expect(item.groupKey).to.be.equals(groupKey);
 					// very big number
-					expect(item.groupKey).to.be.above(100000000);
+					expect(parseFloat(item.groupKey)).to.be.above(100000000);
 				});
 			});
 			it(`should set as children's groupkey when children have a groupkey.`, async () => {

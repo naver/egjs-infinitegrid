@@ -399,10 +399,9 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		const itemManager = this._itemManager;
 		const infinite = this._infinite;
 		const isResize = renderer.resize();
-		const items = this.getItems();
+		const visibleItems = this.getItems();
 		const { isEqualSize, isConstantSize, transitionDuration } = this.options;
 		const isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
-		const size = itemManager.size();
 
 		this._watcher.resize();
 
@@ -411,50 +410,9 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 				this._setSize(renderer.getViewportSize());
 			}
 		}
-		// check childElement
-		if (!items.length) {
-			const children = toArray(renderer.container.children).filter(el => {
-				return el.className.indexOf(IGNORE_CLASSNAME) === -1;
-			});
-			const hasChildren = children.length > 0;
-
-			if (size) {
-				const firstGroup = itemManager.getGroup(0);
-
-				if (hasChildren) {
-					firstGroup.items.forEach((item, i) => {
-						item.el = children[i];
-					});
-				}
-				// has items, no visible items
-				this._postLayout({
-					groups: [firstGroup],
-					hasChildren,
-					fromCache: false,
-					isAppend: true,
-				});
-			} else {
-				// no items, no visible items
-				if (hasChildren) {
-					let groupKey: string | null | undefined = children[0].getAttribute("data-groupkey");
-
-					if (typeof groupKey !== "string") {
-						groupKey = undefined;
-					}
-					this._insert({
-						elements: children,
-						isAppend: true,
-						hasChildren: true,
-						groupKey,
-					});
-				} else {
-					if (renderer.getContainerSize()) {
-						renderer.setContainerSize(0);
-					}
-					this._requestAppend({});
-				}
-			}
-			return this;
+		// first layout (startCursor -1 endCursor -1)
+		if (!visibleItems.length) {
+			return this._firstLayout();
 		}
 
 		// layout datas
@@ -463,17 +421,17 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			itemManager.sliceGroups(startCursor, endCursor + 1);
 
 		// LayoutManger interface
-		this._relayout(isRelayout, data, isResize ? items : []);
+		this._relayout(isRelayout, data, isResize ? visibleItems : []);
 
 		if (isLayoutAll) {
 			this._fit();
 		} else if (isRelayout && isResize) {
 			itemManager.clearOutlines(startCursor, endCursor);
 		}
-		this._renderer.renderItems(items, transitionDuration);
+		this._renderer.renderItems(visibleItems, transitionDuration);
 		isRelayout && this._watcher.setScrollPos();
 		this._onLayoutComplete({
-			items,
+			items: visibleItems,
 			isAppend: true,
 			fromCache: true,
 			isTrusted: false,
@@ -1036,7 +994,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		elements,
 		isAppend,
 		hasChildren,
-		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
+		groupKey = this._getRandomKey(),
 	}: {
 		elements: string | string[] | HTMLElement[] | IJQuery,
 		isAppend?: boolean,
@@ -1059,7 +1017,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		items,
 		isAppend,
 		hasChildren,
-		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
+		groupKey = this._getRandomKey(),
 	}: {
 		items: IInfiniteGridItem[],
 		isAppend?: boolean,
@@ -1515,6 +1473,76 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			},
 		});
 		this._infinite.scroll(scrollPos);
+	}
+	private _firstLayout() {
+		const renderer = this._renderer;
+		const infinite = this._infinite;
+		const itemManager = this._itemManager;
+		const attributePrefix = this.options.attributePrefix;
+
+		const children = toArray(renderer.container.children).filter(el => {
+			return el.className.indexOf(IGNORE_CLASSNAME) === -1;
+		});
+		const hasChildren = children.length > 0;
+
+		if (itemManager.size()) {
+			// no visible items
+			if (hasChildren) {
+				itemManager.pluck("items").forEach((item, i) => {
+					item.el = children[i];
+				});
+			}
+		} else {
+			// no items, no visible items, no elements
+			if (!hasChildren) {
+				if (renderer.getContainerSize()) {
+					renderer.setContainerSize(0);
+				}
+				this._requestAppend({});
+				return this;
+			}
+			// no items, no visible items
+			let prevGroupKey = `${this._getRandomKey()}`;
+			children.forEach(el => {
+				let groupKey = el.getAttribute(`${attributePrefix}groupkey`);
+
+				if (typeof groupKey !== "string") {
+					groupKey = prevGroupKey;
+				}
+
+				prevGroupKey = groupKey;
+
+				itemManager.insert({
+					groupKey,
+					el,
+				});
+			});
+		}
+
+		// The currently displayed elements are visible groups.
+		const groups = itemManager.getGroups();
+
+		infinite.setCursor("start", 0);
+		infinite.setCursor("end", groups.length - 1);
+
+		this._postLayout({
+			groups,
+			hasChildren,
+			fromCache: false,
+			isAppend: true,
+		});
+		return this;
+	}
+	private _getRandomKey() {
+		const itemManager = this._itemManager;
+
+		while (true) {
+			const groupKey = new Date().getTime() + Math.floor(Math.random() * 1000);
+
+			if (!itemManager.getGroupByKey(groupKey)) {
+				return groupKey;
+			}
+		}
 	}
 	private _reset() {
 		this._status = {
