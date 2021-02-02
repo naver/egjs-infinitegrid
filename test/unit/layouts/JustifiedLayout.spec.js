@@ -1,7 +1,7 @@
 /* eslint-disable */
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "../helper/data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline, getLineCount} from "../helper/common";
+import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline, getRowCount} from "../helper/common";
 import Layout from "../../../src/layouts/JustifiedLayout";
 
 
@@ -265,14 +265,14 @@ describe("JustifiedLayout Test", function () {
 			});
 		});
 	});
-	describe("test line option", () => {
-		it(`should check if lineCount is enough (column * line = itemCount)`, () => {
+	describe("test row option", () => {
+		it(`should check if rowCount is enough (column * row = itemCount)`, () => {
 			// Given
 			const layout = new Layout({
 				margin: 5,
 				horizontal: false,
 				column: [4, 5],
-				line: [4, 5],
+				row: [4, 5],
 			});
 
 			const items = makeItems(18);
@@ -280,18 +280,18 @@ describe("JustifiedLayout Test", function () {
 			// When
 			const group = layout.append(items, []);
 
-			const lineCount = getLineCount(group.items, "top");
+			const rowCount = getRowCount(group.items, "top");
 
 			// Then
-			expect(lineCount).to.be.equals(4);
+			expect(rowCount).to.be.equals(4);
 		});
-		it(`should check if lineCount is not enough (column * line > itemCount)`, () => {
+		it(`should check if rowCount is not enough (column * row > itemCount)`, () => {
 			// Given
 			const layout = new Layout({
 				margin: 5,
 				horizontal: false,
 				column: [4, 5],
-				line: [4, 5],
+				row: [4, 5],
 			});
 
 			const items = makeItems(10);
@@ -300,18 +300,18 @@ describe("JustifiedLayout Test", function () {
 			// When
 			const group = layout.append(items, []);
 
-			const lineCount = getLineCount(group.items, "top");
+			const rowCount = getRowCount(group.items, "top");
 
 			// Then
-			expect(lineCount).to.be.equals(3);
+			expect(rowCount).to.be.equals(3);
 		});
-		it(`should check if lineCount is exceeded (column * line < itemCount)`, () => {
+		it(`should check if rowCount is exceeded (column * row < itemCount)`, () => {
 			// Given
 			const layout = new Layout({
 				margin: 5,
 				horizontal: false,
 				column: [4, 5],
-				line: [4, 5],
+				row: [4, 5],
 			});
 
 			const items = makeItems(30);
@@ -320,18 +320,18 @@ describe("JustifiedLayout Test", function () {
 			// When
 			const group = layout.append(items, []);
 
-			const lineCount = getLineCount(group.items, "top");
+			const rowCount = getRowCount(group.items, "top");
 
 			// Then
-			expect(lineCount).to.be.equals(6);
+			expect(rowCount).to.be.equals(6);
 		});
-		it(`should check if lineCount is 1 (column > itemCount)`, () => {
+		it(`should check if rowCount is 1 (column > itemCount)`, () => {
 			// Given
 			const layout = new Layout({
 				margin: 5,
 				horizontal: false,
 				column: [4, 5],
-				line: [4, 5],
+				row: [4, 5],
 			});
 
 			const items = makeItems(3);
@@ -340,10 +340,10 @@ describe("JustifiedLayout Test", function () {
 			// When
 			const group = layout.append(items, []);
 
-			const lineCount = getLineCount(group.items, "top");
+			const rowCount = getRowCount(group.items, "top");
 
 			// Then
-			expect(lineCount).to.be.equals(1);
+			expect(rowCount).to.be.equals(1);
 		});
 	});
 });

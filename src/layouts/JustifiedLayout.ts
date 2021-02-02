@@ -25,7 +25,7 @@ interface Link {
  * @param {Number} [options.minSize=0] Minimum size of item to be resized <ko> 아이템이 조정되는 최소 크기 </ko>
  * @param {Number} [options.maxSize=0] Maximum size of item to be resized <ko> 아이템이 조정되는 최대 크기 </ko>
  * @param {Array|Number} [options.column=[1, 8]] The number of items in a line <ko> 한 줄에 들어가는 아이템의 개수 </ko>
- * @param {Array|Number} [options.line=0] The number or range of lines in a group, 0 is not set <ko>한 그룹에 들어가는 라인의 개수, 0은 미설정이다</ko>
+ * @param {Array|Number} [options.row=0] The number or range of rows in a group, 0 is not set <ko>한 그룹에 들어가는 열의 개수, 0은 미설정이다</ko>
  * @example
 ```
 <script>
@@ -59,7 +59,7 @@ class JustifiedLayout implements ILayout {
 		maxSize: number;
 		column: number | number[];
 		horizontal: boolean;
-		line: number | number[];
+		row: number | number[];
 	};
 	private _style: IRectlProperties;
 	private _size: number;
@@ -72,7 +72,7 @@ class JustifiedLayout implements ILayout {
 				minSize: 0,
 				maxSize: 0,
 				column: [1, 8],
-				line: 0,
+				row: 0,
 			},
 			options
 		);
@@ -143,11 +143,11 @@ class JustifiedLayout implements ILayout {
 		return this;
 	}
 	private _layout(items: IInfiniteGridItem[], outline: number[], isAppend?: boolean) {
-		const line = this.options.line;
+		const row = this.options.row;
 		let path: string[] = [];
 
 		if (items.length) {
-			path = line ? this._getLinePath(items) : this._getPath(items);
+			path = row ? this._getRowPath(items) : this._getPath(items);
 		}
 		return this._setStyle(items, path, outline, isAppend);
 	}
@@ -188,21 +188,21 @@ class JustifiedLayout implements ILayout {
 		// shortest path for items' total height.
 		return find_path(graph, "0", `${lastNode}`);
 	}
-	private _getLinePath(items: IInfiniteGridItem[]) {
+	private _getRowPath(items: IInfiniteGridItem[]) {
 		const style = this._style;
 		const size1Name = style.size1;
 		const size2Name = style.size2;
 		const column = this.options.column;
-		const line = this.options.line;
+		const row = this.options.row;
 		const [minColumn, maxColumn] = isObject(column) ? column : [column, column];
-		const [minLine, maxLine]: number[] = isObject(line) ? line : [line, line];
+		const [minRow, maxRow]: number[] = isObject(row) ? row : [row, row];
 		const lastNode = items.length;
 
 		const getLinks = (prevLink: Link, prevNode: number) => {
 			const nextLinks: Link[] = [];
 			const { path, length: pathLength, cost } = prevLink;
 
-			if ((maxLine <= pathLength || prevNode + minColumn > lastNode) && prevNode < lastNode) {
+			if ((maxRow <= pathLength || prevNode + minColumn > lastNode) && prevNode < lastNode) {
 				const rangeCost = getRangeCost(lastNode - prevNode, [minColumn, maxColumn]);
 				const lastCost = rangeCost * Math.abs(this._getCost(items, prevNode, lastNode, size1Name, size2Name));
 
@@ -216,7 +216,7 @@ class JustifiedLayout implements ILayout {
 			} else if (prevNode >= lastNode) {
 				nextLinks.push({
 					...prevLink,
-					isOver: minLine > pathLength || maxLine < pathLength,
+					isOver: minRow > pathLength || maxRow < pathLength,
 				});
 			} else {
 				const nextLength = Math.min(lastNode, prevNode + maxColumn);
@@ -243,8 +243,8 @@ class JustifiedLayout implements ILayout {
 				} else if (!aIsOver && bIsOver) {
 					return -1;
 				}
-				const aRangeCost = getRangeCost(a.length, [minLine, maxLine]);
-				const bRangeCost = getRangeCost(b.length, [minLine, maxLine]);
+				const aRangeCost = getRangeCost(a.length, [minRow, maxRow]);
+				const bRangeCost = getRangeCost(b.length, [minRow, maxRow]);
 
 				return aRangeCost - bRangeCost || a.cost - b.cost;
 			});

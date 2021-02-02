@@ -99,15 +99,15 @@ export function expectConnectGroups({ group1, items1, group2, items2, margin = 0
 		}
 	}
 }
-export function getLineCount(items, posName) {
-	const lineCountMap = {};
+export function getRowCount(items, posName) {
+	const rowCountMap = {};
 	let count = 0;
 
 	items.forEach(item => {
 		const pos = item.rect[posName];
 
-		if (!lineCountMap[pos]) {
-			lineCountMap[pos] = true;
+		if (!rowCountMap[pos]) {
+			rowCountMap[pos] = true;
 			++count;
 		}
 	});
