@@ -99,3 +99,17 @@ export function expectConnectGroups({ group1, items1, group2, items2, margin = 0
 		}
 	}
 }
+export function getLineCount(items, posName) {
+	const lineCountMap = {};
+	let count = 0;
+
+	items.forEach(item => {
+		const pos = item.rect[posName];
+
+		if (!lineCountMap[pos]) {
+			lineCountMap[pos] = true;
+			++count;
+		}
+	});
+	return count;
+}

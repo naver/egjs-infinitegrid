@@ -1,9 +1,8 @@
 /* eslint-disable */
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "../helper/data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline} from "../helper/common";
+import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline, getLineCount} from "../helper/common";
 import Layout from "../../../src/layouts/JustifiedLayout";
-import { getStyleNames } from "../../../src/utils";
 
 
 describe("JustifiedLayout Test", function () {
@@ -143,7 +142,7 @@ describe("JustifiedLayout Test", function () {
 					lines[lines.length - 1].push(item);
 					top = item.rect.top;
 				});
-				
+
 				lines.forEach(line => {
 					expect(line.every(item => item.rect.top === line[0].rect.top)).to.be.true;
 					expect(line[0].rect.left).to.be.equal(0);
@@ -179,7 +178,7 @@ describe("JustifiedLayout Test", function () {
 
 				// When
 				const group = layout.append(items, []);
-				
+
 				// Then
 				group.items.forEach(item => {
 					expect(item.rect.height).to.at.least(200);
@@ -264,6 +263,87 @@ describe("JustifiedLayout Test", function () {
 					expectConnectGroupsOutline(group2, group);
 				});
 			});
+		});
+	});
+	describe("test line option", () => {
+		it(`should check if lineCount is enough (column * line = itemCount)`, () => {
+			// Given
+			const layout = new Layout({
+				margin: 5,
+				horizontal: false,
+				column: [4, 5],
+				line: [4, 5],
+			});
+
+			const items = makeItems(18);
+			layout.setSize(1000);
+			// When
+			const group = layout.append(items, []);
+
+			const lineCount = getLineCount(group.items, "top");
+
+			// Then
+			expect(lineCount).to.be.equals(4);
+		});
+		it(`should check if lineCount is not enough (column * line > itemCount)`, () => {
+			// Given
+			const layout = new Layout({
+				margin: 5,
+				horizontal: false,
+				column: [4, 5],
+				line: [4, 5],
+			});
+
+			const items = makeItems(10);
+			layout.setSize(1000);
+
+			// When
+			const group = layout.append(items, []);
+
+			const lineCount = getLineCount(group.items, "top");
+
+			// Then
+			expect(lineCount).to.be.equals(3);
+		});
+		it(`should check if lineCount is exceeded (column * line < itemCount)`, () => {
+			// Given
+			const layout = new Layout({
+				margin: 5,
+				horizontal: false,
+				column: [4, 5],
+				line: [4, 5],
+			});
+
+			const items = makeItems(30);
+			layout.setSize(1000);
+
+			// When
+			const group = layout.append(items, []);
+
+			const lineCount = getLineCount(group.items, "top");
+
+			// Then
+			expect(lineCount).to.be.equals(6);
+		});
+		it(`should check if lineCount is 1 (column > itemCount)`, () => {
+			// Given
+			const layout = new Layout({
+				margin: 5,
+				horizontal: false,
+				column: [4, 5],
+				line: [4, 5],
+			});
+
+			const items = makeItems(3);
+			layout.setSize(1000);
+
+			// When
+			const group = layout.append(items, []);
+
+			const lineCount = getLineCount(group.items, "top");
+
+			// Then
+			expect(lineCount).to.be.equals(1);
 		});
 	});
 });
