@@ -1,6 +1,19 @@
 import { find_path } from "./lib/dijkstra";
-import { getStyleNames, assignOptions, cloneItems } from "../utils";
-import { ILayout, IRectlProperties, SizeType, IInfiniteGridItem, IInfiniteGridGroup } from "../types";
+import { getStyleNames, assignOptions, cloneItems, isObject, getRangeCost } from "../utils";
+import {
+	ILayout,
+	IRectlProperties,
+	SizeType,
+	IInfiniteGridItem,
+	IInfiniteGridGroup,
+} from "../types";
+
+interface Link {
+	path: number[];
+	cost: number;
+	length: number;
+	isOver?: boolean;
+}
 
 /**
  * @classdesc 'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedLayout is a layout that the card is filled up on the basis of a line given a size.
@@ -45,18 +58,23 @@ class JustifiedLayout implements ILayout {
 		maxSize: number;
 		column: number | number[];
 		horizontal: boolean;
+		line: number | number[];
 	};
 	private _style: IRectlProperties;
 	private _size: number;
 
 	constructor(options: Partial<JustifiedLayout["options"]> = {}) {
-		this.options = assignOptions({
-			margin: 0,
-			horizontal: false,
-			minSize: 0,
-			maxSize: 0,
-			column: [1, 8],
-		}, options);
+		this.options = assignOptions(
+			{
+				margin: 0,
+				horizontal: false,
+				minSize: 0,
+				maxSize: 0,
+				column: [1, 8],
+				line: 0,
+			},
+			options
+		);
 
 		this._style = getStyleNames(this.options.horizontal);
 		this._size = 0;
@@ -124,39 +142,125 @@ class JustifiedLayout implements ILayout {
 		return this;
 	}
 	private _layout(items: IInfiniteGridItem[], outline: number[], isAppend?: boolean) {
+		const line = this.options.line;
+		let path: string[] = [];
+
+		if (items.length) {
+			path = line ? this._getLinePath(items) : this._getPath(items);
+		}
+		return this._setStyle(items, path, outline, isAppend);
+	}
+
+	private _getPath(items: IInfiniteGridItem[]) {
 		const style = this._style;
 		const size1Name = style.size1;
 		const size2Name = style.size2;
-		const startIndex = 0;
-		const endIndex = items.length;
+		const lastNode = items.length;
 		const column = this.options.column;
-		const columns: number[] = (typeof column === "object") ? column : [column, column];
+		const [minColumn, maxColumn]: number[] = isObject(column)
+			? column
+			: [column, column];
 
-		const graph = (_start: string) => {
+		const graph = (nodeKey: string) => {
 			const results: { [key: string]: number } = {};
-			const start = +_start.replace(/[^0-9]/g, "");
-			const length = endIndex + 1;
+			const prevNode = parseInt(nodeKey, 10);
 
-			for (let i = Math.min(start + columns[0], length - 1); i < length; ++i) {
-				if (i - start > columns[1]) {
+			for (let nextNode = Math.min(prevNode + minColumn, lastNode); nextNode <= lastNode; ++nextNode) {
+				if (nextNode - prevNode > maxColumn) {
 					break;
 				}
-				let cost = this._getCost(items, start, i, size1Name, size2Name);
+				let cost = this._getCost(
+					items,
+					prevNode,
+					nextNode,
+					size1Name,
+					size2Name
+				);
 
-				if (cost === null) {
-					continue;
-				}
-				if (cost < 0 && i === length - 1) {
+				if (cost < 0 && nextNode === lastNode) {
 					cost = 0;
 				}
-				results[`${i}`] = Math.pow(cost, 2);
+				results[`${nextNode}`] = Math.pow(cost, 2);
 			}
 			return results;
 		};
 		// shortest path for items' total height.
-		const path = find_path(graph, `${startIndex}`, `${endIndex}`);
+		return find_path(graph, "0", `${lastNode}`);
+	}
+	private _getLinePath(items: IInfiniteGridItem[]) {
+		const style = this._style;
+		const size1Name = style.size1;
+		const size2Name = style.size2;
+		const column = this.options.column;
+		const line = this.options.line;
+		const [minColumn, maxColumn] = isObject(column) ? column : [column, column];
+		const [minLine, maxLine]: number[] = isObject(line) ? line : [line, line];
+		const lastNode = items.length;
 
-		return this._setStyle(items, path, outline, isAppend);
+		const getLinks = (prevLink: Link, prevNode: number) => {
+			const nextLinks: Link[] = [];
+			const { path, length: pathLength, cost } = prevLink;
+
+			if ((maxLine <= pathLength|| prevNode + minColumn > lastNode) && prevNode < lastNode) {
+				const rangeCost = getRangeCost(lastNode - prevNode, [minColumn, maxColumn]);
+				const lastCost = rangeCost * Math.abs(this._getCost(items, prevNode, lastNode, size1Name, size2Name));
+
+				nextLinks.push({
+					...prevLink,
+					length: pathLength + 1,
+					path: [...path, length],
+					cost: cost + lastCost,
+					isOver: true,
+				});
+			} else if (prevNode >= lastNode) {
+				nextLinks.push({
+					...prevLink,
+					isOver: minLine > pathLength || maxLine < pathLength,
+				});
+			} else {
+				const nextLength = Math.min(lastNode, prevNode + maxColumn);
+
+				for (let nextNode = prevNode + minColumn; nextNode <= nextLength; ++nextNode) {
+					if (nextNode === prevNode) {
+						continue;
+					}
+					const nextCost = Math.abs(this._getCost(items, prevNode, nextNode, size1Name, size2Name));
+
+					nextLinks.push(...getLinks({
+						path: [...path, nextNode],
+						length: pathLength + 1,
+						cost: cost + nextCost,
+					}, nextNode));
+				}
+			}
+			nextLinks.sort((a, b) => {
+				const aIsOver = a.isOver;
+				const bIsOver = b.isOver;
+
+				if (aIsOver && !bIsOver) {
+					return 1;
+				} else if (!aIsOver && bIsOver) {
+					return -1;
+				}
+				const aRangeCost = getRangeCost(a.length, [minLine, maxLine]);
+				const bRangeCost = getRangeCost(b.length, [minLine, maxLine]);
+
+				return aRangeCost - bRangeCost || a.cost - b.cost;
+			});
+			if (nextLinks.length) {
+				return [nextLinks[0]];
+			} else {
+				return [];
+			}
+		};
+
+		const pathLinks = getLinks({
+			path: [0],
+			cost: 0,
+			length: 0,
+		}, 0);
+
+		return pathLinks[0].path.map((node) => `${node}`);
 	}
 	private _getSize(items: IInfiniteGridItem[], size1Name: SizeType, size2Name: SizeType) {
 		const margin = this.options.margin;
