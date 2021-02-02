@@ -12,6 +12,7 @@ interface Link {
 	path: number[];
 	cost: number;
 	length: number;
+	currentNode: number;
 	isOver?: boolean;
 }
 
@@ -164,15 +165,15 @@ class JustifiedLayout implements ILayout {
 
 		const graph = (nodeKey: string) => {
 			const results: { [key: string]: number } = {};
-			const prevNode = parseInt(nodeKey, 10);
+			const currentNode = parseInt(nodeKey, 10);
 
-			for (let nextNode = Math.min(prevNode + minColumn, lastNode); nextNode <= lastNode; ++nextNode) {
-				if (nextNode - prevNode > maxColumn) {
+			for (let nextNode = Math.min(currentNode + minColumn, lastNode); nextNode <= lastNode; ++nextNode) {
+				if (nextNode - currentNode > maxColumn) {
 					break;
 				}
 				let cost = this._getCost(
 					items,
-					prevNode,
+					currentNode,
 					nextNode,
 					size1Name,
 					size2Name
@@ -189,6 +190,16 @@ class JustifiedLayout implements ILayout {
 		return find_path(graph, "0", `${lastNode}`);
 	}
 	private _getRowPath(items: IInfiniteGridItem[]) {
+		const pathLink = this._getRowLink(items, {
+			path: [0],
+			cost: 0,
+			length: 0,
+			currentNode: 0,
+		});
+
+		return pathLink?.path.map((node) => `${node}`) ?? [];
+	}
+	private _getRowLink(items: IInfiniteGridItem[], currentLink: Link): Link {
 		const style = this._style;
 		const size1Name = style.size1;
 		const size2Name = style.size2;
@@ -197,71 +208,86 @@ class JustifiedLayout implements ILayout {
 		const [minColumn, maxColumn] = isObject(column) ? column : [column, column];
 		const [minRow, maxRow]: number[] = isObject(row) ? row : [row, row];
 		const lastNode = items.length;
+		const {
+			path,
+			length: pathLength,
+			cost,
+			currentNode
+		} = currentLink;
 
-		const getLinks = (prevLink: Link, prevNode: number) => {
-			const nextLinks: Link[] = [];
-			const { path, length: pathLength, cost } = prevLink;
+		// not reached lastNode but path is exceed or the number of remaining nodes is less than minColumn.
+		if (currentNode < lastNode && (maxRow <= pathLength || currentNode + minColumn > lastNode)) {
+			const rangeCost = getRangeCost(lastNode - currentNode, [minColumn, maxColumn]);
+			const lastCost = rangeCost * Math.abs(this._getCost(items, currentNode, lastNode, size1Name, size2Name));
 
-			if ((maxRow <= pathLength || prevNode + minColumn > lastNode) && prevNode < lastNode) {
-				const rangeCost = getRangeCost(lastNode - prevNode, [minColumn, maxColumn]);
-				const lastCost = rangeCost * Math.abs(this._getCost(items, prevNode, lastNode, size1Name, size2Name));
+			return {
+				...currentLink,
+				length: pathLength + 1,
+				path: [...path, length],
+				currentNode: lastNode,
+				cost: cost + lastCost,
+				isOver: true,
+			};
+		} else if (currentNode >= lastNode) {
+			return {
+				...currentLink,
+				currentNode: lastNode,
+				isOver: minRow > pathLength || maxRow < pathLength,
+			};
+		} else {
+			return this._searchRowLink(items, currentLink, lastNode);
+		}
 
-				nextLinks.push({
-					...prevLink,
-					length: pathLength + 1,
-					path: [...path, length],
-					cost: cost + lastCost,
-					isOver: true,
-				});
-			} else if (prevNode >= lastNode) {
-				nextLinks.push({
-					...prevLink,
-					isOver: minRow > pathLength || maxRow < pathLength,
-				});
-			} else {
-				const nextLength = Math.min(lastNode, prevNode + maxColumn);
+	}
+	private _searchRowLink(items: IInfiniteGridItem[], currentLink: Link, lastNode: number) {
+		const style = this._style;
+		const size1Name = style.size1;
+		const size2Name = style.size2;
+		const column = this.options.column;
+		const row = this.options.row;
+		const [minColumn, maxColumn] = isObject(column) ? column : [column, column];
+		const [minRow, maxRow]: number[] = isObject(row) ? row : [row, row];
+		const {
+			currentNode,
+			path,
+			length: pathLength,
+			cost
+		} = currentLink;
+		const length = Math.min(lastNode, currentNode + maxColumn);
+		const links: Link[] = [];
 
-				for (let nextNode = prevNode + minColumn; nextNode <= nextLength; ++nextNode) {
-					if (nextNode === prevNode) {
-						continue;
-					}
-					const nextCost = Math.abs(this._getCost(items, prevNode, nextNode, size1Name, size2Name));
-
-					nextLinks.push(...getLinks({
-						path: [...path, nextNode],
-						length: pathLength + 1,
-						cost: cost + nextCost,
-					}, nextNode));
-				}
+		for (let nextNode = currentNode + minColumn; nextNode <= length; ++nextNode) {
+			if (nextNode === currentNode) {
+				continue;
 			}
-			nextLinks.sort((a, b) => {
-				const aIsOver = a.isOver;
-				const bIsOver = b.isOver;
-
-				if (aIsOver && !bIsOver) {
-					return 1;
-				} else if (!aIsOver && bIsOver) {
-					return -1;
-				}
-				const aRangeCost = getRangeCost(a.length, [minRow, maxRow]);
-				const bRangeCost = getRangeCost(b.length, [minRow, maxRow]);
-
-				return aRangeCost - bRangeCost || a.cost - b.cost;
+			const nextCost = Math.abs(this._getCost(items, currentNode, nextNode, size1Name, size2Name));
+			const nextLink = this._getRowLink(items, {
+				path: [...path, nextNode],
+				length: pathLength + 1,
+				cost: cost + nextCost,
+				currentNode: nextNode,
 			});
-			if (nextLinks.length) {
-				return [nextLinks[0]];
-			} else {
-				return [];
+
+			if (nextLink) {
+				links.push(nextLink);
 			}
-		};
+		}
+		links.sort((a, b) => {
+			const aIsOver = a.isOver;
+			const bIsOver = b.isOver;
 
-		const pathLinks = getLinks({
-			path: [0],
-			cost: 0,
-			length: 0,
-		}, 0);
+			if (aIsOver !== bIsOver) {
+				// If it is over, the cost is high.
+				return aIsOver ? 1 : -1;
+			}
+			const aRangeCost = getRangeCost(a.length, [minRow, maxRow]);
+			const bRangeCost = getRangeCost(b.length, [minRow, maxRow]);
 
-		return pathLinks[0].path.map((node) => `${node}`);
+			return aRangeCost - bRangeCost || a.cost - b.cost;
+		});
+
+		// It returns the lowest cost link.
+		return links[0];
 	}
 	private _getSize(items: IInfiniteGridItem[], size1Name: SizeType, size2Name: SizeType) {
 		const margin = this.options.margin;
