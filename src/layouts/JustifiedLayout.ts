@@ -25,6 +25,7 @@ interface Link {
  * @param {Number} [options.minSize=0] Minimum size of item to be resized <ko> 아이템이 조정되는 최소 크기 </ko>
  * @param {Number} [options.maxSize=0] Maximum size of item to be resized <ko> 아이템이 조정되는 최대 크기 </ko>
  * @param {Array|Number} [options.column=[1, 8]] The number of items in a line <ko> 한 줄에 들어가는 아이템의 개수 </ko>
+ * @param {Array|Number} [options.line=0] The number or range of lines in a group, 0 is not set <ko>The number of lines in a group, 0 is not set</ko>
  * @example
 ```
 <script>
