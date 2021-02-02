@@ -202,7 +202,7 @@ class JustifiedLayout implements ILayout {
 			const nextLinks: Link[] = [];
 			const { path, length: pathLength, cost } = prevLink;
 
-			if ((maxLine <= pathLength|| prevNode + minColumn > lastNode) && prevNode < lastNode) {
+			if ((maxLine <= pathLength || prevNode + minColumn > lastNode) && prevNode < lastNode) {
 				const rangeCost = getRangeCost(lastNode - prevNode, [minColumn, maxColumn]);
 				const lastCost = rangeCost * Math.abs(this._getCost(items, prevNode, lastNode, size1Name, size2Name));
 

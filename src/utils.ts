@@ -409,5 +409,5 @@ export function isObject(value: any): value is object {
 }
 
 export function getRangeCost(value: number, range: number[]) {
-	return Math.max(Math.max(value - range[1], 0), Math.max(range[0] - value, 0)) + 1;
+	return Math.max(value - range[1], range[0] - value, 0) + 1;
 }
