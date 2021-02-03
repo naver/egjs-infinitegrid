@@ -1,6 +1,6 @@
 const MARGIN_DESCRIPTION = "Margin used to create space around items";
 export const GRIDLAYOUT_OPTIONS = ["margin", "align"];
-export const JUSTIFIEDLAYOUT_OPTIONS = ["margin", "column", "minSize", "maxSize"];
+export const JUSTIFIEDLAYOUT_OPTIONS = ["margin", "column", "row", "minSize", "maxSize"];
 export const FRAMELAYOUT_OPTIONS = ["margin", "itemSize", "frame", "frameFill"];
 export const SQUARELAYOUT_OPTIONS = ["margin", "itemSize", "column"];
 export const PACKINGLAYOUT_OPTIONS = ["margin", "horizontal", "aspectRatio", "sizeWeight", "ratioWeight"];
@@ -95,6 +95,10 @@ export function getJustifiedLayoutArgs() {
         column: {
             type: "object", default: [1, 8],
             description: "The number of items in a line",
+        },
+        row: {
+            type: "object", default: 0,
+            description: "The number of rows in a group",
         },
         minSize: {
             type: "number", default: 0,

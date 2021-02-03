@@ -26,7 +26,7 @@
 		"demo:prebuild-latest": "cpx 'dist/**/*' demo/release/latest/dist --clean && cpx 'doc/**/*' demo/release/latest/doc --clean",
 		"demo:predeploy": "npm run build && npm run jsdoc && npm run demo:prebuild-version && npm run demo:prebuild-latest && npm run demo:build && npm run storybook",
 		"demo:origin": "npm run demo:predeploy && gh-pages -d demo/_site",
-		"demo:deploy": "npm run demo:predeploy && gh-pages -d demo/_site --add --remote upstream",
+		"demo:deploy": "gh-pages -d demo/_site --add --remote upstream",
 		"demo:updateVersion": "echo $npm_package_version > demo/_data/version.yml",
 		"demo:setup": "cpx 'node_modules/@egjs/common-demo/**/*' 'demo/' && rm demo/package.json",
 		"release": "node config/release.js",
