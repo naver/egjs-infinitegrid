@@ -154,9 +154,6 @@ class JustifiedLayout implements ILayout {
 	}
 
 	private _getPath(items: IInfiniteGridItem[]) {
-		const style = this._style;
-		const size1Name = style.size1;
-		const size2Name = style.size2;
 		const lastNode = items.length;
 		const column = this.options.column;
 		const [minColumn, maxColumn]: number[] = isObject(column)
@@ -175,8 +172,6 @@ class JustifiedLayout implements ILayout {
 					items,
 					currentNode,
 					nextNode,
-					size1Name,
-					size2Name
 				);
 
 				if (cost < 0 && nextNode === lastNode) {
@@ -190,23 +185,27 @@ class JustifiedLayout implements ILayout {
 		return find_path(graph, "0", `${lastNode}`);
 	}
 	private _getRowPath(items: IInfiniteGridItem[]) {
+		const column = this.options.column;
+		const row = this.options.row;
+		const columnRange = isObject(column) ? column : [column, column];
+		const rowRange: number[] = isObject(row) ? row : [row, row];
 		const pathLink = this._getRowLink(items, {
 			path: [0],
 			cost: 0,
 			length: 0,
 			currentNode: 0,
-		});
+		}, columnRange, rowRange);
 
 		return pathLink?.path.map((node) => `${node}`) ?? [];
 	}
-	private _getRowLink(items: IInfiniteGridItem[], currentLink: Link): Link {
-		const style = this._style;
-		const size1Name = style.size1;
-		const size2Name = style.size2;
-		const column = this.options.column;
-		const row = this.options.row;
-		const [minColumn, maxColumn] = isObject(column) ? column : [column, column];
-		const [minRow, maxRow]: number[] = isObject(row) ? row : [row, row];
+	private _getRowLink(
+		items: IInfiniteGridItem[],
+		currentLink: Link,
+		columnRange: number[],
+		rowRange: number[]
+	): Link {
+		const [minColumn, maxColumn] = columnRange;
+		const [minRow, maxRow] = rowRange;
 		const lastNode = items.length;
 		const {
 			path,
@@ -217,8 +216,8 @@ class JustifiedLayout implements ILayout {
 
 		// not reached lastNode but path is exceed or the number of remaining nodes is less than minColumn.
 		if (currentNode < lastNode && (maxRow <= pathLength || currentNode + minColumn > lastNode)) {
-			const rangeCost = getRangeCost(lastNode - currentNode, [minColumn, maxColumn]);
-			const lastCost = rangeCost * Math.abs(this._getCost(items, currentNode, lastNode, size1Name, size2Name));
+			const rangeCost = getRangeCost(lastNode - currentNode, columnRange);
+			const lastCost = rangeCost * Math.abs(this._getCost(items, currentNode, lastNode));
 
 			return {
 				...currentLink,
@@ -235,18 +234,18 @@ class JustifiedLayout implements ILayout {
 				isOver: minRow > pathLength || maxRow < pathLength,
 			};
 		} else {
-			return this._searchRowLink(items, currentLink, lastNode);
+			return this._searchRowLink(items, currentLink, lastNode, columnRange, rowRange);
 		}
 
 	}
-	private _searchRowLink(items: IInfiniteGridItem[], currentLink: Link, lastNode: number) {
-		const style = this._style;
-		const size1Name = style.size1;
-		const size2Name = style.size2;
-		const column = this.options.column;
-		const row = this.options.row;
-		const [minColumn, maxColumn] = isObject(column) ? column : [column, column];
-		const [minRow, maxRow]: number[] = isObject(row) ? row : [row, row];
+	private _searchRowLink(
+		items: IInfiniteGridItem[],
+		currentLink: Link,
+		lastNode: number,
+		columnRange: number[],
+		rowRange: number[]
+	) {
+		const [minColumn, maxColumn] = columnRange;
 		const {
 			currentNode,
 			path,
@@ -260,13 +259,13 @@ class JustifiedLayout implements ILayout {
 			if (nextNode === currentNode) {
 				continue;
 			}
-			const nextCost = Math.abs(this._getCost(items, currentNode, nextNode, size1Name, size2Name));
+			const nextCost = Math.abs(this._getCost(items, currentNode, nextNode));
 			const nextLink = this._getRowLink(items, {
 				path: [...path, nextNode],
 				length: pathLength + 1,
 				cost: cost + nextCost,
 				currentNode: nextNode,
-			});
+			}, columnRange, rowRange);
 
 			if (nextLink) {
 				links.push(nextLink);
@@ -280,8 +279,8 @@ class JustifiedLayout implements ILayout {
 				// If it is over, the cost is high.
 				return aIsOver ? 1 : -1;
 			}
-			const aRangeCost = getRangeCost(a.length, [minRow, maxRow]);
-			const bRangeCost = getRangeCost(b.length, [minRow, maxRow]);
+			const aRangeCost = getRangeCost(a.length, rowRange);
+			const bRangeCost = getRangeCost(b.length, rowRange);
 
 			return aRangeCost - bRangeCost || a.cost - b.cost;
 		});
@@ -300,9 +299,10 @@ class JustifiedLayout implements ILayout {
 		items: IInfiniteGridItem[],
 		i: number,
 		j: number,
-		size1Name: SizeType,
-		size2Name: SizeType,
 	) {
+		const style = this._style;
+		const size1Name = style.size1;
+		const size2Name = style.size2;
 		const size = this._getSize(items.slice(i, j), size1Name, size2Name);
 		const min = this.options.minSize || 0;
 		const max = this.options.maxSize || Infinity;
