@@ -404,3 +404,10 @@ export function addClass(element: HTMLElement, className: string) {
 		element.className += ` ${className}`;
 	}
 }
+export function isObject(value: any): value is object {
+	return typeof value === "object";
+}
+
+export function getRangeCost(value: number, range: number[]) {
+	return Math.max(value - range[1], range[0] - value, 0) + 1;
+}
