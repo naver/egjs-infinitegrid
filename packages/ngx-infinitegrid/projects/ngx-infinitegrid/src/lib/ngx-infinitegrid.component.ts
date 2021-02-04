@@ -72,8 +72,8 @@ export class NgxInfiniteGridComponent
       const { startCursor, endCursor } = this.status._infinite;
 
       this.updateVisibleItems(ItemManager.pluck(groups.slice(startCursor, endCursor + 1), 'items').map(item => item.data));
-    } else if (this.useFirstRender && groups[0]) {
-      this.updateVisibleItems(groups[0].items.map(item => item.data));
+    } else if (this.useFirstRender) {
+      this.updateVisibleItems(this.items);
     }
   }
   ngOnChanges(changes) {

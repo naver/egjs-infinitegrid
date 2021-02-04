@@ -84,7 +84,7 @@ export default class InfiniteGrid<T extends ILayout = GridLayout>
 					"items",
 				).map((item: IItem) => item.jsx);
 			} else if (props.useFirstRender && groups[0]) {
-				visibleChildren = groups[0].items.map((item: IItem) => item.jsx);
+				visibleChildren = items.map(item => item.jsx);
 			}
 		}
 		if (this.props.loading) {
