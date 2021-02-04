@@ -204,7 +204,7 @@ class JustifiedLayout implements ILayout {
 		columnRange: number[],
 		rowRange: number[]
 	): Link {
-		const [minColumn, maxColumn] = columnRange;
+		const [minColumn] = columnRange;
 		const [minRow, maxRow] = rowRange;
 		const lastNode = items.length;
 		const {
@@ -222,7 +222,7 @@ class JustifiedLayout implements ILayout {
 			return {
 				...currentLink,
 				length: pathLength + 1,
-				path: [...path, length],
+				path: [...path, lastNode],
 				currentNode: lastNode,
 				cost: cost + lastCost,
 				isOver: true,

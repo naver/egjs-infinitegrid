@@ -106,6 +106,9 @@ export function getRowCount(items, posName) {
 	items.forEach(item => {
 		const pos = item.rect[posName];
 
+		if (pos == null) {
+			return;
+		}
 		if (!rowCountMap[pos]) {
 			rowCountMap[pos] = true;
 			++count;
