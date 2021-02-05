@@ -99,6 +99,11 @@ export function expectConnectGroups({ group1, items1, group2, items2, margin = 0
 		}
 	}
 }
+export function expectItemsPosition(items, posName) {
+	items.forEach(item => {
+		expect(item.rect[posName]).to.be.at.least(0);
+	});
+}
 export function getRowCount(items, posName) {
 	const rowCountMap = {};
 	let count = 0;
@@ -106,6 +111,9 @@ export function getRowCount(items, posName) {
 	items.forEach(item => {
 		const pos = item.rect[posName];
 
+		if (pos == null) {
+			return;
+		}
 		if (!rowCountMap[pos]) {
 			rowCountMap[pos] = true;
 			++count;

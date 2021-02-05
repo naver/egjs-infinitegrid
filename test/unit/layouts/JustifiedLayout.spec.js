@@ -1,7 +1,7 @@
 /* eslint-disable */
 /* global describe, beforeEach, afterEach, it, expect */
 import { makeItems, VIEWPORT } from "../helper/data";
-import { checkMargin, checkDirection, expectConnectItems, expectConnectGroups, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline, getRowCount} from "../helper/common";
+import { checkMargin, checkDirection, expectConnectItems, expectItemsPosition, expectNoOutline, expectSameAppendPrepend, expectAppend, expectOutlineIndex, expectConnectGroupsOutline, getRowCount} from "../helper/common";
 import Layout from "../../../src/layouts/JustifiedLayout";
 
 
@@ -283,6 +283,7 @@ describe("JustifiedLayout Test", function () {
 			const rowCount = getRowCount(group.items, "top");
 
 			// Then
+			expectItemsPosition(group.items, "top");
 			expect(rowCount).to.be.equals(4);
 		});
 		it(`should check if rowCount is not enough (column * row > itemCount)`, () => {
@@ -303,6 +304,7 @@ describe("JustifiedLayout Test", function () {
 			const rowCount = getRowCount(group.items, "top");
 
 			// Then
+			expectItemsPosition(group.items, "top");
 			expect(rowCount).to.be.equals(3);
 		});
 		it(`should check if rowCount is exceeded (column * row < itemCount)`, () => {
@@ -323,6 +325,7 @@ describe("JustifiedLayout Test", function () {
 			const rowCount = getRowCount(group.items, "top");
 
 			// Then
+			expectItemsPosition(group.items, "top");
 			expect(rowCount).to.be.equals(6);
 		});
 		it(`should check if rowCount is 1 (column > itemCount)`, () => {
@@ -343,6 +346,7 @@ describe("JustifiedLayout Test", function () {
 			const rowCount = getRowCount(group.items, "top");
 
 			// Then
+			expectItemsPosition(group.items, "top");
 			expect(rowCount).to.be.equals(1);
 		});
 	});
