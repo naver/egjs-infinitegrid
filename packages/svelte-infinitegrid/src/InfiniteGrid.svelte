@@ -85,8 +85,8 @@
       groups.slice(startCursor, endCursor + 1),
       "items"
     ).map(item => item.data);
-  } else if (useFirstRender && groups[0]) {
-    visibleItems = groups[0].items.map(item => item.data);
+  } else if (useFirstRender) {
+    visibleItems = items;
   }
   beforeUpdate(() => {
     updateAttributes();

@@ -118,8 +118,8 @@ export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
 					groups.slice(startCursor, endCursor + 1),
 					"items",
 				).map((item: IItem) => item.vnode);
-			} else if (this.useFirstRender && groups[0]) {
-				visibleChildren = groups[0].items.map((item: IItem) => item.vnode);
+			} else if (this.useFirstRender) {
+				visibleChildren = items.map((item: IItem) => item.vnode);
 			}
 		}
 

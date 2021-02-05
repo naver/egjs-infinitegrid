@@ -89,4 +89,31 @@ describe("test react-infinitegrid", () => {
     // [300, 100]
     expect(document.querySelector<HTMLElement>(".item5").style.top).to.be.equals("100px");
   });
+  it("should check if all children are rendered when useFirstRender is true", async () => {
+    // Given, When
+    const ref = React.createRef<GridLayout>();
+    ReactDOM.render(
+      <GridLayout ref={ref} className="test" useFirstRender={true}>
+        <div
+          className="item item1"
+          style={{ width: "100px", height: "100px" }}
+          data-groupkey={1}
+        ></div>
+        <div
+          className="item item2"
+          style={{ width: "100px", height: "120px" }}
+          data-groupkey={2}
+        ></div>
+      </GridLayout>,
+      document.querySelector(".container")
+    );
+
+    await wait();
+
+
+    // Then
+    const container = document.querySelector(".test");
+
+    expect(container.children).to.be.lengthOf(2);
+  });
 });
