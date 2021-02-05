@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-infinitegrid",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "A react component that can easily use egjs-infinitegrid",
   "types": "declaration/index.d.ts",
   "main": "dist/infinitegrid.cjs.js",
@@ -16,7 +16,7 @@
     "url": "https://github.com/naver/egjs-infinitegrid"
   },
   "dependencies": {
-    "@egjs/infinitegrid": "^3.8.0",
+    "@egjs/infinitegrid": "^3.8.1",
     "@egjs/list-differ": "^1.0.0"
   },
   "devDependencies": {
