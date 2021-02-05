@@ -89,7 +89,7 @@ describe("test react-infinitegrid", () => {
     // [300, 100]
     expect(document.querySelector<HTMLElement>(".item5").style.top).to.be.equals("100px");
   });
-  it.only("should check if all children are rendered when useFirstRender is true", async () => {
+  it("should check if all children are rendered when useFirstRender is true", async () => {
     // Given, When
     const ref = React.createRef<GridLayout>();
     ReactDOM.render(
