@@ -1,11 +1,5 @@
 /* eslint-disable */
-var homeUrl = window.location.href;
-if (homeUrl.indexOf("#") !== -1) {
-	homeUrl = homeUrl.substr(0, homeUrl.indexOf("#"));
-}
-homeUrl = homeUrl.split("/");
-homeUrl.pop();
-homeUrl = homeUrl.join("/") + "/";
+var homeUrl = window.location.origin + window.location.pathname;
 window.HOMELINK = homeUrl;
 window.LIBLINK = window.LIBLINK || [];
 window.LIBLINK.push(homeUrl + "../../release/latest/dist/infinitegrid.pkgd.min.js");

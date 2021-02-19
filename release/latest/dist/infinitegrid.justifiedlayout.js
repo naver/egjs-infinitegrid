@@ -4,7 +4,7 @@ name: @egjs/infinitegrid
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-infinitegrid
-version: 3.8.0
+version: 3.7.0
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -62,13 +62,6 @@ version: 3.8.0
 
       return __assign.apply(this, arguments);
     };
-    function __spreadArrays() {
-      for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-
-      for (var r = Array(s), k = 0, i = 0; i < il; i++) for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) r[k] = a[j];
-
-      return r;
-    }
 
     /*
     Copyright (c) NAVER Corp.
@@ -1153,12 +1146,6 @@ version: 3.8.0
         element.className += " " + className;
       }
     }
-    function isObject(value) {
-      return typeof value === "object";
-    }
-    function getRangeCost(value, range) {
-      return Math.max(value - range[1], range[0] - value, 0) + 1;
-    }
 
     var ItemManager =
     /*#__PURE__*/
@@ -1344,7 +1331,7 @@ version: 3.8.0
         var _this = this;
 
         if (groupIndex < 0) {
-          return this.appendGroup(group);
+          return null;
         }
 
         var prevItems = group.items || [];
@@ -2267,7 +2254,7 @@ version: 3.8.0
     license: MIT
     author: NAVER Corp.
     repository: https://github.com/naver/egjs-imready
-    version: 1.1.2
+    version: 1.1.1
     */
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -2491,7 +2478,7 @@ version: 3.8.0
         _this.isSkip = false;
 
         _this.onCheck = function (e) {
-          _this.clear();
+          _this.destroy();
 
           if (e && e.type === "error") {
             _this.onError(_this.element);
@@ -2544,7 +2531,7 @@ version: 3.8.0
         });
       };
 
-      __proto.clear = function () {
+      __proto.destroy = function () {
         var _this = this;
 
         var element = this.element;
@@ -2552,11 +2539,6 @@ version: 3.8.0
           removeEvent$1(element, name, _this.onCheck);
         });
         this.removeAutoSizer();
-      };
-
-      __proto.destroy = function () {
-        this.clear();
-        this.off();
       };
 
       __proto.removeAutoSizer = function () {
@@ -2672,9 +2654,8 @@ version: 3.8.0
       };
 
       __proto.destroy = function () {
-        this.clear();
+        this.removeAutoSizer();
         this.trigger("requestDestroy");
-        this.off();
       };
 
       __proto.onAlreadyPreReady = function () {
@@ -2778,15 +2759,15 @@ version: 3.8.0
           }).on("ready", function (_a) {
             var withPreReady = _a.withPreReady,
                 hasLoading = _a.hasLoading,
-                isSkip = _a.isSkip;
+                isSkip = _a.isSkip; // Pre-ready and ready occur simultaneously
+
             var info = _this.elementInfos[index];
             info.hasLoading = hasLoading;
             info.isSkip = isSkip;
 
             var isPreReady = withPreReady && _this.checkPreReady(index);
 
-            var isReady = _this.checkReady(index); // Pre-ready and ready occur simultaneously
-
+            var isReady = _this.checkReady(index);
 
             withPreReady && _this.onPreReadyElement(index);
 
@@ -4175,12 +4156,13 @@ version: 3.8.0
         var itemManager = this._itemManager;
         var infinite = this._infinite;
         var isResize = renderer.resize();
-        var visibleItems = this.getItems();
+        var items = this.getItems();
         var _a = this.options,
             isEqualSize = _a.isEqualSize,
             isConstantSize = _a.isConstantSize,
             transitionDuration = _a.transitionDuration;
         var isLayoutAll = isRelayout && (isEqualSize || isConstantSize);
+        var size = itemManager.size();
 
         this._watcher.resize();
 
@@ -4188,11 +4170,56 @@ version: 3.8.0
           if (isResize) {
             this._setSize(renderer.getViewportSize());
           }
-        } // first layout (startCursor -1 endCursor -1)
+        } // check childElement
 
 
-        if (!visibleItems.length) {
-          return this._firstLayout();
+        if (!items.length) {
+          var children_1 = toArray(renderer.container.children).filter(function (el) {
+            return el.className.indexOf(IGNORE_CLASSNAME) === -1;
+          });
+          var hasChildren = children_1.length > 0;
+
+          if (size) {
+            var firstGroup = itemManager.getGroup(0);
+
+            if (hasChildren) {
+              firstGroup.items.forEach(function (item, i) {
+                item.el = children_1[i];
+              });
+            } // has items, no visible items
+
+
+            this._postLayout({
+              groups: [firstGroup],
+              hasChildren: hasChildren,
+              fromCache: false,
+              isAppend: true
+            });
+          } else {
+            // no items, no visible items
+            if (hasChildren) {
+              var groupKey = children_1[0].getAttribute("data-groupkey");
+
+              if (typeof groupKey !== "string") {
+                groupKey = undefined;
+              }
+
+              this._insert({
+                elements: children_1,
+                isAppend: true,
+                hasChildren: true,
+                groupKey: groupKey
+              });
+            } else {
+              if (renderer.getContainerSize()) {
+                renderer.setContainerSize(0);
+              }
+
+              this._requestAppend({});
+            }
+          }
+
+          return this;
         } // layout datas
 
 
@@ -4202,7 +4229,7 @@ version: 3.8.0
 
         var data = isLayoutAll || !(isRelayout && isResize) ? itemManager.getGroups() : itemManager.sliceGroups(startCursor, endCursor + 1); // LayoutManger interface
 
-        this._relayout(isRelayout, data, isResize ? visibleItems : []);
+        this._relayout(isRelayout, data, isResize ? items : []);
 
         if (isLayoutAll) {
           this._fit();
@@ -4210,12 +4237,12 @@ version: 3.8.0
           itemManager.clearOutlines(startCursor, endCursor);
         }
 
-        this._renderer.renderItems(visibleItems, transitionDuration);
+        this._renderer.renderItems(items, transitionDuration);
 
         isRelayout && this._watcher.setScrollPos();
 
         this._onLayoutComplete({
-          items: visibleItems,
+          items: items,
           isAppend: true,
           fromCache: true,
           isTrusted: false,
@@ -4948,7 +4975,7 @@ version: 3.8.0
             isAppend = _a.isAppend,
             hasChildren = _a.hasChildren,
             _b = _a.groupKey,
-            groupKey = _b === void 0 ? this._getRandomKey() : _b;
+            groupKey = _b === void 0 ? new Date().getTime() + Math.floor(Math.random() * 1000) : _b;
 
         if (this._isProcessing() || elements.length === 0) {
           return;
@@ -4969,7 +4996,7 @@ version: 3.8.0
             isAppend = _a.isAppend,
             hasChildren = _a.hasChildren,
             _b = _a.groupKey,
-            groupKey = _b === void 0 ? this._getRandomKey() : _b;
+            groupKey = _b === void 0 ? new Date().getTime() + Math.floor(Math.random() * 1000) : _b;
 
         if (!items.length) {
           return;
@@ -5488,80 +5515,6 @@ version: 3.8.0
         this._infinite.scroll(scrollPos);
       };
 
-      __proto._firstLayout = function () {
-        var renderer = this._renderer;
-        var infinite = this._infinite;
-        var itemManager = this._itemManager;
-        var attributePrefix = this.options.attributePrefix;
-        var children = toArray(renderer.container.children).filter(function (el) {
-          return el.className.indexOf(IGNORE_CLASSNAME) === -1;
-        });
-        var hasChildren = children.length > 0;
-
-        if (itemManager.size()) {
-          // no visible items
-          if (hasChildren) {
-            itemManager.pluck("items").forEach(function (item, i) {
-              item.el = children[i];
-            });
-          }
-        } else {
-          // no items, no visible items, no elements
-          if (!hasChildren) {
-            if (renderer.getContainerSize()) {
-              renderer.setContainerSize(0);
-            }
-
-            this._requestAppend({});
-
-            return this;
-          } // no items, no visible items
-
-
-          var prevGroupKey_1 = "" + this._getRandomKey();
-
-          children.forEach(function (el) {
-            var groupKey = el.getAttribute(attributePrefix + "groupkey");
-
-            if (typeof groupKey !== "string") {
-              groupKey = prevGroupKey_1;
-            }
-
-            prevGroupKey_1 = groupKey;
-            itemManager.insert({
-              groupKey: groupKey,
-              el: el
-            });
-          });
-        } // The currently displayed elements are visible groups.
-
-
-        var groups = itemManager.getGroups();
-        infinite.setCursor("start", 0);
-        infinite.setCursor("end", groups.length - 1);
-
-        this._postLayout({
-          groups: groups,
-          hasChildren: hasChildren,
-          fromCache: false,
-          isAppend: true
-        });
-
-        return this;
-      };
-
-      __proto._getRandomKey = function () {
-        var itemManager = this._itemManager;
-
-        while (true) {
-          var groupKey = new Date().getTime() + Math.floor(Math.random() * 1000);
-
-          if (!itemManager.getGroupByKey(groupKey)) {
-            return groupKey;
-          }
-        }
-      };
-
       __proto._reset = function () {
         this._status = {
           processingStatus: IDLE,
@@ -5581,7 +5534,7 @@ version: 3.8.0
        */
 
 
-      InfiniteGrid.VERSION = "3.8.0";
+      InfiniteGrid.VERSION = "3.7.0";
       return InfiniteGrid;
     }(Component);
 
@@ -5816,7 +5769,6 @@ version: 3.8.0
      * @param {Number} [options.minSize=0] Minimum size of item to be resized <ko> 아이템이 조정되는 최소 크기 </ko>
      * @param {Number} [options.maxSize=0] Maximum size of item to be resized <ko> 아이템이 조정되는 최대 크기 </ko>
      * @param {Array|Number} [options.column=[1, 8]] The number of items in a line <ko> 한 줄에 들어가는 아이템의 개수 </ko>
-     * @param {Array|Number} [options.row=0] The number or range of rows in a group, 0 is not set <ko>한 그룹에 들어가는 열의 개수, 0은 미설정이다</ko>
      * @example
     ```
     <script>
@@ -5857,8 +5809,7 @@ version: 3.8.0
           horizontal: false,
           minSize: 0,
           maxSize: 0,
-          column: [1, 8],
-          row: 0
+          column: [1, 8]
         }, options);
         this._style = getStyleNames(this.options.horizontal);
         this._size = 0;
@@ -5947,146 +5898,45 @@ version: 3.8.0
       };
 
       __proto._layout = function (items, outline, isAppend) {
-        var row = this.options.row;
-        var path = [];
-
-        if (items.length) {
-          path = row ? this._getRowPath(items) : this._getPath(items);
-        }
-
-        return this._setStyle(items, path, outline, isAppend);
-      };
-
-      __proto._getPath = function (items) {
         var _this = this;
 
-        var lastNode = items.length;
+        var style = this._style;
+        var size1Name = style.size1;
+        var size2Name = style.size2;
+        var startIndex = 0;
+        var endIndex = items.length;
         var column = this.options.column;
+        var columns = typeof column === "object" ? column : [column, column];
 
-        var _a = isObject(column) ? column : [column, column],
-            minColumn = _a[0],
-            maxColumn = _a[1];
-
-        var graph = function (nodeKey) {
+        var graph = function (_start) {
           var results = {};
-          var currentNode = parseInt(nodeKey, 10);
+          var start = +_start.replace(/[^0-9]/g, "");
+          var length = endIndex + 1;
 
-          for (var nextNode = Math.min(currentNode + minColumn, lastNode); nextNode <= lastNode; ++nextNode) {
-            if (nextNode - currentNode > maxColumn) {
+          for (var i = Math.min(start + columns[0], length - 1); i < length; ++i) {
+            if (i - start > columns[1]) {
               break;
             }
 
-            var cost = _this._getCost(items, currentNode, nextNode);
+            var cost = _this._getCost(items, start, i, size1Name, size2Name);
 
-            if (cost < 0 && nextNode === lastNode) {
+            if (cost === null) {
+              continue;
+            }
+
+            if (cost < 0 && i === length - 1) {
               cost = 0;
             }
 
-            results["" + nextNode] = Math.pow(cost, 2);
+            results["" + i] = Math.pow(cost, 2);
           }
 
           return results;
         }; // shortest path for items' total height.
 
 
-        return find_path(graph, "0", "" + lastNode);
-      };
-
-      __proto._getRowPath = function (items) {
-        var _a;
-
-        var column = this.options.column;
-        var row = this.options.row;
-        var columnRange = isObject(column) ? column : [column, column];
-        var rowRange = isObject(row) ? row : [row, row];
-
-        var pathLink = this._getRowLink(items, {
-          path: [0],
-          cost: 0,
-          length: 0,
-          currentNode: 0
-        }, columnRange, rowRange);
-
-        return (_a = pathLink === null || pathLink === void 0 ? void 0 : pathLink.path.map(function (node) {
-          return "" + node;
-        })) !== null && _a !== void 0 ? _a : [];
-      };
-
-      __proto._getRowLink = function (items, currentLink, columnRange, rowRange) {
-        var minColumn = columnRange[0],
-            maxColumn = columnRange[1];
-        var minRow = rowRange[0],
-            maxRow = rowRange[1];
-        var lastNode = items.length;
-        var path = currentLink.path,
-            pathLength = currentLink.length,
-            cost = currentLink.cost,
-            currentNode = currentLink.currentNode; // not reached lastNode but path is exceed or the number of remaining nodes is less than minColumn.
-
-        if (currentNode < lastNode && (maxRow <= pathLength || currentNode + minColumn > lastNode)) {
-          var rangeCost = getRangeCost(lastNode - currentNode, columnRange);
-          var lastCost = rangeCost * Math.abs(this._getCost(items, currentNode, lastNode));
-          return __assign(__assign({}, currentLink), {
-            length: pathLength + 1,
-            path: __spreadArrays(path, [length]),
-            currentNode: lastNode,
-            cost: cost + lastCost,
-            isOver: true
-          });
-        } else if (currentNode >= lastNode) {
-          return __assign(__assign({}, currentLink), {
-            currentNode: lastNode,
-            isOver: minRow > pathLength || maxRow < pathLength
-          });
-        } else {
-          return this._searchRowLink(items, currentLink, lastNode, columnRange, rowRange);
-        }
-      };
-
-      __proto._searchRowLink = function (items, currentLink, lastNode, columnRange, rowRange) {
-        var minColumn = columnRange[0],
-            maxColumn = columnRange[1];
-        var currentNode = currentLink.currentNode,
-            path = currentLink.path,
-            pathLength = currentLink.length,
-            cost = currentLink.cost;
-        var length = Math.min(lastNode, currentNode + maxColumn);
-        var links = [];
-
-        for (var nextNode = currentNode + minColumn; nextNode <= length; ++nextNode) {
-          if (nextNode === currentNode) {
-            continue;
-          }
-
-          var nextCost = Math.abs(this._getCost(items, currentNode, nextNode));
-
-          var nextLink = this._getRowLink(items, {
-            path: __spreadArrays(path, [nextNode]),
-            length: pathLength + 1,
-            cost: cost + nextCost,
-            currentNode: nextNode
-          }, columnRange, rowRange);
-
-          if (nextLink) {
-            links.push(nextLink);
-          }
-        }
-
-        links.sort(function (a, b) {
-          var aIsOver = a.isOver;
-          var bIsOver = b.isOver;
-
-          if (aIsOver !== bIsOver) {
-            // If it is over, the cost is high.
-            return aIsOver ? 1 : -1;
-          }
-
-          var aRangeCost = getRangeCost(a.length, rowRange);
-          var bRangeCost = getRangeCost(b.length, rowRange);
-          return aRangeCost - bRangeCost || a.cost - b.cost;
-        }); // It returns the lowest cost link.
-
-        return links[0];
+        var path = find_path(graph, "" + startIndex, "" + endIndex);
+        return this._setStyle(items, path, outline, isAppend);
       };
 
       __proto._getSize = function (items, size1Name, size2Name) {
@@ -6097,11 +5947,7 @@ version: 3.8.0
         return (this._size - margin * (items.length - 1)) / size;
       };
 
-      __proto._getCost = function (items, i, j) {
-        var style = this._style;
-        var size1Name = style.size1;
-        var size2Name = style.size2;
-
+      __proto._getCost = function (items, i, j, size1Name, size2Name) {
         var size = this._getSize(items.slice(i, j), size1Name, size2Name);
 
         var min = this.options.minSize || 0;

@@ -796,9 +796,10 @@ class InfiniteGrid extends Component&lt;InfiniteGridEvents> {
 		const itemManager = this._itemManager;
 		const infinite = this._infinite;
 		const isResize = renderer.resize();
-		const visibleItems = this.getItems();
+		const items = this.getItems();
 		const { isEqualSize, isConstantSize, transitionDuration } = this.options;
 		const isLayoutAll = isRelayout &amp;&amp; (isEqualSize || isConstantSize);
+		const size = itemManager.size();
 
 		this._watcher.resize();
 
@@ -807,9 +808,50 @@ class InfiniteGrid extends Component&lt;InfiniteGridEvents> {
 				this._setSize(renderer.getViewportSize());
 			}
 		}
-		// first layout (startCursor -1 endCursor -1)
-		if (!visibleItems.length) {
-			return this._firstLayout();
+		// check childElement
+		if (!items.length) {
+			const children = toArray(renderer.container.children).filter(el => {
+				return el.className.indexOf(IGNORE_CLASSNAME) === -1;
+			});
+			const hasChildren = children.length > 0;
+
+			if (size) {
+				const firstGroup = itemManager.getGroup(0);
+
+				if (hasChildren) {
+					firstGroup.items.forEach((item, i) => {
+						item.el = children[i];
+					});
+				}
+				// has items, no visible items
+				this._postLayout({
+					groups: [firstGroup],
+					hasChildren,
+					fromCache: false,
+					isAppend: true,
+				});
+			} else {
+				// no items, no visible items
+				if (hasChildren) {
+					let groupKey: string | null | undefined = children[0].getAttribute("data-groupkey");
+
+					if (typeof groupKey !== "string") {
+						groupKey = undefined;
+					}
+					this._insert({
+						elements: children,
+						isAppend: true,
+						hasChildren: true,
+						groupKey,
+					});
+				} else {
+					if (renderer.getContainerSize()) {
+						renderer.setContainerSize(0);
+					}
+					this._requestAppend({});
+				}
+			}
+			return this;
 		}
 
 		// layout datas
@@ -818,17 +860,17 @@ class InfiniteGrid extends Component&lt;InfiniteGridEvents> {
 			itemManager.sliceGroups(startCursor, endCursor + 1);
 
 		// LayoutManger interface
-		this._relayout(isRelayout, data, isResize ? visibleItems : []);
+		this._relayout(isRelayout, data, isResize ? items : []);
 
 		if (isLayoutAll) {
 			this._fit();
 		} else if (isRelayout &amp;&amp; isResize) {
 			itemManager.clearOutlines(startCursor, endCursor);
 		}
-		this._renderer.renderItems(visibleItems, transitionDuration);
+		this._renderer.renderItems(items, transitionDuration);
 		isRelayout &amp;&amp; this._watcher.setScrollPos();
 		this._onLayoutComplete({
-			items: visibleItems,
+			items,
 			isAppend: true,
 			fromCache: true,
 			isTrusted: false,
@@ -1391,7 +1433,7 @@ class InfiniteGrid extends Component&lt;InfiniteGridEvents> {
 		elements,
 		isAppend,
 		hasChildren,
-		groupKey = this._getRandomKey(),
+		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
 	}: {
 		elements: string | string[] | HTMLElement[] | IJQuery,
 		isAppend?: boolean,
@@ -1414,7 +1456,7 @@ class InfiniteGrid extends Component&lt;InfiniteGridEvents> {
 		items,
 		isAppend,
 		hasChildren,
-		groupKey = this._getRandomKey(),
+		groupKey = new Date().getTime() + Math.floor(Math.random() * 1000),
 	}: {
 		items: IInfiniteGridItem[],
 		isAppend?: boolean,
@@ -1871,76 +1913,6 @@ class InfiniteGrid extends Component&lt;InfiniteGridEvents> {
 		});
 		this._infinite.scroll(scrollPos);
 	}
-	private _firstLayout() {
-		const renderer = this._renderer;
-		const infinite = this._infinite;
-		const itemManager = this._itemManager;
-		const attributePrefix = this.options.attributePrefix;
-
-		const children = toArray(renderer.container.children).filter(el => {
-			return el.className.indexOf(IGNORE_CLASSNAME) === -1;
-		});
-		const hasChildren = children.length > 0;
-
-		if (itemManager.size()) {
-			// no visible items
-			if (hasChildren) {
-				itemManager.pluck("items").forEach((item, i) => {
-					item.el = children[i];
-				});
-			}
-		} else {
-			// no items, no visible items, no elements
-			if (!hasChildren) {
-				if (renderer.getContainerSize()) {
-					renderer.setContainerSize(0);
-				}
-				this._requestAppend({});
-				return this;
-			}
-			// no items, no visible items
-			let prevGroupKey = `${this._getRandomKey()}`;
-			children.forEach(el => {
-				let groupKey = el.getAttribute(`${attributePrefix}groupkey`);
-
-				if (typeof groupKey !== "string") {
-					groupKey = prevGroupKey;
-				}
-
-				prevGroupKey = groupKey;
-
-				itemManager.insert({
-					groupKey,
-					el,
-				});
-			});
-		}
-
-		// The currently displayed elements are visible groups.
-		const groups = itemManager.getGroups();
-
-		infinite.setCursor("start", 0);
-		infinite.setCursor("end", groups.length - 1);
-
-		this._postLayout({
-			groups,
-			hasChildren,
-			fromCache: false,
-			isAppend: true,
-		});
-		return this;
-	}
-	private _getRandomKey() {
-		const itemManager = this._itemManager;
-
-		while (true) {
-			const groupKey = new Date().getTime() + Math.floor(Math.random() * 1000);
-
-			if (!itemManager.getGroupByKey(groupKey)) {
-				return groupKey;
-			}
-		}
-	}
 	private _reset() {
 		this._status = {
 			processingStatus: IDLE,
@@ -1969,7 +1941,7 @@ export default InfiniteGrid;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 0.3.10</a> on Wed Feb 03 2021 17:28:40 GMT+0900 (Korean Standard Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 0.3.8</a> on Fri Feb 19 2021 13:55:29 GMT+0900 (GMT+09:00)
         </footer>
     </div>
 </div>
