@@ -8,16 +8,7 @@
 	<script src="{{ dist }}"></script>
 {% endfor %}
 <script>
-	var homeUrl = window.location.href;
-	if (homeUrl.indexOf("#") !== -1) {
-		homeUrl = homeUrl.substr(0, homeUrl.indexOf("#"));
-	}
-	homeUrl = homeUrl
-		.replace("/index.html", "/")
-		.replace("/gallery.html", "/");
-	if (homeUrl[homeUrl.length-1] !== "/") {
-		homeUrl += "/";
-	};
+	var homeUrl = window.location.origin + window.location.pathname;
 	window.HOMELINK = homeUrl;
 	window.LIBLINK = [];
 	{% for dist in site.data.egjs.dist %}

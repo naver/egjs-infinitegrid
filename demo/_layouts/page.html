@@ -8,21 +8,12 @@
 	<script src="{{ dist }}"></script>
 {% endfor %}
 <script>
-	var homeUrl = window.location.href;
-	if (homeUrl.indexOf("#") !== -1) {
-		homeUrl = homeUrl.substr(0, homeUrl.indexOf("#"));
-	}
-	homeUrl = homeUrl
-		.replace("/index.html", "/")
-		.replace("/gallery.html", "/");
-	if (homeUrl[homeUrl.length-1] !== "/") {
-		homeUrl += "/";
-	};
+	var homeUrl = window.location.origin + window.location.pathname;
 	window.HOMELINK = homeUrl;
 	window.LIBLINK = [];
 	// "https://naver.github.io/egjs-infinitegrid/v3.0.0/demo/"
 	{% for dist in site.data.egjs.dist %}
-	//window.HOMELINK + 
+	//window.HOMELINK +
 	window.LIBLINK.push("{{ dist }}");
 	{% endfor %}
 </script>
@@ -109,7 +100,7 @@
 			</div>
 		</div>
 	</section>
-	
+
 </div>
 {% include footer.html %}
 {% for js in site.data.egjs.js %}
