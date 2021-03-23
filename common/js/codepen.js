@@ -1,5 +1,6 @@
 /* eslint-disable */
-var homeUrl = window.location.origin + window.location.pathname;
+var homeUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]+$/g, "/");
+
 window.HOMELINK = homeUrl;
 window.LIBLINK = window.LIBLINK || [];
 window.LIBLINK.push(homeUrl + "../../release/latest/dist/infinitegrid.pkgd.min.js");

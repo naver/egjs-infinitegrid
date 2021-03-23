@@ -24,7 +24,7 @@
 	<script src="release/latest/dist/infinitegrid.pkgd.min.js"></script>
 
 <script>
-	var homeUrl = window.location.origin + window.location.pathname;
+	var homeUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]+$/g, "/");
 	window.HOMELINK = homeUrl;
 	window.LIBLINK = [];
 	// "https://naver.github.io/egjs-infinitegrid/v3.0.0/demo/"
@@ -84,8 +84,8 @@
         </div> -->
         <h2 class="title">
             <span class="highlight">InfiniteGrid</span>
-            <a href="https://github.com/naver/egjs-infinitegrid/releases/tag/3.7.0">
-                <span class="version">v3.7.0</span>
+            <a href="https://github.com/naver/egjs-infinitegrid/releases/tag/3.8.1">
+                <span class="version">v3.8.1</span>
             </a>
         </h2>
         <p class="intro">A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -415,22 +415,22 @@
 <h5 id="es5">ES5</h5>
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-// All (Packaged): 64.7kb
+// All (Packaged): 66.3kb
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 
-// GridLayout: 53.4kb
+// GridLayout: 53.8kb
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.gridlayout.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 
-// JustifiedLayout: 54.7kb
+// JustifiedLayout: 56.4kb
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.justifiedlayout.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 
-// FrameLayout: 54kb
+// FrameLayout: 54.4kb
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.framelayout.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 
-// SquareLayout: 55.6kb
+// SquareLayout: 56kb
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.squarelayout.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 
-// PackingLayout: 54.3kb
+// PackingLayout: 54.6kb
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.packinglayout.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 
 </code></pre></div></div>
@@ -845,19 +845,19 @@
 </ul>
 
 <h3 id="install">Install</h3>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ npm install @egjs/react-layout  --save
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ npm install @egjs/react-layout  --save
 </code></pre></div></div>
 
 <h3 id="how-to-use">How to use</h3>
 <div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">GridLayout</span><span class="p">,</span> <span class="nx">JustifiedLayout</span><span class="p">,</span> <span class="nx">FrameLayout</span><span class="p">,</span> <span class="nx">SquareLayout</span><span class="p">,</span> <span class="nx">PackingLayout</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@egjs/react-layout</span><span class="dl">"</span><span class="p">;</span>
 
-<span class="p">&lt;</span><span class="nc">GridLayout</span> <span class="na">tag=</span><span class="s2">"div"</span> <span class="na">size=</span><span class="s2">"1000"</span> <span class="na">horizontal=</span><span class="si">{</span><span class="kc">true</span><span class="si">}</span> <span class="na">margin=</span><span class="s2">"10"</span> <span class="na">isEqualSize=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span> <span class="na">outline=</span><span class="si">{</span><span class="p">[]</span><span class="si">}</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className=</span><span class="s2">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className=</span><span class="s2">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className=</span><span class="s2">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className=</span><span class="s2">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className=</span><span class="s2">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className=</span><span class="s2">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nc">GridLayout</span> <span class="na">tag</span><span class="p">=</span><span class="s">"div"</span> <span class="na">size</span><span class="p">=</span><span class="s">"1000"</span> <span class="na">horizontal</span><span class="p">=</span><span class="si">{</span><span class="kc">true</span><span class="si">}</span> <span class="na">margin</span><span class="p">=</span><span class="s">"10"</span> <span class="na">isEqualSize</span><span class="p">=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span> <span class="na">outline</span><span class="p">=</span><span class="si">{</span><span class="p">[]</span><span class="si">}</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className</span><span class="p">=</span><span class="s">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className</span><span class="p">=</span><span class="s">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className</span><span class="p">=</span><span class="s">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className</span><span class="p">=</span><span class="s">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className</span><span class="p">=</span><span class="s">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">className</span><span class="p">=</span><span class="s">"item"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nc">GridLayout</span><span class="p">&gt;</span>
 </code></pre></div></div>
 
@@ -873,7 +873,7 @@
 </ul>
 
 <h3 id="install-1">Install</h3>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ npm install @egjs/react-infinitegrid  --save
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ npm install @egjs/react-infinitegrid  --save
 </code></pre></div></div>
 
 <h3 id="how-to-use-1">How to use</h3>
@@ -881,27 +881,27 @@
 <span class="k">import</span> <span class="p">{</span><span class="nx">GridLayout</span><span class="p">,</span> <span class="nx">JustifiedLayout</span><span class="p">,</span> <span class="nx">FrameLayout</span><span class="p">,</span> <span class="nx">SquareLayout</span><span class="p">,</span> <span class="nx">PackingLayout</span><span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@egjs/react-layout</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="p">&lt;</span><span class="nc">GridLayout</span>
-	<span class="na">tag=</span><span class="s2">"div"</span>
-	<span class="na">threshold=</span><span class="si">{</span><span class="mi">100</span><span class="si">}</span>
-	<span class="na">isOverflowScroll=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
-	<span class="na">isEqualSize=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
-	<span class="na">isConstantSize=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
-	<span class="na">useFit=</span><span class="si">{</span><span class="kc">true</span><span class="si">}</span>
-	<span class="na">useRecycle=</span><span class="si">{</span><span class="kc">true</span><span class="si">}</span>
-	<span class="na">horizontal=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
-	<span class="na">percentage=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
-	<span class="na">onAppend=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">append</span><span class="si">}</span>
-	<span class="na">onPrepend=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">append</span><span class="si">}</span>
-	<span class="na">onLayoutComplete=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">layoutComplete</span><span class="si">}</span>
-	<span class="na">onImageError=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">imageError</span><span class="si">}</span>
-	<span class="na">onChange=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">chnage</span><span class="si">}</span><span class="p">&gt;</span>
-	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey=</span><span class="si">{</span><span class="mi">0</span><span class="si">}</span> <span class="na">key=</span><span class="si">{</span><span class="mi">0</span><span class="si">}</span><span class="p">/&gt;</span>
-	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey=</span><span class="si">{</span><span class="mi">0</span><span class="si">}</span> <span class="na">key=</span><span class="si">{</span><span class="mi">1</span><span class="si">}</span><span class="p">/&gt;</span>
-	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey=</span><span class="si">{</span><span class="mi">1</span><span class="si">}</span> <span class="na">key=</span><span class="si">{</span><span class="mi">2</span><span class="si">}</span><span class="p">/&gt;</span>
-	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey=</span><span class="si">{</span><span class="mi">1</span><span class="si">}</span> <span class="na">key=</span><span class="si">{</span><span class="mi">3</span><span class="si">}</span><span class="p">/&gt;</span>
-	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey=</span><span class="si">{</span><span class="mi">2</span><span class="si">}</span> <span class="na">key=</span><span class="si">{</span><span class="mi">4</span><span class="si">}</span><span class="p">/&gt;</span>
-	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey=</span><span class="si">{</span><span class="mi">2</span><span class="si">}</span> <span class="na">key=</span><span class="si">{</span><span class="mi">5</span><span class="si">}</span><span class="p">/&gt;</span>
-	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey=</span><span class="si">{</span><span class="mi">2</span><span class="si">}</span> <span class="na">key=</span><span class="si">{</span><span class="mi">6</span><span class="si">}</span><span class="p">/&gt;</span>
+	<span class="na">tag</span><span class="p">=</span><span class="s">"div"</span>
+	<span class="na">threshold</span><span class="p">=</span><span class="si">{</span><span class="mi">100</span><span class="si">}</span>
+	<span class="na">isOverflowScroll</span><span class="p">=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
+	<span class="na">isEqualSize</span><span class="p">=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
+	<span class="na">isConstantSize</span><span class="p">=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
+	<span class="na">useFit</span><span class="p">=</span><span class="si">{</span><span class="kc">true</span><span class="si">}</span>
+	<span class="na">useRecycle</span><span class="p">=</span><span class="si">{</span><span class="kc">true</span><span class="si">}</span>
+	<span class="na">horizontal</span><span class="p">=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
+	<span class="na">percentage</span><span class="p">=</span><span class="si">{</span><span class="kc">false</span><span class="si">}</span>
+	<span class="na">onAppend</span><span class="p">=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">append</span><span class="si">}</span>
+	<span class="na">onPrepend</span><span class="p">=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">append</span><span class="si">}</span>
+	<span class="na">onLayoutComplete</span><span class="p">=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">layoutComplete</span><span class="si">}</span>
+	<span class="na">onImageError</span><span class="p">=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">imageError</span><span class="si">}</span>
+	<span class="na">onChange</span><span class="p">=</span><span class="si">{</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">chnage</span><span class="si">}</span><span class="p">&gt;</span>
+	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey</span><span class="p">=</span><span class="si">{</span><span class="mi">0</span><span class="si">}</span> <span class="na">key</span><span class="p">=</span><span class="si">{</span><span class="mi">0</span><span class="si">}</span><span class="p">/&gt;</span>
+	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey</span><span class="p">=</span><span class="si">{</span><span class="mi">0</span><span class="si">}</span> <span class="na">key</span><span class="p">=</span><span class="si">{</span><span class="mi">1</span><span class="si">}</span><span class="p">/&gt;</span>
+	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey</span><span class="p">=</span><span class="si">{</span><span class="mi">1</span><span class="si">}</span> <span class="na">key</span><span class="p">=</span><span class="si">{</span><span class="mi">2</span><span class="si">}</span><span class="p">/&gt;</span>
+	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey</span><span class="p">=</span><span class="si">{</span><span class="mi">1</span><span class="si">}</span> <span class="na">key</span><span class="p">=</span><span class="si">{</span><span class="mi">3</span><span class="si">}</span><span class="p">/&gt;</span>
+	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey</span><span class="p">=</span><span class="si">{</span><span class="mi">2</span><span class="si">}</span> <span class="na">key</span><span class="p">=</span><span class="si">{</span><span class="mi">4</span><span class="si">}</span><span class="p">/&gt;</span>
+	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey</span><span class="p">=</span><span class="si">{</span><span class="mi">2</span><span class="si">}</span> <span class="na">key</span><span class="p">=</span><span class="si">{</span><span class="mi">5</span><span class="si">}</span><span class="p">/&gt;</span>
+	<span class="p">&lt;</span><span class="nc">Item</span> <span class="na">groupKey</span><span class="p">=</span><span class="si">{</span><span class="mi">2</span><span class="si">}</span> <span class="na">key</span><span class="p">=</span><span class="si">{</span><span class="mi">6</span><span class="si">}</span><span class="p">/&gt;</span>
 <span class="p">&lt;/</span><span class="nc">GridLayout</span><span class="p">&gt;</span>
 </code></pre></div></div>
 
