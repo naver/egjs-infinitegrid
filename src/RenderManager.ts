@@ -94,7 +94,7 @@ export default class RenderManager {
 		this._renderer.updateSize(items);
 		groups.forEach(group => {
 			const groupOutline = group.outlines[isAppend ? "start" : "end"];
-			const isRelayout = !outline.length || (outline.length === groupOutline.length ?
+			const isRelayout = group.needUpdate || !outline.length || (outline.length === groupOutline.length ?
 				!outline.every((v, index) => v === groupOutline[index]) : true);
 
 			if (!isRelayout) {
@@ -108,6 +108,7 @@ export default class RenderManager {
 			assign(group, groupInfo);
 			this._renderer.renderItems(groupInfo.items);
 			outline = groupInfo.outlines[isAppend ? "end" : "start"];
+			group.needUpdate = false;
 		});
 
 		const startCursor = Math.max(infinite.getCursor("start"), 0);

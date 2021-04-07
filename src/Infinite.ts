@@ -82,9 +82,13 @@ class Infinite {
 			return "relayout";
 		} else {
 			const nextVisibleItems = itemManager.pluck("items", startCursor, endCursor);
-			const visibleDiffResult = diff(prevVisibleItems, nextVisibleItems, ({ itemKey }) => itemKey);
+			const {
+				added: visibleAdded,
+				removed: visibleRemoved,
+				changed: visibleChanged,
+			} = diff(prevVisibleItems, nextVisibleItems, ({ itemKey }) => itemKey);
 
-			if (visibleDiffResult.removed.length > 0) {
+			if (!visibleAdded.length && (visibleChanged.length > 0 || visibleRemoved.length > 0)) {
 				return "layout";
 			} else {
 				return "";

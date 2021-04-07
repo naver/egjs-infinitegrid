@@ -930,6 +930,10 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			}
 		}
 		this._layout.layout(layoutGroups, outline);
+
+		layoutGroups.forEach(group => {
+			group.needUpdate = false;
+		});
 	}
 	private _setContainerSize(size: number) {
 		this._renderer.setContainerSize(Math.max(this._itemManager.getMaxEdgeValue(), size));

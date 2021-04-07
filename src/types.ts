@@ -31,6 +31,7 @@ export interface IInfiniteGridOptions {
 export interface IInfiniteGridGroup {
 	groupKey: string | number;
 	items: IInfiniteGridItem[];
+	needUpdate: boolean;
 	outlines: { start: number[], end: number[] };
 }
 
