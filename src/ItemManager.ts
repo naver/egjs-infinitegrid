@@ -161,6 +161,7 @@ export default class ItemManager {
 			},
 			...group,
 			items: [],
+			needUpdate: true,
 		};
 		this._groups.splice(groupIndex, 0, newGroup);
 		this._groupKeys[newGroup.groupKey] = newGroup;
@@ -213,6 +214,8 @@ export default class ItemManager {
 		if (!group) {
 			return null;
 		}
+		group.needUpdate = true;
+
 		const groupItem: IInfiniteGridItem = {
 			content: "",
 			mounted: false,
@@ -251,6 +254,8 @@ export default class ItemManager {
 		if (!data) {
 			return { items, group };
 		}
+
+		data.needUpdate = true;
 		// remove item information
 		items = data.items.splice(itemIndex, 1);
 
@@ -314,6 +319,8 @@ export default class ItemManager {
 		const {
 			added,
 			maintained,
+			changed,
+			removed,
 		} = diff(items, newItems, item => item.itemKey);
 
 		const group = this._groups[groupIndex];
@@ -327,6 +334,10 @@ export default class ItemManager {
 		});
 
 		group.items = nextItems;
+
+		if (changed.length || removed.length) {
+			group.needUpdate = true;
+		}
 		added.forEach(addedIndex => {
 			this.insert(newItems[addedIndex], groupIndex, addedIndex);
 		});
