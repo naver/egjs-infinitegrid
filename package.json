@@ -1,6 +1,6 @@
 {
 	"name": "@egjs/infinitegrid",
-	"version": "3.8.1-snapshot",
+	"version": "3.8.2",
 	"description": "A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
 	"sideEffects": false,
 	"module": "dist/infinitegrid.esm.js",
@@ -119,7 +119,7 @@
 		"mocha": "^4.0.1",
 		"print-coveralls": "^1.2.2",
 		"print-sizes": "^0.0.3",
-		"pvu": "^0.3.1",
+		"pvu": "^0.5.1",
 		"replace-in-file": "^3.4.2",
 		"rollup": "^0.67.1",
 		"rollup-plugin-babel": "^4.0.3",
