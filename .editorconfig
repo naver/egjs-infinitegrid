@@ -1,15 +1,15 @@
 # http://editorconfig.org
 root = true
+
 [*]
 insert_final_newline = true
 trim_trailing_whitespace = true
-
-[{*.js,*.ts}]
 charset = utf-8
 end_of_line = lf
-indent_style = tab
+indent_style = space
+indent_size = 2
 max_line_length = 80
 
-[{package.json,.travis.yml}]
+[{*.json,.travis.yml}]
 indent_style = space
 indent_size = 2

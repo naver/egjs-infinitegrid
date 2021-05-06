@@ -4,6 +4,10 @@
     "removeComments": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "declarationDir": "declaration"
-  }
+    "declarationDir": "declaration",
+    "strictNullChecks": false,
+  },
+  "include": [
+    "./src/**/*.ts",
+  ]
 }
