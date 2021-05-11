@@ -58,7 +58,7 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 	onPrepend={e => append}
 	onLayoutComplete={e => layoutComplete}
 	onImageError={e => imageError}
-	onChange={e => chnage}>
+	onChange={e => change}>
 	<Item groupKey={0} key={0}/>
 	<Item groupKey={0} key={1}/>
 	<Item groupKey={1} key={2}/>
