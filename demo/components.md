@@ -55,7 +55,7 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 	horizontal={false}
 	percentage={false}
 	onAppend={e => append}
-	onPrepend={e => append}
+	onPrepend={e => prepend}
 	onLayoutComplete={e => layoutComplete}
 	onImageError={e => imageError}
 	onChange={e => change}>
