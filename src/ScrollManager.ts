@@ -160,7 +160,9 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
         // Find Container by Selector
         container = scrollContainer.querySelector(containerOption) as HTMLElement;
       }
-      scrollContainer.style.overflow = horizontal ? "scroll hidden" : "hidden scroll";
+      const style = scrollContainer.style;
+
+      [style.overflowX, style.overflowY] = horizontal ? ["scroll", "hidden"] : ["hidden", "scroll"];
     }
     const eventTarget = scrollContainer === document.body ? window : scrollContainer;
 

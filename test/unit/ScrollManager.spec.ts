@@ -38,10 +38,13 @@ describe("test ScrollManager", () => {
     });
 
     // Then
+    const scrollContainer = scrollManager.getScrollContainer();
+
     expect(scrollManager.getWrapper()).to.be.equals(wrapper);
     expect(scrollManager.getContainer().className).to.be.equals(CONTAINER_CLASS_NAME);
-    expect(scrollManager.getScrollContainer()).to.be.equals(wrapper);
-    expect(scrollManager.getScrollContainer().style.overflow).to.be.equals("hidden scroll");
+    expect(scrollContainer).to.be.equals(wrapper);
+    expect(scrollContainer.style.overflowX).to.be.equals("hidden");
+    expect(scrollContainer.style.overflowY).to.be.equals("scroll");
   });
   it("should check if container is virtual container(ul) and scrollContainer is wrapper", () => {
     // Given, When
@@ -110,14 +113,17 @@ describe("test ScrollManager", () => {
     // When
     scrollManager.getContainer().style.cssText = "position:relative; top: 100px; height: 1000px;";
     scrollManager.resize();
+
+    const scrollEvent = waitEvent(scrollManager, "scroll");
+
     scrollManager.scrollTo(150);
 
-    const scrollEvent = await waitEvent(scrollManager, "scroll");
+    const eventParam = await scrollEvent;
 
     // Then
-    expect(scrollEvent.scrollPos).to.be.equals(150);
-    expect(scrollEvent.relativeScrollPos).to.be.equals(50);
-    expect(scrollEvent.direction).to.be.equals("end");
+    expect(eventParam.scrollPos).to.be.equals(150);
+    expect(eventParam.relativeScrollPos).to.be.equals(50);
+    expect(eventParam.direction).to.be.equals("end");
   });
   it(`should check if the 1st scroll is omitted for iOS`, async () => {
     // Given
