@@ -50,42 +50,18 @@ describe("test Infinite", () => {
   it("should check if the cursor changes when you sync items", () => {
     infinite = new Infinite({});
     infinite.setItems([
-      {
-        key: 1,
-        startOutline: [0],
-        endOutline: [300],
-      },
-      {
-        key: 2,
-        startOutline: [300],
-        endOutline: [600],
-      },
-      {
-        key: 3,
-        startOutline: [600],
-        endOutline: [900],
-      },
+      { key: 1, startOutline: [], endOutline: [] },
+      { key: 2, startOutline: [], endOutline: [] },
+      { key: 3, startOutline: [], endOutline: [] },
     ]);
     infinite.setCursors(0, 0);
 
     // When
     // 0 => 1
     infinite.sync([
-      {
-        key: 2,
-        startOutline: [],
-        endOutline: [],
-      },
-      {
-        key: 1,
-        startOutline: [],
-        endOutline: [],
-      },
-      {
-        key: 3,
-        startOutline: [],
-        endOutline: [],
-      },
+      { key: 2, startOutline: [], endOutline: [] },
+      { key: 1, startOutline: [], endOutline: [] },
+      { key: 3, startOutline: [], endOutline: [] },
     ]);
 
 
@@ -95,21 +71,9 @@ describe("test Infinite", () => {
     infinite.setCursors(0, 1);
     // [0, 1] => [0, 2]
     infinite.sync([
-      {
-        key: 1,
-        startOutline: [],
-        endOutline: [],
-      },
-      {
-        key: 3,
-        startOutline: [],
-        endOutline: [],
-      },
-      {
-        key: 2,
-        startOutline: [],
-        endOutline: [],
-      },
+      { key: 1, startOutline: [], endOutline: [] },
+      { key: 3, startOutline: [], endOutline: [] },
+      { key: 2, startOutline: [], endOutline: [] },
     ]);
 
     const cursors2 = [infinite.getStartCursor(), infinite.getEndCursor()];
@@ -118,6 +82,54 @@ describe("test Infinite", () => {
     // Then
     expect(cursors1).to.be.deep.equals([1, 1]);
     expect(cursors2).to.be.deep.equals([0, 2]);
+  });
+  it("should check if change is true when visible items change", () => {
+    infinite = new Infinite({});
+    infinite.setItems([
+      { key: 1, startOutline: [], endOutline: [] },
+      { key: 2, startOutline: [], endOutline: [] },
+      { key: 3, startOutline: [], endOutline: [] },
+      { key: 4, startOutline: [], endOutline: [] },
+    ]);
+    infinite.setCursors(0, 2);
+
+    // When
+    // (0, 2) 1 2 3 => (0, 3) 1 2 4 3
+    const isChange1 = infinite.sync([
+      { key: 1, startOutline: [], endOutline: [] },
+      { key: 2, startOutline: [], endOutline: [] },
+      { key: 4, startOutline: [], endOutline: [] },
+      { key: 3, startOutline: [], endOutline: [] },
+    ]);
+    // (0, 3) 1 2 4 3 => (0, 3) 1 4 2 3
+    const isChange2 = infinite.sync([
+      { key: 1, startOutline: [], endOutline: [] },
+      { key: 4, startOutline: [], endOutline: [] },
+      { key: 2, startOutline: [], endOutline: [] },
+      { key: 3, startOutline: [], endOutline: [] },
+    ]);
+    // (0, 3)1 4 2 3 => (0, 3)1 4 2 3 5
+    const isChange3 = infinite.sync([
+      { key: 1, startOutline: [], endOutline: [] },
+      { key: 4, startOutline: [], endOutline: [] },
+      { key: 2, startOutline: [], endOutline: [] },
+      { key: 3, startOutline: [], endOutline: [] },
+      { key: 5, startOutline: [], endOutline: [] },
+    ]);
+    // (0, 3) 1 4 2 3 5 => (1, 4) 5 1 4 2 3
+    const isChange4 = infinite.sync([
+      { key: 5, startOutline: [], endOutline: [] },
+      { key: 1, startOutline: [], endOutline: [] },
+      { key: 4, startOutline: [], endOutline: [] },
+      { key: 2, startOutline: [], endOutline: [] },
+      { key: 3, startOutline: [], endOutline: [] },
+    ]);
+
+    // Then
+    expect(isChange1).to.be.true;
+    expect(isChange2).to.be.true;
+    expect(isChange3).to.be.false;
+    expect(isChange4).to.be.false;
   });
   it("should check if the next cursor is [0, 1] when scroll 250, [1, 2] when scroll 550 ", () => {
     // Given

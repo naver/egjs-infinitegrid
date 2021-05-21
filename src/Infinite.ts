@@ -6,38 +6,44 @@ export interface OnInfiniteRequestAppend {
   endCursor: number;
   groupKey: string | number;
 }
+
 export interface OnInfiniteRequestPrepend {
   startCursor: number;
   endCursor: number;
   groupKey: string | number;
 }
+
 export interface OnInfiniteChange {
   prevStartCursor: number;
   prevEndCursor: number;
   nextStartCursor: number;
   nextEndCursor: number;
 }
+
 export interface InfiniteEvents {
   requestAppend: OnInfiniteRequestAppend;
   requestPrepend: OnInfiniteRequestPrepend;
   change: OnInfiniteChange;
 }
+
 export interface InfiniteOptions {
   useRecyle?: boolean;
   threshold?: number;
   defaultDirection?: "start" | "end";
 }
+
 export interface InfiniteItem {
   key: string | number;
   startOutline: number[];
   endOutline: number[];
 }
+
 export class Infinite extends Component<InfiniteEvents> {
   public options: Required<InfiniteOptions>;
   protected startCursor = -1;
   protected endCursor = -1;
   protected size = 0;
-  protected items: InfiniteItem[];
+  protected items: InfiniteItem[] = [];
   constructor(options: InfiniteOptions) {
     super();
     this.options = {
