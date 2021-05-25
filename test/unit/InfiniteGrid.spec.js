@@ -1357,7 +1357,7 @@ describe("InfiniteGrid Test", function () {
 			expect(this.inst._itemManager._groups[this.inst._itemManager._groups.length - 1].outlines.start.length).to.be.equals(0);
 			expect(this.inst._itemManager._groups[this.inst._itemManager._groups.length - 1].items[0].rect.top).to.be.below(0);
 		});
-		it.only(`should check if infinite viewSize changes after resize`, async () => {
+		it(`should check if infinite viewSize changes after resize`, async () => {
 			// Given
 			await waitInsert(this.inst, true, 10, 10);
 			this.inst._infinite.recycle(0, false);
