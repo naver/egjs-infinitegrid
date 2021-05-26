@@ -47,7 +47,7 @@ if (isRcBranch && hasUpstream && hasDistfolder) {
 
     console.log(chalk.green(`1. Change package.json version to '${newVersion}'`));
     fs.writeJsonSync(__dirname + "/../package.json", pkg, {spaces: "\t"});
-    
+
     console.log(chalk.green("2. Build"));
     shell("npm run build");
 
@@ -55,17 +55,18 @@ if (isRcBranch && hasUpstream && hasDistfolder) {
     shell(`git add --all`);
     shell(`git commit -m "chore(release): Release ${newVersion}"`);
 
-    console.log(chalk.green(`4. Create local tag '${newVersion}'`));
+    console.log(chalk.green(`4. Deploy demo: '${newVersion}'`));
+    shell(`npm run demo:deploy`);
+
+
+    console.log(chalk.green(`5. Create local tag '${newVersion}'`));
     shell(`git tag -d ${newVersion}`, true);
     shell(`git tag ${newVersion}`);
-    
-    console.log(chalk.green(`5. Push tag '${newVersion}'`));
+
+    console.log(chalk.green(`6. Push tag '${newVersion}'`));
     shell(`git push upstream :${newVersion}`, true);
     shell(`git push upstream ${newVersion}`);
-    
-    console.log(chalk.green(`6. Deploy demo: '${newVersion}'`));
-    shell(`npm run demo:deploy`);
-    
+
     console.log(chalk.green(`7. Register npm with ${newVersion}. The registration procedure is as follows.`));
     console.log(chalk.greenBright(`  # npm login`));
     console.log(chalk.greenBright(`  # npm publish --access public`) + "\n");
