@@ -55,10 +55,10 @@ import {GridLayout, JustifiedLayout, FrameLayout, SquareLayout, PackingLayout} f
 	horizontal={false}
 	percentage={false}
 	onAppend={e => append}
-	onPrepend={e => append}
+	onPrepend={e => prepend}
 	onLayoutComplete={e => layoutComplete}
 	onImageError={e => imageError}
-	onChange={e => chnage}>
+	onChange={e => change}>
 	<Item groupKey={0} key={0}/>
 	<Item groupKey={0} key={1}/>
 	<Item groupKey={1} key={2}/>
