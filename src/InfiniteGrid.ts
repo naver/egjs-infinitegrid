@@ -406,9 +406,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		this._watcher.resize();
 
 		if (isRelayout) {
-			if (isResize) {
-				this._setSize(renderer.getViewportSize());
-			}
+			this._setSize(renderer.getViewportSize());
 		}
 		// first layout (startCursor -1 endCursor -1)
 		if (!visibleItems.length) {

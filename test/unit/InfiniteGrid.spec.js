@@ -1326,7 +1326,7 @@ describe("InfiniteGrid Test", function () {
 			document.body.style.marginBottom = "0px";
 			document.body.style.padding = "0px";
 			this.el = sandbox();
-			this.el.innerHTML = "<div id='infinite' style='width: 500px;height: 500px;'></div>";
+			this.el.innerHTML = "<div id='infinite' style='width: 500px; height: 500px;'></div>";
 			this.inst = new InfiniteGrid("#infinite", {
 				isOverflowScroll: true,
 			});
@@ -1357,6 +1357,23 @@ describe("InfiniteGrid Test", function () {
 			expect(this.inst._itemManager._groups[this.inst._itemManager._groups.length - 1].outlines.start.length).to.be.equals(0);
 			expect(this.inst._itemManager._groups[this.inst._itemManager._groups.length - 1].items[0].rect.top).to.be.below(0);
 		});
+		it(`should check if infinite viewSize changes after resize`, async () => {
+			// Given
+			await waitInsert(this.inst, true, 10, 10);
+			this.inst._infinite.recycle(0, false);
+			const viewSize1 = this.inst._infinite._status.size;
+
+			// When
+			this.el.querySelector("#infinite").style.height = "550px";
+			this.inst._watcher._onResize();
+
+			await wait();
+			const viewSize2 = this.inst._infinite._status.size;
+
+			// Then
+			expect(viewSize1).to.be.equals(500);
+			expect(viewSize2).to.be.equals(550);
+		})
 	});
 	[true, false].forEach(useRecycle => {
 		describe(`moveTo method Test(useRecycle=${useRecycle}, defense=${DEFENSE_BROWSER})`, function () {
