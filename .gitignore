@@ -214,4 +214,3 @@ CHANGELOG.md
 build/
 packages/*/dist
 declaration/
-dist/

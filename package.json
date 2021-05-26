@@ -1,6 +1,6 @@
 {
 	"name": "@egjs/infinitegrid",
-	"version": "3.8.2-snapshot",
+	"version": "3.8.3",
 	"description": "A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
 	"sideEffects": false,
 	"module": "dist/infinitegrid.esm.js",
@@ -26,7 +26,7 @@
 		"demo:prebuild-latest": "cpx 'dist/**/*' demo/release/latest/dist --clean && cpx 'doc/**/*' demo/release/latest/doc --clean",
 		"demo:predeploy": "npm run build && npm run jsdoc && npm run demo:prebuild-version && npm run demo:prebuild-latest && npm run demo:build && npm run storybook",
 		"demo:origin": "npm run demo:predeploy && gh-pages -d demo/_site",
-		"demo:deploy": "gh-pages -d demo/_site --add --remote upstream",
+		"demo:deploy": "npm run demo:predeploy && gh-pages -d demo/_site --add --remote upstream",
 		"demo:updateVersion": "echo $npm_package_version > demo/_data/version.yml",
 		"demo:setup": "cpx 'node_modules/@egjs/common-demo/**/*' 'demo/' && rm demo/package.json",
 		"release": "node config/release.js",
