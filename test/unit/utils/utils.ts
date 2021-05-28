@@ -43,3 +43,11 @@ export function waitEvent(component: Component<any>, eventName: string): Promise
     });
   });
 }
+
+export function createElement(text: string) {
+  const el = document.createElement("div");
+
+  el.innerHTML = text;
+
+  return el;
+}
