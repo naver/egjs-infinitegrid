@@ -7,9 +7,6 @@ export interface GridRendererItem extends RendererItem {
 }
 
 export class VanillaGridRenderer extends VanillaRenderer<GridRendererItem> {
-  constructor() {
-    super();
-  }
   public syncItems(nextItems: GridRendererItem[]) {
     const result = super.syncItems(nextItems);
     const {
