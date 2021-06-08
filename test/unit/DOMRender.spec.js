@@ -24,7 +24,7 @@ describe("DOMRender Test", function() {
 
       // When
       const items = this.inst.updateSize(this.items);
-      
+
       // Then
       const baseSize = items[0].size;
       expect(items.every(v => v.size.height == baseSize.height && v.size.width == baseSize.width)).to.be.true;
@@ -38,11 +38,40 @@ describe("DOMRender Test", function() {
 
       // When
       const items = this.inst.updateSize(this.items);
-      
+
       // Then
       const baseSize = items[0].size;
       expect(items.every(v => v.size.height == baseSize.height && v.size.width == baseSize.width)).to.be.false;
       expect(items.every(v => v.orgSize)).to.be.true;
-    });    
+    });
   });
+	describe("test container option", function() {
+		beforeEach(() => {
+      this.el = sandbox();
+    });
+		afterEach(() => {
+      if(this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+		it("should checks whether the container is not removed when the container option is element.", () => {
+			// Given
+			const container = document.createElement("div");
+
+			this.el.appendChild(container);
+
+			this.inst = new DOMRenderer(this.el, {
+				container,
+			});
+
+			// When
+			this.inst.destroy();
+			this.inst = null;
+
+			// Then
+			expect(this.el.firstChild).to.be.equal(container);
+		});
+	});
 });
