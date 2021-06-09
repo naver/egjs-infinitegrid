@@ -16,7 +16,12 @@ import {
 	addOnceEvent,
 	assign,
 } from "./utils";
-import { RectType, IPosition, IJQuery, IInfiniteGridItem, IDOMRendererStatus, IDOMRendererSize, IDOMRendererOptions, IDOMRendererOrgStyle } from "./types";
+import {
+	RectType, IPosition, IJQuery,
+	IInfiniteGridItem, IDOMRendererStatus,
+	IDOMRendererSize, IDOMRendererOptions,
+	IDOMRendererOrgStyle,
+} from "./types";
 
 function removeTransition(style: HTMLElement["style"]) {
 	style[`${TRANSITION}-property`] = "";
@@ -246,7 +251,9 @@ export default class DOMRenderer {
 		for (property in this._orgStyle) {
 			(this[container ? "view" : "container"] as HTMLElement).style[property] = this._orgStyle[property]!;
 		}
-		container && this.container.parentNode!.removeChild(this.container);
+		if (container === true) {
+			this.container.parentNode!.removeChild(this.container);
+		}
 	}
 	private _init(el: HTMLElement | IJQuery | string) {
 		const element = $(el);
