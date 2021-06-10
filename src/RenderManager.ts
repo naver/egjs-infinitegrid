@@ -88,8 +88,15 @@ export default class RenderManager {
 		const itemManager = this._itemManager;
 		const cursor = isAppend ? "end" : "start";
 		const groupIndex = itemManager.indexOf(groups[0]);
+		const startGroup = itemManager.getGroup(groupIndex);
 		const prevGroup = itemManager.getGroup(groupIndex + (isAppend ? -1 : 1));
-		let outline = prevGroup ? prevGroup.outlines[cursor] : [0];
+		let outline = [0];
+
+		if (prevGroup) {
+			outline = prevGroup.outlines[cursor];
+		} else if (startGroup) {
+			outline = startGroup.outlines[isAppend ? "start" : "end"];
+		}
 
 		this._renderer.updateSize(items);
 		groups.forEach(group => {
