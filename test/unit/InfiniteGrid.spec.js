@@ -329,7 +329,7 @@ describe("InfiniteGrid Test", function () {
 					expect(item.groupKey).to.be.equals("");
 				});
 			});
-			it.only(`should check if status is restored with partial data`, async () => {
+			it(`should check if status is restored with partial data`, async () => {
 				// Given
 				await waitInsert(this.inst, true, 10, 10);
 
