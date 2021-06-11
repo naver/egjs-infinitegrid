@@ -33,7 +33,7 @@ files:
   size: 56.2kb
 - name: PackingLayout
   file: infinitegrid.packinglayout.min.js
-  size: 54.8kb
+  size: 54.9kb
 layouts:
 - name: GridLayout
   image: ./assets/image/GridLayout.svg
