@@ -329,6 +329,46 @@ describe("InfiniteGrid Test", function () {
 					expect(item.groupKey).to.be.equals("");
 				});
 			});
+			it(`should check if status is restored with partial data`, async () => {
+				// Given
+				await waitInsert(this.inst, true, 10, 10);
+
+				const scrollContainer = isOverflowScroll
+					? this.el.querySelector("#infinite")
+					: document.documentElement;
+				// [1000, 900] ~ [3000, 3000]
+				scrollContainer.scrollLeft = 1400;
+
+				await wait();
+
+				// When
+				// save status
+				const status = this.inst.getStatus(2, 3);
+
+				// initialize scroll position
+				scrollContainer.scrollLeft = 0;
+
+				await wait();
+
+				// restore status
+				this.inst.setStatus(status);
+
+				await wait();
+
+				// Then
+				const savedOutline = status._itemManager._data[0].outlines;
+				const restoredOutline = status._itemManager._data[0].outlines;
+				const items = this.inst.getItems(true);
+
+				expect(restoredOutline).to.be.deep.equals(savedOutline);
+				expect(items).to.be.lengthOf(20);
+
+				// group 2: 0 ~ 9
+				expect(items[0].groupKey).to.be.equals(2);
+				// group 3: 10 ~ 19
+				expect(items[10].groupKey).to.be.equals(3);
+				expect(scrollContainer.scrollLeft).to.be.equals(1400);
+			});
 			it(`should check getStatus(startCursor, endCursor)`, async () => {
 				// Given
 				await waitInsert(this.inst, true, 10, 10);

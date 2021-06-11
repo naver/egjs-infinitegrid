@@ -86,19 +86,27 @@ export default class RenderManager {
 		const infinite = this._infinite;
 		const layout = this._layout;
 		const itemManager = this._itemManager;
-		const cursor = isAppend ? "end" : "start";
+		const insertCursor = isAppend ? "end" : "start";
+		const outlineCursor = isAppend ? "start" : "end";
 		const groupIndex = itemManager.indexOf(groups[0]);
+		const startGroup = itemManager.getGroup(groupIndex);
 		const prevGroup = itemManager.getGroup(groupIndex + (isAppend ? -1 : 1));
-		let outline = prevGroup ? prevGroup.outlines[cursor] : [0];
+		let outline = [0];
+
+		if (prevGroup) {
+			outline = prevGroup.outlines[insertCursor];
+		} else if (startGroup) {
+			outline = startGroup.outlines[outlineCursor];
+		}
 
 		this._renderer.updateSize(items);
 		groups.forEach(group => {
-			const groupOutline = group.outlines[isAppend ? "start" : "end"];
+			const groupOutline = group.outlines[outlineCursor];
 			const isRelayout = group.needUpdate || !outline.length || (outline.length === groupOutline.length ?
 				!outline.every((v, index) => v === groupOutline[index]) : true);
 
 			if (!isRelayout) {
-				outline = group.outlines[isAppend ? "end" : "start"];
+				outline = group.outlines[insertCursor];
 				this._renderer.renderItems(group.items);
 				return;
 			}
@@ -107,7 +115,7 @@ export default class RenderManager {
 
 			assign(group, groupInfo);
 			this._renderer.renderItems(groupInfo.items);
-			outline = groupInfo.outlines[isAppend ? "end" : "start"];
+			outline = groupInfo.outlines[insertCursor];
 			group.needUpdate = false;
 		});
 
