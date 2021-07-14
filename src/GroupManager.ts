@@ -1,26 +1,27 @@
-import Grid, { GridItem } from "@egjs/grid";
+import Grid, {
+  GridFunction, GridOptions,
+  GridOutlines, Properties, PROPERTY_TYPE,
+  RenderOptions, UPDATE_STATE,
+} from "@egjs/grid";
+import { InfiniteGridItem } from "./InfiniteGridItem";
+import { InfiniteGridGroup } from "./types";
+import { flat } from "./utils";
 
-export interface GroupManagerOptions {
-  gridContructor: new (container, gridOptions) => Grid;
+export interface GroupManagerOptions extends GridOptions {
+  gridContructor: GridFunction;
+  gridOptions: Record<string, any>;
 }
-export interface Group {
+
+interface CategorizedGroup {
   groupKey: number | string;
-  grid: Grid;
-}
-export interface GroupManagerItem {
-  groupKey: string | number;
-  key: string | number;
-  item?: GridItem | null;
-}
-export interface GroupManagerGroup {
-  groupKey: string | number;
-  items: GroupManagerItem[];
+  items: InfiniteGridItem[];
 }
 
-export function categorize(items: GroupManagerItem[]): GroupManagerGroup[] {
-  const groups: GroupManagerGroup[] = [];
 
-  const groupKeys: { [key: string]: GroupManagerGroup } = {};
+
+function categorize(items: InfiniteGridItem[]) {
+  const groups: CategorizedGroup[] = [];
+  const groupKeys: { [key: string]: CategorizedGroup } = {};
 
   items.forEach((item) => {
     const { groupKey } = item;
@@ -40,28 +41,100 @@ export function categorize(items: GroupManagerItem[]): GroupManagerGroup[] {
   return groups;
 }
 
-export class GroupManager {
-  protected groups: Group[] = [];
-  protected groupKeys: Record<string | number, Group> = {};
-  protected items: GroupManagerItem[] = [];
+export class GroupManager extends Grid<GroupManagerOptions> {
+  public static propertyTypes = {
+    ...Grid.propertyTypes,
+    gridConstructor: PROPERTY_TYPE.PROPERTY,
+  };
+  protected items: InfiniteGridItem[];
+  protected groupItems: InfiniteGridItem[] = [];
+  protected groups: InfiniteGridGroup[] = [];
+  protected groupKeys: Record<string | number, InfiniteGridGroup> = {};
+  protected startCursor = 0;
+  protected endCursor = 0;
+  protected gridOptions: Record<string, any> = {};
 
-  constructor(protected container: HTMLElement, protected options: GroupManagerOptions) {}
-  public getGroups(): Group[] {
+  public setGridOptions(options: Record<string, any>) {
+    const shouldRender = this._checkShouldRender(options);
+    this.gridOptions = options;
+    this.groups.forEach(({ grid }) => {
+      for (const name in options) {
+        (grid as any)[name] = options[name];
+      }
+    });
+    if (shouldRender) {
+      this.scheduleRender();
+    }
+  }
+
+  public getGroupItems() {
+    return this.groupItems;
+  }
+
+  public getVisibleGroups(): InfiniteGridGroup[] {
+    return this.groups.slice(this.startCursor, this.endCursor + 1);
+  }
+
+  public getGroups(): InfiniteGridGroup[] {
     return this.groups;
   }
-  public getItems(): GroupManagerItem[] {
-    return this.items;
+
+  public applyGrid(items: InfiniteGridItem[], direction: "end" | "start", outline: number[]): GridOutlines {
+    let nextOutline = outline;
+
+    const originalGroups = this.groups;
+    const length = originalGroups.length;
+
+    if (!length) {
+      return {
+        start: [],
+        end: [],
+      };
+    }
+
+    const groups = originalGroups.slice();
+
+    if (direction === "start") {
+      groups.reverse();
+    }
+    groups.forEach((group) => {
+      const grid = group.grid;
+
+      const gridOutline = grid.applyGrid(grid.getItems(), direction, nextOutline);
+
+      grid.setOutlines(gridOutline);
+
+      nextOutline = gridOutline[direction];
+    });
+
+    return {
+      start: originalGroups[0].grid.getOutlines().start,
+      end: originalGroups[length - 1].grid.getOutlines().end,
+    };
   }
-  public syncItems(nextItems: GroupManagerItem[]) {
-    const container = this.container;
+
+  public syncItems(nextItems: InfiniteGridItem[]) {
+    const container = this.getContainerElement();
     const prevGroupKeys = this.groupKeys;
     const nextManagerGroups = categorize(nextItems);
-    const nextGroupKeys: Record<string | number, Group> = {};
+    const nextGroupKeys: Record<string | number, InfiniteGridGroup> = {};
     const GridContructor = this.options.gridContructor;
-    const nextGroups: Group[] = nextManagerGroups.map(({ groupKey }) => {
+    const gridOptions = this.gridOptions;
+    const nextGroups: InfiniteGridGroup[] = nextManagerGroups.map(({ groupKey, items }) => {
+      const grid = prevGroupKeys[groupKey]?.grid ?? new GridContructor(container, {
+        ...gridOptions,
+        useFit: false,
+        autoResize: false,
+        renderOnPropertyChange: false,
+        externalContainerManager: this.containerManager,
+        externalItemRenderer: this.itemRenderer,
+      });
+
+      grid.setItems(items);
+
       return {
         groupKey,
-        grid: prevGroupKeys[groupKey]?.grid ?? new GridContructor(container, {}),
+        grid,
       };
     });
 
@@ -69,8 +142,49 @@ export class GroupManager {
       nextGroupKeys[group.groupKey] = group;
     });
 
-    this.items = nextItems;
+    this.groupItems = nextItems;
     this.groups = nextGroups;
     this.groupKeys = nextGroupKeys;
   }
+
+  public renderItems(options: RenderOptions = {}) {
+    if (options.useResize) {
+      this.groupItems.forEach((item) => {
+        item.updateState = UPDATE_STATE.NEED_UPDATE;
+      });
+    }
+    return super.renderItems(options);
+  }
+
+  public setCursors(startCursor: number, endCursor: number) {
+    this.startCursor = startCursor;
+    this.endCursor = endCursor;
+    this.items = this._getVisibleItems();
+  }
+
+  private _getVisibleItems() {
+    return flat(this.getVisibleGroups().map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
+  }
+
+  private _checkShouldRender(options: Record<string, any>) {
+    const GridContructor = this.options.gridContructor;
+    const prevOptions = this.gridOptions;
+    const propertyTypes = GridContructor.propertyTypes;
+
+    for (const name in prevOptions) {
+      if (!(name in options) && propertyTypes[name] === PROPERTY_TYPE.RENDER_PROPERTY) {
+        return true;
+      }
+    }
+    for (const name in options) {
+      if (prevOptions[name] !== options[name] && propertyTypes[name] === PROPERTY_TYPE.RENDER_PROPERTY) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+export interface GroupManager extends Properties<typeof GroupManager> {
+  getItems(): InfiniteGridItem[];
 }
