@@ -3,6 +3,7 @@ import Grid, {
   GridOutlines, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
 } from "@egjs/grid";
+import { IGNORE_PROPERITES_MAP } from "./consts";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { InfiniteGridGroup } from "./types";
 import { flat } from "./utils";
@@ -17,7 +18,27 @@ interface CategorizedGroup {
   items: InfiniteGridItem[];
 }
 
+function splitGridOptions(options: Record<string, any>) {
+  const nextOptions: Record<string, any> = {};
+  const gridOptions: Record<string, any> = {};
+  const defaultOptions = Grid.defaultOptions;
 
+  for (const name in options) {
+    const value = options[name];
+
+    if (!(name in IGNORE_PROPERITES_MAP)) {
+      gridOptions[name] = value;
+    }
+
+    if (name in defaultOptions) {
+      nextOptions[name] = value;
+    }
+  }
+  return {
+    ...nextOptions,
+    gridOptions,
+  };
+}
 
 function categorize(items: InfiniteGridItem[]) {
   const groups: CategorizedGroup[] = [];
@@ -53,15 +74,29 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   protected startCursor = 0;
   protected endCursor = 0;
   protected gridOptions: Record<string, any> = {};
-
+  constructor(container: HTMLElement, options: GroupManagerOptions) {
+    super(container, {
+      ...options,
+      ...splitGridOptions(options.gridOptions!),
+    });
+  }
   public setGridOptions(options: Record<string, any>) {
+    const {
+      gridOptions,
+      ...otherOptions
+    } = splitGridOptions(options);
+
     const shouldRender = this._checkShouldRender(options);
-    this.gridOptions = options;
+
+    this.gridOptions = gridOptions;
     this.groups.forEach(({ grid }) => {
       for (const name in options) {
         (grid as any)[name] = options[name];
       }
     });
+    for (const name in otherOptions) {
+      this[name] = otherOptions[name];
+    }
     if (shouldRender) {
       this.scheduleRender();
     }
