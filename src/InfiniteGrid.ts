@@ -1,9 +1,11 @@
-import { ContainerManager, GridItem } from "@egjs/grid";
-// import { MOUNT_STATE } from "@egjs/grid";
+import { MasonryGrid, ContainerManager } from "@egjs/grid";
+import { GroupManager } from "./GroupManager";
 import { Infinite } from "./Infinite";
+import { InfiniteGridItem } from "./InfiniteGridItem";
 import { OnRendererUpdated, Renderer } from "./Renderer/Renderer";
 import { GridRendererItem } from "./Renderer/VanillaGridRenderer";
 import { ScrollManager } from "./ScrollManager";
+import { InfiniteGridGroup } from "./types";
 import { isString } from "./utils";
 
 export class InfiniteGrid {
@@ -12,6 +14,7 @@ export class InfiniteGrid {
   protected containerManager: ContainerManager;
   protected infinite: Infinite;
   protected renderer: Renderer;
+  protected groupManager: GroupManager;
   constructor(wrapper: HTMLElement | string) {
     // options.container === false, wrapper = container, scrollContainer = document.body
     // options.container === true, wrapper = scrollContainer, container = wrapper's child
@@ -22,10 +25,10 @@ export class InfiniteGrid {
       containerTag: "div",
       horizontal: false,
     });
-    const containerManager = new ContainerManager(scrollManager.getContainer(), {
+    const container = scrollManager.getContainer();
+    const containerManager = new ContainerManager(container, {
       horizontal: false,
     });
-
     const infinite = new Infinite({
       useRecyle: false,
     }).on({
@@ -33,25 +36,40 @@ export class InfiniteGrid {
       "requestAppend": this._onRequestAppend,
       "requestPrepend": this._onRequestPrepend,
     });
+
+    const groupManager = new GroupManager(container, {
+      gridConstructor: MasonryGrid,
+      externalContainerManager: containerManager,
+      gridOptions: {},
+    });
+
+    groupManager.on({
+      "renderComplete": this._onRenderComplete,
+      "contentError": this._onContentError,
+    });
     const renderer: Renderer = null as any;
 
-    renderer.setContainer(scrollManager.getContainer());
+    renderer.setContainer(container);
     renderer.on("updated", this._onRendererUpdated);
 
+    this.groupManager = groupManager;
     this.wrapperElement = wrapperElement;
     this.scrollManager = scrollManager;
     this.containerManager = containerManager;
     this.infinite = infinite;
   }
   public syncItems() {
-    // this.groupManager.syncItems(nextItems);
-    const groups: any[] = [];
+    this.groupManager.syncItems([]);
 
-    this.infinite.sync(groups.map((item) => {
+    const groups = this.groupManager.getGroups();
+
+    this.infinite.sync(groups.map(({ groupKey, grid }) => {
+      const outlines = grid.getOutlines();
+
       return {
-        key: item.key,
-        startOutline: item.startOutline,
-        endOutline: item.endOutline,
+        key: groupKey,
+        startOutline: outlines.start,
+        endOutline: outlines.end,
       };
     }));
 
@@ -61,20 +79,29 @@ export class InfiniteGrid {
   public syncElements() {
     return;
   }
+
   public setCursors(startCursor: number, endCursor: number) {
+    this.groupManager.setCursors(startCursor, endCursor);
     this.infinite.setCursors(startCursor, endCursor);
     this._update();
   }
-  public getVisibleItems(): GridItem[] {
-    return [];
-    // return this.getVisibleGroups().map((group) => group.getItems());
+
+  public getItems(): InfiniteGridItem[] {
+    return this.groupManager.getGroupItems();
   }
-  public getVisibleGroups(): [] {
-    return [];
-    // return this.infinite.getVisibleItems().map(item => {
-    //   // return this.groupManager.getItem(item.key);
-    // });
+
+  public getVisibleItems(): InfiniteGridItem[] {
+    return this.groupManager.getItems();
   }
+
+  public getGroups(): InfiniteGridGroup[] {
+    return this.groupManager.getGroups();
+  }
+
+  public getVisibleGroups(): InfiniteGridGroup[] {
+    return this.groupManager.getVisibleGroups();
+  }
+
   private _render() {
     this.renderer.render(this.getVisibleItems().map((item) => {
       return {
@@ -133,5 +160,11 @@ export class InfiniteGrid {
       }
     });
     // this.renderItems();
+  }
+  private _onContentError = () => {
+    //
+  }
+  private _onRenderComplete = () => {
+    //
   }
 }
