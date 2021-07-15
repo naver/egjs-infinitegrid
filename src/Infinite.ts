@@ -152,10 +152,7 @@ export class Infinite extends Component<InfiniteEvents> {
     let nextEndCursor = -1;
 
     // sync cursors
-    [
-      ...result.changed,
-      ...result.maintained,
-    ].forEach(([prevIndex, nextIndex]) => {
+    result.maintained.forEach(([prevIndex, nextIndex]) => {
       if (prevStartCursor <= prevIndex && prevIndex <= prevEndCursor) {
         if (nextStartCursor === -1) {
           nextStartCursor = nextIndex;
