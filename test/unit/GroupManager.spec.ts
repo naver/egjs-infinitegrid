@@ -23,7 +23,7 @@ describe("test GroupManager", () => {
     it("should check if container elements are the same", () => {
       // Given
       manager = new GroupManager(container!, {
-        gridContructor: SampleGrid,
+        gridConstructor: SampleGrid,
         gridOptions: {},
       });
 
@@ -43,7 +43,7 @@ describe("test GroupManager", () => {
       <div>6</div>
       `;
       manager = new GroupManager(container!, {
-        gridContructor: SampleGrid,
+        gridConstructor: SampleGrid,
         gridOptions: {},
       });
 

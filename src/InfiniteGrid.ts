@@ -38,7 +38,7 @@ export class InfiniteGrid {
     });
 
     const groupManager = new GroupManager(container, {
-      gridContructor: MasonryGrid,
+      gridConstructor: MasonryGrid,
       externalContainerManager: containerManager,
       gridOptions: {},
     });

@@ -3,64 +3,15 @@ import Grid, {
   GridOutlines, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
 } from "@egjs/grid";
-import { IGNORE_PROPERITES_MAP } from "./consts";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { InfiniteGridGroup } from "./types";
-import { flat } from "./utils";
+import { categorize, flat, splitGridOptions } from "./utils";
 
 export interface GroupManagerOptions extends GridOptions {
-  gridContructor: GridFunction;
+  gridConstructor: GridFunction;
   gridOptions: Record<string, any>;
 }
 
-interface CategorizedGroup {
-  groupKey: number | string;
-  items: InfiniteGridItem[];
-}
-
-function splitGridOptions(options: Record<string, any>) {
-  const nextOptions: Record<string, any> = {};
-  const gridOptions: Record<string, any> = {};
-  const defaultOptions = Grid.defaultOptions;
-
-  for (const name in options) {
-    const value = options[name];
-
-    if (!(name in IGNORE_PROPERITES_MAP)) {
-      gridOptions[name] = value;
-    }
-
-    if (name in defaultOptions) {
-      nextOptions[name] = value;
-    }
-  }
-  return {
-    ...nextOptions,
-    gridOptions,
-  };
-}
-
-function categorize(items: InfiniteGridItem[]) {
-  const groups: CategorizedGroup[] = [];
-  const groupKeys: { [key: string]: CategorizedGroup } = {};
-
-  items.forEach((item) => {
-    const { groupKey } = item;
-    let group = groupKeys[groupKey];
-
-    if (!group) {
-      group = {
-        groupKey,
-        items: [],
-      };
-      groupKeys[groupKey] = group;
-      groups.push(group);
-    }
-
-    group.items.push(item);
-  });
-  return groups;
-}
 
 export class GroupManager extends Grid<GroupManagerOptions> {
   public static propertyTypes = {
@@ -153,10 +104,10 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     const prevGroupKeys = this.groupKeys;
     const nextManagerGroups = categorize(nextItems);
     const nextGroupKeys: Record<string | number, InfiniteGridGroup> = {};
-    const GridContructor = this.options.gridContructor;
+    const GridConstructor = this.options.gridConstructor;
     const gridOptions = this.gridOptions;
     const nextGroups: InfiniteGridGroup[] = nextManagerGroups.map(({ groupKey, items }) => {
-      const grid = prevGroupKeys[groupKey]?.grid ?? new GridContructor(container, {
+      const grid = prevGroupKeys[groupKey]?.grid ?? new GridConstructor(container, {
         ...gridOptions,
         useFit: false,
         autoResize: false,
@@ -202,9 +153,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   }
 
   private _checkShouldRender(options: Record<string, any>) {
-    const GridContructor = this.options.gridContructor;
+    const GridConstructor = this.options.gridConstructor;
     const prevOptions = this.gridOptions;
-    const propertyTypes = GridContructor.propertyTypes;
+    const propertyTypes = GridConstructor.propertyTypes;
 
     for (const name in prevOptions) {
       if (!(name in options) && propertyTypes[name] === PROPERTY_TYPE.RENDER_PROPERTY) {
