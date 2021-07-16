@@ -1,21 +1,55 @@
-import { MasonryGrid, ContainerManager } from "@egjs/grid";
+import Component from "@egjs/component";
+import {
+  ContainerManager,
+  GridOptions,
+  DEFAULT_GRID_OPTIONS,
+  GRID_PROPERTY_TYPES,
+  GridFunction,
+  Properties,
+} from "@egjs/grid";
+import { DEFAULT_INFINITEGRID_OPTIONS } from "./consts";
 import { GroupManager } from "./GroupManager";
 import { Infinite } from "./Infinite";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { OnRendererUpdated, Renderer } from "./Renderer/Renderer";
 import { GridRendererItem } from "./Renderer/VanillaGridRenderer";
-import { ScrollManager } from "./ScrollManager";
-import { InfiniteGridGroup } from "./types";
-import { isString } from "./utils";
+import { OnScroll, ScrollManager } from "./ScrollManager";
+import { InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
+import { convertInsertedItems, GetterSetter, isString } from "./utils";
 
-export class InfiniteGrid {
+export interface InfiniteGridOptions extends GridOptions {
+  gridConstructor: GridFunction | null;
+}
+
+export interface InfiniteGridEvents {
+  scroll: OnScroll;
+  renderComplete: {};
+  contentError: {};
+
+}
+
+/**
+ * @extends eg.Component
+ */
+@GetterSetter
+class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> extends Component<{}> {
+  public static defaultOptions: Required<InfiniteGridOptions> = {
+    ...DEFAULT_GRID_OPTIONS,
+    ...DEFAULT_INFINITEGRID_OPTIONS,
+  };
+  public static propertyTypes = GRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
   protected scrollManager: ScrollManager;
   protected containerManager: ContainerManager;
   protected infinite: Infinite;
   protected renderer: Renderer;
   protected groupManager: GroupManager;
-  constructor(wrapper: HTMLElement | string) {
+  constructor(wrapper: HTMLElement | string, options: InfiniteGridOptions) {
+    super();
+    const {
+      gridConstructor,
+      ...gridOptions
+    } = options;
     // options.container === false, wrapper = container, scrollContainer = document.body
     // options.container === true, wrapper = scrollContainer, container = wrapper's child
     // options.container === string,
@@ -36,11 +70,10 @@ export class InfiniteGrid {
       "requestAppend": this._onRequestAppend,
       "requestPrepend": this._onRequestPrepend,
     });
-
     const groupManager = new GroupManager(container, {
-      gridConstructor: MasonryGrid,
+      gridConstructor: gridConstructor!,
       externalContainerManager: containerManager,
-      gridOptions: {},
+      gridOptions,
     });
 
     groupManager.on({
@@ -58,12 +91,14 @@ export class InfiniteGrid {
     this.containerManager = containerManager;
     this.infinite = infinite;
   }
-  public syncItems() {
-    this.groupManager.syncItems([]);
+
+  public syncItems(items: InfiniteGridItemInfo[]): this {
+    this.groupManager.syncItems(items);
 
     const groups = this.groupManager.getGroups();
+    const infinite = this.infinite;
 
-    this.infinite.sync(groups.map(({ groupKey, grid }) => {
+    infinite.sync(groups.map(({ groupKey, grid }) => {
       const outlines = grid.getOutlines();
 
       return {
@@ -73,19 +108,37 @@ export class InfiniteGrid {
       };
     }));
 
+    this.groupManager.setCursors(infinite.getStartCursor(), infinite.getEndCursor());
     this._render();
+
+    return this;
   }
 
-  public syncElements() {
-    return;
-  }
-
-  public setCursors(startCursor: number, endCursor: number) {
+  public setCursors(startCursor: number, endCursor: number): void {
     this.groupManager.setCursors(startCursor, endCursor);
     this.infinite.setCursors(startCursor, endCursor);
     this._update();
   }
 
+  public append(items: InfiniteGridInsertedItems, groupKey?: string | number): this {
+    return this.insert(-1, items, groupKey);
+  }
+
+  public prepend(items: InfiniteGridInsertedItems, groupKey?: string | number): this {
+    return this.insert(0, items, groupKey);
+  }
+
+  public insert(index: number, items: InfiniteGridInsertedItems, groupKey?: string | number): this {
+    const prevItemInfos = this.groupManager.getItemInfos();
+    const itemInfos = convertInsertedItems(items, groupKey);
+
+    if (index === -1) {
+      prevItemInfos.push(...itemInfos);
+    } else {
+      prevItemInfos.splice(index, 0, ...itemInfos);
+    }
+    return this.syncItems(itemInfos);
+  }
   public getItems(): InfiniteGridItem[] {
     return this.groupManager.getGroupItems();
   }
@@ -102,7 +155,7 @@ export class InfiniteGrid {
     return this.groupManager.getVisibleGroups();
   }
 
-  private _render() {
+  private _render(): void {
     this.renderer.render(this.getVisibleItems().map((item) => {
       return {
         element: item.element,
@@ -111,21 +164,21 @@ export class InfiniteGrid {
       };
     }));
   }
-  private _update() {
+  private _update(): void {
     if (this.renderer.update()) {
       this._render();
     }
   }
-  private _onChange = () => {
+  private _onChange = (): void => {
     //
   }
-  private _onRequestAppend = () => {
+  private _onRequestAppend = (): void => {
     //
   }
-  private _onRequestPrepend = () => {
+  private _onRequestPrepend = (): void => {
     //
   }
-  private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>) => {
+  private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>): void => {
     if (!e.isChanged) {
       return;
     }
@@ -161,10 +214,14 @@ export class InfiniteGrid {
     });
     // this.renderItems();
   }
-  private _onContentError = () => {
+  private _onContentError = (): void => {
     //
   }
-  private _onRenderComplete = () => {
+  private _onRenderComplete = (): void => {
     //
   }
 }
+
+interface InfiniteGrid extends Properties<typeof InfiniteGrid> { }
+
+export default InfiniteGrid;
