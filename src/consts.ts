@@ -8,3 +8,8 @@ export const IGNORE_PROPERITES_MAP = {
   useFit: true,
   autoResize: true,
 } as const;
+
+
+export const DEFAULT_INFINITEGRID_OPTIONS = {
+  gridConstructor: null,
+};
