@@ -139,7 +139,7 @@ export function convertInsertedItems(
     const dummy = document.createElement("div");
 
     dummy.innerHTML = items;
-    insertedItems = [].slice.call(dummy.children) as HTMLElement[];
+    insertedItems = toArray(dummy.children);
   } else {
     insertedItems = items;
   }
@@ -164,4 +164,18 @@ export function convertInsertedItems(
       element,
     };
   });
+}
+export function toArray(nodes: HTMLCollection): HTMLElement[];
+export function toArray<T>(nodes: { length: number, [key: number]: T }): T[];
+export function toArray<T>(nodes: { length: number, [key: number]: T }): T[] {
+  const array: T[] = [];
+
+  if (nodes) {
+    const length = nodes.length;
+
+    for (let i = 0; i < length; i++) {
+      array.push(nodes[i]);
+    }
+  }
+  return array;
 }

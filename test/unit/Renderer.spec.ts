@@ -1,6 +1,7 @@
 import { cleanup, createElement, sandbox } from "./utils/utils";
 import { Renderer } from "../../src/Renderer/Renderer";
 import * as sinon from "sinon";
+import { toArray } from "../../src/utils";
 
 describe("test Renderer", () => {
   let renderer: Renderer | null;
@@ -48,7 +49,7 @@ describe("test Renderer", () => {
 
 
     // Then
-    const elements = [].slice.call(container!.children);
+    const elements = toArray(container!.children);
     expect(items.map(({ key }) => key)).to.be.deep.equals([1, 2, 3]);
     items.forEach((item, i) => {
       expect(item.element).to.be.equals(elements[i]);

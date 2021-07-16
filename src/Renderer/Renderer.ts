@@ -1,5 +1,6 @@
 import Component from "@egjs/component";
 import { diff, DiffResult } from "@egjs/list-differ";
+import { toArray } from "../utils";
 
 export interface RendererItem {
   key: string | number;
@@ -50,7 +51,7 @@ export class Renderer<T extends RendererItem = RendererItem> extends Component<R
 
     this.trigger("updated", {
       items,
-      elements: [].slice.call(nextElements),
+      elements: toArray(nextElements),
       diffResult: this._diffResult,
       isChanged,
     });

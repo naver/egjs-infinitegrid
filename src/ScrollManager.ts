@@ -1,6 +1,6 @@
 import Component from "@egjs/component";
 import { CONTAINER_CLASS_NAME, IS_IOS } from "./consts";
-import { isWindow } from "./utils";
+import { isWindow, toArray } from "./utils";
 
 export interface ScrollManagerOptions {
   container?: HTMLElement | boolean | string;
@@ -115,7 +115,7 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       const scrollContainer = this.scrollContainer;
 
       const fragment = document.createDocumentFragment();
-      const childNodes = [].slice.call(container.childNodes);
+      const childNodes = toArray(container.childNodes);
 
       scrollContainer.removeChild(container);
       childNodes.forEach((childNode) => {
@@ -148,7 +148,7 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
 
         container.style.position = "relative";
         container.className = CONTAINER_CLASS_NAME;
-        const childNodes = [].slice.call(scrollContainer.childNodes);
+        const childNodes = toArray(scrollContainer.childNodes);
 
         childNodes.forEach((childNode) => {
           container.appendChild(childNode);
