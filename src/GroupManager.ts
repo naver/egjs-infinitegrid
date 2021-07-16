@@ -3,7 +3,6 @@ import Grid, {
   GridOutlines, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
 } from "@egjs/grid";
-import { stringify } from "node:querystring";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
 import { categorize, flat, makeKey, splitGridOptions } from "./utils";
@@ -200,7 +199,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       }
     });
     const nextItems = nextItemInfos.map((info) => {
-      let key = info.key;
+      let key = info.key!;
 
       if (info.key == null) {
         key = makeKey(nextItemKeys);
