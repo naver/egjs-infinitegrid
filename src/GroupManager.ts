@@ -3,9 +3,10 @@ import Grid, {
   GridOutlines, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
 } from "@egjs/grid";
+import { stringify } from "node:querystring";
 import { InfiniteGridItem } from "./InfiniteGridItem";
-import { InfiniteGridGroup } from "./types";
-import { categorize, flat, splitGridOptions } from "./utils";
+import { InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
+import { categorize, flat, makeKey, splitGridOptions } from "./utils";
 
 export interface GroupManagerOptions extends GridOptions {
   gridConstructor: GridFunction;
@@ -21,6 +22,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   protected items: InfiniteGridItem[];
   protected groupItems: InfiniteGridItem[] = [];
   protected groups: InfiniteGridGroup[] = [];
+  protected itemKeys: Record<string | number, InfiniteGridItem> = {};
   protected groupKeys: Record<string | number, InfiniteGridGroup> = {};
   protected startCursor = 0;
   protected endCursor = 0;
@@ -31,7 +33,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       ...splitGridOptions(options.gridOptions!),
     });
   }
-  public setGridOptions(options: Record<string, any>) {
+  public setGridOptions(options: Record<string, any>): void {
     const {
       gridOptions,
       ...otherOptions
@@ -51,6 +53,18 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     if (shouldRender) {
       this.scheduleRender();
     }
+  }
+
+  public getItemInfos(): InfiniteGridItemInfo[] {
+    return this.groupItems.map((item) => {
+      return {
+        groupKey: item.groupKey,
+        key: item.key,
+        element: item.element,
+        html: item.html,
+        data: item.data,
+      };
+    });
   }
 
   public getGroupItems() {
@@ -99,7 +113,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     };
   }
 
-  public syncItems(nextItems: InfiniteGridItem[]) {
+  public syncItems(nextItemInfos: InfiniteGridItemInfo[]) {
+    const nextItems = this._syncItemInfos(nextItemInfos);
     const container = this.getContainerElement();
     const prevGroupKeys = this.groupKeys;
     const nextManagerGroups = categorize(nextItems);
@@ -168,6 +183,38 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       }
     }
     return false;
+  }
+  private _syncItemInfos(nextItemInfos: InfiniteGridItemInfo[]) {
+    const horizontal = this.options.horizontal;
+    const prevItemKeys = this.itemKeys;
+    const nextItemKeys: Record<number | string, InfiniteGridItem> = {};
+
+    nextItemInfos.filter((info) => info.key != null).forEach((info) => {
+      const key = info.key!;
+      if (!(key in prevItemKeys)) {
+        nextItemKeys[key] = new InfiniteGridItem(horizontal, {
+          ...info,
+        });
+      } else {
+        nextItemKeys[key] = prevItemKeys[key];
+      }
+    });
+    const nextItems = nextItemInfos.map((info) => {
+      let key = info.key;
+
+      if (info.key == null) {
+        key = makeKey(nextItemKeys);
+        nextItemKeys[key] = new InfiniteGridItem(horizontal, {
+          ...info,
+          key,
+        });
+      }
+
+      return nextItemKeys[key];
+    });
+
+    this.itemKeys = nextItemKeys;
+    return nextItems;
   }
 }
 
