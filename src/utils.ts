@@ -1,7 +1,8 @@
-import Grid from "@egjs/grid";
+import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
 import { IGNORE_PROPERITES_MAP } from "./consts";
+import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem } from "./InfiniteGridItem";
-import { CategorizedGroup } from "./types";
+import { CategorizedGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
 
 export function isWindow(el: Window | Element): el is Window {
   return el === window;
@@ -41,10 +42,29 @@ export function splitGridOptions(options: Record<string, any>) {
 
 export function categorize(items: InfiniteGridItem[]) {
   const groups: CategorizedGroup[] = [];
-  const groupKeys: Record<string, CategorizedGroup> = {};
+  const groupKeys: Record<string | number, CategorizedGroup> = {};
+  const registeredGroupKeys: Record<string | number, boolean> = {};
+
+  items.filter((item) => item.groupKey != null).forEach(({ groupKey }) => {
+    registeredGroupKeys[groupKey] = true;
+  });
+
+  let generatedGroupKey: number | string;
+  let isContinuousGroupKey = false;
 
   items.forEach((item) => {
-    const { groupKey } = item;
+    if (item.groupKey != null) {
+      isContinuousGroupKey = false;
+    } else {
+      if (!isContinuousGroupKey) {
+        generatedGroupKey = makeKey(registeredGroupKeys);
+        isContinuousGroupKey = true;
+        registeredGroupKeys[generatedGroupKey] = true;
+      }
+      item.groupKey = generatedGroupKey;
+    }
+
+    const groupKey = item.groupKey;
     let group = groupKeys[groupKey];
 
     if (!group) {
@@ -59,4 +79,89 @@ export function categorize(items: InfiniteGridItem[]) {
     group.items.push(item);
   });
   return groups;
+}
+
+
+/* Class Decorator */
+export function GetterSetter(component: {
+  prototype: InfiniteGrid<any>,
+  propertyTypes: typeof GRID_PROPERTY_TYPES,
+}) {
+  const {
+    prototype,
+    propertyTypes,
+  } = component;
+  for (const name in propertyTypes) {
+    const attributes: Record<string, any> = {
+      enumerable: true,
+      configurable: true,
+      get(this: InfiniteGrid) {
+        const options = this.groupManager.options;
+        if (name in options) {
+          return options[name];
+        } else {
+          return options.gridOptions[name];
+        }
+      },
+      set(this: InfiniteGrid, value: any) {
+        const prevValue = this.groupManager[name];
+
+        if (prevValue === value) {
+          return;
+        }
+        this.groupManager.setGridOptions({
+          [name]: value,
+        });
+      },
+    };
+    Object.defineProperty(prototype, name, attributes);
+  }
+}
+
+export function makeKey(registeredKeys: Record<string, any>) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const key = new Date().getTime() + Math.floor(Math.random() * 1000);
+
+    if (!(key in registeredKeys)) {
+      return key;
+    }
+  }
+}
+
+export function convertInsertedItems(
+  items: InfiniteGridInsertedItems,
+  groupKey?: string | number,
+): InfiniteGridItemInfo[] {
+  let insertedItems: Array<string | HTMLElement | InfiniteGridItemInfo>;
+
+  if (isString(items)) {
+    const dummy = document.createElement("div");
+
+    dummy.innerHTML = items;
+    insertedItems = [].slice.call(dummy.children) as HTMLElement[];
+  } else {
+    insertedItems = items;
+  }
+  return insertedItems.map((item) => {
+    let element!: HTMLElement;
+    let html = "";
+    let key!: string | number;
+
+    if (isString(item)) {
+      html = item;
+    } else if ("parentNode" in item) {
+      element = item;
+      html = item.outerHTML;
+    } else {
+      return item;
+    }
+
+    return {
+      key,
+      groupKey,
+      html,
+      element,
+    };
+  });
 }
