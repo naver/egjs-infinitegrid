@@ -1,9 +1,9 @@
-import { GridItem } from "@egjs/grid";
+import { InfiniteGridItem } from "../InfiniteGridItem";
 import { RendererItem } from "./Renderer";
 import { VanillaRenderer } from "./VanillaRenderer";
 
 export interface GridRendererItem extends RendererItem {
-  orgItem: GridItem;
+  orgItem: InfiniteGridItem;
 }
 
 export class VanillaGridRenderer extends VanillaRenderer<GridRendererItem> {

@@ -54,6 +54,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     }
   }
 
+  public getItemByKey(key: string | number): InfiniteGridItem | null {
+    return this.itemKeys[key] || null;
+  }
   public getItemInfos(): InfiniteGridItemInfo[] {
     return this.groupItems.map((item) => {
       return {

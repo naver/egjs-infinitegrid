@@ -7,6 +7,7 @@ import {
   GridFunction,
   Properties,
   RenderOptions,
+  MOUNT_STATE,
 } from "@egjs/grid";
 import { DEFAULT_INFINITEGRID_OPTIONS } from "./consts";
 import { GroupManager } from "./GroupManager";
@@ -258,37 +259,33 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     if (!e.isChanged) {
       return;
     }
-    const rendererItems = e.items;
+    const renderedItems = e.items;
 
-    // const {
-    //   added,
-    //   removed,
-    //   prevList,
-    //   list,
-    // } = e.diffResult;
+    const {
+      added,
+      removed,
+      prevList,
+      list,
+    } = e.diffResult;
 
-    // removed.forEach((index) => {
-    //   const orgItem = prevList[index].orgItem;
+    removed.forEach((index) => {
+      const orgItem = prevList[index].orgItem;
 
-    //   orgItem.mountState = MOUNT_STATE.UNMOUNTED;
-    // });
-    // added.forEach((index) => {
-    //   const orgItem = list[index].orgItem;
-
-    //   orgItem.mountState = MOUNT_STATE.MOUNTED;
-    // });
-
-    rendererItems.forEach((item) => {
-      if (item.key === "infinite_unique_loading") {
-        // set loading element
-      } else {
-        // set grid element
-        // const gridItem = this.groupManager.findItemByKey(item.key);
-
-        // gridItem.element = item.element;
-      }
+      orgItem.mountState = MOUNT_STATE.UNMOUNTED;
     });
-    // this.renderItems();
+    added.forEach((index) => {
+      const orgItem = list[index].orgItem;
+
+      orgItem.mountState = MOUNT_STATE.MOUNTED;
+    });
+
+    renderedItems.forEach((item) => {
+      // set grid element
+      const gridItem = this.groupManager.getItemByKey(item.key)!;
+
+      gridItem.element = item.element as HTMLElement;
+    });
+    this.renderItems();
   }
   private _onContentError = (): void => {
     //
