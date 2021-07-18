@@ -9,18 +9,19 @@ import {
   RenderOptions,
   MOUNT_STATE,
 } from "@egjs/grid";
-import { DEFAULT_INFINITEGRID_OPTIONS } from "./consts";
 import { GroupManager } from "./GroupManager";
 import { Infinite } from "./Infinite";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { OnRendererUpdated, Renderer } from "./Renderer/Renderer";
-import { GridRendererItem } from "./Renderer/VanillaGridRenderer";
+import { GridRendererItem, VanillaGridRenderer } from "./Renderer/VanillaGridRenderer";
 import { OnScroll, ScrollManager } from "./ScrollManager";
 import { InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
 import { convertInsertedItems, GetterSetter, isString, toArray } from "./utils";
 
 export interface InfiniteGridOptions extends GridOptions {
-  gridConstructor: GridFunction | null;
+  gridConstructor?: GridFunction | null;
+  container?: boolean | string | HTMLElement;
+  renderer?: Renderer | null;
 }
 
 export interface InfiniteGridEvents {
@@ -71,39 +72,49 @@ some.renderItems();
 class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> extends Component<{}> {
   public static defaultOptions: Required<InfiniteGridOptions> = {
     ...DEFAULT_GRID_OPTIONS,
-    ...DEFAULT_INFINITEGRID_OPTIONS,
+    gridConstructor: null,
+    container: false,
+    renderer: null,
   };
   public static propertyTypes = GRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
   protected scrollManager: ScrollManager;
   protected containerManager: ContainerManager;
   protected infinite: Infinite;
-  protected renderer: Renderer;
   protected groupManager: GroupManager;
+  protected options: Required<Options>;
   /**
 	 * @param - A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
 	 * @param - The option object of the InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
 	 */
-  constructor(wrapper: HTMLElement | string, options: InfiniteGridOptions) {
+  constructor(wrapper: HTMLElement | string, options: Options) {
     super();
+    this.options = {
+      ...((this.constructor as typeof InfiniteGrid).defaultOptions as Required<Options>),
+      renderer: new VanillaGridRenderer(),
+      ...options,
+    };
+
     const {
       gridConstructor,
+      container,
+      renderer,
       ...gridOptions
-    } = options;
+    } = this.options;
     // options.container === false, wrapper = container, scrollContainer = document.body
     // options.container === true, wrapper = scrollContainer, container = wrapper's child
     // options.container === string,
     const horizontal = gridOptions.horizontal;
     const wrapperElement = isString(wrapper) ? document.querySelector(wrapper) as HTMLElement : wrapper;
     const scrollManager = new ScrollManager(wrapperElement, {
-      container: false,
+      container,
       containerTag: "div",
       horizontal,
     }).on({
       scroll: this._onScroll,
     });
-    const container = scrollManager.getContainer();
-    const containerManager = new ContainerManager(container, {
+    const containerElement = scrollManager.getContainer();
+    const containerManager = new ContainerManager(containerElement, {
       horizontal,
     });
     const infinite = new Infinite({
@@ -113,7 +124,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       "requestAppend": this._onRequestAppend,
       "requestPrepend": this._onRequestPrepend,
     });
-    const groupManager = new GroupManager(container, {
+    const groupManager = new GroupManager(containerElement, {
       gridConstructor: gridConstructor!,
       externalContainerManager: containerManager,
       gridOptions,
@@ -123,10 +134,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       "renderComplete": this._onRenderComplete,
       "contentError": this._onContentError,
     });
-    const renderer: Renderer = null as any;
 
-    renderer.setContainer(container);
-    renderer.on("updated", this._onRendererUpdated);
+
+    renderer!.setContainer(containerElement);
+    renderer!.on("updated", this._onRendererUpdated);
 
     this.groupManager = groupManager;
     this.wrapperElement = wrapperElement;
@@ -229,8 +240,18 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     return this.groupManager.getVisibleGroups();
   }
 
+  public destroy(): void {
+    this.off();
+    this.groupManager.destroy();
+    this.scrollManager.destroy();
+    this.infinite.destroy();
+  }
+
+  private _getRenderer() {
+    return this.options.renderer!;
+  }
   private _render(): void {
-    this.renderer.render(this.getVisibleItems().map((item) => {
+    this._getRenderer().render(this.getVisibleItems().map((item) => {
       return {
         element: item.element,
         key: item.key,
@@ -239,7 +260,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     }));
   }
   private _update(): void {
-    if (this.renderer.update()) {
+    if (this._getRenderer().update()) {
       this._render();
     }
   }
