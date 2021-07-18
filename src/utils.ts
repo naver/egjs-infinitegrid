@@ -129,6 +129,13 @@ export function makeKey(registeredKeys: Record<string, any>) {
   }
 }
 
+export function convertHTMLtoElement(html: string) {
+  const dummy = document.createElement("div");
+
+  dummy.innerHTML = html;
+  return toArray(dummy.children);
+}
+
 export function convertInsertedItems(
   items: InfiniteGridInsertedItems,
   groupKey?: string | number,
@@ -136,10 +143,7 @@ export function convertInsertedItems(
   let insertedItems: Array<string | HTMLElement | InfiniteGridItemInfo>;
 
   if (isString(items)) {
-    const dummy = document.createElement("div");
-
-    dummy.innerHTML = items;
-    insertedItems = toArray(dummy.children);
+    insertedItems = convertHTMLtoElement(items);
   } else {
     insertedItems = items;
   }

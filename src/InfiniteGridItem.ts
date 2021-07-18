@@ -9,9 +9,12 @@ export interface InfiniteGridItemStatus extends GridItemStatus {
 
 export class InfiniteGridItem extends GridItem implements Required<InfiniteGridItemInfo> {
   public groupKey: string | number;
-  public html = "";
+  public html: string;
   constructor(horizontal: boolean, itemStatus?: Partial<InfiniteGridItemStatus>) {
-    super(horizontal, itemStatus);
+    super(horizontal, {
+      html: "",
+      ...itemStatus,
+    });
   }
   public getStatus(): Required<InfiniteGridItemStatus> {
     return {
