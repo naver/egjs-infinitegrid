@@ -180,5 +180,98 @@ describe("test InfiniteGrid", () => {
         expect(child.style.top).to.be.equals(`${i * 23}px`);
       });
     });
+    it("should check whether it is rendered after changing options", async () => {
+      // Given
+      const igContainer = ig!.getContainerElement();
+
+      ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: child,
+          html: `<div>${child}</div>`,
+        };
+      }));
+
+      ig!.setCursors(0, 1);
+
+      await waitEvent(ig!, "renderComplete");
+
+      // When
+      // 0 => 5
+      ig!.gap = 5;
+      ig!.renderItems();
+
+      await waitEvent(ig!, "renderComplete");
+
+      // Then
+      const children = toArray(igContainer.children);
+
+      children.forEach((child, i) => {
+        expect(child.style.top).to.be.equals(`${i * 23}px`);
+      });
+    });
+    it("should check if render is complete after append", async () => {
+      // Given
+      const igContainer = ig!.getContainerElement();
+
+      ig!.append([0, 1, 2, 3, 4, 5].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: child,
+          html: `<div>${child}</div>`,
+        };
+      }));
+
+      await waitEvent(ig!, "renderComplete");
+
+      // Then
+      const children = toArray(igContainer.children);
+      expect(ig!.getItems().map((item) => item.groupKey)).to.be.deep.equals([0, 0, 0, 1, 1, 1]);
+      expect(ig!.getGroups().map((group) => group.groupKey)).to.be.deep.equals([0, 1]);
+      expect(ig!.getVisibleGroups().map((group) => group.groupKey)).to.be.deep.equals([0]);
+      expect(children.length).to.be.equals(3);
+
+      children.forEach((child, i) => {
+        expect(child.style.top).to.be.equals(`${i * 18}px`);
+      });
+    });
+    it.only("should check if render is complete after prepend", async () => {
+      // Given
+      const igContainer = ig!.getContainerElement();
+
+      ig!.append([0, 1, 2].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: child,
+          html: `<div>${child}</div>`,
+        };
+      }));
+
+      await waitEvent(ig!, "renderComplete");
+
+
+      ig!.prepend([3, 4, 5].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: child,
+          html: `<div>${child}</div>`,
+        };
+      }));
+
+      await waitEvent(ig!, "renderComplete");
+
+      // Then
+      const children = toArray(igContainer.children);
+
+      expect(ig!.getItems().map((item) => item.groupKey)).to.be.deep.equals([1, 1, 1, 0, 0, 0]);
+      expect(ig!.getGroups().map((group) => group.groupKey)).to.be.deep.equals([1, 0]);
+      expect(ig!.getVisibleGroups().map((group) => group.groupKey)).to.be.deep.equals([1, 0]);
+      expect(children.length).to.be.equals(6);
+
+
+      children.forEach((child, i) => {
+        expect(child.style.top).to.be.equals(`${i * 18}px`);
+      });
+    });
   });
 });
