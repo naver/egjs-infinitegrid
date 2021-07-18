@@ -4,13 +4,13 @@ import { diff } from "@egjs/list-differ";
 export interface OnInfiniteRequestAppend {
   startCursor: number;
   endCursor: number;
-  groupKey: string | number;
+  groupKey: string | number | undefined;
 }
 
 export interface OnInfiniteRequestPrepend {
   startCursor: number;
   endCursor: number;
-  groupKey: string | number;
+  groupKey: string | number | undefined;
 }
 
 export interface OnInfiniteChange {
@@ -59,15 +59,38 @@ export class Infinite extends Component<InfiniteEvents> {
     const items = this.items;
     const length = items.length;
     const size = this.size;
-
-    if (prevStartCursor === -1 || prevEndCursor === -1 || !length) {
-      return;
-    }
     const {
       defaultDirection,
       threshold,
     } = this.options;
     const isDirectionEnd = defaultDirection === "end";
+
+    if (!length) {
+      if (isDirectionEnd) {
+        this.trigger("requestPrepend", {
+          groupKey: undefined,
+          startCursor: prevStartCursor,
+          endCursor: prevEndCursor,
+        });
+      } else {
+        this.trigger("requestAppend", {
+          groupKey: undefined,
+          startCursor: prevStartCursor,
+          endCursor: prevEndCursor,
+        });
+      }
+      return;
+    } else if (prevStartCursor === -1 || prevEndCursor === -1) {
+      const nextCursor = isDirectionEnd ? 0 : length - 1;
+      this.trigger("change", {
+        prevStartCursor,
+        prevEndCursor,
+        nextStartCursor: nextCursor,
+        nextEndCursor: nextCursor,
+      });
+      return;
+    }
+
     const endScrollPos = scrollPos + size;
     const startEdgePos = Math.max(...items[prevStartCursor].startOutline);
     const endEdgePos = Math.min(...items[prevEndCursor].endOutline);

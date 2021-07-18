@@ -158,7 +158,7 @@ export function convertInsertedItems(
       element = item;
       html = item.outerHTML;
     } else {
-      return item;
+      return { groupKey, ...item };
     }
 
     return {

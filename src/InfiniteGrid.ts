@@ -125,6 +125,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       "requestAppend": this._onRequestAppend,
       "requestPrepend": this._onRequestPrepend,
     });
+
+    infinite.setSize(scrollManager.getContentSize());
     const groupManager = new GroupManager(containerElement, {
       gridConstructor: gridConstructor!,
       externalContainerManager: containerManager,
@@ -159,6 +161,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * grid.renderItems();
    */
   public renderItems(options: RenderOptions = {}) {
+    this._resizeScroll();
     if (!this.getItems().length) {
       const children = toArray(this.getContainerElement().children);
       if (children.length > 0) {
@@ -208,18 +211,9 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   public syncItems(items: InfiniteGridItemInfo[]): this {
     this.groupManager.syncItems(items);
 
-    const groups = this.groupManager.getGroups();
     const infinite = this.infinite;
 
-    infinite.sync(groups.map(({ groupKey, grid }) => {
-      const outlines = grid.getOutlines();
-
-      return {
-        key: groupKey,
-        startOutline: outlines.start,
-        endOutline: outlines.end,
-      };
-    }));
+    this._syncInfinite();
 
     this.groupManager.setCursors(infinite.getStartCursor(), infinite.getEndCursor());
     this._render();
@@ -357,6 +351,23 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       this._render();
     }
   }
+  private _resizeScroll() {
+    const scrollManager = this.scrollManager;
+
+    scrollManager.resize();
+    this.infinite.setSize(scrollManager.getContentSize());
+  }
+  private _syncInfinite() {
+    this.infinite.sync(this.getGroups().map(({ groupKey, grid }) => {
+      const outlines = grid.getOutlines();
+
+      return {
+        key: groupKey,
+        startOutline: outlines.start,
+        endOutline: outlines.end,
+      };
+    }));
+  }
   private _onScroll = (): void => {
     this.infinite.scroll(this.scrollManager.getRelativeScrollPos());
   }
@@ -365,6 +376,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
   private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>): void => {
     if (!e.isChanged) {
+      this._onScroll();
       return;
     }
     const renderedItems = e.items;
@@ -393,7 +405,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       gridItem.element = item.element as HTMLElement;
     });
-    this.renderItems();
+    this.groupManager.renderItems();
   }
   private _onRequestAppend = (): void => {
     // TODO
@@ -411,6 +423,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   private _onRenderComplete = (): void => {
     // TODO
     this.trigger("renderComplete", {});
+    this._syncInfinite();
+    this._onScroll();
   }
 }
 
