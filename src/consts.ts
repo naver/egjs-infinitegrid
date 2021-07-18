@@ -12,4 +12,5 @@ export const IGNORE_PROPERITES_MAP = {
 
 export const DEFAULT_INFINITEGRID_OPTIONS = {
   gridConstructor: null,
+  container: false,
 };
