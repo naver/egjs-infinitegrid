@@ -7,7 +7,7 @@ import PackingLayout from "../../src/layouts/PackingLayout";
 import JustifiedLayout from "../../src/layouts/JustifiedLayout";
 import { getItems, insert, wait, waitInsert, waitEvent } from "./helper/TestHelper";
 import { LOADING_APPEND, LOADING_PREPEND, DEFENSE_BROWSER, IDLE } from "../../src/consts";
-import { scroll, innerHeight, innerWidth } from "../../src/utils";
+import { scroll, getClientHeight, getClientWidth } from "../../src/utils";
 import { expectConnectGroupsOutline } from "./helper/common";
 
 /* eslint-disable */
@@ -545,7 +545,7 @@ describe("InfiniteGrid Test", function () {
 					this.inst.append(`<div class="item" style="width: 100%; height: 50px;">Item</div>`);
 					const e = await event;
 					const isScroll = e.isScroll;
-					const size = isOverflowScroll ? 250 : innerHeight(window);
+					const size = isOverflowScroll ? 250 : getClientHeight(window);
 
 					// Then
 					if (e.size <= size) {
@@ -978,7 +978,7 @@ describe("InfiniteGrid Test", function () {
 
 					const layoutCompleteHandler = sinon.spy(e => {
 						if (!isOverflowScroll) {
-							expect(innerHeight(this.inst._renderer.container)).to.be.equal(this.inst._getEdgeValue("end") - this.inst._getEdgeValue("start") + (isAppend ? 75 : 100));
+							expect(getClientHeight(this.inst._renderer.container)).to.be.equal(this.inst._getEdgeValue("end") - this.inst._getEdgeValue("start") + (isAppend ? 75 : 100));
 						}
 						expect(this.inst.isLoading()).to.be.true;
 						if (isAppend) {
@@ -988,7 +988,7 @@ describe("InfiniteGrid Test", function () {
 					this.inst.on("layoutComplete", layoutCompleteHandler);
 
 					if (!isOverflowScroll) {
-						expect(innerHeight(this.inst._renderer.container)).to.be.equal(isAppend ? 75 : 100);
+						expect(getClientHeight(this.inst._renderer.container)).to.be.equal(isAppend ? 75 : 100);
 					}
 					const handler = await waitInsert(this.inst, isAppend, ITEMCOUNT, 2);
 					// End Loading
@@ -1175,7 +1175,7 @@ describe("InfiniteGrid Test", function () {
 			const size = datas.map(data => data.items.map(item => Object.assign(item.size)));
 			const waitLayout = waitEvent(this.inst, "layoutComplete");
 			const container = this.el.querySelector("#infinite");
-			const width = innerWidth(container);
+			const width = getClientWidth(container);
 			container.style.width = `${width * 2}px`;
 			datas[0].outlines.start = [0];
 			this.inst._renderer._size.viewport = width * 2;
@@ -1336,7 +1336,7 @@ describe("InfiniteGrid Test", function () {
 			// When
 			const waitLayoutComplete = waitEvent(this.inst, "layoutComplete");
 			const container = this.el.querySelector("#infinite");
-			const width = innerWidth(container);
+			const width = getClientWidth(container);
 			container.style.width = `${width * 3}px`;
 			datas[0].outlines.start = [];
 			this.inst._renderer._size.viewport = width * 3;
