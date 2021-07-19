@@ -1055,6 +1055,63 @@ describe("InfiniteGrid Test", function () {
 			});
 		});
 	});
+	describe("test useOffset option", function () {
+		beforeEach(() => {
+			this.el = sandbox();
+			this.el.innerHTML = "<div id='infinite'></div>";
+		});
+		afterEach(() => {
+			if (this.inst) {
+				this.inst.destroy();
+				this.inst = null;
+			}
+			cleanup();
+		});
+		[false, true].forEach(useOffset => {
+			it(`should check if rendering is normal when scale is 1 (useOffset: ${useOffset}) `, async () => {
+				// Given
+				this.inst = new InfiniteGrid("#infinite", {
+					useRecycle: true,
+					isOverflowScroll: false,
+					useOffset,
+				});
+				this.inst.setLayout(GridLayout);
+				await waitInsert(this.inst, true, 5, 4);
+
+				expect(document.querySelector("#infinite").style.height).to.be.equals("1000px");
+			});
+		});
+		it(`should check if rendering is abnormal when scale is 0.5 (useOffset: false) `, async () => {
+			// Given
+			const container = document.querySelector("#infinite");
+
+			container.style.transform = "scale(0.5)";
+			this.inst = new InfiniteGrid(container, {
+				useRecycle: true,
+				isOverflowScroll: false,
+				useOffset: false,
+			});
+			this.inst.setLayout(GridLayout);
+			await waitInsert(this.inst, true, 5, 4);
+
+			expect(document.querySelector("#infinite").style.height).to.be.equals("300px");
+		});
+		it(`should check if rendering is normal when scale is 0.5 (useOffset: true) `, async () => {
+			// Given
+			const container = document.querySelector("#infinite");
+
+			container.style.transform = "scale(0.5)";
+			this.inst = new InfiniteGrid(container, {
+				useRecycle: true,
+				isOverflowScroll: false,
+				useOffset: true,
+			});
+			this.inst.setLayout(GridLayout);
+			await waitInsert(this.inst, true, 5, 4);
+
+			expect(document.querySelector("#infinite").style.height).to.be.equals("1000px");
+		});
+	});
 	describe("append/prepend Test on layoutComplete", function () {
 		[true, false].forEach(isOverflowScroll => {
 			beforeEach(() => {
