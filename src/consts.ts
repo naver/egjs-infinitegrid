@@ -52,6 +52,7 @@ export const DEFAULT_OPTIONS = {
 	resizeDebounce: 100,
 	maxResizeDebounce: 0,
 	percentage: false,
+	useOffset: false,
 };
 
 export const DEFAULT_LAYOUT_OPTIONS = {

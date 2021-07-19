@@ -26,6 +26,7 @@ export interface IInfiniteGridOptions {
 	resizeDebounce: number;
 	maxResizeDebounce: number;
 	percentage: boolean | Array<"size" | "position">;
+	useOffset: boolean;
 }
 
 export interface IInfiniteGridGroup {
@@ -255,6 +256,7 @@ export interface LoadingImageElement extends HTMLImageElement {
 }
 
 export interface IDOMRendererOptions {
+	useOffset: boolean;
 	isEqualSize: boolean;
 	isConstantSize: boolean;
 	horizontal: boolean;

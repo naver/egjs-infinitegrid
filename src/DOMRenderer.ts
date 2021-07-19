@@ -9,12 +9,13 @@ import {
 import { window, document } from "./browser";
 import {
 	$,
-	innerHeight,
-	innerWidth,
-	getSize,
 	getStyle,
 	addOnceEvent,
 	assign,
+	getOffsetSize,
+	getClientWidth,
+	getClientHeight,
+	getRectSize,
 } from "./utils";
 import {
 	RectType, IPosition, IJQuery,
@@ -105,6 +106,7 @@ export default class DOMRenderer {
 	public container: HTMLElement;
 	public view: Window | HTMLElement;
 	public options: IDOMRendererOptions = {
+		useOffset: false,
 		isEqualSize: false,
 		isConstantSize: false,
 		horizontal: false,
@@ -136,7 +138,7 @@ export default class DOMRenderer {
 		assign(this._size, status._size);
 	}
 	public updateSize(items: IInfiniteGridItem[]) {
-		const { isEqualSize, isConstantSize } = this.options;
+		const { isEqualSize, isConstantSize, useOffset } = this.options;
 		const size = this._size;
 
 		return items.map(item => {
@@ -144,11 +146,11 @@ export default class DOMRenderer {
 				return item;
 			}
 			if (isEqualSize && !size.item) {
-				size.item = getSize(item.el);
+				size.item = useOffset ? getOffsetSize(item.el) : getRectSize(item.el);
 			}
 			item.size = (isEqualSize && assign({}, size.item)) ||
 				(isConstantSize && item.orgSize && item.orgSize.width && assign({}, item.orgSize)) ||
-				getSize(item.el);
+				(useOffset ? getOffsetSize(item.el) : getRectSize(item.el));
 			if (!item.orgSize || !item.orgSize.width || !item.orgSize.height) {
 				item.orgSize = assign({}, item.size);
 			}
@@ -226,7 +228,7 @@ export default class DOMRenderer {
 				item: null,
 			};
 		}
-		this._size.view = horizontal ? innerWidth(view) : innerHeight(view);
+		this._size.view = horizontal ? getClientWidth(view) : getClientHeight(view);
 		return isResize;
 	}
 	public isNeededResize() {
@@ -297,7 +299,7 @@ export default class DOMRenderer {
 	}
 	private _calcSize() {
 		return this.options.horizontal ?
-			innerHeight(this.container) : innerWidth(this.container);
+			getClientHeight(this.container) : getClientWidth(this.container);
 	}
 	private _render(properties: RectType[], rect: IInfiniteGridItem["rect"], style: HTMLElement["style"]) {
 		const isSizePercentage = this._isSizePercentage;
