@@ -67,19 +67,11 @@ export class Infinite extends Component<InfiniteEvents> {
     const isDirectionEnd = defaultDirection === "end";
 
     if (!length) {
-      if (isDirectionEnd) {
-        this.trigger("requestPrepend", {
-          groupKey: undefined,
-          startCursor: prevStartCursor,
-          endCursor: prevEndCursor,
-        });
-      } else {
-        this.trigger("requestAppend", {
-          groupKey: undefined,
-          startCursor: prevStartCursor,
-          endCursor: prevEndCursor,
-        });
-      }
+      this.trigger(isDirectionEnd ? "requestAppend" : "requestPrepend", {
+        groupKey: undefined,
+        startCursor: prevStartCursor,
+        endCursor: prevEndCursor,
+      });
       return;
     } else if (prevStartCursor === -1 || prevEndCursor === -1) {
       const nextCursor = isDirectionEnd ? 0 : length - 1;

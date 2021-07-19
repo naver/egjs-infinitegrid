@@ -58,13 +58,13 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return this.itemKeys[key] || null;
   }
   public getItemInfos(): InfiniteGridItemInfo[] {
-    return this.groupItems.map((item) => {
+    return this.groupItems.map(({ groupKey, key, element, html, data }) => {
       return {
-        groupKey: item.groupKey,
-        key: item.key,
-        element: item.element,
-        html: item.html,
-        data: item.data,
+        groupKey,
+        key,
+        element,
+        html,
+        data,
       };
     });
   }

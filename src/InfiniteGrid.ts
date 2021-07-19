@@ -38,7 +38,7 @@ export interface InfiniteGridEvents {
  * @extends Component
  * @support {"ie": "9+(with polyfill)", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "4.X+"}
  * @example
-```
+```html
 <ul id="grid">
   <li class="card">
     <div>test1</div>
@@ -226,10 +226,11 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @param - first index of visible groups. <ko>보이는 그룹의 첫번째 index.</ko>
    * @param - last index of visible groups. <ko>보이는 그룹의 마지막 index.</ko>
    */
-  public setCursors(startCursor: number, endCursor: number): void {
+  public setCursors(startCursor: number, endCursor: number): this {
     this.groupManager.setCursors(startCursor, endCursor);
     this.infinite.setCursors(startCursor, endCursor);
     this._update();
+    return this;
   }
   /**
    * Add items at the bottom(right) of the grid.
