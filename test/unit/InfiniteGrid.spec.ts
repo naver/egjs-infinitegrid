@@ -126,27 +126,25 @@ describe("test InfiniteGrid", () => {
         return {
           groupKey: Math.floor(child / 3),
           key: child,
-          html: `<div>${child}</div>`,
+          html: `<div style="height: 200px">${child}</div>`,
         };
       }));
 
       ig!.setCursors(0, 1);
 
+      // When
       await waitEvent(ig!, "renderComplete");
 
-      // When
-      // [0, 1] => [1]
-      ig!.setCursors(1, 1);
-
+      // one more [0, 1] => [0]
       await waitEvent(ig!, "renderComplete");
       const children = toArray(igContainer.children);
 
       // Then
-      expect(ig!.getVisibleGroups().map((group) => group.groupKey)).to.be.deep.equals([1]);
+      expect(ig!.getVisibleGroups().map((group) => group.groupKey)).to.be.deep.equals([0]);
       expect(children.length).to.be.equals(3);
 
       children.forEach((child, i) => {
-        expect(child.style.top).to.be.equals(`${54 + i * 18}px`);
+        expect(child.style.top).to.be.equals(`${i * 200}px`);
       });
     });
     it("should check whether it is rendered after changing options", async () => {
@@ -218,7 +216,7 @@ describe("test InfiniteGrid", () => {
         return {
           groupKey: Math.floor(child / 3),
           key: child,
-          html: `<div>${child}</div>`,
+          html: `<div style="height: 200px">${child}</div>`,
         };
       }));
 
@@ -232,29 +230,29 @@ describe("test InfiniteGrid", () => {
       expect(children.length).to.be.equals(3);
 
       children.forEach((child, i) => {
-        expect(child.style.top).to.be.equals(`${i * 18}px`);
+        expect(child.style.top).to.be.equals(`${i * 200}px`);
       });
     });
-    it.only("should check if render is complete after prepend", async () => {
+    it("should check if the scroll position changes when prepend", async () => {
       // Given
       const igContainer = ig!.getContainerElement();
 
-      ig!.append([0, 1, 2].map((child) => {
+      ig!.append([0, 1, 2, 3, 4].map((child) => {
         return {
-          groupKey: Math.floor(child / 3),
+          groupKey: Math.floor(child / 5),
           key: child,
-          html: `<div>${child}</div>`,
+          html: `<div style="height: 200px;">${child}</div>`,
         };
       }));
 
       await waitEvent(ig!, "renderComplete");
 
 
-      ig!.prepend([3, 4, 5].map((child) => {
+      ig!.prepend([5, 6, 7, 8, 9].map((child) => {
         return {
-          groupKey: Math.floor(child / 3),
+          groupKey: Math.floor(child / 5),
           key: child,
-          html: `<div>${child}</div>`,
+          html: `<div style="height: 200px;">${child}</div>`,
         };
       }));
 
@@ -263,14 +261,14 @@ describe("test InfiniteGrid", () => {
       // Then
       const children = toArray(igContainer.children);
 
-      expect(ig!.getItems().map((item) => item.groupKey)).to.be.deep.equals([1, 1, 1, 0, 0, 0]);
+      expect(ig!.getItems().map((item) => item.groupKey)).to.be.deep.equals([1, 1, 1, 1, 1, 0, 0, 0, 0, 0]);
       expect(ig!.getGroups().map((group) => group.groupKey)).to.be.deep.equals([1, 0]);
       expect(ig!.getVisibleGroups().map((group) => group.groupKey)).to.be.deep.equals([1, 0]);
-      expect(children.length).to.be.equals(6);
-
+      expect(ig!.getScrollContainerElement().scrollTop).to.be.equals(1000);
+      expect(children.length).to.be.equals(10);
 
       children.forEach((child, i) => {
-        expect(child.style.top).to.be.equals(`${i * 18}px`);
+        expect(child.style.top).to.be.equals(`${i * 200}px`);
       });
     });
   });
