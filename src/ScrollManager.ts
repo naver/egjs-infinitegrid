@@ -94,9 +94,15 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     }
   }
   public scrollBy(pos: number) {
+    if (!pos) {
+      return;
+    }
     const eventTarget = this.eventTarget;
     const horizontal = this.options.horizontal;
     const [x, y] = horizontal ? [pos, 0] : [0, pos];
+
+
+    this.prevScrollPos! += pos;
 
     if (isWindow(eventTarget)) {
       eventTarget.scrollBy(x, y);

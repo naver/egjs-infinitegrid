@@ -44,6 +44,7 @@ export class Infinite extends Component<InfiniteEvents> {
   protected endCursor = -1;
   protected size = 0;
   protected items: InfiniteItem[] = [];
+  protected itemKeys: Record<string | number, InfiniteItem> = {};
   constructor(options: InfiniteOptions) {
     super();
     this.options = {
@@ -165,6 +166,13 @@ export class Infinite extends Component<InfiniteEvents> {
   }
   public setItems(nextItems: InfiniteItem[]) {
     this.items = nextItems;
+
+    const itemKeys: Record<string | number, InfiniteItem> = {};
+
+    nextItems.forEach((item) => {
+      itemKeys[item.key] = item;
+    });
+    this.itemKeys = itemKeys;
   }
   public sync(nextItems: InfiniteItem[]) {
     const prevItems = this.items;
@@ -212,6 +220,17 @@ export class Infinite extends Component<InfiniteEvents> {
       return [];
     }
     return this.items.slice(startCursor, endCursor + 1);
+  }
+  public getItemByKey(key: string | number) {
+    return this.itemKeys[key];
+  }
+  public getRenderedVisibleItems() {
+    const groups = this.getVisibleItems();
+    const rendered = groups.map((group) => group.startOutline.length > 0);
+    const startIndex = rendered.indexOf(true);
+    const endIndex = rendered.lastIndexOf(true);
+
+    return endIndex === -1 ? [] : groups.slice(startIndex, endIndex + 1);
   }
   public destroy() {
     this.off();
