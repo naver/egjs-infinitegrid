@@ -9,6 +9,7 @@ import {
   RenderOptions,
   MOUNT_STATE,
 } from "@egjs/grid";
+import { EVENTS } from "./consts";
 import { GroupManager } from "./GroupManager";
 import { Infinite, OnInfiniteChange } from "./Infinite";
 import { InfiniteGridItem } from "./InfiniteGridItem";
@@ -369,15 +370,19 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       };
     }));
   }
-  private _onScroll = (): void => {
+  private _scroll() {
     this.infinite.scroll(this.scrollManager.getRelativeScrollPos());
+  }
+  private _onScroll = (): void => {
+    this._scroll();
+    this.trigger(EVENTS.SCROLL, {});
   }
   private _onChange = (e: OnInfiniteChange): void => {
     this.setCursors(e.nextStartCursor, e.nextEndCursor);
   }
   private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>): void => {
     if (!e.isChanged) {
-      this._onScroll();
+      this._scroll();
       return;
     }
     const renderedItems = e.items;
@@ -410,15 +415,15 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
   private _onRequestAppend = (): void => {
     // TODO
-    this.trigger("requestAppend", {});
+    this.trigger(EVENTS.REQUEST_APPEND, {});
   }
   private _onRequestPrepend = (): void => {
     // TODO
-    this.trigger("requestPrepend", {});
+    this.trigger(EVENTS.REQUEST_PREPEND, {});
   }
   private _onContentError = (): void => {
     // TODO
-    this.trigger("contentError", {});
+    this.trigger(EVENTS.CONTENT_ERROR, {});
   }
 
   private _onRenderComplete = (): void => {
@@ -439,8 +444,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       this.scrollManager.scrollBy(offset);
     }
-    this.trigger("renderComplete", {});
-    this._onScroll();
+    this.trigger(EVENTS.RENDER_COMPLETE, {});
+    this._scroll();
   }
 }
 
