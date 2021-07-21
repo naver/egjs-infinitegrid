@@ -167,7 +167,8 @@ export function getStyle(el: Element) {
 	return (SUPPORT_COMPUTEDSTYLE ?
 		window.getComputedStyle(el) : (el as any).currentStyle) || {};
 }
-function _getSize(el: Window | Document | HTMLElement, name: "Width" | "Height", isOffset?: boolean) {
+
+function getSize(el: Window | Document | HTMLElement, name: "Width" | "Height", type: "client" | "offset" | "rect") {
 	if (isWindow(el)) { // WINDOW
 		return window[`inner${name}` as InnerSizeType] || document.body[`client${name}` as ClientSizeType];
 	} else if (isDocument(el)) { // DOCUMENT_NODE
@@ -182,10 +183,12 @@ function _getSize(el: Window | Document | HTMLElement, name: "Width" | "Height",
 	} else { // NODE
 		let size = 0;
 
-		if (isOffset) {
+		if (type === "rect") {
 			const clientRect = el.getBoundingClientRect();
 
 			size = name === "Width" ? clientRect.right - clientRect.left : clientRect.bottom - clientRect.top;
+		} else if (type === "offset") {
+			size = el[`offset${name}` as OffsetSizeType] || el[`client${name}` as ClientSizeType];
 		} else {
 			size = el[`client${name}` as ClientSizeType] || el[`offset${name}` as OffsetSizeType];
 		}
@@ -198,22 +201,34 @@ function _getSize(el: Window | Document | HTMLElement, name: "Width" | "Height",
 	}
 }
 
-export function innerWidth(el: Window | Document | HTMLElement) {
-	return _getSize(el, "Width", false);
+export function getClientWidth(el: Window | Document | HTMLElement) {
+	return getSize(el, "Width", "client");
 }
-export function innerHeight(el: Window | Document | HTMLElement) {
-	return _getSize(el, "Height", false);
+export function getClientHeight(el: Window | Document | HTMLElement) {
+	return getSize(el, "Height", "client");
 }
-export function outerWidth(el: Window | Document | HTMLElement) {
-	return _getSize(el, "Width", true);
+export function getOffsetWidth(el: Window | Document | HTMLElement) {
+	return getSize(el, "Width", "offset");
 }
-export function outerHeight(el: Window | Document | HTMLElement) {
-	return _getSize(el, "Height", true);
+export function getOffsetHeight(el: Window | Document | HTMLElement) {
+	return getSize(el, "Height", "offset");
 }
-export function getSize(el: HTMLElement) {
+export function getRectWidth(el: Window | Document | HTMLElement) {
+	return getSize(el, "Width", "rect");
+}
+export function getRectHeight(el: Window | Document | HTMLElement) {
+	return getSize(el, "Height", "rect");
+}
+export function getOffsetSize(el: HTMLElement) {
 	return {
-		width: outerWidth(el),
-		height: outerHeight(el),
+		width: getOffsetWidth(el),
+		height: getOffsetHeight(el),
+	};
+}
+export function getRectSize(el: HTMLElement) {
+	return {
+		width: getRectWidth(el),
+		height: getRectHeight(el),
 	};
 }
 export const STYLE: {

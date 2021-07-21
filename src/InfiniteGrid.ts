@@ -18,7 +18,7 @@ import {
 	DEFAULT_OPTIONS,
 } from "./consts";
 import Infinite from "./Infinite";
-import { toArray, $, outerHeight, outerWidth, assign, resetSize, hasClass, addClass } from "./utils";
+import { toArray, $, assign, resetSize, hasClass, addClass, getOffsetWidth, getOffsetHeight, getRectWidth, getRectHeight } from "./utils";
 import {
 	IJQuery, ILayout,
 	CursorType, StyleType,
@@ -122,6 +122,8 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 	 * @param {boolean} [options.isOverflowScroll=false] Indicates whether overflow:scroll is applied<ko>overflow:scroll 적용여부를 결정한다.</ko>
 	 * @param {boolean} [options.horizontal=false] Direction of the scroll movement (true: horizontal, false: vertical) <ko>스크롤 이동 방향 (true 가로방향, false 세로방향)</ko>
 	 * @param {boolean} [options.useFit=true] The useFit option scrolls upwards so that no space is visible until an item is added <ko>위로 스크롤할 시 아이템을 추가하는 동안 보이는 빈 공간을 안보이게 한다.</ko>
+	 * @param {boolean} [options.useOffset=false] Whether to get the size as offsetWidth, offsetHeight. Set to true if transform is applied to the container. If false, get the size through getBoundingClientRect. <ko>사이즈를 offsetWidth, offsetHeight로 가져올지 여부.
+container에 transform이 적용되어 있다면 true로 설정해라. false면 getBoundingClientRect를 통해 사이즈를 가져온다.</ko>
 	 * @param {boolean} [options.isEqualSize=false] Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to "true", the performance of layout arrangement can be improved. <ko>카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
 	 * @param {boolean} [options.isConstantSize=false] Indicates whether sizes of all card elements does not change, the performance of layout arrangement can be improved. <ko>모든 카드 엘리먼트의 크기가 불변일 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다</ko>
 	 * @param {number} [options.transitionDruation=0] Indicates how many seconds a transition effect takes to complete. <ko>트랜지션 효과를 완료하는데 걸리는 시간을 나타낸다.</ko>
@@ -152,6 +154,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			resizeDebounce,
 			maxResizeDebounce,
 			percentage,
+			useOffset,
 		} = this.options;
 
 		this._itemManager = new ItemManager();
@@ -161,6 +164,7 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 			horizontal,
 			container: isOverflowScroll,
 			percentage,
+			useOffset,
 		});
 		this._watcher = new Watcher(
 			this._renderer.view,
@@ -1096,7 +1100,15 @@ class InfiniteGrid extends Component<InfiniteGridEvents> {
 		for (const property in style) {
 			el.style[property] = style[property as keyof StyleType];
 		}
-		this._status.loadingSize = this.options.horizontal ? outerWidth(el) : outerHeight(el);
+		const {
+			useOffset,
+			horizontal,
+		} = this.options;
+		if (horizontal) {
+			this._status.loadingSize = useOffset ? getOffsetWidth(el) : getRectWidth(el);
+		} else {
+			this._status.loadingSize = useOffset ? getOffsetHeight(el) : getRectHeight(el);
+		}
 		const posName = this.options.horizontal ? "left" : "top";
 
 		if (!(posName in style)) {
