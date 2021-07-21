@@ -1,6 +1,6 @@
 import Component from "@egjs/component";
 import { CONTAINER_CLASS_NAME, IS_IOS } from "./consts";
-import { isWindow } from "./utils";
+import { isWindow, toArray } from "./utils";
 
 export interface ScrollManagerOptions {
   container?: HTMLElement | boolean | string;
@@ -23,11 +23,13 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
   protected prevScrollPos: number | null = null;
   protected eventTarget: HTMLElement | Window;
   protected scrollOffset = 0;
+  protected contentSize = 0;
   protected container: HTMLElement;
   protected scrollContainer: HTMLElement;
   private _orgCSSText: string;
   private _isScrollIssue = IS_IOS;
   private _isCreateElement: boolean;
+
   constructor(
     protected wrapper: HTMLElement,
     options: ScrollManagerOptions,
@@ -53,6 +55,9 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
   }
   public getScrollOffset() {
     return this.scrollOffset;
+  }
+  public getContentSize() {
+    return this.contentSize;
   }
   public getRelativeScrollPos() {
     return (this.prevScrollPos || 0) - this.scrollOffset;
@@ -89,9 +94,15 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     }
   }
   public scrollBy(pos: number) {
+    if (!pos) {
+      return;
+    }
     const eventTarget = this.eventTarget;
     const horizontal = this.options.horizontal;
     const [x, y] = horizontal ? [pos, 0] : [0, pos];
+
+
+    this.prevScrollPos! += pos;
 
     if (isWindow(eventTarget)) {
       eventTarget.scrollBy(x, y);
@@ -101,10 +112,15 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     }
   }
   public resize() {
-    const scrollContainerRect = this.scrollContainer.getBoundingClientRect();
+    const scrollContainer = this.scrollContainer;
+    const horizontal = this.options.horizontal;
+    const scrollContainerRect = scrollContainer.getBoundingClientRect();
     const containerRect = this.container.getBoundingClientRect();
 
-    this.scrollOffset = (this.prevScrollPos! || 0) + containerRect.top - scrollContainerRect.top;
+    this.scrollOffset = (this.prevScrollPos! || 0) + (horizontal
+      ? containerRect.left - scrollContainerRect.left
+      : containerRect.top - scrollContainerRect.top);
+    this.contentSize = horizontal ? scrollContainer.offsetHeight : scrollContainer.offsetWidth;
   }
   public destroy() {
     const container = this.container;
@@ -115,7 +131,7 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       const scrollContainer = this.scrollContainer;
 
       const fragment = document.createDocumentFragment();
-      const childNodes = [].slice.call(container.childNodes);
+      const childNodes = toArray(container.childNodes);
 
       scrollContainer.removeChild(container);
       childNodes.forEach((childNode) => {
@@ -148,7 +164,7 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
 
         container.style.position = "relative";
         container.className = CONTAINER_CLASS_NAME;
-        const childNodes = [].slice.call(scrollContainer.childNodes);
+        const childNodes = toArray(scrollContainer.childNodes);
 
         childNodes.forEach((childNode) => {
           container.appendChild(childNode);

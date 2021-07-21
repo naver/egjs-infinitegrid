@@ -1,9 +1,10 @@
-import { GridItem } from "@egjs/grid";
+import { InfiniteGridItem } from "../InfiniteGridItem";
+import { convertHTMLtoElement } from "../utils";
 import { RendererItem } from "./Renderer";
 import { VanillaRenderer } from "./VanillaRenderer";
 
 export interface GridRendererItem extends RendererItem {
-  orgItem: GridItem;
+  orgItem: InfiniteGridItem;
 }
 
 export class VanillaGridRenderer extends VanillaRenderer<GridRendererItem> {
@@ -16,8 +17,9 @@ export class VanillaGridRenderer extends VanillaRenderer<GridRendererItem> {
     added.forEach((index) => {
       const orgItem = nextItems[index].orgItem;
 
-      // createElement(orgItem.element);
-
+      if (orgItem.html && !orgItem.element) {
+        orgItem.element = convertHTMLtoElement(orgItem.html)[0];
+      }
       list[index].element = orgItem.element!;
     });
 

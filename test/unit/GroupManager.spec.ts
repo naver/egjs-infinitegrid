@@ -2,6 +2,7 @@ import { cleanup, sandbox, waitEvent } from "./utils/utils";
 import { GroupManager } from "../../src/GroupManager";
 import { SampleGrid } from "./samples/SampleGrid";
 import { InfiniteGridItem } from "../../src/InfiniteGridItem";
+import { toArray } from "../../src/utils";
 
 describe("test GroupManager", () => {
   let manager: GroupManager | null;
@@ -47,7 +48,7 @@ describe("test GroupManager", () => {
         gridOptions: {},
       });
 
-      const children = [].slice.call(container!.children) as HTMLElement[];
+      const children = toArray(container!.children);
 
       // 0 0 0 1 1 1
       manager!.syncItems(children.map((child, i) => {
@@ -60,7 +61,7 @@ describe("test GroupManager", () => {
     });
     it("should check if items are rendered", async () => {
       // Given
-      const children = [].slice.call(container!.children) as HTMLElement[];
+      const children = toArray(container!.children);
 
       // When
       manager!.setCursors(0, 1);
@@ -80,7 +81,7 @@ describe("test GroupManager", () => {
     });
     it("should check if only visible items are rendered", async () => {
       // Given
-      const children = [].slice.call(container!.children) as HTMLElement[];
+      const children = toArray(container!.children);
 
       // When
       manager!.setCursors(0, 0);
@@ -103,7 +104,7 @@ describe("test GroupManager", () => {
     });
     it("should check whether invisible items are remembered after rendering all items", async () => {
       // Given
-      const children = [].slice.call(container!.children) as HTMLElement[];
+      const children = toArray(container!.children);
 
       // render all
       manager!.setCursors(0, 1);
@@ -130,7 +131,7 @@ describe("test GroupManager", () => {
     });
     it("should check whether it is rendered after changing options", async () => {
       // Given
-      const children = [].slice.call(container!.children) as HTMLElement[];
+      const children = toArray(container!.children);
 
       manager!.setCursors(0, 1);
       manager!.renderItems();

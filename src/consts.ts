@@ -8,3 +8,18 @@ export const IGNORE_PROPERITES_MAP = {
   useFit: true,
   autoResize: true,
 } as const;
+
+
+export const DEFAULT_INFINITEGRID_OPTIONS = {
+  gridConstructor: null,
+  container: false,
+};
+
+
+export const EVENTS = {
+  SCROLL: "scroll",
+  REQUEST_APPEND: "requestAppend",
+  REQUEST_PREPEND: "requestPrepend",
+  RENDER_COMPLETE: "renderComplete",
+  CONTENT_ERROR: "contentError",
+} as const;

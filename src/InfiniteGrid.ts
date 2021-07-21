@@ -1,33 +1,123 @@
-import { MasonryGrid, ContainerManager } from "@egjs/grid";
+import Component from "@egjs/component";
+import {
+  ContainerManager,
+  GridOptions,
+  DEFAULT_GRID_OPTIONS,
+  GRID_PROPERTY_TYPES,
+  GridFunction,
+  Properties,
+  RenderOptions,
+  MOUNT_STATE,
+} from "@egjs/grid";
+import { EVENTS } from "./consts";
 import { GroupManager } from "./GroupManager";
-import { Infinite } from "./Infinite";
+import { Infinite, OnInfiniteChange } from "./Infinite";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { OnRendererUpdated, Renderer } from "./Renderer/Renderer";
-import { GridRendererItem } from "./Renderer/VanillaGridRenderer";
+import { GridRendererItem, VanillaGridRenderer } from "./Renderer/VanillaGridRenderer";
 import { ScrollManager } from "./ScrollManager";
-import { InfiniteGridGroup } from "./types";
-import { isString } from "./utils";
+import { InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
+import { convertInsertedItems, GetterSetter, isString, toArray } from "./utils";
 
-export class InfiniteGrid {
+export interface InfiniteGridOptions extends GridOptions {
+  gridConstructor?: GridFunction | null;
+  container?: boolean | string | HTMLElement;
+  renderer?: Renderer | null;
+}
+
+export interface InfiniteGridEvents {
+  scroll: {};
+  requestAppend: {};
+  requestPrepend: {};
+  renderComplete: {};
+  contentError: {};
+}
+
+/**
+ * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
+ * @ko 콘텐츠가 있는 카드 엘리먼트를 레이아웃 타입에 따라 무한으로 배치하는 모듈. 다양한 크기의 카드 엘리먼트를 다양한 레이아웃으로 배치할 수 있다. 카드 엘리먼트의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
+ * @extends Component
+ * @support {"ie": "9+(with polyfill)", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "4.X+"}
+ * @example
+```html
+<ul id="grid">
+  <li class="card">
+    <div>test1</div>
+  </li>
+  <li class="card">
+    <div>test2</div>
+  </li>
+  <li class="card">
+    <div>test3</div>
+  </li>
+  <li class="card">
+    <div>test4</div>
+  </li>
+  <li class="card">
+    <div>test5</div>
+  </li>
+  <li class="card">
+    <div>test6</div>
+  </li>
+</ul>
+<script>
+import { MasonryGrid } from "@egjs/infinitegrid";
+var some = new MasonryGrid("#grid").on("renderComplete", function(e) {
+  // ...
+});
+// If you already have items in the container, call "layout" method.
+some.renderItems();
+</script>
+```
+ */
+@GetterSetter
+class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> extends Component<InfiniteGridEvents> {
+  public static defaultOptions: Required<InfiniteGridOptions> = {
+    ...DEFAULT_GRID_OPTIONS,
+    gridConstructor: null,
+    container: false,
+    renderer: null,
+  };
+  public static propertyTypes = GRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
   protected scrollManager: ScrollManager;
   protected containerManager: ContainerManager;
   protected infinite: Infinite;
-  protected renderer: Renderer;
   protected groupManager: GroupManager;
-  constructor(wrapper: HTMLElement | string) {
+  protected options: Required<Options>;
+  /**
+   * @param - A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
+   * @param - The option object of the InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
+   */
+  constructor(wrapper: HTMLElement | string, options: Options) {
+    super();
+    this.options = {
+      ...((this.constructor as typeof InfiniteGrid).defaultOptions as Required<Options>),
+      renderer: new VanillaGridRenderer(),
+      ...options,
+    };
+
+    const {
+      gridConstructor,
+      container,
+      renderer,
+      ...gridOptions
+    } = this.options;
     // options.container === false, wrapper = container, scrollContainer = document.body
     // options.container === true, wrapper = scrollContainer, container = wrapper's child
     // options.container === string,
+    const horizontal = gridOptions.horizontal;
     const wrapperElement = isString(wrapper) ? document.querySelector(wrapper) as HTMLElement : wrapper;
     const scrollManager = new ScrollManager(wrapperElement, {
-      container: false,
+      container,
       containerTag: "div",
-      horizontal: false,
+      horizontal,
+    }).on({
+      scroll: this._onScroll,
     });
-    const container = scrollManager.getContainer();
-    const containerManager = new ContainerManager(container, {
-      horizontal: false,
+    const containerElement = scrollManager.getContainer();
+    const containerManager = new ContainerManager(containerElement, {
+      horizontal,
     });
     const infinite = new Infinite({
       useRecyle: false,
@@ -37,20 +127,20 @@ export class InfiniteGrid {
       "requestPrepend": this._onRequestPrepend,
     });
 
-    const groupManager = new GroupManager(container, {
-      gridConstructor: MasonryGrid,
+    infinite.setSize(scrollManager.getContentSize());
+    const groupManager = new GroupManager(containerElement, {
+      gridConstructor: gridConstructor!,
       externalContainerManager: containerManager,
-      gridOptions: {},
+      gridOptions,
     });
 
     groupManager.on({
       "renderComplete": this._onRenderComplete,
       "contentError": this._onContentError,
     });
-    const renderer: Renderer = null as any;
 
-    renderer.setContainer(container);
-    renderer.on("updated", this._onRendererUpdated);
+    renderer!.setContainer(containerElement);
+    renderer!.on("updated", this._onRendererUpdated);
 
     this.groupManager = groupManager;
     this.wrapperElement = wrapperElement;
@@ -58,12 +148,219 @@ export class InfiniteGrid {
     this.containerManager = containerManager;
     this.infinite = infinite;
   }
-  public syncItems() {
-    this.groupManager.syncItems([]);
+  /**
+   * Rearrange items to fit the grid and render them. When rearrange is complete, the `renderComplete` event is fired.
+   * @ko grid에 맞게 아이템을 재배치하고 렌더링을 한다. 배치가 완료되면 `renderComplete` 이벤트가 발생한다.
+   * @param - Options for rendering. <ko>렌더링을 하기 위한 옵션.</ko>
+   * @example
+   * import { MasonryGrid } from "@egjs/infinitegrid";
+   * const grid = new MasonryGrid();
+   *
+   * grid.on("renderComplete", e => {
+   *   console.log(e);
+   * });
+   * grid.renderItems();
+   */
+  public renderItems(options: RenderOptions = {}) {
+    this._resizeScroll();
+    if (!this.getItems().length) {
+      const children = toArray(this.getContainerElement().children);
+      if (children.length > 0) {
+        this.append(children);
+      } else {
+        if (this.defaultDirection === "end") {
+          // request append
+        } else {
+          // request prepend
+        }
+        return this;
+      }
+    }
+    if (!this.getVisibleItems().length) {
+      this.setCursors(0, 0);
+    } else {
+      this.groupManager.renderItems(options);
+    }
+    return this;
+  }
+  /**
+   * Returns the wrapper element specified by the user.
+   * @ko 컨테이너 엘리먼트를 반환한다.
+   */
+  public getWrapperElement() {
+    return this.scrollManager.getWrapper();
+  }
+  /**
+   * Returns the container element corresponding to the scroll area.
+   * @ko 스크롤 영역에 해당하는 컨테이너 엘리먼트를 반환한다.
+   */
+  public getScrollContainerElement() {
+    return this.scrollManager.getScrollContainer();
+  }
+  /**
+   * Returns the container element containing item elements.
+   * @ko 아이템 엘리먼트들을 담긴 컨테이너 엘리먼트를 반환한다.
+   */
+  public getContainerElement() {
+    return this.scrollManager.getContainer();
+  }
+  /**
+   * When items change, it synchronizes and renders items.
+   * @ko items가 바뀐 경우 동기화를 하고 렌더링을 한다.
+   * @param - Options for rendering. <ko>렌더링을 하기 위한 옵션.</ko>
+   */
+  public syncItems(items: InfiniteGridItemInfo[]): this {
+    this.groupManager.syncItems(items);
 
-    const groups = this.groupManager.getGroups();
+    const infinite = this.infinite;
 
-    this.infinite.sync(groups.map(({ groupKey, grid }) => {
+    this._syncInfinite();
+
+    this.groupManager.setCursors(infinite.getStartCursor(), infinite.getEndCursor());
+    this._render();
+
+    return this;
+  }
+  /**
+   * Change the currently visible groups.
+   * @ko 현재 보이는 그룹들을 바꾼다.
+   * @param - first index of visible groups. <ko>보이는 그룹의 첫번째 index.</ko>
+   * @param - last index of visible groups. <ko>보이는 그룹의 마지막 index.</ko>
+   */
+  public setCursors(startCursor: number, endCursor: number): this {
+    this.groupManager.setCursors(startCursor, endCursor);
+    this.infinite.setCursors(startCursor, endCursor);
+    this._update();
+    return this;
+  }
+  /**
+   * Add items at the bottom(right) of the grid.
+   * @ko 아이템들을 grid 아래(오른쪽)에 추가한다.
+   * @param - items to be added <ko>추가할 아이템들</ko>
+   * @param - The group key to be configured in items. It is automatically generated by default.
+   * <ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.</ko>
+   * @return - An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * ig.append("&lt;div class='item'&gt;test1&lt;/div&gt;&lt;div class='item'&gt;test2&lt;/div&gt;");
+   * ig.append(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]);
+   * ig.append([HTMLElement1, HTMLElement2]);
+   */
+  public append(items: InfiniteGridInsertedItems, groupKey?: string | number): this {
+    return this.insert(-1, items, groupKey);
+  }
+  /**
+   * Add items at the top(left) of the grid.
+   * @ko 아이템들을 grid 위(왼쪽)에 추가한다.
+   * @param - items to be added <ko>추가할 아이템들</ko>
+   * @param - The group key to be configured in items. It is automatically generated by default.
+   * <ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.</ko>
+   * @return - An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * ig.prepend("&lt;div class='item'&gt;test1&lt;/div&gt;&lt;div class='item'&gt;test2&lt;/div&gt;");
+   * ig.prepend(["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]);
+   * ig.prepend([HTMLElement1, HTMLElement2]);
+   */
+  public prepend(items: InfiniteGridInsertedItems, groupKey?: string | number): this {
+    return this.insert(0, items, groupKey);
+  }
+  /**
+   * Add items to a specific index.
+   * @ko 아이템들을 특정 index에 추가한다.
+   * @param - index to add <ko>추가하기 위한 index</ko>
+   * @param - items to be added <ko>추가할 아이템들</ko>
+   * @param - The group key to be configured in items. It is automatically generated by default.
+   * <ko>추가할 카드 엘리먼트에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.</ko>
+   * @return - An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * ig.insert(2, "&lt;div class='item'&gt;test1&lt;/div&gt;&lt;div class='item'&gt;test2&lt;/div&gt;");
+   * ig.insert(3, ["&lt;div class='item'&gt;test1&lt;/div&gt;", "&lt;div class='item'&gt;test2&lt;/div&gt;"]);
+   * ig.insert(4, [HTMLElement1, HTMLElement2]);
+   */
+  public insert(index: number, items: InfiniteGridInsertedItems, groupKey?: string | number): this {
+    const nextItemInfos = this.groupManager.getItemInfos();
+    const itemInfos = convertInsertedItems(items, groupKey);
+
+    if (index === -1) {
+      nextItemInfos.push(...itemInfos);
+    } else {
+      nextItemInfos.splice(index, 0, ...itemInfos);
+    }
+    return this.syncItems(nextItemInfos);
+  }
+  /**
+   * Update the size of the items and render them.
+   * @ko 아이템들의 사이즈를 업데이트하고 렌더링을 한다.
+   * @param - Items to be updated. <ko>업데이트할 아이템들.</ko>
+   * @param - Options for rendering. <ko>렌더링을 하기 위한 옵션.</ko>
+   */
+  public updateItems(items?: InfiniteGridItem[], options: RenderOptions = {}) {
+    this.groupManager.updateItems(items, options);
+    return this;
+  }
+  /**
+   * Return all items of InfiniteGrid.
+   * @ko InfiniteGrid의 모든 아이템들을 반환한다.
+   */
+  public getItems(): InfiniteGridItem[] {
+    return this.groupManager.getGroupItems();
+  }
+  /**
+   * Return visible items of InfiniteGrid.
+   * @ko InfiniteGrid의 보이는 아이템들을 반환한다.
+   */
+  public getVisibleItems(): InfiniteGridItem[] {
+    return this.groupManager.getItems();
+  }
+  /**
+   * Return all groups of InfiniteGrid.
+   * @ko InfiniteGrid의 모든 그룹들을 반환한다.
+   */
+  public getGroups(): InfiniteGridGroup[] {
+    return this.groupManager.getGroups();
+  }
+  /**
+   * Return visible groups of InfiniteGrid.
+   * @ko InfiniteGrid의 보이는 그룹들을 반환한다.
+   */
+  public getVisibleGroups(): InfiniteGridGroup[] {
+    return this.groupManager.getVisibleGroups();
+  }
+  /**
+   * Releases the instnace and events and returns the CSS of the container and elements.
+   * @ko 인스턴스와 이벤트를 해제하고 컨테이너와 엘리먼트들의 CSS를 되돌린다.
+   */
+  public destroy(): void {
+    this.off();
+    this.groupManager.destroy();
+    this.scrollManager.destroy();
+    this.infinite.destroy();
+  }
+
+  private _getRenderer() {
+    return this.options.renderer!;
+  }
+  private _render(): void {
+    this._getRenderer().render(this.getVisibleItems().map((item) => {
+      return {
+        element: item.element,
+        key: item.key,
+        orgItem: item,
+      };
+    }));
+  }
+  private _update(): void {
+    if (this._getRenderer().update()) {
+      this._render();
+    }
+  }
+  private _resizeScroll() {
+    const scrollManager = this.scrollManager;
+
+    scrollManager.resize();
+    this.infinite.setSize(scrollManager.getContentSize());
+  }
+  private _syncInfinite() {
+    this.infinite.sync(this.getGroups().map(({ groupKey, grid }) => {
       const outlines = grid.getOutlines();
 
       return {
@@ -72,99 +369,86 @@ export class InfiniteGrid {
         endOutline: outlines.end,
       };
     }));
-
-    this._render();
   }
-
-  public syncElements() {
-    return;
+  private _scroll() {
+    this.infinite.scroll(this.scrollManager.getRelativeScrollPos());
   }
-
-  public setCursors(startCursor: number, endCursor: number) {
-    this.groupManager.setCursors(startCursor, endCursor);
-    this.infinite.setCursors(startCursor, endCursor);
-    this._update();
+  private _onScroll = (): void => {
+    this._scroll();
+    this.trigger(EVENTS.SCROLL, {});
   }
-
-  public getItems(): InfiniteGridItem[] {
-    return this.groupManager.getGroupItems();
+  private _onChange = (e: OnInfiniteChange): void => {
+    this.setCursors(e.nextStartCursor, e.nextEndCursor);
   }
-
-  public getVisibleItems(): InfiniteGridItem[] {
-    return this.groupManager.getItems();
-  }
-
-  public getGroups(): InfiniteGridGroup[] {
-    return this.groupManager.getGroups();
-  }
-
-  public getVisibleGroups(): InfiniteGridGroup[] {
-    return this.groupManager.getVisibleGroups();
-  }
-
-  private _render() {
-    this.renderer.render(this.getVisibleItems().map((item) => {
-      return {
-        element: item.element,
-        key: item.key,
-        orgItem: item,
-      };
-    }));
-  }
-  private _update() {
-    if (this.renderer.update()) {
-      this._render();
-    }
-  }
-  private _onChange = () => {
-    //
-  }
-  private _onRequestAppend = () => {
-    //
-  }
-  private _onRequestPrepend = () => {
-    //
-  }
-  private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>) => {
+  private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>): void => {
     if (!e.isChanged) {
+      this._scroll();
       return;
     }
-    const rendererItems = e.items;
+    const renderedItems = e.items;
 
-    // const {
-    //   added,
-    //   removed,
-    //   prevList,
-    //   list,
-    // } = e.diffResult;
+    const {
+      added,
+      removed,
+      prevList,
+      list,
+    } = e.diffResult;
 
-    // removed.forEach((index) => {
-    //   const orgItem = prevList[index].orgItem;
+    removed.forEach((index) => {
+      const orgItem = prevList[index].orgItem;
 
-    //   orgItem.mountState = MOUNT_STATE.UNMOUNTED;
-    // });
-    // added.forEach((index) => {
-    //   const orgItem = list[index].orgItem;
-
-    //   orgItem.mountState = MOUNT_STATE.MOUNTED;
-    // });
-
-    rendererItems.forEach((item) => {
-      if (item.key === "infinite_unique_loading") {
-        // set loading element
-      } else {
-        // set grid element
-        // const gridItem = this.groupManager.findItemByKey(item.key);
-
-        // gridItem.element = item.element;
-      }
+      orgItem.mountState = MOUNT_STATE.UNMOUNTED;
     });
-    // this.renderItems();
+    added.forEach((index) => {
+      const orgItem = list[index].orgItem;
+
+      orgItem.mountState = MOUNT_STATE.MOUNTED;
+    });
+
+    renderedItems.forEach((item) => {
+      // set grid element
+      const gridItem = this.groupManager.getItemByKey(item.key)!;
+
+      gridItem.element = item.element as HTMLElement;
+    });
+    this.groupManager.renderItems();
   }
-  private _onContentError = () => {
-    //
+  private _onRequestAppend = (): void => {
+    // TODO
+    this.trigger(EVENTS.REQUEST_APPEND, {});
   }
-  private _onRenderComplete = () => {
-    //
+  private _onRequestPrepend = (): void => {
+    // TODO
+    this.trigger(EVENTS.REQUEST_PREPEND, {});
+  }
+  private _onContentError = (): void => {
+    // TODO
+    this.trigger(EVENTS.CONTENT_ERROR, {});
+  }
+
+  private _onRenderComplete = (): void => {
+    // TODO: grid에서 e.direction
+    const infinite = this.infinite;
+    const prevRenderedGroups = infinite.getRenderedVisibleItems();
+    const length = prevRenderedGroups.length;
+    const isDirectionEnd = this.defaultDirection === "end";
+
+    this._syncInfinite();
+
+    if (length) {
+      const prevStandardGroup = prevRenderedGroups[isDirectionEnd ? 0 : length - 1];
+      const nextStandardGroup = infinite.getItemByKey(prevStandardGroup.key);
+      const offset = isDirectionEnd
+        ? Math.min(...nextStandardGroup.startOutline) - Math.min(...prevStandardGroup.startOutline)
+        : Math.max(...nextStandardGroup.endOutline) - Math.max(...prevStandardGroup.endOutline);
+
+      this.scrollManager.scrollBy(offset);
+    }
+    this.trigger(EVENTS.RENDER_COMPLETE, {});
+    this._scroll();
   }
 }
+
+interface InfiniteGrid extends Properties<typeof InfiniteGrid> { }
+
+export default InfiniteGrid;

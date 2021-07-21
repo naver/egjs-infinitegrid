@@ -1,4 +1,5 @@
 import Component from "@egjs/component";
+import { toArray } from "../../../src/utils";
 
 export function sandbox(obj: object | string, prop?: object): HTMLElement {
   const tmp = document.createElement("div");
@@ -24,7 +25,7 @@ export function sandbox(obj: object | string, prop?: object): HTMLElement {
 }
 
 export function cleanup() {
-  const elements: HTMLElement[] = [].slice.call(document.querySelectorAll("._tempSandbox_"));
+  const elements = toArray<HTMLElement>(document.querySelectorAll("._tempSandbox_"));
   elements.forEach((v) => {
     v.parentNode!.removeChild(v);
   });
