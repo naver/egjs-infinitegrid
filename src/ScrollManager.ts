@@ -1,5 +1,6 @@
 import Component from "@egjs/component";
 import { CONTAINER_CLASS_NAME, IS_IOS } from "./consts";
+import { OnScroll } from "./types";
 import { isWindow, toArray } from "./utils";
 
 export interface ScrollManagerOptions {
@@ -8,11 +9,6 @@ export interface ScrollManagerOptions {
   horizontal?: boolean;
 }
 
-export interface OnScroll {
-  direction: "start" | "end";
-  scrollPos: number;
-  relativeScrollPos: number;
-}
 
 export interface ScrollManagerEvents {
   scroll: OnScroll;
