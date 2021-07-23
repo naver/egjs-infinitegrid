@@ -293,6 +293,35 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     }
     return this.syncItems(nextItemInfos);
   }
+  /**
+   * Removes the group corresponding to index.
+   * @ko index에 해당하는 그룹을 제거 한다.
+   */
+  public removeGroupByIndex(index: number): this {
+    const nextGroups = this.groupManager.getGroups();
+
+    return this.removeGroupByKey(nextGroups[index].groupKey);
+  }
+  /**
+   * Removes the group corresponding to key.
+   * @ko key에 해당하는 그룹을 제거 한다.
+   */
+  public removeGroupByKey(key: number | string): this {
+    const nextItemInfos = this.groupManager.getItemInfos();
+
+    const firstIndex = findIndex(nextItemInfos, (item) => item.key === key);
+    const lastIndex = findIndex(nextItemInfos, (item) => item.key === key);
+
+    if (firstIndex === -1) {
+      return this;
+    }
+    nextItemInfos.splice(firstIndex, lastIndex - firstIndex + 1);
+    return this.syncItems(nextItemInfos);
+  }
+  /**
+   * Removes the item corresponding to index.
+   * @ko index에 해당하는 아이템을 제거 한다.
+   */
   public removeByIndex(index: number): this {
     const nextItemInfos = this.groupManager.getItemInfos();
 
@@ -300,6 +329,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
     return this.syncItems(nextItemInfos);
   }
+  /**
+   * Removes the item corresponding to key.
+   * @ko key에 해당하는 아이템을 제거 한다.
+   */
   public removeByKey(key: string | number): this {
     const nextItemInfos = this.getItems();
     const index = findIndex(nextItemInfos, (item) => item.key === key);
