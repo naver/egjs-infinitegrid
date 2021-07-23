@@ -2,7 +2,7 @@ import { cleanup, sandbox, waitEvent } from "./utils/utils";
 import InfiniteGrid from "../../src/InfiniteGrid";
 import { SampleGrid } from "./samples/SampleGrid";
 import { toArray } from "../../src/utils";
-import { InfiniteGridOptions } from "../../src/types";
+import { InfiniteGridOptions, OnRenderComplete } from "../../src/types";
 
 describe("test InfiniteGrid", () => {
   let ig: InfiniteGrid | null;
@@ -106,10 +106,12 @@ describe("test InfiniteGrid", () => {
       // When
       ig!.setCursors(0, 1);
 
-      await waitEvent(ig!, "renderComplete");
+      const e = await waitEvent<OnRenderComplete>(ig!, "renderComplete");
       const children = toArray(igContainer.children);
 
       // Then
+      expect(e.startCursor).to.be.equals(0);
+      expect(e.endCursor).to.be.equals(1);
       expect(ig!.getItems().map((item) => item.groupKey)).to.be.deep.equals([0, 0, 0, 1, 1, 1]);
       expect(ig!.getGroups().map((group) => group.groupKey)).to.be.deep.equals([0, 1]);
       expect(ig!.getVisibleGroups().map((group) => group.groupKey)).to.be.deep.equals([0, 1]);
@@ -134,13 +136,17 @@ describe("test InfiniteGrid", () => {
       ig!.setCursors(0, 1);
 
       // When
-      await waitEvent(ig!, "renderComplete");
+      await waitEvent<OnRenderComplete>(ig!, "renderComplete");
 
       // one more [0, 1] => [0]
-      await waitEvent(ig!, "renderComplete");
+      const e = await waitEvent<OnRenderComplete>(ig!, "renderComplete");
       const children = toArray(igContainer.children);
 
       // Then
+      expect(e.startCursor).to.be.equals(0);
+      expect(e.endCursor).to.be.equals(0);
+      expect(e.items).to.be.deep.equals(ig!.getVisibleItems());
+      expect(e.groups).to.be.deep.equals(ig!.getVisibleGroups());
       expect(ig!.getVisibleGroups().map((group) => group.groupKey)).to.be.deep.equals([0]);
       expect(children.length).to.be.equals(3);
 
