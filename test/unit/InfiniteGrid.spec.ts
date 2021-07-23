@@ -2,7 +2,7 @@ import { cleanup, sandbox, waitEvent } from "./utils/utils";
 import InfiniteGrid from "../../src/InfiniteGrid";
 import { SampleGrid } from "./samples/SampleGrid";
 import { toArray } from "../../src/utils";
-import { InfiniteGridOptions, OnRenderComplete } from "../../src/types";
+import { InfiniteGridOptions, OnRenderComplete, OnRequestAppend, OnRequestPrepend, OnScroll } from "../../src/types";
 
 describe("test InfiniteGrid", () => {
   let ig: InfiniteGrid | null;
@@ -276,6 +276,110 @@ describe("test InfiniteGrid", () => {
 
       children.forEach((child, i) => {
         expect(child.style.top).to.be.equals(`${i * 200}px`);
+      });
+    });
+    describe.only("test scroll event", () => {
+      it("should check if scroll event occurs when scrolling", async () => {
+        // Given
+        const igScrollContainer = ig!.getScrollContainerElement();
+        const igContainer = ig!.getContainerElement();
+
+        igContainer.style.marginTop = "10px";
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 150px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 1);
+        ig!.renderItems();
+
+        await waitEvent(ig!, "renderComplete");
+
+
+        // When
+        // start to end
+        igScrollContainer.scrollTop = 200;
+
+        const e1 = await waitEvent<OnScroll>(ig!, "scroll");
+
+        igScrollContainer.scrollTop = 0;
+
+        // end to start
+        const e2 = await waitEvent<OnScroll>(ig!, "scroll");
+
+        // Then
+        expect(e1.direction).to.be.equals("end");
+        expect(e1.scrollPos).to.be.equals(200);
+        expect(e1.relativeScrollPos).to.be.equals(190);
+
+        expect(e2.direction).to.be.equals("start");
+        expect(e2.scrollPos).to.be.equals(0);
+        expect(e2.relativeScrollPos).to.be.equals(-10);
+      });
+      it("should check if the requestAppend event occurs when scrolling to the end", async () => {
+        // Given
+        const igScrollContainer = ig!.getScrollContainerElement();
+        const igContainer = ig!.getContainerElement();
+
+        igContainer.style.marginTop = "10px";
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 150px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 1);
+        ig!.renderItems();
+
+        await waitEvent(ig!, "renderComplete");
+
+
+        // When
+        // scroll to end
+        igScrollContainer.scrollTop = 800;
+
+        const e1 = await waitEvent<OnRequestAppend>(ig!, "requestAppend");
+
+        // Then
+        expect(e1.groupKey).to.be.equals(1);
+      });
+      it("should check if the requestPrepend event occurs when scrolling to the start", async () => {
+        // Given
+        const igScrollContainer = ig!.getScrollContainerElement();
+        const igContainer = ig!.getContainerElement();
+
+        igContainer.style.marginTop = "10px";
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 150px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 1);
+        ig!.renderItems();
+
+        await waitEvent(ig!, "renderComplete");
+
+        // scroll to end
+        igScrollContainer.scrollTop = 800;
+
+        await waitEvent<OnRequestAppend>(ig!, "requestAppend");
+
+        // When
+        // end to start
+        igScrollContainer.scrollTop = 0;
+
+        const e = await waitEvent<OnRequestPrepend>(ig!, "requestPrepend");
+
+        // Then
+        expect(e.groupKey).to.be.equals(0);
       });
     });
     describe("test remove methods", () => {

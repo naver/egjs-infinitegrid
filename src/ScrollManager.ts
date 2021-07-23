@@ -116,7 +116,7 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     this.scrollOffset = (this.prevScrollPos! || 0) + (horizontal
       ? containerRect.left - scrollContainerRect.left
       : containerRect.top - scrollContainerRect.top);
-    this.contentSize = horizontal ? scrollContainer.offsetHeight : scrollContainer.offsetWidth;
+    this.contentSize = horizontal ? scrollContainer.offsetWidth : scrollContainer.offsetHeight;
   }
   public destroy() {
     const container = this.container;

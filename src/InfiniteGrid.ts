@@ -69,6 +69,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     gridConstructor: null,
     container: false,
     renderer: null,
+    threshold: 100,
   };
   public static propertyTypes = GRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
@@ -93,6 +94,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       gridConstructor,
       container,
       renderer,
+      threshold,
       ...gridOptions
     } = this.options;
     // options.container === false, wrapper = container, scrollContainer = document.body
@@ -113,6 +115,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     });
     const infinite = new Infinite({
       useRecyle: false,
+      threshold,
     }).on({
       "change": this._onChange,
       "requestAppend": this._onRequestAppend,
@@ -409,6 +412,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const scrollManager = this.scrollManager;
 
     scrollManager.resize();
+
     this.infinite.setSize(scrollManager.getContentSize());
   }
   private _syncInfinite() {
