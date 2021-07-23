@@ -20,7 +20,6 @@ import NativeInfiniteGrid, {
 import ListDiffer from '@egjs/list-differ';
 import { TEMPLATE } from './consts';
 import NgxinfiniteGridInterface from './ngx-infinitegrid.interface';
-import { InfiniteGridType } from './types';
 
 @Component({
   selector: 'ngx-infinitegrid, [NgxInfiniteGrid]',
