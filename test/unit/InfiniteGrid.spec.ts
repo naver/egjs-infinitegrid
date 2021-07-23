@@ -1,7 +1,8 @@
 import { cleanup, sandbox, waitEvent } from "./utils/utils";
-import InfiniteGrid, { InfiniteGridOptions } from "../../src/InfiniteGrid";
+import InfiniteGrid from "../../src/InfiniteGrid";
 import { SampleGrid } from "./samples/SampleGrid";
 import { toArray } from "../../src/utils";
+import { InfiniteGridOptions } from "../../src/types";
 
 describe("test InfiniteGrid", () => {
   let ig: InfiniteGrid | null;
@@ -269,6 +270,128 @@ describe("test InfiniteGrid", () => {
 
       children.forEach((child, i) => {
         expect(child.style.top).to.be.equals(`${i * 200}px`);
+      });
+    });
+    describe("test remove methods", () => {
+      it("should checks whether the item is removed when the removeByKey method is called", async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 1);
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        // 0 1 3 4 5
+        ig!.removeByKey("key2");
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        const children = toArray(igContainer.children);
+
+        expect(ig!.getItems().map((item) => item.key)).to.be.deep.equals([0, 1, 3, 4, 5].map((key) => `key${key}`));
+        expect(igContainer.children.length).to.be.equals(5);
+
+        children.forEach((child, i) => {
+          expect(child.style.top).to.be.equals(`${i * 100}px`);
+        });
+      });
+      it("should checks whether the item is removed when the removeByIndex method is called", async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 1);
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        // 0 1 3 4 5
+        ig!.removeByIndex(2);
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        const children = toArray(igContainer.children);
+
+        expect(ig!.getItems().map((item) => item.key)).to.be.deep.equals([0, 1, 3, 4, 5].map((key) => `key${key}`));
+        expect(igContainer.children.length).to.be.equals(5);
+
+        children.forEach((child, i) => {
+          expect(child.style.top).to.be.equals(`${i * 100}px`);
+        });
+      });
+      it("should checks whether the item is removed when the removeGroupByKey method is called", async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 1);
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        // 3 4 5
+        ig!.removeGroupByKey(0);
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        const children = toArray(igContainer.children);
+
+        expect(ig!.getItems().map((item) => item.key)).to.be.deep.equals([3, 4, 5].map((key) => `key${key}`));
+        expect(igContainer.children.length).to.be.equals(3);
+
+        children.forEach((child, i) => {
+          expect(child.style.top).to.be.equals(`${i * 100}px`);
+        });
+      });
+      it("should checks whether the item is removed when the removeGroupByIndex method is called", async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 1);
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        // 3 4 5
+        ig!.removeGroupByIndex(0);
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        const children = toArray(igContainer.children);
+
+        expect(ig!.getItems().map((item) => item.key)).to.be.deep.equals([3, 4, 5].map((key) => `key${key}`));
+        expect(igContainer.children.length).to.be.equals(3);
+
+        children.forEach((child, i) => {
+          expect(child.style.top).to.be.equals(`${i * 100}px`);
+        });
       });
     });
   });

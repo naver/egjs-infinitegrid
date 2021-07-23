@@ -22,7 +22,7 @@ import {
   InfiniteGridOptions,
   OnScroll,
 } from "./types";
-import { convertInsertedItems, findIndex, GetterSetter, isString, toArray } from "./utils";
+import { convertInsertedItems, findIndex, findLastIndex, GetterSetter, isString, toArray } from "./utils";
 
 
 /**
@@ -309,8 +309,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   public removeGroupByKey(key: number | string): this {
     const nextItemInfos = this.groupManager.getItemInfos();
 
-    const firstIndex = findIndex(nextItemInfos, (item) => item.key === key);
-    const lastIndex = findIndex(nextItemInfos, (item) => item.key === key);
+    const firstIndex = findIndex(nextItemInfos, (item) => item.groupKey === key);
+    const lastIndex = findLastIndex(nextItemInfos, (item) => item.groupKey === key);
 
     if (firstIndex === -1) {
       return this;
