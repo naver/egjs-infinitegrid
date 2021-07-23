@@ -2,7 +2,14 @@ import { cleanup, sandbox, waitEvent } from "./utils/utils";
 import InfiniteGrid from "../../src/InfiniteGrid";
 import { SampleGrid } from "./samples/SampleGrid";
 import { toArray } from "../../src/utils";
-import { InfiniteGridOptions, OnRenderComplete, OnRequestAppend, OnRequestPrepend, OnScroll } from "../../src/types";
+import {
+  InfiniteGridOptions,
+  OnRenderComplete,
+  OnRequestAppend,
+  OnRequestPrepend,
+  OnContentError,
+  OnScroll,
+} from "../../src/types";
 
 describe("test InfiniteGrid", () => {
   let ig: InfiniteGrid | null;
@@ -129,7 +136,7 @@ describe("test InfiniteGrid", () => {
         return {
           groupKey: Math.floor(child / 3),
           key: child,
-          html: `<div style="height: 200px">${child}</div>`,
+          html: `<div style="height: 250px">${child}</div>`,
         };
       }));
 
@@ -151,7 +158,7 @@ describe("test InfiniteGrid", () => {
       expect(children.length).to.be.equals(3);
 
       children.forEach((child, i) => {
-        expect(child.style.top).to.be.equals(`${i * 200}px`);
+        expect(child.style.top).to.be.equals(`${i * 250}px`);
       });
     });
     it("should check whether it is rendered after changing options", async () => {
@@ -223,7 +230,7 @@ describe("test InfiniteGrid", () => {
         return {
           groupKey: Math.floor(child / 3),
           key: child,
-          html: `<div style="height: 200px">${child}</div>`,
+          html: `<div style="height: 250px">${child}</div>`,
         };
       }));
 
@@ -237,7 +244,7 @@ describe("test InfiniteGrid", () => {
       expect(children.length).to.be.equals(3);
 
       children.forEach((child, i) => {
-        expect(child.style.top).to.be.equals(`${i * 200}px`);
+        expect(child.style.top).to.be.equals(`${i * 250}px`);
       });
     });
     it("should check if the scroll position changes when prepend", async () => {
@@ -278,7 +285,55 @@ describe("test InfiniteGrid", () => {
         expect(child.style.top).to.be.equals(`${i * 200}px`);
       });
     });
-    describe.only("test scroll event", () => {
+    describe("test contentError event", () => {
+      it("should check if contentError event occurs with error image", async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: 0,
+            key: `key${child}`,
+            html: `<div style="height: 150px">${child === 2 ? `<img src="ERR" />` : ""}</div>`,
+          };
+        }));
+        ig!.renderItems();
+
+        // When
+        const e = await waitEvent<OnContentError>(ig!, "contentError");
+
+
+        // Then
+        expect(e.item.key).to.be.equals("key2");
+      });
+      it("should check if it is recalculated if removed", async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: 0,
+            key: `key${child}`,
+            html: `<div style="height: 150px">${child === 2 ? `<img src="ERR" />` : ""}</div>`,
+          };
+        }));
+        ig!.renderItems();
+
+        // When
+        const e = await waitEvent<OnContentError>(ig!, "contentError");
+
+        e.remove();
+
+        await waitEvent<OnRenderComplete>(ig!, "renderComplete");
+
+        // Then
+        const children = toArray(ig!.getContainerElement().children);
+
+        expect(ig!.getItems().length).to.be.equals(5);
+        expect(children.length).to.be.equals(5);
+
+        children.forEach((child, i) => {
+          expect(child.style.top).to.be.equals(`${i * 150}px`);
+        });
+      });
+    });
+    describe("test scroll event", () => {
       it("should check if scroll event occurs when scrolling", async () => {
         // Given
         const igScrollContainer = ig!.getScrollContainerElement();
