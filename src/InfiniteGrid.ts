@@ -1,37 +1,29 @@
 import Component from "@egjs/component";
 import {
   ContainerManager,
-  GridOptions,
   DEFAULT_GRID_OPTIONS,
   GRID_PROPERTY_TYPES,
-  GridFunction,
   Properties,
   RenderOptions,
   MOUNT_STATE,
+  OnRenderComplete,
+  OnContentError,
 } from "@egjs/grid";
 import { EVENTS } from "./consts";
 import { GroupManager } from "./GroupManager";
-import { Infinite, OnInfiniteChange } from "./Infinite";
+import { Infinite, OnInfiniteChange, OnInfiniteRequestAppend, OnInfiniteRequestPrepend } from "./Infinite";
 import { InfiniteGridItem } from "./InfiniteGridItem";
-import { OnRendererUpdated, Renderer } from "./Renderer/Renderer";
+import { OnRendererUpdated } from "./Renderer/Renderer";
 import { GridRendererItem, VanillaGridRenderer } from "./Renderer/VanillaGridRenderer";
 import { ScrollManager } from "./ScrollManager";
-import { InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
-import { convertInsertedItems, GetterSetter, isString, toArray } from "./utils";
+import {
+  InfiniteGridEvents, InfiniteGridGroup,
+  InfiniteGridInsertedItems, InfiniteGridItemInfo,
+  InfiniteGridOptions,
+  OnScroll,
+} from "./types";
+import { convertInsertedItems, findIndex, findLastIndex, GetterSetter, isString, toArray } from "./utils";
 
-export interface InfiniteGridOptions extends GridOptions {
-  gridConstructor?: GridFunction | null;
-  container?: boolean | string | HTMLElement;
-  renderer?: Renderer | null;
-}
-
-export interface InfiniteGridEvents {
-  scroll: {};
-  requestAppend: {};
-  requestPrepend: {};
-  renderComplete: {};
-  contentError: {};
-}
 
 /**
  * A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
@@ -77,6 +69,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     gridConstructor: null,
     container: false,
     renderer: null,
+    threshold: 100,
   };
   public static propertyTypes = GRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
@@ -101,6 +94,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       gridConstructor,
       container,
       renderer,
+      threshold,
       ...gridOptions
     } = this.options;
     // options.container === false, wrapper = container, scrollContainer = document.body
@@ -121,6 +115,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     });
     const infinite = new Infinite({
       useRecyle: false,
+      threshold,
     }).on({
       "change": this._onChange,
       "requestAppend": this._onRequestAppend,
@@ -234,6 +229,20 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     return this;
   }
   /**
+   * Returns the first index of visible groups.
+   * @ko 보이는 그룹들의 첫번째 index를 반환한다.
+   */
+  public getStartCursor(): number {
+    return this.infinite.getStartCursor();
+  }
+  /**
+   * Returns the last index of visible groups.
+   * @ko 보이는 그룹들의 마지막 index를 반환한다.
+   */
+  public getEndCursor(): number {
+    return this.infinite.getEndCursor();
+  }
+  /**
    * Add items at the bottom(right) of the grid.
    * @ko 아이템들을 grid 아래(오른쪽)에 추가한다.
    * @param - items to be added <ko>추가할 아이템들</ko>
@@ -286,6 +295,52 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       nextItemInfos.splice(index, 0, ...itemInfos);
     }
     return this.syncItems(nextItemInfos);
+  }
+  /**
+   * Removes the group corresponding to index.
+   * @ko index에 해당하는 그룹을 제거 한다.
+   */
+  public removeGroupByIndex(index: number): this {
+    const nextGroups = this.groupManager.getGroups();
+
+    return this.removeGroupByKey(nextGroups[index].groupKey);
+  }
+  /**
+   * Removes the group corresponding to key.
+   * @ko key에 해당하는 그룹을 제거 한다.
+   */
+  public removeGroupByKey(key: number | string): this {
+    const nextItemInfos = this.groupManager.getItemInfos();
+
+    const firstIndex = findIndex(nextItemInfos, (item) => item.groupKey === key);
+    const lastIndex = findLastIndex(nextItemInfos, (item) => item.groupKey === key);
+
+    if (firstIndex === -1) {
+      return this;
+    }
+    nextItemInfos.splice(firstIndex, lastIndex - firstIndex + 1);
+    return this.syncItems(nextItemInfos);
+  }
+  /**
+   * Removes the item corresponding to index.
+   * @ko index에 해당하는 아이템을 제거 한다.
+   */
+  public removeByIndex(index: number): this {
+    const nextItemInfos = this.groupManager.getItemInfos();
+
+    nextItemInfos.splice(index, 1);
+
+    return this.syncItems(nextItemInfos);
+  }
+  /**
+   * Removes the item corresponding to key.
+   * @ko key에 해당하는 아이템을 제거 한다.
+   */
+  public removeByKey(key: string | number): this {
+    const nextItemInfos = this.getItems();
+    const index = findIndex(nextItemInfos, (item) => item.key === key);
+
+    return this.removeByIndex(index);
   }
   /**
    * Update the size of the items and render them.
@@ -357,6 +412,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const scrollManager = this.scrollManager;
 
     scrollManager.resize();
+
     this.infinite.setSize(scrollManager.getContentSize());
   }
   private _syncInfinite() {
@@ -373,9 +429,13 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   private _scroll() {
     this.infinite.scroll(this.scrollManager.getRelativeScrollPos());
   }
-  private _onScroll = (): void => {
+  private _onScroll = ({ direction, scrollPos, relativeScrollPos }: OnScroll): void => {
     this._scroll();
-    this.trigger(EVENTS.SCROLL, {});
+    this.trigger(EVENTS.SCROLL, {
+      direction,
+      scrollPos,
+      relativeScrollPos,
+    });
   }
   private _onChange = (e: OnInfiniteChange): void => {
     this.setCursors(e.nextStartCursor, e.nextEndCursor);
@@ -413,20 +473,34 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     });
     this.groupManager.renderItems();
   }
-  private _onRequestAppend = (): void => {
-    // TODO
-    this.trigger(EVENTS.REQUEST_APPEND, {});
-  }
-  private _onRequestPrepend = (): void => {
-    // TODO
-    this.trigger(EVENTS.REQUEST_PREPEND, {});
-  }
-  private _onContentError = (): void => {
-    // TODO
-    this.trigger(EVENTS.CONTENT_ERROR, {});
+
+  private _onRequestAppend = (e: OnInfiniteRequestAppend): void => {
+    // TODO LOADING
+    this.trigger(EVENTS.REQUEST_APPEND, {
+      groupKey: e.groupKey,
+    });
   }
 
-  private _onRenderComplete = (): void => {
+  private _onRequestPrepend = (e: OnInfiniteRequestPrepend): void => {
+    // TODO LOADING
+    this.trigger(EVENTS.REQUEST_PREPEND, {
+      groupKey: e.groupKey,
+    });
+  }
+
+  private _onContentError = ({ element, target, item, update }: OnContentError): void => {
+    this.trigger(EVENTS.CONTENT_ERROR, {
+      element,
+      target,
+      item: item as InfiniteGridItem,
+      update,
+      remove: () => {
+        this.removeByKey(item.key!);
+      },
+    });
+  }
+
+  private _onRenderComplete = ({ isResize, mounted, updated }: OnRenderComplete): void => {
     // TODO: grid에서 e.direction
     const infinite = this.infinite;
     const prevRenderedGroups = infinite.getRenderedVisibleItems();
@@ -444,7 +518,15 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       this.scrollManager.scrollBy(offset);
     }
-    this.trigger(EVENTS.RENDER_COMPLETE, {});
+    this.trigger(EVENTS.RENDER_COMPLETE, {
+      isResize,
+      mounted: mounted as InfiniteGridItem[],
+      updated: updated as InfiniteGridItem[],
+      startCursor: this.getStartCursor(),
+      endCursor: this.getEndCursor(),
+      items: this.getVisibleItems(),
+      groups: this.getVisibleGroups(),
+    });
     this._scroll();
   }
 }

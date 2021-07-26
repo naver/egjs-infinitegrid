@@ -183,3 +183,26 @@ export function toArray<T>(nodes: { length: number, [key: number]: T }): T[] {
   }
   return array;
 }
+
+
+export function findIndex<T>(arr: T[], callback: (value: T, index: number) => boolean) {
+  const length = arr.length;
+  for (let i = 0; i < length; ++i) {
+    if (callback(arr[i], i)) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+export function findLastIndex<T>(arr: T[], callback: (value: T, index: number) => boolean) {
+  const length = arr.length;
+  for (let i = length - 1; i >= 0; --i) {
+    if (callback(arr[i], i)) {
+      return i;
+    }
+  }
+
+  return -1;
+}
