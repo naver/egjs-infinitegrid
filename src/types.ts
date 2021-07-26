@@ -35,7 +35,7 @@ export interface InfiniteGridItemInfo {
  * @property - The size of the scrollable area for adding the next group of items. (default: 100) <ko>다음 아이템 그룹을 추가하기 위한 스크롤 영역의 크기. (default: 100)</ko>
  */
 export interface InfiniteGridOptions extends GridOptions {
-  gridConstructor?: GridFunction | null;
+  gridConstructor?: GridFunction;
   renderer?: Renderer | null;
   container?: boolean | string | HTMLElement;
   threshold?: number;

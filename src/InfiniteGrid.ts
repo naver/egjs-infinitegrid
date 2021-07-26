@@ -9,7 +9,6 @@ import {
   OnRenderComplete,
   OnContentError,
 } from "@egjs/grid";
-import { isString } from "node:util";
 import { EVENTS } from "./consts";
 import { GroupManager } from "./GroupManager";
 import { Infinite, OnInfiniteChange, OnInfiniteRequestAppend, OnInfiniteRequestPrepend } from "./Infinite";
@@ -23,7 +22,7 @@ import {
   InfiniteGridOptions,
   OnScroll,
 } from "./types";
-import { InfiniteGridGetterSetter, toArray, convertInsertedItems, findIndex, findLastIndex } from "./utils";
+import { InfiniteGridGetterSetter, toArray, convertInsertedItems, findIndex, findLastIndex, isString } from "./utils";
 
 
 /**
@@ -65,13 +64,12 @@ some.renderItems();
  */
 @InfiniteGridGetterSetter
 class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> extends Component<InfiniteGridEvents> {
-  public static defaultOptions: Required<InfiniteGridOptions> = {
+  public static defaultOptions = {
     ...DEFAULT_GRID_OPTIONS,
-    gridConstructor: null,
     container: false,
     renderer: null,
     threshold: 100,
-  };
+  } as Required<InfiniteGridOptions>;
   public static propertyTypes = GRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
   protected scrollManager: ScrollManager;
