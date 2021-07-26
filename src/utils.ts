@@ -83,7 +83,7 @@ export function categorize(items: InfiniteGridItem[]) {
 
 
 /* Class Decorator */
-export function GetterSetter(component: {
+export function InfiniteGridGetterSetter(component: {
   prototype: InfiniteGrid<any>,
   propertyTypes: typeof GRID_PROPERTY_TYPES,
 }) {

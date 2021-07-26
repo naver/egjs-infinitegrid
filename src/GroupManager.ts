@@ -1,4 +1,5 @@
 import Grid, {
+  GetterSetter,
   GridFunction, GridOptions,
   GridOutlines, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
@@ -8,16 +9,22 @@ import { InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
 import { categorize, flat, makeKey, splitGridOptions } from "./utils";
 
 export interface GroupManagerOptions extends GridOptions {
-  gridConstructor: GridFunction;
+  gridConstructor: GridFunction | null;
   gridOptions: Record<string, any>;
 }
 
-
+@GetterSetter
 export class GroupManager extends Grid<GroupManagerOptions> {
+  public static defaultOptions: Required<GroupManagerOptions> = {
+    ...Grid.defaultOptions,
+    gridConstructor: null,
+    gridOptions: {},
+  };
   public static propertyTypes = {
     ...Grid.propertyTypes,
     gridConstructor: PROPERTY_TYPE.PROPERTY,
-  };
+    gridOptions: PROPERTY_TYPE.PROPERTY,
+  } as const;
   protected items: InfiniteGridItem[];
   protected groupItems: InfiniteGridItem[] = [];
   protected groups: InfiniteGridGroup[] = [];
@@ -25,7 +32,6 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   protected groupKeys: Record<string | number, InfiniteGridGroup> = {};
   protected startCursor = 0;
   protected endCursor = 0;
-  protected gridOptions: Record<string, any> = {};
   constructor(container: HTMLElement, options: GroupManagerOptions) {
     super(container, {
       ...options,
@@ -121,8 +127,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     const prevGroupKeys = this.groupKeys;
     const nextManagerGroups = categorize(nextItems);
     const nextGroupKeys: Record<string | number, InfiniteGridGroup> = {};
-    const GridConstructor = this.options.gridConstructor;
+    const GridConstructor = this.options.gridConstructor!;
     const gridOptions = this.gridOptions;
+
     const nextGroups: InfiniteGridGroup[] = nextManagerGroups.map(({ groupKey, items }) => {
       const grid = prevGroupKeys[groupKey]?.grid ?? new GridConstructor(container, {
         ...gridOptions,
@@ -170,7 +177,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   }
 
   private _checkShouldRender(options: Record<string, any>) {
-    const GridConstructor = this.options.gridConstructor;
+    const GridConstructor = this.options.gridConstructor!;
     const prevOptions = this.gridOptions;
     const propertyTypes = GridConstructor.propertyTypes;
 
