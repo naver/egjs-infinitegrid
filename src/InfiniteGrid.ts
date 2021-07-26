@@ -22,7 +22,7 @@ import {
   InfiniteGridOptions,
   OnScroll,
 } from "./types";
-import { convertInsertedItems, findIndex, findLastIndex, GetterSetter, isString, toArray } from "./utils";
+import { InfiniteGridGetterSetter, toArray, convertInsertedItems, findIndex, findLastIndex, isString } from "./utils";
 
 
 /**
@@ -62,15 +62,14 @@ some.renderItems();
 </script>
 ```
  */
-@GetterSetter
+@InfiniteGridGetterSetter
 class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> extends Component<InfiniteGridEvents> {
-  public static defaultOptions: Required<InfiniteGridOptions> = {
+  public static defaultOptions = {
     ...DEFAULT_GRID_OPTIONS,
-    gridConstructor: null,
     container: false,
     renderer: null,
     threshold: 100,
-  };
+  } as Required<InfiniteGridOptions>;
   public static propertyTypes = GRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
   protected scrollManager: ScrollManager;

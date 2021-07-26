@@ -1,5 +1,7 @@
 import Component from "@egjs/component";
+import { InfiniteGridItemInfo } from "../../../src/types";
 import { toArray } from "../../../src/utils";
+import { SIZES } from "./consts";
 
 export function sandbox(obj: object | string, prop?: object): HTMLElement {
   const tmp = document.createElement("div");
@@ -51,4 +53,21 @@ export function createElement(text: string) {
   el.innerHTML = text;
 
   return el;
+}
+
+
+export function getItems(count: number): InfiniteGridItemInfo[] {
+  const length = SIZES.length;
+  const elements: InfiniteGridItemInfo[] = [];
+
+  for (let i = 0; i < count; ++i) {
+    const size = SIZES[i % length];
+    const element = document.createElement("div");
+
+    element.style.cssText = `position: absolute; width: ${size[0]}px; height: ${size[1]}px;`;
+    elements.push({
+      element,
+    });
+  }
+  return elements;
 }
