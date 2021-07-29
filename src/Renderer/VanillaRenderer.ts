@@ -1,9 +1,9 @@
 import { Renderer, RendererItem } from "./Renderer";
 
 export class VanillaRenderer<T extends RendererItem = RendererItem> extends Renderer<T> {
-  public render(nextItems: T[]) {
+  public render(nextItems: T[], state?: Record<string, any>) {
     const container = this.container!;
-    const result = this.syncItems(nextItems);
+    const result = super.render(nextItems, state);
     const {
       prevList,
       removed,
@@ -31,8 +31,5 @@ export class VanillaRenderer<T extends RendererItem = RendererItem> extends Rend
 
     this.updated(container.children);
     return result;
-  }
-  public update() {
-    return true;
   }
 }
