@@ -23,3 +23,26 @@ export const EVENTS = {
   RENDER_COMPLETE: "renderComplete",
   CONTENT_ERROR: "contentError",
 } as const;
+
+
+export enum GROUP_TYPE {
+  GROUP = 0,
+  VIRTUAL = 1,
+}
+
+export enum ITEM_TYPE {
+  ITEM = 0,
+  VIRTUAL = 1,
+  VIRTUAL_GROUP = 2,
+}
+
+export enum STATUS_TYPE {
+  // does not remove anything.
+  NOT_REMOVE = 0,
+  // Minimize information on invisible items
+  MINIMIZE_INVISIBLE_ITEMS = 1,
+  // Minimize information on invisible groups
+  MINIMIZE_INVISIBLE_GROUPS = 2,
+  // remove invisible groups
+  REMOVE_INVISIBLE_GROUPS = 3,
+}

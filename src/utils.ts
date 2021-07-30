@@ -17,7 +17,17 @@ export function flat<T>(arr: T[][]): T[] {
     return [...prev, ...cur];
   }, []);
 }
+export function splitOptions(options: Record<string, any>) {
+  const {
+    gridOptions,
+    ...otherOptions
+  } = options;
 
+  return {
+    ...splitGridOptions(gridOptions),
+    ...otherOptions,
+  };
+}
 export function splitGridOptions(options: Record<string, any>) {
   const nextOptions: Record<string, any> = {};
   const gridOptions: Record<string, any> = {};
@@ -34,6 +44,7 @@ export function splitGridOptions(options: Record<string, any>) {
       nextOptions[name] = value;
     }
   }
+  console.log(options, nextOptions);
   return {
     ...nextOptions,
     gridOptions,

@@ -2,12 +2,15 @@ import Grid, {
   GridOptions,
   GridFunction,
 } from "@egjs/grid";
+import { GROUP_TYPE, ITEM_TYPE } from "./consts";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { Renderer } from "./Renderer/Renderer";
 
 export interface InfiniteGridGroup {
+  type: GROUP_TYPE;
   groupKey: string | number;
   grid: Grid;
+  items: InfiniteGridItem[];
 }
 
 export interface CategorizedGroup {
@@ -19,6 +22,7 @@ export interface CategorizedGroup {
  * @memberof eg.InfiniteGrid
  */
 export interface InfiniteGridItemInfo {
+  type?: ITEM_TYPE;
   groupKey?: string | number;
   key?: string | number;
   element?: HTMLElement | null;
@@ -130,4 +134,9 @@ export interface InfiniteGridEvents {
 
 
 
+export interface OnPickedRenderComplete {
+  mounted: InfiniteGridItem[];
+  updated: InfiniteGridItem[];
+  isResize: boolean;
+}
 export type InfiniteGridInsertedItems = string | Array<string | InfiniteGridItemInfo | HTMLElement>;
