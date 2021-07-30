@@ -123,8 +123,11 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     }
     groups.forEach((group) => {
       const grid = group.grid;
-
-      const gridOutline = grid.applyGrid(grid.getItems(), direction, nextOutline);
+      const gridItems = grid.getItems();
+      const isVirtual = group.type === GROUP_TYPE.VIRTUAL && !gridItems.length;
+      const gridOutline = isVirtual
+        ? this._applyVirtualGrid(grid, direction, outline)
+        : grid.applyGrid(gridItems, direction, nextOutline);
 
       grid.setOutlines(gridOutline);
 
@@ -305,6 +308,21 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       }
     }
     return false;
+  }
+  private _applyVirtualGrid(grid: Grid, direction: "start" | "end", outline: number[]) {
+    const prevOutlines = grid.getOutlines();
+    const prevOutline = prevOutlines[direction === "end" ? "start" : "end"];
+
+    if (
+      prevOutline.length !== outline.length
+      || prevOutline.some((value, i) => value !== outline[i])
+    ) {
+      return {
+        start: [...outline],
+        end: [...outline],
+      };
+    }
+    return prevOutlines;
   }
   private _syncItemInfos(
     nextItemInfos: InfiniteGridItemStatus[],

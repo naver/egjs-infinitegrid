@@ -44,7 +44,6 @@ export function splitGridOptions(options: Record<string, any>) {
       nextOptions[name] = value;
     }
   }
-  console.log(options, nextOptions);
   return {
     ...nextOptions,
     gridOptions,
