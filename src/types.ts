@@ -1,6 +1,7 @@
 import Grid, {
   GridOptions,
   GridFunction,
+  GridItem,
 } from "@egjs/grid";
 import { GROUP_TYPE, ITEM_TYPE } from "./consts";
 import { InfiniteGridItem } from "./InfiniteGridItem";
@@ -19,7 +20,7 @@ export interface CategorizedGroup {
 }
 /**
  * @typedef
- * @memberof eg.InfiniteGrid
+ * @memberof InfiniteGrid
  */
 export interface InfiniteGridItemInfo {
   type?: ITEM_TYPE;
@@ -78,6 +79,7 @@ export interface OnRequestPrepend {
  * @memberof InfiniteGrid
  * @property - The items rendered for the first time. <ko>처음 렌더링한 아이템들.</ko>
  * @property - The items updated in size. <ko>사이즈 업데이트한 아이템들.</ko>
+ * @property - The direction InfiniteGrid was rendered. <ko>InfiniteGrid가 렌더링된 방향.</ko>
  * @property - Whether rendering was done using the resize event or the useResize option. <ko>resize 이벤트 또는 useResize 옵션을 사용하여 렌더링를 했는지 여부.</ko>
  * @property - The key of the first group that has been rendered. <ko>렌더링이 완료된 첫번째 그룹의 키.</ko>
  * @property - The key of the last group that has been rendered. <ko>렌더링이 완료된 마지막 그룹의 키.</ko>
@@ -87,6 +89,7 @@ export interface OnRequestPrepend {
 export interface OnRenderComplete {
   mounted: InfiniteGridItem[];
   updated: InfiniteGridItem[];
+  direction: "start" | "end";
   isResize: boolean;
   startCursor: number;
   endCursor: number;
@@ -135,8 +138,9 @@ export interface InfiniteGridEvents {
 
 
 export interface OnPickedRenderComplete {
-  mounted: InfiniteGridItem[];
-  updated: InfiniteGridItem[];
+  mounted: GridItem[];
+  updated: GridItem[];
   isResize: boolean;
+  direction: "start" | "end";
 }
 export type InfiniteGridInsertedItems = string | Array<string | InfiniteGridItemInfo | HTMLElement>;

@@ -7,6 +7,7 @@ import {
   RenderOptions,
   MOUNT_STATE,
   OnContentError,
+  ItemRenderer,
 } from "@egjs/grid";
 import { EVENTS, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { GroupManager, InfiniteGridStatus } from "./GroupManager";
@@ -73,6 +74,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   public static propertyTypes = GRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
   protected scrollManager: ScrollManager;
+  protected itemRenderer: ItemRenderer;
   protected containerManager: ContainerManager;
   protected infinite: Infinite;
   protected groupManager: GroupManager;
@@ -101,6 +103,11 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     // options.container === string,
     const {
       horizontal,
+      attributePrefix,
+      useTransform,
+      percentage,
+      isConstantSize,
+      isEqualSize,
     } = gridOptions;
     const wrapperElement = isString(wrapper) ? document.querySelector(wrapper) as HTMLElement : wrapper;
     const scrollManager = new ScrollManager(wrapperElement, {
@@ -114,6 +121,14 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const containerManager = new ContainerManager(containerElement, {
       horizontal,
     });
+    const itemRenderer = new ItemRenderer({
+      attributePrefix,
+      horizontal,
+      useTransform,
+      percentage,
+      isEqualSize,
+      isConstantSize,
+    });
     const infinite = new Infinite({
       useRecyle: false,
       threshold,
@@ -126,6 +141,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     infinite.setSize(scrollManager.getContentSize());
     const groupManager = new GroupManager(containerElement, {
       gridConstructor: gridConstructor!,
+      externalItemRenderer: itemRenderer,
       externalContainerManager: containerManager,
       gridOptions,
     });
@@ -138,6 +154,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     renderer!.setContainer(containerElement);
     renderer!.on("updated", this._onRendererUpdated);
 
+    this.itemRenderer = itemRenderer;
     this.groupManager = groupManager;
     this.wrapperElement = wrapperElement;
     this.scrollManager = scrollManager;
@@ -498,13 +515,14 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       isResize,
     } = e.state;
 
-    this.groupManager.getItemRenderer().renderItems(items);
+    this.itemRenderer.renderItems(items);
 
     if (isRestore) {
       this._onRenderComplete({
         mounted: items,
         updated: [],
         isResize: false,
+        direction: this.defaultDirection,
       });
       if (isResize) {
         this.groupManager.renderItems();
@@ -540,12 +558,11 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     });
   }
 
-  private _onRenderComplete = ({ isResize, mounted, updated }: OnPickedRenderComplete): void => {
-    // TODO: grid에서 e.direction
+  private _onRenderComplete = ({ isResize, mounted, updated, direction }: OnPickedRenderComplete): void => {
     const infinite = this.infinite;
     const prevRenderedGroups = infinite.getRenderedVisibleItems();
     const length = prevRenderedGroups.length;
-    const isDirectionEnd = this.defaultDirection === "end";
+    const isDirectionEnd = direction === "end";
 
     this._syncInfinite();
 
@@ -560,8 +577,9 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     }
     this.trigger(EVENTS.RENDER_COMPLETE, {
       isResize,
-      mounted,
-      updated,
+      direction,
+      mounted: mounted as InfiniteGridItem[],
+      updated: updated as InfiniteGridItem[],
       startCursor: this.getStartCursor(),
       endCursor: this.getEndCursor(),
       items: this.getVisibleItems(),

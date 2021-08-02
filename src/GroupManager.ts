@@ -196,10 +196,6 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     this.items = this._getGroupVisibleItems();
   }
 
-  public getItemRenderer() {
-    return this.itemRenderer;
-  }
-
   public getGroupStatus(type: STATUS_TYPE): InfiniteGridStatus {
     const containerManagerStatus = this.containerManager.getStatus();
     const itemRendererStatus = this.itemRenderer.getStatus();
