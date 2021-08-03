@@ -57,7 +57,7 @@ describe("test Renderer", () => {
     expect(updatedSpy.callCount).to.be.equals(1);
     expect(updatedSpy.args[0][0].isChanged).to.be.equals(true);
   });
-  it("should checks whether the update method returns false and whether the update event does occur.", () => {
+  it("should checks whether the update event does occur.", () => {
     // Given
     const items = [
       {
@@ -79,11 +79,10 @@ describe("test Renderer", () => {
     renderer.render(items.map((item) => ({ ...item })));
 
     // When
-    const result = renderer.update();
+    renderer.update();
 
 
     // Then
     expect(updateSpy.callCount).to.be.equals(1);
-    expect(result).to.be.equals(false);
   });
 });
