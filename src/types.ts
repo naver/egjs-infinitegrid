@@ -62,29 +62,24 @@ export interface InfiniteGridOptions extends GridOptions {
  * @typedef
  * @memberof InfiniteGrid
  * @property - Last group key. <ko>마지막 그룹의 키.</ko>
+ * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
  */
 export interface OnRequestAppend {
   groupKey: string | number | undefined;
+  nextGroupKey: string | number | undefined;
 }
 
 /**
  * @typedef
  * @memberof InfiniteGrid
  * @property - First group key. <ko>첫번째 그룹의 키.</ko>
+ * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
  */
 export interface OnRequestPrepend {
   groupKey: string | number | undefined;
+  nextGroupKey: string | number | undefined;
 }
 
-
-/**
- * @typedef
- * @memberof InfiniteGrid
- * @property - First group key. <ko>첫번째 그룹의 키.</ko>
- */
-export interface OnRequestPrepend {
-  groupKey: string | number | undefined;
-}
 
 /**
  * @typedef
@@ -154,5 +149,10 @@ export interface OnPickedRenderComplete {
   updated: GridItem[];
   isResize: boolean;
   direction: "start" | "end";
+}
+
+export interface OnRequestInsert {
+  groupKey?: string | number;
+  nextGroupKey?: string | number;
 }
 export type InfiniteGridInsertedItems = string | Array<string | InfiniteGridItemInfo | HTMLElement>;

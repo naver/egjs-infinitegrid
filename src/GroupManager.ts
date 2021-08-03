@@ -157,9 +157,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     groups.forEach((group) => {
       const grid = group.grid;
       const gridItems = grid.getItems();
-      const isVirtual = group.type === GROUP_TYPE.VIRTUAL && !gridItems.length;
+      const isVirtual = group.type === GROUP_TYPE.VIRTUAL;
       const gridOutline = isVirtual
-        ? this._applyVirtualGrid(grid, direction, outline)
+        ? this._applyVirtualGrid(grid, direction, nextOutline)
         : grid.applyGrid(gridItems, direction, nextOutline);
 
       grid.setOutlines(gridOutline);
@@ -190,8 +190,6 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     nextManagerGroups = [...startVirtualGroups, ...nextManagerGroups, ...endVirtualGroups];
 
     const nextGroups: InfiniteGridGroup[] = nextManagerGroups.map(({ groupKey, items }) => {
-      const firstItem = items[0];
-      const isVirtual = firstItem.type !== ITEM_TYPE.ITEM;
       const grid = prevGroupKeys[groupKey]?.grid ?? new GridConstructor(container, {
         ...gridOptions,
         useFit: false,
@@ -204,7 +202,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       grid.setItems(items);
 
       return {
-        type: isVirtual ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.GROUP,
+        type: items[0] ? GROUP_TYPE.GROUP : GROUP_TYPE.VIRTUAL,
         groupKey,
         grid,
         items,

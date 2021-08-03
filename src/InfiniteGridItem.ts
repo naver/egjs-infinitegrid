@@ -1,5 +1,4 @@
 import { GridItem, GridItemStatus } from "@egjs/grid";
-import { info } from "node:console";
 import { ITEM_TYPE } from "./consts";
 import { InfiniteGridItemInfo } from "./types";
 
