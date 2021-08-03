@@ -9,7 +9,8 @@ import {
   OnRequestPrepend,
   OnContentError,
   OnScroll,
-} from "../../src/types";
+  STATUS_TYPE,
+} from "../../src";
 
 describe("test InfiniteGrid", () => {
   let ig: InfiniteGrid | null;
@@ -556,6 +557,372 @@ describe("test InfiniteGrid", () => {
 
         children.forEach((child, i) => {
           expect(child.style.top).to.be.equals(`${i * 100}px`);
+        });
+      });
+    });
+    describe("test getStatus, setStatus", () => {
+      it("should check if recovery is possible When you get the full status and setStatus", async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        const children = [].slice.call(igContainer.children);
+        const html = igContainer.outerHTML;
+
+        ig!.setStatus(ig!.getStatus());
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        const children2 = [].slice.call(igContainer.children);
+        const html2 = igContainer.outerHTML;
+
+        expect(html2).to.be.equals(html);
+        expect(ig!.getItems().length).to.be.equals(15);
+        expect(ig!.getVisibleItems().length).to.be.equals(9);
+        expect(ig!.getGroups().length).to.be.equals(5);
+        expect(ig!.getVisibleGroups().length).to.be.equals(3);
+        children2.forEach((el, i) => {
+          expect(el).to.be.not.equal(children[i]);
+        });
+      });
+      it("should check if recovery is possible When you get the partial status and setStatus", async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        const children = [].slice.call(igContainer.children);
+        const html = igContainer.outerHTML;
+
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.REMOVE_INVISIBLE_GROUPS));
+        await waitEvent(ig!, "renderComplete");
+
+        const children2 = [].slice.call(igContainer.children);
+        const html2 = igContainer.outerHTML;
+
+        ig!.renderItems();
+        await waitEvent(ig!, "renderComplete");
+
+        // update outlines
+        const children3 = [].slice.call(igContainer.children);
+        const html3 = igContainer.outerHTML;
+
+        // Then
+        expect(ig!.getItems().length).to.be.equals(9);
+        expect(ig!.getVisibleItems().length).to.be.equals(9);
+        expect(ig!.getGroups().length).to.be.equals(3);
+        expect(ig!.getVisibleGroups().length).to.be.equals(3);
+
+        expect(html2).to.be.equals(html);
+        children2.forEach((el, i) => {
+          expect(el).to.be.not.equal(children[i]);
+        });
+        expect(html3).to.be.not.equals(html);
+        children3.forEach((el, i) => {
+          expect(el).to.be.not.equal(children[i]);
+        });
+      });
+      it(`should check if recovery is possible When you get the partial status with minimized invisible items and setStatus`, async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        const children = [].slice.call(igContainer.children);
+        const html = igContainer.outerHTML;
+
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS));
+        await waitEvent(ig!, "renderComplete");
+
+        const children2 = [].slice.call(igContainer.children);
+        const html2 = igContainer.outerHTML;
+
+        ig!.renderItems();
+        await waitEvent(ig!, "renderComplete");
+
+        // update outlines
+        const children3 = [].slice.call(igContainer.children);
+        const html3 = igContainer.outerHTML;
+
+        // Then
+        // items (9) virtual items (6)
+        expect(ig!.getItems(true).length).to.be.equals(15);
+        expect(ig!.getItems().length).to.be.equals(9);
+        expect(ig!.getVisibleItems().length).to.be.equals(9);
+        // groups (3) virtual groups (2)
+        expect(ig!.getGroups(true).length).to.be.equals(5);
+        expect(ig!.getGroups().length).to.be.equals(3);
+        expect(ig!.getVisibleGroups().length).to.be.equals(3);
+
+        expect(html2).to.be.equals(html);
+        children2.forEach((el, i) => {
+          expect(el).to.be.not.equal(children[i]);
+        });
+        expect(html3).to.be.equals(html);
+        children3.forEach((el, i) => {
+          expect(el).to.be.not.equal(children[i]);
+        });
+      });
+      it(`should check if recovery is possible When you get the partial status with minimized invisible groups and setStatus`, async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        const children = [].slice.call(igContainer.children);
+        const html = igContainer.outerHTML;
+
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_GROUPS));
+        await waitEvent(ig!, "renderComplete");
+
+        const children2 = [].slice.call(igContainer.children);
+        const html2 = igContainer.outerHTML;
+
+        ig!.renderItems();
+        await waitEvent(ig!, "renderComplete");
+
+        // update outlines
+        const children3 = [].slice.call(igContainer.children);
+        const html3 = igContainer.outerHTML;
+
+        // Then
+        expect(ig!.getItems(true).length).to.be.equals(9);
+        expect(ig!.getItems().length).to.be.equals(9);
+        expect(ig!.getVisibleItems().length).to.be.equals(9);
+        // groups (3) virtual groups (2)
+        expect(ig!.getGroups(true).length).to.be.equals(5);
+        expect(ig!.getGroups().length).to.be.equals(3);
+        expect(ig!.getVisibleGroups().length).to.be.equals(3);
+
+        expect(html2).to.be.equals(html);
+        children2.forEach((el, i) => {
+          expect(el).to.be.not.equal(children[i]);
+        });
+        expect(html3).to.be.equals(html);
+        children3.forEach((el, i) => {
+          expect(el).to.be.not.equal(children[i]);
+        });
+      });
+      it(`should check if requestAppend event for invisible items is triggered`, async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS));
+        await waitEvent(ig!, "renderComplete");
+
+        ig!.getScrollContainerElement().scrollTop = 500;
+
+        const e = await waitEvent<OnRequestAppend>(ig!, "requestAppend");
+
+        // Then
+        expect(ig!.getStartCursor()).to.be.equals(1);
+        expect(ig!.getEndCursor()).to.be.equals(3);
+        expect(e.groupKey).to.be.equals(2);
+        expect(e.nextGroupKey).to.be.equals(3);
+      });
+      it(`should check if requestAppend event for invisible groups is triggered`, async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_GROUPS));
+        await waitEvent(ig!, "renderComplete");
+
+        ig!.getScrollContainerElement().scrollTop = 500;
+
+        const e = await waitEvent<OnRequestAppend>(ig!, "requestAppend");
+
+        // Then
+        expect(ig!.getStartCursor()).to.be.equals(1);
+        expect(ig!.getEndCursor()).to.be.equals(3);
+        expect(e.groupKey).to.be.equals(2);
+        expect(e.nextGroupKey).to.be.equals(3);
+      });
+      it(`should check if recovery is possible with placeholders When you get the partial status with minimized invisible items and setStatus`, async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+
+        // set place holder
+        ig!.setPlaceholder({
+          html: `<div class="placeholder"></div>`,
+        });
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS));
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        ig!.getScrollContainerElement().scrollTop = 500;
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        expect(ig!.getStartCursor()).to.be.equals(1);
+        expect(ig!.getEndCursor()).to.be.equals(3);
+        // items (6) virtual items (3)
+        expect(ig!.getVisibleItems(true).length).to.be.equals(9);
+        expect(ig!.getVisibleItems().length).to.be.equals(6);
+
+        const children = [].slice.call(igContainer.children) as HTMLElement[];
+
+        children.slice(0, 6).forEach((el) => {
+          expect(el.classList.contains("placeholder")).to.be.false;
+        });
+        children.slice(6, 9).forEach((el) => {
+          expect(el.classList.contains("placeholder")).to.be.true;
+        });
+      });
+      it(`should check that the call requestAppend and replace the placeholder`, async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+
+
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // set place holder
+        ig!.setPlaceholder({
+          html: `<div class="placeholder"></div>`,
+        });
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS));
+
+        await waitEvent(ig!, "renderComplete");
+
+        ig!.on("requestAppend", ({ nextGroupKey }) => {
+          if (nextGroupKey) {
+            const groupKey = nextGroupKey as number;
+
+            ig!.append([0, 1, 2].map((child) => ({
+              groupKey,
+              key: `key${groupKey * 3 + child}`,
+              html: `<div style="height: 100px">${groupKey * 3 + child}</div>`,
+            })));
+          }
+        });
+
+        // When
+        ig!.getScrollContainerElement().scrollTop = 500;
+
+        await waitEvent(ig!, "requestAppend");
+        await waitEvent(ig!, "renderComplete");
+
+
+        // Then
+        expect(ig!.getStartCursor()).to.be.equals(1);
+        expect(ig!.getEndCursor()).to.be.equals(3);
+        // items (12) virtual items (3)
+        expect(ig!.getItems(true).length).to.be.equals(15);
+        expect(ig!.getItems().length).to.be.equals(12);
+        // items (9) virtual items (0)
+        expect(ig!.getVisibleItems(true).length).to.be.equals(9);
+        expect(ig!.getVisibleItems().length).to.be.equals(9);
+
+        const children = [].slice.call(igContainer.children) as HTMLElement[];
+
+        children.forEach((el) => {
+          expect(el.classList.contains("placeholder")).to.be.false;
         });
       });
     });
