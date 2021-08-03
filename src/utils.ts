@@ -8,6 +8,10 @@ export function isWindow(el: Window | Element): el is Window {
   return el === window;
 }
 
+export function isNumber(val: any): val is number {
+  return typeof val === "number";
+}
+
 export function isString(val: any): val is string {
   return typeof val === "string";
 }
@@ -245,4 +249,12 @@ export function setPlaceholder(item: InfiniteGridItem, info: InfiniteGridItemSta
       item[name] = info[name];
     }
   }
+}
+
+export function range(length: number): number[] {
+  const arr: number[] = [];
+  for (let i = 0; i < length; ++i) {
+    arr.push(i);
+  }
+  return arr;
 }

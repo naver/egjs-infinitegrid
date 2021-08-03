@@ -10,7 +10,8 @@ import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { CategorizedGroup, InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
 import {
   categorize, findIndex, findLastIndex,
-  flat, getItemInfo, makeKey,
+  flat, getItemInfo, isNumber, makeKey,
+  range,
   setPlaceholder,
   splitGridOptions, splitOptions,
 } from "./utils";
@@ -109,7 +110,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       return groups;
     } else {
       return groups.filter((group) => {
-        return group.type !== GROUP_TYPE.VIRTUAL && group.items[0].type !== ITEM_TYPE.VIRTUAL;
+        return group.type !== GROUP_TYPE.VIRTUAL;
       });
     }
   }
@@ -130,7 +131,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       return groups;
     } else {
       return groups.filter((group) => {
-        return group.type !== GROUP_TYPE.VIRTUAL && group.items[0].type !== ITEM_TYPE.VIRTUAL;
+        return group.type !== GROUP_TYPE.VIRTUAL;
       });
     }
   }
@@ -157,7 +158,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     groups.forEach((group) => {
       const grid = group.grid;
       const gridItems = grid.getItems();
-      const isVirtual = group.type === GROUP_TYPE.VIRTUAL;
+      const isVirtual = group.type === GROUP_TYPE.VIRTUAL && !gridItems[0];
       const gridOutline = isVirtual
         ? this._applyVirtualGrid(grid, direction, nextOutline)
         : grid.applyGrid(gridItems, direction, nextOutline);
@@ -178,11 +179,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
     this.itemKeys = {};
     const nextItems = this._syncItemInfos(nextItemInfos.map((info) => getItemInfo(info)), prevItemKeys);
-    const container = this.getContainerElement();
     const prevGroupKeys = this.groupKeys;
     let nextManagerGroups = categorize(nextItems);
-    const GridConstructor = this.options.gridConstructor!;
-    const gridOptions = this.gridOptions;
 
     const startVirtualGroups = this._getVirtualGroups("start", nextManagerGroups);
     const endVirtualGroups = this._getVirtualGroups("end", nextManagerGroups);
@@ -190,19 +188,13 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     nextManagerGroups = [...startVirtualGroups, ...nextManagerGroups, ...endVirtualGroups];
 
     const nextGroups: InfiniteGridGroup[] = nextManagerGroups.map(({ groupKey, items }) => {
-      const grid = prevGroupKeys[groupKey]?.grid ?? new GridConstructor(container, {
-        ...gridOptions,
-        useFit: false,
-        autoResize: false,
-        renderOnPropertyChange: false,
-        externalContainerManager: this.containerManager,
-        externalItemRenderer: this.itemRenderer,
-      });
+      const isVirtual = !items[0] || items[0].type === ITEM_TYPE.VIRTUAL;
+      const grid = prevGroupKeys[groupKey]?.grid ?? this._makeGrid();
 
       grid.setItems(items);
 
       return {
-        type: items[0] ? GROUP_TYPE.GROUP : GROUP_TYPE.VIRTUAL,
+        type: isVirtual ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.GROUP,
         groupKey,
         grid,
         items,
@@ -260,7 +252,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
         : gridItems.map((item) => isVirtualItems ? item.getVirtualStatus() : item.getStatus());
 
       return {
-        type: isVirtualGroup ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.GROUP,
+        type: isVirtualGroup || isVirtualItems ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.GROUP,
         groupKey: groupKey,
         outlines: grid.getOutlines(),
         items,
@@ -273,14 +265,12 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       groups: groupStatus,
     };
   }
+
   public setGroupStatus(status: GroupManagerStatus) {
     this.itemKeys = {};
     this.groupItems = [];
     this.items = [];
-    const container = this.getContainerElement();
     const prevGroupKeys = this.groupKeys;
-    const GridConstructor = this.options.gridConstructor!;
-    const gridOptions = this.gridOptions;
 
     const nextGroups: InfiniteGridGroup[] = status.groups.map(({
       type,
@@ -289,14 +279,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       outlines,
     }) => {
       const nextItems = this._syncItemInfos(items);
-      const grid = prevGroupKeys[groupKey]?.grid ?? new GridConstructor(container, {
-        ...gridOptions,
-        useFit: false,
-        autoResize: false,
-        renderOnPropertyChange: false,
-        externalContainerManager: this.containerManager,
-        externalItemRenderer: this.itemRenderer,
-      });
+      const grid = prevGroupKeys[groupKey]?.grid ?? this._makeGrid();
 
       grid.setOutlines(outlines);
       grid.setItems(nextItems);
@@ -312,6 +295,52 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     this._registerGroups(nextGroups);
     this._updatePlaceholder();
     this.setCursors(status.startCursor, status.endCursor);
+  }
+  public appendPlaceholders(items: number | InfiniteGridItemStatus[], groupKey?: string | number) {
+    this.insertPlaceholders("end", items, groupKey);
+  }
+  public prependPlaceholders(items: number | InfiniteGridItemStatus[], groupKey?: string | number) {
+    this.insertPlaceholders("start", items, groupKey);
+  }
+  public insertPlaceholders(
+    direction: "start" | "end",
+    items: number | InfiniteGridItemStatus[],
+    groupKey: string | number = makeKey(this.groupKeys),
+  ) {
+
+    let infos: InfiniteGridItemInfo[] = [];
+
+    if (isNumber(items)) {
+      infos = range(items).map(() => ({ type: ITEM_TYPE.VIRTUAL, groupKey }));
+    } else if (Array.isArray(items)) {
+      infos = items.map((status) => ({
+        groupKey,
+        ...status,
+        type: ITEM_TYPE.VIRTUAL,
+      }));
+    }
+    const nextItems = this._syncItemInfos(infos, this.itemKeys);
+    const grid = this._makeGrid();
+
+    grid.setItems(nextItems);
+
+    const group = {
+      type: GROUP_TYPE.VIRTUAL,
+      groupKey,
+      grid,
+      items: nextItems,
+    };
+    if (direction === "end") {
+      this.groups.push(group);
+      this.groupItems.push(...nextItems);
+    } else {
+      this.groups.splice(0, 0, group);
+      this.groupItems.splice(0, 0, ...nextItems);
+      if (this.startCursor > -1) {
+        ++this.startCursor;
+        ++this.endCursor;
+      }
+    }
   }
 
   private _getGroupItems() {
@@ -438,6 +467,20 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
     this.groupItems.filter((item) => item.type === ITEM_TYPE.VIRTUAL).forEach((item) => {
       setPlaceholder(item, placeholder);
+    });
+  }
+  private _makeGrid() {
+    const GridConstructor = this.options.gridConstructor!;
+    const gridOptions = this.gridOptions;
+    const container = this.containerElement;
+
+    return new GridConstructor(container, {
+      ...gridOptions,
+      useFit: false,
+      autoResize: false,
+      renderOnPropertyChange: false,
+      externalContainerManager: this.containerManager,
+      externalItemRenderer: this.itemRenderer,
     });
   }
 }
