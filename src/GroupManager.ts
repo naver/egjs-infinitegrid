@@ -11,6 +11,7 @@ import { CategorizedGroup, InfiniteGridGroup, InfiniteGridItemInfo } from "./typ
 import {
   categorize, findIndex, findLastIndex,
   flat, getItemInfo, makeKey,
+  setPlaceholder,
   splitGridOptions, splitOptions,
 } from "./utils";
 
@@ -51,6 +52,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   protected groupKeys: Record<string | number, InfiniteGridGroup> = {};
   protected startCursor = 0;
   protected endCursor = 0;
+  private _placeholder: Partial<InfiniteGridItemStatus> | null = null;
+
   constructor(container: HTMLElement, options: GroupManagerOptions) {
     super(container, splitOptions(options));
   }
@@ -90,7 +93,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     }
   }
   public getVisibleItems(includePlaceholders?: boolean) {
-    const items = this.groupItems;
+    const items = this.items;
 
     if (includePlaceholders) {
       return items;
@@ -109,6 +112,15 @@ export class GroupManager extends Grid<GroupManagerOptions> {
         return group.type !== GROUP_TYPE.VIRTUAL && group.items[0].type !== ITEM_TYPE.VIRTUAL;
       });
     }
+  }
+
+  public hasPlaceholder() {
+    return !!this._placeholder;
+  }
+
+  public setPlaceholder(placeholder: Partial<InfiniteGridItemStatus> | null) {
+    this._placeholder = placeholder;
+    this._updatePlaceholder();
   }
 
   public getVisibleGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
@@ -265,6 +277,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   }
   public setGroupStatus(status: GroupManagerStatus) {
     this.itemKeys = {};
+    this.groupItems = [];
+    this.items = [];
     const container = this.getContainerElement();
     const prevGroupKeys = this.groupKeys;
     const GridConstructor = this.options.gridConstructor!;
@@ -298,15 +312,16 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     });
 
     this._registerGroups(nextGroups);
+    this._updatePlaceholder();
     this.setCursors(status.startCursor, status.endCursor);
   }
 
   private _getGroupItems() {
-    return flat(this.getGroups().map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
+    return flat(this.getGroups(true).map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
   }
 
   private _getGroupVisibleItems() {
-    return flat(this.getVisibleGroups().map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
+    return flat(this.getVisibleGroups(true).map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
   }
 
   private _checkShouldRender(options: Record<string, any>) {
@@ -415,6 +430,17 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     }).reverse();
 
     return virtualGroups;
+  }
+  private _updatePlaceholder() {
+    const placeholder = this._placeholder;
+
+    if (!placeholder) {
+      return;
+    }
+
+    this.groupItems.filter((item) => item.type === ITEM_TYPE.VIRTUAL).forEach((item) => {
+      setPlaceholder(item, placeholder);
+    });
   }
 }
 

@@ -12,7 +12,7 @@ import {
 import { EVENTS, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { GroupManager } from "./GroupManager";
 import { Infinite, OnInfiniteChange, OnInfiniteRequestAppend, OnInfiniteRequestPrepend } from "./Infinite";
-import { InfiniteGridItem } from "./InfiniteGridItem";
+import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { OnRendererUpdated } from "./Renderer/Renderer";
 import { GridRendererItem, VanillaGridRenderer } from "./Renderer/VanillaGridRenderer";
 import { ScrollManager } from "./ScrollManager";
@@ -240,6 +240,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @param - last index of visible groups. <ko>보이는 그룹의 마지막 index.</ko>
    */
   public setCursors(startCursor: number, endCursor: number): this {
+    console.log("CUR", startCursor, endCursor);
     this.groupManager.setCursors(startCursor, endCursor);
     this.infinite.setCursors(startCursor, endCursor);
     this._update();
@@ -320,6 +321,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       itemRenderer: this.itemRenderer.getStatus(),
       groupManager: this.groupManager.getGroupStatus(type),
     };
+  }
+
+  public setPlaceholder(info: Partial<InfiniteGridItemStatus> | null) {
+    this.groupManager.setPlaceholder(info);
   }
 
   public setStatus(status: InfiniteGridStatus) {
@@ -439,11 +444,11 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     return this.options.renderer!;
   }
   private _render(state?: Record<string, any>): void {
-    let items = this.getVisibleItems();
-    const hasPlaceHolder = false;
+    const hasPlaceholder = this.groupManager.hasPlaceholder();
+    let items = this.getVisibleItems(hasPlaceholder);
 
     // has placeHolder
-    if (!hasPlaceHolder) {
+    if (!hasPlaceholder) {
       items = items.filter((item) => item.type === ITEM_TYPE.ITEM);
     }
     this._getRenderer().render(items.map((item) => {
@@ -465,7 +470,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.infinite.setSize(scrollManager.getContentSize());
   }
   private _syncInfinite() {
-    this.infinite.sync(this.getGroups().map(({ groupKey, grid }) => {
+    this.infinite.sync(this.getGroups(true).map(({ groupKey, grid }) => {
       const outlines = grid.getOutlines();
 
       return {

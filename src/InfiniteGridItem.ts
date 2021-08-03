@@ -1,4 +1,5 @@
 import { GridItem, GridItemStatus } from "@egjs/grid";
+import { info } from "node:console";
 import { ITEM_TYPE } from "./consts";
 import { InfiniteGridItemInfo } from "./types";
 
@@ -18,6 +19,25 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
       type: ITEM_TYPE.ITEM,
       ...itemStatus,
     });
+
+    if (this.type === ITEM_TYPE.VIRTUAL) {
+      const orgRect = this.orgRect;
+      const rect = this.rect;
+      const cssRect = this.cssRect;
+
+      if (cssRect.width) {
+        rect.width = cssRect.width;
+      } else if (orgRect.width) {
+        rect.width = orgRect.width;
+        cssRect.width = orgRect.width;
+      }
+      if (cssRect.height) {
+        rect.height = cssRect.height;
+      } else if (orgRect.height) {
+        rect.height = orgRect.height;
+        cssRect.height = orgRect.height;
+      }
+    }
   }
   public getVirtualStatus(): Partial<InfiniteGridItemStatus> {
     return {

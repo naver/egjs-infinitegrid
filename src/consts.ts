@@ -47,7 +47,6 @@ export enum GROUP_TYPE {
 export enum ITEM_TYPE {
   ITEM = 0,
   VIRTUAL = 1,
-  VIRTUAL_GROUP = 2,
 }
 
 export enum STATUS_TYPE {

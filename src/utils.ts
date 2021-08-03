@@ -1,7 +1,7 @@
 import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
 import { IGNORE_PROPERITES_MAP, ITEM_INFO_PROPERTIES } from "./consts";
 import InfiniteGrid from "./InfiniteGrid";
-import { InfiniteGridItem } from "./InfiniteGridItem";
+import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { CategorizedGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
 
 export function isWindow(el: Window | Element): el is Window {
@@ -10,6 +10,9 @@ export function isWindow(el: Window | Element): el is Window {
 
 export function isString(val: any): val is string {
   return typeof val === "string";
+}
+export function isObject(val: any): val is object {
+  return typeof val === "object";
 }
 
 export function flat<T>(arr: T[][]): T[] {
@@ -227,4 +230,19 @@ export function getItemInfo(info: InfiniteGridItemInfo) {
   }
 
   return nextInfo;
+}
+
+export function setPlaceholder(item: InfiniteGridItem, info: InfiniteGridItemStatus) {
+  for (const name in info) {
+    const value = info[name];
+
+    if (isObject(value)) {
+      item[name] = {
+        ...item[name],
+        ...value,
+      };
+    } else {
+      item[name] = info[name];
+    }
+  }
 }
