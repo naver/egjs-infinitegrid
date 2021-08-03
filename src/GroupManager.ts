@@ -235,7 +235,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return this.endCursor;
   }
 
-  public getGroupStatus(type: STATUS_TYPE): GroupManagerStatus {
+  public getGroupStatus(type?: STATUS_TYPE): GroupManagerStatus {
     let startCursor = this.startCursor;
     let endCursor = this.endCursor;
     const isMinimizeItems = type === STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS;

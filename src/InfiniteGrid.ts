@@ -9,7 +9,7 @@ import {
   OnContentError,
   ItemRenderer,
 } from "@egjs/grid";
-import { EVENTS, GROUP_TYPE, ITEM_TYPE, STATUS_TYPE } from "./consts";
+import { EVENTS, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { GroupManager } from "./GroupManager";
 import {
   Infinite, OnInfiniteChange } from "./Infinite";
@@ -316,7 +316,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     return this.syncItems(nextItemInfos);
   }
 
-  public getStatus(type: STATUS_TYPE): InfiniteGridStatus {
+  public getStatus(type?: STATUS_TYPE): InfiniteGridStatus {
     return {
       containerManager: this.containerManager.getStatus(),
       itemRenderer: this.itemRenderer.getStatus(),
@@ -337,10 +337,15 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     groupManager.setGroupStatus(status.groupManager);
     this._syncInfinite();
     this.infinite.setCursors(groupManager.getStartCursor(), groupManager.getEndCursor());
-    this._render({
-      isReisze: this.containerManager.getInlineSize() !== prevInlineSize,
-      isRestore: true,
+
+    setTimeout(() => {
+      this._getRenderer().updateKey();
+      this._render({
+        isReisze: this.containerManager.getInlineSize() !== prevInlineSize,
+        isRestore: true,
+      });
     });
+    return this;
   }
   /**
    * Removes the group corresponding to index.

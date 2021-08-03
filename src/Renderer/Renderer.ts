@@ -4,6 +4,7 @@ import { toArray } from "../utils";
 
 export interface RendererItem {
   key: string | number;
+  renderKey?: string;
   element?: Element | null;
 }
 
@@ -26,8 +27,13 @@ export interface RendererEvents<T extends RendererItem = RendererItem> {
 export class Renderer<T extends RendererItem = RendererItem> extends Component<RendererEvents> {
   protected items: T[] = [];
   protected container: Element | null = null;
+  protected rendererKey = 0;
   private _diffResult: DiffResult<T>;
   private _state: Record<string, any> = {};
+
+  public updateKey() {
+    this.rendererKey = Date.now();
+  }
 
   public getItems() {
     return this.items;
@@ -36,7 +42,11 @@ export class Renderer<T extends RendererItem = RendererItem> extends Component<R
     this.container = container;
   }
   public setItems(items: T[]) {
-    this.items = items;
+    const rendererKey = this.rendererKey;
+    this.items = items.map((item) => ({
+      ...item,
+      renderKey:  `${rendererKey}_${item.key}`,
+    }));
   }
   public render(nextItems: T[], state?: Record<string, any>) {
     if (state) {
@@ -75,10 +85,13 @@ export class Renderer<T extends RendererItem = RendererItem> extends Component<R
     this.off();
   }
   protected syncItems(nextItems: T[]) {
-    const result = diff(this.items, nextItems, (item) => item.key);
+    const prevItems = this.items;
+
+    this.setItems(nextItems);
+
+    const result = diff(prevItems, this.items, (item) => item.renderKey!);
 
     this._diffResult = result;
-    this.items = nextItems;
 
     return result;
   }
