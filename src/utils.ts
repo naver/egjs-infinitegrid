@@ -1,5 +1,5 @@
 import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
-import { IGNORE_PROPERITES_MAP } from "./consts";
+import { IGNORE_PROPERITES_MAP, ITEM_INFO_PROPERTIES } from "./consts";
 import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { CategorizedGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
@@ -215,4 +215,16 @@ export function findLastIndex<T>(arr: T[], callback: (value: T, index: number) =
   }
 
   return -1;
+}
+
+export function getItemInfo(info: InfiniteGridItemInfo) {
+  const nextInfo: InfiniteGridItemInfo  = {};
+
+  for (const name in info) {
+    if (name in ITEM_INFO_PROPERTIES) {
+      nextInfo[name] = info[name];
+    }
+  }
+
+  return nextInfo;
 }

@@ -24,6 +24,20 @@ export const EVENTS = {
   CONTENT_ERROR: "contentError",
 } as const;
 
+// type?: ITEM_TYPE;
+// groupKey?: string | number;
+// key?: string | number;
+// element?: HTMLElement | null;
+// html?: string;
+// data?: Record<string, any>;
+export const ITEM_INFO_PROPERTIES = {
+  type: true,
+  groupKey: true,
+  key: true,
+  element: true,
+  html: true,
+  data: true,
+};
 
 export enum GROUP_TYPE {
   GROUP = 0,

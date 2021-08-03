@@ -2,10 +2,22 @@ import Grid, {
   GridOptions,
   GridFunction,
   GridItem,
+  ContainerManagerStatus,
+  ItemRendererStatus,
 } from "@egjs/grid";
 import { GROUP_TYPE, ITEM_TYPE } from "./consts";
+import { GroupManagerStatus } from "./GroupManager";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { Renderer } from "./Renderer/Renderer";
+
+/**
+ * @typedef
+ */
+export interface InfiniteGridStatus {
+  itemRenderer: ItemRendererStatus;
+  containerManager: ContainerManagerStatus;
+  groupManager: GroupManagerStatus;
+}
 
 export interface InfiniteGridGroup {
   type: GROUP_TYPE;

@@ -1,21 +1,18 @@
 import Grid, {
-  ContainerManagerStatus,
   GetterSetter,
   GridFunction, GridOptions,
   GridOutlines, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
 } from "@egjs/grid";
-import { ItemRendererStatus } from "@egjs/grid/declaration/ItemRenderer";
 import { diff } from "@egjs/list-differ";
 import { GROUP_TYPE, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { CategorizedGroup, InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
-import { categorize, findIndex, findLastIndex, flat, makeKey, splitGridOptions, splitOptions } from "./utils";
-
-export interface GroupManagerOptions extends GridOptions {
-  gridConstructor: GridFunction | null;
-  gridOptions: Record<string, any>;
-}
+import {
+  categorize, findIndex, findLastIndex,
+  flat, getItemInfo, makeKey,
+  splitGridOptions, splitOptions,
+} from "./utils";
 
 export interface InfiniteGridGroupStatus {
   type: GROUP_TYPE;
@@ -24,12 +21,15 @@ export interface InfiniteGridGroupStatus {
   outlines: GridOutlines;
 }
 
-export interface InfiniteGridStatus {
-  itemRenderer: ItemRendererStatus;
-  containerManager: ContainerManagerStatus;
-  groups: InfiniteGridGroupStatus[];
+export interface GroupManagerOptions extends GridOptions {
+  gridConstructor: GridFunction | null;
+  gridOptions: Record<string, any>;
+}
+
+export interface GroupManagerStatus {
   startCursor: number;
   endCursor: number;
+  groups: InfiniteGridGroupStatus[];
 }
 
 @GetterSetter
@@ -79,29 +79,50 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   public getItemByKey(key: string | number): InfiniteGridItem | null {
     return this.itemKeys[key] || null;
   }
-  public getItemInfos(): InfiniteGridItemInfo[] {
-    return this.groupItems.map(({ groupKey, key, element, html, data }) => {
-      return {
-        groupKey,
-        key,
-        element,
-        html,
-        data,
-      };
-    });
+
+  public getGroupItems(includePlaceholders?: boolean) {
+    const items = this.groupItems;
+
+    if (includePlaceholders) {
+      return items;
+    } else {
+      return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
+    }
+  }
+  public getVisibleItems(includePlaceholders?: boolean) {
+    const items = this.groupItems;
+
+    if (includePlaceholders) {
+      return items;
+    } else {
+      return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
+    }
   }
 
-  public getGroupItems() {
-    return this.groupItems;
+  public getGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
+    const groups = this.groups;
+
+    if (includePlaceholders) {
+      return groups;
+    } else {
+      return groups.filter((group) => {
+        return group.type !== GROUP_TYPE.VIRTUAL && group.items[0].type !== ITEM_TYPE.VIRTUAL;
+      });
+    }
   }
 
-  public getVisibleGroups(): InfiniteGridGroup[] {
-    return this.groups.slice(this.startCursor, this.endCursor + 1);
+  public getVisibleGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
+    const groups = this.groups.slice(this.startCursor, this.endCursor + 1);
+
+    if (includePlaceholders) {
+      return groups;
+    } else {
+      return groups.filter((group) => {
+        return group.type !== GROUP_TYPE.VIRTUAL && group.items[0].type !== ITEM_TYPE.VIRTUAL;
+      });
+    }
   }
 
-  public getGroups(): InfiniteGridGroup[] {
-    return this.groups;
-  }
 
   public applyGrid(items: InfiniteGridItem[], direction: "end" | "start", outline: number[]): GridOutlines {
     let nextOutline = outline;
@@ -144,7 +165,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     const prevItemKeys = this.itemKeys;
 
     this.itemKeys = {};
-    const nextItems = this._syncItemInfos(nextItemInfos, prevItemKeys);
+    const nextItems = this._syncItemInfos(nextItemInfos.map((info) => getItemInfo(info)), prevItemKeys);
     const container = this.getContainerElement();
     const prevGroupKeys = this.groupKeys;
     let nextManagerGroups = categorize(nextItems);
@@ -196,10 +217,15 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     this.items = this._getGroupVisibleItems();
   }
 
-  public getGroupStatus(type: STATUS_TYPE): InfiniteGridStatus {
-    const containerManagerStatus = this.containerManager.getStatus();
-    const itemRendererStatus = this.itemRenderer.getStatus();
+  public getStartCursor() {
+    return this.startCursor;
+  }
 
+  public getEndCursor() {
+    return this.endCursor;
+  }
+
+  public getGroupStatus(type: STATUS_TYPE): GroupManagerStatus {
     let startCursor = this.startCursor;
     let endCursor = this.endCursor;
     const isMinimizeItems = type === STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS;
@@ -235,14 +261,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       startCursor,
       endCursor,
       groups: groupStatus,
-      itemRenderer: itemRendererStatus,
-      containerManager: containerManagerStatus,
     };
   }
-  public setGroupStatus(status: InfiniteGridStatus) {
-    this.itemRenderer.setStatus(status.itemRenderer);
-    this.containerManager.setStatus(status.containerManager);
-
+  public setGroupStatus(status: GroupManagerStatus) {
     this.itemKeys = {};
     const container = this.getContainerElement();
     const prevGroupKeys = this.groupKeys;

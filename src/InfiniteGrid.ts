@@ -10,7 +10,7 @@ import {
   ItemRenderer,
 } from "@egjs/grid";
 import { EVENTS, ITEM_TYPE, STATUS_TYPE } from "./consts";
-import { GroupManager, InfiniteGridStatus } from "./GroupManager";
+import { GroupManager } from "./GroupManager";
 import { Infinite, OnInfiniteChange, OnInfiniteRequestAppend, OnInfiniteRequestPrepend } from "./Infinite";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { OnRendererUpdated } from "./Renderer/Renderer";
@@ -20,6 +20,7 @@ import {
   InfiniteGridEvents, InfiniteGridGroup,
   InfiniteGridInsertedItems, InfiniteGridItemInfo,
   InfiniteGridOptions,
+  InfiniteGridStatus,
   OnPickedRenderComplete,
   OnScroll,
 } from "./types";
@@ -120,7 +121,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const containerElement = scrollManager.getContainer();
     const containerManager = new ContainerManager(containerElement, {
       horizontal,
-    });
+    }).on("resize", this._onResize);
     const itemRenderer = new ItemRenderer({
       attributePrefix,
       horizontal,
@@ -302,7 +303,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * ig.insert(4, [HTMLElement1, HTMLElement2]);
    */
   public insert(index: number, items: InfiniteGridInsertedItems, groupKey?: string | number): this {
-    const nextItemInfos = this.groupManager.getItemInfos();
+    const nextItemInfos: InfiniteGridItemInfo[] = this.groupManager.getGroupItems();
     const itemInfos = convertInsertedItems(items, groupKey);
 
     if (index === -1) {
@@ -312,15 +313,24 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     }
     return this.syncItems(nextItemInfos);
   }
-  public getStatus(type: STATUS_TYPE) {
-    return this.groupManager.getGroupStatus(type);
+
+  public getStatus(type: STATUS_TYPE): InfiniteGridStatus {
+    return {
+      containerManager: this.containerManager.getStatus(),
+      itemRenderer: this.itemRenderer.getStatus(),
+      groupManager: this.groupManager.getGroupStatus(type),
+    };
   }
 
   public setStatus(status: InfiniteGridStatus) {
+    this.itemRenderer.setStatus(status.itemRenderer);
+    this.containerManager.setStatus(status.containerManager);
+    const groupManager = this.groupManager;
     const prevInlineSize = this.containerManager.getInlineSize();
-    this.groupManager.setGroupStatus(status);
+
+    groupManager.setGroupStatus(status.groupManager);
     this._syncInfinite();
-    this.infinite.setCursors(status.startCursor, status.endCursor);
+    this.infinite.setCursors(groupManager.getStartCursor(), groupManager.getEndCursor());
     this._render({
       isReisze: this.containerManager.getInlineSize() !== prevInlineSize,
       isRestore: true,
@@ -340,7 +350,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @ko key에 해당하는 그룹을 제거 한다.
    */
   public removeGroupByKey(key: number | string): this {
-    const nextItemInfos = this.groupManager.getItemInfos();
+    const nextItemInfos = this.groupManager.getItems();
 
     const firstIndex = findIndex(nextItemInfos, (item) => item.groupKey === key);
     const lastIndex = findLastIndex(nextItemInfos, (item) => item.groupKey === key);
@@ -356,7 +366,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @ko index에 해당하는 아이템을 제거 한다.
    */
   public removeByIndex(index: number): this {
-    const nextItemInfos = this.groupManager.getItemInfos();
+    const nextItemInfos = this.getItems(true);
 
     nextItemInfos.splice(index, 1);
 
@@ -367,7 +377,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @ko key에 해당하는 아이템을 제거 한다.
    */
   public removeByKey(key: string | number): this {
-    const nextItemInfos = this.getItems();
+    const nextItemInfos = this.getItems(true);
     const index = findIndex(nextItemInfos, (item) => item.key === key);
 
     return this.removeByIndex(index);
@@ -385,30 +395,34 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   /**
    * Return all items of InfiniteGrid.
    * @ko InfiniteGrid의 모든 아이템들을 반환한다.
+   * @param - Whether to include items corresponding to placeholders. <ko>placeholder에 해당하는 아이템들을 포함할지 여부.</ko>
    */
-  public getItems(): InfiniteGridItem[] {
-    return this.groupManager.getGroupItems();
+  public getItems(includePlaceholders?: boolean): InfiniteGridItem[] {
+    return this.groupManager.getGroupItems(includePlaceholders);
   }
   /**
    * Return visible items of InfiniteGrid.
    * @ko InfiniteGrid의 보이는 아이템들을 반환한다.
+   * @param - Whether to include items corresponding to placeholders. <ko>placeholder에 해당하는 아이템들을 포함할지 여부.</ko>
    */
-  public getVisibleItems(): InfiniteGridItem[] {
-    return this.groupManager.getItems();
+  public getVisibleItems(includePlaceholders?: boolean): InfiniteGridItem[] {
+    return this.groupManager.getVisibleItems(includePlaceholders);
   }
   /**
    * Return all groups of InfiniteGrid.
    * @ko InfiniteGrid의 모든 그룹들을 반환한다.
+   * @param - Whether to include groups corresponding to placeholders. <ko>placeholder에 해당하는 그룹들을 포함할지 여부.</ko>
    */
-  public getGroups(): InfiniteGridGroup[] {
-    return this.groupManager.getGroups();
+  public getGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
+    return this.groupManager.getGroups(includePlaceholders);
   }
   /**
    * Return visible groups of InfiniteGrid.
    * @ko InfiniteGrid의 보이는 그룹들을 반환한다.
+   * @param - Whether to include groups corresponding to placeholders. <ko>placeholder에 해당하는 그룹들을 포함할지 여부.</ko>
    */
-  public getVisibleGroups(): InfiniteGridGroup[] {
-    return this.groupManager.getVisibleGroups();
+  public getVisibleGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
+    return this.groupManager.getVisibleGroups(includePlaceholders);
   }
   /**
    * Releases the instnace and events and returns the CSS of the container and elements.
@@ -530,6 +544,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     } else {
       this.groupManager.renderItems();
     }
+  }
+
+  private _onResize = () => {
+    this.renderItems({ useResize: true });
   }
 
   private _onRequestAppend = (e: OnInfiniteRequestAppend): void => {
