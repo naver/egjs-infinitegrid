@@ -1,4 +1,4 @@
-import { GridItem, GridItemStatus } from "@egjs/grid";
+import { GridItem, GridItemStatus, MOUNT_STATE } from "@egjs/grid";
 import { INVISIBLE_POS, ITEM_TYPE } from "./consts";
 import { InfiniteGridItemInfo } from "./types";
 
@@ -21,6 +21,9 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
     });
 
     if (this.type === ITEM_TYPE.VIRTUAL) {
+      if (this.rect.width || this.rect.height) {
+        this.mountState = MOUNT_STATE.UNMOUNTED;
+      }
       const orgRect = this.orgRect;
       const rect = this.rect;
       const cssRect = this.cssRect;
@@ -45,6 +48,7 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
       groupKey: this.groupKey,
       key: this.key,
       orgRect: this.orgRect,
+      rect: this.rect,
       cssRect: this.cssRect,
       attributes: this.attributes,
     };

@@ -404,7 +404,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
     groupManager.setGroupStatus(status.groupManager);
     this._syncInfinite();
-    this.infinite.setCursors(groupManager.getStartCursor(), groupManager.getEndCursor());
+    this.infinite.setCursors(this.infinite.getStartCursor(), groupManager.getEndCursor());
 
     setTimeout(() => {
       this._getRenderer().updateKey();

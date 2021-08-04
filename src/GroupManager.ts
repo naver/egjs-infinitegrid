@@ -338,7 +338,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       }
     }
 
-    this.syncItems(this.getItems());
+    this.syncItems(flatGroups(this.getGroups()));
   }
   public insertPlaceholders(
     direction: "start" | "end",
@@ -357,9 +357,10 @@ export class GroupManager extends Grid<GroupManagerOptions> {
         type: ITEM_TYPE.VIRTUAL,
       }));
     }
-    const nextItems = this._syncItemInfos(infos, this.itemKeys);
     const grid = this._makeGrid();
+    const nextItems = this._syncItemInfos(infos, this.itemKeys);
 
+    this._updatePlaceholder(nextItems);
     grid.setItems(nextItems);
 
     const group = {
@@ -502,14 +503,14 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
     return virtualGroups;
   }
-  private _updatePlaceholder() {
+  private _updatePlaceholder(items = this.groupItems) {
     const placeholder = this._placeholder;
 
     if (!placeholder) {
       return;
     }
 
-    this.groupItems.filter((item) => item.type === ITEM_TYPE.VIRTUAL).forEach((item) => {
+    items.filter((item) => item.type === ITEM_TYPE.VIRTUAL).forEach((item) => {
       setPlaceholder(item, placeholder);
     });
   }

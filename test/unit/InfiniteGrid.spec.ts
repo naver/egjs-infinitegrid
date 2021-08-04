@@ -862,7 +862,7 @@ describe("test InfiniteGrid", () => {
           expect(el.classList.contains("placeholder")).to.be.true;
         });
       });
-      it(`should check that the call requestAppend and replace the placeholder`, async () => {
+      it(`should check that the call requestAppend and replace placeholders`, async () => {
         // Given
         const igContainer = ig!.getContainerElement();
 
@@ -924,6 +924,99 @@ describe("test InfiniteGrid", () => {
         children.forEach((el) => {
           expect(el.classList.contains("placeholder")).to.be.false;
         });
+      });
+      it(`should check that the call requestAppend and remove placeholders`, async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+
+
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // set place holder
+        ig!.setPlaceholder({
+          html: `<div class="placeholder"></div>`,
+        });
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS));
+
+        await waitEvent(ig!, "renderComplete");
+
+        ig!.once("requestAppend", ({ nextGroupKey }) => {
+          if (nextGroupKey) {
+            ig!.removePlaceholders({ groupKey: nextGroupKey });
+          }
+        });
+
+        // When
+        ig!.getScrollContainerElement().scrollTop = 500;
+
+        await waitEvent(ig!, "requestAppend");
+        await waitEvent(ig!, "renderComplete");
+
+
+        // Then
+        expect(ig!.getStartCursor()).to.be.equals(1);
+        expect(ig!.getEndCursor()).to.be.equals(3);
+        // items (9) virtual items (3) remove (3)
+        expect(ig!.getItems(true).length).to.be.equals(12);
+        expect(ig!.getItems().length).to.be.equals(9);
+        // items (6) virtual items (3)
+        expect(ig!.getVisibleItems(true).length).to.be.equals(9);
+        expect(ig!.getVisibleItems().length).to.be.equals(6);
+      });
+      it(`should check if the placeholder is replaced when appending after adding the placeholder`, async () => {
+        // Given
+        ig!.append([0, 1, 2].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+        // cursors (0, 0)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        // set place holder
+        ig!.setPlaceholder({
+          html: `<div class="placeholder"></div>`,
+        });
+
+        // append placeholders
+        ig!.appendPlaceholders(3, 1);
+        await waitEvent(ig!, "renderComplete");
+
+        const itemsLength = ig!.getItems().length;
+        const allItemsLength = ig!.getItems(true).length;
+
+        ig!.append([3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        await waitEvent(ig!, "renderComplete");
+
+        const itemsLength2 = ig!.getItems().length;
+        const allItemsLength2 = ig!.getItems(true).length;
+
+
+        expect(itemsLength).to.be.equals(3);
+        expect(allItemsLength).to.be.equals(6);
+        expect(itemsLength2).to.be.equals(6);
+        expect(allItemsLength2).to.be.equals(6);
       });
     });
   });
