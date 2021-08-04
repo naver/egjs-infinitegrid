@@ -381,6 +381,11 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     };
   }
 
+  /**
+   * Remove placeholders
+   * @ko placeholder들을 삭제한다.
+   * @param type - Remove the placeholders corresponding to the groupkey. When "start" or "end", remove all placeholders in that direction. <ko>groupkey에 해당하는 placeholder들을 삭제한다. "start" 또는 "end" 일 때 해당 방향의 모든 placeholder들을 삭제한다.</ko>
+   */
   public removePlaceholders(type: "start" | "end" | { groupKey: string | number}) {
     this.groupManager.removePlaceholders(type);
     this._syncGroups();
