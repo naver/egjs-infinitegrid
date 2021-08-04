@@ -2,7 +2,7 @@ import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
 import { IGNORE_PROPERITES_MAP, ITEM_INFO_PROPERTIES } from "./consts";
 import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
-import { CategorizedGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
+import { CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
 
 export function isWindow(el: Window | Element): el is Window {
   return el === window;
@@ -257,4 +257,8 @@ export function range(length: number): number[] {
     arr.push(i);
   }
   return arr;
+}
+
+export function flatGroups(groups: InfiniteGridGroup[]) {
+  return flat(groups.map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
 }

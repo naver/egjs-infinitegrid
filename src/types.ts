@@ -80,6 +80,19 @@ export interface OnRequestPrepend {
   nextGroupKey: string | number | undefined;
 }
 
+/**
+ * @typedef
+ * @memberof InfiniteGrid
+ * @property - Groups corresponding to placeholders <ko>placholder에 해당하는 그룹</ko>
+ * @property - Items corresponding to placeholders <ko>placholder에 해당하는 아이템들</ko>
+ * @property - Remove the inserted placeholders. <ko>추가한 placeholder들을 삭제한다.</ko>
+ */
+export interface InsertedPlaceholdersResult {
+  group: InfiniteGridGroup;
+  items: InfiniteGridItem[];
+  remove(): void;
+}
+
 
 /**
  * @typedef

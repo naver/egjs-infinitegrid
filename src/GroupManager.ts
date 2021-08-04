@@ -1,7 +1,7 @@
 import Grid, {
   GetterSetter,
   GridFunction, GridOptions,
-  GridOutlines, Properties, PROPERTY_TYPE,
+  GridOutlines, MOUNT_STATE, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
 } from "@egjs/grid";
 import { diff } from "@egjs/list-differ";
@@ -10,7 +10,7 @@ import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { CategorizedGroup, InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
 import {
   categorize, findIndex, findLastIndex,
-  flat, getItemInfo, isNumber, makeKey,
+  flatGroups, getItemInfo, isNumber, makeKey,
   range,
   setPlaceholder,
   splitGridOptions, splitOptions,
@@ -138,6 +138,10 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
 
   public applyGrid(items: InfiniteGridItem[], direction: "end" | "start", outline: number[]): GridOutlines {
+    items.forEach((item) => {
+      item.mountState = MOUNT_STATE.MOUNTED;
+    });
+
     let nextOutline = outline;
 
     const originalGroups = this.groups;
@@ -159,13 +163,22 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       const grid = group.grid;
       const gridItems = grid.getItems();
       const isVirtual = group.type === GROUP_TYPE.VIRTUAL && !gridItems[0];
-      const gridOutline = isVirtual
-        ? this._applyVirtualGrid(grid, direction, nextOutline)
-        : grid.applyGrid(gridItems, direction, nextOutline);
+      const appliedItems = gridItems.filter((item) => item.mountState !== MOUNT_STATE.UNCHECKED);
+      let gridOutlines: GridOutlines;
 
-      grid.setOutlines(gridOutline);
+      if (isVirtual) {
+        gridOutlines = this._applyVirtualGrid(grid, direction, nextOutline);
+      } else if (appliedItems.length) {
+        gridOutlines = grid.applyGrid(appliedItems, direction, nextOutline);
+      } else {
+        gridOutlines = {
+          start: [...nextOutline],
+          end: [...nextOutline],
+        };
+      }
 
-      nextOutline = gridOutline[direction];
+      grid.setOutlines(gridOutlines);
+      nextOutline = gridOutlines[direction];
     });
 
     return {
@@ -297,10 +310,35 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     this.setCursors(status.startCursor, status.endCursor);
   }
   public appendPlaceholders(items: number | InfiniteGridItemStatus[], groupKey?: string | number) {
-    this.insertPlaceholders("end", items, groupKey);
+    return this.insertPlaceholders("end", items, groupKey);
   }
   public prependPlaceholders(items: number | InfiniteGridItemStatus[], groupKey?: string | number) {
-    this.insertPlaceholders("start", items, groupKey);
+    return this.insertPlaceholders("start", items, groupKey);
+  }
+  public removePlaceholders(type: "start" | "end" | { groupKey: string | number}) {
+    const groups = this.groups;
+    const length = groups.length;
+
+    if (type === "start") {
+      const index = findIndex(groups, (group) => group.type === GROUP_TYPE.GROUP);
+
+      groups.splice(0, index);
+
+    } else if (type === "end") {
+      const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.GROUP);
+
+      groups.splice(index + 1, length - index - 1);
+    } else {
+      const groupKey = type.groupKey;
+
+      const index = findIndex(groups, (group) => group.groupKey === groupKey);
+
+      if (index > -1) {
+        groups.splice(index, 1);
+      }
+    }
+
+    this.syncItems(this.getItems());
   }
   public insertPlaceholders(
     direction: "start" | "end",
@@ -341,14 +379,20 @@ export class GroupManager extends Grid<GroupManagerOptions> {
         ++this.endCursor;
       }
     }
+
+
+    return {
+      group,
+      items: nextItems,
+    };
   }
 
   private _getGroupItems() {
-    return flat(this.getGroups(true).map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
+    return flatGroups(this.getGroups(true));
   }
 
   private _getGroupVisibleItems() {
-    return flat(this.getVisibleGroups(true).map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
+    return flatGroups(this.getVisibleGroups(true));
   }
 
   private _checkShouldRender(options: Record<string, any>) {
