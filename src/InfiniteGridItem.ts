@@ -1,5 +1,5 @@
 import { GridItem, GridItemStatus } from "@egjs/grid";
-import { ITEM_TYPE } from "./consts";
+import { INVISIBLE_POS, ITEM_TYPE } from "./consts";
 import { InfiniteGridItemInfo } from "./types";
 
 export interface InfiniteGridItemStatus extends GridItemStatus {
@@ -16,6 +16,7 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
     super(horizontal, {
       html: "",
       type: ITEM_TYPE.ITEM,
+      cssRect: { top: INVISIBLE_POS, left: INVISIBLE_POS },
       ...itemStatus,
     });
 

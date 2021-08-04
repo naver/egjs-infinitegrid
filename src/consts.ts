@@ -59,3 +59,5 @@ export enum STATUS_TYPE {
   // remove invisible groups
   REMOVE_INVISIBLE_GROUPS = 3,
 }
+
+export const INVISIBLE_POS = -9999;
