@@ -1,16 +1,18 @@
 import { Renderer, RendererItem } from "./Renderer";
 
 export class VanillaRenderer<T extends RendererItem = RendererItem> extends Renderer<T> {
-  public render(nextItems: T[]) {
+  public render(nextItems: T[], state?: Record<string, any>) {
     const container = this.container!;
-    const result = this.syncItems(nextItems);
+    const result = super.render(nextItems, state);
     const {
       prevList,
       removed,
       ordered,
       added,
+      list,
     } = result;
     const diffList = [...prevList];
+
 
     removed.forEach((index) => {
       diffList.splice(index, 1);
@@ -23,7 +25,7 @@ export class VanillaRenderer<T extends RendererItem = RendererItem> extends Rend
       container.insertBefore(item.element!, diffList[nextIndex + 1]?.element ?? null);
     });
     added.forEach((index) => {
-      const item = nextItems[index];
+      const item = list[index];
 
       diffList.splice(index, 0, item);
       container.insertBefore(item.element!, diffList[index + 1]?.element ?? null);
@@ -31,8 +33,5 @@ export class VanillaRenderer<T extends RendererItem = RendererItem> extends Rend
 
     this.updated(container.children);
     return result;
-  }
-  public update() {
-    return true;
   }
 }

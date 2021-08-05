@@ -1,5 +1,6 @@
 import { PackingGrid, PackingGridOptions } from "@egjs/grid";
-import InfiniteGrid, { InfiniteGridOptions } from "../InfiniteGrid";
+import InfiniteGrid from "../InfiniteGrid";
+import { InfiniteGridOptions } from "../types";
 import { InfiniteGridGetterSetter } from "../utils";
 
 /**
@@ -34,5 +35,5 @@ export class PackingInfiniteGrid extends InfiniteGrid<PackingInfiniteGridOptions
     ...InfiniteGrid.defaultOptions,
     ...PackingGrid.defaultOptions,
     gridConstructor: PackingGrid,
-  } as const;
+  };
 }

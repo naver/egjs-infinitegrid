@@ -1,15 +1,22 @@
 import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
-import { IGNORE_PROPERITES_MAP } from "./consts";
+import { IGNORE_PROPERITES_MAP, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
 import InfiniteGrid from "./InfiniteGrid";
-import { InfiniteGridItem } from "./InfiniteGridItem";
-import { CategorizedGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
+import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
+import { CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
 
 export function isWindow(el: Window | Element): el is Window {
   return el === window;
 }
 
+export function isNumber(val: any): val is number {
+  return typeof val === "number";
+}
+
 export function isString(val: any): val is string {
   return typeof val === "string";
+}
+export function isObject(val: any): val is object {
+  return typeof val === "object";
 }
 
 export function flat<T>(arr: T[][]): T[] {
@@ -17,7 +24,17 @@ export function flat<T>(arr: T[][]): T[] {
     return [...prev, ...cur];
   }, []);
 }
+export function splitOptions(options: Record<string, any>) {
+  const {
+    gridOptions,
+    ...otherOptions
+  } = options;
 
+  return {
+    ...splitGridOptions(gridOptions),
+    ...otherOptions,
+  };
+}
 export function splitGridOptions(options: Record<string, any>) {
   const nextOptions: Record<string, any> = {};
   const gridOptions: Record<string, any> = {};
@@ -205,4 +222,55 @@ export function findLastIndex<T>(arr: T[], callback: (value: T, index: number) =
   }
 
   return -1;
+}
+
+export function getItemInfo(info: InfiniteGridItemInfo) {
+  const nextInfo: InfiniteGridItemInfo  = {};
+
+  for (const name in info) {
+    if (name in ITEM_INFO_PROPERTIES) {
+      nextInfo[name] = info[name];
+    }
+  }
+
+  return nextInfo;
+}
+
+export function setPlaceholder(item: InfiniteGridItem, info: InfiniteGridItemStatus) {
+  for (const name in info) {
+    const value = info[name];
+
+    if (isObject(value)) {
+      item[name] = {
+        ...item[name],
+        ...value,
+      };
+    } else {
+      item[name] = info[name];
+    }
+  }
+}
+
+export function range(length: number): number[] {
+  const arr: number[] = [];
+  for (let i = 0; i < length; ++i) {
+    arr.push(i);
+  }
+  return arr;
+}
+
+export function flatGroups(groups: InfiniteGridGroup[]) {
+  return flat(groups.map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
+}
+
+
+export function filterVirtuals<T extends InfiniteGridItem | InfiniteGridGroup>(
+  items: T[],
+  includePlaceholders?: boolean
+): T[] {
+  if (includePlaceholders) {
+    return items;
+  } else {
+    return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
+  }
 }

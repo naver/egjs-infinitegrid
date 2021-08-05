@@ -38,6 +38,7 @@ export class SampleGrid extends Grid<SampleGridOptions> {
           inlineSize: item.inlineSize,
           contentSize: item.contentSize,
           contentPos: prevPos,
+          inlinePos: 0,
         });
 
         prevOutline = [prevPos + (rect?.height ?? 0) + this.gap];
