@@ -40,12 +40,12 @@ export const ITEM_INFO_PROPERTIES = {
 };
 
 export enum GROUP_TYPE {
-  GROUP = 0,
+  NORMAL = 0,
   VIRTUAL = 1,
 }
 
 export enum ITEM_TYPE {
-  ITEM = 0,
+  NORMAL = 0,
   VIRTUAL = 1,
 }
 

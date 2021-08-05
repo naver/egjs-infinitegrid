@@ -15,7 +15,7 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
   constructor(horizontal: boolean, itemStatus?: Partial<InfiniteGridItemStatus>) {
     super(horizontal, {
       html: "",
-      type: ITEM_TYPE.ITEM,
+      type: ITEM_TYPE.NORMAL,
       cssRect: { top: INVISIBLE_POS, left: INVISIBLE_POS },
       ...itemStatus,
     });
@@ -56,7 +56,7 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
   public getStatus(): Required<InfiniteGridItemStatus> {
     return {
       ...super.getStatus(),
-      type: ITEM_TYPE.ITEM,
+      type: ITEM_TYPE.NORMAL,
       groupKey: this.groupKey,
       html: this.html,
     };

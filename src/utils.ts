@@ -1,5 +1,5 @@
 import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
-import { IGNORE_PROPERITES_MAP, ITEM_INFO_PROPERTIES } from "./consts";
+import { IGNORE_PROPERITES_MAP, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
 import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
@@ -261,4 +261,16 @@ export function range(length: number): number[] {
 
 export function flatGroups(groups: InfiniteGridGroup[]) {
   return flat(groups.map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
+}
+
+
+export function filterVirtuals<T extends InfiniteGridItem | InfiniteGridGroup>(
+  items: T[],
+  includePlaceholders?: boolean
+): T[] {
+  if (includePlaceholders) {
+    return items;
+  } else {
+    return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
+  }
 }

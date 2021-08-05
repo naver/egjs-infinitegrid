@@ -9,7 +9,7 @@ import { GROUP_TYPE, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { CategorizedGroup, InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
 import {
-  categorize, findIndex, findLastIndex,
+  categorize, filterVirtuals, findIndex, findLastIndex,
   flatGroups, getItemInfo, isNumber, makeKey,
   range,
   setPlaceholder,
@@ -85,34 +85,14 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   }
 
   public getGroupItems(includePlaceholders?: boolean) {
-    const items = this.groupItems;
-
-    if (includePlaceholders) {
-      return items;
-    } else {
-      return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
-    }
+    return filterVirtuals(this.groupItems, includePlaceholders);
   }
   public getVisibleItems(includePlaceholders?: boolean) {
-    const items = this.items;
-
-    if (includePlaceholders) {
-      return items;
-    } else {
-      return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
-    }
+    return filterVirtuals(this.items, includePlaceholders);
   }
 
   public getGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
-    const groups = this.groups;
-
-    if (includePlaceholders) {
-      return groups;
-    } else {
-      return groups.filter((group) => {
-        return group.type !== GROUP_TYPE.VIRTUAL;
-      });
-    }
+    return filterVirtuals(this.groups, includePlaceholders);
   }
 
   public hasPlaceholder() {
@@ -127,13 +107,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   public getVisibleGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
     const groups = this.groups.slice(this.startCursor, this.endCursor + 1);
 
-    if (includePlaceholders) {
-      return groups;
-    } else {
-      return groups.filter((group) => {
-        return group.type !== GROUP_TYPE.VIRTUAL;
-      });
-    }
+    return filterVirtuals(groups, includePlaceholders);
   }
 
 
@@ -207,7 +181,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       grid.setItems(items);
 
       return {
-        type: isVirtual ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.GROUP,
+        type: isVirtual ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.NORMAL,
         groupKey,
         grid,
         items,
@@ -265,7 +239,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
         : gridItems.map((item) => isVirtualItems ? item.getVirtualStatus() : item.getStatus());
 
       return {
-        type: isVirtualGroup || isVirtualItems ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.GROUP,
+        type: isVirtualGroup || isVirtualItems ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.NORMAL,
         groupKey: groupKey,
         outlines: grid.getOutlines(),
         items,
@@ -320,12 +294,12 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     const length = groups.length;
 
     if (type === "start") {
-      const index = findIndex(groups, (group) => group.type === GROUP_TYPE.GROUP);
+      const index = findIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
 
       groups.splice(0, index);
 
     } else if (type === "end") {
-      const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.GROUP);
+      const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
 
       groups.splice(index + 1, length - index - 1);
     } else {
@@ -483,14 +457,14 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     let virtualGroups: InfiniteGridGroup[] = [];
 
     if (direction === "start") {
-      const index = findIndex(groups, (group) => group.type === GROUP_TYPE.GROUP);
+      const index = findIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
 
       if (index === -1) {
         return [];
       }
       virtualGroups = groups.slice(0, index);
     } else {
-      const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.GROUP);
+      const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
 
       if (index === -1) {
         return [];

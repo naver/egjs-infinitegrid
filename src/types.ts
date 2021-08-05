@@ -66,7 +66,7 @@ export interface InfiniteGridOptions extends GridOptions {
  */
 export interface OnRequestAppend {
   groupKey: string | number | undefined;
-  nextGroupKey: string | number | undefined;
+  nextGroupKey?: string | number | undefined;
 }
 
 /**
@@ -77,7 +77,7 @@ export interface OnRequestAppend {
  */
 export interface OnRequestPrepend {
   groupKey: string | number | undefined;
-  nextGroupKey: string | number | undefined;
+  nextGroupKey?: string | number | undefined;
 }
 
 /**

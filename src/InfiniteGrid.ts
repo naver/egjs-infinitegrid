@@ -12,7 +12,9 @@ import {
 import { EVENTS, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { GroupManager } from "./GroupManager";
 import {
-  Infinite, OnInfiniteChange } from "./Infinite";
+  Infinite,
+  OnInfiniteChange,
+} from "./Infinite";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { OnRendererUpdated } from "./Renderer/Renderer";
 import { GridRendererItem, VanillaGridRenderer } from "./Renderer/VanillaGridRenderer";
@@ -35,7 +37,7 @@ import {
 
 /**
  * A module used to arrange items including content infinitely according to layout type. With this module, you can implement various layouts composed of different items whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance
- * @ko 콘텐츠가 있는 아이템를 레이아웃 타입에 따라 무한으로 배치하는 모듈. 다양한 크기의 아이템를 다양한 레이아웃으로 배치할 수 있다. 아이템의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
+ * @ko 콘텐츠가 있는 아이템을 레이아웃 타입에 따라 무한으로 배치하는 모듈. 다양한 크기의 아이템을 다양한 레이아웃으로 배치할 수 있다. 아이템의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
  * @extends Component
  * @support {"ie": "9+(with polyfill)", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "4.X+"}
  * @example
@@ -523,7 +525,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
     // has placeHolder
     if (!hasPlaceholder) {
-      items = items.filter((item) => item.type === ITEM_TYPE.ITEM);
+      items = items.filter((item) => item.type === ITEM_TYPE.NORMAL);
     }
     this._getRenderer().render(items.map((item) => {
       return {
@@ -562,7 +564,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     }));
   }
   private _scroll() {
-    if (this._checkVirtualGroups()) {
+    if (!this._requestFillVirtualGroups()) {
       this.infinite.scroll(this.scrollManager.getRelativeScrollPos());
     }
   }
@@ -647,7 +649,13 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     });
   }
 
-  private _checkVirtualGroups() {
+  /**
+   * @private
+   * Call the requestAppend or requestPrepend event to fill the virtual group.
+   * @ko virtual group을 fill 위해 requestAppend 또는 requestPrepend 이벤트를 호출합니다.
+   * @return - Whether the event is called. <ko>이벤트를 호출했는지 여부.</ko>
+   */
+  private _requestFillVirtualGroups() {
     const groups = this.groupManager.getGroups(true);
     const visibleGroups = this.getVisibleGroups();
     const length = visibleGroups.length;
@@ -671,34 +679,34 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
           groupKey: endGroupKey,
           nextGroupKey: groups[endGroupIndex].groupKey,
         });
-        return false;
+        return true;
       } else if ((!isEndDirection || !isEnd) && isStart) {
         this._onRequestPrepend({
           groupKey: startGroupKey,
           nextGroupKey: groups[startGroupIndex].groupKey,
         });
-        return false;
+        return true;
       }
     } else {
       const visiblePlaceholderGroups = this.getVisibleGroups(true);
       const placeholderLength = visiblePlaceholderGroups.length;
 
       if (!placeholderLength) {
-        return true;
+        return false;
       }
       if (isEndDirection) {
         this._onRequestAppend({
           nextGroupKey: visiblePlaceholderGroups[0].groupKey,
         });
-        return false;
+        return true;
       } else {
         this._onRequestPrepend({
           nextGroupKey: visiblePlaceholderGroups[placeholderLength - 1].groupKey,
         });
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
   private _onContentError = ({ element, target, item, update }: OnContentError): void => {
