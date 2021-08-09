@@ -424,6 +424,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
           ...info,
         });
       } else {
+        if (info.data) {
+          prevItem.data = info.data;
+        }
         nextItemKeys[key] = prevItem;
       }
     });

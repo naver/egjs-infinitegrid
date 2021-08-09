@@ -1,5 +1,5 @@
-import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
-import { IGNORE_PROPERITES_MAP, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
+import Grid, { GRID_PROPERTY_TYPES, withMethods } from "@egjs/grid";
+import { IGNORE_PROPERITES_MAP, INFINITEGRID_METHODS, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
 import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
@@ -57,13 +57,13 @@ export function splitGridOptions(options: Record<string, any>) {
   };
 }
 
-export function categorize(items: InfiniteGridItem[]) {
-  const groups: CategorizedGroup[] = [];
-  const groupKeys: Record<string | number, CategorizedGroup> = {};
+export function categorize<Item extends InfiniteGridItemInfo = InfiniteGridItem>(items: Item[]) {
+  const groups: Array<CategorizedGroup<Item>> = [];
+  const groupKeys: Record<string | number, CategorizedGroup<Item>> = {};
   const registeredGroupKeys: Record<string | number, boolean> = {};
 
   items.filter((item) => item.groupKey != null).forEach(({ groupKey }) => {
-    registeredGroupKeys[groupKey] = true;
+    registeredGroupKeys[groupKey!] = true;
   });
 
   let generatedGroupKey: number | string;
@@ -274,3 +274,21 @@ export function filterVirtuals<T extends InfiniteGridItem | InfiniteGridGroup>(
     return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
   }
 }
+
+/**
+ * Decorator that makes the method of InfiniteGrid available in the framework.
+ * @ko 프레임워크에서 InfiniteGrid의 메소드를 사용할 수 있게 하는 데코레이터.
+ * @memberof InfiniteGrid
+ * @private
+ * @example
+ * ```js
+ * import { withInfiniteGridMethods } from "@egjs/infinitegrid";
+ *
+ * class Grid extends React.Component<Partial<InfiniteGridProps & InfiniteGridOptions>> {
+ *   &#64;withInfiniteGridMethods
+ *   private grid: NativeGrid;
+ * }
+ * ```
+ */
+export const withInfiniteGridMethods = withMethods(INFINITEGRID_METHODS);
+

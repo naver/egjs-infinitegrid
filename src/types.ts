@@ -4,9 +4,11 @@ import Grid, {
   GridItem,
   ContainerManagerStatus,
   ItemRendererStatus,
+  Methods,
 } from "@egjs/grid";
-import { GROUP_TYPE, ITEM_TYPE } from "./consts";
+import { GROUP_TYPE, INFINITEGRID_METHODS, ITEM_TYPE } from "./consts";
 import { GroupManagerStatus } from "./GroupManager";
+import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { Renderer } from "./Renderer/Renderer";
 
@@ -26,9 +28,9 @@ export interface InfiniteGridGroup {
   items: InfiniteGridItem[];
 }
 
-export interface CategorizedGroup {
+export interface CategorizedGroup<Item extends InfiniteGridItemInfo = InfiniteGridItem> {
   groupKey: number | string;
-  items: InfiniteGridItem[];
+  items: Item[];
 }
 /**
  * @typedef
@@ -169,3 +171,8 @@ export interface OnRequestInsert {
   nextGroupKey?: string | number;
 }
 export type InfiniteGridInsertedItems = string | Array<string | InfiniteGridItemInfo | HTMLElement>;
+
+export type InfiniteGridMethods<Component> = Methods<Component, InfiniteGrid, typeof INFINITEGRID_METHODS>;
+export type InfiniteGridFunction
+  = (new (container: HTMLElement, options: Partial<GridOptions>) => InfiniteGrid)
+  & { propertyTypes: any, defaultOptions: any };

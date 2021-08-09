@@ -9,7 +9,7 @@ import {
   OnContentError,
   ItemRenderer,
 } from "@egjs/grid";
-import { EVENTS, ITEM_TYPE, STATUS_TYPE } from "./consts";
+import { INFINITEGRID_EVENTS, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { GroupManager } from "./GroupManager";
 import {
   Infinite,
@@ -570,7 +570,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
   private _onScroll = ({ direction, scrollPos, relativeScrollPos }: OnScroll): void => {
     this._scroll();
-    this.trigger(EVENTS.SCROLL, {
+    this.trigger(INFINITEGRID_EVENTS.SCROLL, {
       direction,
       scrollPos,
       relativeScrollPos,
@@ -635,7 +635,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
   private _onRequestAppend = (e: OnRequestInsert): void => {
     // TODO LOADING
-    this.trigger(EVENTS.REQUEST_APPEND, {
+    this.trigger(INFINITEGRID_EVENTS.REQUEST_APPEND, {
       groupKey: e.groupKey,
       nextGroupKey: e.nextGroupKey,
     });
@@ -643,7 +643,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
   private _onRequestPrepend = (e: OnRequestInsert): void => {
     // TODO LOADING
-    this.trigger(EVENTS.REQUEST_PREPEND, {
+    this.trigger(INFINITEGRID_EVENTS.REQUEST_PREPEND, {
       groupKey: e.groupKey,
       nextGroupKey: e.nextGroupKey,
     });
@@ -710,7 +710,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onContentError = ({ element, target, item, update }: OnContentError): void => {
-    this.trigger(EVENTS.CONTENT_ERROR, {
+    this.trigger(INFINITEGRID_EVENTS.CONTENT_ERROR, {
       element,
       target,
       item: item as InfiniteGridItem,
@@ -738,7 +738,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       this.scrollManager.scrollBy(offset);
     }
-    this.trigger(EVENTS.RENDER_COMPLETE, {
+    this.trigger(INFINITEGRID_EVENTS.RENDER_COMPLETE, {
       isResize,
       direction,
       mounted: mounted as InfiniteGridItem[],

@@ -16,7 +16,7 @@ export const DEFAULT_INFINITEGRID_OPTIONS = {
 };
 
 
-export const EVENTS = {
+export const INFINITEGRID_EVENTS = {
   SCROLL: "scroll",
   REQUEST_APPEND: "requestAppend",
   REQUEST_PREPEND: "requestPrepend",
@@ -38,6 +38,29 @@ export const ITEM_INFO_PROPERTIES = {
   html: true,
   data: true,
 };
+
+
+export const INFINITEGRID_METHODS = [
+  "updateItems",
+  "getItems",
+  "getVisibleItems",
+  "getGroups",
+  "getVisibleGroups",
+  "renderItems",
+  "getContainerElement",
+  "getScrollContainerElement",
+  "getWrapperElement",
+  "setStatus",
+  "getStatus",
+  "removePlaceholders",
+  "prependPlaceholders",
+  "appendPlaceholders",
+  "setPlaceholder",
+  "getStartCursor",
+  "getEndCursor",
+  "setCursors",
+] as const;
+
 
 export enum GROUP_TYPE {
   NORMAL = 0,
