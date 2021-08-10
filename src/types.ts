@@ -51,12 +51,14 @@ export interface InfiniteGridItemInfo {
  * @memberof InfiniteGrid
  * @property - Grid class to apply Infinite function. <ko>Infinite 기능을 적용할 Grid 클래스.</ko>
  * @property - The target to which the container is applied. If false, create itself, if true, create container. A string or HTMLElement specifies the target directly. (default: false) <ko>container를 적용할 대상. false면 자기 자신, true면 container를 생성. string 또는 HTMLElement는 직접 대상을 지정. (default: false)</ko>
+ * @property - If you create a container, you can set the container's tag. (default: "div") <ko>container를 생성한다면 container의 tag를 정할 수 있다. (default: "div")</ko>
  * @property - The size of the scrollable area for adding the next group of items. (default: 100) <ko>다음 아이템 그룹을 추가하기 위한 스크롤 영역의 크기. (default: 100)</ko>
  */
 export interface InfiniteGridOptions extends GridOptions {
   gridConstructor?: GridFunction;
   renderer?: Renderer | null;
   container?: boolean | string | HTMLElement;
+  containerTag?: string;
   threshold?: number;
 }
 

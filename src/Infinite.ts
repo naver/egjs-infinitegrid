@@ -1,5 +1,6 @@
 import Component from "@egjs/component";
 import { diff } from "@egjs/list-differ";
+import { getNextCursors } from "./utils";
 
 export interface OnInfiniteRequestAppend {
   startCursor: number;
@@ -168,25 +169,17 @@ export class Infinite extends Component<InfiniteEvents> {
   }
   public sync(nextItems: InfiniteItem[]) {
     const prevItems = this.items;
-    const result = diff(prevItems, nextItems, (item) => item.key);
     const prevStartCursor = this.startCursor;
     const prevEndCursor = this.endCursor;
-    let nextStartCursor = -1;
-    let nextEndCursor = -1;
-
-    // sync cursors
-    result.maintained.forEach(([prevIndex, nextIndex]) => {
-      if (prevStartCursor <= prevIndex && prevIndex <= prevEndCursor) {
-        if (nextStartCursor === -1) {
-          nextStartCursor = nextIndex;
-          nextEndCursor = nextIndex;
-        } else {
-          nextStartCursor = Math.min(nextStartCursor, nextIndex);
-          nextEndCursor = Math.max(nextEndCursor, nextIndex);
-        }
-      }
-    });
-
+    const {
+      startCursor: nextStartCursor,
+      endCursor: nextEndCursor,
+    } = getNextCursors(
+      this.items.map((item) => item.key),
+      nextItems.map((item) => item.key),
+      prevStartCursor,
+      prevEndCursor,
+    );
     // sync items between cursors
     let isChange = nextEndCursor - nextStartCursor !== prevEndCursor - prevStartCursor
       || (prevStartCursor === -1 || nextStartCursor === -1);

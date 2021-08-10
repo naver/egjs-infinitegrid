@@ -1,8 +1,13 @@
 import Grid, { GRID_PROPERTY_TYPES, withMethods } from "@egjs/grid";
-import { IGNORE_PROPERITES_MAP, INFINITEGRID_METHODS, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
+import { diff } from "@egjs/list-differ";
+import { GROUP_TYPE, IGNORE_PROPERITES_MAP, INFINITEGRID_METHODS, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
+import { GroupManagerStatus, InfiniteGridGroupStatus } from "./GroupManager";
 import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
-import { CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
+import {
+  CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems,
+  InfiniteGridItemInfo,
+} from "./types";
 
 export function isWindow(el: Window | Element): el is Window {
   return el === window;
@@ -98,6 +103,121 @@ export function categorize<Item extends InfiniteGridItemInfo = InfiniteGridItem>
   return groups;
 }
 
+export function getNextCursors(
+  prevKeys: Array<string | number>,
+  nextKeys: Array<string | number>,
+  prevStartCursor: number,
+  prevEndCursor: number,
+) {
+  const result = diff(prevKeys, nextKeys, (key) => key);
+  let nextStartCursor = -1;
+  let nextEndCursor = -1;
+
+  // sync cursors
+  result.maintained.forEach(([prevIndex, nextIndex]) => {
+    if (prevStartCursor <= prevIndex && prevIndex <= prevEndCursor) {
+      if (nextStartCursor === -1) {
+        nextStartCursor = nextIndex;
+        nextEndCursor = nextIndex;
+      } else {
+        nextStartCursor = Math.min(nextStartCursor, nextIndex);
+        nextEndCursor = Math.max(nextEndCursor, nextIndex);
+      }
+    }
+  });
+  return {
+    startCursor: nextStartCursor,
+    endCursor: nextEndCursor,
+  };
+}
+export function splitVirtualGroups<Group extends { type: GROUP_TYPE, groupKey: string | number }>(
+  groups: Group[],
+  direction: "start" | "end",
+  nextGroups: CategorizedGroup<any>[],
+) {
+  let virtualGroups: Group[] = [];
+
+  if (direction === "start") {
+    const index = findIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
+
+    if (index === -1) {
+      return [];
+    }
+    virtualGroups = groups.slice(0, index);
+  } else {
+    const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
+
+    if (index === -1) {
+      return [];
+    }
+    virtualGroups = groups.slice(index + 1);
+  }
+
+  const nextVirtualGroups = diff<{ groupKey: string | number }>(
+    virtualGroups, nextGroups, ({ groupKey }) => groupKey,
+  ).removed.map((index) => {
+    return virtualGroups[index];
+  }).reverse();
+
+  return nextVirtualGroups;
+}
+
+export function getFirstRenderItems(
+  nextItems: InfiniteGridItemStatus[],
+  horizontal: boolean,
+) {
+  const groups = categorize(nextItems);
+
+  if (!groups[0]) {
+    return [];
+  }
+  return groups[0].items.map((item) => {
+    return new InfiniteGridItem(horizontal, {
+      ...item,
+    });
+  });
+}
+export function getVisibleItemsByStatus(
+  groupManagerStatus: GroupManagerStatus,
+  nextItems: InfiniteGridItemStatus[],
+  usePlaceholder: boolean,
+  horizontal: boolean,
+) {
+  const prevGroups = groupManagerStatus.groups;
+  const groups = categorize(nextItems);
+
+  const startVirtualGroups = splitVirtualGroups(prevGroups, "start", groups);
+  const endVirtualGroups = splitVirtualGroups(prevGroups, "end", groups);
+  const nextGroups = [
+    ...startVirtualGroups,
+    ...groups,
+    ...endVirtualGroups,
+  ] as Array<InfiniteGridGroupStatus | CategorizedGroup<InfiniteGridItemStatus>>;
+  const {
+    startCursor,
+    endCursor,
+  } = getNextCursors(
+    prevGroups.map((group) => group.groupKey),
+    nextGroups.map((group) => group.groupKey),
+    groupManagerStatus.startCursor,
+    groupManagerStatus.endCursor,
+  );
+
+  let nextVisibleItems = flat(nextGroups.slice(startCursor, endCursor + 1).map((group) => {
+    return group.items.map((item) => {
+      return new InfiniteGridItem(horizontal, {...item});
+    });
+  }));
+
+  if (!usePlaceholder) {
+    nextVisibleItems = nextVisibleItems.filter((item) => {
+      return item.type !== ITEM_TYPE.VIRTUAL;
+    });
+  }
+
+  return nextVisibleItems;
+}
+
 
 /* Class Decorator */
 export function InfiniteGridGetterSetter(component: {
@@ -126,9 +246,7 @@ export function InfiniteGridGetterSetter(component: {
         if (prevValue === value) {
           return;
         }
-        this.groupManager.setGridOptions({
-          [name]: value,
-        });
+        this.groupManager[name] = value;
       },
     };
     Object.defineProperty(prototype, name, attributes);

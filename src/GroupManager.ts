@@ -4,7 +4,6 @@ import Grid, {
   GridOutlines, MOUNT_STATE, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
 } from "@egjs/grid";
-import { diff } from "@egjs/list-differ";
 import { GROUP_TYPE, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { CategorizedGroup, InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
@@ -13,13 +12,13 @@ import {
   flatGroups, getItemInfo, isNumber, makeKey,
   range,
   setPlaceholder,
-  splitGridOptions, splitOptions,
+  splitGridOptions, splitOptions, splitVirtualGroups,
 } from "./utils";
 
 export interface InfiniteGridGroupStatus {
   type: GROUP_TYPE;
   groupKey: string | number;
-  items: Array<Partial<InfiniteGridItemStatus>>;
+  items: InfiniteGridItemStatus[];
   outlines: GridOutlines;
 }
 
@@ -58,7 +57,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   constructor(container: HTMLElement, options: GroupManagerOptions) {
     super(container, splitOptions(options));
   }
-  public setGridOptions(options: Record<string, any>): void {
+  public set gridOptions(options: Record<string, any>) {
     const {
       gridOptions,
       ...otherOptions
@@ -66,7 +65,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
     const shouldRender = this._checkShouldRender(options);
 
-    this.gridOptions = gridOptions;
+    this.options.gridOptions = gridOptions;
     this.groups.forEach(({ grid }) => {
       for (const name in options) {
         (grid as any)[name] = options[name];
@@ -169,8 +168,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     const prevGroupKeys = this.groupKeys;
     let nextManagerGroups = categorize(nextItems);
 
-    const startVirtualGroups = this._getVirtualGroups("start", nextManagerGroups);
-    const endVirtualGroups = this._getVirtualGroups("end", nextManagerGroups);
+    const startVirtualGroups = this._splitVirtualGroups("start", nextManagerGroups);
+    const endVirtualGroups = this._splitVirtualGroups("end", nextManagerGroups);
 
     nextManagerGroups = [...startVirtualGroups, ...nextManagerGroups, ...endVirtualGroups];
 
@@ -455,30 +454,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     this.groupKeys = nextGroupKeys;
     this.groupItems = this._getGroupItems();
   }
-  private _getVirtualGroups(direction: "start" | "end", nextGroups: CategorizedGroup[]) {
-    const groups = this.groups;
-    let virtualGroups: InfiniteGridGroup[] = [];
-
-    if (direction === "start") {
-      const index = findIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
-
-      if (index === -1) {
-        return [];
-      }
-      virtualGroups = groups.slice(0, index);
-    } else {
-      const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
-
-      if (index === -1) {
-        return [];
-      }
-      virtualGroups = groups.slice(index + 1);
-    }
-    virtualGroups = diff(virtualGroups, nextGroups, ({ groupKey }) => groupKey).removed.map((index) => {
-      return virtualGroups[index];
-    }).reverse();
-
-    return virtualGroups;
+  private _splitVirtualGroups(direction: "start" | "end", nextGroups: CategorizedGroup[]) {
+    return splitVirtualGroups(this.groups, direction, nextGroups);
   }
   private _updatePlaceholder(items = this.groupItems) {
     const placeholder = this._placeholder;

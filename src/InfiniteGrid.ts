@@ -2,14 +2,13 @@ import Component from "@egjs/component";
 import {
   ContainerManager,
   DEFAULT_GRID_OPTIONS,
-  GRID_PROPERTY_TYPES,
   Properties,
   RenderOptions,
   MOUNT_STATE,
   OnContentError,
   ItemRenderer,
 } from "@egjs/grid";
-import { INFINITEGRID_EVENTS, ITEM_TYPE, STATUS_TYPE } from "./consts";
+import { INFINITEGRID_EVENTS, INFINITEGRID_PROPERTY_TYPES, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { GroupManager } from "./GroupManager";
 import {
   Infinite,
@@ -80,7 +79,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     renderer: null,
     threshold: 100,
   } as Required<InfiniteGridOptions>;
-  public static propertyTypes = GRID_PROPERTY_TYPES;
+  public static propertyTypes = INFINITEGRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
   protected scrollManager: ScrollManager;
   protected itemRenderer: ItemRenderer;
@@ -102,6 +101,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
     const {
       gridConstructor,
+      containerTag,
       container,
       renderer,
       threshold,
@@ -121,7 +121,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const wrapperElement = isString(wrapper) ? document.querySelector(wrapper) as HTMLElement : wrapper;
     const scrollManager = new ScrollManager(wrapperElement, {
       container,
-      containerTag: "div",
+      containerTag,
       horizontal,
     }).on({
       scroll: this._onScroll,
@@ -241,10 +241,15 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @param - first index of visible groups. <ko>보이는 그룹의 첫번째 index.</ko>
    * @param - last index of visible groups. <ko>보이는 그룹의 마지막 index.</ko>
    */
-  public setCursors(startCursor: number, endCursor: number): this {
+  public setCursors(startCursor: number, endCursor: number, useFirstRender?: boolean): this {
     this.groupManager.setCursors(startCursor, endCursor);
     this.infinite.setCursors(startCursor, endCursor);
-    this._update();
+
+    if (useFirstRender) {
+      this._render();
+    } else {
+      this._update();
+    }
     return this;
   }
   /**
@@ -388,7 +393,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @ko placeholder들을 삭제한다.
    * @param type - Remove the placeholders corresponding to the groupkey. When "start" or "end", remove all placeholders in that direction. <ko>groupkey에 해당하는 placeholder들을 삭제한다. "start" 또는 "end" 일 때 해당 방향의 모든 placeholder들을 삭제한다.</ko>
    */
-  public removePlaceholders(type: "start" | "end" | { groupKey: string | number}) {
+  public removePlaceholders(type: "start" | "end" | { groupKey: string | number }) {
     this.groupManager.removePlaceholders(type);
     this._syncGroups();
   }
@@ -398,7 +403,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @ko getStatus() 메서드가 저장한 정보로 InfiniteGrid 모듈의 상태를 설정한다.
    * @param - status object of the InfiniteGrid module
    */
-  public setStatus(status: InfiniteGridStatus): this {
+  public setStatus(status: InfiniteGridStatus, useFirstRender?: boolean): this {
     this.itemRenderer.setStatus(status.itemRenderer);
     this.containerManager.setStatus(status.containerManager);
     const groupManager = this.groupManager;
@@ -408,13 +413,18 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this._syncInfinite();
     this.infinite.setCursors(this.infinite.getStartCursor(), groupManager.getEndCursor());
 
-    setTimeout(() => {
-      this._getRenderer().updateKey();
-      this._render({
-        isReisze: this.containerManager.getInlineSize() !== prevInlineSize,
-        isRestore: true,
-      });
-    });
+    this._getRenderer().updateKey();
+
+    const state = {
+      isReisze: this.containerManager.getInlineSize() !== prevInlineSize,
+      isRestore: true,
+    };
+
+    if (useFirstRender) {
+      this._update(state);
+    } else {
+      this._update(state);
+    }
     return this;
   }
   /**

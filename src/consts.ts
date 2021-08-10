@@ -1,3 +1,4 @@
+import { GRID_PROPERTY_TYPES } from "@egjs/grid";
 
 const ua = typeof window !== "undefined" ? window.navigator.userAgent : "";
 
@@ -10,9 +11,8 @@ export const IGNORE_PROPERITES_MAP = {
 } as const;
 
 
-export const DEFAULT_INFINITEGRID_OPTIONS = {
-  gridConstructor: null,
-  container: false,
+export const INFINITEGRID_PROPERTY_TYPES = {
+  ...GRID_PROPERTY_TYPES,
 };
 
 
@@ -55,7 +55,6 @@ export const INFINITEGRID_METHODS = [
   "removePlaceholders",
   "prependPlaceholders",
   "appendPlaceholders",
-  "setPlaceholder",
   "getStartCursor",
   "getEndCursor",
   "setCursors",
