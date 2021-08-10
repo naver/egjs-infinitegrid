@@ -186,6 +186,9 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * grid.renderItems();
    */
   public renderItems(options: RenderOptions = {}) {
+    if (options.useResize) {
+      this.containerManager.resize();
+    }
     this._resizeScroll();
     if (!this.getItems(true).length) {
       const children = toArray(this.getContainerElement().children);
