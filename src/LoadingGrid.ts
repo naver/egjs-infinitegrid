@@ -40,6 +40,8 @@ export class LoadingGrid extends Grid {
     const item = items[0];
     const offset = item.contentSize + this.gap;
 
+    item.cssInlinePos = this.getContainerInlineSize() / 2 - item.inlineSize / 2;
+
     if (direction === "end") {
       const maxPos = Math.max(...nextOutline);
 

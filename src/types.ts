@@ -65,28 +65,6 @@ export interface InfiniteGridOptions extends GridOptions {
 /**
  * @typedef
  * @memberof InfiniteGrid
- * @property - Last group key. <ko>마지막 그룹의 키.</ko>
- * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
- */
-export interface OnRequestAppend {
-  groupKey: string | number | undefined;
-  nextGroupKey?: string | number | undefined;
-}
-
-/**
- * @typedef
- * @memberof InfiniteGrid
- * @property - First group key. <ko>첫번째 그룹의 키.</ko>
- * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
- */
-export interface OnRequestPrepend {
-  groupKey: string | number | undefined;
-  nextGroupKey?: string | number | undefined;
-}
-
-/**
- * @typedef
- * @memberof InfiniteGrid
  * @property - Groups corresponding to placeholders <ko>placholder에 해당하는 그룹</ko>
  * @property - Items corresponding to placeholders <ko>placholder에 해당하는 아이템들</ko>
  * @property - Remove the inserted placeholders. <ko>추가한 placeholder들을 삭제한다.</ko>
@@ -101,6 +79,38 @@ export interface InsertedPlaceholdersResult {
 /**
  * @typedef
  * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+ * @property - Last group key. <ko>마지막 그룹의 키.</ko>
+ * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ */
+export interface OnRequestAppend {
+  currentTarget: InfiniteGrid;
+  groupKey: string | number | undefined;
+  nextGroupKey?: string | number | undefined;
+  wait(): void;
+  ready(): void;
+}
+
+/**
+ * @typedef
+ * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+ * @property - First group key. <ko>첫번째 그룹의 키.</ko>
+ * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ */
+export interface OnRequestPrepend {
+  currentTarget: InfiniteGrid;
+  groupKey: string | number | undefined;
+  nextGroupKey?: string | number | undefined;
+  wait(): void;
+  ready(): void;
+}
+
+
+/**
+ * @typedef
+ * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - The items rendered for the first time. <ko>처음 렌더링한 아이템들.</ko>
  * @property - The items updated in size. <ko>사이즈 업데이트한 아이템들.</ko>
  * @property - The direction InfiniteGrid was rendered. <ko>InfiniteGrid가 렌더링된 방향.</ko>
@@ -111,6 +121,7 @@ export interface InsertedPlaceholdersResult {
  * @property - Groups that have been rendered. <ko>렌더링이 완료된 그룹들.</ko>
  */
 export interface OnRenderComplete {
+  currentTarget: InfiniteGrid;
   mounted: InfiniteGridItem[];
   updated: InfiniteGridItem[];
   direction: "start" | "end";
@@ -124,6 +135,7 @@ export interface OnRenderComplete {
 /**
  * @typedef
  * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - The item's element.<ko>아이템의 엘리먼트.</ko>
  * @property - The content element with error.<ko>에러난 발생한 콘텐츠 엘리먼트.</ko>
  * @property - The item with error content.<ko>에러난 콘텐츠를 가지고 있는 아이템</ko>
@@ -131,6 +143,7 @@ export interface OnRenderComplete {
  * @property - If you want to remove the item corresponding to the error, call remove(). <ko>에러에 해당하는 아이템을 제거하고 싶으면 remove()를 호출해라.</ko>
  */
 export interface OnContentError {
+  currentTarget: InfiniteGrid;
   element: HTMLElement;
   target: HTMLElement;
   item: InfiniteGridItem;
@@ -141,11 +154,13 @@ export interface OnContentError {
 /**
  * @typedef
  * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - The scroll direction. <ko>스크롤 방향.</ko>
  * @property - The scroll position. <ko>스크롤 포지션.</ko>
  * @property - The scroll position relative to container. <ko>컨테이너 기준의 스크롤 포지션.</ko>
  */
 export interface OnScroll {
+  currentTarget: InfiniteGrid;
   direction: "start" | "end";
   scrollPos: number;
   relativeScrollPos: number;

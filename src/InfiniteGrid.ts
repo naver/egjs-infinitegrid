@@ -1,4 +1,4 @@
-import Component from "@egjs/component";
+import Component, { ComponentEvent } from "@egjs/component";
 import {
   ContainerManager,
   DEFAULT_GRID_OPTIONS,
@@ -90,6 +90,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   protected infinite: Infinite;
   protected groupManager: GroupManager;
   protected options: Required<Options>;
+  private _isWait = false;
   /**
    * @param - A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
    * @param - The option object of the InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
@@ -98,7 +99,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     super();
     this.options = {
       ...((this.constructor as typeof InfiniteGrid).defaultOptions as Required<Options>),
-      renderer: new VanillaGridRenderer().on("update", () => this._render()),
+      renderer: new VanillaGridRenderer().on("requestUpdate", () => this._render()),
       ...options,
     };
 
@@ -145,7 +146,6 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       useRecyle: false,
       threshold,
     }).on({
-      "unchanged": this._onUnchanged,
       "change": this._onChange,
       "requestAppend": this._onRequestAppend,
       "requestPrepend": this._onRequestPrepend,
@@ -256,6 +256,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       this._render();
     } else {
       this._update();
+      this._checkEndLoading();
     }
     return this;
   }
@@ -597,18 +598,15 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
   private _onScroll = ({ direction, scrollPos, relativeScrollPos }: OnScroll): void => {
     this._scroll();
-    this.trigger(INFINITEGRID_EVENTS.SCROLL, {
+    this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.SCROLL, {
       direction,
       scrollPos,
       relativeScrollPos,
-    });
+    }));
   }
 
   private _onChange = (e: OnInfiniteChange): void => {
     this.setCursors(e.nextStartCursor, e.nextEndCursor);
-  }
-  private _onUnchanged = (): void => {
-    this._endLoading();
   }
   private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>): void => {
     if (!e.isChanged) {
@@ -663,19 +661,37 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onRequestAppend = (e: OnRequestInsert): void => {
-    this._startLoading("end", e);
-    this.trigger(INFINITEGRID_EVENTS.REQUEST_APPEND, {
+    if (this._isWait) {
+      return;
+    }
+
+    this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.REQUEST_APPEND, {
       groupKey: e.groupKey,
       nextGroupKey: e.nextGroupKey,
-    });
+      wait: () => {
+        this._wait("end", e);
+      },
+      ready: () => {
+        this._ready();
+      },
+    }));
   }
 
   private _onRequestPrepend = (e: OnRequestInsert): void => {
-    this._startLoading("start", e);
-    this.trigger(INFINITEGRID_EVENTS.REQUEST_PREPEND, {
+    if (this._isWait) {
+      return;
+    }
+
+    this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.REQUEST_PREPEND, {
       groupKey: e.groupKey,
       nextGroupKey: e.nextGroupKey,
-    });
+      wait: () => {
+        this._wait("start", e);
+      },
+      ready: () => {
+        this._ready();
+      },
+    }));
   }
 
   /**
@@ -739,7 +755,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onContentError = ({ element, target, item, update }: OnContentError): void => {
-    this.trigger(INFINITEGRID_EVENTS.CONTENT_ERROR, {
+    this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.CONTENT_ERROR, {
       element,
       target,
       item: item as InfiniteGridItem,
@@ -747,7 +763,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       remove: () => {
         this.removeByKey(item.key!);
       },
-    });
+    }));
   }
 
   private _onRenderComplete = ({ isResize, mounted, updated, direction }: OnPickedRenderComplete): void => {
@@ -767,7 +783,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       this.scrollManager.scrollBy(offset);
     }
-    this.trigger(INFINITEGRID_EVENTS.RENDER_COMPLETE, {
+    this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.RENDER_COMPLETE, {
       isResize,
       direction,
       mounted: (mounted as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING),
@@ -776,20 +792,29 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       endCursor: this.getEndCursor(),
       items: this.getVisibleItems(true),
       groups: this.getVisibleGroups(true),
-    });
+    }));
     this._scroll();
   }
-  private _startLoading(direction: "start" | "end", e: OnRequestInsert) {
+  private _wait(direction: "start" | "end", e: OnRequestInsert) {
+    this._isWait = true;
+
     const groupManager = this.groupManager;
 
-    if ("nextGroupKey" in e && groupManager.startLoading(direction) && groupManager.hasLoadingItem()) {
+    if (!("nextGroupKey" in e) && groupManager.startLoading(direction) && groupManager.hasLoadingItem()) {
       this._update();
     }
   }
-  private _endLoading() {
-    const groupManager = this.groupManager;
-    if (groupManager.endLoading() && groupManager.hasLoadingItem()) {
-      this._update();
+  private _ready() {
+    this._isWait = false;
+  }
+  private _checkEndLoading() {
+    const groups = this.groupManager.getGroups(true);
+
+    if (this.infinite.getStartCursor() > 0 || this.infinite.getEndCursor() < groups.length - 1) {
+      const groupManager = this.groupManager;
+      if (groupManager.endLoading() && groupManager.hasLoadingItem()) {
+        this._update();
+      }
     }
   }
 }

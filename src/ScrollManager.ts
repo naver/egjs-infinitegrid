@@ -1,4 +1,4 @@
-import Component from "@egjs/component";
+import Component, { ComponentEvent } from "@egjs/component";
 import { CONTAINER_CLASS_NAME, IS_IOS } from "./consts";
 import { OnScroll } from "./types";
 import { isWindow, toArray } from "./utils";
@@ -110,7 +110,9 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
   public resize() {
     const scrollContainer = this.scrollContainer;
     const horizontal = this.options.horizontal;
-    const scrollContainerRect = scrollContainer.getBoundingClientRect();
+    const scrollContainerRect = scrollContainer === document.body
+      ? { top : 0, left: 0 }
+      : scrollContainer.getBoundingClientRect();
     const containerRect = this.container.getBoundingClientRect();
 
     this.scrollOffset = (this.prevScrollPos! || 0) + (horizontal
@@ -197,10 +199,10 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       return;
     }
     this._isScrollIssue = false;
-    this.trigger("scroll", {
+    this.trigger(new ComponentEvent("scroll", {
       direction: prevScrollPos < nextScrollPos ? "end" : "start",
       scrollPos: nextScrollPos,
       relativeScrollPos: this.getRelativeScrollPos(),
-    });
+    }));
   }
 }

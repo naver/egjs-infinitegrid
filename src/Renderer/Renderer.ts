@@ -22,13 +22,15 @@ export interface OnRendererUpdate {
 export interface RendererEvents<T extends RendererItem = RendererItem> {
   update: OnRendererUpdate;
   updated: OnRendererUpdated<T>;
+  requestUpdate: OnRendererUpdate;
 }
 
-export class Renderer<T extends RendererItem = RendererItem> extends Component<RendererEvents> {
-  protected items: T[] = [];
+export class Renderer<Item extends RendererItem = RendererItem> extends Component<RendererEvents> {
+  protected items: Item[] = [];
   protected container: Element | null = null;
   protected rendererKey = 0;
-  private _diffResult: DiffResult<T>;
+  private _diffResult: DiffResult<Item>;
+  private _updateTimer = 0;
   private _state: Record<string, any> = {};
 
   public updateKey() {
@@ -41,14 +43,14 @@ export class Renderer<T extends RendererItem = RendererItem> extends Component<R
   public setContainer(container: Element) {
     this.container = container;
   }
-  public setItems(items: T[]) {
+  public setItems(items: Item[]) {
     const rendererKey = this.rendererKey;
     this.items = items.map((item) => ({
       ...item,
       renderKey:  `${rendererKey}_${item.key}`,
     }));
   }
-  public render(nextItems: T[], state?: Record<string, any>) {
+  public render(nextItems: Item[], state?: Record<string, any>) {
     if (state) {
       this._state = state;
     }
@@ -58,6 +60,13 @@ export class Renderer<T extends RendererItem = RendererItem> extends Component<R
     this._state = state;
     this.trigger("update", {
       state,
+    });
+
+    clearTimeout(this._updateTimer);
+    this._updateTimer = window.setTimeout(() => {
+      this.trigger("requestUpdate", {
+        state,
+      });
     });
   }
   public updated(nextElements: ArrayLike<Element>) {
@@ -84,7 +93,7 @@ export class Renderer<T extends RendererItem = RendererItem> extends Component<R
   public destroy() {
     this.off();
   }
-  protected syncItems(nextItems: T[]) {
+  protected syncItems(nextItems: Item[]) {
     const prevItems = this.items;
 
     this.setItems(nextItems);

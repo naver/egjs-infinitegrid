@@ -132,13 +132,16 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   public startLoading(type: "start" | "end") {
     this._loadingGrid.type = type;
     this.items = this._getRenderingItems();
-    return this;
+
+    return true;
   }
 
   public endLoading() {
+    const prevType = this._loadingGrid.type;
+
     this._loadingGrid.type = "";
     this.items = this._getRenderingItems();
-    return this;
+    return !!prevType;
   }
 
   public setLoading(loading: Partial<InfiniteGridItemStatus> | null) {
