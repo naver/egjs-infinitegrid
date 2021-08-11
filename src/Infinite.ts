@@ -25,6 +25,7 @@ export interface InfiniteEvents {
   requestAppend: OnInfiniteRequestAppend;
   requestPrepend: OnInfiniteRequestPrepend;
   change: OnInfiniteChange;
+  unchanged: void;
 }
 
 export interface InfiniteOptions {
@@ -142,6 +143,8 @@ export class Infinite extends Component<InfiniteEvents> {
         startCursor: prevStartCursor,
         endCursor: prevEndCursor,
       });
+    } else {
+      this.trigger("unchanged");
     }
   }
   public setCursors(startCursor: number, endCursor: number) {

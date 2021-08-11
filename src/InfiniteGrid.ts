@@ -8,7 +8,10 @@ import {
   OnContentError,
   ItemRenderer,
 } from "@egjs/grid";
-import { INFINITEGRID_EVENTS, INFINITEGRID_PROPERTY_TYPES, ITEM_TYPE, STATUS_TYPE } from "./consts";
+import {
+  INFINITEGRID_EVENTS, INFINITEGRID_PROPERTY_TYPES,
+  ITEM_TYPE, STATUS_TYPE,
+} from "./consts";
 import { GroupManager } from "./GroupManager";
 import {
   Infinite,
@@ -142,6 +145,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       useRecyle: false,
       threshold,
     }).on({
+      "unchanged": this._onUnchanged,
       "change": this._onChange,
       "requestAppend": this._onRequestAppend,
       "requestPrepend": this._onRequestPrepend,
@@ -349,6 +353,15 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     return this;
   }
   /**
+   * You can set placeholders to restore status or wait for items to be added.
+   * @ko status 복구 또는 아이템 추가 대기를 위한 placeholder를 설정할 수 있다.
+   * @param - The placeholder status. <ko>placeholder의 status</ko>
+   */
+  public setLoading(info: Partial<InfiniteGridItemStatus> | null): this {
+    this.groupManager.setLoading(info);
+    return this;
+  }
+  /**
    * Add the placeholder at the end.
    * @ko placeholder들을 마지막에 추가한다.
    * @param - Items that correspond to placeholders. If it is a number, it duplicates the number of copies. <ko>placeholder에 해당하는 아이템들. 숫자면 갯수만큼 복제를 한다.</ko>
@@ -502,6 +515,14 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   public getVisibleItems(includePlaceholders?: boolean): InfiniteGridItem[] {
     return this.groupManager.getVisibleItems(includePlaceholders);
   }
+
+  /**
+   * Return rendering items of InfiniteGrid.
+   * @ko InfiniteGrid의 렌더링 아이템들을 반환한다.
+   */
+  public getRenderingItems(): InfiniteGridItem[] {
+    return this.groupManager.getRenderingItems();
+  }
   /**
    * Return all groups of InfiniteGrid.
    * @ko InfiniteGrid의 모든 그룹들을 반환한다.
@@ -533,14 +554,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     return this.options.renderer!;
   }
   private _render(state?: Record<string, any>): void {
-    const hasPlaceholder = this.groupManager.hasPlaceholder();
-    let items = this.getVisibleItems(hasPlaceholder);
-
-    // has placeHolder
-    if (!hasPlaceholder) {
-      items = items.filter((item) => item.type === ITEM_TYPE.NORMAL);
-    }
-    this._getRenderer().render(items.map((item) => {
+    this._getRenderer().render(this.getRenderingItems().map((item) => {
       return {
         element: item.element,
         key: `${item.type}_${item.key}`,
@@ -593,7 +607,9 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   private _onChange = (e: OnInfiniteChange): void => {
     this.setCursors(e.nextStartCursor, e.nextEndCursor);
   }
-
+  private _onUnchanged = (): void => {
+    this._endLoading();
+  }
   private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>): void => {
     if (!e.isChanged) {
       this._scroll();
@@ -647,7 +663,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onRequestAppend = (e: OnRequestInsert): void => {
-    // TODO LOADING
+    this._startLoading("end", e);
     this.trigger(INFINITEGRID_EVENTS.REQUEST_APPEND, {
       groupKey: e.groupKey,
       nextGroupKey: e.nextGroupKey,
@@ -655,7 +671,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onRequestPrepend = (e: OnRequestInsert): void => {
-    // TODO LOADING
+    this._startLoading("start", e);
     this.trigger(INFINITEGRID_EVENTS.REQUEST_PREPEND, {
       groupKey: e.groupKey,
       nextGroupKey: e.nextGroupKey,
@@ -754,14 +770,27 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.trigger(INFINITEGRID_EVENTS.RENDER_COMPLETE, {
       isResize,
       direction,
-      mounted: mounted as InfiniteGridItem[],
-      updated: updated as InfiniteGridItem[],
+      mounted: (mounted as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING),
+      updated: (updated as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING),
       startCursor: this.getStartCursor(),
       endCursor: this.getEndCursor(),
       items: this.getVisibleItems(true),
       groups: this.getVisibleGroups(true),
     });
     this._scroll();
+  }
+  private _startLoading(direction: "start" | "end", e: OnRequestInsert) {
+    const groupManager = this.groupManager;
+
+    if ("nextGroupKey" in e && groupManager.startLoading(direction) && groupManager.hasLoadingItem()) {
+      this._update();
+    }
+  }
+  private _endLoading() {
+    const groupManager = this.groupManager;
+    if (groupManager.endLoading() && groupManager.hasLoadingItem()) {
+      this._update();
+    }
   }
 }
 

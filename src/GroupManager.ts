@@ -6,6 +6,7 @@ import Grid, {
 } from "@egjs/grid";
 import { GROUP_TYPE, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
+import { LoadingGrid, LOADING_GROUP_KEY } from "./LoadingGrid";
 import { CategorizedGroup, InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
 import {
   categorize, filterVirtuals, findIndex, findLastIndex,
@@ -53,9 +54,18 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   protected startCursor = 0;
   protected endCursor = 0;
   private _placeholder: Partial<InfiniteGridItemStatus> | null = null;
+  private _loadingGrid!: LoadingGrid;
 
   constructor(container: HTMLElement, options: GroupManagerOptions) {
     super(container, splitOptions(options));
+
+    this._loadingGrid = new LoadingGrid(container, {
+      externalContainerManager: this.containerManager,
+      useFit: false,
+      autoResize: false,
+      renderOnPropertyChange: false,
+      gap: this.gap,
+    });
   }
   public set gridOptions(options: Record<string, any>) {
     const {
@@ -74,6 +84,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     for (const name in otherOptions) {
       this[name] = otherOptions[name];
     }
+
+    this._loadingGrid.gap = this.gap;
     if (shouldRender) {
       this.scheduleRender();
     }
@@ -90,17 +102,48 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return filterVirtuals(this.items, includePlaceholders);
   }
 
+  public getRenderingItems() {
+    if (this.hasPlaceholder()) {
+      return this.items;
+    } else {
+      return this.items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
+    }
+  }
+
   public getGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
     return filterVirtuals(this.groups, includePlaceholders);
   }
 
+  public hasVisibleVirtualGroups() {
+    return this.getVisibleGroups(true).some((group) => group.type === GROUP_TYPE.VIRTUAL);
+  }
   public hasPlaceholder() {
     return !!this._placeholder;
+  }
+  public hasLoadingItem() {
+    return !!this._getLoadingItem();
   }
 
   public setPlaceholder(placeholder: Partial<InfiniteGridItemStatus> | null) {
     this._placeholder = placeholder;
     this._updatePlaceholder();
+  }
+
+  public startLoading(type: "start" | "end") {
+    this._loadingGrid.type = type;
+    this.items = this._getRenderingItems();
+    return this;
+  }
+
+  public endLoading() {
+    this._loadingGrid.type = "";
+    this.items = this._getRenderingItems();
+    return this;
+  }
+
+  public setLoading(loading: Partial<InfiniteGridItemStatus> | null) {
+    this._loadingGrid.setLoadingItem(loading);
+    this.items = this._getRenderingItems();
   }
 
   public getVisibleGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
@@ -117,17 +160,27 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
     let nextOutline = outline;
 
-    const originalGroups = this.groups;
-    const length = originalGroups.length;
+    const renderingGroups = this.groups.slice();
 
-    if (!length) {
+    if (!renderingGroups.length) {
       return {
         start: [],
         end: [],
       };
     }
 
-    const groups = originalGroups.slice();
+
+    const loadingGrid = this._loadingGrid;
+
+    if (loadingGrid.getLoadingItem()) {
+      if (loadingGrid.type === "start") {
+        renderingGroups.unshift(this._getLoadingGroup());
+      } else if (loadingGrid.type === "end") {
+        renderingGroups.push(this._getLoadingGroup());
+      }
+    }
+
+    const groups = renderingGroups.slice();
 
     if (direction === "start") {
       groups.reverse();
@@ -155,8 +208,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     });
 
     return {
-      start: originalGroups[0].grid.getOutlines().start,
-      end: originalGroups[length - 1].grid.getOutlines().end,
+      start: renderingGroups[0].grid.getOutlines().start,
+      end: renderingGroups[renderingGroups.length - 1].grid.getOutlines().end,
     };
   }
 
@@ -195,6 +248,11 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       this.groupItems.forEach((item) => {
         item.updateState = UPDATE_STATE.NEED_UPDATE;
       });
+      const loadingItem = this._getLoadingItem();
+
+      if (loadingItem) {
+        loadingItem.updateState = UPDATE_STATE.NEED_UPDATE;
+      }
     }
     return super.renderItems(options);
   }
@@ -202,7 +260,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   public setCursors(startCursor: number, endCursor: number) {
     this.startCursor = startCursor;
     this.endCursor = endCursor;
-    this.items = this._getGroupVisibleItems();
+    this.items = this._getRenderingItems();
   }
 
   public getStartCursor() {
@@ -288,7 +346,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   public prependPlaceholders(items: number | InfiniteGridItemStatus[], groupKey?: string | number) {
     return this.insertPlaceholders("start", items, groupKey);
   }
-  public removePlaceholders(type: "start" | "end" | { groupKey: string | number}) {
+  public removePlaceholders(type: "start" | "end" | { groupKey: string | number }) {
     const groups = this.groups;
     const length = groups.length;
 
@@ -365,8 +423,21 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return flatGroups(this.getGroups(true));
   }
 
-  private _getGroupVisibleItems() {
-    return flatGroups(this.getVisibleGroups(true));
+  private _getRenderingItems() {
+    const items = flatGroups(this.getVisibleGroups(true));
+
+    const loadingGrid = this._loadingGrid;
+    const loadingItem = loadingGrid.getLoadingItem();
+
+    if (loadingItem) {
+      if (loadingGrid.type === "end") {
+        items.push(loadingItem);
+      } else if (loadingGrid.type === "start") {
+        items.unshift(loadingItem);
+      }
+    }
+
+    return items;
   }
 
   private _checkShouldRender(options: Record<string, any>) {
@@ -481,6 +552,19 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       externalContainerManager: this.containerManager,
       externalItemRenderer: this.itemRenderer,
     });
+  }
+  private _getLoadingGroup(): InfiniteGridGroup {
+    const loadingGrid = this._loadingGrid;
+
+    return {
+      groupKey: LOADING_GROUP_KEY,
+      type: GROUP_TYPE.NORMAL,
+      grid: loadingGrid,
+      items: loadingGrid.getItems() as InfiniteGridItem[],
+    };
+  }
+  private _getLoadingItem() {
+    return this._loadingGrid.getLoadingItem();
   }
 }
 

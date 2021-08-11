@@ -64,11 +64,13 @@ export const INFINITEGRID_METHODS = [
 export enum GROUP_TYPE {
   NORMAL = 0,
   VIRTUAL = 1,
+  LOADING = 2,
 }
 
 export enum ITEM_TYPE {
   NORMAL = 0,
   VIRTUAL = 1,
+  LOADING = 2,
 }
 
 export enum STATUS_TYPE {

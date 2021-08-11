@@ -162,7 +162,7 @@ export function splitVirtualGroups<Group extends { type: GROUP_TYPE, groupKey: s
   return nextVirtualGroups;
 }
 
-export function getFirstRenderItems(
+export function getFirstRenderingItems(
   nextItems: InfiniteGridItemStatus[],
   horizontal: boolean,
 ) {
@@ -177,7 +177,7 @@ export function getFirstRenderItems(
     });
   });
 }
-export function getVisibleItemsByStatus(
+export function getRenderingItemsByStatus(
   groupManagerStatus: GroupManagerStatus,
   nextItems: InfiniteGridItemStatus[],
   usePlaceholder: boolean,
