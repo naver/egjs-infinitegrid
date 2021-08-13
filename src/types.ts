@@ -11,6 +11,7 @@ import { GroupManagerStatus } from "./GroupManager";
 import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { Renderer } from "./Renderer/Renderer";
+import { ScrollManagerStatus } from "./ScrollManager";
 
 /**
  * @typedef
@@ -19,6 +20,7 @@ export interface InfiniteGridStatus {
   itemRenderer: ItemRendererStatus;
   containerManager: ContainerManagerStatus;
   groupManager: GroupManagerStatus;
+  scrollManager: ScrollManagerStatus;
 }
 
 export interface InfiniteGridGroup {
@@ -26,6 +28,7 @@ export interface InfiniteGridGroup {
   groupKey: string | number;
   grid: Grid;
   items: InfiniteGridItem[];
+  renderItems: InfiniteGridItem[];
 }
 
 export interface CategorizedGroup<Item extends InfiniteGridItemInfo = InfiniteGridItem> {
@@ -87,6 +90,7 @@ export interface OnRequestAppend {
   currentTarget: InfiniteGrid;
   groupKey: string | number | undefined;
   nextGroupKey?: string | number | undefined;
+  isVirtual: boolean;
   wait(): void;
   ready(): void;
 }
@@ -102,6 +106,7 @@ export interface OnRequestPrepend {
   currentTarget: InfiniteGrid;
   groupKey: string | number | undefined;
   nextGroupKey?: string | number | undefined;
+  isVirtual: boolean;
   wait(): void;
   ready(): void;
 }
@@ -184,9 +189,11 @@ export interface OnPickedRenderComplete {
 }
 
 export interface OnRequestInsert {
-  groupKey?: string | number;
-  nextGroupKey?: string | number;
+  key?: string | number;
+  nextKey?: string | number;
+  isVirtual: boolean;
 }
+
 export type InfiniteGridInsertedItems = string | Array<string | InfiniteGridItemInfo | HTMLElement>;
 
 export type InfiniteGridMethods<Component> = Methods<Component, InfiniteGrid, typeof INFINITEGRID_METHODS>;

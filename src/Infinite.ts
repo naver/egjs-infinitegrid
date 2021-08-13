@@ -1,17 +1,17 @@
 import Component from "@egjs/component";
 import { diff } from "@egjs/list-differ";
-import { getNextCursors } from "./utils";
+import { findIndex, getNextCursors } from "./utils";
 
 export interface OnInfiniteRequestAppend {
-  startCursor: number;
-  endCursor: number;
-  groupKey: string | number | undefined;
+  key?: string | number | undefined;
+  nextKey?: string | number | undefined;
+  isVirtual: boolean;
 }
 
 export interface OnInfiniteRequestPrepend {
-  startCursor: number;
-  endCursor: number;
-  groupKey: string | number | undefined;
+  key?: string | number | undefined;
+  nextKey?: string | number | undefined;
+  isVirtual: boolean;
 }
 
 export interface OnInfiniteChange {
@@ -37,6 +37,7 @@ export interface InfiniteItem {
   key: string | number;
   startOutline: number[];
   endOutline: number[];
+  isVirtual?: boolean;
 }
 
 export class Infinite extends Component<InfiniteEvents> {
@@ -69,9 +70,8 @@ export class Infinite extends Component<InfiniteEvents> {
 
     if (!length) {
       this.trigger(isDirectionEnd ? "requestAppend" : "requestPrepend", {
-        groupKey: undefined,
-        startCursor: prevStartCursor,
-        endCursor: prevEndCursor,
+        key: undefined,
+        isVirtual: false,
       });
       return;
     } else if (prevStartCursor === -1 || prevEndCursor === -1) {
@@ -130,19 +130,83 @@ export class Infinite extends Component<InfiniteEvents> {
         nextStartCursor,
         nextEndCursor,
       });
+      return;
+    } else if (this._requestVirtualItems()) {
+      return;
     } else if ((!isDirectionEnd || !isEnd) && isStart) {
       this.trigger("requestPrepend", {
-        groupKey: items[prevStartCursor].key,
-        startCursor: prevStartCursor,
-        endCursor: prevEndCursor,
+        key: items[prevStartCursor].key,
+        isVirtual: false,
       });
     } else if ((isDirectionEnd || !isStart) && isEnd) {
       this.trigger("requestAppend", {
-        groupKey: items[prevEndCursor].key,
-        startCursor: prevStartCursor,
-        endCursor: prevEndCursor,
+        key: items[prevEndCursor].key,
+        isVirtual: false,
       });
     }
+  }
+
+  /**
+   * @private
+   * Call the requestAppend or requestPrepend event to fill the virtual items.
+   * @ko virtual item을 채우기 위해 requestAppend 또는 requestPrepend 이벤트를 호출합니다.
+   * @return - Whether the event is called. <ko>이벤트를 호출했는지 여부.</ko>
+   */
+  public _requestVirtualItems() {
+    const isDirectionEnd = this.options.defaultDirection === "end";
+    const items = this.items;
+    const visibleItemsWithVirtuals = this.getVisibleItems();
+    const visibleItems = visibleItemsWithVirtuals.filter((item) => !item.isVirtual);
+    const visibleLength = visibleItems.length;
+    const startCursor = this.getStartCursor();
+    const endCursor = this.getEndCursor();
+
+
+    if (visibleLength) {
+      const startKey = visibleItems[0].key;
+      const endKey = visibleItems[visibleLength - 1].key;
+      const startIndex = findIndex(items, (item) => item.key === startKey) - 1;
+      const endIndex = findIndex(items, (item) => item.key === endKey) + 1;
+
+      const isEnd = endIndex <= endCursor;
+      const isStart = startIndex >= startCursor;
+
+      // Fill the placeholder with the original item.
+      if ((isDirectionEnd || !isStart) && isEnd) {
+        this.trigger("requestAppend", {
+          key: endKey,
+          nextKey: items[endIndex].key,
+          isVirtual: true,
+        });
+        return true;
+      } else if ((!isDirectionEnd || !isEnd) && isStart) {
+        this.trigger("requestPrepend", {
+          key: startKey,
+          nextKey: items[startIndex].key,
+          isVirtual: true,
+        });
+        return true;
+      }
+    } else {
+      const lastItem  = visibleItemsWithVirtuals[visibleItemsWithVirtuals.length - 1];
+
+      if (!lastItem) {
+        return false;
+      }
+      if (isDirectionEnd) {
+        this.trigger("requestAppend", {
+          nextKey: visibleItemsWithVirtuals[0].key,
+          isVirtual: true,
+        });
+      } else {
+        this.trigger("requestPrepend", {
+          nextKey: lastItem.key,
+          isVirtual: true,
+        });
+      }
+      return true;
+    }
+    return false;
   }
   public setCursors(startCursor: number, endCursor: number) {
     this.startCursor = startCursor;
@@ -167,7 +231,7 @@ export class Infinite extends Component<InfiniteEvents> {
     });
     this.itemKeys = itemKeys;
   }
-  public sync(nextItems: InfiniteItem[]) {
+  public syncItems(nextItems: InfiniteItem[]) {
     const prevItems = this.items;
     const prevStartCursor = this.startCursor;
     const prevEndCursor = this.endCursor;
@@ -185,8 +249,8 @@ export class Infinite extends Component<InfiniteEvents> {
       || (prevStartCursor === -1 || nextStartCursor === -1);
 
     if (!isChange) {
-      const prevVisibleItems = prevItems.slice(prevStartCursor, prevEndCursor);
-      const nextVisibleItems = nextItems.slice(nextStartCursor, nextEndCursor);
+      const prevVisibleItems = prevItems.slice(prevStartCursor, prevEndCursor + 1);
+      const nextVisibleItems = nextItems.slice(nextStartCursor, nextEndCursor + 1);
       const visibleResult = diff(prevVisibleItems, nextVisibleItems, (item) => item.key);
 
       isChange = visibleResult.added.length > 0
@@ -210,12 +274,19 @@ export class Infinite extends Component<InfiniteEvents> {
     return this.itemKeys[key];
   }
   public getRenderedVisibleItems() {
-    const groups = this.getVisibleItems();
-    const rendered = groups.map((group) => group.startOutline.length > 0);
+    const items = this.getVisibleItems();
+    const rendered = items.map(({ startOutline, endOutline }) => {
+      const length = startOutline.length;
+
+      if (length === 0 || length !== endOutline.length) {
+        return false;
+      }
+      return startOutline.some((pos, i) => endOutline[i] !== pos);
+    });
     const startIndex = rendered.indexOf(true);
     const endIndex = rendered.lastIndexOf(true);
 
-    return endIndex === -1 ? [] : groups.slice(startIndex, endIndex + 1);
+    return endIndex === -1 ? [] : items.slice(startIndex, endIndex + 1);
   }
   public destroy() {
     this.off();

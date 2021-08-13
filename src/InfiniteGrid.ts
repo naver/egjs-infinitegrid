@@ -7,8 +7,10 @@ import {
   MOUNT_STATE,
   OnContentError,
   ItemRenderer,
+  GridItem,
 } from "@egjs/grid";
 import {
+  GROUP_TYPE,
   INFINITEGRID_EVENTS, INFINITEGRID_PROPERTY_TYPES,
   ITEM_TYPE, STATUS_TYPE,
 } from "./consts";
@@ -16,6 +18,8 @@ import { GroupManager } from "./GroupManager";
 import {
   Infinite,
   OnInfiniteChange,
+  OnInfiniteRequestAppend,
+  OnInfiniteRequestPrepend,
 } from "./Infinite";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import { OnRendererUpdated } from "./Renderer/Renderer";
@@ -341,6 +345,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       containerManager: this.containerManager.getStatus(),
       itemRenderer: this.itemRenderer.getStatus(),
       groupManager: this.groupManager.getGroupStatus(type),
+      scrollManager: this.scrollManager.getStatus(),
     };
   }
 
@@ -375,7 +380,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   ): InsertedPlaceholdersResult {
     const result = this.groupManager.appendPlaceholders(items, groupKey);
 
-    this._syncGroups();
+    this._syncGroups(true);
     return {
       ...result,
       remove: () => {
@@ -396,7 +401,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   ): InsertedPlaceholdersResult {
     const result = this.groupManager.prependPlaceholders(items, groupKey);
 
-    this._syncGroups();
+    this._syncGroups(true);
     return {
       ...result,
       remove: () => {
@@ -412,7 +417,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    */
   public removePlaceholders(type: "start" | "end" | { groupKey: string | number }) {
     this.groupManager.removePlaceholders(type);
-    this._syncGroups();
+    this._syncGroups(true);
   }
 
   /**
@@ -423,12 +428,13 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   public setStatus(status: InfiniteGridStatus, useFirstRender?: boolean): this {
     this.itemRenderer.setStatus(status.itemRenderer);
     this.containerManager.setStatus(status.containerManager);
+    this.scrollManager.setStatus(status.scrollManager);
     const groupManager = this.groupManager;
     const prevInlineSize = this.containerManager.getInlineSize();
 
     groupManager.setGroupStatus(status.groupManager);
     this._syncInfinite();
-    this.infinite.setCursors(this.infinite.getStartCursor(), groupManager.getEndCursor());
+    this.infinite.setCursors(groupManager.getStartCursor(), groupManager.getEndCursor());
 
     this._getRenderer().updateKey();
 
@@ -573,28 +579,31 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
     this.infinite.setSize(scrollManager.getContentSize());
   }
-  private _syncGroups() {
+  private _syncGroups(isUpdate?: boolean) {
     const infinite = this.infinite;
 
     this._syncInfinite();
     this.groupManager.setCursors(infinite.getStartCursor(), infinite.getEndCursor());
-    this._render();
+    if (isUpdate) {
+      this._update();
+    } else {
+      this._render();
+    }
   }
   private _syncInfinite() {
-    this.infinite.sync(this.getGroups(true).map(({ groupKey, grid }) => {
+    this.infinite.syncItems(this.getGroups(true).map(({ groupKey, grid, type }) => {
       const outlines = grid.getOutlines();
 
       return {
         key: groupKey,
+        isVirtual: type === GROUP_TYPE.VIRTUAL,
         startOutline: outlines.start,
         endOutline: outlines.end,
       };
     }));
   }
   private _scroll() {
-    if (!this._requestFillVirtualGroups()) {
-      this.infinite.scroll(this.scrollManager.getRelativeScrollPos());
-    }
+    this.infinite.scroll(this.scrollManager.getRelativeScrollPos());
   }
   private _onScroll = ({ direction, scrollPos, relativeScrollPos }: OnScroll): void => {
     this._scroll();
@@ -616,17 +625,21 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const renderedItems = e.items;
 
     const {
+      added,
       removed,
       prevList,
+      list,
     } = e.diffResult;
 
     removed.forEach((index) => {
       const orgItem = prevList[index].orgItem;
 
-      orgItem.mountState = orgItem.mountState === MOUNT_STATE.UNCHECKED ? MOUNT_STATE.UNCHECKED : MOUNT_STATE.UNMOUNTED;
+      if (orgItem.mountState !== MOUNT_STATE.UNCHECKED) {
+        orgItem.mountState = MOUNT_STATE.UNMOUNTED;
+      }
     });
 
-    const items = renderedItems.map((item) => {
+    renderedItems.forEach((item) => {
       // set grid element
       const gridItem = item.orgItem;
 
@@ -634,16 +647,41 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       return gridItem;
     });
+
+    const horizontal = this.options.horizontal;
+    const addedItems = added.map((index) => {
+      const gridItem = list[index].orgItem;
+      const element = gridItem.element!;
+
+      if (gridItem.type === ITEM_TYPE.VIRTUAL) {
+        const cssRect = { ...gridItem.cssRect };
+        const rect = gridItem.rect;
+
+        if (!cssRect.width && rect.width) {
+          cssRect.width = rect.width;
+        }
+        if (!cssRect.height && rect.height) {
+          cssRect.height = rect.height;
+        }
+        // virtual item
+        return new GridItem(horizontal!, {
+          element,
+          cssRect,
+        });
+      }
+      return gridItem;
+    });
+
     const {
       isRestore,
       isResize,
     } = e.state;
 
-    this.itemRenderer.renderItems(items);
+    this.itemRenderer.renderItems(addedItems);
 
     if (isRestore) {
       this._onRenderComplete({
-        mounted: items,
+        mounted: added.map((index) => list[index].orgItem),
         updated: [],
         isResize: false,
         direction: this.defaultDirection,
@@ -661,97 +699,33 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onRequestAppend = (e: OnRequestInsert): void => {
+    this._onRequestInsert("end", INFINITEGRID_EVENTS.REQUEST_APPEND, e);
+  }
+
+  private _onRequestPrepend = (e: OnInfiniteRequestPrepend): void => {
+    this._onRequestInsert("start", INFINITEGRID_EVENTS.REQUEST_PREPEND, e);
+  }
+
+  private _onRequestInsert(
+    direction: "start" | "end",
+    eventType: "requestAppend" | "requestPrepend",
+    e: OnInfiniteRequestAppend | OnInfiniteRequestPrepend,
+  ) {
     if (this._isWait) {
       return;
     }
 
-    this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.REQUEST_APPEND, {
-      groupKey: e.groupKey,
-      nextGroupKey: e.nextGroupKey,
+    this.trigger(new ComponentEvent(eventType, {
+      groupKey: e.key,
+      nextGroupKey: e.nextKey,
+      isVirtual: e.isVirtual,
       wait: () => {
-        this._wait("end", e);
+        this._wait(direction, e);
       },
       ready: () => {
         this._ready();
       },
     }));
-  }
-
-  private _onRequestPrepend = (e: OnRequestInsert): void => {
-    if (this._isWait) {
-      return;
-    }
-
-    this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.REQUEST_PREPEND, {
-      groupKey: e.groupKey,
-      nextGroupKey: e.nextGroupKey,
-      wait: () => {
-        this._wait("start", e);
-      },
-      ready: () => {
-        this._ready();
-      },
-    }));
-  }
-
-  /**
-   * @private
-   * Call the requestAppend or requestPrepend event to fill the virtual group.
-   * @ko virtual group을 fill 위해 requestAppend 또는 requestPrepend 이벤트를 호출합니다.
-   * @return - Whether the event is called. <ko>이벤트를 호출했는지 여부.</ko>
-   */
-  private _requestFillVirtualGroups() {
-    const groups = this.groupManager.getGroups(true);
-    const visibleGroups = this.getVisibleGroups();
-    const length = visibleGroups.length;
-    const isEndDirection = this.defaultDirection === "end";
-    const startCursor = this.getStartCursor();
-    const endCursor = this.getEndCursor();
-
-
-    if (length) {
-      const startGroupKey = visibleGroups[0].groupKey;
-      const endGroupKey = visibleGroups[length - 1].groupKey;
-      const startGroupIndex = findIndex(groups, (item) => item.groupKey === startGroupKey) - 1;
-      const endGroupIndex = findIndex(groups, (item) => item.groupKey === endGroupKey) + 1;
-
-      const isEnd = endGroupIndex <= endCursor;
-      const isStart = startGroupIndex >= startCursor;
-
-      // Fill the placeholder with the original item.
-      if ((isEndDirection || !isStart) && isEnd) {
-        this._onRequestAppend({
-          groupKey: endGroupKey,
-          nextGroupKey: groups[endGroupIndex].groupKey,
-        });
-        return true;
-      } else if ((!isEndDirection || !isEnd) && isStart) {
-        this._onRequestPrepend({
-          groupKey: startGroupKey,
-          nextGroupKey: groups[startGroupIndex].groupKey,
-        });
-        return true;
-      }
-    } else {
-      const visiblePlaceholderGroups = this.getVisibleGroups(true);
-      const placeholderLength = visiblePlaceholderGroups.length;
-
-      if (!placeholderLength) {
-        return false;
-      }
-      if (isEndDirection) {
-        this._onRequestAppend({
-          nextGroupKey: visiblePlaceholderGroups[0].groupKey,
-        });
-        return true;
-      } else {
-        this._onRequestPrepend({
-          nextGroupKey: visiblePlaceholderGroups[placeholderLength - 1].groupKey,
-        });
-        return true;
-      }
-    }
-    return false;
   }
 
   private _onContentError = ({ element, target, item, update }: OnContentError): void => {
@@ -793,7 +767,12 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       items: this.getVisibleItems(true),
       groups: this.getVisibleGroups(true),
     }));
-    this._scroll();
+
+    if (this.groupManager.checkRerenderItems()) {
+      this._update();
+    } else {
+      this._scroll();
+    }
   }
   private _wait(direction: "start" | "end", e: OnRequestInsert) {
     this._isWait = true;

@@ -133,7 +133,7 @@ export function getNextCursors(
 export function splitVirtualGroups<Group extends { type: GROUP_TYPE, groupKey: string | number }>(
   groups: Group[],
   direction: "start" | "end",
-  nextGroups: CategorizedGroup<any>[],
+  nextGroups: CategorizedGroup<InfiniteGridItemStatus>[],
 ) {
   let virtualGroups: Group[] = [];
 
@@ -199,13 +199,13 @@ export function getRenderingItemsByStatus(
   } = getNextCursors(
     prevGroups.map((group) => group.groupKey),
     nextGroups.map((group) => group.groupKey),
-    groupManagerStatus.startCursor,
-    groupManagerStatus.endCursor,
+    groupManagerStatus.cursors[0],
+    groupManagerStatus.cursors[1],
   );
 
   let nextVisibleItems = flat(nextGroups.slice(startCursor, endCursor + 1).map((group) => {
     return group.items.map((item) => {
-      return new InfiniteGridItem(horizontal, {...item});
+      return new InfiniteGridItem(horizontal, { ...item });
     });
   }));
 
@@ -343,7 +343,7 @@ export function findLastIndex<T>(arr: T[], callback: (value: T, index: number) =
 }
 
 export function getItemInfo(info: InfiniteGridItemInfo) {
-  const nextInfo: InfiniteGridItemInfo  = {};
+  const nextInfo: InfiniteGridItemInfo = {};
 
   for (const name in info) {
     if (name in ITEM_INFO_PROPERTIES) {

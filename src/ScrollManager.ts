@@ -9,6 +9,12 @@ export interface ScrollManagerOptions {
   horizontal?: boolean;
 }
 
+export interface ScrollManagerStatus {
+  contentSize: number;
+  scrollOffset: number;
+  prevScrollPos: number;
+}
+
 
 export interface ScrollManagerEvents {
   scroll: OnScroll;
@@ -77,6 +83,20 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       return eventTarget[prop];
     }
   }
+  public setStatus(status: ScrollManagerStatus) {
+    this.contentSize = status.contentSize;
+    this.scrollOffset = status.scrollOffset;
+    this.prevScrollPos = status.prevScrollPos;
+
+    this.scrollTo(this.prevScrollPos);
+  }
+  public getStatus(): ScrollManagerStatus {
+    return {
+      contentSize: this.contentSize,
+      scrollOffset: this.scrollOffset,
+      prevScrollPos: this.prevScrollPos!,
+    };
+  }
   public scrollTo(pos: number) {
     const eventTarget = this.eventTarget;
     const horizontal = this.options.horizontal;
@@ -111,7 +131,7 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     const scrollContainer = this.scrollContainer;
     const horizontal = this.options.horizontal;
     const scrollContainerRect = scrollContainer === document.body
-      ? { top : 0, left: 0 }
+      ? { top: 0, left: 0 }
       : scrollContainer.getBoundingClientRect();
     const containerRect = this.container.getBoundingClientRect();
 

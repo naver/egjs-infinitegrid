@@ -32,13 +32,11 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
         rect.width = cssRect.width;
       } else if (orgRect.width) {
         rect.width = orgRect.width;
-        cssRect.width = orgRect.width;
       }
       if (cssRect.height) {
         rect.height = cssRect.height;
       } else if (orgRect.height) {
         rect.height = orgRect.height;
-        cssRect.height = orgRect.height;
       }
     }
   }
@@ -59,6 +57,7 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
       type: ITEM_TYPE.NORMAL,
       groupKey: this.groupKey,
       html: this.html,
+      data: {},
     };
   }
 }

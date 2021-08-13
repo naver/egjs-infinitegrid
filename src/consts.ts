@@ -62,15 +62,15 @@ export const INFINITEGRID_METHODS = [
 
 
 export enum GROUP_TYPE {
-  NORMAL = 0,
-  VIRTUAL = 1,
-  LOADING = 2,
+  NORMAL = 1,
+  VIRTUAL = 2,
+  LOADING = 3,
 }
 
 export enum ITEM_TYPE {
-  NORMAL = 0,
-  VIRTUAL = 1,
-  LOADING = 2,
+  NORMAL = 1,
+  VIRTUAL = 2,
+  LOADING = 3,
 }
 
 export enum STATUS_TYPE {
@@ -83,5 +83,6 @@ export enum STATUS_TYPE {
   // remove invisible groups
   REMOVE_INVISIBLE_GROUPS = 3,
 }
+
 
 export const INVISIBLE_POS = -9999;
