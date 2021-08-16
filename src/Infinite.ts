@@ -28,7 +28,7 @@ export interface InfiniteEvents {
 }
 
 export interface InfiniteOptions {
-  useRecyle?: boolean;
+  useRecycle?: boolean;
   threshold?: number;
   defaultDirection?: "start" | "end";
 }
@@ -51,7 +51,7 @@ export class Infinite extends Component<InfiniteEvents> {
     super();
     this.options = {
       threshold: 0,
-      useRecyle: false,
+      useRecycle: true,
       defaultDirection: "end",
       ...options,
     };
@@ -65,6 +65,7 @@ export class Infinite extends Component<InfiniteEvents> {
     const {
       defaultDirection,
       threshold,
+      useRecycle,
     } = this.options;
     const isDirectionEnd = defaultDirection === "end";
 
@@ -115,6 +116,11 @@ export class Infinite extends Component<InfiniteEvents> {
     if (nextStartCursor === -1) {
       nextStartCursor = prevStartCursor;
       nextEndCursor = prevEndCursor;
+    }
+
+    if (!useRecycle) {
+      nextStartCursor = Math.min(nextStartCursor, prevStartCursor);
+      nextEndCursor = Math.max(nextEndCursor, prevEndCursor);
     }
 
     if (nextStartCursor === prevStartCursor && hasStartItems && isStart) {

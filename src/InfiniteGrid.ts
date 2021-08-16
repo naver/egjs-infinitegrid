@@ -85,6 +85,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     container: false,
     renderer: null,
     threshold: 100,
+    useRecycle: true,
   } as Required<InfiniteGridOptions>;
   public static propertyTypes = INFINITEGRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
@@ -113,6 +114,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       container,
       renderer,
       threshold,
+      useRecycle,
       ...gridOptions
     } = this.options;
     // options.container === false, wrapper = container, scrollContainer = document.body
@@ -147,7 +149,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       isConstantSize,
     });
     const infinite = new Infinite({
-      useRecyle: false,
+      useRecycle,
       threshold,
     }).on({
       "change": this._onChange,
@@ -711,7 +713,9 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     eventType: "requestAppend" | "requestPrepend",
     e: OnInfiniteRequestAppend | OnInfiniteRequestPrepend,
   ) {
+
     if (this._isWait) {
+      this._checkStartLoading(direction, e);
       return;
     }
 
@@ -776,20 +780,24 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
   private _wait(direction: "start" | "end", e: OnRequestInsert) {
     this._isWait = true;
-
+    this._checkStartLoading(direction, e);
+  }
+  private _ready() {
+    this._isWait = false;
+  }
+  private _checkStartLoading(direction: "start" | "end", e: OnRequestInsert) {
     const groupManager = this.groupManager;
 
     if (!("nextGroupKey" in e) && groupManager.startLoading(direction) && groupManager.hasLoadingItem()) {
       this._update();
     }
-  }
-  private _ready() {
-    this._isWait = false;
+    return true;
   }
   private _checkEndLoading() {
     const groups = this.groupManager.getGroups(true);
+    const infinite = this.infinite;
 
-    if (this.infinite.getStartCursor() > 0 || this.infinite.getEndCursor() < groups.length - 1) {
+    if (infinite.getStartCursor() > 0 || infinite.getEndCursor() < groups.length - 1) {
       const groupManager = this.groupManager;
       if (groupManager.endLoading() && groupManager.hasLoadingItem()) {
         this._update();
