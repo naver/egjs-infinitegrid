@@ -1,6 +1,6 @@
 import Component from "@egjs/component";
 import { diff } from "@egjs/list-differ";
-import { findIndex, getNextCursors } from "./utils";
+import { findIndex, getNextCursors, isFlatOutline } from "./utils";
 
 export interface OnInfiniteRequestAppend {
   key?: string | number | undefined;
@@ -122,7 +122,6 @@ export class Infinite extends Component<InfiniteEvents> {
       nextStartCursor = Math.min(nextStartCursor, prevStartCursor);
       nextEndCursor = Math.max(nextEndCursor, prevEndCursor);
     }
-
     if (nextStartCursor === prevStartCursor && hasStartItems && isStart) {
       nextStartCursor -= 1;
     }
@@ -161,14 +160,17 @@ export class Infinite extends Component<InfiniteEvents> {
   public _requestVirtualItems() {
     const isDirectionEnd = this.options.defaultDirection === "end";
     const items = this.items;
-    const visibleItemsWithVirtuals = this.getVisibleItems();
-    const visibleItems = visibleItemsWithVirtuals.filter((item) => !item.isVirtual);
+    const totalVisibleItems = this.getVisibleItems();
+    const visibleItems = totalVisibleItems.filter((item) => !item.isVirtual);
+    const totalVisibleLength = totalVisibleItems.length;
     const visibleLength = visibleItems.length;
     const startCursor = this.getStartCursor();
     const endCursor = this.getEndCursor();
 
 
-    if (visibleLength) {
+    if (visibleLength === totalVisibleLength) {
+      return false;
+    } else if (visibleLength) {
       const startKey = visibleItems[0].key;
       const endKey = visibleItems[visibleLength - 1].key;
       const startIndex = findIndex(items, (item) => item.key === startKey) - 1;
@@ -193,15 +195,12 @@ export class Infinite extends Component<InfiniteEvents> {
         });
         return true;
       }
-    } else {
-      const lastItem  = visibleItemsWithVirtuals[visibleItemsWithVirtuals.length - 1];
+    } else if (totalVisibleLength) {
+      const lastItem  = totalVisibleItems[totalVisibleLength - 1];
 
-      if (!lastItem) {
-        return false;
-      }
       if (isDirectionEnd) {
         this.trigger("requestAppend", {
-          nextKey: visibleItemsWithVirtuals[0].key,
+          nextKey: totalVisibleItems[0].key,
           isVirtual: true,
         });
       } else {
@@ -226,6 +225,32 @@ export class Infinite extends Component<InfiniteEvents> {
   }
   public getEndCursor() {
     return this.endCursor;
+  }
+  public isLoading(direction: "start" | "end") {
+    const startCursor = this.startCursor;
+    const endCursor = this.endCursor;
+    const items = this.items;
+    const firstItem = items[startCursor]!;
+    const lastItem = items[endCursor]!;
+    const length = items.length;
+
+    if (
+      direction === "end"
+      && endCursor < length - 1
+      && !lastItem.isVirtual
+      && !isFlatOutline(lastItem.startOutline, lastItem.endOutline)
+    ) {
+      return false;
+    }
+    if (
+      direction === "start"
+      && startCursor > 0
+      && !firstItem.isVirtual
+      && !isFlatOutline(firstItem.startOutline, firstItem.endOutline)
+    ) {
+      return false;
+    }
+    return true;
   }
   public setItems(nextItems: InfiniteItem[]) {
     this.items = nextItems;
@@ -266,6 +291,9 @@ export class Infinite extends Component<InfiniteEvents> {
     this.setItems(nextItems);
     this.setCursors(nextStartCursor, nextEndCursor);
     return isChange;
+  }
+  public getItems() {
+    return this.items;
   }
   public getVisibleItems() {
     const startCursor = this.startCursor;

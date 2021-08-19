@@ -134,6 +134,10 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     this._updatePlaceholder();
   }
 
+  public getLoadingType() {
+    return this._loadingGrid.type;
+  }
+
   public startLoading(type: "start" | "end") {
     this._loadingGrid.type = type;
     this.items = this._getRenderingItems();
@@ -197,7 +201,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       const grid = group.grid;
       const gridItems = grid.getItems();
       const isVirtual = group.type === GROUP_TYPE.VIRTUAL && !gridItems[0];
-      const appliedItems = gridItems.filter((item) => item.mountState !== MOUNT_STATE.UNCHECKED);
+      const appliedItems = gridItems.filter((item) => item.mountState !== MOUNT_STATE.UNCHECKED && item.rect.width);
       let gridOutlines: GridOutlines;
 
       if (isVirtual) {
@@ -210,7 +214,6 @@ export class GroupManager extends Grid<GroupManagerOptions> {
           end: [...nextOutline],
         };
       }
-
       grid.setOutlines(gridOutlines);
       nextOutline = gridOutlines[direction];
     });
@@ -307,7 +310,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       const gridItems = grid.getItems() as InfiniteGridItem[];
       const items = isVirtualGroup
         ? []
-        : gridItems.map((item) => isVirtualItems ? item.getVirtualStatus() : item.getStatus());
+        : gridItems.map((item) => isVirtualItems ? item.getVirtualStatus() : item.getMinimizedStatus());
 
       return {
         type: isVirtualGroup || isVirtualItems ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.NORMAL,

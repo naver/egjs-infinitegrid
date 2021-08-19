@@ -51,14 +51,16 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
       attributes: this.attributes,
     };
   }
-  public getStatus(): Required<InfiniteGridItemStatus> {
-    return {
+  public getMinimizedStatus(): Partial<InfiniteGridItemStatus> {
+    const status: Partial<InfiniteGridItemStatus> = {
       ...super.getStatus(),
       type: ITEM_TYPE.NORMAL,
       groupKey: this.groupKey,
-      html: this.html,
-      data: {},
     };
+    if (this.html) {
+      status.html = this.html;
+    }
+    return status;
   }
 }
 

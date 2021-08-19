@@ -37,4 +37,5 @@ packages
 
 #storybook
 .storybook
+storybook/
 stories/

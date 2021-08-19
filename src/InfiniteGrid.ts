@@ -95,7 +95,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   protected infinite: Infinite;
   protected groupManager: GroupManager;
   protected options: Required<Options>;
-  private _isWait = false;
+  private _waitType: "" | "start" | "end" = "";
   /**
    * @param - A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
    * @param - The option object of the InfiniteGrid module <ko>eg.InfiniteGrid 모듈의 옵션 객체</ko>
@@ -548,6 +548,13 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   public getVisibleGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
     return this.groupManager.getVisibleGroups(includePlaceholders);
   }
+  public wait(direction: "start" | "end" = "end") {
+    this._waitType = direction;
+    this._checkStartLoading(direction);
+  }
+  public ready() {
+    this._waitType = "";
+  }
   /**
    * Releases the instnace and events and returns the CSS of the container and elements.
    * @ko 인스턴스와 이벤트를 해제하고 컨테이너와 엘리먼트들의 CSS를 되돌린다.
@@ -617,10 +624,12 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onChange = (e: OnInfiniteChange): void => {
+    // console.log(e.prevStartCursor, e.prevEndCursor, e.nextStartCursor, e.nextEndCursor);
     this.setCursors(e.nextStartCursor, e.nextEndCursor);
   }
   private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>): void => {
     if (!e.isChanged) {
+      this._checkEndLoading();
       this._scroll();
       return;
     }
@@ -714,8 +723,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     e: OnInfiniteRequestAppend | OnInfiniteRequestPrepend,
   ) {
 
-    if (this._isWait) {
-      this._checkStartLoading(direction, e);
+    if (this._waitType) {
+      this._checkStartLoading(this._waitType);
       return;
     }
 
@@ -724,10 +733,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       nextGroupKey: e.nextKey,
       isVirtual: e.isVirtual,
       wait: () => {
-        this._wait(direction, e);
+        this.wait(direction);
       },
       ready: () => {
-        this._ready();
+        this.ready();
       },
     }));
   }
@@ -775,33 +784,34 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     if (this.groupManager.checkRerenderItems()) {
       this._update();
     } else {
+      this._checkEndLoading();
       this._scroll();
     }
   }
-  private _wait(direction: "start" | "end", e: OnRequestInsert) {
-    this._isWait = true;
-    this._checkStartLoading(direction, e);
-  }
-  private _ready() {
-    this._isWait = false;
-  }
-  private _checkStartLoading(direction: "start" | "end", e: OnRequestInsert) {
+  private _checkStartLoading(direction: "start" | "end") {
     const groupManager = this.groupManager;
-
-    if (!("nextGroupKey" in e) && groupManager.startLoading(direction) && groupManager.hasLoadingItem()) {
-      this._update();
-    }
-    return true;
-  }
-  private _checkEndLoading() {
-    const groups = this.groupManager.getGroups(true);
     const infinite = this.infinite;
 
-    if (infinite.getStartCursor() > 0 || infinite.getEndCursor() < groups.length - 1) {
-      const groupManager = this.groupManager;
-      if (groupManager.endLoading() && groupManager.hasLoadingItem()) {
-        this._update();
-      }
+    if (
+      !groupManager.getLoadingType()
+      && infinite.isLoading(direction)
+      && groupManager.startLoading(direction)
+      && groupManager.hasLoadingItem()
+    ) {
+      this._update();
+    }
+  }
+  private _checkEndLoading() {
+    const groupManager = this.groupManager;
+    const loadingType = this.groupManager.getLoadingType();
+
+    if (
+      loadingType
+      && (!this._waitType || !this.infinite.isLoading(loadingType))
+      && groupManager.endLoading()
+      && groupManager.hasLoadingItem()
+    ) {
+      this._update();
     }
   }
 }

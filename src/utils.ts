@@ -369,6 +369,10 @@ export function setPlaceholder(item: InfiniteGridItem, info: InfiniteGridItemSta
   }
 }
 
+export function isFlatOutline(start: number[], end: number[]) {
+  return start.length === end.length && start.every((pos, i) => end[i] === pos);
+}
+
 export function range(length: number): number[] {
   const arr: number[] = [];
   for (let i = 0; i < length; ++i) {
