@@ -43,13 +43,6 @@ export class Renderer<Item extends RendererItem = RendererItem> extends Componen
   public setContainer(container: Element) {
     this.container = container;
   }
-  public setItems(items: Item[]) {
-    const rendererKey = this.rendererKey;
-    this.items = items.map((item) => ({
-      ...item,
-      renderKey:  `${rendererKey}_${item.key}`,
-    }));
-  }
   public render(nextItems: Item[], state?: Record<string, any>) {
     if (state) {
       this._state = state;
@@ -69,19 +62,22 @@ export class Renderer<Item extends RendererItem = RendererItem> extends Componen
       });
     });
   }
-  public updated(nextElements: ArrayLike<Element>) {
-    const items = this.items;
+  public updated(nextElements: ArrayLike<Element> = this.container?.children ?? []) {
     const diffResult = this._diffResult;
     const isChanged = !!(diffResult.added.length || diffResult.removed.length || diffResult.changed.length);
     const state = this._state;
 
     this._state = {};
-    items.forEach((item, i) => {
+
+    const nextItems = diffResult.list;
+
+    this.items = nextItems;
+    nextItems.forEach((item, i) => {
       item.element = nextElements[i];
     });
 
     this.trigger("updated", {
-      items,
+      items: nextItems,
       elements: toArray(nextElements),
       diffResult: this._diffResult,
       state,
@@ -93,12 +89,15 @@ export class Renderer<Item extends RendererItem = RendererItem> extends Componen
   public destroy() {
     this.off();
   }
-  protected syncItems(nextItems: Item[]) {
+  protected syncItems(items: Item[]) {
+    const rendererKey = this.rendererKey;
     const prevItems = this.items;
+    const nextItems = items.map((item) => ({
+      ...item,
+      renderKey:  `${rendererKey}_${item.key}`,
+    }));
 
-    this.setItems(nextItems);
-
-    const result = diff(prevItems, this.items, (item) => item.renderKey!);
+    const result = diff(prevItems, nextItems, (item) => item.renderKey!);
 
     this._diffResult = result;
 

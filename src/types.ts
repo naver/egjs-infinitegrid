@@ -197,6 +197,14 @@ export interface OnRequestInsert {
   isVirtual: boolean;
 }
 
+export interface RenderingOptions {
+  grid: InfiniteGrid<any> | null | undefined;
+  status: InfiniteGridStatus | null | undefined;
+  useFirstRender: boolean | undefined | null;
+  usePlaceholder: boolean | undefined | null;
+  useLoading: boolean | undefined | null;
+  horizontal: boolean | undefined | null;
+}
 export type InfiniteGridInsertedItems = string | Array<string | InfiniteGridItemInfo | HTMLElement>;
 
 export type InfiniteGridMethods<Component> = Methods<Component, InfiniteGrid, typeof INFINITEGRID_METHODS>;

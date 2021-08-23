@@ -7,6 +7,7 @@ import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
 import {
   CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems,
   InfiniteGridItemInfo,
+  RenderingOptions,
 } from "./types";
 
 export function isWindow(el: Window | Element): el is Window {
@@ -218,6 +219,58 @@ export function getRenderingItemsByStatus(
   return nextVisibleItems;
 }
 
+export function mountRenderingItems(items: InfiniteGridItemInfo[], options: RenderingOptions) {
+  const {
+    grid,
+    usePlaceholder,
+    useLoading,
+    useFirstRender,
+    status,
+  } = options;
+  if (!grid) {
+    return;
+  }
+  if (usePlaceholder) {
+    grid.setPlaceholder({});
+  }
+  if (useLoading) {
+    grid.setLoading({});
+  }
+  if (status) {
+    grid.setStatus(status, true);
+  }
+
+  grid.syncItems(items);
+
+  if (useFirstRender && !status && grid.getGroups().length) {
+    grid.setCursors(0, 0, true);
+  }
+}
+export function getRenderingItems(items: InfiniteGridItemInfo[], options: RenderingOptions) {
+  const {
+    status,
+    usePlaceholder,
+    useLoading,
+    horizontal,
+    useFirstRender,
+    grid,
+  } = options;
+  let visibleItems: InfiniteGridItem[] = [];
+
+  if (grid) {
+    grid.setPlaceholder(usePlaceholder ? {} : null);
+    grid.setLoading(useLoading ? {} : null);
+    grid.syncItems(items);
+
+    visibleItems = grid.getRenderingItems();
+  } else if (status) {
+    visibleItems = getRenderingItemsByStatus(status.groupManager, items, !!usePlaceholder, !!horizontal);
+  } else if (useFirstRender) {
+    visibleItems = getFirstRenderingItems(items, !!horizontal);
+  }
+
+  return visibleItems;
+}
 
 /* Class Decorator */
 export function InfiniteGridGetterSetter(component: {

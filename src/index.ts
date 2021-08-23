@@ -10,8 +10,8 @@ export * from "./types";
 export * from "./consts";
 export {
   withInfiniteGridMethods,
-  getRenderingItemsByStatus,
-  getFirstRenderingItems,
+  getRenderingItems,
+  mountRenderingItems,
 } from "./utils";
 
 export default InfiniteGrid;
