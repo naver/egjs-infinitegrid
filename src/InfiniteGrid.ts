@@ -33,7 +33,7 @@ import {
   InsertedPlaceholdersResult,
   OnPickedRenderComplete,
   OnRequestInsert,
-  OnScroll,
+  OnChangeScroll,
 } from "./types";
 import {
   InfiniteGridGetterSetter, toArray, convertInsertedItems, findIndex,
@@ -83,6 +83,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   public static defaultOptions = {
     ...DEFAULT_GRID_OPTIONS,
     container: false,
+    containerTag: "div",
     renderer: null,
     threshold: 100,
     useRecycle: true,
@@ -548,12 +549,28 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   public getVisibleGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
     return this.groupManager.getVisibleGroups(includePlaceholders);
   }
+  /**
+   * Set to wait to request data.
+   * @ko 데이터를 요청하기 위해 대기 상태로 설정한다.
+   * @param direction - direction in which data will be added
+   */
   public wait(direction: "start" | "end" = "end") {
     this._waitType = direction;
     this._checkStartLoading(direction);
   }
+  /**
+   * When the data request is complete, it is set to ready state.
+   * @ko 데이터 요청이 끝났다면 준비 상태로 설정한다.
+   */
   public ready() {
     this._waitType = "";
+  }
+  /**
+   * Returns whether it is set to wait to request data.
+   * @ko 데이터를 요청하기 위해 대기 상태로 설정되어 있는지 여부를 반환한다.
+   */
+  public isWait() {
+    return !!this._waitType;
   }
   /**
    * Releases the instnace and events and returns the CSS of the container and elements.
@@ -614,9 +631,15 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   private _scroll() {
     this.infinite.scroll(this.scrollManager.getRelativeScrollPos());
   }
-  private _onScroll = ({ direction, scrollPos, relativeScrollPos }: OnScroll): void => {
+  private _onScroll = ({ direction, scrollPos, relativeScrollPos }: OnChangeScroll): void => {
     this._scroll();
-    this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.SCROLL, {
+    /**
+     * This event is fired when scrolling.
+     * @ko 스크롤하면 발생하는 이벤트이다.
+     * @event InfiniteGrid#changeScroll
+     * @param {InfiniteGrid.OnChangeScroll} e - The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+     */
+    this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.CHANGE_SCROLL, {
       direction,
       scrollPos,
       relativeScrollPos,
@@ -624,7 +647,6 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onChange = (e: OnInfiniteChange): void => {
-    // console.log(e.prevStartCursor, e.prevEndCursor, e.nextStartCursor, e.nextEndCursor);
     this.setCursors(e.nextStartCursor, e.nextEndCursor);
   }
   private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>): void => {
@@ -710,10 +732,22 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onRequestAppend = (e: OnRequestInsert): void => {
+    /**
+     * The event is fired when scrolling reaches the end or when data for a virtual group is required.
+     * @ko 스크롤이 끝에 도달하거나 virtual 그룹에 대한 데이터가 필요한 경우 이벤트가 발생한다.
+     * @event InfiniteGrid#requestAppend
+     * @param {InfiniteGrid.OnRequestAppend} e - The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+     */
     this._onRequestInsert("end", INFINITEGRID_EVENTS.REQUEST_APPEND, e);
   }
 
   private _onRequestPrepend = (e: OnInfiniteRequestPrepend): void => {
+    /**
+     * The event is fired when scrolling reaches the start or when data for a virtual group is required.
+     * @ko 스크롤이 끝에 도달하거나 virtual 그룹에 대한 데이터가 필요한 경우 이벤트가 발생한다.
+     * @event InfiniteGrid#requestPrepend
+     * @param {InfiniteGrid.OnRequestPrepend} e - The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+     */
     this._onRequestInsert("start", INFINITEGRID_EVENTS.REQUEST_PREPEND, e);
   }
 
@@ -727,7 +761,6 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       this._checkStartLoading(this._waitType);
       return;
     }
-
     this.trigger(new ComponentEvent(eventType, {
       groupKey: e.key,
       nextGroupKey: e.nextKey,
@@ -742,6 +775,12 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onContentError = ({ element, target, item, update }: OnContentError): void => {
+    /**
+     * The event is fired when scrolling reaches the start or when data for a virtual group is required.
+     * @ko 스크롤이 끝에 도달하거나 virtual 그룹에 대한 데이터가 필요한 경우 이벤트가 발생한다.
+     * @event InfiniteGrid#contentError
+     * @param {InfiniteGrid.OnContentError} e - The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+     */
     this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.CONTENT_ERROR, {
       element,
       target,
@@ -770,6 +809,13 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       this.scrollManager.scrollBy(offset);
     }
+
+    /**
+     * This event is fired when the InfiniteGrid has completed rendering.
+     * @ko InfiniteGrid가 렌더링이 완료됐을 때 이벤트가 발생한다.
+     * @event InfiniteGrid#renderComplete
+     * @param {InfiniteGrid.OnRenderComplete} e - The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
+     */
     this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.RENDER_COMPLETE, {
       isResize,
       direction,
