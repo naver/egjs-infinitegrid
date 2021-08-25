@@ -1,6 +1,6 @@
 import Component, { ComponentEvent } from "@egjs/component";
 import { CONTAINER_CLASS_NAME, IS_IOS } from "./consts";
-import { OnScroll } from "./types";
+import { OnChangeScroll } from "./types";
 import { isWindow, toArray } from "./utils";
 
 export interface ScrollManagerOptions {
@@ -17,7 +17,7 @@ export interface ScrollManagerStatus {
 
 
 export interface ScrollManagerEvents {
-  scroll: OnScroll;
+  scroll: OnChangeScroll;
 }
 
 export class ScrollManager extends Component<ScrollManagerEvents> {

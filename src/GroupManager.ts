@@ -80,7 +80,10 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
     const shouldRender = this._checkShouldRender(options);
 
-    this.options.gridOptions = gridOptions;
+    this.options.gridOptions = {
+      ...this.options.gridOptions,
+      ...gridOptions,
+    };
     this.groups.forEach(({ grid }) => {
       for (const name in options) {
         (grid as any)[name] = options[name];

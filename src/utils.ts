@@ -299,7 +299,9 @@ export function InfiniteGridGetterSetter(component: {
         if (prevValue === value) {
           return;
         }
-        this.groupManager[name] = value;
+        this.groupManager.gridOptions = {
+          [name]: value,
+        };
       },
     };
     Object.defineProperty(prototype, name, attributes);
