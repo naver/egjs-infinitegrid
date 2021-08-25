@@ -87,7 +87,10 @@ export interface InsertedPlaceholdersResult {
  * @memberof InfiniteGrid
  * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - Last group key. <ko>마지막 그룹의 키.</ko>
- * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ * @property - The key of the next group that should replace placeholders. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ * @property - Whether to request virtual groups corresponding to placeholders. <ko>placeholder에 해당하는 가상의 그룹을 요청하는지 여부</ko>
+ * @property - Set to standby to request data. <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
+ * @property - When the data request is complete, it is set to ready state. <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
  */
 export interface OnRequestAppend {
   currentTarget: InfiniteGrid;
@@ -103,7 +106,10 @@ export interface OnRequestAppend {
  * @memberof InfiniteGrid
  * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - First group key. <ko>첫번째 그룹의 키.</ko>
- * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ * @property - The key of the next group that should replace placeholders. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ * @property - Whether to request virtual groups corresponding to placeholders. <ko>placeholder에 해당하는 가상의 그룹을 요청하는지 여부</ko>
+ * @property - Set to standby to request data. <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
+ * @property - When the data request is complete, it is set to ready state. <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
  */
 export interface OnRequestPrepend {
   currentTarget: InfiniteGrid;
@@ -167,7 +173,7 @@ export interface OnContentError {
  * @property - The scroll position. <ko>스크롤 포지션.</ko>
  * @property - The scroll position relative to container. <ko>컨테이너 기준의 스크롤 포지션.</ko>
  */
-export interface OnScroll {
+export interface OnChangeScroll {
   currentTarget: InfiniteGrid;
   direction: "start" | "end";
   scrollPos: number;
@@ -175,7 +181,7 @@ export interface OnScroll {
 }
 
 export interface InfiniteGridEvents {
-  scroll: OnScroll;
+  changeScroll: OnChangeScroll;
   requestAppend: OnRequestAppend;
   requestPrepend: OnRequestPrepend;
   renderComplete: OnRenderComplete;

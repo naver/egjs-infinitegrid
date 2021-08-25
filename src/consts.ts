@@ -17,7 +17,7 @@ export const INFINITEGRID_PROPERTY_TYPES = {
 
 
 export const INFINITEGRID_EVENTS = {
-  SCROLL: "scroll",
+  CHANGE_SCROLL: "changeScroll",
   REQUEST_APPEND: "requestAppend",
   REQUEST_PREPEND: "requestPrepend",
   RENDER_COMPLETE: "renderComplete",
