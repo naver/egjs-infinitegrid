@@ -59,6 +59,7 @@ describe("test 4 grids", () => {
       ig = new type.GridConstructor(wrapper, {
         container: true,
         gap: 5,
+        useRecycle: false,
         ...type.options,
       });
 
@@ -96,6 +97,7 @@ describe("test 4 grids", () => {
       ig.append(getItems(5));
       ig.append(getItems(5));
       ig.setCursors(0, 1);
+      ig.renderItems();
 
       await waitEvent(ig, "renderComplete");
 
