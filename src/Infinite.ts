@@ -236,6 +236,7 @@ export class Infinite extends Component<InfiniteEvents> {
 
     if (
       direction === "end"
+      && endCursor > -1
       && endCursor < length - 1
       && !lastItem.isVirtual
       && !isFlatOutline(lastItem.startOutline, lastItem.endOutline)
