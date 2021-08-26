@@ -1,0 +1,73 @@
+{
+  "name": "@egjs/svelte-infinitegrid",
+  "version": "0.0.0",
+  "description": "A Svelte component that can arrange items according to the type of grids",
+  "sideEffects": false,
+  "types": "src/index.d.ts",
+  "module": "dist/infinitegrid.esm.js",
+  "main": "dist/infinitegrid.cjs.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naver/egjs-infinitegrid"
+  },
+  "author": {
+    "name": "NAVER Corp."
+  },
+  "namespace": {
+    "eg": "eg"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/naver/egjs-infinitegrid",
+  "keywords": [
+    "svelte",
+    "lazyloading",
+    "ready",
+    "grid",
+    "image",
+    "video",
+    "egjs",
+    "masonry",
+    "justified",
+    "packing",
+    "frame",
+    "layout"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.build.config.js",
+    "storybook": "start-storybook -p 6010 -s public",
+    "build-storybook": "build-storybook -s public"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@egjs/build-helper": "^0.1.2",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@rollup/plugin-typescript": "^8.0.0",
+    "@storybook/addon-actions": "^6.1.11",
+    "@storybook/addon-essentials": "^6.1.11",
+    "@storybook/addon-links": "^6.1.11",
+    "@storybook/svelte": "^6.1.11",
+    "@testing-library/jest-dom": "^5.11.8",
+    "@testing-library/svelte": "^3.0.3",
+    "@tsconfig/svelte": "^1.0.0",
+    "babel-loader": "^8.2.2",
+    "raw-loader": "^4.0.2",
+    "rollup": "^2.3.4",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-terser": "^7.0.0",
+    "sirv-cli": "^1.0.0",
+    "storybook-addon-preview": "^2.1.1",
+    "storybook-dark-mode": "^1.0.7",
+    "svelte": "^3.0.0",
+    "svelte-check": "^1.0.0",
+    "svelte-loader": "^2.13.6",
+    "svelte-preprocess": "^4.0.0",
+    "tslib": "^2.0.0",
+    "typescript": "^4.0.0"
+  },
+  "dependencies": {
+    "@egjs/infinitegrid": "^4.0.0-beta.10"
+  }
+}
