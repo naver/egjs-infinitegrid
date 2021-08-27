@@ -1,0 +1,4 @@
+.storybook
+stories/
+vue3/
+public/
