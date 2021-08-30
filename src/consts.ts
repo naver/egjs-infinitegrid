@@ -15,6 +15,11 @@ export const INFINITEGRID_PROPERTY_TYPES = {
   ...GRID_PROPERTY_TYPES,
 };
 
+export const DIRECTION = {
+  START: "start",
+  END: "end",
+  NONE: "",
+} as const;
 
 export const INFINITEGRID_EVENTS = {
   CHANGE_SCROLL: "changeScroll",
@@ -62,15 +67,15 @@ export const INFINITEGRID_METHODS = [
 
 
 export enum GROUP_TYPE {
-  NORMAL = 1,
-  VIRTUAL = 2,
-  LOADING = 3,
+  NORMAL = 0,
+  VIRTUAL = 1,
+  LOADING = 2,
 }
 
 export enum ITEM_TYPE {
-  NORMAL = 1,
-  VIRTUAL = 2,
-  LOADING = 3,
+  NORMAL = 0,
+  VIRTUAL = 1,
+  LOADING = 2,
 }
 
 export enum STATUS_TYPE {

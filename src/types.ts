@@ -198,18 +198,18 @@ export interface OnPickedRenderComplete {
 }
 
 export interface OnRequestInsert {
-  key?: string | number;
-  nextKey?: string | number;
+  key: string | number | undefined;
+  nextKey: string | number | undefined;
   isVirtual: boolean;
 }
 
 export interface RenderingOptions {
   grid: InfiniteGrid<any> | null | undefined;
   status: InfiniteGridStatus | null | undefined;
-  useFirstRender: boolean | undefined | null;
-  usePlaceholder: boolean | undefined | null;
-  useLoading: boolean | undefined | null;
-  horizontal: boolean | undefined | null;
+  useFirstRender: boolean | null | undefined;
+  usePlaceholder: boolean | null | undefined;
+  useLoading: boolean | null | undefined;
+  horizontal: boolean | null | undefined;
 }
 export type InfiniteGridInsertedItems = string | Array<string | InfiniteGridItemInfo | HTMLElement>;
 

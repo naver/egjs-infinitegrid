@@ -1,5 +1,6 @@
 import Component from "@egjs/component";
 import { diff } from "@egjs/list-differ";
+import { DIRECTION } from "./consts";
 import { findIndex, getNextCursors, isFlatOutline } from "./utils";
 
 export interface OnInfiniteRequestAppend {
@@ -9,8 +10,8 @@ export interface OnInfiniteRequestAppend {
 }
 
 export interface OnInfiniteRequestPrepend {
-  key?: string | number | undefined;
-  nextKey?: string | number | undefined;
+  key?: string | number;
+  nextKey?: string | number;
   isVirtual: boolean;
 }
 
@@ -196,7 +197,7 @@ export class Infinite extends Component<InfiniteEvents> {
         return true;
       }
     } else if (totalVisibleLength) {
-      const lastItem  = totalVisibleItems[totalVisibleLength - 1];
+      const lastItem = totalVisibleItems[totalVisibleLength - 1];
 
       if (isDirectionEnd) {
         this.trigger("requestAppend", {
@@ -235,7 +236,7 @@ export class Infinite extends Component<InfiniteEvents> {
     const length = items.length;
 
     if (
-      direction === "end"
+      direction === DIRECTION.END
       && endCursor > -1
       && endCursor < length - 1
       && !lastItem.isVirtual
@@ -244,7 +245,7 @@ export class Infinite extends Component<InfiniteEvents> {
       return false;
     }
     if (
-      direction === "start"
+      direction === DIRECTION.START
       && startCursor > 0
       && !firstItem.isVirtual
       && !isFlatOutline(firstItem.startOutline, firstItem.endOutline)

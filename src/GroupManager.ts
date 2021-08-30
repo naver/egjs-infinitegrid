@@ -453,7 +453,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     };
   }
 
-  public checkRerenderItems() {
+  public shouldRerenderItems() {
     let isRerender = false;
 
     this.getVisibleGroups().forEach((group) => {

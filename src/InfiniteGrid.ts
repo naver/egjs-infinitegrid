@@ -10,6 +10,7 @@ import {
   GridItem,
 } from "@egjs/grid";
 import {
+  DIRECTION,
   GROUP_TYPE,
   INFINITEGRID_EVENTS, INFINITEGRID_PROPERTY_TYPES,
   ITEM_TYPE, STATUS_TYPE,
@@ -254,6 +255,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @ko 현재 보이는 그룹들을 바꾼다.
    * @param - first index of visible groups. <ko>보이는 그룹의 첫번째 index.</ko>
    * @param - last index of visible groups. <ko>보이는 그룹의 마지막 index.</ko>
+   * @param - Whether the first rendering has already been done. <ko>첫 렌더링이 이미 되어있는지 여부.</ko>
    */
   public setCursors(startCursor: number, endCursor: number, useFirstRender?: boolean): this {
     this.groupManager.setCursors(startCursor, endCursor);
@@ -426,7 +428,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   /**
    * Sets the status of the InfiniteGrid module with the information returned through a call to the getStatus() method.
    * @ko getStatus() 메서드가 저장한 정보로 InfiniteGrid 모듈의 상태를 설정한다.
-   * @param - status object of the InfiniteGrid module
+   * @param - status object of the InfiniteGrid module. <ko>InfiniteGrid 모듈의 status 객체.</ko>
+   * @param - Whether the first rendering has already been done. <ko>첫 렌더링이 이미 되어있는지 여부.</ko>
    */
   public setStatus(status: InfiniteGridStatus, useFirstRender?: boolean): this {
     this.itemRenderer.setStatus(status.itemRenderer);
@@ -447,7 +450,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     };
 
     if (useFirstRender) {
-      this._update(state);
+      this._render(state);
     } else {
       this._update(state);
     }
@@ -552,9 +555,9 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   /**
    * Set to wait to request data.
    * @ko 데이터를 요청하기 위해 대기 상태로 설정한다.
-   * @param direction - direction in which data will be added
+   * @param direction - direction in which data will be added. <ko>데이터를 추가하기 위한 방향.</ko>
    */
-  public wait(direction: "start" | "end" = "end") {
+  public wait(direction: "start" | "end" = DIRECTION.END) {
     this._waitType = direction;
     this._checkStartLoading(direction);
   }
@@ -677,8 +680,6 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       const gridItem = item.orgItem;
 
       gridItem.element = item.element as HTMLElement;
-
-      return gridItem;
     });
 
     const horizontal = this.options.horizontal;
@@ -738,7 +739,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
      * @event InfiniteGrid#requestAppend
      * @param {InfiniteGrid.OnRequestAppend} e - The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
      */
-    this._onRequestInsert("end", INFINITEGRID_EVENTS.REQUEST_APPEND, e);
+    this._onRequestInsert(DIRECTION.END, INFINITEGRID_EVENTS.REQUEST_APPEND, e);
   }
 
   private _onRequestPrepend = (e: OnInfiniteRequestPrepend): void => {
@@ -748,7 +749,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
      * @event InfiniteGrid#requestPrepend
      * @param {InfiniteGrid.OnRequestPrepend} e - The object of data to be sent to an event <ko>이벤트에 전달되는 데이터 객체</ko>
      */
-    this._onRequestInsert("start", INFINITEGRID_EVENTS.REQUEST_PREPEND, e);
+    this._onRequestInsert(DIRECTION.START, INFINITEGRID_EVENTS.REQUEST_PREPEND, e);
   }
 
   private _onRequestInsert(
@@ -796,7 +797,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const infinite = this.infinite;
     const prevRenderedGroups = infinite.getRenderedVisibleItems();
     const length = prevRenderedGroups.length;
-    const isDirectionEnd = direction === "end";
+    const isDirectionEnd = direction === DIRECTION.END;
 
     this._syncInfinite();
 
@@ -827,7 +828,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       groups: this.getVisibleGroups(true),
     }));
 
-    if (this.groupManager.checkRerenderItems()) {
+    if (this.groupManager.shouldRerenderItems()) {
       this._update();
     } else {
       this._checkEndLoading();
