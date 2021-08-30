@@ -1,8 +1,14 @@
-import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
-import { IGNORE_PROPERITES_MAP, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
+import Grid, { GRID_PROPERTY_TYPES, withMethods } from "@egjs/grid";
+import { diff } from "@egjs/list-differ";
+import { GROUP_TYPE, IGNORE_PROPERITES_MAP, INFINITEGRID_METHODS, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
+import { GroupManagerStatus, InfiniteGridGroupStatus } from "./GroupManager";
 import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
-import { CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems, InfiniteGridItemInfo } from "./types";
+import {
+  CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems,
+  InfiniteGridItemInfo,
+  RenderingOptions,
+} from "./types";
 
 export function isWindow(el: Window | Element): el is Window {
   return el === window;
@@ -57,13 +63,13 @@ export function splitGridOptions(options: Record<string, any>) {
   };
 }
 
-export function categorize(items: InfiniteGridItem[]) {
-  const groups: CategorizedGroup[] = [];
-  const groupKeys: Record<string | number, CategorizedGroup> = {};
+export function categorize<Item extends InfiniteGridItemInfo = InfiniteGridItem>(items: Item[]) {
+  const groups: Array<CategorizedGroup<Item>> = [];
+  const groupKeys: Record<string | number, CategorizedGroup<Item>> = {};
   const registeredGroupKeys: Record<string | number, boolean> = {};
 
   items.filter((item) => item.groupKey != null).forEach(({ groupKey }) => {
-    registeredGroupKeys[groupKey] = true;
+    registeredGroupKeys[groupKey!] = true;
   });
 
   let generatedGroupKey: number | string;
@@ -98,6 +104,173 @@ export function categorize(items: InfiniteGridItem[]) {
   return groups;
 }
 
+export function getNextCursors(
+  prevKeys: Array<string | number>,
+  nextKeys: Array<string | number>,
+  prevStartCursor: number,
+  prevEndCursor: number,
+) {
+  const result = diff(prevKeys, nextKeys, (key) => key);
+  let nextStartCursor = -1;
+  let nextEndCursor = -1;
+
+  // sync cursors
+  result.maintained.forEach(([prevIndex, nextIndex]) => {
+    if (prevStartCursor <= prevIndex && prevIndex <= prevEndCursor) {
+      if (nextStartCursor === -1) {
+        nextStartCursor = nextIndex;
+        nextEndCursor = nextIndex;
+      } else {
+        nextStartCursor = Math.min(nextStartCursor, nextIndex);
+        nextEndCursor = Math.max(nextEndCursor, nextIndex);
+      }
+    }
+  });
+  return {
+    startCursor: nextStartCursor,
+    endCursor: nextEndCursor,
+  };
+}
+export function splitVirtualGroups<Group extends { type: GROUP_TYPE, groupKey: string | number }>(
+  groups: Group[],
+  direction: "start" | "end",
+  nextGroups: CategorizedGroup<InfiniteGridItemStatus>[],
+) {
+  let virtualGroups: Group[] = [];
+
+  if (direction === "start") {
+    const index = findIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
+
+    if (index === -1) {
+      return [];
+    }
+    virtualGroups = groups.slice(0, index);
+  } else {
+    const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
+
+    if (index === -1) {
+      return [];
+    }
+    virtualGroups = groups.slice(index + 1);
+  }
+
+  const nextVirtualGroups = diff<{ groupKey: string | number }>(
+    virtualGroups, nextGroups, ({ groupKey }) => groupKey,
+  ).removed.map((index) => {
+    return virtualGroups[index];
+  }).reverse();
+
+  return nextVirtualGroups;
+}
+
+export function getFirstRenderingItems(
+  nextItems: InfiniteGridItemStatus[],
+  horizontal: boolean,
+) {
+  const groups = categorize(nextItems);
+
+  if (!groups[0]) {
+    return [];
+  }
+  return groups[0].items.map((item) => {
+    return new InfiniteGridItem(horizontal, {
+      ...item,
+    });
+  });
+}
+export function getRenderingItemsByStatus(
+  groupManagerStatus: GroupManagerStatus,
+  nextItems: InfiniteGridItemStatus[],
+  usePlaceholder: boolean,
+  horizontal: boolean,
+) {
+  const prevGroups = groupManagerStatus.groups;
+  const groups = categorize(nextItems);
+
+  const startVirtualGroups = splitVirtualGroups(prevGroups, "start", groups);
+  const endVirtualGroups = splitVirtualGroups(prevGroups, "end", groups);
+  const nextGroups = [
+    ...startVirtualGroups,
+    ...groups,
+    ...endVirtualGroups,
+  ] as Array<InfiniteGridGroupStatus | CategorizedGroup<InfiniteGridItemStatus>>;
+  const {
+    startCursor,
+    endCursor,
+  } = getNextCursors(
+    prevGroups.map((group) => group.groupKey),
+    nextGroups.map((group) => group.groupKey),
+    groupManagerStatus.cursors[0],
+    groupManagerStatus.cursors[1],
+  );
+
+  let nextVisibleItems = flat(nextGroups.slice(startCursor, endCursor + 1).map((group) => {
+    return group.items.map((item) => {
+      return new InfiniteGridItem(horizontal, { ...item });
+    });
+  }));
+
+  if (!usePlaceholder) {
+    nextVisibleItems = nextVisibleItems.filter((item) => {
+      return item.type !== ITEM_TYPE.VIRTUAL;
+    });
+  }
+
+  return nextVisibleItems;
+}
+
+export function mountRenderingItems(items: InfiniteGridItemInfo[], options: RenderingOptions) {
+  const {
+    grid,
+    usePlaceholder,
+    useLoading,
+    useFirstRender,
+    status,
+  } = options;
+  if (!grid) {
+    return;
+  }
+  if (usePlaceholder) {
+    grid.setPlaceholder({});
+  }
+  if (useLoading) {
+    grid.setLoading({});
+  }
+  if (status) {
+    grid.setStatus(status, true);
+  }
+
+  grid.syncItems(items);
+
+  if (useFirstRender && !status && grid.getGroups().length) {
+    grid.setCursors(0, 0, true);
+  }
+}
+export function getRenderingItems(items: InfiniteGridItemInfo[], options: RenderingOptions) {
+  const {
+    status,
+    usePlaceholder,
+    useLoading,
+    horizontal,
+    useFirstRender,
+    grid,
+  } = options;
+  let visibleItems: InfiniteGridItem[] = [];
+
+  if (grid) {
+    grid.setPlaceholder(usePlaceholder ? {} : null);
+    grid.setLoading(useLoading ? {} : null);
+    grid.syncItems(items);
+
+    visibleItems = grid.getRenderingItems();
+  } else if (status) {
+    visibleItems = getRenderingItemsByStatus(status.groupManager, items, !!usePlaceholder, !!horizontal);
+  } else if (useFirstRender) {
+    visibleItems = getFirstRenderingItems(items, !!horizontal);
+  }
+
+  return visibleItems;
+}
 
 /* Class Decorator */
 export function InfiniteGridGetterSetter(component: {
@@ -126,9 +299,9 @@ export function InfiniteGridGetterSetter(component: {
         if (prevValue === value) {
           return;
         }
-        this.groupManager.setGridOptions({
+        this.groupManager.gridOptions = {
           [name]: value,
-        });
+        };
       },
     };
     Object.defineProperty(prototype, name, attributes);
@@ -225,7 +398,7 @@ export function findLastIndex<T>(arr: T[], callback: (value: T, index: number) =
 }
 
 export function getItemInfo(info: InfiniteGridItemInfo) {
-  const nextInfo: InfiniteGridItemInfo  = {};
+  const nextInfo: InfiniteGridItemInfo = {};
 
   for (const name in info) {
     if (name in ITEM_INFO_PROPERTIES) {
@@ -251,6 +424,10 @@ export function setPlaceholder(item: InfiniteGridItem, info: InfiniteGridItemSta
   }
 }
 
+export function isFlatOutline(start: number[], end: number[]) {
+  return start.length === end.length && start.every((pos, i) => end[i] === pos);
+}
+
 export function range(length: number): number[] {
   const arr: number[] = [];
   for (let i = 0; i < length; ++i) {
@@ -274,3 +451,21 @@ export function filterVirtuals<T extends InfiniteGridItem | InfiniteGridGroup>(
     return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
   }
 }
+
+/**
+ * Decorator that makes the method of InfiniteGrid available in the framework.
+ * @ko 프레임워크에서 InfiniteGrid의 메소드를 사용할 수 있게 하는 데코레이터.
+ * @memberof InfiniteGrid
+ * @private
+ * @example
+ * ```js
+ * import { withInfiniteGridMethods } from "@egjs/infinitegrid";
+ *
+ * class Grid extends React.Component<Partial<InfiniteGridProps & InfiniteGridOptions>> {
+ *   &#64;withInfiniteGridMethods
+ *   private grid: NativeGrid;
+ * }
+ * ```
+ */
+export const withInfiniteGridMethods = withMethods(INFINITEGRID_METHODS);
+

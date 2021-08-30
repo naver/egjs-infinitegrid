@@ -1,6 +1,6 @@
-import Component from "@egjs/component";
+import Component, { ComponentEvent } from "@egjs/component";
 import { CONTAINER_CLASS_NAME, IS_IOS } from "./consts";
-import { OnScroll } from "./types";
+import { OnChangeScroll } from "./types";
 import { isWindow, toArray } from "./utils";
 
 export interface ScrollManagerOptions {
@@ -9,9 +9,15 @@ export interface ScrollManagerOptions {
   horizontal?: boolean;
 }
 
+export interface ScrollManagerStatus {
+  contentSize: number;
+  scrollOffset: number;
+  prevScrollPos: number;
+}
+
 
 export interface ScrollManagerEvents {
-  scroll: OnScroll;
+  scroll: OnChangeScroll;
 }
 
 export class ScrollManager extends Component<ScrollManagerEvents> {
@@ -77,6 +83,20 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       return eventTarget[prop];
     }
   }
+  public setStatus(status: ScrollManagerStatus) {
+    this.contentSize = status.contentSize;
+    this.scrollOffset = status.scrollOffset;
+    this.prevScrollPos = status.prevScrollPos;
+
+    this.scrollTo(this.prevScrollPos);
+  }
+  public getStatus(): ScrollManagerStatus {
+    return {
+      contentSize: this.contentSize,
+      scrollOffset: this.scrollOffset,
+      prevScrollPos: this.prevScrollPos!,
+    };
+  }
   public scrollTo(pos: number) {
     const eventTarget = this.eventTarget;
     const horizontal = this.options.horizontal;
@@ -110,7 +130,9 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
   public resize() {
     const scrollContainer = this.scrollContainer;
     const horizontal = this.options.horizontal;
-    const scrollContainerRect = scrollContainer.getBoundingClientRect();
+    const scrollContainerRect = scrollContainer === document.body
+      ? { top: 0, left: 0 }
+      : scrollContainer.getBoundingClientRect();
     const containerRect = this.container.getBoundingClientRect();
 
     this.scrollOffset = (this.prevScrollPos! || 0) + (horizontal
@@ -197,10 +219,10 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       return;
     }
     this._isScrollIssue = false;
-    this.trigger("scroll", {
+    this.trigger(new ComponentEvent("scroll", {
       direction: prevScrollPos < nextScrollPos ? "end" : "start",
       scrollPos: nextScrollPos,
       relativeScrollPos: this.getRelativeScrollPos(),
-    });
+    }));
   }
 }

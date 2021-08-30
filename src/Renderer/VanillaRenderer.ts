@@ -1,7 +1,7 @@
 import { Renderer, RendererItem } from "./Renderer";
 
-export class VanillaRenderer<T extends RendererItem = RendererItem> extends Renderer<T> {
-  public render(nextItems: T[], state?: Record<string, any>) {
+export class VanillaRenderer<Item extends RendererItem = RendererItem> extends Renderer<Item> {
+  public render(nextItems: Item[], state?: Record<string, any>) {
     const container = this.container!;
     const result = super.render(nextItems, state);
     const {

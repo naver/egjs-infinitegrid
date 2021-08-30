@@ -140,9 +140,9 @@ describe("test GroupManager", () => {
 
 
       // When
-      manager!.setGridOptions({
+      manager!.gridOptions = {
         gap: 5,
-      });
+      };
       manager!.renderItems();
 
       await waitEvent(manager!, "renderComplete");

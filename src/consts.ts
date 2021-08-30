@@ -1,3 +1,4 @@
+import { GRID_PROPERTY_TYPES } from "@egjs/grid";
 
 const ua = typeof window !== "undefined" ? window.navigator.userAgent : "";
 
@@ -10,14 +11,18 @@ export const IGNORE_PROPERITES_MAP = {
 } as const;
 
 
-export const DEFAULT_INFINITEGRID_OPTIONS = {
-  gridConstructor: null,
-  container: false,
+export const INFINITEGRID_PROPERTY_TYPES = {
+  ...GRID_PROPERTY_TYPES,
 };
 
+export const DIRECTION = {
+  START: "start",
+  END: "end",
+  NONE: "",
+} as const;
 
-export const EVENTS = {
-  SCROLL: "scroll",
+export const INFINITEGRID_EVENTS = {
+  CHANGE_SCROLL: "changeScroll",
   REQUEST_APPEND: "requestAppend",
   REQUEST_PREPEND: "requestPrepend",
   RENDER_COMPLETE: "renderComplete",
@@ -39,14 +44,38 @@ export const ITEM_INFO_PROPERTIES = {
   data: true,
 };
 
+
+export const INFINITEGRID_METHODS = [
+  "updateItems",
+  "getItems",
+  "getVisibleItems",
+  "getGroups",
+  "getVisibleGroups",
+  "renderItems",
+  "getContainerElement",
+  "getScrollContainerElement",
+  "getWrapperElement",
+  "setStatus",
+  "getStatus",
+  "removePlaceholders",
+  "prependPlaceholders",
+  "appendPlaceholders",
+  "getStartCursor",
+  "getEndCursor",
+  "setCursors",
+] as const;
+
+
 export enum GROUP_TYPE {
   NORMAL = 0,
   VIRTUAL = 1,
+  LOADING = 2,
 }
 
 export enum ITEM_TYPE {
   NORMAL = 0,
   VIRTUAL = 1,
+  LOADING = 2,
 }
 
 export enum STATUS_TYPE {
@@ -59,5 +88,6 @@ export enum STATUS_TYPE {
   // remove invisible groups
   REMOVE_INVISIBLE_GROUPS = 3,
 }
+
 
 export const INVISIBLE_POS = -9999;

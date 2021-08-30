@@ -58,7 +58,7 @@ describe("test Infinite", () => {
 
     // When
     // 0 => 1
-    infinite.sync([
+    infinite.syncItems([
       { key: 2, startOutline: [], endOutline: [] },
       { key: 1, startOutline: [], endOutline: [] },
       { key: 3, startOutline: [], endOutline: [] },
@@ -70,7 +70,7 @@ describe("test Infinite", () => {
     // When
     infinite.setCursors(0, 1);
     // [0, 1] => [0, 2]
-    infinite.sync([
+    infinite.syncItems([
       { key: 1, startOutline: [], endOutline: [] },
       { key: 3, startOutline: [], endOutline: [] },
       { key: 2, startOutline: [], endOutline: [] },
@@ -95,21 +95,21 @@ describe("test Infinite", () => {
 
     // When
     // (0, 2) 1 2 3 => (0, 3) 1 2 4 3
-    const isChange1 = infinite.sync([
+    const isChange1 = infinite.syncItems([
       { key: 1, startOutline: [], endOutline: [] },
       { key: 2, startOutline: [], endOutline: [] },
       { key: 4, startOutline: [], endOutline: [] },
       { key: 3, startOutline: [], endOutline: [] },
     ]);
     // (0, 3) 1 2 4 3 => (0, 3) 1 4 2 3
-    const isChange2 = infinite.sync([
+    const isChange2 = infinite.syncItems([
       { key: 1, startOutline: [], endOutline: [] },
       { key: 4, startOutline: [], endOutline: [] },
       { key: 2, startOutline: [], endOutline: [] },
       { key: 3, startOutline: [], endOutline: [] },
     ]);
     // (0, 3)1 4 2 3 => (0, 3)1 4 2 3 5
-    const isChange3 = infinite.sync([
+    const isChange3 = infinite.syncItems([
       { key: 1, startOutline: [], endOutline: [] },
       { key: 4, startOutline: [], endOutline: [] },
       { key: 2, startOutline: [], endOutline: [] },
@@ -117,7 +117,7 @@ describe("test Infinite", () => {
       { key: 5, startOutline: [], endOutline: [] },
     ]);
     // (0, 3) 1 4 2 3 5 => (1, 4) 5 1 4 2 3
-    const isChange4 = infinite.sync([
+    const isChange4 = infinite.syncItems([
       { key: 5, startOutline: [], endOutline: [] },
       { key: 1, startOutline: [], endOutline: [] },
       { key: 4, startOutline: [], endOutline: [] },
@@ -255,9 +255,7 @@ describe("test Infinite", () => {
     const ev1 = requestAppendEvent.args[0][0];
 
     expect(requestAppendEvent.callCount).to.be.equals(1);
-    expect(ev1.startCursor).to.be.equals(0);
-    expect(ev1.endCursor).to.be.equals(1);
-    expect(ev1.groupKey).to.be.equals(2);
+    expect(ev1.key).to.be.equals(2);
   });
   it("should checks whether requestPrepend event is called when the start of the item is reached", () => {
     // Given
@@ -290,9 +288,7 @@ describe("test Infinite", () => {
     const ev1 = requestPrependEvent.args[0][0];
 
     expect(requestPrependEvent.callCount).to.be.equals(1);
-    expect(ev1.startCursor).to.be.equals(0);
-    expect(ev1.endCursor).to.be.equals(1);
-    expect(ev1.groupKey).to.be.equals(1);
+    expect(ev1.key).to.be.equals(1);
   });
   it(`should check if requestAppend event is called if defaultDirection is end when both start and end are reached`, () => {
     // Given
@@ -327,9 +323,7 @@ describe("test Infinite", () => {
 
     expect(requestAppendEvent.callCount).to.be.equals(1);
     expect(requestPrependEvent.callCount).to.be.equals(0);
-    expect(ev1.startCursor).to.be.equals(0);
-    expect(ev1.endCursor).to.be.equals(1);
-    expect(ev1.groupKey).to.be.equals(2);
+    expect(ev1.key).to.be.equals(2);
   });
   it(`should check if requestPrepend event is called if defaultDirection is start when both start and end are reached`, () => {
     // Given
@@ -364,8 +358,85 @@ describe("test Infinite", () => {
 
     expect(requestAppendEvent.callCount).to.be.equals(0);
     expect(requestPrependEvent.callCount).to.be.equals(1);
-    expect(ev1.startCursor).to.be.equals(0);
-    expect(ev1.endCursor).to.be.equals(1);
-    expect(ev1.groupKey).to.be.equals(1);
+    expect(ev1.key).to.be.equals(1);
+  });
+  it(`should check if a virtual group is requested when it exists`, () => {
+    // Given
+    const requestAppendEvent = sinon.spy();
+
+    infinite = new Infinite({
+      defaultDirection: "end",
+    });
+    infinite.on("requestAppend", requestAppendEvent);
+    infinite.setItems([
+      {
+        key: 1,
+        startOutline: [0],
+        endOutline: [200],
+      },
+      {
+        key: 2,
+        startOutline: [200],
+        endOutline: [400],
+        isVirtual: true,
+      },
+    ]);
+    infinite.setCursors(0, 1);
+    infinite.setSize(400);
+
+    // When
+    infinite.scroll(200);
+
+    // Then
+    const ev1 = requestAppendEvent.args[0][0];
+
+    expect(requestAppendEvent.callCount).to.be.equals(1);
+    expect(ev1.nextKey).to.be.equals(2);
+    expect(ev1.isVirtual).to.be.equals(true);
+  });
+  it(`should check whether the minimum and maximum cursors are maintained when useRecycle is false.`, () => {
+    // Given
+    const changeEventSpy = sinon.spy();
+
+    infinite = new Infinite({
+      defaultDirection: "end",
+      useRecycle: false,
+    });
+    infinite.on("change", changeEventSpy);
+    infinite.setItems([
+      {
+        key: 1,
+        startOutline: [0],
+        endOutline: [200],
+      },
+      {
+        key: 2,
+        startOutline: [200],
+        endOutline: [400],
+      },
+      {
+        key: 3,
+        startOutline: [400],
+        endOutline: [600],
+      },
+      {
+        key: 4,
+        startOutline: [600],
+        endOutline: [800],
+      },
+    ]);
+    infinite.setCursors(0, 1);
+    infinite.setSize(400);
+
+    // When
+    infinite.scroll(400);
+
+    // Then
+    const ev = changeEventSpy.args[0][0];
+
+    expect(ev.prevStartCursor).to.be.equals(0);
+    expect(ev.prevEndCursor).to.be.equals(1);
+    expect(ev.nextStartCursor).to.be.equals(0);
+    expect(ev.nextEndCursor).to.be.equals(3);
   });
 });

@@ -32,13 +32,11 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
         rect.width = cssRect.width;
       } else if (orgRect.width) {
         rect.width = orgRect.width;
-        cssRect.width = orgRect.width;
       }
       if (cssRect.height) {
         rect.height = cssRect.height;
       } else if (orgRect.height) {
         rect.height = orgRect.height;
-        cssRect.height = orgRect.height;
       }
     }
   }
@@ -53,13 +51,16 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
       attributes: this.attributes,
     };
   }
-  public getStatus(): Required<InfiniteGridItemStatus> {
-    return {
+  public getMinimizedStatus(): Partial<InfiniteGridItemStatus> {
+    const status: Partial<InfiniteGridItemStatus> = {
       ...super.getStatus(),
       type: ITEM_TYPE.NORMAL,
       groupKey: this.groupKey,
-      html: this.html,
     };
+    if (this.html) {
+      status.html = this.html;
+    }
+    return status;
   }
 }
 

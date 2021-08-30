@@ -4,11 +4,14 @@ import Grid, {
   GridItem,
   ContainerManagerStatus,
   ItemRendererStatus,
+  Methods,
 } from "@egjs/grid";
-import { GROUP_TYPE, ITEM_TYPE } from "./consts";
+import { GROUP_TYPE, INFINITEGRID_METHODS, ITEM_TYPE } from "./consts";
 import { GroupManagerStatus } from "./GroupManager";
+import InfiniteGrid from "./InfiniteGrid";
 import { InfiniteGridItem } from "./InfiniteGridItem";
 import { Renderer } from "./Renderer/Renderer";
+import { ScrollManagerStatus } from "./ScrollManager";
 
 /**
  * @typedef
@@ -17,6 +20,7 @@ export interface InfiniteGridStatus {
   itemRenderer: ItemRendererStatus;
   containerManager: ContainerManagerStatus;
   groupManager: GroupManagerStatus;
+  scrollManager: ScrollManagerStatus;
 }
 
 export interface InfiniteGridGroup {
@@ -24,11 +28,12 @@ export interface InfiniteGridGroup {
   groupKey: string | number;
   grid: Grid;
   items: InfiniteGridItem[];
+  renderItems: InfiniteGridItem[];
 }
 
-export interface CategorizedGroup {
+export interface CategorizedGroup<Item extends InfiniteGridItemInfo = InfiniteGridItem> {
   groupKey: number | string;
-  items: InfiniteGridItem[];
+  items: Item[];
 }
 /**
  * @typedef
@@ -46,38 +51,21 @@ export interface InfiniteGridItemInfo {
 
 /**
  * @typedef
+ * @extends Grid.GridOptions
  * @memberof InfiniteGrid
  * @property - Grid class to apply Infinite function. <ko>Infinite 기능을 적용할 Grid 클래스.</ko>
  * @property - The target to which the container is applied. If false, create itself, if true, create container. A string or HTMLElement specifies the target directly. (default: false) <ko>container를 적용할 대상. false면 자기 자신, true면 container를 생성. string 또는 HTMLElement는 직접 대상을 지정. (default: false)</ko>
+ * @property - If you create a container, you can set the container's tag. (default: "div") <ko>container를 생성한다면 container의 tag를 정할 수 있다. (default: "div")</ko>
  * @property - The size of the scrollable area for adding the next group of items. (default: 100) <ko>다음 아이템 그룹을 추가하기 위한 스크롤 영역의 크기. (default: 100)</ko>
+ * @property - Whether to show only the DOM of the visible area. (default: true) <ko>보이는 영역의 DOM만 보여줄지 여부. (default: true)</ko>
  */
 export interface InfiniteGridOptions extends GridOptions {
   gridConstructor?: GridFunction;
   renderer?: Renderer | null;
   container?: boolean | string | HTMLElement;
+  containerTag?: string;
   threshold?: number;
-}
-
-/**
- * @typedef
- * @memberof InfiniteGrid
- * @property - Last group key. <ko>마지막 그룹의 키.</ko>
- * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
- */
-export interface OnRequestAppend {
-  groupKey: string | number | undefined;
-  nextGroupKey?: string | number | undefined;
-}
-
-/**
- * @typedef
- * @memberof InfiniteGrid
- * @property - First group key. <ko>첫번째 그룹의 키.</ko>
- * @property - The key of the next group that should replace the placeholder. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
- */
-export interface OnRequestPrepend {
-  groupKey: string | number | undefined;
-  nextGroupKey?: string | number | undefined;
+  useRecycle?: boolean;
 }
 
 /**
@@ -97,6 +85,46 @@ export interface InsertedPlaceholdersResult {
 /**
  * @typedef
  * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+ * @property - Last group key. <ko>마지막 그룹의 키.</ko>
+ * @property - The key of the next group that should replace placeholders. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ * @property - Whether to request virtual groups corresponding to placeholders. <ko>placeholder에 해당하는 가상의 그룹을 요청하는지 여부</ko>
+ * @property - Set to standby to request data. <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
+ * @property - When the data request is complete, it is set to ready state. <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
+ */
+export interface OnRequestAppend {
+  currentTarget: InfiniteGrid;
+  groupKey: string | number | undefined;
+  nextGroupKey?: string | number | undefined;
+  isVirtual: boolean;
+  wait(): void;
+  ready(): void;
+}
+
+/**
+ * @typedef
+ * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+ * @property - First group key. <ko>첫번째 그룹의 키.</ko>
+ * @property - The key of the next group that should replace placeholders. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ * @property - Whether to request virtual groups corresponding to placeholders. <ko>placeholder에 해당하는 가상의 그룹을 요청하는지 여부</ko>
+ * @property - Set to standby to request data. <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
+ * @property - When the data request is complete, it is set to ready state. <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
+ */
+export interface OnRequestPrepend {
+  currentTarget: InfiniteGrid;
+  groupKey: string | number | undefined;
+  nextGroupKey?: string | number | undefined;
+  isVirtual: boolean;
+  wait(): void;
+  ready(): void;
+}
+
+
+/**
+ * @typedef
+ * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - The items rendered for the first time. <ko>처음 렌더링한 아이템들.</ko>
  * @property - The items updated in size. <ko>사이즈 업데이트한 아이템들.</ko>
  * @property - The direction InfiniteGrid was rendered. <ko>InfiniteGrid가 렌더링된 방향.</ko>
@@ -107,6 +135,7 @@ export interface InsertedPlaceholdersResult {
  * @property - Groups that have been rendered. <ko>렌더링이 완료된 그룹들.</ko>
  */
 export interface OnRenderComplete {
+  currentTarget: InfiniteGrid;
   mounted: InfiniteGridItem[];
   updated: InfiniteGridItem[];
   direction: "start" | "end";
@@ -120,6 +149,7 @@ export interface OnRenderComplete {
 /**
  * @typedef
  * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - The item's element.<ko>아이템의 엘리먼트.</ko>
  * @property - The content element with error.<ko>에러난 발생한 콘텐츠 엘리먼트.</ko>
  * @property - The item with error content.<ko>에러난 콘텐츠를 가지고 있는 아이템</ko>
@@ -127,6 +157,7 @@ export interface OnRenderComplete {
  * @property - If you want to remove the item corresponding to the error, call remove(). <ko>에러에 해당하는 아이템을 제거하고 싶으면 remove()를 호출해라.</ko>
  */
 export interface OnContentError {
+  currentTarget: InfiniteGrid;
   element: HTMLElement;
   target: HTMLElement;
   item: InfiniteGridItem;
@@ -137,18 +168,20 @@ export interface OnContentError {
 /**
  * @typedef
  * @memberof InfiniteGrid
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - The scroll direction. <ko>스크롤 방향.</ko>
  * @property - The scroll position. <ko>스크롤 포지션.</ko>
  * @property - The scroll position relative to container. <ko>컨테이너 기준의 스크롤 포지션.</ko>
  */
-export interface OnScroll {
+export interface OnChangeScroll {
+  currentTarget: InfiniteGrid;
   direction: "start" | "end";
   scrollPos: number;
   relativeScrollPos: number;
 }
 
 export interface InfiniteGridEvents {
-  scroll: OnScroll;
+  changeScroll: OnChangeScroll;
   requestAppend: OnRequestAppend;
   requestPrepend: OnRequestPrepend;
   renderComplete: OnRenderComplete;
@@ -165,7 +198,22 @@ export interface OnPickedRenderComplete {
 }
 
 export interface OnRequestInsert {
-  groupKey?: string | number;
-  nextGroupKey?: string | number;
+  key: string | number | undefined;
+  nextKey: string | number | undefined;
+  isVirtual: boolean;
+}
+
+export interface RenderingOptions {
+  grid: InfiniteGrid<any> | null | undefined;
+  status: InfiniteGridStatus | null | undefined;
+  useFirstRender: boolean | null | undefined;
+  usePlaceholder: boolean | null | undefined;
+  useLoading: boolean | null | undefined;
+  horizontal: boolean | null | undefined;
 }
 export type InfiniteGridInsertedItems = string | Array<string | InfiniteGridItemInfo | HTMLElement>;
+
+export type InfiniteGridMethods<Component> = Methods<Component, InfiniteGrid, typeof INFINITEGRID_METHODS>;
+export type InfiniteGridFunction
+  = (new (container: HTMLElement, options: Partial<GridOptions>) => InfiniteGrid)
+  & { propertyTypes: any, defaultOptions: any };

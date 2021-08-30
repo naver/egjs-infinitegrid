@@ -1,4 +1,4 @@
-import { cleanup, sandbox, waitEvent } from "./utils/utils";
+import { cleanup, sandbox, waitEvent, waitFor } from "./utils/utils";
 import InfiniteGrid from "../../src/InfiniteGrid";
 import { SampleGrid } from "./samples/SampleGrid";
 import { toArray } from "../../src/utils";
@@ -8,9 +8,10 @@ import {
   OnRequestAppend,
   OnRequestPrepend,
   OnContentError,
-  OnScroll,
+  OnChangeScroll,
   STATUS_TYPE,
 } from "../../src";
+import * as sinon from "sinon";
 
 describe("test InfiniteGrid", () => {
   let ig: InfiniteGrid | null;
@@ -193,36 +194,6 @@ describe("test InfiniteGrid", () => {
         expect(child.style.top).to.be.equals(`${i * 23}px`);
       });
     });
-    it("should check whether it is rendered after changing options", async () => {
-      // Given
-      const igContainer = ig!.getContainerElement();
-
-      ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
-        return {
-          groupKey: Math.floor(child / 3),
-          key: child,
-          html: `<div>${child}</div>`,
-        };
-      }));
-
-      ig!.setCursors(0, 1);
-
-      await waitEvent(ig!, "renderComplete");
-
-      // When
-      // 0 => 5
-      ig!.gap = 5;
-      ig!.renderItems();
-
-      await waitEvent(ig!, "renderComplete");
-
-      // Then
-      const children = toArray(igContainer.children);
-
-      children.forEach((child, i) => {
-        expect(child.style.top).to.be.equals(`${i * 23}px`);
-      });
-    });
     it("should check if render is complete after append", async () => {
       // Given
       const igContainer = ig!.getContainerElement();
@@ -311,15 +282,15 @@ describe("test InfiniteGrid", () => {
           return {
             groupKey: 0,
             key: `key${child}`,
-            html: `<div style="height: 150px">${child === 2 ? `<img src="ERR" />` : ""}</div>`,
+            html: `<div style="height: 150px; width: 150px;">${child === 2 ? `<img src="ERR" />` : ""}</div>`,
           };
         }));
-        ig!.renderItems();
+        ig!.on("contentError", (e) => {
+          e.remove();
+        });
 
         // When
-        const e = await waitEvent<OnContentError>(ig!, "contentError");
-
-        e.remove();
+        ig!.renderItems();
 
         await waitEvent<OnRenderComplete>(ig!, "renderComplete");
 
@@ -359,12 +330,12 @@ describe("test InfiniteGrid", () => {
         // start to end
         igScrollContainer.scrollTop = 200;
 
-        const e1 = await waitEvent<OnScroll>(ig!, "scroll");
+        const e1 = await waitEvent<OnChangeScroll>(ig!, "changeScroll");
 
         igScrollContainer.scrollTop = 0;
 
         // end to start
-        const e2 = await waitEvent<OnScroll>(ig!, "scroll");
+        const e2 = await waitEvent<OnChangeScroll>(ig!, "changeScroll");
 
         // Then
         expect(e1.direction).to.be.equals("end");
@@ -436,6 +407,73 @@ describe("test InfiniteGrid", () => {
 
         // Then
         expect(e.groupKey).to.be.equals(0);
+      });
+    });
+    describe("test wait, ready for data", () => {
+      it("should check if the requestAppend event is not called if it is in the wait state", async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 2);
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        const requestAppendSpy1 = sinon.spy();
+        const requestAppendSpy2 = sinon.spy();
+
+        ig!.wait("end");
+        ig!.on("requestAppend", requestAppendSpy1);
+
+        // not call append
+        ig!.getScrollContainerElement().scrollTop = 300;
+        await waitFor(100);
+        ig!.off("requestAppend", requestAppendSpy1);
+
+        ig!.ready();
+        ig!.on("requestAppend", requestAppendSpy2);
+
+        // call append
+        ig!.getScrollContainerElement().scrollTop = 301;
+        await waitFor(100);
+
+        // Then
+        expect(requestAppendSpy1.callCount).to.be.equals(0);
+        expect(requestAppendSpy2.callCount).to.be.equals(1);
+      });
+      it("should check if the loading bar appears in the wait state", async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 2);
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        ig!.setLoading({
+          html: `<div class="loading" style="width: 100%; height: 80px"></div>`,
+        });
+        ig!.wait("end");
+
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        const children = ig!.getContainerElement().children;
+        const lastElement = children[children.length - 1];
+
+        expect(lastElement.className).to.be.equals("loading");
       });
     });
     describe("test remove methods", () => {
@@ -875,6 +913,7 @@ describe("test InfiniteGrid", () => {
         }));
 
         ig!.setCursors(0, 4);
+
         // all cursors
         await waitEvent(ig!, "renderComplete");
 
@@ -884,7 +923,7 @@ describe("test InfiniteGrid", () => {
 
         // set place holder
         ig!.setPlaceholder({
-          html: `<div class="placeholder"></div>`,
+          html: `<div class="placeholder" style="height: 100px; width: 100px;"></div>`,
         });
         ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS));
 
@@ -897,7 +936,7 @@ describe("test InfiniteGrid", () => {
             ig!.append([0, 1, 2].map((child) => ({
               groupKey,
               key: `key${groupKey * 3 + child}`,
-              html: `<div style="height: 100px">${groupKey * 3 + child}</div>`,
+              html: `<div style="height: 100px; width: 100px;">${groupKey * 3 + child}</div>`,
             })));
           }
         });

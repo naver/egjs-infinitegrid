@@ -4,22 +4,23 @@ import Grid, {
   GridOutlines, MOUNT_STATE, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
 } from "@egjs/grid";
-import { diff } from "@egjs/list-differ";
 import { GROUP_TYPE, ITEM_TYPE, STATUS_TYPE } from "./consts";
 import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
+import { LoadingGrid, LOADING_GROUP_KEY } from "./LoadingGrid";
 import { CategorizedGroup, InfiniteGridGroup, InfiniteGridItemInfo } from "./types";
 import {
   categorize, filterVirtuals, findIndex, findLastIndex,
+  flat,
   flatGroups, getItemInfo, isNumber, makeKey,
   range,
   setPlaceholder,
-  splitGridOptions, splitOptions,
+  splitGridOptions, splitOptions, splitVirtualGroups,
 } from "./utils";
 
 export interface InfiniteGridGroupStatus {
   type: GROUP_TYPE;
   groupKey: string | number;
-  items: Array<Partial<InfiniteGridItemStatus>>;
+  items: InfiniteGridItemStatus[];
   outlines: GridOutlines;
 }
 
@@ -29,9 +30,13 @@ export interface GroupManagerOptions extends GridOptions {
 }
 
 export interface GroupManagerStatus {
-  startCursor: number;
-  endCursor: number;
+  cursors: [number, number];
+  orgCursors: [number, number];
+  itemCursors: [number, number];
+  startGroupKey: number | string;
+  endGroupKey: number | string;
   groups: InfiniteGridGroupStatus[];
+  outlines: GridOutlines;
 }
 
 @GetterSetter
@@ -54,11 +59,20 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   protected startCursor = 0;
   protected endCursor = 0;
   private _placeholder: Partial<InfiniteGridItemStatus> | null = null;
+  private _loadingGrid!: LoadingGrid;
 
   constructor(container: HTMLElement, options: GroupManagerOptions) {
     super(container, splitOptions(options));
+
+    this._loadingGrid = new LoadingGrid(container, {
+      externalContainerManager: this.containerManager,
+      useFit: false,
+      autoResize: false,
+      renderOnPropertyChange: false,
+      gap: this.gap,
+    });
   }
-  public setGridOptions(options: Record<string, any>): void {
+  public set gridOptions(options: Record<string, any>) {
     const {
       gridOptions,
       ...otherOptions
@@ -66,7 +80,10 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
     const shouldRender = this._checkShouldRender(options);
 
-    this.gridOptions = gridOptions;
+    this.options.gridOptions = {
+      ...this.options.gridOptions,
+      ...gridOptions,
+    };
     this.groups.forEach(({ grid }) => {
       for (const name in options) {
         (grid as any)[name] = options[name];
@@ -75,6 +92,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     for (const name in otherOptions) {
       this[name] = otherOptions[name];
     }
+
+    this._loadingGrid.gap = this.gap;
     if (shouldRender) {
       this.scheduleRender();
     }
@@ -91,17 +110,55 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return filterVirtuals(this.items, includePlaceholders);
   }
 
+  public getRenderingItems() {
+    if (this.hasPlaceholder()) {
+      return this.items;
+    } else {
+      return this.items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
+    }
+  }
+
   public getGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
     return filterVirtuals(this.groups, includePlaceholders);
   }
 
+  public hasVisibleVirtualGroups() {
+    return this.getVisibleGroups(true).some((group) => group.type === GROUP_TYPE.VIRTUAL);
+  }
   public hasPlaceholder() {
     return !!this._placeholder;
+  }
+  public hasLoadingItem() {
+    return !!this._getLoadingItem();
   }
 
   public setPlaceholder(placeholder: Partial<InfiniteGridItemStatus> | null) {
     this._placeholder = placeholder;
     this._updatePlaceholder();
+  }
+
+  public getLoadingType() {
+    return this._loadingGrid.type;
+  }
+
+  public startLoading(type: "start" | "end") {
+    this._loadingGrid.type = type;
+    this.items = this._getRenderingItems();
+
+    return true;
+  }
+
+  public endLoading() {
+    const prevType = this._loadingGrid.type;
+
+    this._loadingGrid.type = "";
+    this.items = this._getRenderingItems();
+    return !!prevType;
+  }
+
+  public setLoading(loading: Partial<InfiniteGridItemStatus> | null) {
+    this._loadingGrid.setLoadingItem(loading);
+    this.items = this._getRenderingItems();
   }
 
   public getVisibleGroups(includePlaceholders?: boolean): InfiniteGridGroup[] {
@@ -116,19 +173,29 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       item.mountState = MOUNT_STATE.MOUNTED;
     });
 
-    let nextOutline = outline;
+    const renderingGroups = this.groups.slice();
 
-    const originalGroups = this.groups;
-    const length = originalGroups.length;
-
-    if (!length) {
+    if (!renderingGroups.length) {
       return {
         start: [],
         end: [],
       };
     }
 
-    const groups = originalGroups.slice();
+
+    const loadingGrid = this._loadingGrid;
+
+    if (loadingGrid.getLoadingItem()) {
+      if (loadingGrid.type === "start") {
+        renderingGroups.unshift(this._getLoadingGroup());
+      } else if (loadingGrid.type === "end") {
+        renderingGroups.push(this._getLoadingGroup());
+      }
+    }
+
+    const groups = renderingGroups.slice();
+
+    let nextOutline = outline;
 
     if (direction === "start") {
       groups.reverse();
@@ -137,7 +204,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       const grid = group.grid;
       const gridItems = grid.getItems();
       const isVirtual = group.type === GROUP_TYPE.VIRTUAL && !gridItems[0];
-      const appliedItems = gridItems.filter((item) => item.mountState !== MOUNT_STATE.UNCHECKED);
+      const appliedItems = gridItems.filter((item) => item.mountState !== MOUNT_STATE.UNCHECKED && item.rect.width);
       let gridOutlines: GridOutlines;
 
       if (isVirtual) {
@@ -150,14 +217,13 @@ export class GroupManager extends Grid<GroupManagerOptions> {
           end: [...nextOutline],
         };
       }
-
       grid.setOutlines(gridOutlines);
       nextOutline = gridOutlines[direction];
     });
 
     return {
-      start: originalGroups[0].grid.getOutlines().start,
-      end: originalGroups[length - 1].grid.getOutlines().end,
+      start: renderingGroups[0].grid.getOutlines().start,
+      end: renderingGroups[renderingGroups.length - 1].grid.getOutlines().end,
     };
   }
 
@@ -169,22 +235,23 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     const prevGroupKeys = this.groupKeys;
     let nextManagerGroups = categorize(nextItems);
 
-    const startVirtualGroups = this._getVirtualGroups("start", nextManagerGroups);
-    const endVirtualGroups = this._getVirtualGroups("end", nextManagerGroups);
-
-    nextManagerGroups = [...startVirtualGroups, ...nextManagerGroups, ...endVirtualGroups];
+    const startVirtualGroups = this._splitVirtualGroups("start", nextManagerGroups);
+    const endVirtualGroups = this._splitVirtualGroups("end", nextManagerGroups);
+    nextManagerGroups = [...startVirtualGroups, ...this._mergeVirtualGroups(nextManagerGroups), ...endVirtualGroups];
 
     const nextGroups: InfiniteGridGroup[] = nextManagerGroups.map(({ groupKey, items }) => {
       const isVirtual = !items[0] || items[0].type === ITEM_TYPE.VIRTUAL;
       const grid = prevGroupKeys[groupKey]?.grid ?? this._makeGrid();
+      const gridItems = isVirtual ? items : items.filter(({ type }) => type === ITEM_TYPE.NORMAL);
 
-      grid.setItems(items);
+      grid.setItems(gridItems);
 
       return {
         type: isVirtual ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.NORMAL,
         groupKey,
         grid,
-        items,
+        items: gridItems,
+        renderItems: items,
       };
     });
 
@@ -196,6 +263,11 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       this.groupItems.forEach((item) => {
         item.updateState = UPDATE_STATE.NEED_UPDATE;
       });
+      const loadingItem = this._getLoadingItem();
+
+      if (loadingItem) {
+        loadingItem.updateState = UPDATE_STATE.NEED_UPDATE;
+      }
     }
     return super.renderItems(options);
   }
@@ -203,7 +275,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   public setCursors(startCursor: number, endCursor: number) {
     this.startCursor = startCursor;
     this.endCursor = endCursor;
-    this.items = this._getGroupVisibleItems();
+    this.items = this._getRenderingItems();
   }
 
   public getStartCursor() {
@@ -215,8 +287,13 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   }
 
   public getGroupStatus(type?: STATUS_TYPE): GroupManagerStatus {
-    let startCursor = this.startCursor;
-    let endCursor = this.endCursor;
+    const orgStartCursor = this.startCursor;
+    const orgEndCursor = this.endCursor;
+    const orgGroups = this.groups;
+
+    let startCursor = orgStartCursor;
+    let endCursor = orgEndCursor;
+
     const isMinimizeItems = type === STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS;
     const isMinimizeGroups = type === STATUS_TYPE.MINIMIZE_INVISIBLE_GROUPS;
     let groups: InfiniteGridGroup[];
@@ -236,7 +313,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       const gridItems = grid.getItems() as InfiniteGridItem[];
       const items = isVirtualGroup
         ? []
-        : gridItems.map((item) => isVirtualItems ? item.getVirtualStatus() : item.getStatus());
+        : gridItems.map((item) => isVirtualItems ? item.getVirtualStatus() : item.getMinimizedStatus());
 
       return {
         type: isVirtualGroup || isVirtualItems ? GROUP_TYPE.VIRTUAL : GROUP_TYPE.NORMAL,
@@ -246,10 +323,21 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       };
     });
 
+    const startGroup = orgGroups[orgStartCursor];
+    const endGroup = orgGroups[orgEndCursor];
+    const totalItems = this.getGroupItems();
+
+    const itemStartCursor = totalItems.indexOf(startGroup?.items[0]);
+    const itemEndCursor = totalItems.indexOf(endGroup?.items.slice().reverse()[0]);
+
     return {
-      startCursor,
-      endCursor,
+      cursors: [startCursor, endCursor],
+      orgCursors: [orgStartCursor, orgEndCursor],
+      itemCursors: [itemStartCursor, itemEndCursor],
+      startGroupKey: startGroup?.groupKey,
+      endGroupKey: endGroup?.groupKey,
       groups: groupStatus,
+      outlines: this.outlines,
     };
   }
 
@@ -276,12 +364,14 @@ export class GroupManager extends Grid<GroupManagerOptions> {
         groupKey,
         grid,
         items: nextItems,
+        renderItems: nextItems,
       };
     });
 
+    this.setOutlines(status.outlines);
     this._registerGroups(nextGroups);
     this._updatePlaceholder();
-    this.setCursors(status.startCursor, status.endCursor);
+    this.setCursors(status.cursors[0], status.cursors[1]);
   }
   public appendPlaceholders(items: number | InfiniteGridItemStatus[], groupKey?: string | number) {
     return this.insertPlaceholders("end", items, groupKey);
@@ -289,7 +379,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   public prependPlaceholders(items: number | InfiniteGridItemStatus[], groupKey?: string | number) {
     return this.insertPlaceholders("start", items, groupKey);
   }
-  public removePlaceholders(type: "start" | "end" | { groupKey: string | number}) {
+  public removePlaceholders(type: "start" | "end" | { groupKey: string | number }) {
     const groups = this.groups;
     const length = groups.length;
 
@@ -342,6 +432,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       groupKey,
       grid,
       items: nextItems,
+      renderItems: nextItems,
     };
     if (direction === "end") {
       this.groups.push(group);
@@ -362,12 +453,44 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     };
   }
 
+  public shouldRerenderItems() {
+    let isRerender = false;
+
+    this.getVisibleGroups().forEach((group) => {
+      const items = group.items;
+
+      if (
+        items.length === group.renderItems.length
+        || items.every((item) => item.mountState === MOUNT_STATE.UNCHECKED)
+      ) {
+        return;
+      }
+      isRerender = true;
+      group.renderItems = [...items];
+    });
+
+    return isRerender;
+  }
+
   private _getGroupItems() {
     return flatGroups(this.getGroups(true));
   }
 
-  private _getGroupVisibleItems() {
-    return flatGroups(this.getVisibleGroups(true));
+  private _getRenderingItems() {
+    const items = flat(this.getVisibleGroups(true).map((item) => item.renderItems));
+
+    const loadingGrid = this._loadingGrid;
+    const loadingItem = loadingGrid.getLoadingItem();
+
+    if (loadingItem) {
+      if (loadingGrid.type === "end") {
+        items.push(loadingItem);
+      } else if (loadingGrid.type === "start") {
+        items.unshift(loadingItem);
+      }
+    }
+
+    return items;
   }
 
   private _checkShouldRender(options: Record<string, any>) {
@@ -388,16 +511,17 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return false;
   }
   private _applyVirtualGrid(grid: Grid, direction: "start" | "end", outline: number[]) {
+    const startOutline = outline.length ? [...outline] : [0];
     const prevOutlines = grid.getOutlines();
     const prevOutline = prevOutlines[direction === "end" ? "start" : "end"];
 
     if (
-      prevOutline.length !== outline.length
-      || prevOutline.some((value, i) => value !== outline[i])
+      prevOutline.length !== startOutline.length
+      || prevOutline.some((value, i) => value !== startOutline[i])
     ) {
       return {
-        start: [...outline],
-        end: [...outline],
+        start: [...startOutline],
+        end: [...startOutline],
       };
     }
     return prevOutlines;
@@ -424,6 +548,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
           ...info,
         });
       } else {
+        if (info.data) {
+          prevItem.data = info.data;
+        }
         nextItemKeys[key] = prevItem;
       }
     });
@@ -452,31 +579,43 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     this.groupKeys = nextGroupKeys;
     this.groupItems = this._getGroupItems();
   }
-  private _getVirtualGroups(direction: "start" | "end", nextGroups: CategorizedGroup[]) {
-    const groups = this.groups;
-    let virtualGroups: InfiniteGridGroup[] = [];
+  private _splitVirtualGroups(direction: "start" | "end", nextGroups: CategorizedGroup[]) {
+    const groups = splitVirtualGroups(this.groups, direction, nextGroups);
+    const itemKeys = this.itemKeys;
 
-    if (direction === "start") {
-      const index = findIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
+    groups.forEach(({ renderItems }) => {
+      renderItems.forEach((item) => {
+        itemKeys[item.key] = item;
+      });
+    });
 
-      if (index === -1) {
-        return [];
-      }
-      virtualGroups = groups.slice(0, index);
-    } else {
-      const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
-
-      if (index === -1) {
-        return [];
-      }
-      virtualGroups = groups.slice(index + 1);
-    }
-    virtualGroups = diff(virtualGroups, nextGroups, ({ groupKey }) => groupKey).removed.map((index) => {
-      return virtualGroups[index];
-    }).reverse();
-
-    return virtualGroups;
+    return groups;
   }
+  private _mergeVirtualGroups(groups: Array<CategorizedGroup<InfiniteGridItem>>) {
+    const itemKeys = this.itemKeys;
+    const groupKeys = this.groupKeys;
+
+    groups.forEach((group) => {
+      const prevGroup = groupKeys[group.groupKey];
+
+      if (!prevGroup) {
+        return;
+      }
+      const items = group.items;
+
+
+      if (items.every((item) => item.mountState === MOUNT_STATE.UNCHECKED)) {
+        prevGroup.renderItems.forEach((item) => {
+          if (item.type === ITEM_TYPE.VIRTUAL && !itemKeys[item.key]) {
+            items.push(item);
+            itemKeys[item.key] = item;
+          }
+        });
+      }
+    });
+    return groups;
+  }
+
   private _updatePlaceholder(items = this.groupItems) {
     const placeholder = this._placeholder;
 
@@ -501,6 +640,21 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       externalContainerManager: this.containerManager,
       externalItemRenderer: this.itemRenderer,
     });
+  }
+  private _getLoadingGroup(): InfiniteGridGroup {
+    const loadingGrid = this._loadingGrid;
+    const items = loadingGrid.getItems() as InfiniteGridItem[];
+
+    return {
+      groupKey: LOADING_GROUP_KEY,
+      type: GROUP_TYPE.NORMAL,
+      grid: loadingGrid,
+      items,
+      renderItems: items,
+    };
+  }
+  private _getLoadingItem() {
+    return this._loadingGrid.getLoadingItem();
   }
 }
 
