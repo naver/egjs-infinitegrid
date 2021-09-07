@@ -37,7 +37,6 @@ export interface CategorizedGroup<Item extends InfiniteGridItemInfo = InfiniteGr
 }
 /**
  * @typedef
- * @memberof InfiniteGrid
  */
 export interface InfiniteGridItemInfo {
   type?: ITEM_TYPE;
@@ -52,25 +51,24 @@ export interface InfiniteGridItemInfo {
 /**
  * @typedef
  * @extends Grid.GridOptions
- * @memberof InfiniteGrid
- * @property - Grid class to apply Infinite function. <ko>Infinite 기능을 적용할 Grid 클래스.</ko>
  * @property - The target to which the container is applied. If false, create itself, if true, create container. A string or HTMLElement specifies the target directly. (default: false) <ko>container를 적용할 대상. false면 자기 자신, true면 container를 생성. string 또는 HTMLElement는 직접 대상을 지정. (default: false)</ko>
  * @property - If you create a container, you can set the container's tag. (default: "div") <ko>container를 생성한다면 container의 tag를 정할 수 있다. (default: "div")</ko>
  * @property - The size of the scrollable area for adding the next group of items. (default: 100) <ko>다음 아이템 그룹을 추가하기 위한 스크롤 영역의 크기. (default: 100)</ko>
  * @property - Whether to show only the DOM of the visible area. (default: true) <ko>보이는 영역의 DOM만 보여줄지 여부. (default: true)</ko>
+ * @property - Grid class to apply Infinite function. <ko>Infinite 기능을 적용할 Grid 클래스.</ko>
+ * @property - class that renders the DOM. <ko> DOM을 렌더하는 클래스. </ko>
  */
 export interface InfiniteGridOptions extends GridOptions {
-  gridConstructor?: GridFunction;
-  renderer?: Renderer | null;
   container?: boolean | string | HTMLElement;
   containerTag?: string;
   threshold?: number;
   useRecycle?: boolean;
+  gridConstructor?: GridFunction;
+  renderer?: Renderer | null;
 }
 
 /**
  * @typedef
- * @memberof InfiniteGrid
  * @property - Groups corresponding to placeholders <ko>placholder에 해당하는 그룹</ko>
  * @property - Items corresponding to placeholders <ko>placholder에 해당하는 아이템들</ko>
  * @property - Remove the inserted placeholders. <ko>추가한 placeholder들을 삭제한다.</ko>
@@ -84,7 +82,6 @@ export interface InsertedPlaceholdersResult {
 
 /**
  * @typedef
- * @memberof InfiniteGrid
  * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - Last group key. <ko>마지막 그룹의 키.</ko>
  * @property - The key of the next group that should replace placeholders. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
@@ -103,7 +100,6 @@ export interface OnRequestAppend {
 
 /**
  * @typedef
- * @memberof InfiniteGrid
  * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - First group key. <ko>첫번째 그룹의 키.</ko>
  * @property - The key of the next group that should replace placeholders. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
@@ -123,7 +119,6 @@ export interface OnRequestPrepend {
 
 /**
  * @typedef
- * @memberof InfiniteGrid
  * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - The items rendered for the first time. <ko>처음 렌더링한 아이템들.</ko>
  * @property - The items updated in size. <ko>사이즈 업데이트한 아이템들.</ko>
@@ -148,7 +143,6 @@ export interface OnRenderComplete {
 
 /**
  * @typedef
- * @memberof InfiniteGrid
  * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - The item's element.<ko>아이템의 엘리먼트.</ko>
  * @property - The content element with error.<ko>에러난 발생한 콘텐츠 엘리먼트.</ko>
@@ -167,7 +161,6 @@ export interface OnContentError {
 
 /**
  * @typedef
- * @memberof InfiniteGrid
  * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
  * @property - The scroll direction. <ko>스크롤 방향.</ko>
  * @property - The scroll position. <ko>스크롤 포지션.</ko>

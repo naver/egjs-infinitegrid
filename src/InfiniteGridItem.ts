@@ -2,6 +2,7 @@ import { GridItem, GridItemStatus, MOUNT_STATE } from "@egjs/grid";
 import { INVISIBLE_POS, ITEM_TYPE } from "./consts";
 import { InfiniteGridItemInfo } from "./types";
 
+
 export interface InfiniteGridItemStatus extends GridItemStatus {
   type?: ITEM_TYPE;
   groupKey?: string | number;
@@ -9,6 +10,9 @@ export interface InfiniteGridItemStatus extends GridItemStatus {
   html?: string;
 }
 
+/**
+ * @extends Grid.GridItem
+ */
 export class InfiniteGridItem extends GridItem implements Required<InfiniteGridItemInfo> {
   public groupKey: string | number;
   public readonly html: string;
@@ -18,7 +22,7 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
       type: ITEM_TYPE.NORMAL,
       cssRect: { top: INVISIBLE_POS, left: INVISIBLE_POS },
       ...itemStatus,
-    });
+    } as GridItemStatus);
 
     if (this.type === ITEM_TYPE.VIRTUAL) {
       if (this.rect.width || this.rect.height) {

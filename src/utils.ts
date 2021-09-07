@@ -455,7 +455,6 @@ export function filterVirtuals<T extends InfiniteGridItem | InfiniteGridGroup>(
 /**
  * Decorator that makes the method of InfiniteGrid available in the framework.
  * @ko 프레임워크에서 InfiniteGrid의 메소드를 사용할 수 있게 하는 데코레이터.
- * @memberof InfiniteGrid
  * @private
  * @example
  * ```js

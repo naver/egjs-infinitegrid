@@ -5,8 +5,7 @@ import { InfiniteGridGetterSetter } from "../utils";
 
 /**
  * @typedef
- * @memberof InfiniteGrid
- * @extends InfiniteGrid.InfiniteGridOptions
+ * @extends InfiniteGridOptions
  * @extends Grid.JustifiedGridOptions
  */
 export interface JustifiedInfiniteGridOptions extends JustifiedGridOptions, InfiniteGridOptions {
@@ -19,7 +18,6 @@ export interface JustifiedInfiniteGridOptions extends JustifiedGridOptions, Infi
  * @ko 'justified'는 '1행의 너비에 맞게 꼭 들어찬'이라는 의미를 가진 인쇄 용어다. JustifiedInfiniteGrid는 용어의 의미대로 너비가 주어진 사이즈를 기준으로 아이템가 가득 차도록 배치하는 Grid다.
  * 아이템 엘리먼트에 'data-grid-inline-offset' 또는 'data-grid-content-offset'를 설정하면 offset 값을 제외하고 비율을 유지한다.
  * 비율을 유지하고 싶은 엘리먼트에 'data-grid-maintained-target'을 설정한다면 해당 엘리먼트의 비율을 유지하면서 아이템이 렌더링이 된다.
- * @memberof InfiniteGrid
  * @param {HTMLElement | string} container - A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
  * @param {JustifiedInfiniteGrid.JustifiedInfiniteGridOptions} options - The option object of the JustifiedInfiniteGrid module <ko>JustifiedInfiniteGrid 모듈의 옵션 객체</ko>
  */
