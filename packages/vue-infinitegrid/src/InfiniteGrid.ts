@@ -3,7 +3,7 @@
  * Copyright (c) 2021-present NAVER Corp.
  * MIT license
  */
- import {
+ import VanillaInfiniteGrid, {
   InfiniteGridFunction,
   InfiniteGridOptions,
   INFINITEGRID_EVENTS,
@@ -19,6 +19,7 @@ import { JustifiedInfiniteGrid } from "./grids/JustifiedInfiniteGrid";
 import { MasonryInfiniteGrid } from "./grids/MasonryInfiniteGrid";
 import { PackingInfiniteGrid } from "./grids/PackingInfiniteGrid";
 import { VueInfiniteGridInterface, VueInnerInfiniteInterface } from "./types";
+import { decamelize } from "./utils";
 
 export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string, GridClass: T): VueInfiniteGridInterface<T> {
   const {
@@ -48,10 +49,12 @@ export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string
 
       return key == null ? i : key;
     });
+    const attributePrefix = props.attributePrefix || VanillaInfiniteGrid.defaultOptions.attributePrefix;
+
     const groupBy = props.groupBy || ((item: any) => {
       const props = item.props || item.data?.attrs;
 
-      return props ? props["data-grid-groupkey"] : undefined;
+      return props ? props[`${attributePrefix}groupkey`] : undefined;
     });
 
     let children: any[] = [];
@@ -154,9 +157,10 @@ export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string
 
       for (const name in INFINITEGRID_EVENTS) {
         const eventName = (INFINITEGRID_EVENTS as any)[name];
+        const vueEventName = decamelize(eventName);
 
         grid.on(eventName, (e: any) => {
-          this.$emit(eventName, e);
+          this.$emit(vueEventName, e);
         });
       }
 
