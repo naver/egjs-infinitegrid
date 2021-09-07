@@ -21,7 +21,6 @@
   {items}
   on:requestAppend={({ detail: e }) => {
     const nextGroupKey = (+e.groupKey || 0) + 1;
-    const nextKey = items.length;
 
     items = [...items, ...getItems(nextGroupKey, 10)];
   }}

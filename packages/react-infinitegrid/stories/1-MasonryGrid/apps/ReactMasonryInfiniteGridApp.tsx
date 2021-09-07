@@ -2,8 +2,9 @@ import * as React from "react";
 import { MasonryInfiniteGrid } from "../../../src";
 
 
-function getItems(nextGroupKey: number, nextKey: number, count: number) {
+function getItems(nextGroupKey: number, count: number) {
   const nextItems = [];
+  const nextKey = nextGroupKey * count;
 
   for (let i = 0; i < count; ++i) {
     nextItems.push({ groupKey: nextGroupKey, key: nextKey + i });

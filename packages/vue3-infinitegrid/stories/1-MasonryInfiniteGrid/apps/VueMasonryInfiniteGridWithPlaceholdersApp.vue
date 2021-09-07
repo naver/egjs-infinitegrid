@@ -2,7 +2,7 @@
   <masonry-infinite-grid
     class="masonrygrid container"
     v-bind:gap="5"
-    v-on:requestAppend="onRequestAppend"
+    v-on:request-append="onRequestAppend"
   >
     <div
       class="item"
