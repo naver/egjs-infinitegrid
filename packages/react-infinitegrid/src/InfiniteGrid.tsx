@@ -110,8 +110,9 @@ export abstract class InfiniteGrid<T extends InfiniteGridOptions>
   private _getItemInfos(): InfiniteGridItemInfo[] {
     const props = this.props;
     const children = React.Children.toArray(props.children) as React.ReactElement[];
+    const attributePrefix = props.attributePrefix || VanillaInfiniteGrid.defaultOptions.attributePrefix;
     const itemBy = props.itemBy || ((item: React.ReactElement) => item.key);
-    const groupBy = props.groupBy || ((item: React.ReactElement) => item.props["data-grid-groupkey"]);
+    const groupBy = props.groupBy || ((item: React.ReactElement) => item.props[`${attributePrefix}groupkey`]);
 
     return children.map((child, i) => {
       return {
