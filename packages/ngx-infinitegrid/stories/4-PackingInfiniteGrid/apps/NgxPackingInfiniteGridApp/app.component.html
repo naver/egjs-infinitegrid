@@ -1,0 +1,14 @@
+<div NgxPackingInfiniteGrid
+  class="container"
+  [gap]="5"
+  [items]="items"
+  [trackBy]="trackBy"
+  [groupBy]="groupBy"
+  (requestAppend)="onRequestAppend($event)"
+  *ngFor="let item of [0]; trackBy: randomTrackBy;"
+  #ig
+  >
+  <div class="item" *ngFor ="let item of ig.visibleItems; trackBy: trackBy;">
+    <img [src]="'https://naver.github.io/egjs-infinitegrid/assets/image/' + (item.data.key % 33 + 1) + '.jpg'" alt="egjs" style="width: 100%; height: 100%" />
+  </div>
+</div>

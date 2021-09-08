@@ -16,7 +16,7 @@
 </script>
 
 <MasonryInfiniteGrid
-  class="container masonrygrid"
+  class="container"
   gap={5}
   {items}
   on:requestAppend={({ detail: e }) => {

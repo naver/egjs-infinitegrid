@@ -1,6 +1,6 @@
 <template>
   <masonry-infinite-grid
-    class="masonrygrid container"
+    class="container"
     v-bind:gap="5"
     v-on:request-append="onRequestAppend"
   >
@@ -57,5 +57,4 @@ export default {
 </script>
 <style>
 @import "../../../../../stories/templates/default.css";
-@import "../../../../../stories/templates/masonrygrid.css";
 </style>

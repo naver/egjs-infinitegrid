@@ -1,7 +1,7 @@
 {
   "name": "@egjs/svelte-infinitegrid",
   "version": "0.0.0",
-  "description": "A Svelte component that can arrange items according to the type of grids",
+  "description": "A Svelte component that can arrange items infinitely according to the type of grids",
   "sideEffects": false,
   "types": "src/index.d.ts",
   "module": "dist/infinitegrid.esm.js",
@@ -68,6 +68,6 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
-    "@egjs/infinitegrid": "^4.0.0-beta.10"
+    "@egjs/infinitegrid": "^4.0.0-beta.16"
   }
 }

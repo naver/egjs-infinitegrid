@@ -1,0 +1,30 @@
+<div class="wrapper" style="margin-top: 50px;">
+  <div class="button-area">
+    <button (click)="saveStatus()">Save Status</button>
+    <button (click)="restoreStatus()">Restore Status</button>
+  </div>
+<div NgxMasonryInfiniteGrid
+  class="container"
+  [gap]="5"
+  [align]="'justify'"
+  [usePlaceholder]="true"
+  [status]="status"
+  [items]="items"
+  [trackBy]="trackBy"
+  [groupBy]="groupBy"
+  (requestPrepend)="onRequestPrepend($event)"
+  (requestAppend)="onRequestAppend($event)"
+  *ngFor="let item of [0]; trackBy: randomTrackBy;"
+  #ig
+  >
+  <ng-container *ngFor ="let item of ig.visibleItems; trackBy: trackBy;">
+    <div class="item" *ngIf="item.type === ITEM_TYPE.NORMAL">
+      <div class="thumbnail">
+          <img [src]="'https://naver.github.io/egjs-infinitegrid/assets/image/' + (item.data.key % 33 + 1) + '.jpg'" alt="egjs" />
+      </div>
+      <div class="info">egjs {{item.data.key}}</div>
+    </div>
+    <div class="placeholder" *ngIf="item.type === ITEM_TYPE.VIRTUAL"></div>
+  </ng-container>
+</div>
+</div>

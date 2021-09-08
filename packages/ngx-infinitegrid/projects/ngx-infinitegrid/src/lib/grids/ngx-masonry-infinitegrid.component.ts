@@ -6,20 +6,19 @@ import {
   MasonryInfiniteGrid as VanillaMasonryInfiniteGrid,
   MasonryInfiniteGridOptions,
 } from "@egjs/infinitegrid";
-import { GridAlign } from '@egjs/grid';
 import { TEMPLATE } from '../consts';
 
 
 @Component({
-  selector: 'ngx-masonry-infinitegrid, [NgxMasonryInfiniteGrid]',
+  selector: 'ngx-masonry-infinite-grid, [NgxMasonryInfiniteGrid]',
   template: TEMPLATE,
   styles: [],
 })
 export class NgxMasonryInfiniteGridComponent extends NgxInfiniteGridComponent
   implements Required<MasonryInfiniteGridOptions> {
   public static GridClass = VanillaMasonryInfiniteGrid;
-  @Input() column!: number;
-  @Input() columnSize!: number;
-  @Input() columnSizeRatio!: number;
-  @Input() align!: GridAlign;
+  @Input() column!: Required<MasonryInfiniteGridOptions>['column'];
+  @Input() columnSize!: Required<MasonryInfiniteGridOptions>['columnSize'];
+  @Input() columnSizeRatio!: Required<MasonryInfiniteGridOptions>['columnSizeRatio'];
+  @Input() align!: Required<MasonryInfiniteGridOptions>['align'];
 }

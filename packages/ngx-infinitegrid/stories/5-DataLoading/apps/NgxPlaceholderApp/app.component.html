@@ -1,0 +1,22 @@
+<div NgxMasonryInfiniteGrid
+  class="container"
+  [gap]="5"
+  [align]="'justify'"
+  [usePlaceholder]="true"
+  [items]="items"
+  [trackBy]="trackBy"
+  [groupBy]="groupBy"
+  (requestAppend)="onRequestAppend($event)"
+  *ngFor="let item of [0]; trackBy: randomTrackBy;"
+  #ig
+  >
+  <ng-container *ngFor ="let item of ig.visibleItems; trackBy: trackBy;">
+    <div class="item" *ngIf="item.type === ITEM_TYPE.NORMAL">
+      <div class="thumbnail">
+          <img [src]="'https://naver.github.io/egjs-infinitegrid/assets/image/' + (item.data.key % 33 + 1) + '.jpg'" alt="egjs" />
+      </div>
+      <div class="info">egjs {{item.data.key}}</div>
+    </div>
+    <div class="placeholder" *ngIf="item.type === ITEM_TYPE.VIRTUAL"></div>
+  </ng-container>
+</div>

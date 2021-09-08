@@ -3,7 +3,6 @@ import MasonryInfiniteGridApp from "./apps/SvelteMasonryInfiniteGridApp.svelte";
 // import { MASONRY_GRID_CONTROLS } from "../../../../stories/templates/controls";
 // import { convertPath, convertSvelteTemplate, makeArgs } from "../../../../stories/utils";
 import "../../../../stories/templates/default.css";
-import "../../../../stories/templates/masonrygrid.css";
 
 
 export const MasonryInfiniteGridTemplate = (props) => ({

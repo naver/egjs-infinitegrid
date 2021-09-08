@@ -1,100 +1,90 @@
+<h1 align="center">
+  <img width="256" alt="InfiniteGrid Logo" src="https://naver.github.io/egjs-infinitegrid/img/infinitegrid_logo.png"><br/>
+  @egjs/react-infinitegrid
+</h1>
 
-<p align="middle" ><img src="https://naver.github.io/egjs-infinitegrid/images/logo.png" /></p>
-<h2 align="middle">React Grid</h2>
-<p align="middle">
-<a href="https://www.npmjs.com/package/@egjs/react-grid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/react-grid.svg?style=flat-square&color=007acc&label=version" alt="npm version" /></a>&nbsp;
-<img src="https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square" />&nbsp;
-<a href="https://github.com/naver/egjs-infinitegrid/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/static/v1?style=flat-square&label=license&message=MIT&color=08CE5D" /></a>&nbsp;
+<p align="center">
+  <a href="https://www.npmjs.com/package/@egjs/react-infinitegrid" target="_blank">
+    <img src="https://img.shields.io/npm/v/@egjs/react-infinitegrid.svg?style=flat-square&color=00d8ff&label=version&logo=NPM">
+  </a>
+  <a href="https://www.npmjs.com/package/@egjs/react-infinitegrid" target="_blank">
+    <img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/react-infinitegrid.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc">
+  </a>
+  <a href="https://github.com/naver/egjs-infinitegrid/graphs/commit-activity">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/naver/egjs-infinitegrid.svg?style=flat-square&label=%E2%AC%86%20commits&color=08CE5D">
+  </a>
+  <a href="https://www.npmjs.com/package/@egjs/react-infinitegrid" target="_blank">
+    <img src="https://img.shields.io/npm/dm/@egjs/react-infinitegrid.svg?style=flat-square&label=%E2%AC%87%20downloads&color=08CE5D" alt="npm downloads per month">
+  </a>
+  <a href="https://github.com/naver/egjs-infinitegrid/graphs/contributors" target="_blank">
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/naver/egjs-infinitegrid.svg?label=%F0%9F%91%A5%20contributors&style=flat-square&color=08CE5D"></a>
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE" target="_blank">
+    <img alt="GitHub" src="https://img.shields.io/github/license/naver/egjs-infinitegrid.svg?style=flat-square&label=%F0%9F%93%9C%20license&color=08CE5D">
+  </a>
 </p>
-<p align="middle">A React component that can arrange items according to the type of grids.</p>
-<p align="middle">
-    <a href="https://naver.github.io/egjs-infinitegrid" target="_blank"><strong>Demo</strong></a> /&nbsp;
-    <a href="https://naver.github.io/egjs-infinitegrid/release/latest/doc/" target="_blank"><strong>API</strong></a>
+
+<p align="center">
+  A React component that can arrange items infinitely according to the type of grids
 </p>
 
+<p align="center">
+  <a href="https://naver.github.io/egjs-infinitegrid/">Demo</a> / <a href="https://naver.github.io/egjs-infinitegrid/docs/api/InfiniteGrid">Documentation</a> / <a href="https://naver.github.io/egjs/">Other components</a>
+</p>
 
-## Grids
-
-|<img src="https://naver.github.io/egjs-infinitegrid/images/MasonryGrid.png" />|<img src="https://naver.github.io/egjs-infinitegrid/images/JustifiedGrid.png" />|<img src="https://naver.github.io/egjs-infinitegrid/images/FrameGrid.png" />|<img src="https://naver.github.io/egjs-infinitegrid/images/PackingGrid.png" />|
-|:---:|:---:|:---:|:---:|
-|[**MasonryGrid**](http://naver.github.io/egjs-infinitegrid/storybook/?path=/story/examples-masonrygrid--masonry-grid-template)|[**JustifiedGrid**](http://naver.github.io/egjs-infinitegrid/storybook/?path=/story/examples-justifiedgrid--justified-grid-template)|[**FrameGrid**](http://naver.github.io/egjs-infinitegrid/storybook/?path=/story/examples-framegrid--frame-grid-template)|[**PackingGrid**](http://naver.github.io/egjs-infinitegrid/storybook/?path=/story/examples-packinggrid--packing-grid-template)|
-
-* **MasonryGrid**: The MasonryGrid is a grid that stacks items with the same width as a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new item.
-* **JustifiedGrid**: 'justified' is a printing term with the meaning that 'it fits in one row wide'. The JustifiedGrid is a grid that the item is filled up on the basis of a line given a size.
-* **FrameGrid**: 'Frame' is a printing term with the meaning that 'it fits in one row wide'. The FrameGrid is a grid that the item is filled up on the basis of a line given a size.
-* **PackingGrid**: The PackingGrid is a grid that shows the important items bigger without sacrificing the weight of the items. Rows and columns are separated so that items are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.
-
-
-## Documents
-- [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
-- [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
-
-## Download and Installation
-
-Download dist files from repo directly or install it via npm.
-
-```bash
-$ npm install @egjs/react-grid
+## ⚙️ Installation
+```sh
+npm install --save @egjs/react-infinitegrid
 ```
 
-
-## How to use
+## 🏃 Quick Start
 ```tsx
-import { MasonryGrid, JustifiedGrid, FrameGrid, PackingGrid } from "@egjs/react-grid";
+import * as React from "react";
+import { MasonryInfiniteGrid } from "@egjs/react-infinitegrid";
 
-<MasonryGrid
-  className="container"
-  gap={5}
-  defaultDirection={"end"}
-  align={"justify"}
->
-  <div className={"item"}>1</div>
-  <div className={"item"}>2</div>
-  <div className={"item"}>3</div>
-  <div className={"item"}>4</div>
-  <div className={"item"}>5</div>
-  <div className={"item"}>6</div>
-  <div className={"item"}>7</div>
-  <div className={"item"}>8</div>
-  <div className={"item"}>9</div>
-  <div className={"item"}>10</div>
-</MasonryGrid>
+function getItems(nextGroupKey: number, count: number) {
+  const nextItems = [];
+  const nextKey = nextGroupKey * count;
+
+  for (let i = 0; i < count; ++i) {
+    nextItems.push({ groupKey: nextGroupKey, key: nextKey + i });
+  }
+  return nextItems;
+}
+
+const Item = ({ num }: any) => <div className="item">...</div>;
+
+export default function App() {
+  const [items, setItems] = React.useState(() => getItems(0, 10));
+
+  return <MasonryInfiniteGrid
+    className="container"
+    gap={5}
+    onRequestAppend={(e) => {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      setItems([
+        ...items,
+        ...getItems(nextGroupKey, 10),
+      ]);
+    }}
+  >
+    {items.map((item) => <Item data-grid-groupkey={item.groupKey} key={item.key} num={item.key} />)}
+  </MasonryInfiniteGrid>;
+}
 ```
 
-#### 2. Install dependencies
+
+## 🙌 Contributing
+See [CONTRIBUTING.md](https://github.com/naver/egjs-infinitegrid/blob/master/CONTRIBUTING.md).
+
+## 📝 Feedback
+Please file an [Issue](https://github.com/naver/egjs-infinitegrid/issues) with label "React".
+
+## 📜 License
+egjs-infinitegrid is released under the [MIT license](http://naver.github.io/egjs/license.txt).
 
 ```
-# Install the dependency modules.
-$ npm install
-```
-### 3. `npm start`
-
-Run `storybook` for development.
-
-Open [http://localhost:6007](http://localhost:6007) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-#### 3. `npm build`
-
-Use npm script to build Grid
-
-```bash
-# Build
-$ npm run build
-```
-
-## Bug Report
-
-If you find a bug, please report to us opening a new [Issues](https://github.com/naver/egjs-infinitegrid/issues) on GitHub.
-
-
-## License
-egjs-infinitegrid is released under the [MIT license](https://github.com/naver/egjs/blob/master/LICENSE.txt).
-
-```
-Copyright (c) 2021-present NAVER Corp.
+Copyright (c) 2015-present NAVER Corp.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -114,3 +104,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+
+<p align="center">
+  <a href="https://naver.github.io/egjs/"><img height="50" src="https://naver.github.io/egjs/img/logotype1_black.svg" ></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/naver"><img height="50" src="https://naver.github.io/OpenSourceGuide/book/assets/naver_logo.png" /></a>
+</p>

@@ -1,14 +1,13 @@
 {
   "name": "@egjs/react-infinitegrid",
-  "version": "4.0.0-beta.0",
-  "description": "A React component that can arrange items according to the type of grids",
+  "version": "4.0.0-beta.3",
+  "description": "A React component that can arrange items infinitely according to the type of grids",
   "types": "declaration/index.d.ts",
   "main": "dist/infinitegrid.cjs.js",
   "module": "dist/infinitegrid.esm.js",
   "sideEffects": false,
   "scripts": {
     "storybook": "start-storybook -p 6007",
-    "build:storybook": "build-storybook -o ../../demo/storybook",
     "build": "rollup -c && npm run declaration",
     "declaration": "rimraf declaration && tsc -p tsconfig.declaration.json"
   },
@@ -36,7 +35,7 @@
     "layout"
   ],
   "dependencies": {
-    "@egjs/infinitegrid": "^4.0.0-beta.10"
+    "@egjs/infinitegrid": "^4.0.0-beta.16"
   },
   "devDependencies": {
     "@codeceptjs/configure": "^0.6.2",

@@ -28,7 +28,7 @@ import { NgxInfiniteGridProps } from './types';
 
 // @dynamic
 @Component({
-  selector: 'ngx-infinitegrid, [NgxInfiniteGrid]',
+  selector: 'ngx-infinite-grid, [NgxInfiniteGrid]',
   template: '<slot></slot>',
   styles: [
     ':host { display: block }',
@@ -87,7 +87,6 @@ export class NgxInfiniteGridComponent
       (this as any)[eventName] = new EventEmitter();
     }
   }
-
 
   ngOnInit() {
     this._updateVisibleChildren();

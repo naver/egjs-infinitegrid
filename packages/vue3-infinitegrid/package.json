@@ -1,7 +1,7 @@
 {
   "name": "@egjs/vue3-infinitegrid",
   "version": "0.0.0",
-  "description": "A Vue component that can arrange items according to the type of grids",
+  "description": "A Vue3 component that can arrange items infinitely according to the type of grids",
   "sideEffects": false,
   "types": "declaration/index.d.ts",
   "module": "dist/infinitegrid.esm.js",

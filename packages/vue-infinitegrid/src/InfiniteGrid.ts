@@ -77,17 +77,17 @@ export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string
 
   methods.$_getVisibleChildren = function (this: VueInnerInfiniteInterface) {
     const props = this.$props;
-    const slot = this.$slots;
-    const placeholder = slot.placeholder;
-    const loading = slot.loading;
+    const scopedSlots = this.$scopedSlots || this.$slots;
+    const placeholder = scopedSlots.placeholder;
+    const loading = scopedSlots.loading;
 
     const visibleItems = getRenderingItems(this.$_getItemInfos(), {
       grid: "$_grid" in this ? this.$_grid : null,
       status: props.status,
       horizontal: props.horizontal,
       useFirstRender: props.useFirstRender,
-      usePlaceholder: !!placeholder,
-      useLoading: !!loading,
+      usePlaceholder: !!scopedSlots.placeholder,
+      useLoading: !!scopedSlots.loading,
     })
 
     return visibleItems.map((item) => {
@@ -168,15 +168,15 @@ export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string
       this.$_renderer.on("requestUpdate", () => {
         this.$forceUpdate();
       });
-      const slots = this.$slots;
+      const scopedSlot = this.$scopedSlots || this.$slots;
 
       mountRenderingItems(this.$_getItemInfos(), {
         grid: this.$_grid,
         status: props.status,
         horizontal: props.horizontal,
         useFirstRender: props.useFirstRender,
-        usePlaceholder: !!slots.placeholder,
-        useLoading: !!slots.loading,
+        usePlaceholder: !!scopedSlot.placeholder,
+        useLoading: !!scopedSlot.loading,
       });
       this.$_renderer.updated();
     },
