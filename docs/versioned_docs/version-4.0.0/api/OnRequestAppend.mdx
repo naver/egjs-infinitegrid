@@ -1,0 +1,21 @@
+---
+custom_edit_url: null
+---
+
+### OnRequestAppend {#OnRequestAppend}
+
+<div className="bulma-tags">
+
+</div>
+
+**Type**: TSInterface
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|currentTarget|[InfiniteGrid](InfiniteGrid)|<p>An InfiniteGrid instance that triggered this event. </p>|
+|groupKey|string \| number \| undefined|<p>Last group key. </p>|
+|nextGroupKey|string \| number \| undefined|<p>The key of the next group that should replace placeholders. </p>|
+|isVirtual|boolean|<p>Whether to request virtual groups corresponding to placeholders. </p>|
+|wait|() =&gt; void|<p>Set to standby to request data. </p>|
+|ready|() =&gt; void|<p>When the data request is complete, it is set to ready state. </p>|
+

@@ -1,0 +1,77 @@
+.virtualInfiniteGridWrapper {
+  position: relative;
+  width: 2096px;
+  left: 50%;
+  transform: translate(-50%);
+  height: 600px;
+  overflow: hidden;
+
+}
+.virtualInfiniteGridWrapper:after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  width: 100%;
+  height: 200px;
+  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+  filter: blur(2px);
+}
+.virtualInfinitegridContainer {
+  position: relative;
+  width: 100%;
+  font-size: 0;
+  column-width: 250px;
+  column-count: 8;
+  text-align: center;
+}
+.virtualInfiniteGridWrapper .item {
+  position: relative;
+  display: inline-block;
+  width: 250px;
+  height: 400px;
+  margin: 5px;
+  border-radius: 10px;
+  background: #f55;
+  opacity: 0.8;
+}
+.virtualInfiniteGridWrapper .item:nth-child(6n + 1) {
+  height: 350px;
+}
+.virtualInfiniteGridWrapper .item:nth-child(6n + 2) {
+  height: 300px;
+}
+.virtualInfiniteGridWrapper .item:nth-child(6n + 4) {
+  height: 380px;
+}
+.virtualInfiniteGridWrapper .item:nth-child(6n + 6) {
+  height: 300px;
+}
+
+.virtualInfiniteGridWrapper .item:nth-child(8n + 1) {
+  background: #FF4A5C;
+}
+
+.virtualInfiniteGridWrapper .item:nth-child(8n + 2) {
+  background: #49C68E;
+}
+
+.virtualInfiniteGridWrapper .item:nth-child(8n + 3) {
+  background: #FFA100;
+}
+
+.virtualInfiniteGridWrapper .item:nth-child(8n + 4) {
+  background: #4f8ed0;
+}
+
+.virtualInfiniteGridWrapper .item:nth-child(8n + 5) {
+  background: #FFDF89;
+}
+.virtualInfiniteGridWrapper .item:nth-child(8n + 6) {
+  background: #FBF843;
+}
+.virtualInfiniteGridWrapper .item:nth-child(8n + 7) {
+  background: #A57BC2;
+}
+.virtualInfiniteGridWrapper .item:nth-child(8n) {
+  background: #eee;
+}

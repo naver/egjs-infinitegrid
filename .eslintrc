@@ -25,7 +25,7 @@
         "@typescript-eslint/ban-types": "off",
         "@typescript-eslint/indent": ["error", 2],
         "@typescript-eslint/adjacent-overload-signatures": "off",
-        "max-len": ["error", { "code": 120, "comments": 400, "ignoreTemplateLiterals": true }],
+        "max-len": ["error", { "code": 120, "comments": 1000, "ignoreTemplateLiterals": true }],
         "arrow-parens": ["error", "always"],
         "@typescript-eslint/naming-convention": [
             "error",

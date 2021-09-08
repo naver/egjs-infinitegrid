@@ -1,0 +1,67 @@
+<script>
+  import { #ClassName } from "@egjs/svelte-infinitegrid";
+  import { ITEM_TYPE } from "@egjs/infinitegrid";
+
+  let items = getItems(0, 10);
+
+  function getItems(nextGroupKey, count) {
+    const nextItems = [];
+
+    for (let i = 0; i < count; ++i) {
+      const nextKey = nextGroupKey * count + i;
+
+      nextItems.push({ groupKey: nextGroupKey, key: nextKey });
+    }
+    return nextItems;
+  }
+</script>
+
+<#ClassName
+  class="container"
+#Options
+  {items}
+  usePlaceholder={true}
+  on:requestPrepend={({ detail: e }) => {
+      if (e.isVirtual) {
+        e.wait();
+        setTimeout(() => {
+          e.ready();
+          items = [
+            ...getItems(e.nextGroupKey, 10),
+            ...items,
+          ];
+        }, 200);
+      }
+    }}
+    on:requestAppend={({ detail: e }) => {
+      if (e.isVirtual) {
+        e.wait();
+        setTimeout(() => {
+          e.ready();
+          items =[
+            ...items,
+            ...getItems(e.nextGroupKey, 10),
+          ];
+        }, 200);
+      }
+    }}
+  let:visibleItems
+>
+  {#each visibleItems as item (item.key)}
+    {#if item.type === ITEM_TYPE.NORMAL}
+      <div class="item">
+        <div class="thumbnail">
+          <img
+            src={`https://naver.github.io/egjs-infinitegrid/assets/image/${
+              (item.key % 33) + 1
+            }.jpg`}
+            alt="egjs" #Maintained
+          />
+        </div>
+        <div class="info">{`egjs ${item.key}`}</div>
+      </div>
+    {:else if item.type === ITEM_TYPE.VIRTUAL}
+      <div class="placeholder" />
+    {/if}
+  {/each}
+</#ClassName>

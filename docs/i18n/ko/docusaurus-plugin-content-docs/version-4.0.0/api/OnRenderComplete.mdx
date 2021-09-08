@@ -1,0 +1,24 @@
+---
+custom_edit_url: null
+---
+
+### OnRenderComplete {#OnRenderComplete}
+
+<div className="bulma-tags">
+
+</div>
+
+**Type**: TSInterface
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|currentTarget|[InfiniteGrid](InfiniteGrid)|이 이벤트를 트리거한 InfiniteGrid의 인스턴스|
+|mounted|InfiniteGridItem[]|처음 렌더링한 아이템들.|
+|updated|InfiniteGridItem[]|사이즈 업데이트한 아이템들.|
+|direction|"start" \| "end"|InfiniteGrid가 렌더링된 방향.|
+|isResize|boolean|resize 이벤트 또는 useResize 옵션을 사용하여 렌더링를 했는지 여부.|
+|startCursor|number|렌더링이 완료된 첫번째 그룹의 키.|
+|endCursor|number|렌더링이 완료된 마지막 그룹의 키.|
+|items|InfiniteGridItem[]|렌더링이 완료된 아이템들.|
+|groups|InfiniteGridGroup[]|렌더링이 완료된 그룹들.|
+

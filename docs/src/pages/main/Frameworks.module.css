@@ -1,0 +1,55 @@
+.is-vue3 {
+  background-color: rgb(166, 123, 194) !important;
+  border-color: transparent !important;
+  color: white !important;
+}
+.frameworksContainer .frameworkLogo {
+  width: 200px;
+  height: 200px;
+  border-radius: 5px;
+  background: #eee;
+  text-align: center;
+  display: inline-block;
+  margin: 6px;
+}
+.frameworksContainer .frameworkIcon {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: auto;
+}
+.frameworksContainer .frameworkIcon img {
+  width: 100%;
+  height: 100%;
+}
+.frameworksContainer p {
+  font-weight: bold;
+}
+.frameworksContainer .frameworkLogo:nth-child(8n + 1) {
+  background: #FF4A5C;
+}
+
+.frameworksContainer .frameworkLogo:nth-child(8n + 2) {
+  background: #49C68E;
+}
+
+.frameworksContainer .frameworkLogo:nth-child(8n + 3) {
+  background: #FFA100;
+}
+
+.frameworksContainer .frameworkLogo:nth-child(8n + 4) {
+  background: #4f8ed0;
+}
+
+.frameworksContainer .frameworkLogo:nth-child(8n + 5) {
+  background: #FFDF89;
+}
+.frameworksContainer .frameworkLogo:nth-child(8n + 6) {
+  background: #FBF843;
+}
+.frameworksContainer .frameworkLogo:nth-child(8n + 7) {
+  background: #A57BC2;
+}
+.frameworksContainer .frameworkLogo:nth-child(8n) {
+  background: #eee;
+}

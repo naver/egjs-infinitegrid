@@ -1,0 +1,83 @@
+<template>
+  <#DeClassName
+    class="container"
+#Options
+    v-on:request-append="onRequestAppend"
+    v-on:request-prepend="onRequestPrepend"
+  >
+    <div
+      class="item"
+      v-for="item in items"
+      :key="item.key"
+      :data-grid-groupkey="item.groupKey"
+    >
+      <div class="thumbnail">
+        <img
+          v-bind:src="
+            'https://naver.github.io/egjs-infinitegrid/assets/image/' +
+            ((item.key % 33) + 1) +
+            '.jpg'
+          "
+          alt="egjs" #Maintained
+        />
+      </div>
+      <div class="info">egjs {{ item.key }}</div>
+    </div>
+    <template v-slot:placeholder="{ item }">
+    <div
+      class="placeholder"
+      :key="item.key"
+      :data-grid-groupkey="item.groupKey"
+    ></div>
+  </template>
+  </#DeClassName>
+</template>
+<script lang="ts">
+import { #ClassName } from "@egjs/vue-infinitegrid";
+
+export default {
+  components: {
+    #ClassName,
+  },
+  data() {
+    return {
+      items: this.getItems(0, 10),
+    };
+  },
+  methods: {
+    getItems(nextGroupKey: number, count: number) {
+      const nextItems: any[] = [];
+
+      for (let i = 0; i < count; ++i) {
+        const nextKey = nextGroupKey * count + i;
+
+        nextItems.push({ groupKey: nextGroupKey, key: nextKey });
+      }
+      return nextItems;
+    },
+    onRequestPrepend(e: OnRequestPrepend) {
+    if (e.isVirtual) {
+      e.wait();
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...this.getItems(e.nextGroupKey, 10),
+          ...this.items,
+        ];
+      }, 200);
+    }
+  },
+  onRequestAppend(e: OnRequestAppend) {
+    if (e.isVirtual) {
+      e.wait();
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...this.items,
+          ...this.getItems(e.nextGroupKey, 10),
+        ];
+      }, 200);
+    }
+  },
+};
+</script>

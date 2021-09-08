@@ -1,0 +1,1134 @@
+---
+title: Guides
+custom_edit_url: null
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+import MasonryInfiniteGrid from "@site/src/component/grids/MasonryInfiniteGrid";
+import JustifiedInfiniteGrid from "@site/src/component/grids/JustifiedInfiniteGrid";
+import FrameInfiniteGrid from "@site/src/component/grids/FrameInfiniteGrid";
+import PackingInfiniteGrid from "@site/src/component/grids/PackingInfiniteGrid";
+
+import WaitReady from "@site/src/component/grids/WaitReady";
+import Placeholder from "@site/src/component/grids/Placeholder";
+import Loading from "@site/src/component/grids/Loading";
+import Status from "@site/src/component/grids/Status";
+import VisibleStatus from "@site/src/component/grids/VisibleStatus";
+
+import InfiniteGridDefaultCode from "@site/src/component/code/InfiniteGridDefaultCode";
+import InfiniteGridStatusCode from "@site/src/component/code/InfiniteGridStatusCode";
+
+
+
+# Guides
+## Grid Types
+### MasonryInfiniteGrid
+
+MasonryInfiniteGrid is a grid that stacks items with the same width as a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new item.
+
+<MasonryInfiniteGrid />
+
+<InfiniteGridDefaultCode
+  className="MasonryInfiniteGrid"
+  />
+
+### JustifiedInfiniteGrid
+'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedGrid is a grid that the item is filled up on the basis of a line given a size.
+* If 'data-grid-inline-offset' or 'data-grid-content-offset' are set for item element, the ratio is maintained except for the offset value.
+* If 'data-grid-maintained-target' is set for an element whose ratio is to be maintained, the item is rendered while maintaining the ratio of the element.
+
+<JustifiedInfiniteGrid />
+
+<InfiniteGridDefaultCode
+  className="JustifiedInfiniteGrid"
+  hasMaintained={true}
+  />
+
+### FrameInfiniteGrid
+'Frame' is a printing term with the meaning that 'it fits in one row wide'. FrameGrid is a grid that the item is filled up on the basis of a line given a size.
+
+<FrameInfiniteGrid />
+
+<InfiniteGridDefaultCode
+  className="FrameInfiniteGrid"
+  options={{
+    gap: 5,
+    frame: [
+      [1, 1, 2, 3, 3],
+      [1, 1, 4, 4, 5],
+    ],
+  }}
+  />
+
+### PackingInfiniteGrid
+
+The PackingGrid is a grid that shows the important items bigger without sacrificing the weight of the items.
+* Rows and columns are separated so that items are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.
+* If `sizeWeight` is higher than `ratioWeight`, the size of items is preserved as much as possible.
+* Conversely, if `ratioWeight` is higher than `sizeWeight`, the ratio of items is preserved as much as possible.
+
+<PackingInfiniteGrid />
+
+<InfiniteGridDefaultCode
+  className="PackingInfiniteGrid"
+  />
+
+## Insert Data
+
+Through scrolling, when the scroll reaches the end, the `requestAppend` event is raised, and when it reaches the start, the `requestPrepend` event is raised. You can add data within this event.
+
+* You can set the key of an item through `itemBy` prop.
+* You can set the group's key through `groupBy` prop.
+
+<MasonryInfiniteGrid />
+
+
+<Tabs
+  groupId="cfc"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@2", value: "vue" },
+    { label: "Vue@3", value: "vue3" },
+    { label: "Angular", value: "angular" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+If the `append` method or `prepend` method is used, there is no need to use a separate key. You can set the groupKey through the second argument.
+
+```js
+ig.on("requestAppend", e => {
+  const nextGroupKey = (+e.groupKey || 0) + 1;
+
+  ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+});
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+* React's groupBy default is jsx's `data-grid-groupkey` prop. (attributePrefix: data-grid-)
+* React's itemBy default is jsx's key.
+
+```jsx
+const [items, setItems] = React.useState([]);
+
+<MasonryInfiniteGrid
+  groupBy={(jsx) => jsx.props["data-grid-groupkey"]}
+  itemBy={(jsx) => jsx.key}
+  onRequestAppend={(e) => {
+    const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+    setItems([
+      ...items,
+      ...getItems(nextGroupKey, 10),
+    ]);
+  }}>
+  {items.map((item) => <Item data-grid-groupkey={item.groupKey} key={item.key} num={item.key} />)}
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+  <TabItem value="vue">
+
+* Vue's groupBy default is jsx's `data-grid-groupkey` prop. (attributePrefix: data-grid-)
+* Vue's itemBy default is jsx's key.
+
+```html
+<masonry-infinite-grid
+  :itemBy="itemBy"
+  :groupBy="groupBy"
+  @request-append="onRequestAppend">
+  <div
+    class="item"
+    v-for="item in items"
+    :key="item.key"
+    :data-grid-groupkey="item.groupKey"
+  >
+    ...
+  </div>
+</masonry-infinite-grid>
+```
+
+```jsx
+export default {
+  data() {
+    return {
+      items: [],
+    },
+  },
+  methods: {
+    itemBy(jsx) {
+      const key = jsx.key;
+
+      return key == null ? i : key;
+    },
+    groupBy(jsx) {
+      const props = jsx.props || jsx.data?.attrs;
+
+      return props ? props[`data-grid-groupkey`] : undefined;
+    },
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      this.items = [
+        ...this.items,
+        ...getItems(nextGroupKey, 10),
+      ];
+  },
+};
+```
+  </TabItem>
+  <TabItem value="vue3">
+
+* Vue's groupBy default is jsx's `data-grid-groupkey` prop. (attributePrefix: data-grid-)
+* Vue's itemBy default is jsx's key.
+
+```html
+<masonry-infinite-grid
+  :itemBy="itemBy"
+  :groupBy="groupBy"
+  @request-append="onRequestAppend">
+  <div
+    class="item"
+    v-for="item in items"
+    :key="item.key"
+    :data-grid-groupkey="item.groupKey"
+  >
+    ...
+  </div>
+</masonry-infinite-grid>
+```
+
+```jsx
+export default {
+  data() {
+    return {
+      items: [],
+    },
+  },
+  methods: {
+    itemBy(jsx) {
+      const key = jsx.key;
+
+      return key == null ? i : key;
+    },
+    groupBy(jsx) {
+      const props = jsx.props || jsx.data?.attrs;
+
+      return props ? props[`${attributePrefix}groupkey`] : undefined;
+    },
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      this.items = [
+        ...this.items,
+        ...getItems(nextGroupKey, 10),
+      ];
+  },
+};
+```
+  </TabItem>
+  <TabItem value="angular">
+* Angular uses `trackBy` instead of `itemBy`.
+* Angular's `groupBy` default is item's `groupKey`.
+* Angular's `trackBy` default is items's `key`.
+
+```html
+<div NgxMasonryInfiniteGrid
+  class="container"
+  [items]="items"
+  [trackBy]="trackBy"
+  [groupBy]="groupBy"
+  [useLoading]="true"
+  (requestAppend)="onRequestAppend($event)"
+  #ig
+  >
+  <div class="item" *ngFor ="let item of ig.visibleItems; trackBy: trackBy;">
+    ...
+  </div>
+</div>
+```
+```jsx
+export default class App {
+  items = [];
+  groupBy(_: any, item: any) {
+    return item.groupKey;
+  }
+  trackBy(_: any, item: any) {
+    return item.key;
+  }
+  onRequestAppend(e) {
+    const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+    this.items = [
+      ...this.items,
+      ...getItems(nextGroupKey, 10),
+    ];
+  }
+};
+```
+  </TabItem>
+  <TabItem value="svelte">
+
+* Svelte's `groupBy` default is item's `groupKey`.
+* Svelte's `itemBy` default is items's `key`.
+
+```html
+<script>
+let items = [];
+</script>
+<MasonryInfiniteGrid
+  items={items}
+  groupBy={(item) => item.groupKey}
+  itemBy={(item) => item.key}
+  on:requestAppend={({ detail: e }) => {
+    items = [
+      ...items,
+      ...getItems(nextGroupKey, 10),
+    ];
+  }}>
+  {#each visibleItems as item (item.key)}
+    <div class="item"></div>
+  {/each}
+</MasonryInfiniteGrid>
+```
+  </TabItem>
+</Tabs>
+
+## Wait Data Loading
+
+
+### Use wait & ready
+If you want to add items asynchronously, call the `e.wait` function and when the data is ready call the `e.ready` function.
+
+<WaitReady />
+
+<Tabs
+  groupId="cfc"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@2", value: "vue" },
+    { label: "Vue@3", value: "vue3" },
+    { label: "Angular", value: "angular" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+```js
+ig.on("requestAppend", e => {
+  const nextGroupKey = (+e.groupKey || 0) + 1;
+
+  e.wait();
+
+  setTimeout(() => {
+    e.ready();
+    ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+  }, 1000);
+});
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+```jsx
+const [items, setItems] = React.useState([]);
+
+<MasonryInfiniteGrid
+  onRequestAppend={(e) => {
+    const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+    e.wait();
+    setTimeout(() => {
+      e.ready();
+      setItems([
+        ...items,
+        ...getItems(nextGroupKey, 10),
+      ]);
+    }, 1000);
+  }}>
+  {items.map((item) => <Item data-grid-groupkey={item.groupKey} key={item.key} num={item.key} />)}
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+  <TabItem value="vue">
+
+```jsx
+export default {
+  data() {
+    return {
+      items: [],
+    },
+  },
+  methods: {
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      e.wait();
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...this.items,
+          ...getItems(nextGroupKey, 10),
+        ];
+      }, 1000);
+  },
+};
+```
+  </TabItem>
+  <TabItem value="vue3">
+
+```jsx
+export default {
+  data() {
+    return {
+      items: [],
+    },
+  },
+  methods: {
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      e.wait();
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...this.items,
+          ...getItems(nextGroupKey, 10),
+        ];
+      }, 1000);
+  },
+};
+```
+  </TabItem>
+  <TabItem value="angular">
+
+```jsx
+export default class App {
+  items = [];
+  onRequestAppend(e) {
+    const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+    e.wait();
+    setTimeout(() => {
+      e.ready();
+      this.items = [
+        ...this.items,
+        ...getItems(nextGroupKey, 10),
+      ];
+    }, 1000);
+  }
+};
+```
+  </TabItem>
+  <TabItem value="svelte">
+
+```html
+<script>
+let items = [];
+</script>
+<MasonryInfiniteGrid
+  on:requestAppend={({ detail: e }) => {
+    e.wait();
+    setTimeout(() => {
+      e.ready();
+      items = [
+        ...items,
+        ...getItems(nextGroupKey, 10),
+      ];
+    }, 1000);
+  }}>
+  {items.map((item) => <Item data-grid-groupkey={item.groupKey} key={item.key} num={item.key} />)}
+</MasonryInfiniteGrid>
+```
+  </TabItem>
+</Tabs>
+
+### Use Placeholder
+You can add placeholders to show instead while data is being loaded/added. The placeholder is placed on the grid instead of the actual item and can be maintained until the actual item is added.
+
+<Placeholder />
+
+
+
+<Tabs
+  groupId="cfc"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@2", value: "vue" },
+    { label: "Vue@3", value: "vue3" },
+    { label: "Angular", value: "angular" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+You can set a placeholder through the `ig.setPlaceholder` method.
+
+```js
+ig.setPlaceholder({
+  html: `<div class="placeholder"></div>`,
+});
+
+ig.on("requestAppend", e => {
+  const nextGroupKey = (+e.groupKey || 0) + 1;
+
+  e.wait();
+  e.currentTarget.appendPlaceholders(5, nextGroupKey);
+  setTimeout(() => {
+    e.ready();
+    ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+  }, 1000);
+});
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+You can set the placeholder via the placeholder prop.
+
+```jsx
+const [items, setItems] = React.useState([]);
+
+<MasonryInfiniteGrid
+  placeholder={<div className="placeholder"></div>}
+  onRequestAppend={(e) => {
+    const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+    e.wait();
+    e.currentTarget.appendPlaceholders(5, nextGroupKey);
+    setTimeout(() => {
+      e.ready();
+      setItems([
+        ...items,
+        ...getItems(nextGroupKey, 10),
+      ]);
+    }, 1000);
+  }}>
+  {items.map((item) => <Item data-grid-groupkey={item.groupKey} key={item.key} num={item.key} />)}
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+  <TabItem value="vue">
+
+A placeholder can be set via a placeholder slot.
+
+```html
+<masonry-infinite-grid
+  @request-append="onRequestAppend">
+  <div
+    class="item"
+    v-for="item in items"
+    :key="item.key"
+    :data-grid-groupkey="item.groupKey"
+  ></div>
+  <template v-slot:placeholder="{ item }">
+    <div
+      class="placeholder"
+      :key="item.key"
+      :data-grid-groupkey="item.groupKey"
+    ></div>
+  </template>
+</masonry-infinite-grid>
+```
+
+```jsx
+export default {
+  data() {
+    return {
+      items: [],
+    },
+  },
+  methods: {
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      e.wait();
+      e.currentTarget.appendPlaceholders(5, nextGroupKey);
+
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...this.items,
+          ...getItems(nextGroupKey, 10),
+        ];
+      }, 1000);
+  },
+};
+```
+  </TabItem>
+  <TabItem value="vue3">
+
+A placeholder can be set via a placeholder slot.
+
+```html
+<masonry-infinite-grid
+  @request-append="onRequestAppend">
+  <div
+    class="item"
+    v-for="item in items"
+    :key="item.key"
+    :data-grid-groupkey="item.groupKey"
+  ></div>
+  <template v-slot:placeholder="{ item }">
+    <div
+      class="placeholder"
+      :key="item.key"
+      :data-grid-groupkey="item.groupKey"
+    ></div>
+  </template>
+</masonry-infinite-grid>
+```
+
+```jsx
+export default {
+  data() {
+    return {
+      items: [],
+    },
+  },
+  methods: {
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      e.wait();
+      e.currentTarget.appendPlaceholders(5, nextGroupKey);
+
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...this.items,
+          ...getItems(nextGroupKey, 10),
+        ];
+      }, 1000);
+  },
+};
+```
+  </TabItem>
+  <TabItem value="angular">
+
+You can set the placeholder via usePlaceholder(true).
+
+```html
+<div NgxMasonryInfiniteGrid
+  class="container"
+  [usePlaceholder]="true"
+  (requestAppend)="onRequestAppend($event)"
+  #ig
+  >
+  <ng-container *ngFor ="let item of ig.visibleItems; trackBy: trackBy;">
+    <div class="item" *ngIf="item.type === ITEM_TYPE.NORMAL"></div>
+    <div class="placeholder" *ngIf="item.type === ITEM_TYPE.VIRTUAL"></div>
+  </ng-container>
+</div>
+
+```
+```jsx
+import { ITEM_TYPE } from "@egjs/infinitegrid";
+
+export default class App {
+  ITEM_TYPE = ITEM_TYPE;
+  items = [];
+  onRequestAppend(e) {
+    const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+    e.wait();
+    e.currentTarget.appendPlaceholders(5, nextGroupKey);
+
+    setTimeout(() => {
+      e.ready();
+      this.items = [
+        ...this.items,
+        ...getItems(nextGroupKey, 10),
+      ];
+    }, 1000);
+  }
+};
+```
+  </TabItem>
+  <TabItem value="svelte">
+
+You can set the placeholder via usePlaceholder(true).
+
+```html
+<script>
+import { ITEM_TYPE } from "@egjs/infinitegrid";
+
+let items = [];
+</script>
+<MasonryInfiniteGrid
+  usePlaceholder={true}
+  on:requestAppend={({ detail: e }) => {
+    e.wait();
+    setTimeout(() => {
+      e.ready();
+      items = [
+        ...items,
+        ...getItems(nextGroupKey, 10),
+      ];
+    }, 1000);
+  }}
+  let:visibleItems
+>
+  {#each visibleItems as item (item.key)}
+    {#if item.type === ITEM_TYPE.NORMAL}
+      <div class="item"></div>
+    {:else if item.type === ITEM_TYPE.VIRTUAL}
+      <div class="placeholder" />
+    {/if}
+  {/each}
+</MasonryInfiniteGrid>
+```
+  </TabItem>
+</Tabs>
+
+
+### Use loading
+You can show the loading bar while the data is loading. It can be added by calling the `e.wait` function, and the loading bar automatically disappears when data is loaded.
+
+<Loading />
+
+
+<Tabs
+  groupId="cfc"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@2", value: "vue" },
+    { label: "Vue@3", value: "vue3" },
+    { label: "Angular", value: "angular" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+You can set a loading through the `ig.setLoading` method.
+
+```js
+ig.setLoading({
+  html: `<div class="loading">Loading...</div>`,
+});
+
+ig.on("requestAppend", e => {
+  const nextGroupKey = (+e.groupKey || 0) + 1;
+
+  e.wait();
+  setTimeout(() => {
+    e.ready();
+    ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+  }, 1000);
+});
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+You can set the loading via the loading prop.
+
+```jsx
+const [items, setItems] = React.useState([]);
+
+<MasonryInfiniteGrid
+  loading={<div className="loading">Loading...</div>}
+  onRequestAppend={(e) => {
+    const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+    e.wait();
+    setTimeout(() => {
+      e.ready();
+      setItems([
+        ...items,
+        ...getItems(nextGroupKey, 10),
+      ]);
+    }, 1000);
+  }}>
+  {items.map((item) => <Item data-grid-groupkey={item.groupKey} key={item.key} num={item.key} />)}
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+  <TabItem value="vue">
+
+A loading can be set via a loading slot.
+
+```html
+<masonry-infinite-grid
+  @request-append="onRequestAppend">
+  <div
+    class="item"
+    v-for="item in items"
+    :key="item.key"
+    :data-grid-groupkey="item.groupKey"
+  ></div>
+  <template v-slot:loading="{ item }">
+    <div
+      class="loading"
+      :key="item.key"
+      :data-grid-groupkey="item.groupKey"
+    >Loading...</div>
+  </template>
+</masonry-infinite-grid>
+```
+
+```jsx
+export default {
+  data() {
+    return {
+      items: [],
+    },
+  },
+  methods: {
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      e.wait();
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...this.items,
+          ...getItems(nextGroupKey, 10),
+        ];
+      }, 1000);
+  },
+};
+```
+  </TabItem>
+  <TabItem value="vue3">
+
+A loading can be set via a loading slot.
+
+```html
+<masonry-infinite-grid
+  @request-append="onRequestAppend">
+  <div
+    class="item"
+    v-for="item in items"
+    :key="item.key"
+    :data-grid-groupkey="item.groupKey"
+  ></div>
+  <template v-slot:loading="{ item }">
+    <div
+      class="loading"
+      :key="item.key"
+      :data-grid-groupkey="item.groupKey"
+    >Loading...</div>
+  </template>
+</masonry-infinite-grid>
+```
+
+```jsx
+export default {
+  data() {
+    return {
+      items: [],
+    },
+  },
+  methods: {
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      e.wait();
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...this.items,
+          ...getItems(nextGroupKey, 10),
+        ];
+      }, 1000);
+  },
+};
+```
+  </TabItem>
+  <TabItem value="angular">
+
+You can set the loading via useLoading(true).
+
+```html
+<div NgxMasonryInfiniteGrid
+  class="container"
+  [useLoading]="true"
+  (requestAppend)="onRequestAppend($event)"
+  #ig
+  >
+  <ng-container *ngFor ="let item of ig.visibleItems; trackBy: trackBy;">
+    <div class="item" *ngIf="item.type === ITEM_TYPE.NORMAL"></div>
+    <div class="loading" *ngIf="item.type === ITEM_TYPE.LOADING">Loading...</div>
+  </ng-container>
+</div>
+```
+```jsx
+import { ITEM_TYPE } from "@egjs/infinitegrid";
+
+export default class App {
+  ITEM_TYPE = ITEM_TYPE;
+  items = [];
+  onRequestAppend(e) {
+    const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+    e.wait();
+    setTimeout(() => {
+      e.ready();
+      this.items = [
+        ...this.items,
+        ...getItems(nextGroupKey, 10),
+      ];
+    }, 1000);
+  }
+};
+```
+  </TabItem>
+  <TabItem value="svelte">
+
+You can set the loading via useLoading(true).
+
+```html
+<script>
+import { ITEM_TYPE } from "@egjs/infinitegrid";
+
+let items = [];
+</script>
+<MasonryInfiniteGrid
+  useLoading={true}
+  on:requestAppend={({ detail: e }) => {
+    e.wait();
+    setTimeout(() => {
+      e.ready();
+      items = [
+        ...items,
+        ...getItems(nextGroupKey, 10),
+      ];
+    }, 1000);
+  }}
+  let:visibleItems
+>
+  {#each visibleItems as item (item.key)}
+    {#if item.type === ITEM_TYPE.NORMAL}
+      <div class="item"></div>
+    {:else if item.type === ITEM_TYPE.LOADING}
+      <div class="loading">Loading...</div>
+    {/if}
+  {/each}
+</MasonryInfiniteGrid>
+```
+  </TabItem>
+</Tabs>
+
+## Restore Status
+You want to save the current status to storage before moving the page and restore it after returning the page.
+
+If it does not support BF Cache like Safari, you need to save and restore the status.
+
+InfiniteGrid provides a way to get and restore status.
+
+If you want to restore dynamically, call the `setStatus` method.
+
+In the framework, items must also be saved and restored.
+
+### Get Status & Restore Status
+
+<Status />
+
+<Tabs
+  groupId="cfc"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@2", value: "vue" },
+    { label: "Vue@3", value: "vue3" },
+    { label: "Angular", value: "angular" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+Get Status
+
+```js
+const status = ig.getStatus();
+```
+
+Restore Status
+
+```js
+const ig = new MasonryInfiniteGrid(...);
+
+ig.setStatus(status);
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+Get Status
+
+```jsx
+const igRef = React.useRef();
+
+
+igRef.current.getStatus();
+
+<MasonryInfiniteGrid
+  ref={igRef}>...</MasonryInfiniteGrid>
+```
+
+Restore Status
+
+```jsx
+<MasonryInfiniteGrid
+  ref={igRef}
+  status={status}
+  >...</MasonryInfiniteGrid>
+```
+  </TabItem>
+  <TabItem value="vue">
+
+Get Status
+
+```html
+<masonry-infinite-grid ref="ig">
+  ...
+</masonry-infinite-grid>
+```
+
+```jsx
+this.$refs.ig.getStatus();
+```
+
+Restore Status
+
+```html
+<masonry-infinite-grid v-bind:status="status">
+  ...
+</masonry-infinite-grid>
+```
+
+  </TabItem>
+
+  <TabItem value="vue3">
+
+Get Status
+
+```html
+<masonry-infinite-grid ref="ig">
+  ...
+</masonry-infinite-grid>
+```
+
+```jsx
+this.$refs.ig.getStatus();
+```
+
+Restore Status
+
+```html
+<masonry-infinite-grid v-bind:status="status">
+  ...
+</masonry-infinite-grid>
+```
+
+  </TabItem>
+
+
+   <TabItem value="angular">
+
+Get Status
+
+```html
+<div NgxMasonryInfiniteGrid #ig>
+  ...
+</div>
+```
+
+```js
+import { Component, Input, AfterViewInit } from '@angular/core';
+import { NgxInfiniteGridComponent } from '@egjs/ngx-infinitegrid';
+
+class App {
+  @ViewChild("ig") ig!: NgxInfiniteGridComponent;
+  getStatus() {
+    this.ig.getStatus();
+  }
+}
+```
+
+Restore Status
+
+```html
+<div NgxMasonryInfiniteGrid [status]="status" #ig>
+  ...
+</div>
+```
+
+  </TabItem>
+
+   <TabItem value="svelte">
+
+Get Status
+
+```html
+let ig;
+
+ig.getStatus();
+```
+
+```jsx
+<MasonryInfiniteGrid
+  bind:this={ig}>
+</MasonryInfiniteGrid>
+```
+
+Restore Status
+
+```jsx
+<MasonryInfiniteGrid
+  status={status}
+  bind:this={ig}>
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+</Tabs>
+
+### Restore Visible Status
+
+To reduce the size of the status, only the status of the items in the visible area is fetched.
+
+```js
+import { STATUS_TYPE } from "@egjs/infinitegrid";
+
+// (default) gets all infos
+ig.getStatus(STATUS_TYPE.NOT_REMOVE);
+
+// gets visible infos
+ig.getStatus(STATUS_TYPE.REMOVE_INVISIBLE_GROUPS);
+
+// gets visible infos. However, the information is simplified for invisible items.
+ig.getStatus(STATUS.MINIMIZE_INVISIBLE_ITEMS);
+
+// gets visible infos. However, invisible items are removed and only the outline remains.
+ig.getStatus(STATUS.MINIMIZE_INVISIBLE_GROUPS);
+```
+
+```js
+import { STATUS_TYPE } from "@egjs/infinitegrid";
+
+const status = ig.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS);
+const [startCursor, endCursor] = status.groupManager.itemCursors;
+const itemsStatus = items.slice(startCursor, endCursor + 1);
+```
+
+### Restore Visible Status with virtual items
+
+Since you got the status for the visible area, replace it with a placeholder to handle the invisible area.
+
+<VisibleStatus/>
+
+<InfiniteGridStatusCode className="MasonryInfiniteGrid" />

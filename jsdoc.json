@@ -1,22 +1,27 @@
 {
   "tags": {
-    "allowUnknownTags" : true,
-    "dictionaries": ["jsdoc","closure"]
+    "allowUnknownTags": true,
+    "dictionaries": [
+      "jsdoc",
+      "closure"
+    ]
   },
   "source": {
-      "include": [
-        "src", "README.md",
-        "node_modules/@egjs/component/src"
-      ],
-      "includePattern": ".+\\.(j|t)s(doc|x)?$",
-      "excludePattern": "(^|\\/|\\\\)_"
+    "include": [
+      "src",
+      "README.md",
+      "node_modules/@egjs/grid/src/",
+      "node_modules/@egjs/component/src/Component.ts",
+      "node_modules/@egjs/component/src/ComponentEvent.ts"
+    ],
+    "includePattern": ".+\\.(j|t)s(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
   },
   "opts": {
-      "template": "node_modules/egjs-jsdoc-template",
-      "destination": "./doc/",
-      "ignores": ["eg.Component"],
-      "expendsItemMembers": true,
-      "recurse": true
+    "template": "node_modules/egjs-jsdoc-template",
+    "destination": "./doc/",
+    "expendsItemMembers": true,
+    "recurse": true
   },
   "plugins": [
     "plugins/markdown",
@@ -28,7 +33,7 @@
     "cleverLinks": true,
     "monospaceLinks": true,
     "default": {
-      "outputSourceFiles" : true
+      "outputSourceFiles": true
     },
     "applicationName": "eg.InfiniteGrid",
     "disqus": "egjs",
@@ -43,16 +48,11 @@
     "meta": {
       "title": "egjs::InfiniteGrid - API",
       "description": "..",
-      "keyword": "InfiniteGrid, Grid, Masonry, Justified, Layout, Packing, Frame, Square"
+      "keyword": "InfiniteGrid, Grid, Masonry, Justified, Layout, Packing, Frame"
     },
     "linenums": true,
     "link": {
       "canonical": "https://naver.github.io/egjs-infinitegrid/release/latest/doc/"
     }
-  },
-  "markdown": {
-    "parser": "gfm",
-    "hardwrap": true,
-    "tags": ["examples", "ko"]
   }
 }
