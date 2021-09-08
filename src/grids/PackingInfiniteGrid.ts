@@ -21,7 +21,7 @@ export interface PackingInfiniteGridOptions extends PackingGridOptions, Infinite
  * `sizeWeight`가 `ratioWeight`보다 높으면 아이템들의 size가 최대한 보존이 된다.
  * 반대로 `ratioWeight`가 `sizeWeight`보다 높으면 아이템들의 비율이 최대한 보존이 된다.
  * @param {HTMLElement | string} container - A base element for a module <ko>모듈을 적용할 기준 엘리먼트</ko>
- * @param {Grid.PackingInfiniteGrid.PackingInfiniteGridOptions} options - The option object of the PackingInfiniteGrid module <ko>PackingInfiniteGrid 모듈의 옵션 객체</ko>
+ * @param {PackingInfiniteGridOptions} options - The option object of the PackingInfiniteGrid module <ko>PackingInfiniteGrid 모듈의 옵션 객체</ko>
  */
 @InfiniteGridGetterSetter
 export class PackingInfiniteGrid extends InfiniteGrid<PackingInfiniteGridOptions> {
