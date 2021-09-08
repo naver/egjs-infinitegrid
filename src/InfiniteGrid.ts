@@ -204,7 +204,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       this.containerManager.resize();
     }
     this._resizeScroll();
-    if (!this.getItems(true).length) {
+    if (!this.getRenderingItems().length) {
       const children = toArray(this.getContainerElement().children);
       if (children.length > 0) {
         this.append(children);

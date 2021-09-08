@@ -434,6 +434,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       items: nextItems,
       renderItems: nextItems,
     };
+
+    this.groupKeys[groupKey] = group;
+
     if (direction === "end") {
       this.groups.push(group);
       this.groupItems.push(...nextItems);
@@ -468,7 +471,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       isRerender = true;
       group.renderItems = [...items];
     });
-
+    if (isRerender) {
+      this.items = this._getRenderingItems();
+    }
     return isRerender;
   }
 
@@ -478,6 +483,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
   private _getRenderingItems() {
     const items = flat(this.getVisibleGroups(true).map((item) => item.renderItems));
+
 
     const loadingGrid = this._loadingGrid;
     const loadingItem = loadingGrid.getLoadingItem();
@@ -602,7 +608,6 @@ export class GroupManager extends Grid<GroupManagerOptions> {
         return;
       }
       const items = group.items;
-
 
       if (items.every((item) => item.mountState === MOUNT_STATE.UNCHECKED)) {
         prevGroup.renderItems.forEach((item) => {
