@@ -80,6 +80,7 @@ const ig = new MasonryInfiniteGrid(".container", { gap: 5 });
 #### With CDN
 ```html
 <!-- Packaged with all dependencies -->
+<!-- https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js -->
 <script src="https://unpkg.com/@egjs/infinitegrid/dist/infinitegrid.min.js"></script>
 ```
 
