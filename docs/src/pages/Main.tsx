@@ -75,17 +75,17 @@ export default () => <>
         </Link>
         <Link
           className="button is-link m-1"
-          to={useBaseUrl("options/")}>
+          to={useBaseUrl("docs/api/InfiniteGrid")}>
           📄 API
         </Link>
         <Link
           className="button is-link m-1"
-          to={useBaseUrl("options/")}>
-          ⚙️ Options
+          to={useBaseUrl("Guides/")}>
+          📄 Guides
         </Link>
         <Link
           className="button is-link m-1"
-          to={useBaseUrl("demos/")}>
+          to={"https://naver.github.io/egjs-infinitegrid/storybook"}>
           ✨ Demos
         </Link>
       </div>

@@ -81,10 +81,6 @@ module.exports = {
               label: 'API',
               to: 'docs/api/InfiniteGrid'
             },
-            {
-              label: 'Options',
-              to: 'Options/'
-            }
           ]
         },
         {
@@ -92,12 +88,8 @@ module.exports = {
           items: [
             {
               label: 'Demos',
-              to: 'Demos/'
+              to: "https://naver.github.io/egjs-infinitegrid/storybook",
             },
-            {
-              label: 'Showcases',
-              to: 'Showcases/'
-            }
           ]
         },
         {
