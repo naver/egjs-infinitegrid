@@ -66,7 +66,7 @@ export default () => <div className="columns">
         <span className="subtitle has-text-black">Supports IE9+ (With polyfills)</span>
       </div>
       <div>
-        <p>With the Promise polyfill and flicking-inline CSS, InfiniteGrid can support Internet Explorer 9+</p>
+        <p>InfiniteGrid can support Internet Explorer 9+</p>
         <p>⚠️ IE 11+ for Angular & Svelte</p>
       </div>
     </div>
