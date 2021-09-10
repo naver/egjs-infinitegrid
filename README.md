@@ -32,7 +32,7 @@
   <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid/README.md"><img width="45" src="https://naver.github.io/egjs-infinitegrid/img/icons/angular.svg" alt="AngularJS" /></a>&nbsp;&nbsp;
   <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid/README.md"><img width="45" src="https://naver.github.io/egjs-infinitegrid/img/icons/react.svg" alt="React" /></a>&nbsp;&nbsp;
   <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid/README.md"><img width="45" src="https://naver.github.io/egjs-infinitegrid/img/icons/vue.svg" alt="Vue.js" /></a>&nbsp;&nbsp;
-  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid/README.md"><img width="45" src="https://naver.github.io/egjs-inifinitegrid/img/icons/svelte.svg" alt="Svelte" /></a>
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid/README.md"><img width="45" src="https://naver.github.io/egjs-infinitegrid/img/icons/svelte.svg" alt="Svelte" /></a>
 </p>
 
 -----
@@ -41,7 +41,7 @@
 - Use it in a framework you like.
   - We supports all major JS frameworks like React, Vue, Angular
 - SSR(Server Side Rendering) ready
-  - You can use inifinitegrid at your favorite SSR frameworks like [Next.js](https://nextjs.org/) or [Nuxt.js](https://nuxtjs.org/).
+  - You can use infinitegrid at your favorite SSR frameworks like [Next.js](https://nextjs.org/) or [Nuxt.js](https://nuxtjs.org/).
 - Circular(Loop) Mode
 - Ready-to-use plugins you can grab right away.
   - Autoplay, Fade effect, Parallax effect, ...
@@ -127,22 +127,22 @@ ig.renderItems();
 |9+(With polyfill), 11+ for Angular & Svelte|Latest|Latest|Latest|7+|4+|
 
 ## 📼 Demos
-Check our [Demos](https://naver.github.io/egjs-inifinitegrid/).
+Check our [Demos](https://naver.github.io/egjs-infinitegrid/).
 
 ## 📖 Documentation
-See [Documentation](https://naver.github.io/egjs-inifinitegrid/release/latest/doc/index.html) page.
+See [Documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/index.html) page.
 
 ## 🙌 Contributing
-See [CONTRIBUTING.md](https://github.com/naver/egjs-inifinitegrid/blob/master/CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/naver/egjs-infinitegrid/blob/master/CONTRIBUTING.md).
 
 ## 📝 Feedback
-Please file an [Issue](https://github.com/naver/egjs-inifinitegrid/issues).
+Please file an [Issue](https://github.com/naver/egjs-infinitegrid/issues).
 
 ## 🛣️ Roadmap
-See our [Roadmap](https://github.com/naver/egjs-inifinitegrid/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%F0%9F%9B%A3%EF%B8%8FRoadmap+).
+See our [Roadmap](https://github.com/naver/egjs-infinitegrid/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%F0%9F%9B%A3%EF%B8%8FRoadmap+).
 
 ## 📜 License
-@egjs/inifinitegrid is released under the [MIT license](https://github.com/naver/egjs-inifinitegrid/blob/master/LICENSE).
+@egjs/infinitegrid is released under the [MIT license](https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE).
 
 ```
 Copyright (c) 2015-present NAVER Corp.
