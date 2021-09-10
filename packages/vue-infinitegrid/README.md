@@ -1,198 +1,118 @@
-# vue-infinitegrid [![npm version](https://badge.fury.io/js/%40egjs%2Fvue-infinitegrid.svg)](https://badge.fury.io/js/%40egjs%2Fvue-infinitegrid)
+<h1 align="center">
+  <img width="256" alt="InfiniteGrid Logo" src="https://naver.github.io/egjs-infinitegrid/img/infinitegrid_logo.png"><br/>
+  @egjs/vue-infinitegrid
+</h1>
 
-A Vue.js wrapper of [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
+<p align="center">
+  <a href="https://www.npmjs.com/package/@egjs/vue-infinitegrid" target="_blank">
+    <img src="https://img.shields.io/npm/v/@egjs/vue-infinitegrid.svg?style=flat-square&color=42b883&label=version&logo=NPM">
+  </a>
+  <a href="https://www.npmjs.com/package/@egjs/vue-infinitegrid" target="_blank">
+    <img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/vue-infinitegrid.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc">
+  </a>
+  <a href="https://github.com/naver/egjs-infinitegrid/graphs/commit-activity">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/naver/egjs-infinitegrid.svg?style=flat-square&label=%E2%AC%86%20commits&color=08CE5D">
+  </a>
+  <a href="https://www.npmjs.com/package/@egjs/vue-infinitegrid" target="_blank">
+    <img src="https://img.shields.io/npm/dm/@egjs/vue-infinitegrid.svg?style=flat-square&label=%E2%AC%87%20downloads&color=08CE5D" alt="npm downloads per month">
+  </a>
+  <a href="https://github.com/naver/egjs-infinitegrid/graphs/contributors" target="_blank">
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/naver/egjs-infinitegrid.svg?label=%F0%9F%91%A5%20contributors&style=flat-square&color=08CE5D"></a>
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE" target="_blank">
+    <img alt="GitHub" src="https://img.shields.io/github/license/naver/egjs-infinitegrid.svg?style=flat-square&label=%F0%9F%93%9C%20license&color=08CE5D">
+  </a>
+</p>
 
-[Storybook](https://naver.github.io/egjs-infinitegrid/storybook/) /
-[Demo](https://codesandbox.io/s/egjsvue-infinitegrid-examples-itlw2) / [Documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/) / [Other Components](https://naver.github.io/egjs/)
+<p align="center">
+  A Vue component that can arrange items infinitely according to the type of grids
+</p>
 
-## Installation
-```bash
-$ npm install @egjs/vue-infinitegrid --save
+<p align="center">
+  <a href="https://naver.github.io/egjs-infinitegrid/">Demo</a> / <a href="https://naver.github.io/egjs-infinitegrid/docs/api/InfiniteGrid">Documentation</a> / <a href="https://naver.github.io/egjs/">Other components</a>
+</p>
+
+## ⚙️ Installation
+```sh
+npm install --save @egjs/vue-infinitegrid
 ```
 
 ## ❗ Changes from [@egjs/infinitegrid](https://github.com/naver/egjs-infinitegrid)
 - All `camelCased` event names became **`kebab-case`**
-  - e.g., `layoutComplete` => **`layout-complete`**
+  - e.g., `requestAppend` => **`request-append`**
 - You can't use methods that manipulates DOM directly
-  - e.g., `append()`, `remove()`, ...
-- Loading element can be used via named slot with name "loading"
-```vue
-<template>
-  <GridLayout>
-    <div slot="loading">Loading...</div>
-  </GridLayout>
-</template>
-```
+  - e.g., `append()`, `prepend()`, `insert()`, `remove()`
 
 ## 🏃 Quick Start
-### Global registration
-```js
-import VueInfiniteGrid from "@egjs/vue-infinitegrid";
-Vue.use(VueInfiniteGrid);
-```
 
-### Local registration
-```js
-// All available layouts are in src/layouts
-import { GridLayout } from "@egjs/vue-infinitegrid";
+```vue
+<template>
+  <masonry-infinite-grid
+    class="container"
+    v-bind:gap="5"
+    v-on:request-append="onRequestAppend"
+  >
+    <div
+      class="item"
+      v-for="item in items"
+      :key="item.key"
+      :data-grid-groupkey="item.groupKey"
+    >
+      ...
+    </div>
+  </masonry-infinite-grid>
+</template>
+<script lang="ts">
+import { MasonryInfiniteGrid } from "@egjs/vue-infinitegrid";
 
 export default {
   components: {
-    GridLayout: GridLayout,
-  }
-}
-```
-
-### Usage
-See [demo source](https://github.com/naver/egjs-infinitegrid/tree/master/packages/vue-infinitegrid/demo) for detailed implementation.
-
-```vue
-<template>
-  <GridLayout
-    ref="ig"
-    :options="{
-      align: 'center',
-      transitionDuration: 0.2,
-      isOverflowScroll: false,
-    }"
-    @append="onAppend"
-    @layout-complete="onLayoutComplete"
-    @image-error="onImageError"
-  >
-    <!-- Loading element via named slot -->
-    <div slot="loading">Loading...</div>
-    <div class="item" v-for="(item, i) in list" :key="item.key"
-      @click="remove(i)">
-      <div class="thumbnail">
-        <img :src="`https://naver.github.io/egjs-infinitegrid/assets/image/${(item.num + 1) % 59}.jpg`"/>
-      </div>
-      <div class="info">
-        egjs {{ item.num }}
-      </div>
-    </div>
-  </GridLayout>
-</template>
-<script>
-export default {
+    MasonryInfiniteGrid,
+  },
   data() {
     return {
-      start: 0,
-      loading: false,
-      list: [],
+      items: this.getItems(0, 10),
     };
   },
   methods: {
-    loadItems(groupKey, num) {
-      const items = [];
-      const start = this.start || 0;
+    getItems(nextGroupKey: number, count: number) {
+      const nextItems: any[] = [];
 
-      for (let i = 0; i < num; ++i) {
-        items.push({
-          groupKey,
-          num: start + i,
-          key: start + i
-        });
+      for (let i = 0; i < count; ++i) {
+        const nextKey = nextGroupKey * count + i;
+
+        nextItems.push({ groupKey: nextGroupKey, key: nextKey });
       }
-      this.start = start + num;
-      return items;
+      return nextItems;
     },
-    remove(index) {
-      this.list.splice(index, 1);
-    },
-    onAppend({ groupKey, startLoading }) {
-      const list = this.list;
-      const items = this.loadItems(parseFloat(groupKey || 0) + 1, 5);
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
 
-      startLoading();
-      this.list = list.concat(items);
+      this.items = [...this.items, ...this.getItems(nextGroupKey, 10)];
     },
-    onLayoutComplete({ isLayout, endLoading }) {
-      if (!isLayout) {
-        endLoading();
-      }
-    },
-    onImageError({ totalIndex }) {
-      this.list.splice(totalIndex, 1);
-    }
-  }
-}
+  },
+};
 </script>
 ```
 
+## 🙌 Contributing
+See [CONTRIBUTING.md](https://github.com/naver/egjs-infinitegrid/blob/master/CONTRIBUTING.md).
 
+## 📝 Feedback
+Please file an [Issue](https://github.com/naver/egjs-infinitegrid/issues) with label "Vue".
 
-### Restore status
-
-If you want to restore the state, use the status prop.
-
-* Save Status
-```vue
-<template>
-  <GridLayout ref="ig"></GridLayout>
-</template>
-<script>
-import { GridLayout } from "@egjs/vue-infinitegrid";
-
-export default {
-  mounted() {
-    this.$refs.ig.getStatus();
-  }
-}
-</script>
-```
-
-* Restore Status (First mount)
-```vue
-<template>
-  <GridLayout ref="ig" :status="status" />
-</template>
-<script>
-import { GridLayout } from "@egjs/vue-infinitegrid";
-
-</script>
-```
-
-* Dynamically restore status
-```vue
-<template>
-  <GridLayout ref="ig"></GridLayout>
-</template>
-<script>
-import { GridLayout } from "@egjs/vue-infinitegrid";
-
-export default {
-  mounted() {
-    this.$refs.ig.setStatus(status);
-  }
-}
-</script>
-```
-
-
-## Contributing
-See [CONTRIBUTING.md](https://github.com/naver/egjs-infinitegrid/blob/master/CONTRIBUTING.md)
-
-## Feedback
-Please file an [issue](https://github.com/naver/egjs-infinitegrid/issues).
-
-
-## License
-react-infinitegrid is released under the [MIT license](https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE).
-
+## 📜 License
+egjs-infinitegrid is released under the [MIT license](http://naver.github.io/egjs/license.txt).
 
 ```
-Copyright (c) 2019-present NAVER Corp.
-
+Copyright (c) 2015-present NAVER Corp.
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -202,6 +122,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-<p align=center>
+<p align="center">
   <a href="https://naver.github.io/egjs/"><img height="50" src="https://naver.github.io/egjs/img/logotype1_black.svg" ></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/naver"><img height="50" src="https://naver.github.io/OpenSourceGuide/book/assets/naver_logo.png" /></a>
 </p>

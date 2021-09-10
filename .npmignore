@@ -19,17 +19,24 @@ doc
 demo
 jsdoc.json
 README.md
-CHANGELOG.md
 
 #editor settings
 .idea
 .editorconfig
-
+_site
 coverage/
 node_modules/
 .github
 .babelrc
 mocha.opts
 demo/
-packages/
+
+#packages
+packages
+
+
+#storybook
+.storybook
 storybook/
+stories/
+docs/

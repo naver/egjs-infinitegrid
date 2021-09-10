@@ -1,428 +1,470 @@
-
-import { window, document } from "./browser";
-import {
-	SUPPORT_COMPUTEDSTYLE,
-	SUPPORT_ADDEVENTLISTENER,
-	SUPPORT_PASSIVE,
-	VERTICAL,
-	HORIZONTAL,
-	DEFAULT_LAYOUT_OPTIONS,
-	DUMMY_POSITION,
-	INFINITEGRID_METHODS,
-} from "./consts";
+import Grid, { GRID_PROPERTY_TYPES, withMethods } from "@egjs/grid";
+import { diff } from "@egjs/list-differ";
+import { GROUP_TYPE, IGNORE_PROPERITES_MAP, INFINITEGRID_METHODS, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
+import { GroupManagerStatus, InfiniteGridGroupStatus } from "./GroupManager";
 import InfiniteGrid from "./InfiniteGrid";
-import { IJQuery, IRectlProperties, InnerSizeType, ClientSizeType, ScrollSizeType, OffsetSizeType, IItem, IGroup, IArrayFormat, IInfiniteGridItem } from "./types";
+import { InfiniteGridItem, InfiniteGridItemStatus } from "./InfiniteGridItem";
+import {
+  CategorizedGroup, InfiniteGridGroup, InfiniteGridInsertedItems,
+  InfiniteGridItemInfo,
+  RenderingOptions,
+} from "./types";
+
+export function isWindow(el: Window | Element): el is Window {
+  return el === window;
+}
+
+export function isNumber(val: any): val is number {
+  return typeof val === "number";
+}
+
+export function isString(val: any): val is string {
+  return typeof val === "string";
+}
+export function isObject(val: any): val is object {
+  return typeof val === "object";
+}
+
+export function flat<T>(arr: T[][]): T[] {
+  return arr.reduce((prev, cur) => {
+    return [...prev, ...cur];
+  }, []);
+}
+export function splitOptions(options: Record<string, any>) {
+  const {
+    gridOptions,
+    ...otherOptions
+  } = options;
+
+  return {
+    ...splitGridOptions(gridOptions),
+    ...otherOptions,
+  };
+}
+export function splitGridOptions(options: Record<string, any>) {
+  const nextOptions: Record<string, any> = {};
+  const gridOptions: Record<string, any> = {};
+  const defaultOptions = Grid.defaultOptions;
+
+  for (const name in options) {
+    const value = options[name];
+
+    if (!(name in IGNORE_PROPERITES_MAP)) {
+      gridOptions[name] = value;
+    }
+
+    if (name in defaultOptions) {
+      nextOptions[name] = value;
+    }
+  }
+  return {
+    ...nextOptions,
+    gridOptions,
+  };
+}
+
+export function categorize<Item extends InfiniteGridItemInfo = InfiniteGridItem>(items: Item[]) {
+  const groups: Array<CategorizedGroup<Item>> = [];
+  const groupKeys: Record<string | number, CategorizedGroup<Item>> = {};
+  const registeredGroupKeys: Record<string | number, boolean> = {};
+
+  items.filter((item) => item.groupKey != null).forEach(({ groupKey }) => {
+    registeredGroupKeys[groupKey!] = true;
+  });
+
+  let generatedGroupKey: number | string;
+  let isContinuousGroupKey = false;
+
+  items.forEach((item) => {
+    if (item.groupKey != null) {
+      isContinuousGroupKey = false;
+    } else {
+      if (!isContinuousGroupKey) {
+        generatedGroupKey = makeKey(registeredGroupKeys);
+        isContinuousGroupKey = true;
+        registeredGroupKeys[generatedGroupKey] = true;
+      }
+      item.groupKey = generatedGroupKey;
+    }
+
+    const groupKey = item.groupKey;
+    let group = groupKeys[groupKey];
+
+    if (!group) {
+      group = {
+        groupKey,
+        items: [],
+      };
+      groupKeys[groupKey] = group;
+      groups.push(group);
+    }
+
+    group.items.push(item);
+  });
+  return groups;
+}
+
+export function getNextCursors(
+  prevKeys: Array<string | number>,
+  nextKeys: Array<string | number>,
+  prevStartCursor: number,
+  prevEndCursor: number,
+) {
+  const result = diff(prevKeys, nextKeys, (key) => key);
+  let nextStartCursor = -1;
+  let nextEndCursor = -1;
+
+  // sync cursors
+  result.maintained.forEach(([prevIndex, nextIndex]) => {
+    if (prevStartCursor <= prevIndex && prevIndex <= prevEndCursor) {
+      if (nextStartCursor === -1) {
+        nextStartCursor = nextIndex;
+        nextEndCursor = nextIndex;
+      } else {
+        nextStartCursor = Math.min(nextStartCursor, nextIndex);
+        nextEndCursor = Math.max(nextEndCursor, nextIndex);
+      }
+    }
+  });
+  return {
+    startCursor: nextStartCursor,
+    endCursor: nextEndCursor,
+  };
+}
+export function splitVirtualGroups<Group extends { type: GROUP_TYPE, groupKey: string | number }>(
+  groups: Group[],
+  direction: "start" | "end",
+  nextGroups: CategorizedGroup<InfiniteGridItemStatus>[],
+) {
+  let virtualGroups: Group[] = [];
+
+  if (direction === "start") {
+    const index = findIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
+
+    if (index === -1) {
+      return [];
+    }
+    virtualGroups = groups.slice(0, index);
+  } else {
+    const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
+
+    if (index === -1) {
+      return [];
+    }
+    virtualGroups = groups.slice(index + 1);
+  }
+
+  const nextVirtualGroups = diff<{ groupKey: string | number }>(
+    virtualGroups, nextGroups, ({ groupKey }) => groupKey,
+  ).removed.map((index) => {
+    return virtualGroups[index];
+  }).reverse();
+
+  return nextVirtualGroups;
+}
+
+export function getFirstRenderingItems(
+  nextItems: InfiniteGridItemStatus[],
+  horizontal: boolean,
+) {
+  const groups = categorize(nextItems);
+
+  if (!groups[0]) {
+    return [];
+  }
+  return groups[0].items.map((item) => {
+    return new InfiniteGridItem(horizontal, {
+      ...item,
+    });
+  });
+}
+export function getRenderingItemsByStatus(
+  groupManagerStatus: GroupManagerStatus,
+  nextItems: InfiniteGridItemStatus[],
+  usePlaceholder: boolean,
+  horizontal: boolean,
+) {
+  const prevGroups = groupManagerStatus.groups;
+  const groups = categorize(nextItems);
+
+  const startVirtualGroups = splitVirtualGroups(prevGroups, "start", groups);
+  const endVirtualGroups = splitVirtualGroups(prevGroups, "end", groups);
+  const nextGroups = [
+    ...startVirtualGroups,
+    ...groups,
+    ...endVirtualGroups,
+  ] as Array<InfiniteGridGroupStatus | CategorizedGroup<InfiniteGridItemStatus>>;
+  const {
+    startCursor,
+    endCursor,
+  } = getNextCursors(
+    prevGroups.map((group) => group.groupKey),
+    nextGroups.map((group) => group.groupKey),
+    groupManagerStatus.cursors[0],
+    groupManagerStatus.cursors[1],
+  );
+
+  let nextVisibleItems = flat(nextGroups.slice(startCursor, endCursor + 1).map((group) => {
+    return group.items.map((item) => {
+      return new InfiniteGridItem(horizontal, { ...item });
+    });
+  }));
+
+  if (!usePlaceholder) {
+    nextVisibleItems = nextVisibleItems.filter((item) => {
+      return item.type !== ITEM_TYPE.VIRTUAL;
+    });
+  }
+
+  return nextVisibleItems;
+}
+
+export function mountRenderingItems(items: InfiniteGridItemInfo[], options: RenderingOptions) {
+  const {
+    grid,
+    usePlaceholder,
+    useLoading,
+    useFirstRender,
+    status,
+  } = options;
+  if (!grid) {
+    return;
+  }
+  if (usePlaceholder) {
+    grid.setPlaceholder({});
+  }
+  if (useLoading) {
+    grid.setLoading({});
+  }
+  if (status) {
+    grid.setStatus(status, true);
+  }
+
+  grid.syncItems(items);
+
+  if (useFirstRender && !status && grid.getGroups().length) {
+    grid.setCursors(0, 0, true);
+  }
+}
+export function getRenderingItems(items: InfiniteGridItemInfo[], options: RenderingOptions) {
+  const {
+    status,
+    usePlaceholder,
+    useLoading,
+    horizontal,
+    useFirstRender,
+    grid,
+  } = options;
+  let visibleItems: InfiniteGridItem[] = [];
+
+  if (grid) {
+    grid.setPlaceholder(usePlaceholder ? {} : null);
+    grid.setLoading(useLoading ? {} : null);
+    grid.syncItems(items);
+
+    visibleItems = grid.getRenderingItems();
+  } else if (status) {
+    visibleItems = getRenderingItemsByStatus(status.groupManager, items, !!usePlaceholder, !!horizontal);
+  } else if (useFirstRender) {
+    visibleItems = getFirstRenderingItems(items, !!horizontal);
+  }
+
+  return visibleItems;
+}
+
+/* Class Decorator */
+export function InfiniteGridGetterSetter(component: {
+  prototype: InfiniteGrid<any>,
+  propertyTypes: typeof GRID_PROPERTY_TYPES,
+}) {
+  const {
+    prototype,
+    propertyTypes,
+  } = component;
+  for (const name in propertyTypes) {
+    const attributes: Record<string, any> = {
+      enumerable: true,
+      configurable: true,
+      get(this: InfiniteGrid) {
+        const options = this.groupManager.options;
+        if (name in options) {
+          return options[name];
+        } else {
+          return options.gridOptions[name];
+        }
+      },
+      set(this: InfiniteGrid, value: any) {
+        const prevValue = this.groupManager[name];
+
+        if (prevValue === value) {
+          return;
+        }
+        this.groupManager.gridOptions = {
+          [name]: value,
+        };
+      },
+    };
+    Object.defineProperty(prototype, name, attributes);
+  }
+}
+
+export function makeKey(registeredKeys: Record<string, any>) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const key = new Date().getTime() + Math.floor(Math.random() * 1000);
+
+    if (!(key in registeredKeys)) {
+      return key;
+    }
+  }
+}
+
+export function convertHTMLtoElement(html: string) {
+  const dummy = document.createElement("div");
+
+  dummy.innerHTML = html;
+  return toArray(dummy.children);
+}
+
+export function convertInsertedItems(
+  items: InfiniteGridInsertedItems,
+  groupKey?: string | number,
+): InfiniteGridItemInfo[] {
+  let insertedItems: Array<string | HTMLElement | InfiniteGridItemInfo>;
+
+  if (isString(items)) {
+    insertedItems = convertHTMLtoElement(items);
+  } else {
+    insertedItems = items;
+  }
+  return insertedItems.map((item) => {
+    let element!: HTMLElement;
+    let html = "";
+    let key!: string | number;
+
+    if (isString(item)) {
+      html = item;
+    } else if ("parentNode" in item) {
+      element = item;
+      html = item.outerHTML;
+    } else {
+      return { groupKey, ...item };
+    }
+
+    return {
+      key,
+      groupKey,
+      html,
+      element,
+    };
+  });
+}
 export function toArray(nodes: HTMLCollection): HTMLElement[];
-export function toArray<T extends Node>(nodes: IArrayFormat<T>): T[];
-export function toArray<T extends Node>(nodes: IArrayFormat<T>): T[] {
-	// SCRIPT5014 in IE8
-	const array: T[] = [];
+export function toArray<T>(nodes: { length: number, [key: number]: T }): T[];
+export function toArray<T>(nodes: { length: number, [key: number]: T }): T[] {
+  const array: T[] = [];
 
-	if (nodes) {
-		const length = nodes.length;
+  if (nodes) {
+    const length = nodes.length;
 
-		for (let i = 0; i < length; i++) {
-			array.push(nodes[i]);
-		}
-	}
-	return array;
-}
-export function matchHTML(html: string) {
-	return html.match(/^<([A-z]+)\s*([^>]*)>/);
-}
-/**
- * Select or create element
- * @param {String|HTMLElement|jQuery} param
- *  when string given is as HTML tag, then create element
- *  otherwise it returns selected elements
- * @param {Boolean} multi
- * @returns {HTMLElement}
- */
-export function $(param: Window, multi?: false): Window;
-export function $(
-	param: string | HTMLElement | Array<string | HTMLElement> | IJQuery,
-	multi: true,
-): HTMLElement[];
-export function $(
-	param: string | HTMLElement | Array<string | HTMLElement> | IJQuery,
-	multi?: false,
-): HTMLElement;
-export function $(
-	param: string | HTMLElement | Window | IJQuery,
-	multi?: false,
-): HTMLElement | Window;
-export function $(
-	param: string | Window | HTMLElement | Array<string | HTMLElement> | IJQuery,
-	multi = false,
-): HTMLElement | Window | HTMLElement[] {
-	let el: Window | HTMLElement | HTMLElement[] | NodeListOf<HTMLElement> | undefined;
-
-	if (typeof param === "string") { // String (HTML, Selector)
-		// check if string is HTML tag format
-		const match = matchHTML(param);
-
-		// creating element
-		if (match) { // HTML
-			const dummy = document.createElement("div");
-
-			dummy.innerHTML = param;
-			el = dummy.childNodes as NodeListOf<HTMLElement>;
-		} else { // Selector
-			el = document.querySelectorAll<HTMLElement>(param);
-		}
-		if (multi) {
-			return toArray(el as NodeListOf<HTMLElement>);
-		} else {
-			return el && (el as NodeListOf<HTMLElement>)[0];
-		}
-	} else if (isWindow(param)) { // window
-		el = param;
-	} else if (isJQuery(param)) { // jQuery
-		el = multi ? $(param.toArray(), true) :
-			$(param.get(0), false);
-	} else if (Array.isArray(param)) {
-		el = param.map(v => $(v));
-		if (!multi) {
-			el = el.length >= 1 ? (el as HTMLElement[])[0] : undefined;
-		}
-	} else if (param.nodeName &&
-		(param.nodeType === 1 || param.nodeType === 9)) { // HTMLElement, Document
-		el = param;
-	} else {
-		el = [].slice.call(el);
-	}
-	return el as Window | HTMLElement | HTMLElement[];
-}
-export function addEvent(
-	element: Element | Window,
-	type: string,
-	handler: (...args: any[]) => any,
-	eventListenerOptions?: boolean | { [key: string]: any },
-) {
-	if (SUPPORT_ADDEVENTLISTENER) {
-		let options = eventListenerOptions || false;
-
-		if (typeof eventListenerOptions === "object") {
-			options = SUPPORT_PASSIVE ? eventListenerOptions : false;
-		}
-		element.addEventListener(type, handler, options);
-	} else if ((element as any).attachEvent) {
-		(element as any).attachEvent(`on${type}`, handler);
-	} else {
-		(element as any)[`on${type}`] = handler;
-	}
-}
-export function removeEvent(
-	element: Element | Window,
-	type: string,
-	handler: (...args: any[]) => any,
-) {
-	if (element.removeEventListener) {
-		element.removeEventListener(type, handler, false);
-	} else if ((element as any).detachEvent) {
-		(element as any).detachEvent(`on${type}`, handler);
-	} else {
-		(element as any)[`on${type}`] = null;
-	}
-}
-export function addOnceEvent(
-	element: Element,
-	type: string,
-	handler: (...args: any[]) => any,
-	eventListenerOptions?: boolean | { [key: string]: any },
-) {
-	const callback = (e: any) => {
-		removeEvent(element, type, callback);
-		handler(e);
-	};
-
-	addEvent(element, type, callback, eventListenerOptions);
-}
-export function scroll(el: HTMLElement | Window, horizontal = false) {
-	const prop = `scroll${horizontal ? "Left" : "Top"}` as "scrollLeft" | "scrollTop";
-
-	if (isWindow(el)) {
-		return window[horizontal ? "pageXOffset" : "pageYOffset"] || document.body[prop] || document.documentElement[prop];
-	} else {
-		return el[prop];
-	}
-}
-export function scrollTo(el: Window | Element, x: number, y: number) {
-	if (isWindow(el)) {
-		el.scroll(x, y);
-	} else {
-		el.scrollLeft = x;
-		el.scrollTop = y;
-	}
-}
-export function scrollBy(el: Window | Element, x: number, y: number) {
-	if (isWindow(el)) {
-		el.scrollBy(x, y);
-	} else {
-		el.scrollLeft += x;
-		el.scrollTop += y;
-	}
-}
-export function getStyle(el: Element) {
-	return (SUPPORT_COMPUTEDSTYLE ?
-		window.getComputedStyle(el) : (el as any).currentStyle) || {};
+    for (let i = 0; i < length; i++) {
+      array.push(nodes[i]);
+    }
+  }
+  return array;
 }
 
-function getSize(el: Window | Document | HTMLElement, name: "Width" | "Height", type: "client" | "offset" | "rect") {
-	if (isWindow(el)) { // WINDOW
-		return window[`inner${name}` as InnerSizeType] || document.body[`client${name}` as ClientSizeType];
-	} else if (isDocument(el)) { // DOCUMENT_NODE
-		const doc = (el as Document).documentElement;
-		const body = (el as Document).body;
 
-		return Math.max(
-			body[`scroll${name}` as ScrollSizeType], doc[`scroll${name}` as ScrollSizeType],
-			body[`offset${name}` as OffsetSizeType], doc[`offset${name}` as OffsetSizeType],
-			doc[`client${name}` as ClientSizeType],
-		);
-	} else { // NODE
-		let size = 0;
+export function findIndex<T>(arr: T[], callback: (value: T, index: number) => boolean) {
+  const length = arr.length;
+  for (let i = 0; i < length; ++i) {
+    if (callback(arr[i], i)) {
+      return i;
+    }
+  }
 
-		if (type === "rect") {
-			const clientRect = el.getBoundingClientRect();
-
-			size = name === "Width" ? clientRect.right - clientRect.left : clientRect.bottom - clientRect.top;
-		} else if (type === "offset") {
-			size = el[`offset${name}` as OffsetSizeType] || el[`client${name}` as ClientSizeType];
-		} else {
-			size = el[`client${name}` as ClientSizeType] || el[`offset${name}` as OffsetSizeType];
-		}
-		if (size) {
-			return size;
-		}
-		const cssSize = getStyle(el)[name.toLowerCase()];
-
-		return (~cssSize.indexOf("px") && parseFloat(cssSize)) || 0;
-	}
+  return -1;
 }
 
-export function getClientWidth(el: Window | Document | HTMLElement) {
-	return getSize(el, "Width", "client");
-}
-export function getClientHeight(el: Window | Document | HTMLElement) {
-	return getSize(el, "Height", "client");
-}
-export function getOffsetWidth(el: Window | Document | HTMLElement) {
-	return getSize(el, "Width", "offset");
-}
-export function getOffsetHeight(el: Window | Document | HTMLElement) {
-	return getSize(el, "Height", "offset");
-}
-export function getRectWidth(el: Window | Document | HTMLElement) {
-	return getSize(el, "Width", "rect");
-}
-export function getRectHeight(el: Window | Document | HTMLElement) {
-	return getSize(el, "Height", "rect");
-}
-export function getOffsetSize(el: HTMLElement) {
-	return {
-		width: getOffsetWidth(el),
-		height: getOffsetHeight(el),
-	};
-}
-export function getRectSize(el: HTMLElement) {
-	return {
-		width: getRectWidth(el),
-		height: getRectHeight(el),
-	};
-}
-export const STYLE: {
-	vertical: IRectlProperties,
-	horizontal: IRectlProperties,
-} = {
-	vertical: {
-		startPos1: "top",
-		endPos1: "bottom",
-		size1: "height",
-		startPos2: "left",
-		endPos2: "right",
-		size2: "width",
-	},
-	horizontal: {
-		startPos1: "left",
-		endPos1: "right",
-		size1: "width",
-		startPos2: "top",
-		endPos2: "bottom",
-		size2: "height",
-	},
-};
+export function findLastIndex<T>(arr: T[], callback: (value: T, index: number) => boolean) {
+  const length = arr.length;
+  for (let i = length - 1; i >= 0; --i) {
+    if (callback(arr[i], i)) {
+      return i;
+    }
+  }
 
-export function getStyleNames(isHorizontal: boolean): IRectlProperties {
-	return STYLE[isHorizontal ? HORIZONTAL : VERTICAL];
-}
-export function assign<A, B>(target: A, source: B): A & B;
-export function assign<A, B, C>(target: A, source1: B, source2: C): A & B & C;
-export function assign<A, B, C, D>(target: A, source1: B, source2: C, source3: D): A & B & C & D;
-export function assign(target: { [key: string]: any }, ...sources: Array<{ [key: string]: any }>): { [key: string]: any };
-export function assign(target: { [key: string]: any }, ...sources: Array<{ [key: string]: any }>) {
-	sources.forEach(source => {
-		for (const key in source) {
-			target[key] = source[key];
-		}
-	});
-	return target;
-}
-export function assignOptions<A extends { [key: string]: any }, B extends { [key: string]: any }>(
-	defaultOptions: A, options: B): typeof DEFAULT_LAYOUT_OPTIONS & A & B {
-	return assign({},
-		DEFAULT_LAYOUT_OPTIONS,
-		defaultOptions,
-		options);
+  return -1;
 }
 
-export function toZeroArray(outline?: number[]) {
-	if (!outline || !outline.length) {
-		return [0];
-	}
-	return outline;
-}
-export function cloneItems<T extends { [key: string]: any }>(items: T[]) {
-	return items.map(item => assign({}, item));
-}
-export function isJQuery(el: any): el is IJQuery {
-	return (typeof (window as any).jQuery === "function" && el instanceof (window as any).jQuery) ||
-		el.constructor.prototype.jquery && el.toArray;
-}
-export function isWindow(el: any): el is Window {
-	return el === window;
-}
-export function isDocument(el: Node): el is Document {
-	return el.nodeType === 9;
+export function getItemInfo(info: InfiniteGridItemInfo) {
+  const nextInfo: InfiniteGridItemInfo = {};
+
+  for (const name in info) {
+    if (name in ITEM_INFO_PROPERTIES) {
+      nextInfo[name] = info[name];
+    }
+  }
+
+  return nextInfo;
 }
 
-export function fill<T>(arr: T[], value: T) {
-	const length = arr.length;
+export function setPlaceholder(item: InfiniteGridItem, info: InfiniteGridItemStatus) {
+  for (const name in info) {
+    const value = info[name];
 
-	for (let i = length - 1; i >= 0; --i) {
-		arr[i] = value;
-	}
-
-	return arr;
+    if (isObject(value)) {
+      item[name] = {
+        ...item[name],
+        ...value,
+      };
+    } else {
+      item[name] = info[name];
+    }
+  }
 }
 
-export function isUndefined(target: any): target is undefined {
-	return typeof target === "undefined";
+export function isFlatOutline(start: number[], end: number[]) {
+  return start.length === end.length && start.every((pos, i) => end[i] === pos);
 }
 
-export function find<T>(arr: T[], callback: (target: T) => any) {
-	const length = arr.length;
-
-	for (let i = 0; i < length; ++i) {
-		if (callback(arr[i])) {
-			return arr[i];
-		}
-	}
-	return null;
-}
-export function findLast<T>(arr: T[], callback: (target: T) => any) {
-	const length = arr.length;
-
-	for (let i = length - 1; i >= 0; --i) {
-		if (callback(arr[i])) {
-			return arr[i];
-		}
-	}
-	return null;
-}
-export function categorize(newItems: IItem[]) {
-	const newGroups: IGroup[] = [];
-	const groupKeys: { [key: string]: IGroup } = {};
-
-	newItems.forEach(item => {
-		const { groupKey } = item;
-		let group = groupKeys[groupKey];
-
-		if (!group) {
-			group = {
-				groupKey,
-				items: [],
-			};
-			groupKeys[groupKey] = group;
-			newGroups.push(group);
-		}
-
-		group.items.push(item);
-	});
-
-	return newGroups;
+export function range(length: number): number[] {
+  const arr: number[] = [];
+  for (let i = 0; i < length; ++i) {
+    arr.push(i);
+  }
+  return arr;
 }
 
-export function resetSize(item: IInfiniteGridItem) {
-	item.orgSize = null;
-	item.size = null;
+export function flatGroups(groups: InfiniteGridGroup[]) {
+  return flat(groups.map(({ grid }) => grid.getItems() as InfiniteGridItem[]));
 }
 
-export function makeItem(groupKey: string | number, el?: HTMLElement) {
-	return {
-		el,
-		groupKey,
-		mounted: false,
-		needUpdate: true,
-		content: el ? el.outerHTML : "",
-		rect: {
-			top: DUMMY_POSITION,
-			left: DUMMY_POSITION,
-		},
-	};
+
+export function filterVirtuals<T extends InfiniteGridItem | InfiniteGridGroup>(
+  items: T[],
+  includePlaceholders?: boolean
+): T[] {
+  if (includePlaceholders) {
+    return items;
+  } else {
+    return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
+  }
 }
 
 /**
- * Decorator that makes the method of infinitegrid available in the framework.
- * @ko 프레임워크에서 인피니트그리드의 메소드를 사용할 수 있게 하는 데코레이터.
- * @memberof eg.InfiniteGrid
+ * Decorator that makes the method of InfiniteGrid available in the framework.
+ * @ko 프레임워크에서 InfiniteGrid의 메소드를 사용할 수 있게 하는 데코레이터.
  * @private
  * @example
  * ```js
- * import NativeInfiniteGrid, { withInfiniteGridMethods } from "@egjs/infinitegrid";
+ * import { withInfiniteGridMethods } from "@egjs/infinitegrid";
  *
- * class InfiniteGrid extends React.Component<Partial<InfiniteGridProps & InfiniteGridOptions>> {
+ * class Grid extends React.Component<Partial<InfiniteGridProps & InfiniteGridOptions>> {
  *   &#64;withInfiniteGridMethods
- *   private infinitegrid: NativeInfiniteGrid;
+ *   private grid: NativeGrid;
  * }
  * ```
  */
-export function withInfiniteGridMethods(prototype: any, infinitegridName: string) {
-	Object.keys(INFINITEGRID_METHODS).forEach((name: keyof InfiniteGrid) => {
-		if (prototype[name]) {
-			return;
-		}
-		prototype[name] = function(...args) {
-			const result = this[infinitegridName][name](...args);
+export const withInfiniteGridMethods = withMethods(INFINITEGRID_METHODS);
 
-			// fix `this` type to return your own `infinitegrid` instance to the instance using the decorator.
-			if (result === this[infinitegridName]) {
-				return this;
-			} else {
-				return result;
-			}
-		};
-	});
-}
-
-export function hasClass(element: HTMLElement, className: string) {
-	if (element.classList) {
-		return element.classList.contains(className);
-	}
-	return !!element.className.match(new RegExp(`(\\s|^)${className}(\\s|$)`));
-}
-
-export function addClass(element: HTMLElement, className: string) {
-	if (element.classList) {
-		element.classList.add(className);
-	} else {
-		element.className += ` ${className}`;
-	}
-}
-export function isObject(value: any): value is object {
-	return typeof value === "object";
-}
-
-export function getRangeCost(value: number, range: number[]) {
-	return Math.max(value - range[1], range[0] - value, 0) + 1;
-}

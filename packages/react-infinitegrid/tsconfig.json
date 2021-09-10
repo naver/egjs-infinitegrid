@@ -6,21 +6,23 @@
       "dom.iterable",
       "esnext"
     ],
-    "experimentalDecorators": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "experimentalDecorators": true,
+    "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "./global.d.ts"
   ]
 }

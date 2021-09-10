@@ -1,0 +1,57 @@
+<template>
+  <#DeClassName
+    class="container"
+#Options
+    v-on:request-append="onRequestAppend"
+  >
+    <div
+      class="item"
+      v-for="item in items"
+      :key="item.key"
+      :data-grid-groupkey="item.groupKey"
+    >
+      <div class="thumbnail">
+        <img
+          v-bind:src="
+            'https://naver.github.io/egjs-infinitegrid/assets/image/' +
+            ((item.key % 33) + 1) +
+            '.jpg'
+          "
+          alt="egjs" #Maintained
+        />
+      </div>
+      <div class="info">egjs {{ item.key }}</div>
+    </div>
+  </#DeClassName>
+</template>
+<script lang="ts">
+import { #ClassName } from "@egjs/vue-infinitegrid";
+
+export default {
+  components: {
+    #ClassName,
+  },
+  data() {
+    return {
+      items: this.getItems(0, 10),
+    };
+  },
+  methods: {
+    getItems(nextGroupKey: number, count: number) {
+      const nextItems: any[] = [];
+
+      for (let i = 0; i < count; ++i) {
+        const nextKey = nextGroupKey * count + i;
+
+        nextItems.push({ groupKey: nextGroupKey, key: nextKey });
+      }
+      return nextItems;
+    },
+    onRequestAppend(e) {
+      const nextGroupKey = (+e.groupKey! || 0) + 1;
+
+      this.items = [...this.items, ...this.getItems(nextGroupKey, 10)];
+    },
+  },
+};
+</script>

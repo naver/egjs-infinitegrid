@@ -1,55 +1,58 @@
 {
-	"tags": {
-		"allowUnknownTags" : true,
-		"dictionaries": ["jsdoc","closure"]
-	},
-	"source": {
-		"include": ["src", "src/layouts", "README.md" , "node_modules/@egjs/component/src/"],
-		"includePattern": ".+\\.(j|t)s(doc|x)?$",
-		"excludePattern": "(^|\\/|\\\\)_"
-	},
-	"opts": {
-		"template": "node_modules/egjs-jsdoc-template",
-		"destination": "./doc/",
-		"ignores": ["eg.Component"],
-		"expendsItemMembers": true
-	},
-	"plugins": [
-		"plugins/markdown",
-		"node_modules/egjs-jsdoc-template/jsdoc-plugin/ko",
-		"node_modules/egjs-jsdoc-template/jsdoc-plugin/group",
-		"node_modules/egjs-jsdoc-template/jsdoc-plugin/codepen",
-		"node_modules/egjs-jsdoc-template/jsdoc-plugin/support"
-	],
-	"templates": {
-		"cleverLinks": true,
-		"monospaceLinks": true,
-		"default": {
-			"outputSourceFiles" : true
-		},
-		"applicationName": "eg.InfiniteGrid",
-		"disqus": "egjs",
-		"googleAnalytics": "UA-70842526-18",
-		"openGraph": {
-			"title": "",
-			"type": "website",
-			"image": "",
-			"site_name": "",
-			"url": ""
-		},
-		"meta": {
-			"title": "egjs::infinitegrid - API",
-			"description": "A module used to arrange card elements including content infinitely according to layout type. With this module, you can implement various layouts composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
-			"keyword": ""
-		},
-		"linenums": true,
-		"link": {
-			"canonical": "http://naver.github.io/egjs-infinitegrid/release/latest/doc/"
-		}
-	},
-	"markdown": {
-		"parser": "gfm",
-		"hardwrap": true,
-		"tags": ["examples", "ko"]
-	}
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": [
+      "jsdoc",
+      "closure"
+    ]
+  },
+  "source": {
+    "include": [
+      "src",
+      "README.md",
+      "node_modules/@egjs/grid/src",
+      "node_modules/@egjs/component/src/Component.ts",
+      "node_modules/@egjs/component/src/ComponentEvent.ts"
+    ],
+    "includePattern": ".+\\.(j|t)s(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "template": "node_modules/egjs-jsdoc-template",
+    "destination": "./doc/",
+    "expendsItemMembers": true,
+    "recurse": true
+  },
+  "plugins": [
+    "plugins/markdown",
+    "node_modules/egjs-jsdoc-template/jsdoc-plugin/ko",
+    "node_modules/egjs-jsdoc-template/jsdoc-plugin/group",
+    "node_modules/egjs-jsdoc-template/jsdoc-plugin/support"
+  ],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true,
+    "default": {
+      "outputSourceFiles": true
+    },
+    "applicationName": "eg.InfiniteGrid",
+    "disqus": "egjs",
+    "googleAnalytics": "UA-70842526-18",
+    "openGraph": {
+      "title": "",
+      "type": "website",
+      "image": "",
+      "site_name": "",
+      "url": ""
+    },
+    "meta": {
+      "title": "egjs::InfiniteGrid - API",
+      "description": "..",
+      "keyword": "InfiniteGrid, Grid, Masonry, Justified, Layout, Packing, Frame"
+    },
+    "linenums": true,
+    "link": {
+      "canonical": "https://naver.github.io/egjs-infinitegrid/release/latest/doc/"
+    }
+  }
 }

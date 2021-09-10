@@ -1,0 +1,63 @@
+{
+  "name": "@egjs/vue3-infinitegrid",
+  "version": "4.0.0",
+  "description": "A Vue3 component that can arrange items infinitely according to the type of grids",
+  "sideEffects": false,
+  "types": "declaration/index.d.ts",
+  "module": "dist/infinitegrid.esm.js",
+  "main": "dist/infinitegrid.cjs.js",
+  "scripts": {
+    "postinstall": "node ./config/convert.js",
+    "storybook": "start-storybook -p 6012",
+    "build": "rm -rf dist && npm run postinstall && rollup -c && npm run declaration && print-sizes ./dist",
+    "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
+    "build-storybook": "build-storybook"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naver/egjs-infinitegrid/tree/main/packages/vue3-infinitegrid"
+  },
+  "author": {
+    "name": "NAVER Corp."
+  },
+  "namespace": {
+    "eg": "eg"
+  },
+  "homepage": "https://naver.github.io/egjs-infinitegrid",
+  "bugs": {
+    "url": "https://github.com/naver/egjs-infinitegrid/issues"
+  },
+  "keywords": [
+    "vue",
+    "lazyloading",
+    "ready",
+    "grid",
+    "image",
+    "video",
+    "egjs",
+    "masonry",
+    "justified",
+    "packing",
+    "frame",
+    "layout"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@egjs/build-helper": "^0.1.2",
+    "@storybook/addon-actions": "^6.3.7",
+    "@storybook/addon-essentials": "^6.3.7",
+    "@storybook/addon-links": "^6.3.7",
+    "@storybook/vue3": "^6.3.7",
+    "babel-loader": "^8.2.2",
+    "print-sizes": "^0.1.0",
+    "rollup": "^1.32.1",
+    "rollup-plugin-vue": "^6.0.0",
+    "sync-exec": "^0.6.2",
+    "typescript": "^4.3.5",
+    "vue": "^3.2.4",
+    "vue-loader": "^16.5.0"
+  },
+  "dependencies": {
+    "@egjs/infinitegrid": "^4.0.0"
+  }
+}

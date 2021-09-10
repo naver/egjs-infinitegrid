@@ -1,14 +1,9 @@
-export const PROP_NAMES = [
-	"groupBy",
-	"itemBy",
-	"items",
-	"useFirstRender",
-	"loading",
-	"status",
-	"layoutType",
-	"options",
-	"layoutOptions",
-	"_forceCount",
-	"viewer",
-	"container"
+export const SVELTE_INFINITEGRID_PROPS = [
+  "status",
+  "useFirstRender",
+  "useLoading",
+  "usePlaceholder",
+  "items",
+  "itemBy",
+  "groupBy",
 ];

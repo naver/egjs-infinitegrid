@@ -1,228 +1,197 @@
-import NativeInfiniteGrid, {
-	GridLayout,
-	ILayout,
-	categorize,
-	ItemManager,
-	IItem,
-	IInfiniteGridOptions,
-	IInfiniteGridStatus,
-	CONTAINER_CLASSNAME,
-	INFINITEGRID_EVENTS,
-	withInfiniteGridMethods
+/**
+ * egjs-infinitegrid
+ * Copyright (c) 2021-present NAVER Corp.
+ * MIT license
+ */
+ import VanillaInfiniteGrid, {
+  InfiniteGridFunction,
+  InfiniteGridOptions,
+  INFINITEGRID_EVENTS,
+  INFINITEGRID_METHODS,
+  ITEM_TYPE,
+  Renderer,
+  getRenderingItems,
+  mountRenderingItems,
 } from "@egjs/infinitegrid";
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { InfiniteGridType } from "./types";
-import { VNode, VNodeData, CreateElement } from "vue";
+import { VUE_INFINITEGRID_PROPS } from "./consts";
+import { FrameInfiniteGrid } from "./grids/FrameInfiniteGrid";
+import { JustifiedInfiniteGrid } from "./grids/JustifiedInfiniteGrid";
+import { MasonryInfiniteGrid } from "./grids/MasonryInfiniteGrid";
+import { PackingInfiniteGrid } from "./grids/PackingInfiniteGrid";
+import { VueInfiniteGridInterface, VueInnerInfiniteInterface } from "./types";
+import { decamelize } from "./utils";
 
-@Component({})
-export default class InfiniteGrid<T extends ILayout = GridLayout> extends Vue {
-	// Tag of wrapper element
-	@Prop({ type: String, default: "div", required: false }) tag!: string;
-	// Tag of container element ( wrapper > container )
-	@Prop({ type: String, default: "div", required: false }) containerTag!: string;
-	@Prop({ type: Boolean, default: false, required: false }) useFirstRender!: boolean;
-	@Prop({ type: Object, default: null, required: false }) status!: IInfiniteGridStatus | null;
-	@Prop({ type: Object, default: () => ({}), required: false }) options!: Partial<IInfiniteGridOptions>;
-	@Prop({ type: Object, default: () => ({}), required: false }) layoutOptions!: Partial<T["options"]>;
-	@Prop({ type: Function, default: GridLayout, required: false }) layoutType!: ILayout;
-	// Data of wrapper element
-	@Prop({ type: Object, default: () => ({}), required: false }) wrapperData!: VNodeData;
-	@Prop({ type: Function, default: (item: VNode, index: number) => {
-		const attrs = item.data && item.data.attrs;
-		const props = item.data && item.data.props;
+export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string, GridClass: T): VueInfiniteGridInterface<T> {
+  const {
+    propertyTypes,
+    defaultOptions,
+  } = GridClass;
+  const watch: Record<string, any> = {};
 
-		// For DOM elements
-		if (attrs) {
-			if ("data-groupkey" in attrs) {
-				return attrs["data-groupkey"];
-			} else if ("groupKey" in attrs) {
-				return attrs.groupKey;
-			}
-		}
-		// For components
-		if (props) {
-			if ("data-groupkey" in props) {
-				return props["data-groupkey"];
-			} else if ("groupKey" in props) {
-				return props.groupKey;
-			}
-		}
+  for (const name in propertyTypes) {
+    watch[name] = function (this: any, value: any) {
+      this.$_grid[name] = value;
+    };
+  }
+  const methods: Record<string, any> = {};
 
-		return "";
-	}}) groupBy!: (item: any, index: number) => number | string;
+  INFINITEGRID_METHODS.forEach(name => {
+    methods[name] = function (this: any, ...args: any[]) {
+      return this.$_grid[name](...args);
+    };
+  });
 
-	@withInfiniteGridMethods
-	private $_nativeInfiniteGrid!: NativeInfiniteGrid;
-	private $_wrapperElement!: HTMLElement;
-	private $_layout!: string;
+  methods.$_getItemInfos = function (this: VueInnerInfiniteInterface) {
+    const props = this.$props;
+    const slots = this.$slots.default as any[] | (() => any);
+    const itemBy = props.itemBy || ((item: any, i: number) => {
+      const key = item.key;
 
-	public mounted(): void {
-		const wrapperElement = this.$el as HTMLElement;
-		this.$_nativeInfiniteGrid = new NativeInfiniteGrid(wrapperElement, {
-			...this.options,
-			renderExternal: true,
-		});
-		this.$_wrapperElement = wrapperElement;
-		this.$_layout = "";
+      return key == null ? i : key;
+    });
+    const attributePrefix = props.attributePrefix || VanillaInfiniteGrid.defaultOptions.attributePrefix;
 
-		this.$_bindEvents();
+    const groupBy = props.groupBy || ((item: any) => {
+      const props = item.props || item.data?.attrs;
 
-		const nativeIG = this.$_nativeInfiniteGrid;
-		nativeIG.setLayout(this.layoutType, this.layoutOptions);
+      return props ? props[`${attributePrefix}groupkey`] : undefined;
+    });
 
-		this.$_setLoadingElement();
+    let children: any[] = [];
 
-		if (this.status) {
-			nativeIG.setStatus(this.status, true, this.$_getElements());
-		} else {
-			nativeIG.beforeSync(this.$_toItems());
-			nativeIG.layout(true);
-		}
-	}
+    if (Array.isArray(slots)) {
+      children = slots;
+    }
+    // Check Vue3 Slot Type
 
-	public updated(): void {
-		const nativeIG = this.$_nativeInfiniteGrid;
-		const layout = this.$_layout;
-		const elements = this.$_getElements();
+    return children.map((child, i) => {
+      return {
+        groupKey: groupBy(child, i),
+        key: itemBy(child, i),
+        data: {
+          vnode: child,
+        },
+      };
+    });
+  }
 
-		this.$_setLoadingElement();
-		nativeIG.sync(elements);
+  methods.$_getVisibleChildren = function (this: VueInnerInfiniteInterface) {
+    const props = this.$props;
+    const scopedSlots = this.$scopedSlots || this.$slots;
+    const placeholder = scopedSlots.placeholder;
+    const loading = scopedSlots.loading;
 
-		if (layout) {
-			this.$_layout = "";
-			nativeIG.layout(layout === "relayout");
-		}
-	}
+    const visibleItems = getRenderingItems(this.$_getItemInfos(), {
+      grid: "$_grid" in this ? this.$_grid : null,
+      status: props.status,
+      horizontal: props.horizontal,
+      useFirstRender: props.useFirstRender,
+      usePlaceholder: !!scopedSlots.placeholder,
+      useLoading: !!scopedSlots.loading,
+    })
 
-	public render(h: CreateElement) {
-		const nativeIG = this.$_nativeInfiniteGrid;
-		const items = this.$_toItems();
+    return visibleItems.map((item) => {
+      if (item.type === ITEM_TYPE.VIRTUAL) {
+        return placeholder!({ item });
+      } else if (item.type === ITEM_TYPE.LOADING) {
+        return loading!({ item });
+      } else {
+        return item.data.vnode;
+      }
+    });
+  };
+  methods.$_renderContainer = function (this: VueInnerInfiniteInterface, h: any) {
+    const props = this.$props;
+    const visibleChildren = this.$_getVisibleChildren();
+    const container = props.container;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const containerTag = props.containerTag as any || "div";
 
-		let visibleChildren: VNode[] = [];
-		if (nativeIG) {
-			const result = nativeIG.beforeSync(items.filter(val => !val.isLoading));
-			this.$_layout = result === "relayout"
-				? result
-				: (this.$_layout || result);
+    if (container === true) {
+      return h(containerTag, {
+        ref: "containerRef",
+      }, visibleChildren);
+    }
+    return visibleChildren;
+  }
 
-			visibleChildren = nativeIG.getRenderingItems().map(item => item.vnode);
-			if (this.$slots.loading) {
-				visibleChildren.push(...this.$slots.loading);
-			}
-		} else {
-			const groups = categorize(items);
-			if (this.status) {
-				const { startCursor, endCursor } = this.status._infinite;
+  return {
+    name: tagName,
+    props: [...VUE_INFINITEGRID_PROPS, ...Object.keys(defaultOptions)],
+    watch,
+    methods,
+    render(this: VueInnerInfiniteInterface, h: any) {
+      const props = this.$props;
+      const tag = props.tag || "div";
 
-				visibleChildren = ItemManager.pluck(
-					groups.slice(startCursor, endCursor + 1),
-					"items",
-				).map((item: IItem) => item.vnode);
-			} else if (this.useFirstRender) {
-				visibleChildren = items.map((item: IItem) => item.vnode);
-			}
-		}
+      return h(
+        tag,
+        {
+          ref: "wrapperRef",
+        },
+        this.$_renderContainer(h),
+      );
+    },
+    created(this: VueInnerInfiniteInterface) {
+      this.$_renderer = new Renderer();
+    },
+    mounted(this: VueInnerInfiniteInterface) {
+      const defaultOptions = GridClass.defaultOptions;
+      const options: Partial<InfiniteGridOptions> = {};
+      const props = this.$props;
+      const containerElement = this.$refs.containerRef;
 
-		// To bypass
-		// [Vue warn]: Avoid using observed data object as vnode data: {}
-		const wrapperData = {};
-		for (const key in this.wrapperData) {
-			wrapperData[key] = this.wrapperData[key];
-		}
+      for (const name in defaultOptions) {
+        if (name in props && typeof props[name] !== "undefined") {
+          (options as any)[name] = (props as any)[name];
+        }
+      }
 
-		return h(this.tag, wrapperData, this.$_getContainer(visibleChildren, h));
-	}
+      if (containerElement) {
+        options.container = containerElement;
+      }
 
-	public beforeDestroy() {
-		this.$_nativeInfiniteGrid.destroy();
-	}
-	public setStatus(status: IInfiniteGridStatus, applyScrollPos?: boolean, syncElements: HTMLElement[] = this.$_getElements()) {
-		this.$_nativeInfiniteGrid.setStatus(status, applyScrollPos, syncElements);
-		return this as any;
-	}
+      options.renderer = this.$_renderer;
 
-	private $_bindEvents(): void {
-		const nativeIG = this.$_nativeInfiniteGrid;
+      const grid = new GridClass(this.$refs.wrapperRef, options);
 
-		INFINITEGRID_EVENTS.forEach(eventName => {
-			nativeIG.on((eventName as any), (e: any) => {
-				e.currentTarget = this;
-				// Make events from camelCase to kebab-case
-				this.$emit(eventName.replace(/([A-Z])/g, "-$1").toLowerCase(), e);
-			});
-		});
+      for (const name in INFINITEGRID_EVENTS) {
+        const eventName = (INFINITEGRID_EVENTS as any)[name];
+        const vueEventName = decamelize(eventName);
 
-		nativeIG.on("render", ({ next }) => {
-			this.$forceUpdate();
-			this.$nextTick(() => {
-				next();
-			});
-		});
-	}
+        grid.on(eventName, (e: any) => {
+          this.$emit(vueEventName, e);
+        });
+      }
 
-	private $_getContainer(children: VNode[], h: CreateElement): VNode[] {
-		const isOverflowScroll = this.options.isOverflowScroll;
+      this.$_grid = grid;
+      this.$_renderer.on("requestUpdate", () => {
+        this.$forceUpdate();
+      });
+      const scopedSlot = this.$scopedSlots || this.$slots;
 
-		if (!isOverflowScroll) {
-			return children;
-		}
-
-		const containerData: VNodeData = {
-			class: {
-				[CONTAINER_CLASSNAME]: true,
-			},
-			ref: CONTAINER_CLASSNAME,
-		};
-
-		return [h(this.containerTag, containerData, children)];
-	}
-
-	private $_getElements(): HTMLElement[] {
-		const container = this.$refs && this.$refs[CONTAINER_CLASSNAME] as HTMLElement;
-		const elements =  [].slice.call((container || this.$_wrapperElement).children);
-
-		if (this.$slots.loading) {
-			return elements.slice(0, -1);
-		}
-		return elements;
-	}
-
-	private $_toItems(): IItem[] {
-		const items = this.$slots.default;
-		if (!items) {
-			return [];
-		}
-
-		return items.map((child: VNode, index: number) => {
-			const groupKey = this.groupBy(child, index) || "";
-			const itemKey = child.key != null
-				? child.key
-				: `${child.tag}-${index}`;
-
-			return {
-				groupKey,
-				itemKey,
-				vnode: child,
-			};
-		});
-	}
-	private $_setLoadingElement() {
-		const ig = this.$_nativeInfiniteGrid;
-
-		if (this.$slots.loading) {
-			const container = this.$refs && this.$refs[CONTAINER_CLASSNAME] as HTMLElement;
-			const loadingElement = (container || this.$_wrapperElement).lastElementChild as HTMLElement;
-
-			if (loadingElement) {
-				ig.setLoadingBar({
-					append: loadingElement,
-					prepend: loadingElement,
-				});
-				return;
-			}
-		}
-		ig.setLoadingBar();
-	}
+      mountRenderingItems(this.$_getItemInfos(), {
+        grid: this.$_grid,
+        status: props.status,
+        horizontal: props.horizontal,
+        useFirstRender: props.useFirstRender,
+        usePlaceholder: !!scopedSlot.placeholder,
+        useLoading: !!scopedSlot.loading,
+      });
+      this.$_renderer.updated();
+    },
+    updated(this: VueInnerInfiniteInterface) {
+      this.$_renderer.updated();
+    },
+    beforeDestroy(this: any) {
+      this.$_grid.destroy();
+    },
+  } as any;
 }
 
-export default interface InfiniteGrid extends InfiniteGridType<InfiniteGrid> {}
+export function install(app: { component: (name: string, module: any) => any }): void {
+  app.component("masonry-infinite-grid", MasonryInfiniteGrid);
+  app.component("justified-infinite-grid", JustifiedInfiniteGrid);
+  app.component("frame-infinite-grid", FrameInfiniteGrid);
+  app.component("packing-infinite-grid", PackingInfiniteGrid);
+}

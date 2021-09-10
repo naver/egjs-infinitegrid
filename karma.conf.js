@@ -1,83 +1,56 @@
-module.exports = config => {
-	const karmaConfig = {
-		frameworks: ["mocha", "chai", "sinon"],
+module.exports = function (config) {
+  const karmaConfig = {
+    frameworks: ["mocha", "chai", "karma-typescript", "viewport"],
+    mime: {
+      'text/x-typescript': ['ts', 'tsx']
+    },
+    client: {
+      mocha: {
+        opts: "./mocha.opts",
+      },
+    },
+    files: [
+      "./src/**/*.ts",
+      "./test/unit/**/*.ts",
+    ],
+    preprocessors: {
+      "src/**/*.ts": ["karma-typescript"],
+      "test/unit/**/*.ts": ["karma-typescript"],
+    },
+    karmaTypescriptConfig: {
+      tsconfig: "./tsconfig.test.json",
+      reports: {
+        html: {
+          "directory": "coverage",
+          "subdirectory": "./"
+        },
+        lcovonly: {
+          "directory": "coverage",
+          "filename": "lcov.info",
+          "subdirectory": "."
+        },
+      },
+      coverageOptions: {
+        instrumentation: true,
+        exclude: /test/i,
+      }
+    },
+    browsers: [],
+    customLaunchers: {
+      CustomChromeHeadless: {
+        base: "ChromeHeadless",
+        flags: ["--window-size=400,400", "--no-sandbox", "--disable-setuid-sandbox"],
+      },
+    },
+    reporters: ["mocha"],
+  };
 
-		// list of files / patterns to load in the browser
-		files: [
-			"./node_modules/babel-polyfill/dist/polyfill.js",
-			"./node_modules/lite-fixture/index.js",
-			"./test/unit/**/*.spec.js",
-			"test/unit/image/*.jpg",
-			"test/unit/video/*.mp4",
-		],
-		client: {
-			mocha: {
-				opts: "./mocha.opts",
-			},
-		},
-		webpack: {
-			devtool: "inline-source-map",
-			resolve: {
-				extensions: [".ts", ".js"],
-			},
-			module: {
-				rules: [
-					{
-						test: /\.js$/,
-						exclude: /node_modules/,
-						loader: "babel-loader",
-					},
-					{
-						test: /\.ts$/,
-						exclude: /node_modules/,
-						use: {
-							loader: "awesome-typescript-loader",
-							options: {
-								transpileOnly: true,
-								module: "commonjs",
-							},
-						},
-					},
-				],
-			},
-		},
+  karmaConfig.browsers.push(config.chrome ? "Chrome" : "CustomChromeHeadless");
 
-		// preprocess matching files before serving them to the browser
-		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-		preprocessors: {
-			"./test/**/*.spec.js": config.coverage ? ["webpack"] : ["webpack", "sourcemap"],
-		},
+  if (config.coverage) {
+    karmaConfig.reporters.push("karma-typescript");
+    karmaConfig.singleRun = true;
+  }
 
-		browsers: [],
-
-		// you can define custom flags
-		customLaunchers: {
-			CustomChromeHeadless: {
-				base: "ChromeHeadless",
-				flags: ["--window-size=600,300", "--no-sandbox", "--disable-setuid-sandbox"],
-			},
-		},
-
-		reporters: ["mocha"],
-		webpackMiddleware: {
-			noInfo: true,
-		},
-	};
-
-	karmaConfig.browsers.push(config.chrome ? "Chrome" : "CustomChromeHeadless");
-
-	if (config.coverage) {
-		karmaConfig.reporters.push("coverage-istanbul");
-		karmaConfig.coverageIstanbulReporter = {
-			reports: ["text-summary", "html", "lcovonly"],
-			dir: "./coverage",
-		};
-		karmaConfig.webpack.module.rules.unshift({
-			test: /\.ts$/,
-			exclude: /(node_modules|test)/,
-			loader: "istanbul-instrumenter-loader",
-		});
-		karmaConfig.singleRun = true;
-	}
-	config.set(karmaConfig);
+  config.set(karmaConfig);
 };

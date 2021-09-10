@@ -1,10 +1,13 @@
-import NativeInfiniteGrid, { IInfiniteGridStatus, withInfiniteGridMethods } from '@egjs/infinitegrid';
-import { InfiniteGridType } from './types';
+/**
+ * egjs-infinitegrid
+ * Copyright (c) 2021-present NAVER Corp.
+ * MIT license
+ */
+import VanillaInfiniteGrid, { InfiniteGridMethods, withInfiniteGridMethods } from '@egjs/infinitegrid';
 import { NgxInfiniteGridComponent } from './ngx-infinitegrid.component';
 
-export default class NgxInfiniteGridInterface {
+export class NgxInfiniteGridInterface {
   @withInfiniteGridMethods
-  protected ig!: NativeInfiniteGrid;
-
+  protected vanillaGrid!: VanillaInfiniteGrid;
 }
-export default interface NgxInfiniteGridInterface extends InfiniteGridType<NgxInfiniteGridComponent> { }
+export interface NgxInfiniteGridInterface extends InfiniteGridMethods<NgxInfiniteGridComponent> { }

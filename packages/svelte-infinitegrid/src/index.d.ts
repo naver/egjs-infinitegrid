@@ -1,33 +1,20 @@
-import InfiniteGrid, { InfiniteGridMethods } from "@egjs/infinitegrid";
+import VanillaGrid, {
+  FrameGridOptions, GridMethods, GridOptions, JustifiedGridOptions,
+  MasonryGridOptions, PackingGridOptions,
+} from "@egjs/grid";
+import { SvelteComponentDev } from "svelte/internal";
 
 
-interface ComponentOptions {
-    target: HTMLElement;
-    anchor?: HTMLElement | null;
-    props?: {};
-    hydrate?: boolean;
-    intro?: boolean;
+export default abstract class Grid<T extends GridOptions> extends SvelteComponentDev {
+  $$prop_def: T;
+  getInstance(): VanillaGrid;
 }
 
-interface InfiniteGridComponent extends InfiniteGridMethods {
-    new(options: ComponentOptions): any;
-    // client-side methods
-    $set(props: {}): void;
-    $on(event: string, callback: (event: CustomEvent) => void): void;
-    $destroy(): void;
-    // server-side methods
-    render(props?: {}): {
-        html: string;
-        css: { code: string; map: string | null };
-        head?: string;
-    };
+export default interface Grid<T extends GridOptions> extends GridMethods<Grid<T>> {
+  // eslint-disable-next-line semi
 }
 
-
-export default InfiniteGridComponent;
-
-export interface GridLayout extends InfiniteGridComponent {}
-export interface JustifiedLayout extends InfiniteGridComponent {}
-export interface SquareLayout extends InfiniteGridComponent {}
-export interface FrameLayout extends InfiniteGridComponent {}
-export interface PackingLayout extends InfiniteGridComponent {}
+export class MasonryGrid extends Grid<MasonryGridOptions> { }
+export class JustifiedGrid extends Grid<JustifiedGridOptions> { }
+export class FrameGrid extends Grid<FrameGridOptions> { }
+export class PackingGrid extends Grid<PackingGridOptions> { }

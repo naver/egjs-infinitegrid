@@ -1,250 +1,159 @@
-# egjs-infinitegrid
+<h1 align="center" style="max-width: 100%;">
+  <img width="256" alt="InfiniteGrid Logo" src="https://naver.github.io/egjs-infinitegrid/img/infinitegrid_logo.png" style="max-width: 100%;" /><br/>
+  <a href="https://naver.github.io/egjs-infinitegrid/">@egjs/infinitegrid</a>
+</h1>
 
-[![npm version](https://img.shields.io/npm/v/@egjs/infinitegrid.svg?style=flat-square&color=007acc&label=Version)](https://badge.fury.io/js/%40egjs%2Finfinitegrid) [![Travis CI](https://img.shields.io/travis/naver/egjs-infinitegrid.svg?style=flat-square&label=Build)](https://travis-ci.org/naver/egjs-infinitegrid) [![Coverage Status](https://img.shields.io/coveralls/github/naver/egjs-infinitegrid.svg?style=flat-square&label=Coverage)](https://coveralls.io/github/naver/egjs-infinitegrid?branch=master) [![React](https://img.shields.io/static/v1.svg?label=&message=React&style=flat-square&logoColor=white&color=61aaee)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid) [![Angular](https://img.shields.io/static/v1.svg?label=&message=Angular&style=flat-square&logoColor=white&color=dd0031)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid) [![Vue](https://img.shields.io/static/v1.svg?label=&message=Vue&style=flat-square&logoColor=white&color=42b883)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid) [![Svelte](https://img.shields.io/static/v1.svg?label=&message=Svelte&style=flat-square&logoColor=white&color=ff3d00)](https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid)
+<p align="center" style="line-height: 2;">
+  <a href="https://www.npmjs.com/package/@egjs/infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/infinitegrid.svg?style=flat-square&color=007acc&label=version&logo=NPM" alt="version" /></a>
+  <a href="https://www.npmjs.com/package/@egjs/infinitegrid" target="_blank"><img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/infinitegrid.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc" /></a>
+  <a href="https://travis-ci.org/naver/egjs-infinitegrid" target="_blank"><img alt="Travis (.org)" src="https://img.shields.io/travis/naver/egjs-infinitegrid.svg?style=flat-square&label=build&logo=travis%20ci" /></a>
+  <a href="https://coveralls.io/github/naver/egjs-infinitegrid?branch=master&style=flat-square" target="_blank"><img alt="Coveralls github" src="https://img.shields.io/coveralls/github/naver/egjs-infinitegrid.svg?style=flat-square&label=%E2%9C%85%20coverage" /></a>
+    <a href="https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE" target="_blank"><img alt="GitHub" src="https://img.shields.io/github/license/naver/egjs-infinitegrid.svg?style=flat-square&label=%F0%9F%93%9C%20license&color=08CE5D" /></a>
+</p>
+<p align="center" style="line-height: 2;">
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid/README.md" target="_blank"><img alt="Angular" src="https://img.shields.io/static/v1.svg?label=&message=Angular&style=flat-square&logo=Angular&color=dd0031" /></a>
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid/README.md" target="_blank"><img alt="React" src="https://img.shields.io/static/v1.svg?label=&message=React&style=flat-square&logo=React&logoColor=white&color=61dafb" /></a>
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid/README.md" target="_blank"><img alt="Vue" src="https://img.shields.io/static/v1.svg?label=&message=Vue&style=flat-square&logo=Vue.js&logoColor=white&color=42b883" /></a>
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/preact-infinitegrid/README.md" target="_blank"><img alt="Preact" src="https://img.shields.io/static/v1.svg?label=&message=Preact&style=flat-square&logo=Preact&logoColor=white&color=673ab8" /></a>
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid/README.md" target="_blank"><img alt="Svelte" src="https://img.shields.io/static/v1.svg?label=&message=Svelte&style=flat-square&logo=svelte&logoColor=white&color=FF3E00" /></a>
+  <img src="https://img.shields.io/static/v1.svg?label=&message=TypeScript&color=294E80&style=flat-square&logo=typescript" />
+</p>
+
+<h3 align="center">
+  <a href="https://naver.github.io/egjs-infinitegrid/">Demo</a> / <a href="https://naver.github.io/egjs-infinitegrid/docs/api/InfiniteGrid">Documentation</a> / <a href="https://naver.github.io/egjs/"><img height="20" src="https://naver.github.io/egjs/img/logo.svg"/> Other components</a>
+</h3>
+
+<p align="center">
+  <b>A module used to arrange elements including content infinitely according to grid type. With this module, you can implement various grids composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance</b><br />📱💻🖥
+</p>
+
+<p align="center">
+  <b>Supported Frameworks</b><br/>
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid/README.md"><img width="45" src="https://naver.github.io/egjs-infinitegrid/img/icons/angular.svg" alt="AngularJS" /></a>&nbsp;&nbsp;
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid/README.md"><img width="45" src="https://naver.github.io/egjs-infinitegrid/img/icons/react.svg" alt="React" /></a>&nbsp;&nbsp;
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid/README.md"><img width="45" src="https://naver.github.io/egjs-infinitegrid/img/icons/vue.svg" alt="Vue.js" /></a>&nbsp;&nbsp;
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid/README.md"><img width="45" src="https://naver.github.io/egjs-inifinitegrid/img/icons/svelte.svg" alt="Svelte" /></a>
+</p>
+
+-----
+
+## ✨ Features
+- Use it in a framework you like.
+  - We supports all major JS frameworks like React, Vue, Angular
+- SSR(Server Side Rendering) ready
+  - You can use inifinitegrid at your favorite SSR frameworks like [Next.js](https://nextjs.org/) or [Nuxt.js](https://nuxtjs.org/).
+- Circular(Loop) Mode
+- Ready-to-use plugins you can grab right away.
+  - Autoplay, Fade effect, Parallax effect, ...
+- Restore state like position and active slide with [persist](https://naver.github.io/egjs-persist/)
+- You can make native-scroll like UI with `bound` and `moveType: freeScroll`
+- Supports both Desktop & Mobile
+- Rich API
+- Supports IE9+ with the polyfill
+  - [es6-polyfill](https://cdn.jsdelivr.net/npm/es6-promise@latest/dist/es6-promise.auto.js)
+
+## ⚙️ Installation
+#### npm
+```bash
+$ npm install --save @egjs/infinitegrid
+```
+
+#### CDN
+- jsDelivr: https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/
+- unpkg: https://unpkg.com/@egjs/infinitegrid/dist/
+- cdnjs: https://cdnjs.com/libraries/egjs-infinitegrid
+
+## 🏃 Quick Start
+#### HTML
+
+```html
+<div class="container"></div>
+```
+
+#### ES Modules
+```ts
+import { MasonryInfiniteGrid } from "@egjs/infinitegrid";
+
+const ig = new MasonryInfiniteGrid(".container", { gap: 5 });
+```
+
+#### With CDN
+```html
+<!-- Packaged with all dependencies -->
+<!-- https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js -->
+<script src="https://unpkg.com/@egjs/infinitegrid/dist/infinitegrid.min.js"></script>
+```
+
+```js
+var ig = new InfiniteGrid.MasonryInfiniteGrid(".container", { gap: 5 });
+```
 
 
+```js
+import { MasonryInfiniteGrid } from "@egjs/infinitegrid";
 
+function getItems(nextGroupKey, count) {
+  const nextItems = [];
 
-A module used to arrange card elements including content **infinitely** according to layout type. With this module, you can implement **various layouts** composed of different card elements whose sizes vary. It guarantees **performance** by maintaining the number of DOMs the module is handling under any circumstance
+  for (let i = 0; i < count; ++i) {
+    const num = nextGroupKey * count + i;
+    nextItems.push(`<div class="item"></div>`);
+  }
+  return nextItems;
+}
+const ig = new MasonryInfiniteGrid(".container", {
+  gap: 5,
+});
 
-![infinitegrid](https://github.com/naver/egjs-infinitegrid/raw/master/demo/assets/image/infinitegrid.gif)
+ig.on("requestAppend", (e) => {
+  const nextGroupKey = (+e.groupKey || 0) + 1;
 
-## Documents
-- [Get Started and Demos](https://naver.github.io/egjs-infinitegrid/)
-- [Playground with various framework demos](https://naver.github.io/egjs-infinitegrid/storybook/)
-- [InfiniteGrid Options](https://github.com/naver/egjs-infinitegrid/wiki/InfiniteGrid-Options)
-- [API documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
-- [Migrating from v2.0 to v3.0](https://github.com/naver/egjs-infinitegrid/wiki/Migrating-from-v2.0-to-v3.0)
-- Articles
-  - [Introducing eg.InfiniteGrid, a new library for implementing a card layout](https://github.com/naver/egjs-infinitegrid/wiki/Introducing-eg.InfiniteGrid,-a-new-library-for-implementing-a-card-layout) [[Korean](http://d2.naver.com/helloworld/4874130)]
-  - [Card-based design and eg.InfiniteGrid 3.0](https://medium.com/@sculove/card-based-design-and-eg-infinitegrid-3-0-a84616496671) [[Korean](http://d2.naver.com/helloworld/0637045)]
-
-
-## Layouts
-The InfiniteGrid can use various layouts.
-
-![layout](https://github.com/naver/egjs-infinitegrid/raw/master/demo/assets/image/layout.gif)
-
-- [GridLayout](https://naver.github.io/egjs-infinitegrid/#GridLayout): The GridLayout is a layout that stacks cards with the same width as a stack of bricks.
-- [JustifiedLayout](https://naver.github.io/egjs-infinitegrid/#JustifiedLayout): JustifiedLayout is a layout that the card is filled up on the basis of a line given a size.
-- [FrameLayout](https://naver.github.io/egjs-infinitegrid/#FrameLayout): FrameLayout is a layout that allows you to place cards in a given frame.
-- [SquareLayout](https://naver.github.io/egjs-infinitegrid/#SquareLayout): SquareLayout is a layout that places all cards like squares on a checkerboard, and important cards are n times larger.
-- [PackingLayout](https://naver.github.io/egjs-infinitegrid/#PackingLayout): The PackingLayout is a layout that shows the important cards bigger without sacrificing the weight of the cards.
-
-## Benchmark
-[![eg.infiniteGrid benchmark](https://img.youtube.com/vi/6Kv-NV0dZXw/0.jpg)](http://www.youtube.com/watch?v=6Kv-NV0dZXw)
-
-eg.infiniteGrid benchmark: append item performance with [masonry](https://masonry.desandro.com/)
-
-
-
-
-## Packages
+  ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+});
+ig.renderItems();
+```
+## 📦 Packages
 |Package|Version|Description|
 |:-----:|:-----:|:-----:|
-|[**@egjs/ngx-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/ngx-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/ngx-infinitegrid.svg?style=flat-square&color=dd0031&label=%F0%9F%94%96" alt="version" /></a>| [Angular](https://angular.io/) port of @egjs/infinitegrid|
-|[**@egjs/react-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/react-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/react-infinitegrid.svg?style=flat-square&color=00d8ff&label=%F0%9F%94%96" alt="version" /></a>|[React](https://reactjs.org/) port of @egjs/infinitegrid|
-|[**@egjs/vue-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/vue-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/vue-infinitegrid.svg?style=flat-square&color=42b883&label=%F0%9F%94%96" alt="version" /></a>| [Vue.js](https://vuejs.org/v2/guide/index.html) port of @egjs/infinitegrid|
-|[**@egjs/svelte-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/svelte-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/svelte-infinitegrid.svg?style=flat-square&color=ff3d00&label=%F0%9F%94%96" alt="version" /></a>| [Svelte](https://svelte.dev/) port of @egjs/infinitegrid|
+|[**@egjs/ngx-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/ngx-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/ngx-infinitegrid.svg?style=flat-square&color=dd0031&label=%F0%9F%94%96" alt="version" /></a>|<img width="15" src="https://naver.github.io/egjs-infinitegrid/img/icons/angular.svg" valign="middle" alt="Angular" /> [Angular](https://angular.io/) port of @egjs/infinitegrid|
+|[**@egjs/react-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/react-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/react-infinitegrid.svg?style=flat-square&color=00d8ff&label=%F0%9F%94%96" alt="version" /></a>|<img width="15" src="https://naver.github.io/egjs-infinitegrid/img/icons/react.svg" valign="middle" alt="React" /> [React](https://reactjs.org/) port of @egjs/infinitegrid|
+|[**@egjs/vue-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/vue-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/vue-infinitegrid.svg?style=flat-square&color=42b883&label=%F0%9F%94%96" alt="version" /></a>|<img width="15" src="https://naver.github.io/egjs-infinitegrid/img/icons/vue.svg" valign="middle" alt="Vue.js" /> [Vue.js@2](https://vuejs.org/v2/guide/index.html) port of @egjs/infinitegrid|
+|[**@egjs/vue3-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue3-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/vue3-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/vue3-infinitegrid.svg?style=flat-square&color=42b883&label=%F0%9F%94%96" alt="version" /></a>|<img width="15" src="https://naver.github.io/egjs-infinitegrid/img/icons/vue.svg" valign="middle" alt="Vue.js" /> [Vue.js@3](https://v3.vuejs.org/) port of @egjs/infinitegrid|
+|[**@egjs/svelte-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/svelte-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/svelte-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/svelte-infinitegrid.svg?style=flat-square&color=FF3E00&label=%F0%9F%94%96" alt="version" /></a>|<img width="15" src="https://naver.github.io/egjs-infinitegrid/images/svelte.svg" valign="middle" alt="Svelte" /> [Svelte](https://svelte.dev/) port of @egjs/infinitegrid|
 
+## 🌐 Supported Browsers
+|<img width="20" src="https://simpleicons.org/icons/internetexplorer.svg" alt="IE" />|<img width="20" src="https://simpleicons.org/icons/googlechrome.svg" alt="Chrome" />|<img width="20" src="https://simpleicons.org/icons/firefoxbrowser.svg" alt="Firefox" />|<img width="20" src="https://simpleicons.org/icons/safari.svg" alt="Safari" />|<img width="20" src="https://simpleicons.org/icons/apple.svg" alt="iOS" />|<img width="20" src="https://simpleicons.org/icons/android.svg" alt="Android" />|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|9+(With polyfill), 11+ for Angular & Svelte|Latest|Latest|Latest|7+|4+|
 
+## 📼 Demos
+Check our [Demos](https://naver.github.io/egjs-inifinitegrid/).
 
-## Download and Installation
+## 📖 Documentation
+See [Documentation](https://naver.github.io/egjs-inifinitegrid/release/latest/doc/index.html) page.
 
-Download dist files from repo directly or install it via npm.
+## 🙌 Contributing
+See [CONTRIBUTING.md](https://github.com/naver/egjs-inifinitegrid/blob/master/CONTRIBUTING.md).
 
-### Packaged version
-> Packaged version is not an official distribution.
-> Is just to provide for ease use of 'egjs-infinitegrid'.
+## 📝 Feedback
+Please file an [Issue](https://github.com/naver/egjs-inifinitegrid/issues).
 
-- **Dependencies**
-  - [@egjs/component](https://github.com/naver/egjs-component)
-  - [@egjs/list-differ](https://github.com/naver/egjs-list-differ)
-  - [@egjs/imready](https://github.com/naver/egjs-imready)
-- **latest version**
+## 🛣️ Roadmap
+See our [Roadmap](https://github.com/naver/egjs-inifinitegrid/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%F0%9F%9B%A3%EF%B8%8FRoadmap+).
 
-|| Unminified | Minified |
-|---|----|---|
-|No Dependency| [infinitegrid.js (200kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.js)| [infinitegrid.min.js (53.8kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js)|
-|All| [infinitegrid.pkgd.js (254kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.js) | [infinitegrid.pkgd.min.js (66.9kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.pkgd.min.js)|(https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js)
-|GridLayout| [infinitegrid.gridlayout.js (195.4kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.gridlayout.js) | [infinitegrid.gridlayout.min.js (54.4kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.gridlayout.min.js) |
-|JustifiedLayout| [infinitegrid.justifiedlayout.js (207.3kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.justifiedlayout.js) | [infinitegrid.justifiedlayout.min.js (56.9kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.justifiedlayout.min.js)|
-|FrameLayout| [infinitegrid.framelayout.js (198.4kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.framelayout.js) | [infinitegrid.framelayout.min.js (55kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.framelayout.min.js) |
-|SquareLayout| [infinitegrid.squarelayout.js (205.5kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.squarelayout.js) | [infinitegrid.squarelayout.min.js (56.6kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.squarelayout.min.js) |
-|PackingLayout| [infinitegrid.packinglayout.js (197.8kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.packinglayout.js) | [infinitegrid.packinglayout.min.js (55.2kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.packinglayout.min.js) |
-|Parallax| [parallax.js (13.3kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/parallax.js) |[parallax.min.js (4kb)](https://naver.github.io/egjs-infinitegrid/release/latest/dist/parallax.min.js)|
-
-- **Specific version**
-    * https://naver.github.io/egjs-infinitegrid/release/[VERSION]/dist/[FILE_NAME]
-
-
-### Installation with npm
-
-The following command shows how to install egjs-infinitegrid using npm.
-
-```bash
-$ npm install @egjs/infinitegrid
-```
-
-
-## How to use
-The following code shows how to import InfiniteGrid.
-
-* [See InfiniteGrid options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html)
-* [See InfiniteGrid methods](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html#append)
-
-```js
-import InfiniteGrid, {GridLayout, JustifiedLayout, ...} from "@egjs/infinitegrid";
-
-// eg.InfiniteGrid
-const ig = new InfiniteGrid(".container", {
-  // options
-  isOverflowScroll: true,
-});
-
-// GridLayout, JustifiedLayout, SquareLayout, FrameLayout, PackingLayout ...
-ig.setLayout(GridLayout, {
-  // layout options
-  margin: 5,
-});
-
-// If items are already inserted in children, call layout method
-ig.layout();
-
-// If you want to add items from top(left) to bottom(right), call append method
-ig.append(`<div class="item"></div>`);
-
-
-// If you want to add items from bottom(right) to top(left), call prepend method
-ig.prepend(`<div class="item"></div>`);
-```
-
-### Events
-[See InfiniteGrid events](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html#event:append)
-```js
-
-// If you want to add items infinitely to the bottom(right), use the append event.
-ig.on("append", () => {
-  ig.append(`<div class="item"></div>`);
-});
-
-
-// If you want to add items infinitely to the top(left), use the prepend event.
-ig.on("prepend", () => {
-  ig.prepend(`<div class="item"></div>`);
-});
-
-// If you want to know when items have been added, use the layoutComplete event.
-ig.on("layoutCompete", e => {
-  if (e.isLayout) {
-    // Fired when items are relocated through the resize event or method
-  } else {
-    // Fired when items are added
-  }
-});
-```
-## Supported Browsers
-The following are the supported browsers.
-
-|Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
-|---|---|---|---|---|---|
-|8+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
-
-* If you want to use in IE8, please use polyfill.
-
-## Dependency
-
-egjs-infinitegrid has the dependencies for the following libraries:
-
-|[egjs-component](https://github.com/naver/egjs-component)|
-|----|
-|2.0.0+|
-
-
-## How to start developing egjs-infinitegrid?
-
-For anyone interested to develop egjs-infinitegrid, follow the instructions below.
-
-### Development Environment
-
-#### 1. Clone the repository
-
-Clone the egjs-infinitegrid repository and install the dependency modules.
-
-```bash
-# Clone the repository.
-$ git clone https://github.com/naver/egjs-infinitegrid.git
-```
-
-#### 2. Install dependencies
-`npm` is supported.
+## 📜 License
+@egjs/inifinitegrid is released under the [MIT license](https://github.com/naver/egjs-inifinitegrid/blob/master/LICENSE).
 
 ```
-# Install the dependency modules.
-$ npm install
-```
-
-#### 3. Build
-
-Use npm script to build egjs-infinitegrid
-
-```bash
-# Run webpack-dev-server for development
-$ npm start
-
-# Build
-$ npm run build
-
-# Generate jsdoc
-$ npm run jsdoc
-```
-
-Two folders will be created after complete build is completed.
-
-- **dist** folder: Includes the **infinitegrid.js** and **infinitegrid.min.js** files.
-- **doc** folder: Includes API documentation. The home page for the documentation is **doc/index.html**.
-
-### Linting
-
-To keep the same code style, we adopted [ESLint](http://eslint.org/) to maintain our code quality. The [rules](https://github.com/naver/eslint-config-naver/tree/master/rules) are modified version based on [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript).
-Setup your editor for check or run below command for linting.
-
-```bash
-$ npm run lint
-```
-
-### Test
-
-Once you created a branch and done with development, you must perform a test running `npm run test` command before you push code to a remote repository.
-
-```bash
-$ npm run test
-```
-Running a `npm run test` command will start [Mocha](https://mochajs.org/) tests via [Karma-runner](https://karma-runner.github.io/).
-
-
-## Bug Report
-
-If you find a bug, please report it to us using the [Issues](https://github.com/naver/egjs-infinitegrid/issues) page on GitHub.
-
-
-## License
-egjs-infinitegrid is released under the [MIT license](https://raw.githubusercontent.com/naver/egjs/master/LICENSE.txt).
-
-
-```
-Copyright (c) 2015 NAVER Corp.
-
+Copyright (c) 2015-present NAVER Corp.
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -253,3 +162,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+
+<p align="center">
+  <a href="https://naver.github.io/egjs/"><img height="50" src="https://naver.github.io/egjs/img/logotype1_black.svg" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/naver"><img height="50" src="https://naver.github.io/OpenSourceGuide/book/assets/naver_logo.png" /></a>
+</p>
+

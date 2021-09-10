@@ -10,6 +10,7 @@
     "declarationDir": "declaration"
   },
   "include": [
-    "./src/react-infinitegrid/**/*"
+    "./src/**/*",
+    "./global.d.ts"
   ]
 }

@@ -1,0 +1,60 @@
+import * as React from "react";
+import { #ClassName } from "@egjs/react-infinitegrid";
+
+function getItems(nextGroupKey: number, count: number) {
+  const nextItems = [];
+  const nextKey = nextGroupKey * count;
+
+  for (let i = 0; i < count; ++i) {
+    nextItems.push({ groupKey: nextGroupKey, key: nextKey + i });
+  }
+  return nextItems;
+}
+
+const Item = ({ num }: any) => <div className="item" style={{
+  width: "250px",
+}}>
+  <div className="thumbnail">
+    <img
+      src={`https://naver.github.io/egjs-infinitegrid/assets/image/${(num % 33) + 1}.jpg`}
+      alt="egjs" #Maintained
+    />
+  </div>
+  <div className="info">{`egjs ${num}`}</div>
+</div>;
+
+export default function App() {
+  const [items, setItems] = React.useState(() => getItems(0, 10));
+
+  return <#ClassName
+    className="container"
+#Options
+    placeholder={<div className="placeholder"></div>}
+    onRequestPrepend={(e) => {
+      if (e.isVirtual) {
+        e.wait();
+        setTimeout(() => {
+          e.ready();
+          setItems([
+            ...getItems(e.nextGroupKey, 10),
+            ...items,
+          ]);
+        }, 200);
+      }
+    }}
+    onRequestAppend={(e) => {
+      if (e.isVirtual) {
+        e.wait();
+        setTimeout(() => {
+          e.ready();
+          setItems([
+            ...items,
+            ...getItems(e.nextGroupKey, 10),
+          ]);
+        }, 200);
+      }
+    }}
+  >
+    {items.map((item) => <Item data-grid-groupkey={item.groupKey} key={item.key} num={item.key} />)}
+  </#ClassName>;
+}

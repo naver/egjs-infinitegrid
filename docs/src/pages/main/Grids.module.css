@@ -1,0 +1,14 @@
+.gridContainer {
+
+}
+.gridContainer .grid {
+  text-align: center;
+  padding: 20px;
+}
+.gridContainer .grid img {
+  opacity: 0.8;
+}
+.gridContainer .grid p {
+  font-weight: bold;
+  padding: 5px 0px;
+}

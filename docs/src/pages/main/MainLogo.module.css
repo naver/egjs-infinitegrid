@@ -1,0 +1,88 @@
+@keyframes scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-256px);
+  }
+}
+
+@keyframes rotation {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.title {
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.mainLogoWrapper {
+  position: relative;
+  height: 300px;
+}
+
+.mainLogo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 136px;
+  height: 136px;
+  overflow: hidden;
+  text-align: center;
+  font-size: 0;
+}
+
+.mainLogo .item {
+  position: relative;
+  width: 60px;
+  height: 120px;
+  background: #ccc;
+  display: inline-block;
+  margin: 4px;
+  animation: scroll 6s linear infinite forwards;
+  will-change: transform;
+}
+
+.mainLogo .item:nth-child(2n + 1) {
+  top: -40px;
+}
+
+.mainLogo .item:nth-child(2n) {
+  top: -80px;
+}
+
+.mainLogo .item:nth-child(4n + 1) {
+  background: #FF4A5C;
+}
+
+.mainLogo .item:nth-child(4n + 2) {
+  background: #FFA100;
+}
+
+.mainLogo .item:nth-child(4n + 3) {
+  background: #FBF843;
+}
+
+.mainLogo .item:nth-child(4n) {
+  background: #7A58FF;
+}
+
+.mainLogoRing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  width: 270px;
+  height: 270px;
+  animation: rotation 12s linear infinite forwards;
+  will-change: transform;
+}

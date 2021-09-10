@@ -1,16 +1,45 @@
 {
-	// Naver https://github.com/naver/eslint-config-naver/blob/master/STYLE_GUIDE.md
-	"extends": "naver",
-	"parser": "babel-eslint",
-	"rules": {
-		"no-undef": 0,
-		"array-element-newline": 0,
-		"comma-dangle": ["error", {
-			"arrays": "always-multiline",
-			"objects": "always-multiline",
-			"imports": "always-multiline",
-			"exports": "always-multiline",
-			"functions": "never"
-		}]
-	}
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint",
+        "import"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended"
+    ],
+    "rules": {
+        "import/no-webpack-loader-syntax": "off",
+        "no-unused-vars": "off",
+        "no-console": "error",
+        "no-shadow": "error",
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-unused-vars": ["error"],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/indent": ["error", 2],
+        "@typescript-eslint/adjacent-overload-signatures": "off",
+        "max-len": ["error", { "code": 120, "comments": 1000, "ignoreTemplateLiterals": true }],
+        "arrow-parens": ["error", "always"],
+        "@typescript-eslint/naming-convention": [
+            "error",
+            { "selector": "default", "modifiers": ["protected"], "format": ["camelCase"], "leadingUnderscore": "forbid" },
+            { "selector": "default", "modifiers": ["private"], "format": ["camelCase"], "leadingUnderscore": "require" }
+        ],
+        "no-empty-interface": "off",
+        "comma-dangle": [
+            "error",
+            "always-multiline"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
+    }
 }

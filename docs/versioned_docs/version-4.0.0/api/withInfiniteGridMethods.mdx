@@ -1,0 +1,25 @@
+---
+custom_edit_url: null
+---
+
+```ts
+const withInfiniteGridMethods
+```
+
+### withInfiniteGridMethods {#withInfiniteGridMethods}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Decorator that makes the method of InfiniteGrid available in the framework.</p>
+
+```js
+import { withInfiniteGridMethods } from "@egjs/infinitegrid";
+
+class Grid extends React.Component<Partial<InfiniteGridProps & InfiniteGridOptions>> {
+  &#64;withInfiniteGridMethods
+  private grid: NativeGrid;
+}
+```
+

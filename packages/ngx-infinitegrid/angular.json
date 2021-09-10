@@ -3,9 +3,13 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ngx-infinitegrid-app": {
+    "ngx-infinitegrid-project": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -13,11 +17,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ngx-infinitegrid-app",
+            "outputPath": "dist/ngx-infinitegrid-project",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -38,17 +43,20 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ]
             }
@@ -57,18 +65,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ngx-infinitegrid-app:build"
+            "browserTarget": "ngx-infinitegrid-project:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ngx-infinitegrid-app:build:production"
+              "browserTarget": "ngx-infinitegrid-project:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngx-infinitegrid-app:build"
+            "browserTarget": "ngx-infinitegrid-project:build"
           }
         },
         "test": {
@@ -105,11 +113,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ngx-infinitegrid-app:serve"
+            "devServerTarget": "ngx-infinitegrid-project:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ngx-infinitegrid-app:serve:production"
+              "devServerTarget": "ngx-infinitegrid-project:serve:production"
             }
           }
         }
@@ -122,10 +130,15 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ngx-infinitegrid/tsconfig.lib.json",
             "project": "projects/ngx-infinitegrid/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-infinitegrid/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -149,6 +162,7 @@
           }
         }
       }
-    }},
-  "defaultProject": "ngx-infinitegrid-app"
+    }
+  },
+  "defaultProject": "ngx-infinitegrid-project"
 }

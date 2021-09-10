@@ -1,189 +1,185 @@
+/**
+ * egjs-infinitegrid
+ * Copyright (c) 2021-present NAVER Corp.
+ * MIT license
+ */
 import {
-  Component, OnInit, ViewChild, ElementRef,
-  Input, Output, EventEmitter, OnDestroy, OnChanges,
-  AfterViewInit, AfterViewChecked,
+  AfterViewChecked, AfterViewInit, Component, ElementRef,
+  EventEmitter, Input, OnChanges, OnDestroy, Output, ViewChild,
 } from '@angular/core';
 
-import NativeInfiniteGrid, {
-  GridLayout,
-  ILayout,
-  categorize,
-  ItemManager,
-  IItem,
-  IInfiniteGridStatus,
-  IInfiniteGridItem,
-  StyleType,
-  IGNORE_CLASSNAME,
-  IInfiniteGridOptions,
+import {
+  getRenderingItems,
+  InfiniteGridFunction,
+  InfiniteGridItem,
+  InfiniteGridItemInfo,
+  InfiniteGridOptions,
   INFINITEGRID_EVENTS,
+  mountRenderingItems,
+  OnContentError,
+  OnRenderComplete,
+  OnRequestAppend,
+  OnRequestPrepend,
+  OnChangeScroll,
+  Renderer,
 } from '@egjs/infinitegrid';
-import ListDiffer from '@egjs/list-differ';
-import { TEMPLATE } from './consts';
-import NgxinfiniteGridInterface from './ngx-infinitegrid.interface';
+import { NgxInfiniteGridInterface } from './ngx-infinitegrid.interface';
+import { NgxInfiniteGridProps } from './types';
 
+// @dynamic
 @Component({
-  selector: 'ngx-infinitegrid, [NgxInfiniteGrid]',
-  template: TEMPLATE,
-  styles: []
+  selector: 'ngx-infinite-grid, [NgxInfiniteGrid]',
+  template: '<slot></slot>',
+  styles: [
+    ':host { display: block }',
+  ],
 })
 export class NgxInfiniteGridComponent
-  extends NgxinfiniteGridInterface
-  implements OnInit, AfterViewInit, AfterViewChecked,
-  OnDestroy, OnChanges {
+  extends NgxInfiniteGridInterface
+  implements Required<InfiniteGridOptions>,
+  NgxInfiniteGridProps,
+  AfterViewInit, AfterViewChecked, OnChanges, OnDestroy {
+  public static GridClass: InfiniteGridFunction;
+  @Input() gridConstructor!: NgxInfiniteGridProps['gridConstructor'];
+  @Input() renderer!: NgxInfiniteGridProps['renderer'];
+  @Input() container!: NgxInfiniteGridProps['container'];
+  @Input() containerTag!: NgxInfiniteGridProps['containerTag'];
+  @Input() threshold!: NgxInfiniteGridProps['threshold'];
+  @Input() useRecycle!: NgxInfiniteGridProps['useRecycle'];
+  @Input() horizontal!: NgxInfiniteGridProps['horizontal'];
+  @Input() percentage!: NgxInfiniteGridProps['percentage'];
+  @Input() isEqualSize!: NgxInfiniteGridProps['isEqualSize'];
+  @Input() isConstantSize!: NgxInfiniteGridProps['isConstantSize'];
+  @Input() gap!: NgxInfiniteGridProps['gap'];
+  @Input() attributePrefix!: NgxInfiniteGridProps['attributePrefix'];
+  @Input() resizeDebounce!: NgxInfiniteGridProps['resizeDebounce'];
+  @Input() maxResizeDebounce!: NgxInfiniteGridProps['maxResizeDebounce'];
+  @Input() autoResize!: NgxInfiniteGridProps['autoResize'];
+  @Input() useFit!: NgxInfiniteGridProps['useFit'];
+  @Input() useTransform!: NgxInfiniteGridProps['useTransform'];
+  @Input() renderOnPropertyChange!: NgxInfiniteGridProps['renderOnPropertyChange'];
+  @Input() preserveUIOnDestroy!: NgxInfiniteGridProps['preserveUIOnDestroy'];
+  @Input() defaultDirection!: NgxInfiniteGridProps['defaultDirection'];
+  @Input() externalItemRenderer!: NgxInfiniteGridProps['externalItemRenderer'];
+  @Input() externalContainerManager!: NgxInfiniteGridProps['externalContainerManager'];
+  @Input() usePlaceholder!: NgxInfiniteGridProps['useFirstRender'];
+  @Input() useLoading!: NgxInfiniteGridProps['useLoading'];
+  @Input() status!: NgxInfiniteGridProps['status'];
+  @Input() useFirstRender!: NgxInfiniteGridProps['useFirstRender'];
+  @Input() items: NgxInfiniteGridProps['items'] = [];
+  @Input() trackBy: NgxInfiniteGridProps['trackBy'] = ((_, item) => item.key);
+  @Input() groupBy: NgxInfiniteGridProps['groupBy'] = ((_, item) => item.groupKey);
+  @Output() renderComplete!: EventEmitter<OnRenderComplete>;
+  @Output() contentError!: EventEmitter<OnContentError>;
+  @Output() changeScroll!: EventEmitter<OnChangeScroll>;
+  @Output() requestAppend!: EventEmitter<OnRequestAppend>;
+  @Output() requestPrepend!: EventEmitter<OnRequestPrepend>;
+  public visibleItems: InfiniteGridItem[] = [];
+  @ViewChild('wrapperRef', { static: false }) _wrapperRef!: ElementRef;
+  @ViewChild('containerRef', { static: false }) _containerRef!: ElementRef;
+  private _renderer = new Renderer();
+  private _isChange = false;
 
-  @Input() public trackBy: ((index: number, item: any) => any) = ((_, item) => item.key);
-  @Input() public groupBy: ((index: number, item: any) => any) = ((_, item) => item.groupKey);
-  @Input() public items: IItem[] = [];
-  @Input() public status!: IInfiniteGridStatus;
-  @Input() public loading!: HTMLElement;
-  @Input() public useFirstRender = false;
-  @Input() public layoutType: new () => ILayout = GridLayout;
-  @Input() public options: Partial<IInfiniteGridOptions> = {};
-  @Input() public layoutOptions: Partial<ILayout['options']> = {};
-
-  @Output() public append: EventEmitter<any> = new EventEmitter();
-  @Output() public prepend: EventEmitter<any> = new EventEmitter();
-  @Output() public imageError: EventEmitter<any> = new EventEmitter();
-  @Output() public contentError: EventEmitter<any> = new EventEmitter();
-  // tslint:disable-next-line: no-output-native
-  @Output() public change: EventEmitter<any> = new EventEmitter();
-  @Output() public layoutComplete: EventEmitter<any> = new EventEmitter();
-  @Output() public visibleChange: EventEmitter<any> = new EventEmitter();
-  @Output() public render: EventEmitter<any> = new EventEmitter();
-
-  @ViewChild('wrapper', { static: false }) wrapperRef: ElementRef;
-  @ViewChild('container', { static: false }) containerRef: ElementRef;
-
-  public visibleItems: IItem[] = [];
-
-  private layoutState = '';
-  private isChange = false;
-  private visibleDiffer: ListDiffer<IItem> = new ListDiffer<IItem>([], item => item.itemKey);
-  private nextFunction = () => { };
-
-  constructor(public elRef: ElementRef) {
+  constructor(protected elementRef: ElementRef) {
     super();
+    for (const name in INFINITEGRID_EVENTS) {
+      const eventName = (INFINITEGRID_EVENTS as any)[name];
+      (this as any)[eventName] = new EventEmitter();
+    }
   }
+
   ngOnInit() {
-    const groups = categorize(this.items);
-
-    if (this.status) {
-      const { startCursor, endCursor } = this.status._infinite;
-
-      this.updateVisibleItems(ItemManager.pluck(groups.slice(startCursor, endCursor + 1), 'items').map(item => item.data));
-    } else if (this.useFirstRender) {
-      this.updateVisibleItems(this.items);
-    }
+    this._updateVisibleChildren();
   }
-  ngOnChanges(changes) {
-    const ig = this.ig;
-    if (!ig) {
-      return;
+  ngOnChanges() {
+    this._isChange = true;
+    this._updateVisibleChildren();
+  }
+  ngAfterViewInit(): void {
+    const GridClass = (this.constructor as typeof NgxInfiniteGridComponent).GridClass;
+    const defaultOptions = GridClass.defaultOptions;
+    const options: Partial<InfiniteGridOptions> = {};
+    const containerElement = this._containerRef?.nativeElement;
+
+    for (const name in defaultOptions) {
+      if (name in this && typeof (this as any)[name] !== "undefined") {
+        (options as any)[name] = (this as any)[name];
+      }
     }
-    const result = ig.beforeSync(this.toItems());
+    if (containerElement) {
+      options.container = containerElement;
+    }
+    options.renderer = this._renderer;
+    const wrapper = this._wrapperRef! || this.elementRef;
 
-    this.layoutState = result === 'relayout' ? result : this.layoutState || result;
-    this.updateVisibleItems(this.getVisibleItems());
-    this.isChange = true;
+    const grid = new GridClass(wrapper.nativeElement, options);
 
-    if (changes.loading) {
-      ig.setLoadingBar({
-        append: this.loading,
-        prepend: this.loading,
+    for (const name in INFINITEGRID_EVENTS) {
+      const eventName = (INFINITEGRID_EVENTS as any)[name];
+
+      grid.on(eventName, (e: any) => {
+        (this as any)[eventName].emit(e as any);
       });
     }
+
+    this.vanillaGrid = grid;
+    this._renderer.on("requestUpdate", () => {
+      this._isChange = true;
+      this._updateVisibleChildren();
+    });
+
+    mountRenderingItems(this._getItemInfos(), {
+      grid,
+      useFirstRender: this.useFirstRender,
+      useLoading: this.useLoading,
+      usePlaceholder: this.usePlaceholder,
+      horizontal: this.horizontal,
+      status: this.status,
+    });
+    this._renderer.updated();
   }
   ngAfterViewChecked() {
-    if (!this.isChange) {
+    if (!this._isChange) {
       return;
     }
-    this.isChange = false;
-    this.ig.sync(this.getElements());
+    this._isChange = false;
+    const GridClass = (this.constructor as typeof NgxInfiniteGridComponent).GridClass;
+    const propertyTypes = GridClass.propertyTypes;
+    const grid = this.vanillaGrid;
 
-    const layoutState = this.layoutState;
-    if (layoutState) {
-      this.layoutState = '';
-      this.ig.layout(layoutState === 'relayout');
-    }
-    this.nextFunction();
-    this.nextFunction = () => { };
-  }
-  ngAfterViewInit() {
-    const ref = this.wrapperRef || this.elRef;
-
-    this.ig = new NativeInfiniteGrid(ref.nativeElement, {
-      ...this.options,
-      renderExternal: true,
-    }).on('render', ({ next }) => {
-      setTimeout(() => {
-        this.nextFunction = next;
-        this.updateVisibleItems(this.getVisibleItems());
-        this.isChange = true;
-      });
-    });
-    const ig = this.ig;
-
-    INFINITEGRID_EVENTS.forEach(name => {
-      if (!this[name]) {
-        return;
+    for (const name in propertyTypes) {
+      if (name in this) {
+        (grid as any)[name] = (this as any)[name];
       }
-      ig.on(name as any, e => {
-        (this as any)[name].emit({ ...e, currentTarget: this });
-      });
-    });
-    ig.setLayout(this.layoutType, { ...this.layoutOptions });
-
-
-    if (this.loading) {
-      ig.setLoadingBar({
-        prepend: this.loading,
-        append: this.loading,
-      });
     }
-    if (this.status) {
-      this.setStatus(this.status, true);
-    } else {
-      ig.beforeSync(this.toItems());
-      ig.layout(true);
-    }
-  }
-  public setStatus = (status: IInfiniteGridStatus, applyScrollPos?: boolean, syncElements: HTMLElement[] = this.getElements()): NgxInfiniteGridComponent => {
-    this.ig.setStatus(status, applyScrollPos, syncElements);
-    return this;
-  }
-  public ngOnDestroy() {
-    this.ig.destroy();
-  }
-  private getElements() {
-    const ref = this.containerRef || this.wrapperRef || this.elRef;
 
-    const elements = [].slice.call(ref.nativeElement.children);
+    this._renderer.updated();
+  }
+  ngOnDestroy() {
+    this.vanillaGrid.destroy();
+  }
 
-    if (this.loading) {
-      return elements.filter(el => {
-        return el.className.indexOf(IGNORE_CLASSNAME) < 0;
-      });
-    }
-    return elements;
-  }
-  private getVisibleItems() {
-    return this.ig.getRenderingItems().map(item => item.data);
-  }
-  private toItems() {
-    const groupBy = this.groupBy;
+  private _getItemInfos(): InfiniteGridItemInfo[] {
+    const items = this.items;
     const trackBy = this.trackBy;
-    return this.items.map((item, i) => ({
-      groupKey: groupBy(i, item),
-      itemKey: trackBy(i, item),
-      data: item,
-    }));
-  }
-  private updateVisibleItems(items: IItem[]) {
-    const { added, changed, removed } = this.visibleDiffer.update(items);
+    const groupBy = this.groupBy;
 
-    this.visibleItems = items;
-    if (added.length || changed.length || removed.length) {
-      this.visibleChange.emit(items);
-    }
+    return items.map((item, i) => {
+      return {
+        groupKey: groupBy(i, item),
+        key: trackBy(i, item),
+        data: item,
+      };
+    });
+  }
+  private _updateVisibleChildren() {
+    this.visibleItems = getRenderingItems(this._getItemInfos(), {
+      grid: this.vanillaGrid,
+      useFirstRender: this.useFirstRender,
+      useLoading: this.useLoading,
+      usePlaceholder: this.usePlaceholder,
+      horizontal: this.horizontal,
+      status: this.status,
+    });
   }
 }

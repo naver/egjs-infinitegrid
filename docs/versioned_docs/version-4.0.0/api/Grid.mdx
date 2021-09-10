@@ -1,0 +1,317 @@
+---
+custom_edit_url: null
+---
+
+```ts
+class Grid extends eg.Component
+```
+
+<div className="container">
+  <div className="row mb-2"><div className="col col--4"><strong>Properties</strong></div><div className="col col--4"><strong>Methods</strong></div><div className="col col--4"><strong>Events</strong></div></div>
+  <div className="row"><div className="col col--4"><a href="#gap">gap</a><br/><a href="#defaultDirection">defaultDirection</a><br/><a href="#useFit">useFit</a><br/><a href="#preserveUIOnDestroy">preserveUIOnDestroy</a></div><div className="col col--4"><a href="#applyGrid">applyGrid</a><br/><a href="#getContainerElement">getContainerElement</a><br/><a href="#getItems">getItems</a><br/><a href="#getChildren">getChildren</a><br/><a href="#setItems">setItems</a><br/><a href="#getContainerInlineSize">getContainerInlineSize</a><br/><a href="#getOutlines">getOutlines</a><br/><a href="#setOutlines">setOutlines</a><br/><a href="#syncElements">syncElements</a><br/><a href="#updateItems">updateItems</a><br/><a href="#renderItems">renderItems</a><br/><a href="#getStatus">getStatus</a><br/><a href="#setStatus">setStatus</a><br/><a href="#destroy">destroy</a></div><div className="col col--4"><a href="#event-contentError">contentError</a><br/><a href="#event-renderComplete">renderComplete</a></div></div>
+</div>
+
+## Constructor
+```ts
+new Grid(containerElement, options)
+```
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|containerElement|HTMLElement \| string|||<p>A base element for a module </p>|
+|options|Partial&lt;Options&gt;|✔️|{}|<p>The option object of the Grid module </p>|
+
+## Properties
+
+### gap {#gap}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Gap used to create space around items.</p>
+
+**Type**: $ts:Grid.GridOptions["gap"]
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  gap: 0,
+});
+
+grid.gap = 5;
+```
+
+### defaultDirection {#defaultDirection}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>The default direction value when direction is not set in the render option.</p>
+
+**Type**: $ts:Grid.GridOptions["defaultDirection"]
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  defaultDirection: "end",
+});
+
+grid.defaultDirection = "start";
+```
+
+### useFit {#useFit}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Whether to move the outline to 0 when the top is empty when rendering. However, if it overflows above the top, the outline is forced to 0. (default: true)</p>
+
+**Type**: $ts:Grid.GridOptions["useFit"]
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  useFit: true,
+});
+
+grid.useFit = false;
+```
+
+### preserveUIOnDestroy {#preserveUIOnDestroy}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Whether to preserve the UI of the existing container or item when destroying.</p>
+
+**Type**: $ts:Grid.GridOptions["preserveUIOnDestroy"]
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  preserveUIOnDestroy: false,
+});
+
+grid.preserveUIOnDestroy = true;
+```
+
+## Methods
+
+### applyGrid {#applyGrid}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Apply the CSS rect of items to fit the Grid and calculate the outline.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|direcion|"start" \| "end"|||<p>The direction to apply the Grid. (&quot;end&quot;: start to end, &quot;start&quot;: end to start) </p>|
+|outline|Array&lt;number&gt;|||<p>The start outline to apply the Grid. </p>|
+
+### getContainerElement {#getContainerElement}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Return Container Element.</p>
+
+**Returns**: HTMLElement
+
+### getItems {#getItems}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Return items.</p>
+
+**Returns**: GridItem[]
+
+### getChildren {#getChildren}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Returns the children of the container element.</p>
+
+**Returns**: HTMLElement[]
+
+### setItems {#setItems}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Set items.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|||<p>The items to set. </p>|
+
+### getContainerInlineSize {#getContainerInlineSize}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Gets the container's inline size. (&quot;width&quot; if horizontal is false, otherwise &quot;height&quot;)</p>
+
+**Returns**: number
+
+### getOutlines {#getOutlines}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Returns the outlines of the start and end of the Grid.</p>
+
+**Returns**: GridOutlines
+
+### setOutlines {#setOutlines}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Set outlines.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|outlines|GridOutlines|||<p>The outlines to set. </p>|
+
+### syncElements {#syncElements}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>When elements change, it synchronizes and renders items.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|options|RenderOptions|✔️|{}|<p>Options for rendering. </p>|
+
+### updateItems {#updateItems}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Update the size of the items and render them.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|✔️|this.items|<p>Items to be updated. </p>|
+|options|RenderOptions|✔️|{}|<p>Options for rendering. </p>|
+
+### renderItems {#renderItems}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Rearrange items to fit the grid and render them. When rearrange is complete, the <code>renderComplete</code> event is fired.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|options|RenderOptions|✔️|{}|<p>Options for rendering. </p>|
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+const grid = new MasonryGrid();
+
+grid.on("renderComplete", e => {
+  console.log(e);
+});
+grid.renderItems();
+```
+
+### getStatus {#getStatus}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Returns current status such as item's position, size. The returned status can be restored with the setStatus() method.</p>
+
+**Returns**: GridStatus
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|minimize|boolean|✔️||<p>Whether to minimize the status of the item. (default: false) </p>|
+
+### setStatus {#setStatus}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Set status of the Grid module with the status returned through a call to the getStatus() method.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|status|GridStatus||||
+
+### destroy {#destroy}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>Releases the instnace and events and returns the CSS of the container and elements.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|Options|DestroyOptions|✔️|{}|<p>for destroy. </p>|
+
+## Events
+### contentError {#event-contentError}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>This event is fired when an error occurs in the content.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|[Grid.OnContentError](Grid:OnContentError)|||<p>The object of data to be sent to an event </p>|
+
+```js
+grid.on("contentError", e => {
+  e.update();
+});
+```
+
+### renderComplete {#event-renderComplete}
+
+<div className="bulma-tags">
+
+</div>
+
+<p>This event is fired when the Grid has completed rendering.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|[Grid.OnRenderComplete](Grid:OnRenderComplete)|||<p>The object of data to be sent to an event </p>|
+
+```js
+grid.on("renderComplete", e => {
+  console.log(e.mounted, e.updated, e.useResize);
+});
+```
+

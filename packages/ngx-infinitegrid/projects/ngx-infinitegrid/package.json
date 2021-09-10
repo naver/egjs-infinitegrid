@@ -1,22 +1,28 @@
 {
-  "name": "@egjs/ngx-infinitegrid",
-  "version": "3.3.0",
-  "description": "An Angular component that can easily use egjs-infinitegrid",
+  "name": "ngx-infinitegrid",
+  "version": "4.0.0",
+  "description": "An Angular component that can arrange items infinitely according to the type of grids",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naver/egjs-infinitegrid/tree/master/packages/ngx-infinitegrid"
+  },
   "author": {
     "name": "NAVER Corp."
   },
-  "license": "MIT",
-  "homepage": "https://github.com/naver/egjs-infinitegrid",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/naver/egjs-infinitegrid"
+  "namespace": {
+    "eg": "eg"
   },
+  "homepage": "https://naver.github.io/egjs-infinitegrid/",
+  "bugs": {
+    "url": "https://github.com/naver/egjs-infinitegrid/issues"
+  },
+  "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^8.0.3",
-    "@angular/core": "^8.0.3"
+    "@angular/common": "^11.2.14",
+    "@angular/core": "^11.2.14"
   },
   "dependencies": {
-    "@egjs/infinitegrid": "~3.9.0",
-    "@egjs/list-differ": "^1.0.0"
+    "@egjs/infinitegrid": "~4.0.0",
+    "tslib": "^2.0.0"
   }
 }

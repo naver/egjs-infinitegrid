@@ -1,31 +1,31 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { NgxInfiniteGridComponent } from './ngx-infinitegrid.component';
-import { NgxGridLayoutComponent } from './ngx-gridlayout.component';
-import { NgxJustifiedLayoutComponent } from './ngx-justifiedlayout.component';
-import { NgxSquareLayoutComponent } from './ngx-squarelayout.component';
-import { NgxFrameLayoutComponent } from './ngx-framelayout.component';
-import { NgxPackingLayoutComponent } from './ngx-packinglayout.component';
-import { CommonModule } from '@angular/common';
+import { NgxMasonryInfiniteGridComponent } from './grids/ngx-masonry-infinitegrid.component';
+import { NgxJustifiedInfiniteGridComponent } from './grids/ngx-justified-infinitegrid.component';
+import { NgxFrameInfiniteGridComponent } from './grids/ngx-frame-infinitegrid.component';
+import { NgxPackingInfiniteGridComponent } from './grids/ngx-packing-infinitegrid.component';
+
+
+
 
 @NgModule({
   declarations: [
     NgxInfiniteGridComponent,
-    NgxGridLayoutComponent,
-    NgxJustifiedLayoutComponent,
-    NgxSquareLayoutComponent,
-    NgxFrameLayoutComponent,
-    NgxPackingLayoutComponent,
+    NgxMasonryInfiniteGridComponent,
+    NgxJustifiedInfiniteGridComponent,
+    NgxFrameInfiniteGridComponent,
+    NgxPackingInfiniteGridComponent,
   ],
   imports: [
     CommonModule,
   ],
   exports: [
     NgxInfiniteGridComponent,
-    NgxGridLayoutComponent,
-    NgxJustifiedLayoutComponent,
-    NgxSquareLayoutComponent,
-    NgxFrameLayoutComponent,
-    NgxPackingLayoutComponent,
+    NgxMasonryInfiniteGridComponent,
+    NgxJustifiedInfiniteGridComponent,
+    NgxFrameInfiniteGridComponent,
+    NgxPackingInfiniteGridComponent,
   ],
 })
 export class NgxInfiniteGridModule { }

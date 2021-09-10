@@ -1,375 +1,212 @@
-import Component from "@egjs/component";
-import InfiniteGrid from "./index.squarelayout";
+import Grid, {
+  GridOptions,
+  GridFunction,
+  GridItem,
+  ContainerManagerStatus,
+  ItemRendererStatus,
+  Methods,
+} from "@egjs/grid";
+import { GROUP_TYPE, INFINITEGRID_METHODS, ITEM_TYPE } from "./consts";
+import { GroupManagerStatus } from "./GroupManager";
+import InfiniteGrid from "./InfiniteGrid";
+import { InfiniteGridItem } from "./InfiniteGridItem";
+import { Renderer } from "./Renderer/Renderer";
+import { ScrollManagerStatus } from "./ScrollManager";
 
-export type CursorType = "start" | "end";
-export type SizeType = "width" | "height";
-export type PositionType = "left" | "top";
-export type ReversePositionType = "right" | "bottom";
-export type RectType = SizeType | PositionType;
-export type InnerSizeType = "innerWidth" | "innerHeight";
-export type ClientSizeType = "clientWidth" | "clientHeight";
-export type OffsetSizeType = "offsetWidth" | "offsetHeight";
-export type ScrollSizeType = "scrollWidth" | "scrollHeight";
-
-export interface IInfiniteGridOptions {
-	itemSelector: string;
-	isOverflowScroll: boolean;
-	threshold: number;
-	isEqualSize: boolean;
-	isConstantSize: boolean;
-	useRecycle: boolean;
-	horizontal: boolean;
-	transitionDuration: number;
-	useFit: boolean;
-	attributePrefix: string;
-	renderExternal: boolean;
-	resizeDebounce: number;
-	maxResizeDebounce: number;
-	percentage: boolean | Array<"size" | "position">;
-	useOffset: boolean;
-}
-
-export interface IInfiniteGridGroup {
-	groupKey: string | number;
-	items: IInfiniteGridItem[];
-	needUpdate: boolean;
-	outlines: { start: number[], end: number[] };
-}
-
-export interface IWatcherOptions {
-	container: HTMLElement;
-	isOverflowScroll: boolean;
-	horizontal: boolean;
-	resizeDebounce: number;
-	maxResizeDebounce: number;
-	resize: () => void;
-	check: (e: {
-		isForward: boolean,
-		scrollPos: number,
-		orgScrollPos: number,
-		horizontal: boolean,
-	}) => void;
-}
-
-export interface IInfiniteOptions {
-	useRecycle: boolean;
-	threshold: number;
-	append: (e: { cache: IInfiniteGridGroup[] }) => void;
-	prepend: (e: { cache: IInfiniteGridGroup[] }) => void;
-	recycle: (e: { start: number, end: number }) => void;
-}
-
-export interface IInfiniteGridStatus {
-	_status: {
-		processingStatus: number,
-		loadingSize: number,
-		loadingStyle: StyleType,
-	};
-	_itemManager: IItemManagerStatus;
-	_renderer: IDOMRendererStatus;
-	_watcher: IWatchStatus;
-	_infinite: IInfiniteStatus;
-}
-
-export interface IItemManagerStatus {
-	_data: IInfiniteGridGroup[];
-}
-
-export interface IInfiniteStatus {
-	startCursor: number;
-	endCursor: number;
-	size: number;
-}
-
-export interface IDOMRendererSize {
-	container: number;
-	view: number;
-	viewport: number;
-	item?: ISize | null;
-}
-
-export interface IDOMRendererStatus {
-	cssText: string;
-	_size: IDOMRendererSize;
-}
-
-export interface IWatchStatus {
-	_prevPos: number | null;
-	scrollPos: number;
-}
-
-export interface IRemoveResult {
-	group: IInfiniteGridGroup | null;
-	items: IInfiniteGridItem[];
-}
 /**
- * Error Interface
- * @ko 에러 인터페이스
- * @memberof eg.InfiniteGrid
  * @typedef
  */
-export interface IErrorCallbackOptions {
-	target: HTMLImageElement;
-	element: HTMLElement;
-	items: IInfiniteGridItem[];
-	item: IInfiniteGridItem;
-	itemIndex: number;
-	totalIndex: number;
-	replace: (src?: string | HTMLElement) => void;
-	replaceItem: (content: string) => void;
-	remove: () => void;
-	removeItem: () => void;
+export interface InfiniteGridStatus {
+  itemRenderer: ItemRendererStatus;
+  containerManager: ContainerManagerStatus;
+  groupManager: GroupManagerStatus;
+  scrollManager: ScrollManagerStatus;
+}
+
+export interface InfiniteGridGroup {
+  type: GROUP_TYPE;
+  groupKey: string | number;
+  grid: Grid;
+  items: InfiniteGridItem[];
+  renderItems: InfiniteGridItem[];
+}
+
+export interface CategorizedGroup<Item extends InfiniteGridItemInfo = InfiniteGridItem> {
+  groupKey: number | string;
+  items: Item[];
 }
 /**
- * Item Interface
- * @ko Item Interface
- * @memberof eg.InfiniteGrid
  * @typedef
- * @property - Key in group containing item <ko>아이템을 포함하고 있는 그룹의 키</ko>
- * @property - html of element in item <ko>아이템의 엘리먼트 html</ko>
- * @property {HTMLElement} - Element for the item <ko>아이템에 있는 엘리먼트</ko>
- * @property - Size of elements of the rendering when the first time. <ko>처음 렌더링 했을 때의 엘리먼트의 사이즈</ko>
- * @property - Currently seen the size of element <ko>현재 보여지는 엘리먼트의 사이즈</ko>
- * @property - Position and size of the element shown in layout <ko>레이아웃할 때 보여지는 포지션과 사이즈</ko>
- * @property - The position and size of the element that was seen in the layout before <ko>전에 레이아웃했을 때 보였었던 포지션과 사이즈</ko>
  */
-export interface IInfiniteGridItem {
-	groupKey: string | number;
-	itemKey?: string | number;
-	content: string;
-	el?: IInfiniteGridItemElement | null;
-	orgSize?: ISize | null;
-	size?: ISize | null;
-	rect: IPosition & Partial<ISize>;
-	prevRect?: IPosition & Partial<ISize> | null;
-	needUpdate: boolean;
-	mounted: boolean;
-	[key: string]: any;
+export interface InfiniteGridItemInfo {
+  type?: ITEM_TYPE;
+  groupKey?: string | number;
+  key?: string | number;
+  element?: HTMLElement | null;
+  html?: string;
+  data?: Record<string, any>;
 }
 
-export interface IIndexes {
-	groupIndex?: number;
-	itemIndex?: number;
-}
-export interface IGroup {
-	groupKey: string | number;
-	[key: string]: any;
-}
-export interface IItem {
-	groupKey: string | number;
-	itemKey?: string | number;
-	[key: string]: any;
-}
-// see https://github.com/Microsoft/TypeScript/issues/27024#issuecomment-421529650
-export type Equals<X, Y, A, B = never> =
-	(<T>() => T extends X ? 1 : 2) extends
-	(<T>() => T extends Y ? 1 : 2) ? A : B;
 
-export type ExcludeReadOnly<T> = Pick<T, {
-	[K in keyof T]: (Equals<{ -readonly [P in K]: T[K] }, { [P in K]: T[K] }, K>)
-}[string & keyof T]>;
-
-export type StyleType = Partial<ExcludeReadOnly<CSSStyleDeclaration>>;
-export interface IInfiniteGridItemElement extends HTMLElement {
-	_INFINITEGRID_TRANSITION?: boolean;
-	__IMAGE__?: -1 | IInfiniteGridItemElement;
-	__BOX__?: IInfiniteGridItemElement;
-	__SIZE__?: number;
-	__TRANSLATE__?: number;
-	__RATIO__?: number;
-}
-export interface ITransitionProperties {
-	property: "transition-property";
-	duration: "transition-duration";
-	delay: "transition-delay";
-}
-export interface IRectlProperties {
-	startPos1: PositionType;
-	endPos1: ReversePositionType;
-	size1: SizeType;
-	startPos2: PositionType;
-	endPos2: ReversePositionType;
-	size2: SizeType;
-}
-export interface IAlign {
-	START: "start";
-	CENTER: "center";
-	END: "end";
-	JUSTIFY: "justify";
-}
 /**
- * Position Interface
- * @ko Position Interface
- * @memberof eg.InfiniteGrid
  * @typedef
+ * @extends Grid.GridOptions
+ * @property - The target to which the container is applied. If false, create itself, if true, create container. A string or HTMLElement specifies the target directly. (default: false) <ko>container를 적용할 대상. false면 자기 자신, true면 container를 생성. string 또는 HTMLElement는 직접 대상을 지정. (default: false)</ko>
+ * @property - If you create a container, you can set the container's tag. (default: "div") <ko>container를 생성한다면 container의 tag를 정할 수 있다. (default: "div")</ko>
+ * @property - The size of the scrollable area for adding the next group of items. (default: 100) <ko>다음 아이템 그룹을 추가하기 위한 스크롤 영역의 크기. (default: 100)</ko>
+ * @property - Whether to show only the DOM of the visible area. (default: true) <ko>보이는 영역의 DOM만 보여줄지 여부. (default: true)</ko>
+ * @property - Grid class to apply Infinite function. <ko>Infinite 기능을 적용할 Grid 클래스.</ko>
+ * @property - class that renders the DOM. <ko> DOM을 렌더하는 클래스. </ko>
  */
-export interface IPosition {
-	top: number;
-	left: number;
+export interface InfiniteGridOptions extends GridOptions {
+  container?: boolean | string | HTMLElement;
+  containerTag?: string;
+  threshold?: number;
+  useRecycle?: boolean;
+  gridConstructor?: GridFunction;
+  renderer?: Renderer | null;
 }
+
 /**
- * Size Interface
- * @ko Size Interface
- * @memberof eg.InfiniteGrid
  * @typedef
+ * @property - Groups corresponding to placeholders <ko>placholder에 해당하는 그룹</ko>
+ * @property - Items corresponding to placeholders <ko>placholder에 해당하는 아이템들</ko>
+ * @property - Remove the inserted placeholders. <ko>추가한 placeholder들을 삭제한다.</ko>
  */
-export interface ISize {
-	width: number;
-	height: number;
-}
-export interface IJQuery {
-	length: number;
-	jquery: string;
-	toArray(): Array<string | HTMLElement>;
-	get(index: number): string | HTMLElement;
+export interface InsertedPlaceholdersResult {
+  group: InfiniteGridGroup;
+  items: InfiniteGridItem[];
+  remove(): void;
 }
 
-export interface ILayoutResult {
-	items: IInfiniteGridItem[];
-	outlines: {
-		start: number[],
-		end: number[],
-	};
-}
-export interface ILayout {
-	options: {
-		horizontal: boolean,
-		margin: number;
-		[key: string]: any,
-	};
-	append(groupItems: IInfiniteGridItem[], outline: number[], cache?: boolean): ILayoutResult;
-	prepend(groupItems: IInfiniteGridItem[], outline: number[], cache?: boolean): ILayoutResult;
-	setSize(size: number): this;
-	layout(groups: IInfiniteGridGroup[], outline: number[]): this;
-}
 
-export interface IImageLoadedOptions {
-	prefix?: string;
-	length?: number;
-	type?: 1 | 2;
-	complete?: () => void;
-	end?: () => void;
-	error?: (e: { target: LoadingImageElement, itemIndex: number }) => void;
-}
-export interface LoadingImageElement extends HTMLImageElement {
-	__ITEM_INDEX__?: number;
+/**
+ * @typedef
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+ * @property - Last group key. <ko>마지막 그룹의 키.</ko>
+ * @property - The key of the next group that should replace placeholders. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ * @property - Whether to request virtual groups corresponding to placeholders. <ko>placeholder에 해당하는 가상의 그룹을 요청하는지 여부</ko>
+ * @property - Set to standby to request data. <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
+ * @property - When the data request is complete, it is set to ready state. <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
+ */
+export interface OnRequestAppend {
+  currentTarget: InfiniteGrid;
+  groupKey: string | number | undefined;
+  nextGroupKey?: string | number | undefined;
+  isVirtual: boolean;
+  wait(): void;
+  ready(): void;
 }
 
-export interface IDOMRendererOptions {
-	useOffset: boolean;
-	isEqualSize: boolean;
-	isConstantSize: boolean;
-	horizontal: boolean;
-	container: boolean | HTMLElement;
-	percentage: boolean | Array<"size" | "position">;
+/**
+ * @typedef
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+ * @property - First group key. <ko>첫번째 그룹의 키.</ko>
+ * @property - The key of the next group that should replace placeholders. <ko>placeholder를 대체해야 할 다음 그룹의 키.</ko>
+ * @property - Whether to request virtual groups corresponding to placeholders. <ko>placeholder에 해당하는 가상의 그룹을 요청하는지 여부</ko>
+ * @property - Set to standby to request data. <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
+ * @property - When the data request is complete, it is set to ready state. <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
+ */
+export interface OnRequestPrepend {
+  currentTarget: InfiniteGrid;
+  groupKey: string | number | undefined;
+  nextGroupKey?: string | number | undefined;
+  isVirtual: boolean;
+  wait(): void;
+  ready(): void;
 }
 
-export interface IDOMRendererOrgStyle {
-	position?: CSSStyleDeclaration["position"];
-	overflowX?: CSSStyleDeclaration["overflowX"];
-	overflowY?: CSSStyleDeclaration["overflowY"];
+
+/**
+ * @typedef
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+ * @property - The items rendered for the first time. <ko>처음 렌더링한 아이템들.</ko>
+ * @property - The items updated in size. <ko>사이즈 업데이트한 아이템들.</ko>
+ * @property - The direction InfiniteGrid was rendered. <ko>InfiniteGrid가 렌더링된 방향.</ko>
+ * @property - Whether rendering was done using the resize event or the useResize option. <ko>resize 이벤트 또는 useResize 옵션을 사용하여 렌더링를 했는지 여부.</ko>
+ * @property - The key of the first group that has been rendered. <ko>렌더링이 완료된 첫번째 그룹의 키.</ko>
+ * @property - The key of the last group that has been rendered. <ko>렌더링이 완료된 마지막 그룹의 키.</ko>
+ * @property - Items that have been rendered. <ko>렌더링이 완료된 아이템들.</ko>
+ * @property - Groups that have been rendered. <ko>렌더링이 완료된 그룹들.</ko>
+ */
+export interface OnRenderComplete {
+  currentTarget: InfiniteGrid;
+  mounted: InfiniteGridItem[];
+  updated: InfiniteGridItem[];
+  direction: "start" | "end";
+  isResize: boolean;
+  startCursor: number;
+  endCursor: number;
+  items: InfiniteGridItem[];
+  groups: InfiniteGridGroup[];
 }
 
-export interface IArrayFormat<T> {
-	length: number;
-	[index: number]: T;
+/**
+ * @typedef
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+ * @property - The item's element.<ko>아이템의 엘리먼트.</ko>
+ * @property - The content element with error.<ko>에러난 발생한 콘텐츠 엘리먼트.</ko>
+ * @property - The item with error content.<ko>에러난 콘텐츠를 가지고 있는 아이템</ko>
+ * @property - If you have fixed the error and want to recheck it, call update(). If you remove an element, call the syncElements() method.<ko>에러를 해결했고 재검사하고 싶으면 update()를 호출해라. 만약 엘리먼트를 삭제한 경우 syncElements() 메서드를 호출해라.</ko>
+ * @property - If you want to remove the item corresponding to the error, call remove(). <ko>에러에 해당하는 아이템을 제거하고 싶으면 remove()를 호출해라.</ko>
+ */
+export interface OnContentError {
+  currentTarget: InfiniteGrid;
+  element: HTMLElement;
+  target: HTMLElement;
+  item: InfiniteGridItem;
+  update(): void;
+  remove(): void;
 }
 
-export interface IDOMRendererOptions {
-	isEqualSize: boolean;
-	isConstantSize: boolean;
-	horizontal: boolean;
-	container: boolean | HTMLElement;
+/**
+ * @typedef
+ * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+ * @property - The scroll direction. <ko>스크롤 방향.</ko>
+ * @property - The scroll position. <ko>스크롤 포지션.</ko>
+ * @property - The scroll position relative to container. <ko>컨테이너 기준의 스크롤 포지션.</ko>
+ */
+export interface OnChangeScroll {
+  currentTarget: InfiniteGrid;
+  direction: "start" | "end";
+  scrollPos: number;
+  relativeScrollPos: number;
 }
 
-export interface IDOMRendererOrgStyle {
-	position?: CSSStyleDeclaration["position"];
-	overflowX?: CSSStyleDeclaration["overflowX"];
-	overflowY?: CSSStyleDeclaration["overflowY"];
+export interface InfiniteGridEvents {
+  changeScroll: OnChangeScroll;
+  requestAppend: OnRequestAppend;
+  requestPrepend: OnRequestPrepend;
+  renderComplete: OnRenderComplete;
+  contentError: OnContentError;
 }
 
-export type ExcludeKeys = keyof Component
-  | "clear" | "destroy" | "remove" | "prepend" | "append"
-  | "setLayout" | "removeByIndex" | "setLoadingBar"
-  | "beforeSync" | "sync" | "getRenderingItems";
-export type InfiniteGridMethodsKeys = Exclude<keyof InfiniteGrid, ExcludeKeys>;
-export type InfiniteGridMethods = Pick<InfiniteGrid, InfiniteGridMethodsKeys>;
 
-export type OnAppend = {
-	isTrusted: boolean;
-	groupKey: string | number | undefined;
-	startLoading: (userStyle: StyleType) => void;
-	endLoading: (userStyle: StyleType) => void;
-};
-export type OnPrepend = {
-	isTrusted: boolean;
-	groupKey: string | number | undefined;
-	startLoading: (userStyle: StyleType) => void;
-	endLoading: (userStyle: StyleType) => void;
-};
-export type OnLayoutComplete = {
-	target: IInfiniteGridItem[];
-	isAppend: boolean;
-	isTrusted: boolean;
-	fromCache: boolean;
-	isLayout: boolean;
-	isScroll: boolean;
-	scrollPos: number | null;
-	orgScrollPos: number;
-	size: number;
-	endLoading: (userStyle: StyleType) => void;
-};
-export type OnContentError = {
-	target: HTMLElement;
-	element: HTMLElement;
-	items: IInfiniteGridItem[];
-	item: IInfiniteGridItem;
-	itemIndex: number;
-	totalIndex: number;
-	replace: (element?: string | HTMLElement) => void;
-	replaceItem: (content: string) => void;
-	remove: () => void;
-	removeItem: () => void;
-};
-export type OnImageError = {
-	target: HTMLImageElement;
-	element: HTMLElement;
-	items: IInfiniteGridItem[];
-	item: IInfiniteGridItem;
-	itemIndex: number;
-	totalIndex: number;
-	replace: (src?: string | HTMLImageElement) => void;
-	replaceItem: (content: string) => void;
-	remove: () => void;
-	removeItem: () => void;
-};
-export type OnRender = {
-	next: () => void;
-};
 
-export type OnChange = {
-	isForward: boolean;
-	horizontal: boolean;
-	scrollPos: number;
-	orgScrollPos: number;
-};
+export interface OnPickedRenderComplete {
+  mounted: GridItem[];
+  updated: GridItem[];
+  isResize: boolean;
+  direction: "start" | "end";
+}
 
-export type RenderManagerEvents = {
-	preReady: void;
-	readyElement: { item: IInfiniteGridItem };
-	ready: { remove: HTMLElement[], layout?: boolean };
-	imageError: OnImageError;
-	contentError: OnContentError;
-	renderComplete: { start: number, end: number };
-	layoutComplete: { items: IInfiniteGridItem[], isAppend: boolean };
-};
+export interface OnRequestInsert {
+  key: string | number | undefined;
+  nextKey: string | number | undefined;
+  isVirtual: boolean;
+}
 
-export type InfiniteGridEvents = {
-	append: OnAppend;
-	prepend: OnPrepend;
-	render: OnRender;
-	layoutComplete: OnLayoutComplete;
-	imageError: OnImageError;
-	contentError: OnContentError;
-	change: OnChange;
-};
+export interface RenderingOptions {
+  grid: InfiniteGrid<any> | null | undefined;
+  status: InfiniteGridStatus | null | undefined;
+  useFirstRender: boolean | null | undefined;
+  usePlaceholder: boolean | null | undefined;
+  useLoading: boolean | null | undefined;
+  horizontal: boolean | null | undefined;
+}
+export type InfiniteGridInsertedItems = string | Array<string | InfiniteGridItemInfo | HTMLElement>;
+
+export type InfiniteGridMethods<Component> = Methods<Component, InfiniteGrid, typeof INFINITEGRID_METHODS>;
+export type InfiniteGridFunction
+  = (new (container: HTMLElement, options: Partial<GridOptions>) => InfiniteGrid)
+  & { propertyTypes: any, defaultOptions: any };

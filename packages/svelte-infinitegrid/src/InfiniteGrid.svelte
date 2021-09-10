@@ -1,186 +1,144 @@
 <script lang="ts">
+  /**
+   * egjs-infinitegrid
+   * Copyright (c) 2021-present NAVER Corp.
+   * MIT license
+   */
   import {
     onMount,
-    onDestroy,
     beforeUpdate,
+    createEventDispatcher,
+    onDestroy,
     afterUpdate,
-    createEventDispatcher
   } from "svelte";
   import VanillaInfiniteGrid, {
     INFINITEGRID_EVENTS,
-    GridLayout,
-    categorize,
-    ItemManager,
-    CONTAINER_CLASSNAME
+    InfiniteGridFunction,
+    InfiniteGridOptions,
+    Renderer,
+    CONTAINER_CLASS_NAME,
+    InfiniteGridItem,
+    InfiniteGridItemInfo,
+    getRenderingItems,
+    mountRenderingItems,
   } from "@egjs/infinitegrid";
-  import type {
-    IInfiniteGridOptions,
-    ILayout,
-    IInfiniteGridStatus,
-    IInfiniteGridItem,
-  } from "@egjs/infinitegrid";
-  import LoadingChecker from "./LoadingChecker.svelte";
-  import { PROP_NAMES } from "./consts";
-
-  export let groupBy = (item, index) => item.groupKey;
-  export let itemBy = (item, index) => item.key;
-  export let items: any[] = [];
-  export let useFirstRender = false;
-  export let status: IInfiniteGridStatus | null = null;
-  export let layoutType: new () => ILayout = GridLayout;
-  export let options: Partial<IInfiniteGridOptions> = {};
-  export let layoutOptions: { [key: string]: any } = {};
-  export let _forceCount = 0;
+  import { SVELTE_INFINITEGRID_PROPS } from "./consts";
+  export let GridClass: InfiniteGridFunction;
 
   const dispatch = createEventDispatcher();
-  let viewer: HTMLElement;
+  const renderer = new Renderer();
+  let wrapper: HTMLElement;
   let container: HTMLElement;
-  let nextFunction = () => {};
-  let layoutState;
-  let visibleItems: any[] = [];
-  let ig: VanillaInfiniteGrid;
-  let hasLoadingElement = true;
+  let grid: VanillaInfiniteGrid;
+  let isFirstMount = false;
   let attributes = {};
-  let isFirstMount = true;
+  let visibleItems: InfiniteGridItem[] = [];
 
-  function toItems(items) {
-    return items.map((item, i) => ({
-      groupKey: groupBy(item, i),
-      itemKey: itemBy(item, i),
-      data: item
-    }));
-  }
-  function beforeSync(items) {
-    return ig.beforeSync(toItems(items));
-  }
-  function getLoadingElement() {
-    if (hasLoadingElement) {
-      const el = container || viewer;
-
-      return el!.lastElementChild;
-    }
-  }
-  function getElements() {
-    const el = container || viewer;
-    const elements = [].slice.call(el!.children);
-
-    if (hasLoadingElement) {
-      return elements.slice(0, -1);
-    }
-    return elements;
-  }
   function updateAttributes() {
     attributes = { ...$$props };
 
-    PROP_NAMES.forEach(name => {
+    const defaultOptions = GridClass.defaultOptions;
+
+    delete attributes["GridClass"];
+    for (const name in defaultOptions) {
+      delete attributes[name];
+    }
+    SVELTE_INFINITEGRID_PROPS.forEach((name) => {
       delete attributes[name];
     });
   }
+  function getItemInfos(): InfiniteGridItemInfo[] {
+    const items = $$props.items || [];
+    const itemBy = $$props.itemBy || ((item) => item.key);
+    const groupBy = $$props.groupBy || ((item) => item.groupKey);
 
-  const groups = categorize(items);
 
-  if (status) {
-    const { startCursor, endCursor } = status._infinite;
-    visibleItems = ItemManager.pluck(
-      groups.slice(startCursor, endCursor + 1),
-      "items"
-    ).map(item => item.data);
-  } else if (useFirstRender) {
-    visibleItems = items;
+    return items.map((item, i) => {
+      return {
+        groupKey: groupBy(item, i),
+        key: itemBy(item, i),
+        data: item,
+      };
+    });
   }
+  function updateVisibleChildren() {
+    visibleItems = getRenderingItems(getItemInfos(), {
+      grid,
+      status: $$props.status,
+      usePlaceholder: $$props.usePlaceholder,
+      useFirstRender: $$props.useFirstRender,
+      useLoading: $$props.useLoading,
+      horizontal: $$props.horizontal,
+    });
+  }
+
   beforeUpdate(() => {
     updateAttributes();
-    if (!ig) {
-      return;
-    }
-    const result = beforeSync(items);
-
-    layoutState = result === "relayout" ? result : layoutState || result;
-    visibleItems = ig.getRenderingItems().map(item => item.data);
-
-    const loadingElement = getLoadingElement();
-
-    if (loadingElement) {
-      ig.setLoadingBar({
-        append: loadingElement,
-        prepend: loadingElement
-      });
-    } else {
-      ig.setLoadingBar();
-    }
+    updateVisibleChildren();
   });
   onMount(() => {
-    ig = new VanillaInfiniteGrid(viewer!, {
-      ...options,
-      renderExternal: true
-    }).on("render", ({ next }) => {
-      setTimeout(() => {
-        nextFunction = next;
-        ++_forceCount;
-      });
-    });
-    INFINITEGRID_EVENTS.forEach(name => {
-      ig.on(name as any, (e: any) => {
-        dispatch(name, e);
-      });
-    });
-    ig.setLayout(layoutType, layoutOptions);
+    const defaultOptions = GridClass.defaultOptions;
+    const options: Partial<InfiniteGridOptions> = {};
 
-    const loadingElement = getLoadingElement();
+    for (const name in defaultOptions) {
+      if (name in $$props) {
+        (options as any)[name] = $$props[name];
+      }
+    }
+    if (container) {
+      options.container = container;
+    }
+    options.renderer = renderer;
+    grid = new GridClass(wrapper!, options);
 
-    if (loadingElement) {
-      ig.setLoadingBar({
-        append: loadingElement,
-        prepend: loadingElement
+    for (const name in INFINITEGRID_EVENTS) {
+      const eventName = INFINITEGRID_EVENTS[name];
+
+      grid.on(eventName as any, (e: any) => {
+        dispatch(eventName, e);
       });
     }
-    if (status) {
-      setStatus(status, true);
-    } else {
-      beforeSync(items);
-      ig.layout(true);
-    }
+    renderer.on("requestUpdate", () => {
+      updateVisibleChildren();
+    });
+    mountRenderingItems(getItemInfos(), {
+      grid,
+      status: $$props.status,
+      usePlaceholder: $$props.usePlaceholder,
+      useFirstRender: $$props.useFirstRender,
+      useLoading: $$props.useLoading,
+      horizontal: $$props.horizontal,
+    });
+    renderer.updated();
   });
   afterUpdate(() => {
     if (isFirstMount) {
       isFirstMount = false;
       return;
     }
-    const currentNextFunction = nextFunction;
-    nextFunction = () => {};
-    ig.sync(getElements());
+    const propertyTypes = GridClass.propertyTypes;
 
-    if (layoutState) {
-      layoutState = "";
-      ig.layout(layoutState === "relayout");
+    for (const name in propertyTypes) {
+      if (name in $$props) {
+        (grid as any)[name] = ($$props as any)[name];
+      }
     }
-    currentNextFunction();
+    renderer.updated();
   });
   onDestroy(() => {
-    ig.destroy();
+    grid.destroy();
   });
-
   export function getInstance() {
-    return ig;
-  }
-  export function setStatus(status: IInfiniteGridStatus, applyScrollPos?: boolean, syncElements: HTMLElement[] = getElements()) {
-    ig.setStatus(status, applyScrollPos, syncElements);
-    return ig;
+    return grid;
   }
 </script>
 
-<div {...attributes} bind:this={viewer}>
-  {#if options.isOverflowScroll}
-    <div class={CONTAINER_CLASSNAME} bind:this={container}>
+<div bind:this={wrapper} {...attributes}>
+  {#if $$props.container === true}
+    <div class={CONTAINER_CLASS_NAME} bind:this={container}>
       <slot {visibleItems} />
-      <slot name="loading">
-        <LoadingChecker bind:hasLoading={hasLoadingElement} />
-      </slot>
     </div>
   {:else}
     <slot {visibleItems} />
-    <slot name="loading">
-      <LoadingChecker bind:hasLoading={hasLoadingElement} />
-    </slot>
   {/if}
 </div>

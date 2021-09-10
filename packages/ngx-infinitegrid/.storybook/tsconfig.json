@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.app.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ]
+  },
+  "exclude": [
+    "../src/test.ts",
+    "../src/**/*.spec.ts",
+    "../projects/**/*.spec.ts"
+  ],
+  "include": [
+    "../stories/global.d.ts",
+    "../src/**/*",
+    "../stories/**/*",
+    "../../../stories/templates/controls.ts",
+    "../../../stories/utils.ts"
+  ]
+}

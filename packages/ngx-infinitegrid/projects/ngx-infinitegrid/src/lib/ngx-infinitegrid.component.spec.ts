@@ -1,20 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NgxInfiniteGridComponent } from './ngx-infinitegrid.component';
+import { NgxInfinitegridComponent } from './ngx-infinitegrid.component';
 
-describe('NgxInfiniteGridComponent', () => {
-  let component: NgxInfiniteGridComponent;
-  let fixture: ComponentFixture<NgxInfiniteGridComponent>;
+describe('NgxInfinitegridComponent', () => {
+  let component: NgxInfinitegridComponent;
+  let fixture: ComponentFixture<NgxInfinitegridComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NgxInfiniteGridComponent ]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NgxInfinitegridComponent ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NgxInfiniteGridComponent);
+    fixture = TestBed.createComponent(NgxInfinitegridComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

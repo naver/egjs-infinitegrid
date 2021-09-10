@@ -1,0 +1,193 @@
+---
+title: Migration Guide from v3 to v4
+id: migration-from-v3
+slug: /migration-from-v3
+custom_edit_url: null
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Changed Usage
+Double options are combined into one option.
+
+<Tabs
+  groupId="modules"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@2", value: "vue" },
+    { label: "Vue@3", value: "vue3" },
+    { label: "Angular", value: "angular" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+```js
+import { MasonryInfiniteGrid } from "@egjs/infinitegrid";
+
+const ig = new MasonryInfiniteGrid(".container", {
+  attributePrefix: "data-grid-",
+  column: 5,
+});
+
+ig.renderItems();
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+```jsx
+import { MasonryInfiniteGrid } from "@egjs/react-infinitegrid";
+
+<MasonryInfiniteGrid
+  attributePrefix={"data-grid-"}
+  column={5}
+  >
+  ...
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+  <TabItem value="vue">
+
+```html
+<template>
+  <MasonryInfiniteGrid
+    attributePrefix="data-grid-"
+    v-bind:column="5">
+    ...
+  </MasonryInfiniteGrid>
+</template>
+<script>
+  import { MasonryInfiniteGrid } from "@egjs/vue-infinitegrid";
+  export default {
+    components: {
+      MasonryInfiniteGrid,
+    },
+  };
+</script>
+```
+
+  </TabItem>
+  <TabItem value="vue3">
+
+```html
+<template>
+  <MasonryInfiniteGrid
+    attributePrefix="data-grid-"
+    v-bind:column="5">
+    ...
+  </MasonryInfiniteGrid>
+</template>
+<script>
+  import { MasonryInfiniteGrid } from "@egjs/vue3-infinitegrid";
+  export default {
+    components: {
+      MasonryInfiniteGrid,
+    },
+  };
+</script>
+```
+
+  </TabItem>
+  <TabItem value="angular">
+
+```html
+<div NgxMasonryInfiniteGrid
+  [gap]="5"
+  attributePrefix="data-grid-"
+  >
+  ...
+</div>
+```
+
+  </TabItem>
+  <TabItem value="svelte">
+
+```html
+<script>
+  import { MasonryInfiniteGrid } from "@egjs/svelte-infinitegrid";
+</script>
+<MasonryInfiniteGrid
+  gap={5}
+  attributePrefix={"data-grid-"}
+>
+  ...
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+</Tabs>
+
+
+
+## HTML structure
+- The option called `isOverflowScroll` is renamed `container`.
+- If you set the `container` option to true, a container is created inside the wrapper.
+  - The class name of container has been changed from `_eg-infinitegrid-container_` to `infinitegrid-container`
+
+```html {3}
+<body>
+  <div class="wrapper">
+    <div class="infinitegrid-container">
+      <div>Item 1</div>
+      <div>Item 2</div>
+      <div>Item 3</div>
+    </div>
+  </div>
+</body>
+```
+```js
+const ig = new InfiniteGrid(".container", {
+  container: true,
+});
+```
+
+
+## Changes when using umd modules
+- We've removed `eg` namespace on umd modules.
+  - `eg.InfiniteGrid` is now just `InfiniteGrid`
+
+
+## Changed module names
+
+|From|To|
+|---|---|
+|GridLayout|MasonryInfiniteGrid|
+|JustifiedLayout|JustifiedInfiniteGrid|
+|FrameLayout|FrameInfiniteGrid|
+|SquareLayout|Integration into MasonryInfiniteGrid|
+|PackingLayout|PackingInfiniteGrid|
+
+## Changed Options
+- Default value of **attributePrefix** is now `data-grid-` (was `data-`)
+- The option called `margin` is renamed `gap`.
+- The option called `isOverflowScroll` is renamed `container`.
+
+## Changed Events
+- The event called `append` is renamed `requestAppend`.
+- The event called `prepend` is renamed `requestPrepend`.
+- The event called `layoutComplete` is renamed `renderComplete`.
+- The event called `change` is renamed `changeScroll`.
+- The event called `imageError` is renamed `contentError`.
+
+## Changed Methods
+- The method called `layout` is renamed `renderItems`.
+- The method `getItems(true)` can be used as `getItems()`.
+- The method `getItems(false)` can be used as `getVisibleItems()`.
+- The usage of the `getStatus` method has changed.
+  - `getStatus(STATUS_TYPE.NOT_REMOVE)`(default) gets all infos
+  - `getStatus(STATUS_TYPE.REMOVE_INVISIBLE_GROUPS)` gets visible infos
+  - `getStatus(STATUS.MINIMIZE_INVISIBLE_ITEMS)` gets visible infos. However, the information is simplified for invisible items.
+  - `getStatus(STATUS.MINIMIZE_INVISIBLE_GROUPS)` gets visible infos. However, invisible items are removed and only the outline remains.
+
+## Removed Methods
+- The method called `startLoading` is removed.
+  - Use a method called `wait` instead.
+- The method called `endLoading` is removed.
+  -  Automatically check whether loading is ended.
+- The method called `isLoading` is removed.
+  - Use a method called `isWait` instead.
+- The method called `isProcessing` is removed.

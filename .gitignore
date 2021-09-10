@@ -163,7 +163,7 @@ demo/dist
 demo/doc
 .sass-cache/
 .jekyll-metadata
-
+.jekyll-cache
 
 ### SublimeText ###
 # cache files for sublime text
@@ -202,16 +202,20 @@ GitHub.sublime-settings
 !.vscode/launch.json
 !.vscode/extensions.json
 
+### Docs ###
+docs/docs/api/
+docs/sidebars-api.js
+
 ### Custom ###
-build/
 report/
 temp/
 doc/
 demo/_data/version.yml
-demo/release/
-demo/.jekyll-cache
-CHANGELOG.md
-build/
-packages/*/dist
+demo/release
+demo/storybook
 declaration/
-dist/
+
+packages/*/dist/
+test/e2e/log/
+test/e2e/screenshots/diff/
+storybook/build/

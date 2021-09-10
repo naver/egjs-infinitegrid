@@ -1,0 +1,45 @@
+import { #ClassName } from "@egjs/infinitegrid";
+
+function getItems(nextGroupKey, count) {
+  const nextItems = [];
+
+  for (let i = 0; i < count; ++i) {
+    const num = nextGroupKey * count + i;
+    nextItems.push(`<div class="item">
+  <div class="thumbnail">
+      <img src="https://naver.github.io/egjs-infinitegrid/assets/image/${(num % 33) + 1}.jpg" alt="egjs" #Maintained/>
+  </div>
+  <div class="info">egjs ${num}</div>
+</div>`);
+  }
+  return nextItems;
+}
+const ig = new #ClassName(".container", {
+#Options
+});
+
+ig.setPlaceholder({
+  html: `<div class="placeholder"></div>`,
+});
+
+
+ig.on("requestPrepend", e => {
+  if (e.isVirtual) {
+    e.wait();
+    setTimeout(() => {
+      e.ready();
+      ig.prepend(getItems(nextGroupKey, 10), nextGroupKey);
+    }, 200);
+  }
+});
+ig.on("requestAppend", e => {
+  if (e.isVirtual) {
+    e.wait();
+    e.currentTarget.appendPlaceholders(5, nextGroupKey);
+    setTimeout(() => {
+      e.ready();
+      ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+    }, 200);
+  }
+});
+ig.renderItems();

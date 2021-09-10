@@ -1,182 +1,103 @@
-# svelte-infinitegrid [![npm version](https://badge.fury.io/js/%40egjs%2Fsvelte-infinitegrid.svg)](https://badge.fury.io/js/%40egjs%2Fsvelte-infinitegrid)
+<h1 align="center">
+  <img width="256" alt="InfiniteGrid Logo" src="https://naver.github.io/egjs-infinitegrid/img/infinitegrid_logo.png"><br/>
+  @egjs/svelte-infinitegrid
+</h1>
 
-A Svelte component that can easily use [egjs-infinitegrid](https://github.com/naver/egjs-infinitegrid)
+<p align=center>
+  <a href="https://www.npmjs.com/package/@egjs/svelte-infinitegrid" target="_blank">
+    <img src="https://img.shields.io/npm/v/@egjs/svelte-infinitegrid.svg?style=flat-square&color=42b883&label=version&logo=NPM">
+  </a>
+  <a href="https://www.npmjs.com/package/@egjs/svelte-infinitegrid" target="_blank">
+    <img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/svelte-infinitegrid.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc">
+  </a>
+  <a href="https://github.com/naver/egjs-infinitegrid/graphs/commit-activity">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/naver/egjs-infinitegrid.svg?style=flat-square&label=%E2%AC%86%20commits&color=08CE5D">
+  </a>
+  <a href="https://www.npmjs.com/package/@egjs/svelte-infinitegrid" target="_blank">
+    <img src="https://img.shields.io/npm/dm/@egjs/svelte-infinitegrid.svg?style=flat-square&label=%E2%AC%87%20downloads&color=08CE5D" alt="npm downloads per month">
+  </a>
+  <a href="https://github.com/naver/egjs-infinitegrid/graphs/contributors" target="_blank">
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/naver/egjs-infinitegrid.svg?label=%F0%9F%91%A5%20contributors&style=flat-square&color=08CE5D"></a>
+  <a href="https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE" target="_blank">
+    <img alt="GitHub" src="https://img.shields.io/github/license/naver/egjs-infinitegrid.svg?style=flat-square&label=%F0%9F%93%9C%20license&color=08CE5D">
+  </a>
+</p>
 
-* [Playground with Various Demos](https://naver.github.io/egjs-infinitegrid/storybook/)
-* [GridLayout Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-gridlayout-7ycgd)
-* [GridLayout with Parallax Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-gridlayout-with-parallax-wnl8p)
-* [JustifiedLayout Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-justifiedlayout-e4com)
-* [Youtube Demo](https://codesandbox.io/s/svelte-infinitegrid-demo-youtube-svrus)
-* [API Documentation](https://naver.github.io/egjs-infinitegrid/release/latest/doc/)
 
+<p align="center">
+  A Svelte component that can arrange items infinitely according to the type of grids
+</p>
 
-## Install
-```bash
-$ npm install @egjs/svelte-infinitegrid  --save
+<p align="center">
+  <a href="https://naver.github.io/egjs-infinitegrid/">Demo</a> / <a href="https://naver.github.io/egjs-infinitegrid/docs/api/InfiniteGrid">Documentation</a> / <a href="https://naver.github.io/egjs/">Other components</a>
+</p>
+
+## ⚙️ Installation
+```sh
+npm install --save @egjs/svelte-infinitegrid
 ```
 
-## How to use
+## ❗ Changes from [@egjs/infinitegrid](https://github.com/naver/egjs-infinitegrid)
+- You can't use methods that manipulates DOM directly
+  - e.g., `append()`, `prepend()`, `insert()`, `remove()`
+
+## 🏃 Quick Start
 ```html
 <script>
-    import InfiniteGrid, {
-        GridLayout,
-        JustifiedLayout,
-        SquareLayout,
-        FrameLayout,
-        PackingLayout
-    } from "@egjs/svelte-infinitegrid";
+  import { MasonryInfiniteGrid } from "@egjs/svelte-infinitegrid";
 
-    let ig;
-    let loading;
-    let items = [
-        { groupKey: 0, key: 0},
-        { groupKey: 0, key: 1},
-        { groupKey: 0, key: 2},
-    ];
-    function onAppend(e) {
-        const nextGroupKey = (parseFloat(groupKey) || 0) + 1;
-        const nextKey = items.length;
+  let items = getItems(0, 10);
 
-        items = [
-            ...items,
-            { groupKey: nextGroupKey, key: nextKey },
-            { groupKey: nextGroupKey, key: nextKey + 1 },
-            { groupKey: nextGroupKey, key: nextKey + 2 },
-        ];
+  function getItems(nextGroupKey, count) {
+    const nextItems = [];
+
+    for (let i = 0; i < count; ++i) {
+      const nextKey = nextGroupKey * count + i;
+
+      nextItems.push({ groupKey: nextGroupKey, key: nextKey });
     }
+    return nextItems;
+  }
 </script>
-```
-```jsx
-<GridLayout
-    items={items}
-    itemBy={item => item.key}
-    groupBy={item => item.groupKey}
-    useFirstRender={false}
-    status={null}
-    options={{
-        threshold: 100,
-        isOverflowScroll: false,
-        isEqualSize: false,
-        isContantSize: false,
-        useFit: false,
-        useRecycle: false,
-        horizontal: false,
-    }}
-    layoutOptions={{
-        align: "center",
-    }}
-    onAppend = {({ detail }) => onAppend(detail)}
-    onPrepend = {({ detail }) => onPrepend(detail)}
-    onLayoutComplete = {({ detail }) => onLayoutComplete(detail)}
-    onImageError = {({ detail }) => onImageError(detail)}
-    onChange = {({ detail }) => onChange(detail)}
-    let:item
+
+<MasonryInfiniteGrid
+  class="container"
+  gap={5}
+  {items}
+  on:requestAppend={({ detail: e }) => {
+    const nextGroupKey = (+e.groupKey || 0) + 1;
+
+    items = [...items, ...getItems(nextGroupKey, 10)];
+  }}
+  let:visibleItems
 >
-    {#each visibleItems as item (item.key)}
-        <div class="item">
-            {`item ${item.key}`}</div>
-        </div>
-    {/each}
-    <div slot="loading">Loading</div>
-</GridLayout>
+  {#each visibleItems as item (item.key)}
+    <div class="item">
+      ...
+    </div>
+  {/each}
+</MasonryInfiniteGrid>
 ```
 
-* Add `slot = "loading"` if you want to show the loading bar when calling the `startLoading()` method.
+## 🙌 Contributing
+See [CONTRIBUTING.md](https://github.com/naver/egjs-infinitegrid/blob/master/CONTRIBUTING.md)
 
-## Props
+## 📝 Feedback
+Please file an [Issue](https://github.com/naver/egjs-infinitegrid/issues) with label "Svelte".
 
-
-|name|type|default|description|
-|---|---|---|---|
-|itemBy|Function|get itemKey|Get a unique key that defines how to track changes for items in the iterable.|
-|groupBy|Function|get groupKey or data-groupkey|Get a unique key to distinguish between groups.|
-|useFirstRender|boolean|false|The useFirstRender option determines whether the markup will be shown on the first rendering or after loading is complete.|
-|status|IInfiniteGridStatus|null|State object of the react-infinitegrid module|
-|layoutType|Class|GridLayout|Specifies the Layout class to use.|
-|options|IInfiniteGridOptions|{}|The option object of the eg.InfiniteGrid module|
-|layoutOptions|IInfiniteGridOptions|{}|Options to apply to the Layout.|
-
-
-### Options
-* [InfiniteGrid's options](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html)
-* [InfiniteGrid's events](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.html#event:append)
-* [GridLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.GridLayout.html)
-* [JustifiedLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.JustifiedLayout.html)
-* [SquareLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.SquareLayout.html)
-* [FrameLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.FrameLayout.html)
-* [PackingLayout's layoutOptions](https://naver.github.io/egjs-infinitegrid/release/latest/doc/eg.InfiniteGrid.PackingLayout.html)
-
-
-### Restore status
-
-If you want to restore the state, use the status prop.
-
-* Save Status
-```tsx
-import { GridLayout } from "@egjs/svelte-infinitegrid";
-
-// Save Status
-let ig;
-const status = ig.getStatus();
-
-<GridLayout
-	bind:this={ig}></GridLayout>
-```
-
-* Restore Status (First mount)
-```tsx
-import { GridLayout } from "@egjs/svelte-infinitegrid";
-
-<GridLayout
-	status={status}></GridLayout>
-```
-
-* Dynamically restore status
-```tsx
-import { GridLayout } from "@egjs/svelte-infinitegrid";
-
-// Save Status
-let ig;
-ig.setStatus(status);
-
-<GridLayout
-	bind:this={ig}></GridLayout>
-```
-
-
-
-## ⚙️ Developments
-### `npm run dev`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:5000](http://localhost:5000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-
-## Bug Report
-
-If you find a bug, please report it to us using the [Issues](https://github.com/naver/egjs-infinitegrid/issues) page on GitHub.
-
-
-## License
-react-infinitegrid is released under the [MIT license](https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE).
-
+## 📜 License
+egjs-infinitegrid is released under the [MIT license](http://naver.github.io/egjs/license.txt).
 
 ```
-Copyright (c) 2019-present NAVER Corp.
-
+Copyright (c) 2015-present NAVER Corp.
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -186,3 +107,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
+<p align=center>
+  <a href="https://naver.github.io/egjs/"><img height="50" src="https://naver.github.io/egjs/img/logotype1_black.svg" ></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/naver"><img height="50" src="https://naver.github.io/OpenSourceGuide/book/assets/naver_logo.png" /></a>
+</p>

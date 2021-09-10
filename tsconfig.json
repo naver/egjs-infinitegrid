@@ -1,20 +1,26 @@
 {
-	"compilerOptions": {
-		"outDir": "./outjs/",
-		"sourceMap": true,
-		"module": "es2015",
-		"target": "es5",
-		"strictNullChecks": true,
-		"moduleResolution": "node",
-		"lib": [
-			"es2015",
-			"dom"
-		]
-	},
-	"include": [
-		"./src/**/*.ts"
-	],
-	"exclude": [
-		"node_modules"
-	]
+  "compilerOptions": {
+    "outDir": "./outjs/",
+    "sourceMap": true,
+    "module": "es2015",
+    "target": "es5",
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "lib": [
+      "es2015",
+      "dom"
+    ]
+  },
+  "baseUrl": ".",
+  "include": [
+    "./src/**/*.ts",
+    "./test/unit/**/*.ts",
+    "./stories/**/*.ts",
+    "./global.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
