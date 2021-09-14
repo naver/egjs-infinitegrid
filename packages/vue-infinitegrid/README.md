@@ -31,6 +31,10 @@
   <a href="https://naver.github.io/egjs-infinitegrid/">Demo</a> / <a href="https://naver.github.io/egjs-infinitegrid/docs/api/InfiniteGrid">Documentation</a> / <a href="https://naver.github.io/egjs/">Other components</a>
 </p>
 
+<p align=center>
+  ⚠️ If you're looking for InfiniteGrid for Vue 3, check out <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue3-infinitegrid/README.md">@egjs/vue3-infinitegrid</a>
+</p>
+
 ## ⚙️ Installation
 ```sh
 npm install --save @egjs/vue-infinitegrid
