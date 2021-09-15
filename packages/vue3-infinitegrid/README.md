@@ -23,13 +23,16 @@
   </a>
 </p>
 
-
 <p align="center">
   A Vue 3 component that can arrange items infinitely according to the type of grids
 </p>
 
 <p align="center">
   <a href="https://naver.github.io/egjs-infinitegrid/">Demo</a> / <a href="https://naver.github.io/egjs-infinitegrid/docs/api/InfiniteGrid">Documentation</a> / <a href="https://naver.github.io/egjs/">Other components</a>
+</p>
+
+<p align=center>
+  ⚠️ If you're looking for InfiniteGrid for Vue 2, check out <a href="https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid/README.md">@egjs/vue-infinitegrid</a>
 </p>
 
 ## ⚙️ Installation
