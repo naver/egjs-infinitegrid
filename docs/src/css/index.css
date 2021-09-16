@@ -106,3 +106,8 @@ html[data-theme='dark'] .main-icon {
   height: 50px;
   text-align: center;
 }
+
+
+.transition .item  {
+  transition: all ease 0.2s;
+}

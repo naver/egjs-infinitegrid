@@ -13,7 +13,7 @@ module.exports = {
   baseUrl: isDev ? '/' : '/egjs-infinitegrid/',
   projectName: 'naver.github.io',
   organizationName: 'naver',
-  plugins: ['docusaurus-plugin-sass'],
+  plugins: ['docusaurus-plugin-sass', './webpack.js'],
   themes: ['@docusaurus/theme-live-codeblock'],
   themeConfig: {
     hideableSidebar: false,
