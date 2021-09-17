@@ -91,6 +91,7 @@ html[data-theme='dark'] .main-icon {
 .item .thumbnail {
   overflow: hidden;
   border-radius: 8px;
+  font-size: 0;
 }
 
 .placeholder {
