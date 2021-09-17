@@ -123,9 +123,9 @@ export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string
     const containerTag = props.containerTag as any || "div";
 
     if (container === true) {
-      return h(containerTag, {
+      return [h(containerTag, {
         ref: "containerRef",
-      }, visibleChildren);
+      }, visibleChildren)];
     }
     return visibleChildren;
   }
