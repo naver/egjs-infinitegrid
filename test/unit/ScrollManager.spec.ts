@@ -2,6 +2,7 @@ import { CONTAINER_CLASS_NAME } from "../../src/consts";
 import { ScrollManager } from "../../src/ScrollManager";
 import { cleanup, sandbox, waitEvent, waitFor } from "./utils/utils";
 import * as sinon from "sinon";
+import { ContainerManager } from "@egjs/grid";
 
 describe("test ScrollManager", () => {
   let scrollManager: ScrollManager | null;
@@ -71,6 +72,28 @@ describe("test ScrollManager", () => {
     expect(scrollManager.getWrapper()).to.be.equals(wrapper);
     expect(scrollManager.getContainer()).to.be.equals(container);
     expect(scrollManager.getScrollContainer()).to.be.equals(wrapper);
+  });
+  [true, false].forEach((horizontal) => {
+    it (`should check if inline size is calculated properly when horizontal is ${horizontal}`, () => {
+      // Given
+      wrapper!.style.width = "300px";
+      wrapper!.style.height = "300px";
+
+      // When
+      scrollManager = new ScrollManager(wrapper!, {
+        container: true,
+        horizontal,
+      });
+
+      const containerManager = new ContainerManager(scrollManager.getContainer(), {
+        horizontal,
+      });
+
+      containerManager.resize();
+
+      // Then
+      expect(containerManager.getInlineSize()).to.be.equals(300);
+    });
   });
   it("should check if the original style is restored", () => {
     // Given
