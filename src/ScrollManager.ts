@@ -169,9 +169,11 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     const wrapper = this.wrapper;
     let scrollContainer = wrapper;
     let container = wrapper;
+    let containerCSSText = "";
 
     if (!containerOption) {
       scrollContainer = document.body;
+      containerCSSText = container.style.cssText;
     } else {
       if (containerOption instanceof HTMLElement) {
         // Container that already exists
@@ -194,14 +196,20 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
         // Find Container by Selector
         container = scrollContainer.querySelector(containerOption) as HTMLElement;
       }
+      containerCSSText = container.style.cssText;
+
       const style = scrollContainer.style;
 
       [style.overflowX, style.overflowY] = horizontal ? ["scroll", "hidden"] : ["hidden", "scroll"];
+
+      if (horizontal) {
+        container.style.height = "100%";
+      }
     }
     const eventTarget = scrollContainer === document.body ? window : scrollContainer;
 
     eventTarget.addEventListener("scroll", this._onCheck);
-    this._orgCSSText = container.style.cssText;
+    this._orgCSSText = containerCSSText;
     this.container = container;
     this.scrollContainer = scrollContainer;
     this.eventTarget = eventTarget;
