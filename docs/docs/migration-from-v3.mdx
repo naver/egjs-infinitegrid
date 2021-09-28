@@ -8,6 +8,9 @@ custom_edit_url: null
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
+import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
 ## Changed Usage
 Double options are combined into one option.
 
@@ -183,6 +186,9 @@ const ig = new InfiniteGrid(".container", {
   - `getStatus(STATUS.MINIMIZE_INVISIBLE_ITEMS)` gets visible infos. However, the information is simplified for invisible items.
   - `getStatus(STATUS.MINIMIZE_INVISIBLE_GROUPS)` gets visible infos. However, invisible items are removed and only the outline remains.
 
+## Removed Options
+- The option called `transitionDuration` is removed.
+  - Use CSS. See <Link to={useBaseUrl("Guides#use-transition")}>Guides</Link>
 ## Removed Methods
 - The method called `startLoading` is removed.
   - Use a method called `wait` instead.

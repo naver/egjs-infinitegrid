@@ -19,6 +19,7 @@ import VisibleStatus from "@site/src/component/grids/VisibleStatus";
 
 import InfiniteGridDefaultCode from "@site/src/component/code/InfiniteGridDefaultCode";
 import InfiniteGridStatusCode from "@site/src/component/code/InfiniteGridStatusCode";
+import Transition from "@site/src/component/grids/Transition";
 
 
 
@@ -1132,3 +1133,16 @@ Since you got the status for the visible area, replace it with a placeholder to 
 <VisibleStatus/>
 
 <InfiniteGridStatusCode className="MasonryInfiniteGrid" />
+
+
+## Use Transition
+
+If you want to use transition, use CSS.
+
+```css
+.item {
+  transition: all ease 0.2s;
+}
+```
+
+<Transition />

@@ -91,6 +91,7 @@ html[data-theme='dark'] .main-icon {
 .item .thumbnail {
   overflow: hidden;
   border-radius: 8px;
+  font-size: 0;
 }
 
 .placeholder {
@@ -105,4 +106,9 @@ html[data-theme='dark'] .main-icon {
   width: 100%;
   height: 50px;
   text-align: center;
+}
+
+
+.transition .item  {
+  transition: all ease 0.2s;
 }
