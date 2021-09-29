@@ -9,20 +9,22 @@ import { INFINITEGRID_METHODS } from "@egjs/infinitegrid";
 export default /*#__PURE__*/ (() => {
   const prototype = InfiniteGrid.prototype;
 
-  INFINITEGRID_METHODS.forEach(name => {
-    if (name in prototype) {
-      return;
-    }
-    prototype[name] = function (...args) {
-      const self = this.getInstance();
-      const result = self[name](...args);
-
-      if (result === self) {
-        return this;
-      } else {
-        return result;
+  if (prototype) {
+    INFINITEGRID_METHODS.forEach(name => {
+      if (name in prototype) {
+        return;
       }
-    };
-  });
+      prototype[name] = function (...args) {
+        const self = this.getInstance();
+        const result = self[name](...args);
+
+        if (result === self) {
+          return this;
+        } else {
+          return result;
+        }
+      };
+    });
+  }
   return InfiniteGrid;
 })();
