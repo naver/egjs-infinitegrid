@@ -6,7 +6,9 @@
 import {
   AfterViewChecked, AfterViewInit, Component, ElementRef,
   EventEmitter, Input, OnChanges, OnDestroy, Output, ViewChild,
+  PLATFORM_ID, Inject,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 import {
   getRenderingItems,
@@ -80,7 +82,7 @@ export class NgxInfiniteGridComponent
   private _renderer = new Renderer();
   private _isChange = false;
 
-  constructor(protected elementRef: ElementRef) {
+  constructor(protected elementRef: ElementRef, @Inject(PLATFORM_ID) private _platform: Object) {
     super();
     for (const name in INFINITEGRID_EVENTS) {
       const eventName = (INFINITEGRID_EVENTS as any)[name];
@@ -96,6 +98,9 @@ export class NgxInfiniteGridComponent
     this._updateVisibleChildren();
   }
   ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this._platform)) {
+      return;
+    }
     const GridClass = (this.constructor as typeof NgxInfiniteGridComponent).GridClass;
     const defaultOptions = GridClass.defaultOptions;
     const options: Partial<InfiniteGridOptions> = {};
@@ -139,7 +144,7 @@ export class NgxInfiniteGridComponent
     this._renderer.updated();
   }
   ngAfterViewChecked() {
-    if (!this._isChange) {
+    if (!this._isChange || !this.vanillaGrid) {
       return;
     }
     this._isChange = false;
@@ -156,7 +161,7 @@ export class NgxInfiniteGridComponent
     this._renderer.updated();
   }
   ngOnDestroy() {
-    this.vanillaGrid.destroy();
+    this.vanillaGrid?.destroy();
   }
 
   private _getItemInfos(): InfiniteGridItemInfo[] {
