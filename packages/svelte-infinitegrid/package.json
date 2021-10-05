@@ -3,6 +3,7 @@
   "version": "4.0.0",
   "description": "A Svelte component that can arrange items infinitely according to the type of grids",
   "sideEffects": false,
+  "svelte": "src/index.js",
   "types": "src/index.d.ts",
   "module": "dist/infinitegrid.esm.js",
   "main": "dist/infinitegrid.cjs.js",

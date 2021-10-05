@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   /**
    * egjs-infinitegrid
    * Copyright (c) 2021-present NAVER Corp.
@@ -11,31 +11,27 @@
     onDestroy,
     afterUpdate,
   } from "svelte";
-  import VanillaInfiniteGrid, {
+  import {
     INFINITEGRID_EVENTS,
-    InfiniteGridFunction,
-    InfiniteGridOptions,
     Renderer,
     CONTAINER_CLASS_NAME,
-    InfiniteGridItem,
-    InfiniteGridItemInfo,
     getRenderingItems,
     mountRenderingItems,
   } from "@egjs/infinitegrid";
   import { SVELTE_INFINITEGRID_PROPS } from "./consts";
-  export let GridClass: InfiniteGridFunction;
+  export let GridClass;
+  export let vanillaGrid  = null;
 
   const dispatch = createEventDispatcher();
   const renderer = new Renderer();
-  let wrapper: HTMLElement;
-  let container: HTMLElement;
-  let grid: VanillaInfiniteGrid;
+  let wrapper;
+  let container;
   let isFirstMount = false;
   let attributes = {};
-  let visibleItems: InfiniteGridItem[] = [];
+  let visibleItems = [];
 
-  function updateAttributes() {
-    attributes = { ...$$props };
+  function updateAttributes(props) {
+    attributes = { ...props };
 
     const defaultOptions = GridClass.defaultOptions;
 
@@ -47,11 +43,10 @@
       delete attributes[name];
     });
   }
-  function getItemInfos(): InfiniteGridItemInfo[] {
+  function getItemInfos() {
     const items = $$props.items || [];
     const itemBy = $$props.itemBy || ((item) => item.key);
     const groupBy = $$props.groupBy || ((item) => item.groupKey);
-
 
     return items.map((item, i) => {
       return {
@@ -61,48 +56,50 @@
       };
     });
   }
-  function updateVisibleChildren() {
+  function updateVisibleChildren(props) {
     visibleItems = getRenderingItems(getItemInfos(), {
-      grid,
-      status: $$props.status,
-      usePlaceholder: $$props.usePlaceholder,
-      useFirstRender: $$props.useFirstRender,
-      useLoading: $$props.useLoading,
-      horizontal: $$props.horizontal,
+      grid: vanillaGrid,
+      status: props.status,
+      usePlaceholder: props.usePlaceholder,
+      useFirstRender: props.useFirstRender,
+      useLoading: props.useLoading,
+      horizontal: props.horizontal,
     });
   }
 
   beforeUpdate(() => {
-    updateAttributes();
-    updateVisibleChildren();
+    updateAttributes($$props);
+    updateVisibleChildren($$props);
   });
+
   onMount(() => {
     const defaultOptions = GridClass.defaultOptions;
-    const options: Partial<InfiniteGridOptions> = {};
+    const options = {};
 
     for (const name in defaultOptions) {
       if (name in $$props) {
-        (options as any)[name] = $$props[name];
+        options[name] = $$props[name];
       }
     }
     if (container) {
       options.container = container;
     }
     options.renderer = renderer;
-    grid = new GridClass(wrapper!, options);
+    vanillaGrid = new GridClass(wrapper, options);
 
     for (const name in INFINITEGRID_EVENTS) {
       const eventName = INFINITEGRID_EVENTS[name];
 
-      grid.on(eventName as any, (e: any) => {
+      vanillaGrid.on(eventName, (e) => {
         dispatch(eventName, e);
       });
     }
     renderer.on("requestUpdate", () => {
-      updateVisibleChildren();
+      updateVisibleChildren($$props);
     });
+
     mountRenderingItems(getItemInfos(), {
-      grid,
+      grid: vanillaGrid,
       status: $$props.status,
       usePlaceholder: $$props.usePlaceholder,
       useFirstRender: $$props.useFirstRender,
@@ -120,16 +117,16 @@
 
     for (const name in propertyTypes) {
       if (name in $$props) {
-        (grid as any)[name] = ($$props as any)[name];
+        vanillaGrid[name] = $$props[name];
       }
     }
     renderer.updated();
   });
   onDestroy(() => {
-    grid.destroy();
+    vanillaGrid && vanillaGrid.destroy();
   });
   export function getInstance() {
-    return grid;
+    return vanillaGrid;
   }
 </script>
 

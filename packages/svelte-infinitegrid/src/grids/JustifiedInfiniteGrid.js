@@ -1,9 +1,17 @@
 import InfiniteGrid from "../InfiniteGrid.svelte";
 import { JustifiedInfiniteGrid as GridClass } from "@egjs/infinitegrid";
 
-export class JustifiedInfiniteGrid extends InfiniteGrid {
-  constructor(options) {
-    options.props.GridClass = GridClass;
-    super(options);
+
+let JustifiedInfiniteGrid;
+
+if (typeof InfiniteGrid === "object") {
+  JustifiedInfiniteGrid = InfiniteGrid;
+} else {
+  JustifiedInfiniteGrid = class JustifiedInfiniteGrid extends InfiniteGrid {
+    constructor(options) {
+      options.props.GridClass = GridClass;
+      super(options);
+    }
   }
 }
+export { JustifiedInfiniteGrid };
