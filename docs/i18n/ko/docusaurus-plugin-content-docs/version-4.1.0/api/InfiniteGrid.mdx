@@ -3,9 +3,9 @@ custom_edit_url: null
 ---
 
 ```ts
-class JustifiedInfiniteGrid extends InfiniteGrid
+class InfiniteGrid extends Component
 ```
-'justified'는 '1행의 너비에 맞게 꼭 들어찬'이라는 의미를 가진 인쇄 용어다. JustifiedInfiniteGrid는 용어의 의미대로 너비가 주어진 사이즈를 기준으로 아이템가 가득 차도록 배치하는 Grid다.<br />아이템 엘리먼트에 'data-grid-inline-offset' 또는 'data-grid-content-offset'를 설정하면 offset 값을 제외하고 비율을 유지한다.<br />비율을 유지하고 싶은 엘리먼트에 'data-grid-maintained-target'을 설정한다면 해당 엘리먼트의 비율을 유지하면서 아이템이 렌더링이 된다.
+콘텐츠가 있는 아이템을 레이아웃 타입에 따라 무한으로 배치하는 모듈. 다양한 크기의 아이템을 다양한 레이아웃으로 배치할 수 있다. 아이템의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다
 
 <div className="container">
   <div className="row mb-2"><div className="col col--6"><strong>Methods</strong></div><div className="col col--6"><strong>Events</strong></div></div>
@@ -14,19 +14,19 @@ class JustifiedInfiniteGrid extends InfiniteGrid
 
 ## Constructor
 ```ts
-new JustifiedInfiniteGrid(container, options)
+new InfiniteGrid(wrapper, options)
 ```
 |PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
 |:---:|:---:|:---:|:---:|:---:|
-|container|HTMLElement \| string|||모듈을 적용할 기준 엘리먼트|
-|options|[JustifiedInfiniteGridOptions](JustifiedInfiniteGridOptions)|||JustifiedInfiniteGrid 모듈의 옵션 객체|
+|wrapper|HTMLElement \| string|||모듈을 적용할 기준 엘리먼트|
+|options|Options|||eg.InfiniteGrid 모듈의 옵션 객체|
 
 ## Methods
 
 ### renderItems {#renderItems}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 grid에 맞게 아이템을 재배치하고 렌더링을 한다. 배치가 완료되면 `renderComplete` 이벤트가 발생한다.
@@ -48,7 +48,7 @@ grid.renderItems();
 ### getWrapperElement {#getWrapperElement}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 컨테이너 엘리먼트를 반환한다.
@@ -56,7 +56,7 @@ grid.renderItems();
 ### getScrollContainerElement {#getScrollContainerElement}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 스크롤 영역에 해당하는 컨테이너 엘리먼트를 반환한다.
@@ -64,7 +64,7 @@ grid.renderItems();
 ### getContainerElement {#getContainerElement}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 아이템 엘리먼트들을 담긴 컨테이너 엘리먼트를 반환한다.
@@ -72,7 +72,7 @@ grid.renderItems();
 ### syncItems {#syncItems}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 items가 바뀐 경우 동기화를 하고 렌더링을 한다.
@@ -86,7 +86,7 @@ items가 바뀐 경우 동기화를 하고 렌더링을 한다.
 ### setCursors {#setCursors}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 현재 보이는 그룹들을 바꾼다.
@@ -102,7 +102,7 @@ items가 바뀐 경우 동기화를 하고 렌더링을 한다.
 ### getStartCursor {#getStartCursor}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 보이는 그룹들의 첫번째 index를 반환한다.
@@ -112,7 +112,7 @@ items가 바뀐 경우 동기화를 하고 렌더링을 한다.
 ### getEndCursor {#getEndCursor}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 보이는 그룹들의 마지막 index를 반환한다.
@@ -122,7 +122,7 @@ items가 바뀐 경우 동기화를 하고 렌더링을 한다.
 ### append {#append}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 아이템들을 grid 아래(오른쪽)에 추가한다.
@@ -144,7 +144,7 @@ ig.append([HTMLElement1, HTMLElement2]);
 ### prepend {#prepend}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 아이템들을 grid 위(왼쪽)에 추가한다.
@@ -166,7 +166,7 @@ ig.prepend([HTMLElement1, HTMLElement2]);
 ### insert {#insert}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 아이템들을 특정 index에 추가한다.
@@ -189,7 +189,7 @@ ig.insert(4, [HTMLElement1, HTMLElement2]);
 ### getStatus {#getStatus}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 아이템의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
@@ -203,7 +203,7 @@ ig.insert(4, [HTMLElement1, HTMLElement2]);
 ### setPlaceholder {#setPlaceholder}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 status 복구 또는 아이템 추가 대기를 위한 placeholder를 설정할 수 있다.
@@ -217,7 +217,7 @@ status 복구 또는 아이템 추가 대기를 위한 placeholder를 설정할 
 ### setLoading {#setLoading}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 status 복구 또는 아이템 추가 대기를 위한 placeholder를 설정할 수 있다.
@@ -231,7 +231,7 @@ status 복구 또는 아이템 추가 대기를 위한 placeholder를 설정할 
 ### appendPlaceholders {#appendPlaceholders}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 placeholder들을 마지막에 추가한다.
@@ -246,7 +246,7 @@ placeholder들을 마지막에 추가한다.
 ### prependPlaceholders {#prependPlaceholders}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 placeholder들을 처음에 추가한다.
@@ -261,7 +261,7 @@ placeholder들을 처음에 추가한다.
 ### removePlaceholders {#removePlaceholders}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 placeholder들을 삭제한다.
@@ -273,7 +273,7 @@ placeholder들을 삭제한다.
 ### setStatus {#setStatus}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 getStatus() 메서드가 저장한 정보로 InfiniteGrid 모듈의 상태를 설정한다.
@@ -288,7 +288,7 @@ getStatus() 메서드가 저장한 정보로 InfiniteGrid 모듈의 상태를 �
 ### removeGroupByIndex {#removeGroupByIndex}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 index에 해당하는 그룹을 제거 한다.
@@ -302,7 +302,7 @@ index에 해당하는 그룹을 제거 한다.
 ### removeGroupByKey {#removeGroupByKey}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 key에 해당하는 그룹을 제거 한다.
@@ -316,7 +316,7 @@ key에 해당하는 그룹을 제거 한다.
 ### removeByIndex {#removeByIndex}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 index에 해당하는 아이템을 제거 한다.
@@ -330,7 +330,7 @@ index에 해당하는 아이템을 제거 한다.
 ### removeByKey {#removeByKey}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 key에 해당하는 아이템을 제거 한다.
@@ -344,7 +344,7 @@ key에 해당하는 아이템을 제거 한다.
 ### updateItems {#updateItems}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 아이템들의 사이즈를 업데이트하고 렌더링을 한다.
@@ -357,7 +357,7 @@ key에 해당하는 아이템을 제거 한다.
 ### getItems {#getItems}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 InfiniteGrid의 모든 아이템들을 반환한다.
@@ -371,7 +371,7 @@ InfiniteGrid의 모든 아이템들을 반환한다.
 ### getVisibleItems {#getVisibleItems}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 InfiniteGrid의 보이는 아이템들을 반환한다.
@@ -385,7 +385,7 @@ InfiniteGrid의 보이는 아이템들을 반환한다.
 ### getRenderingItems {#getRenderingItems}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 InfiniteGrid의 렌더링 아이템들을 반환한다.
@@ -395,7 +395,7 @@ InfiniteGrid의 렌더링 아이템들을 반환한다.
 ### getGroups {#getGroups}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 InfiniteGrid의 모든 그룹들을 반환한다.
@@ -409,7 +409,7 @@ InfiniteGrid의 모든 그룹들을 반환한다.
 ### getVisibleGroups {#getVisibleGroups}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 InfiniteGrid의 보이는 그룹들을 반환한다.
@@ -423,7 +423,7 @@ InfiniteGrid의 보이는 그룹들을 반환한다.
 ### wait {#wait}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 데이터를 요청하기 위해 대기 상태로 설정한다.
@@ -435,7 +435,7 @@ InfiniteGrid의 보이는 그룹들을 반환한다.
 ### ready {#ready}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 데이터 요청이 끝났다면 준비 상태로 설정한다.
@@ -443,7 +443,7 @@ InfiniteGrid의 보이는 그룹들을 반환한다.
 ### isWait {#isWait}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 데이터를 요청하기 위해 대기 상태로 설정되어 있는지 여부를 반환한다.
@@ -451,7 +451,7 @@ InfiniteGrid의 보이는 그룹들을 반환한다.
 ### destroy {#destroy}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 인스턴스와 이벤트를 해제하고 컨테이너와 엘리먼트들의 CSS를 되돌린다.
@@ -639,7 +639,7 @@ class Some extends Component<{
 ### changeScroll {#event-changeScroll}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 스크롤하면 발생하는 이벤트이다.
@@ -651,7 +651,7 @@ class Some extends Component<{
 ### requestAppend {#event-requestAppend}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 스크롤이 끝에 도달하거나 virtual 그룹에 대한 데이터가 필요한 경우 이벤트가 발생한다.
@@ -663,7 +663,7 @@ class Some extends Component<{
 ### requestPrepend {#event-requestPrepend}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 스크롤이 끝에 도달하거나 virtual 그룹에 대한 데이터가 필요한 경우 이벤트가 발생한다.
@@ -675,7 +675,7 @@ class Some extends Component<{
 ### contentError {#event-contentError}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 스크롤이 끝에 도달하거나 virtual 그룹에 대한 데이터가 필요한 경우 이벤트가 발생한다.
@@ -687,7 +687,7 @@ class Some extends Component<{
 ### renderComplete {#event-renderComplete}
 
 <div className="bulma-tags">
-  <span className="bulma-tag is-danger">inherited</span>
+
 </div>
 
 InfiniteGrid가 렌더링이 완료됐을 때 이벤트가 발생한다.

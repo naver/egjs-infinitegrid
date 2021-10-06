@@ -1,0 +1,21 @@
+---
+custom_edit_url: null
+---
+
+### OnRequestAppend {#OnRequestAppend}
+
+<div className="bulma-tags">
+
+</div>
+
+**Type**: TSInterface
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|currentTarget|[InfiniteGrid](InfiniteGrid)|이 이벤트를 트리거한 InfiniteGrid의 인스턴스|
+|groupKey|string \| number \| undefined|마지막 그룹의 키.|
+|nextGroupKey|string \| number \| undefined|placeholder를 대체해야 할 다음 그룹의 키.|
+|isVirtual|boolean|placeholder에 해당하는 가상의 그룹을 요청하는지 여부|
+|wait|() =&gt; void|데이터를 요청하기 위해 대기 상태로 설정한다.|
+|ready|() =&gt; void|데이터 요청이 끝났다면 준비 상태로 설정한다.|
+

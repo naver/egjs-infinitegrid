@@ -1,0 +1,110 @@
+---
+title: Listening to Events
+id: listening-to-events
+slug: /listening-to-events
+custom_edit_url: null
+---
+
+import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+  groupId="cfc"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@2", value: "vue" },
+    { label: "Vue@3", value: "vue3" },
+    { label: "Angular", value: "angular" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+You can listen to InfiniteGrid's events with [InfiniteGrid#on](api/InfiniteGrid#on)
+
+```js
+// If you're using a package manager
+
+ig.on("requestAppend", evt => {
+  console.log(evt);
+});
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+All events are prefixed with `on-`, and `camelCase`d.
+
+```tsx
+import { MasonryInfiniteGrid } from "@egjs/react-infinitegrid";
+import { OnRequestAppend } from "@egjs/infinitegrid";
+
+<MasonryInfiniteGrid
+  onRequestAppend={(e: OnRequestAppend) => {
+    console.log(e);
+  }}
+>
+  {...}
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+  <TabItem value="vue">
+
+All event names are renamed to `kebab-case`, following the [Vue event naming convention](https://vuejs.org/v2/guide/components-custom-events.html#Event-Names).
+
+```html
+<MasonryInfiniteGrid
+  @request-append="onRequestAppend"
+>
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+  <TabItem value="vue3">
+
+All event names are renamed to `kebab-case`, following the [Vue 2 event naming convention](https://vuejs.org/v2/guide/components-custom-events.html#Event-Names).
+
+```html
+<MasonryInfiniteGrid
+  @request-append="onRequestAppend"
+>
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+  <TabItem value="angular">
+
+You can listen events of the `ngx-infinitegrid` using Angular's [event binding](https://angular.io/guide/event-binding).
+```html
+<ngx-masonry-infinite-grid
+  (requestAppend)="onRequestAppend($event)">
+  {{ ... }}
+</ngx-masonry-infinite-grid>
+```
+
+  </TabItem>
+  <TabItem value="svelte">
+
+You can use `on:eventName` syntax to listen InfiniteGrid events.
+All event properties are available in the event's `detail` property.
+
+```jsx
+<script lang="ts">
+  import { MasonryInfiniteGrid } from "@egjs/svelte-infinitegrid";
+</script>
+
+<MasonryInfiniteGrid
+  on:requestAppend={({ detail: e }) => {
+  console.log(e);
+  }}>
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+</Tabs>
+
+See all available events at <Link to={useBaseUrl("docs/api/InfiniteGrid#events")}>InfiniteGrid#events</Link>.

@@ -3,9 +3,9 @@ custom_edit_url: null
 ---
 
 ```ts
-class JustifiedInfiniteGrid extends InfiniteGrid
+class MasonryInfiniteGrid extends InfiniteGrid
 ```
-'justified'는 '1행의 너비에 맞게 꼭 들어찬'이라는 의미를 가진 인쇄 용어다. JustifiedInfiniteGrid는 용어의 의미대로 너비가 주어진 사이즈를 기준으로 아이템가 가득 차도록 배치하는 Grid다.<br />아이템 엘리먼트에 'data-grid-inline-offset' 또는 'data-grid-content-offset'를 설정하면 offset 값을 제외하고 비율을 유지한다.<br />비율을 유지하고 싶은 엘리먼트에 'data-grid-maintained-target'을 설정한다면 해당 엘리먼트의 비율을 유지하면서 아이템이 렌더링이 된다.
+MasonryInfiniteGrid는 벽돌을 쌓아 올린 모양처럼 동일한 너비를 가진 아이템을 쌓는 레이아웃이다. 모든 이미지의 너비를 동일한 크기로 조정하고, 가장 높이가 낮은 열을 찾아 새로운 이미지를 삽입한다. 따라서 배치된 아이템 사이에 빈 공간이 생기지는 않지만 배치된 레이아웃의 아래쪽은 울퉁불퉁해진다.
 
 <div className="container">
   <div className="row mb-2"><div className="col col--6"><strong>Methods</strong></div><div className="col col--6"><strong>Events</strong></div></div>
@@ -14,12 +14,12 @@ class JustifiedInfiniteGrid extends InfiniteGrid
 
 ## Constructor
 ```ts
-new JustifiedInfiniteGrid(container, options)
+new MasonryInfiniteGrid(container, options)
 ```
 |PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
 |:---:|:---:|:---:|:---:|:---:|
 |container|HTMLElement \| string|||모듈을 적용할 기준 엘리먼트|
-|options|[JustifiedInfiniteGridOptions](JustifiedInfiniteGridOptions)|||JustifiedInfiniteGrid 모듈의 옵션 객체|
+|options|[MasonryInfiniteGridOptions](MasonryInfiniteGridOptions)|||MasonryInfiniteGrid 모듈의 옵션 객체|
 
 ## Methods
 
