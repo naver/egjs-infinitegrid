@@ -17,7 +17,7 @@ export default buildHelper([
     {
         ...defaultOptions,
         input: "./src/index.umd.ts",
-        exports: "named",
+        exports: "default",
         format: "cjs",
         output: "./dist/infinitegrid.cjs.js",
         commonjs: true,

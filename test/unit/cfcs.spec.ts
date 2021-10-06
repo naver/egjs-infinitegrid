@@ -2,7 +2,7 @@ import InfiniteGrid, { InfiniteGridItemInfo, getRenderingItems, InfiniteGridOpti
 import { SampleGrid } from "./samples/SampleGrid";
 import { sandbox, cleanup, waitEvent } from "./utils/utils";
 
-describe.only("test cfcs", () => {
+describe("test cfcs", () => {
   let ig: InfiniteGrid | null;
   let container: HTMLElement | null;
   let items: InfiniteGridItemInfo[];
