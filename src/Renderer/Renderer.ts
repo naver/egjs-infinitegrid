@@ -44,10 +44,7 @@ export class Renderer<Item extends RendererItem = RendererItem> extends Componen
     this.container = container;
   }
   public render(nextItems: Item[], state?: Record<string, any>) {
-    if (state) {
-      this._state = state;
-    }
-    return this.syncItems(nextItems);
+    return this.syncItems(nextItems, state);
   }
   public update(state: Record<string, any> = {}) {
     this._state = state;
@@ -86,21 +83,23 @@ export class Renderer<Item extends RendererItem = RendererItem> extends Componen
 
     return isChanged;
   }
-  public destroy() {
-    this.off();
-  }
-  protected syncItems(items: Item[]) {
+  public syncItems(items: Item[], state?: Record<string, any>) {
     const rendererKey = this.rendererKey;
     const prevItems = this.items;
     const nextItems = items.map((item) => ({
       ...item,
       renderKey:  `${rendererKey}_${item.key}`,
     }));
-
     const result = diff(prevItems, nextItems, (item) => item.renderKey!);
 
+    if (state) {
+      this._state = state;
+    }
     this._diffResult = result;
 
     return result;
+  }
+  public destroy() {
+    this.off();
   }
 }

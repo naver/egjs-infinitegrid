@@ -97,8 +97,33 @@ describe("test InfiniteGrid", () => {
       ig!.getVisibleGroups().forEach((group) => {
         expect(group.groupKey).to.be.equals(firstItem.groupKey);
       });
+
       children.forEach((child, i) => {
         expect(child.style.top).to.be.equals(`${i * 18}px`);
+      });
+    });
+    it("should check to render children when removing items immediately after rendering children", async () => {
+      // Given
+      const igContainer = ig!.getContainerElement();
+
+      igContainer.innerHTML = `<div>1</div>
+      <div>2</div>
+      <div>3</div>
+      <div>4</div>
+      <div>5</div>
+      <div>6</div>`;
+      // When
+      ig!.renderItems();
+      ig!.removeByIndex(0);
+
+
+      await waitEvent(ig!, "renderComplete");
+
+      // Then
+      // 2 3 4 5 6
+      toArray(igContainer.children).forEach((child, i) => {
+        expect(child.style.top).to.be.equals(`${i * 18}px`);
+        expect(child.innerHTML).to.be.equals(`${i + 2}`);
       });
     });
     it("should check if items are rendered", async () => {
