@@ -87,6 +87,48 @@ describe("test cfcs", () => {
     // 3 3 1
     expect(renderingItems.length).to.be.equals(7);
   });
+  it("should check if the key is maintained every time it is updated", async () => {
+    // Given
+    const noKeyItems = [0, 1, 2, 3, 4, 5].map((item) => {
+      return {
+        html: `<div style="height: 100px;">${item}</div>`,
+      };
+    });
+    container!.innerHTML = `
+    <div class="wrapper" style="width: 100%; height: 500px;"></div>
+    `;
+    const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+    ig = new InfiniteGrid<InfiniteGridOptions>(wrapper, {
+      gridConstructor: SampleGrid,
+      container: true,
+    });
+
+
+    // When
+    // first render
+    ig.syncItems(noKeyItems);
+
+    await waitEvent(ig!, "renderComplete");
+
+    const renderingItems = ig.getRenderingItems();
+
+    // second render
+    ig.syncItems(noKeyItems);
+    ig.renderItems();
+
+    await waitEvent(ig!, "renderComplete");
+
+    const renderingItems2 = ig.getRenderingItems();
+
+    // Then
+    renderingItems.forEach((item, i) => {
+      const item2 = renderingItems2[i];
+
+      expect(item.groupKey).to.be.equals(item2.groupKey);
+      expect(item.key).to.be.equals(item2.key);
+      expect(item.element).to.be.equals(item2.element);
+    });
+  });
   it("should check if rendering items exists with placeholders", async () => {
     // Given
     container!.innerHTML = `

@@ -565,12 +565,27 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
       if (info.key == null) {
         key = makeKey(nextItemKeys);
-        nextItemKeys[key] = new InfiniteGridItem(horizontal, {
-          ...info,
-          key,
-        });
       }
-      return nextItemKeys[key];
+      let item = nextItemKeys[key];
+
+      if (!item) {
+        const prevItem = prevItemKeys[key];
+
+        if (prevItem) {
+          item = prevItem;
+
+          if (info.data) {
+            item.data = info.data;
+          }
+        } else {
+          item = new InfiniteGridItem(horizontal, {
+            ...info,
+            key,
+          });
+        }
+        nextItemKeys[key] = item;
+      }
+      return item;
     });
     return nextItems;
   }
