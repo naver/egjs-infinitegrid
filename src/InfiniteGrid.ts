@@ -207,11 +207,15 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     if (!this.getRenderingItems().length) {
       const children = toArray(this.getContainerElement().children);
       if (children.length > 0) {
-        this.append(children);
+        // no items, but has children
+        this.groupManager.syncItems(convertInsertedItems(children));
+        this._syncInfinite();
+        this.setCursors(0, 0, true);
+        this._getRenderer().updated();
       } else {
         this.infinite.scroll(0);
-        return this;
       }
+      return this;
     }
     if (!this.getVisibleGroups(true).length) {
       this.setCursors(0, 0);
@@ -264,7 +268,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.infinite.setCursors(startCursor, endCursor);
 
     if (useFirstRender) {
-      this._render();
+      this._syncItems();
     } else {
       this._update();
       this._checkEndLoading();
@@ -450,7 +454,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     };
 
     if (useFirstRender) {
-      this._render(state);
+      this._syncItems(state);
     } else {
       this._update(state);
     }
@@ -589,14 +593,20 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   private _getRenderer() {
     return this.options.renderer!;
   }
-  private _render(state?: Record<string, any>): void {
-    this._getRenderer().render(this.getRenderingItems().map((item) => {
+  private _getRendererItems() {
+    return this.getRenderingItems().map((item) => {
       return {
         element: item.element,
         key: `${item.type}_${item.key}`,
         orgItem: item,
       };
-    }), state);
+    });
+  }
+  private _syncItems(state?: Record<string, any>): void {
+    this._getRenderer().syncItems(this._getRendererItems(), state);
+  }
+  private _render(state?: Record<string, any>): void {
+    this._getRenderer().render(this._getRendererItems(), state);
   }
   private _update(state: Record<string, any> = {}): void {
     this._getRenderer().update(state);
