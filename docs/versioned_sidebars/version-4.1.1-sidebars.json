@@ -1,58 +1,58 @@
 {
-  "version-4.1.0/started": [
+  "version-4.1.1/started": [
     {
       "type": "doc",
-      "id": "version-4.1.0/installation"
+      "id": "version-4.1.1/installation"
     },
     {
       "type": "doc",
-      "id": "version-4.1.0/quick-start"
+      "id": "version-4.1.1/quick-start"
     },
     {
       "type": "doc",
-      "id": "version-4.1.0/using-the-methods"
+      "id": "version-4.1.1/using-the-methods"
     },
     {
       "type": "doc",
-      "id": "version-4.1.0/listening-to-events"
+      "id": "version-4.1.1/listening-to-events"
     },
     {
       "type": "doc",
-      "id": "version-4.1.0/migration-from-v3"
+      "id": "version-4.1.1/migration-from-v3"
     }
   ],
-  "version-4.1.0/api": [
+  "version-4.1.1/api": [
     {
       "type": "category",
       "label": "Class",
       "items": [
         {
           "type": "doc",
-          "id": "version-4.1.0/api/InfiniteGrid"
+          "id": "version-4.1.1/api/InfiniteGrid"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/FrameInfiniteGrid"
+          "id": "version-4.1.1/api/FrameInfiniteGrid"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/JustifiedInfiniteGrid"
+          "id": "version-4.1.1/api/JustifiedInfiniteGrid"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/MasonryInfiniteGrid"
+          "id": "version-4.1.1/api/MasonryInfiniteGrid"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/PackingInfiniteGrid"
+          "id": "version-4.1.1/api/PackingInfiniteGrid"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/Grid"
+          "id": "version-4.1.1/api/Grid"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/Component"
+          "id": "version-4.1.1/api/Component"
         }
       ],
       "collapsible": true,
@@ -64,7 +64,7 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-4.1.0/api/withInfiniteGridMethods"
+          "id": "version-4.1.1/api/withInfiniteGridMethods"
         }
       ],
       "collapsible": true,
@@ -76,55 +76,55 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-4.1.0/api/FrameInfiniteGridOptions"
+          "id": "version-4.1.1/api/FrameInfiniteGridOptions"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/JustifiedInfiniteGridOptions"
+          "id": "version-4.1.1/api/JustifiedInfiniteGridOptions"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/MasonryInfiniteGridOptions"
+          "id": "version-4.1.1/api/MasonryInfiniteGridOptions"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/PackingInfiniteGridOptions"
+          "id": "version-4.1.1/api/PackingInfiniteGridOptions"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/InfiniteGridStatus"
+          "id": "version-4.1.1/api/InfiniteGridStatus"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/InfiniteGridItemInfo"
+          "id": "version-4.1.1/api/InfiniteGridItemInfo"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/InfiniteGridOptions"
+          "id": "version-4.1.1/api/InfiniteGridOptions"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/InsertedPlaceholdersResult"
+          "id": "version-4.1.1/api/InsertedPlaceholdersResult"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/OnRequestAppend"
+          "id": "version-4.1.1/api/OnRequestAppend"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/OnRequestPrepend"
+          "id": "version-4.1.1/api/OnRequestPrepend"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/OnRenderComplete"
+          "id": "version-4.1.1/api/OnRenderComplete"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/OnContentError"
+          "id": "version-4.1.1/api/OnContentError"
         },
         {
           "type": "doc",
-          "id": "version-4.1.0/api/OnChangeScroll"
+          "id": "version-4.1.1/api/OnChangeScroll"
         }
       ],
       "collapsible": true,
