@@ -214,7 +214,7 @@ demo/_data/version.yml
 demo/release
 demo/storybook
 declaration/
-
+dist/
 packages/*/dist/
 test/e2e/log/
 test/e2e/screenshots/diff/
