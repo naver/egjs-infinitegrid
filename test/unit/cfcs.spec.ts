@@ -87,7 +87,7 @@ describe("test cfcs", () => {
     // 3 3 1
     expect(renderingItems.length).to.be.equals(7);
   });
-  it.only("should check if the key is maintained every time it is updated", async () => {
+  it("should check if the key is maintained every time it is updated", async () => {
     // Given
     const noKeyItems = [0, 1, 2, 3, 4, 5].map((item) => {
       return {
