@@ -1,15 +1,15 @@
 {
   "name": "@egjs/vue3-infinitegrid",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "A Vue3 component that can arrange items infinitely according to the type of grids",
   "sideEffects": false,
   "types": "declaration/index.d.ts",
   "module": "dist/infinitegrid.esm.js",
   "main": "dist/infinitegrid.cjs.js",
   "scripts": {
-    "postinstall": "node ./config/convert.js",
-    "storybook": "start-storybook -p 6012",
-    "build": "rm -rf dist && npm run postinstall && rollup -c && npm run declaration && print-sizes ./dist",
+    "convert": "node ./config/convert.js",
+    "storybook": "npm run convert && start-storybook -p 6012",
+    "build": "rm -rf dist && npm run convert && rollup -c && npm run declaration && print-sizes ./dist",
     "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
     "build-storybook": "build-storybook"
   },
