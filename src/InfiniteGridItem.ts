@@ -57,7 +57,7 @@ export class InfiniteGridItem extends GridItem implements Required<InfiniteGridI
   }
   public getMinimizedStatus(): Partial<InfiniteGridItemStatus> {
     const status: Partial<InfiniteGridItemStatus> = {
-      ...super.getStatus(),
+      ...super.getMinimizedStatus(),
       type: ITEM_TYPE.NORMAL,
       groupKey: this.groupKey,
     };

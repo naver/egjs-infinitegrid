@@ -624,6 +624,24 @@ describe("test InfiniteGrid", () => {
       });
     });
     describe("test getStatus, setStatus", () => {
+      it("should check if status has data attribute", async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        const status = ig!.getStatus();
+
+        // Then
+        expect(status.groupManager.groups[0].items[0].data).to.be.undefined;
+      });
       it("should check if recovery is possible When you get the full status and setStatus", async () => {
         // Given
         const igContainer = ig!.getContainerElement();
