@@ -12,6 +12,7 @@ export interface OnRendererUpdated<T extends RendererItem = RendererItem> {
   items: T[];
   elements: Element[];
   isChanged: boolean;
+  isItemChanged: boolean;
   state: Record<string, any>;
   diffResult: DiffResult<T>;
 }
@@ -32,6 +33,7 @@ export class Renderer<Item extends RendererItem = RendererItem> extends Componen
   private _diffResult: DiffResult<Item>;
   private _updateTimer = 0;
   private _state: Record<string, any> = {};
+  private _isItemChanged = false;
 
   public updateKey() {
     this.rendererKey = Date.now();
@@ -47,7 +49,7 @@ export class Renderer<Item extends RendererItem = RendererItem> extends Componen
     return this.syncItems(nextItems, state);
   }
   public update(state: Record<string, any> = {}) {
-    this._state = state;
+    this._state = { ...this._state, ...state };
     this.trigger("update", {
       state,
     });
@@ -63,38 +65,40 @@ export class Renderer<Item extends RendererItem = RendererItem> extends Componen
     const diffResult = this._diffResult;
     const isChanged = !!(diffResult.added.length || diffResult.removed.length || diffResult.changed.length);
     const state = this._state;
-
-    this._state = {};
-
+    const isItemChanged = this._isItemChanged;
     const nextItems = diffResult.list;
 
+
+    this._isItemChanged = false;
+    this._state = {};
     this.items = nextItems;
     nextItems.forEach((item, i) => {
       item.element = nextElements[i];
     });
+
 
     this.trigger("updated", {
       items: nextItems,
       elements: toArray(nextElements),
       diffResult: this._diffResult,
       state,
+      isItemChanged,
       isChanged,
     });
 
     return isChanged;
   }
-  public syncItems(items: Item[], state?: Record<string, any>) {
+  public syncItems(items: Item[], state: Record<string, any> = {}) {
     const rendererKey = this.rendererKey;
     const prevItems = this.items;
     const nextItems = items.map((item) => ({
       ...item,
-      renderKey:  `${rendererKey}_${item.key}`,
+      renderKey: `${rendererKey}_${item.key}`,
     }));
     const result = diff(prevItems, nextItems, (item) => item.renderKey!);
 
-    if (state) {
-      this._state = state;
-    }
+    this._isItemChanged = !!result.added.length || !!result.removed.length || !!result.changed.length;
+    this._state = { ...this._state, ...state };
     this._diffResult = result;
 
     return result;

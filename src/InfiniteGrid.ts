@@ -449,7 +449,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this._getRenderer().updateKey();
 
     const state = {
-      isReisze: this.containerManager.getInlineSize() !== prevInlineSize,
+      isResize: this.containerManager.getInlineSize() !== prevInlineSize,
       isRestore: true,
     };
 
@@ -730,10 +730,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
         isResize: false,
         direction: this.defaultDirection,
       });
-      if (isResize) {
-        this.groupManager.renderItems();
-      }
-    } else {
+    }
+    if (!isRestore || isResize || e.isItemChanged) {
       this.groupManager.renderItems();
     }
   }
