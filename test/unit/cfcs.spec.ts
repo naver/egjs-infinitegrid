@@ -1,4 +1,8 @@
-import InfiniteGrid, { InfiniteGridItemInfo, getRenderingItems, InfiniteGridOptions, STATUS_TYPE } from "../../src";
+import InfiniteGrid, {
+  InfiniteGridItemInfo, getRenderingItems,
+  InfiniteGridOptions, STATUS_TYPE,
+  mountRenderingItems, Renderer,
+} from "../../src";
 import { SampleGrid } from "./samples/SampleGrid";
 import { sandbox, cleanup, waitEvent } from "./utils/utils";
 
@@ -199,5 +203,74 @@ describe("test cfcs", () => {
     // Then
     // 3 3 5
     expect(renderingItems.length).to.be.equals(6);
+  });
+  it("should check whether the rendering is done even if the item is changed during status recovery", async () => {
+    // Given
+    container!.innerHTML = `
+    <div class="wrapper" style="width: 100%; height: 500px;"></div>
+    `;
+    const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+    ig = new InfiniteGrid<InfiniteGridOptions>(wrapper, {
+      gridConstructor: SampleGrid,
+      container: true,
+    });
+    ig.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8].map((item) => {
+      return {
+        key: item,
+        html: `<div style="height: 100px;">${item}</div>`,
+      };
+    }));
+
+    await waitEvent(ig!, "renderComplete");
+
+    const status = ig.getStatus();
+
+
+    ig.destroy();
+
+    const renderer = new Renderer();
+
+    ig = new InfiniteGrid<InfiniteGridOptions>(wrapper, {
+      gridConstructor: SampleGrid,
+      container: true,
+      renderer,
+    });
+
+    // When
+    // change itmes
+    const nextItems = [0, 1, 2, 3, 5, 6, 7, 8].map((item) => {
+      return {
+        key: item,
+        html: `<div style="height: 100px;">${item}</div>`,
+      };
+    });
+
+    ig.getContainerElement().innerHTML = nextItems.map((item) => item.html).join("");
+
+    mountRenderingItems(nextItems, {
+      grid: ig,
+      status,
+      useFirstRender: true,
+      usePlaceholder: false,
+      useLoading: false,
+      horizontal: false,
+    });
+
+    setTimeout(() => {
+      renderer.updated();
+    });
+
+    // restore
+    await waitEvent(ig, "renderComplete");
+    // re-render
+    await waitEvent(ig, "renderComplete");
+
+
+    // Then
+    const children = [].slice.call(ig.getContainerElement().children);
+
+    children.forEach((child, i) => {
+      expect(child.style.top).to.be.equals(`${i * 100}px`);
+    });
   });
 });
