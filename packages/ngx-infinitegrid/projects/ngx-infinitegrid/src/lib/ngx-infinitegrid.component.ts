@@ -144,7 +144,7 @@ export class NgxInfiniteGridComponent
     this._renderer.updated();
   }
   ngAfterViewChecked() {
-    if (!this._isChange) {
+    if (!this._isChange || !this.vanillaGrid) {
       return;
     }
     const children = [].slice.call(this.getContainerElement().children);
