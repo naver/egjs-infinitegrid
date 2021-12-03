@@ -3,7 +3,7 @@
  * Copyright (c) 2021-present NAVER Corp.
  * MIT license
  */
- import VanillaInfiniteGrid, {
+import VanillaInfiniteGrid, {
   InfiniteGridFunction,
   InfiniteGridOptions,
   INFINITEGRID_EVENTS,
@@ -92,7 +92,8 @@ export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string
 
   methods.$_getVisibleChildren = function (this: VueInnerInfiniteInterface) {
     const props = this.$props;
-    const scopedSlots = this.$scopedSlots || this.$slots;
+    const scopedSlots = ("$scopedSlots" in this && this.$scopedSlots)
+      || ("$slots" in this && this.$slots) || {};
     const placeholder = scopedSlots.placeholder;
     const loading = scopedSlots.loading;
 
@@ -183,15 +184,16 @@ export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string
       this.$_renderer.on("requestUpdate", () => {
         this.$forceUpdate();
       });
-      const scopedSlot = this.$scopedSlots || this.$slots;
+      const scopedSlots = ("$scopedSlots" in this && this.$scopedSlots)
+        || ("$slots" in this && this.$slots) || {};
 
       mountRenderingItems(this.$_getItemInfos(), {
         grid: this.$_grid,
         status: props.status,
         horizontal: props.horizontal,
         useFirstRender: props.useFirstRender,
-        usePlaceholder: !!scopedSlot.placeholder,
-        useLoading: !!scopedSlot.loading,
+        usePlaceholder: !!scopedSlots.placeholder,
+        useLoading: !!scopedSlots.loading,
       });
       this.$_renderer.updated();
     },
