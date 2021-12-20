@@ -50,8 +50,9 @@ describe("test InfiniteGrid", () => {
 
       await waitEvent(ig!, "renderComplete");
 
+      // [1]
       ig!.getVisibleItems().forEach((item) => {
-        item.element!.style.cssText = "300px";
+        item.element!.style.cssText = "width: 300px";
       });
       ig.updateItems();
 
