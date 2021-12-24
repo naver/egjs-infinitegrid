@@ -1,20 +1,20 @@
-import VanillaGrid, {
-  FrameGridOptions, GridMethods, GridOptions, JustifiedGridOptions,
-  MasonryGridOptions, PackingGridOptions,
-} from "@egjs/grid";
+import VanillaInfiniteGrid, {
+  FrameInfiniteGridOptions, InfiniteGridMethods, InfiniteGridOptions, JustifiedInfiniteGridOptions,
+  MasonryInfiniteGridOptions, PackingInfiniteGridOptions,
+} from "@egjs/Infinitegrid";
 import { SvelteComponentDev } from "svelte/internal";
 
 
-export default abstract class Grid<T extends GridOptions> extends SvelteComponentDev {
+export default abstract class InfiniteGrid<T extends InfiniteGridOptions> extends SvelteComponentDev {
   $$prop_def: T;
-  getInstance(): VanillaGrid;
+  getInstance(): VanillaInfiniteGrid;
 }
 
-export default interface Grid<T extends GridOptions> extends GridMethods<Grid<T>> {
+export default interface InfiniteGrid<T extends InfiniteGridOptions> extends InfiniteGridMethods<InfiniteGrid<T>> {
   // eslint-disable-next-line semi
 }
 
-export class MasonryGrid extends Grid<MasonryGridOptions> { }
-export class JustifiedGrid extends Grid<JustifiedGridOptions> { }
-export class FrameGrid extends Grid<FrameGridOptions> { }
-export class PackingGrid extends Grid<PackingGridOptions> { }
+export class MasonryInfiniteGrid extends InfiniteGrid<MasonryInfiniteGridOptions> { }
+export class JustifiedInfiniteGrid extends InfiniteGrid<JustifiedInfiniteGridOptions> { }
+export class FrameInfiniteGrid extends InfiniteGrid<FrameInfiniteGridOptions> { }
+export class PackingInfiniteGrid extends InfiniteGrid<PackingInfiniteGridOptions> { }
