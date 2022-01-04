@@ -60,6 +60,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   protected endCursor = 0;
   private _placeholder: Partial<InfiniteGridItemStatus> | null = null;
   private _loadingGrid!: LoadingGrid;
+  private _mainGrid!: Grid;
 
   constructor(container: HTMLElement, options: GroupManagerOptions) {
     super(container, splitOptions(options));
@@ -71,6 +72,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       renderOnPropertyChange: false,
       gap: this.gap,
     });
+    this._mainGrid = this._makeGrid();
   }
   public set gridOptions(options: Record<string, any>) {
     const {
@@ -79,12 +81,11 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     } = splitGridOptions(options);
 
     const shouldRender = this._checkShouldRender(options);
-
     this.options.gridOptions = {
       ...this.options.gridOptions,
       ...gridOptions,
     };
-    this.groups.forEach(({ grid }) => {
+    [this._mainGrid, ...this.groups.map(({ grid }) => grid)].forEach((grid) => {
       for (const name in options) {
         (grid as any)[name] = options[name];
       }
@@ -167,6 +168,12 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return filterVirtuals(groups, includePlaceholders);
   }
 
+  public getComputedOutlineLength(items = this.items) {
+    return this._mainGrid.getComputedOutlineLength(items);
+  }
+  public getComputedOutlineSize(items = this.items) {
+    return this._mainGrid.getComputedOutlineSize(items);
+  }
 
   public applyGrid(items: InfiniteGridItem[], direction: "end" | "start", outline: number[]): GridOutlines {
     items.forEach((item) => {
@@ -200,12 +207,19 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     if (direction === "start") {
       groups.reverse();
     }
+
+    const outlineLength = this.getComputedOutlineLength(items);
+    const outlineSize = this.getComputedOutlineSize(items);
+
     groups.forEach((group) => {
       const grid = group.grid;
       const gridItems = grid.getItems();
       const isVirtual = group.type === GROUP_TYPE.VIRTUAL && !gridItems[0];
       const appliedItems = gridItems.filter((item) => item.mountState !== MOUNT_STATE.UNCHECKED && item.rect.width);
       let gridOutlines: GridOutlines;
+
+      grid.outlineLength = outlineLength;
+      grid.outlineSize = outlineSize;
 
       if (isVirtual) {
         gridOutlines = this._applyVirtualGrid(grid, direction, nextOutline);
