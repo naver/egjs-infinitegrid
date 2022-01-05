@@ -9,7 +9,7 @@ export interface SveltInfiniteGridOptions {
   useFirstRender?: boolean;
   usePlaceholder?: boolean;
   useLoading?: boolean;
-  status: InfiniteGridStatus;
+  status?: InfiniteGridStatus;
 }
 
 export default abstract class InfiniteGrid<T extends InfiniteGridOptions> extends SvelteComponentDev {
