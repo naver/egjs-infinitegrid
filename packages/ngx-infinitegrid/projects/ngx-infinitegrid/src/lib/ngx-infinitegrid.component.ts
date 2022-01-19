@@ -147,6 +147,11 @@ export class NgxInfiniteGridComponent
     if (!this._isChange || !this.vanillaGrid) {
       return;
     }
+    const children = [].slice.call(this.getContainerElement().children);
+
+    if (this.visibleItems.length !== children.length) {
+      return;
+    }
     this._isChange = false;
     const GridClass = (this.constructor as typeof NgxInfiniteGridComponent).GridClass;
     const propertyTypes = GridClass.propertyTypes;
@@ -158,7 +163,7 @@ export class NgxInfiniteGridComponent
       }
     }
 
-    this._renderer.updated();
+    this._renderer.updated(children);
   }
   ngOnDestroy() {
     this.vanillaGrid?.destroy();
