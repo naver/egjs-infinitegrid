@@ -4,9 +4,16 @@ import VanillaInfiniteGrid, {
 } from "@egjs/Infinitegrid";
 import { SvelteComponentDev } from "svelte/internal";
 
+export interface SveltInfiniteGridOptions {
+  items?: any[];
+  useFirstRender?: boolean;
+  usePlaceholder?: boolean;
+  useLoading?: boolean;
+  status?: InfiniteGridStatus;
+}
 
 export default abstract class InfiniteGrid<T extends InfiniteGridOptions> extends SvelteComponentDev {
-  $$prop_def: T;
+  $$prop_def: Record<string, any> & SveltInfiniteGridOptions & T;
   getInstance(): VanillaInfiniteGrid;
 }
 
