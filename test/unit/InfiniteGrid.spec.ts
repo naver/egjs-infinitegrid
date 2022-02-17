@@ -928,6 +928,7 @@ describe("test InfiniteGrid", () => {
         await waitEvent(ig!, "renderComplete");
 
         // Then
+        expect(ig!.getScrollContainerElement().scrollTop).to.be.equals(500);
         expect(ig!.getStartCursor()).to.be.equals(1);
         expect(ig!.getEndCursor()).to.be.equals(3);
         // items (6) virtual items (3)
