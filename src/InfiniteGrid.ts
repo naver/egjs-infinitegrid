@@ -8,6 +8,7 @@ import {
   OnContentError,
   ItemRenderer,
   GridItem,
+  ResizeWatcher,
 } from "@egjs/grid";
 import {
   DIRECTION,
@@ -94,6 +95,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   protected scrollManager: ScrollManager;
   protected itemRenderer: ItemRenderer;
   protected containerManager: ContainerManager;
+  protected watcher: ResizeWatcher;
   protected infinite: Infinite;
   protected groupManager: GroupManager;
   protected options: Required<Options>;
@@ -129,6 +131,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       percentage,
       isConstantSize,
       isEqualSize,
+      autoResize,
+      useResizeObserver,
+      resizeDebounce,
+      maxResizeDebounce,
     } = gridOptions;
     const wrapperElement = isString(wrapper) ? document.querySelector(wrapper) as HTMLElement : wrapper;
     const scrollManager = new ScrollManager(wrapperElement, {
@@ -141,7 +147,15 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const containerElement = scrollManager.getContainer();
     const containerManager = new ContainerManager(containerElement, {
       horizontal,
-    }).on("resize", this._onResize);
+      autoResize: false,
+    });
+    const watcher = new ResizeWatcher(wrapperElement, {
+      resizeDebounce,
+      maxResizeDebounce,
+      useWindowResize: autoResize,
+      useResizeObserver: autoResize && useResizeObserver,
+      watchDirection: useResizeObserver ? (horizontal ? "height" : "width") : false,
+    }).listen(this._onResize);
     const itemRenderer = new ItemRenderer({
       attributePrefix,
       horizontal,
@@ -175,6 +189,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     renderer!.setContainer(containerElement);
     renderer!.on("updated", this._onRendererUpdated);
 
+    this.watcher = watcher;
     this.itemRenderer = itemRenderer;
     this.groupManager = groupManager;
     this.wrapperElement = wrapperElement;
@@ -182,7 +197,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.containerManager = containerManager;
     this.infinite = infinite;
 
-    this.containerManager.resize();
+    this.watcher.resize();
+    this.containerManager.setRect(this.watcher.getRect());
   }
   /**
    * Rearrange items to fit the grid and render them. When rearrange is complete, the `renderComplete` event is fired.
@@ -200,28 +216,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * ```
    */
   public renderItems(options: RenderOptions = {}) {
-    if (options.useResize) {
-      this.containerManager.resize();
-    }
-    this._resizeScroll();
-    if (!this.getRenderingItems().length) {
-      const children = toArray(this.getContainerElement().children);
-      if (children.length > 0) {
-        // no items, but has children
-        this.groupManager.syncItems(convertInsertedItems(children));
-        this._syncInfinite();
-        this.setCursors(0, 0, true);
-        this._getRenderer().updated();
-      } else {
-        this.infinite.scroll(0);
-      }
-      return this;
-    }
-    if (!this.getVisibleGroups(true).length) {
-      this.setCursors(0, 0);
-    } else {
-      this.groupManager.renderItems(options);
-    }
+    this._renderItems(options);
     return this;
   }
   /**
@@ -585,6 +580,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    */
   public destroy(): void {
     this.off();
+    this.watcher.destroy();
     this.groupManager.destroy();
     this.scrollManager.destroy();
     this.infinite.destroy();
@@ -737,7 +733,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 
   private _onResize = () => {
-    this.renderItems({ useResize: true });
+    this.containerManager.setRect(this.watcher.getRect());
+    this._renderItems({ useResize: true }, true);
   }
 
   private _onRequestAppend = (e: OnRequestInsert): void => {
@@ -842,6 +839,32 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       this._checkEndLoading();
       this._scroll();
     }
+  }
+  private _renderItems(options: RenderOptions = {}, isTrusted?: boolean) {
+    if (!isTrusted && options.useResize) {
+      this.watcher.resize();
+      this.containerManager.resize();
+    }
+    this._resizeScroll();
+    if (!this.getRenderingItems().length) {
+      const children = toArray(this.getContainerElement().children);
+      if (children.length > 0) {
+        // no items, but has children
+        this.groupManager.syncItems(convertInsertedItems(children));
+        this._syncInfinite();
+        this.setCursors(0, 0, true);
+        this._getRenderer().updated();
+      } else {
+        this.infinite.scroll(0);
+      }
+      return this;
+    }
+    if (!this.getVisibleGroups(true).length) {
+      this.setCursors(0, 0);
+    } else {
+      this.groupManager.renderItems(options);
+    }
+    return this;
   }
   private _checkStartLoading(direction: "start" | "end") {
     const groupManager = this.groupManager;
