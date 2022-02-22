@@ -1,4 +1,4 @@
-import InfiniteGrid from "../InfiniteGrid.svelte";
+import InfiniteGrid from "../InfiniteGrid.js";
 import { PackingInfiniteGrid as GridClass } from "@egjs/infinitegrid";
 
 
