@@ -130,7 +130,8 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
   public resize() {
     const scrollContainer = this.scrollContainer;
     const horizontal = this.options.horizontal;
-    const scrollContainerRect = scrollContainer === document.body
+    const isBody = scrollContainer === document.body;
+    const scrollContainerRect = isBody
       ? { top: 0, left: 0 }
       : scrollContainer.getBoundingClientRect();
     const containerRect = this.container.getBoundingClientRect();
@@ -138,7 +139,12 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     this.scrollOffset = (this.prevScrollPos! || 0) + (horizontal
       ? containerRect.left - scrollContainerRect.left
       : containerRect.top - scrollContainerRect.top);
-    this.contentSize = horizontal ? scrollContainer.offsetWidth : scrollContainer.offsetHeight;
+
+    if (isBody) {
+      this.contentSize = horizontal ? window.innerWidth : window.innerHeight;
+    } else {
+      this.contentSize = horizontal ? scrollContainer.offsetWidth : scrollContainer.offsetHeight;
+    }
   }
   public destroy() {
     const container = this.container;

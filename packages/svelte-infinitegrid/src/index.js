@@ -1,4 +1,4 @@
-import InfiniteGrid from "./InfiniteGrid";
+import InfiniteGrid from "./InfiniteGrid.js";
 
 export { InfiniteGrid };
 export * from "./grids/MasonryInfiniteGrid";

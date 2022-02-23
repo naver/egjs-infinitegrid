@@ -64,6 +64,12 @@ export class NgxInfiniteGridComponent
   @Input() defaultDirection!: NgxInfiniteGridProps['defaultDirection'];
   @Input() externalItemRenderer!: NgxInfiniteGridProps['externalItemRenderer'];
   @Input() externalContainerManager!: NgxInfiniteGridProps['externalContainerManager'];
+  @Input() outlineLength!: NgxInfiniteGridProps['outlineLength'];
+  @Input() outlineSize!: NgxInfiniteGridProps['outlineSize'];
+  @Input() useRoundedSize!: NgxInfiniteGridProps['useRoundedSize'];
+  @Input() useResizeObserver!: NgxInfiniteGridProps['useResizeObserver'];
+
+
   @Input() usePlaceholder!: NgxInfiniteGridProps['useFirstRender'];
   @Input() useLoading!: NgxInfiniteGridProps['useLoading'];
   @Input() status!: NgxInfiniteGridProps['status'];
@@ -89,6 +95,7 @@ export class NgxInfiniteGridComponent
       (this as any)[eventName] = new EventEmitter();
     }
   }
+
 
   ngOnInit() {
     this._updateVisibleChildren();

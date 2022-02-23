@@ -11,6 +11,7 @@ module.exports = function (config) {
     },
     files: [
       "./src/**/*.ts",
+      "./test/unit/css/sample.css",
       "./test/unit/**/*.ts",
     ],
     preprocessors: {

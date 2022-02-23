@@ -17,7 +17,7 @@ describe("test InfiniteGrid", () => {
   let ig: InfiniteGrid | null;
   let container: HTMLElement | null;
   beforeEach(() => {
-    container = sandbox("")!;
+    container = sandbox({ class: "sample" })!;
     container!.style.cssText = "";
   });
 
@@ -928,6 +928,7 @@ describe("test InfiniteGrid", () => {
         await waitEvent(ig!, "renderComplete");
 
         // Then
+        expect(ig!.getScrollContainerElement().scrollTop).to.be.equals(500);
         expect(ig!.getStartCursor()).to.be.equals(1);
         expect(ig!.getEndCursor()).to.be.equals(3);
         // items (6) virtual items (3)
@@ -1100,6 +1101,41 @@ describe("test InfiniteGrid", () => {
         expect(itemsLength2).to.be.equals(6);
         expect(allItemsLength2).to.be.equals(6);
       });
+    });
+  });
+  describe("test ResizeObserver", () => {
+    it(`should check if renderComplete does trigger when useResizeObserver is enabled and container's size is changed`, async () => {
+      // Given
+      container!.innerHTML = `
+      <div class="wrapper" style="width: 100%; height: 500px;">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+      </div>
+      `;
+      const spy = sinon.spy();
+      const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+      ig = new InfiniteGrid<InfiniteGridOptions>(wrapper, {
+        gridConstructor: SampleGrid,
+        container: true,
+        useResizeObserver: true,
+      });
+
+      ig.on("renderComplete", spy);
+
+      // When
+      // occur when resize inline direction
+      container!.style.width = "90%";
+
+
+      await waitFor(100);
+
+      // not occur when resize content direction
+      container!.style.height = "100px";
+      await waitFor(100);
+
+      // Then
+      expect(spy.callCount).to.be.equals(1);
     });
   });
 });

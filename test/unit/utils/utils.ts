@@ -15,11 +15,7 @@ export function sandbox(obj: object | string, prop?: object): HTMLElement {
   if (typeof obj === "object" || typeof prop === "object") {
     const attrs = typeof prop === "object" ? prop : obj;
     for (const p in attrs as object) {
-      if (/class|className/.test(p)) {
-        tmp.setAttribute(p, attrs[p] + " _tempSandbox_");
-      } else {
-        tmp.setAttribute(p, attrs[p]);
-      }
+      tmp.setAttribute(p, attrs[p]);
     }
   }
   document.body.appendChild(tmp);

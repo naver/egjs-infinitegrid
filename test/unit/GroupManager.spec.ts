@@ -8,7 +8,7 @@ describe("test GroupManager", () => {
   let manager: GroupManager | null;
   let container: HTMLElement | null;
   beforeEach(() => {
-    container = sandbox("")!;
+    container = sandbox({ class: "sample-container" })!;
     container!.style.cssText = "";
   });
 
