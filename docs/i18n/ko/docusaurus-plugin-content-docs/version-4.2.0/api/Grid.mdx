@@ -1,0 +1,397 @@
+---
+custom_edit_url: null
+---
+
+```ts
+class Grid extends eg.Component
+```
+
+<div className="container">
+  <div className="row mb-2"><div className="col col--4"><strong>Properties</strong></div><div className="col col--4"><strong>Methods</strong></div><div className="col col--4"><strong>Events</strong></div></div>
+  <div className="row"><div className="col col--4"><a href="#gap">gap</a><br/><a href="#defaultDirection">defaultDirection</a><br/><a href="#useFit">useFit</a><br/><a href="#preserveUIOnDestroy">preserveUIOnDestroy</a><br/><a href="#outlineLength">outlineLength</a><br/><a href="#outlineSize">outlineSize</a></div><div className="col col--4"><a href="#applyGrid">applyGrid</a><br/><a href="#getContainerElement">getContainerElement</a><br/><a href="#getItems">getItems</a><br/><a href="#getChildren">getChildren</a><br/><a href="#setItems">setItems</a><br/><a href="#getContainerInlineSize">getContainerInlineSize</a><br/><a href="#getOutlines">getOutlines</a><br/><a href="#setOutlines">setOutlines</a><br/><a href="#syncElements">syncElements</a><br/><a href="#updateItems">updateItems</a><br/><a href="#renderItems">renderItems</a><br/><a href="#getStatus">getStatus</a><br/><a href="#setStatus">setStatus</a><br/><a href="#getComputedOutlineSize">getComputedOutlineSize</a><br/><a href="#getComputedOutlineLength">getComputedOutlineLength</a><br/><a href="#destroy">destroy</a></div><div className="col col--4"><a href="#event-contentError">contentError</a><br/><a href="#event-renderComplete">renderComplete</a></div></div>
+</div>
+
+## Constructor
+```ts
+new Grid(containerElement, options)
+```
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|containerElement|HTMLElement \| string|||모듈을 적용할 기준 엘리먼트|
+|options|Partial&lt;Options&gt;|✔️|{}|Grid 모듈의 옵션 객체|
+
+## Properties
+
+### gap {#gap}
+
+<div>
+
+</div>
+
+아이템들 사이의 공간.
+
+**Type**: $ts:Grid.GridOptions["gap"]
+
+**Default**: 0
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  gap: 0,
+});
+
+grid.gap = 5;
+```
+
+### defaultDirection {#defaultDirection}
+
+<div>
+
+</div>
+
+render옵션에서 direction을 미설정시의 기본 방향값.
+
+**Type**: $ts:Grid.GridOptions["defaultDirection"]
+
+**Default**: "end"
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  defaultDirection: "end",
+});
+
+grid.defaultDirection = "start";
+```
+
+### useFit {#useFit}
+
+<div>
+
+</div>
+
+렌더링시 상단이 비어있을 때 아웃라인을 0으로 이동시킬지 여부. 하지만 상단보다 넘치는 경우 아웃라인을 0으로 강제 이동한다. (default: true)
+
+**Type**: $ts:Grid.GridOptions["useFit"]
+
+**Default**: true
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  useFit: true,
+});
+
+grid.useFit = false;
+```
+
+### preserveUIOnDestroy {#preserveUIOnDestroy}
+
+<div>
+
+</div>
+
+destroy 시 기존 컨테이너, 아이템의 UI를 보존할지 여부.
+
+**Type**: $ts:Grid.GridOptions["preserveUIOnDestroy"]
+
+**Default**: false
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  preserveUIOnDestroy: false,
+});
+
+grid.preserveUIOnDestroy = true;
+```
+
+### outlineLength {#outlineLength}
+
+<div>
+
+</div>
+
+outline의 개수. 아웃라인의 개수가 0이라면 grid의 종류에 따라 계산이 된다.
+
+**Type**: $ts:Grid.GridOptions["outlineLength"]
+
+**Default**: 0
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  outlineLength: 0,
+  outlineSize: 0,
+});
+
+grid.outlineLength = 3;
+```
+
+### outlineSize {#outlineSize}
+
+<div>
+
+</div>
+
+outline의 사이즈. 만약 outline의 사이즈가 0이면, grid의 종류에 따라 계산이 된다.
+
+**Type**: $ts:Grid.GridOptions["outlineSize"]
+
+**Default**: 0
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  outlineLength: 0,
+  outlineSize: 0,
+});
+
+grid.outlineSize = 300;
+```
+
+## Methods
+
+### applyGrid {#applyGrid}
+
+<div>
+
+</div>
+
+Grid에 맞게 아이템들의 CSS rect를 적용하고 outline을 계산한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|direcion|"start" \| "end"|||Grid를 적용할 방향. (&quot;end&quot;: 시작에서 끝 방향, &quot;start&quot;: 끝에서 시작 방향)|
+|outline|Array&lt;number&gt;|||Grid를 적용할 시작 outline.|
+
+### getContainerElement {#getContainerElement}
+
+<div>
+
+</div>
+
+컨테이너 엘리먼트를 반환한다.
+
+**Returns**: HTMLElement
+
+### getItems {#getItems}
+
+<div>
+
+</div>
+
+아이템들을 반환한다.
+
+**Returns**: GridItem[]
+
+### getChildren {#getChildren}
+
+<div>
+
+</div>
+
+컨테이너 엘리먼트의 children을 반환한다.
+
+**Returns**: HTMLElement[]
+
+### setItems {#setItems}
+
+<div>
+
+</div>
+
+아이템들을 설정한다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|||설정할 아이템들|
+
+### getContainerInlineSize {#getContainerInlineSize}
+
+<div>
+
+</div>
+
+container의 inline 사이즈를 가져온다. (horizontal이 false면 "width", 아니면 "height")
+
+**Returns**: number
+
+### getOutlines {#getOutlines}
+
+<div>
+
+</div>
+
+Grid의 처음과 끝의 outline을 반환한다.
+
+**Returns**: GridOutlines
+
+### setOutlines {#setOutlines}
+
+<div>
+
+</div>
+
+아웃라인을 설정한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|outlines|GridOutlines|||설정할 아웃라인.|
+
+### syncElements {#syncElements}
+
+<div>
+
+</div>
+
+elements가 바뀐 경우 동기화를 하고 렌더링을 한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|options|RenderOptions|✔️|{}|렌더링을 하기 위한 옵션.|
+
+### updateItems {#updateItems}
+
+<div>
+
+</div>
+
+아이템들의 사이즈를 업데이트하고 렌더링을 한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|✔️|this.items|업데이트할 아이템들.|
+|options|RenderOptions|✔️|{}|렌더링을 하기 위한 옵션.|
+
+### renderItems {#renderItems}
+
+<div>
+
+</div>
+
+grid에 맞게 아이템을 재배치하고 렌더링을 한다. 배치가 완료되면 `renderComplete` 이벤트가 발생한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|options|RenderOptions|✔️|{}|렌더링을 하기 위한 옵션.|
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+const grid = new MasonryGrid();
+
+grid.on("renderComplete", e => {
+  console.log(e);
+});
+grid.renderItems();
+```
+
+### getStatus {#getStatus}
+
+<div>
+
+</div>
+
+아이템의 위치, 사이즈 등 현재 상태를 반환한다. 반환한 상태는 setStatus() 메서드로 복원할 수 있다.
+
+**Returns**: GridStatus
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|minimize|boolean|✔️||item의 status를 최소화할지 여부. (default: false)|
+
+### setStatus {#setStatus}
+
+<div>
+
+</div>
+
+getStatus() 메서드에 대한 호출을 통해 반환된 상태로 Grid 모듈의 상태를 설정한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|status|GridStatus||||
+
+### getComputedOutlineSize {#getComputedOutlineSize}
+
+<div>
+
+</div>
+
+outline에 해당하는 inline 사이즈를 구한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|✔️|this.items|outline 사이즈를 구하기 위한 아이템들.|
+
+### getComputedOutlineLength {#getComputedOutlineLength}
+
+<div>
+
+</div>
+
+outline에 해당하는 length를 가져온다.
+
+**Returns**: number
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|✔️|this.items|outline length를 구하기 위한 아이템들.|
+
+### destroy {#destroy}
+
+<div>
+
+</div>
+
+인스턴스와 이벤트를 해제하고 컨테이너와 엘리먼트들의 CSS를 되돌린다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|Options|DestroyOptions|✔️|{}|destory()를 위한 옵션|
+
+## Events
+### contentError {#event-contentError}
+
+<div>
+
+</div>
+
+콘텐츠 로드에 에러가 날 때 발생하는 이벤트.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|[Grid.OnContentError](Grid:OnContentError)|||이벤트에 전달되는 데이터 객체|
+
+```js
+grid.on("contentError", e => {
+  e.update();
+});
+```
+
+### renderComplete {#event-renderComplete}
+
+<div>
+
+</div>
+
+Grid가 렌더링이 완료됐을 때  발생하는 이벤트이다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|[Grid.OnRenderComplete](Grid:OnRenderComplete)|||이벤트에 전달되는 데이터 객체|
+
+```js
+grid.on("renderComplete", e => {
+  console.log(e.mounted, e.updated, e.useResize);
+});
+```
+

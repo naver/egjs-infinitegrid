@@ -1,0 +1,698 @@
+---
+custom_edit_url: null
+---
+
+```ts
+class PackingInfiniteGrid extends InfiniteGrid
+```
+<p>The PackingInfiniteGrid is a grid that shows the important items bigger without sacrificing the weight of the items.<br />Rows and columns are separated so that items are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.<br />If <code>sizeWeight</code> is higher than <code>ratioWeight</code>, the size of items is preserved as much as possible.<br />Conversely, if <code>ratioWeight</code> is higher than <code>sizeWeight</code>, the ratio of items is preserved as much as possible.</p>
+
+<div className="container">
+  <div className="row mb-2"><div className="col col--6"><strong>Methods</strong></div><div className="col col--6"><strong>Events</strong></div></div>
+  <div className="row"><div className="col col--6"><a href="#renderItems">renderItems</a><br/><a href="#getWrapperElement">getWrapperElement</a><br/><a href="#getScrollContainerElement">getScrollContainerElement</a><br/><a href="#getContainerElement">getContainerElement</a><br/><a href="#syncItems">syncItems</a><br/><a href="#setCursors">setCursors</a><br/><a href="#getStartCursor">getStartCursor</a><br/><a href="#getEndCursor">getEndCursor</a><br/><a href="#append">append</a><br/><a href="#prepend">prepend</a><br/><a href="#insert">insert</a><br/><a href="#getStatus">getStatus</a><br/><a href="#setPlaceholder">setPlaceholder</a><br/><a href="#setLoading">setLoading</a><br/><a href="#appendPlaceholders">appendPlaceholders</a><br/><a href="#prependPlaceholders">prependPlaceholders</a><br/><a href="#removePlaceholders">removePlaceholders</a><br/><a href="#setStatus">setStatus</a><br/><a href="#removeGroupByIndex">removeGroupByIndex</a><br/><a href="#removeGroupByKey">removeGroupByKey</a><br/><a href="#removeByIndex">removeByIndex</a><br/><a href="#removeByKey">removeByKey</a><br/><a href="#updateItems">updateItems</a><br/><a href="#getItems">getItems</a><br/><a href="#getVisibleItems">getVisibleItems</a><br/><a href="#getRenderingItems">getRenderingItems</a><br/><a href="#getGroups">getGroups</a><br/><a href="#getVisibleGroups">getVisibleGroups</a><br/><a href="#wait">wait</a><br/><a href="#ready">ready</a><br/><a href="#isWait">isWait</a><br/><a href="#destroy">destroy</a><br/><a href="#trigger">trigger</a><br/><a href="#once">once</a><br/><a href="#hasOn">hasOn</a><br/><a href="#on">on</a><br/><a href="#off">off</a></div><div className="col col--6"><a href="#event-changeScroll">changeScroll</a><br/><a href="#event-requestAppend">requestAppend</a><br/><a href="#event-requestPrepend">requestPrepend</a><br/><a href="#event-contentError">contentError</a><br/><a href="#event-renderComplete">renderComplete</a></div></div>
+</div>
+
+## Constructor
+```ts
+new PackingInfiniteGrid(container, options)
+```
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|container|HTMLElement \| string|||<p>A base element for a module </p>|
+|options|[PackingInfiniteGridOptions](PackingInfiniteGridOptions)|||<p>The option object of the PackingInfiniteGrid module </p>|
+
+## Methods
+
+### renderItems {#renderItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Rearrange items to fit the grid and render them. When rearrange is complete, the <code>renderComplete</code> event is fired.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|options|RenderOptions|✔️|{}|<p>Options for rendering. </p>|
+
+```ts
+import { MasonryInfiniteGrid } from "@egjs/infinitegrid";
+const grid = new MasonryInfiniteGrid();
+
+grid.on("renderComplete", e => {
+  console.log(e);
+});
+grid.renderItems();
+```
+
+### getWrapperElement {#getWrapperElement}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Returns the wrapper element specified by the user.</p>
+
+### getScrollContainerElement {#getScrollContainerElement}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Returns the container element corresponding to the scroll area.</p>
+
+### getContainerElement {#getContainerElement}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Returns the container element containing item elements.</p>
+
+### syncItems {#syncItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>When items change, it synchronizes and renders items.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|[InfiniteGridItemInfo](InfiniteGridItemInfo)[]|||<p>Options for rendering. </p>|
+
+### setCursors {#setCursors}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Change the currently visible groups.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|startCursor|number|||<p>first index of visible groups. </p>|
+|endCursor|number|||<p>last index of visible groups. </p>|
+|useFirstRender|boolean|✔️||<p>Whether the first rendering has already been done. </p>|
+
+### getStartCursor {#getStartCursor}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Returns the first index of visible groups.</p>
+
+**Returns**: number
+
+### getEndCursor {#getEndCursor}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Returns the last index of visible groups.</p>
+
+**Returns**: number
+
+### append {#append}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Add items at the bottom(right) of the grid.</p>
+
+**Returns**: this
+- <ul><br /><li>An instance of a module itself</li><br /></ul>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|InfiniteGridInsertedItems|||<p>items to be added </p>|
+|groupKey|string \| number|✔️||<p>The group key to be configured in items. It is automatically generated by default. </p>|
+
+```js
+ig.append(`<div class="item">test1</div><div class="item">test2</div>`);
+ig.append([`<div class="item">test1</div>`, `<div class="item">test2</div>`]);
+ig.append([HTMLElement1, HTMLElement2]);
+```
+
+### prepend {#prepend}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Add items at the top(left) of the grid.</p>
+
+**Returns**: this
+- <ul><br /><li>An instance of a module itself</li><br /></ul>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|InfiniteGridInsertedItems|||<p>items to be added </p>|
+|groupKey|string \| number|✔️||<p>The group key to be configured in items. It is automatically generated by default. </p>|
+
+```ts
+ig.prepend(`<div class="item">test1</div><div class="item">test2</div>`);
+ig.prepend([`<div class="item">test1</div>`, `<div class="item">test2</div>`]);
+ig.prepend([HTMLElement1, HTMLElement2]);
+```
+
+### insert {#insert}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Add items to a specific index.</p>
+
+**Returns**: this
+- <ul><br /><li>An instance of a module itself</li><br /></ul>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|index|number|||<p>index to add </p>|
+|items|InfiniteGridInsertedItems|||<p>items to be added </p>|
+|groupKey|string \| number|✔️||<p>The group key to be configured in items. It is automatically generated by default. </p>|
+
+```ts
+ig.insert(2, `<div class="item">test1</div><div class="item">test2</div>`);
+ig.insert(3, [`<div class="item">test1</div>`, `<div class="item">test2</div>`]);
+ig.insert(4, [HTMLElement1, HTMLElement2]);
+```
+
+### getStatus {#getStatus}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Returns the current state of a module such as location information. You can use the setStatus() method to restore the information returned through a call to this method.</p>
+
+**Returns**: [InfiniteGridStatus](InfiniteGridStatus)
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|type|STATUS_TYPE|✔️||<p>STATUS_TYPE.NOT_REMOVE = Get all information about items. STATUS_TYPE.REMOVE_INVISIBLE_ITEMS = Get information on visible items only. STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS = Compress invisible items. You can replace it with a placeholder. STATUS_TYPE.MINIMIZE_INVISIBLE_GROUPS = Compress invisible groups. </p>|
+
+### setPlaceholder {#setPlaceholder}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>You can set placeholders to restore status or wait for items to be added.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|info|Partial&lt;InfiniteGridItemStatus&gt; \| null|||<p>The placeholder status. </p>|
+
+### setLoading {#setLoading}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>You can set placeholders to restore status or wait for items to be added.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|info|Partial&lt;InfiniteGridItemStatus&gt; \| null|||<p>The placeholder status. </p>|
+
+### appendPlaceholders {#appendPlaceholders}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Add the placeholder at the end.</p>
+
+**Returns**: [InsertedPlaceholdersResult](InsertedPlaceholdersResult)
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|number \| InfiniteGridItemStatus[]|||<p>Items that correspond to placeholders. If it is a number, it duplicates the number of copies. </p>|
+|groupKey|string \| number|✔️||<p>The group key to be configured in items. It is automatically generated by default. </p>|
+
+### prependPlaceholders {#prependPlaceholders}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Add the placeholder at the start.</p>
+
+**Returns**: [InsertedPlaceholdersResult](InsertedPlaceholdersResult)
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|number \| InfiniteGridItemStatus[]|||<p>Items that correspond to placeholders. If it is a number, it duplicates the number of copies. </p>|
+|groupKey|string \| number|✔️||<p>The group key to be configured in items. It is automatically generated by default. </p>|
+
+### removePlaceholders {#removePlaceholders}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Remove placeholders</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|type|"start" \| "end" \| {groupKey: string \| number}|||<p>Remove the placeholders corresponding to the groupkey. When &quot;start&quot; or &quot;end&quot;, remove all placeholders in that direction. </p>|
+
+### setStatus {#setStatus}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Sets the status of the InfiniteGrid module with the information returned through a call to the getStatus() method.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|status|[InfiniteGridStatus](InfiniteGridStatus)|||<p>status object of the InfiniteGrid module. </p>|
+|useFirstRender|boolean|✔️||<p>Whether the first rendering has already been done. </p>|
+
+### removeGroupByIndex {#removeGroupByIndex}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Removes the group corresponding to index.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|index|number||||
+
+### removeGroupByKey {#removeGroupByKey}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Removes the group corresponding to key.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|key|number \| string||||
+
+### removeByIndex {#removeByIndex}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Removes the item corresponding to index.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|index|number||||
+
+### removeByKey {#removeByKey}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Removes the item corresponding to key.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|key|string \| number||||
+
+### updateItems {#updateItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Update the size of the items and render them.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|InfiniteGridItem[]|✔️||<p>Items to be updated. </p>|
+|options|RenderOptions|✔️|{}|<p>Options for rendering. </p>|
+
+### getItems {#getItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Return all items of InfiniteGrid.</p>
+
+**Returns**: InfiniteGridItem[]
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|includePlaceholders|boolean|✔️||<p>Whether to include items corresponding to placeholders. </p>|
+
+### getVisibleItems {#getVisibleItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Return visible items of InfiniteGrid.</p>
+
+**Returns**: InfiniteGridItem[]
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|includePlaceholders|boolean|✔️||<p>Whether to include items corresponding to placeholders. </p>|
+
+### getRenderingItems {#getRenderingItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Return rendering items of InfiniteGrid.</p>
+
+**Returns**: InfiniteGridItem[]
+
+### getGroups {#getGroups}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Return all groups of InfiniteGrid.</p>
+
+**Returns**: InfiniteGridGroup[]
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|includePlaceholders|boolean|✔️||<p>Whether to include groups corresponding to placeholders. </p>|
+
+### getVisibleGroups {#getVisibleGroups}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Return visible groups of InfiniteGrid.</p>
+
+**Returns**: InfiniteGridGroup[]
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|includePlaceholders|boolean|✔️||<p>Whether to include groups corresponding to placeholders. </p>|
+
+### wait {#wait}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Set to wait to request data.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|direction|"start" \| "end"|✔️|DIRECTION.END|<p>direction in which data will be added. </p>|
+
+### ready {#ready}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>When the data request is complete, it is set to ready state.</p>
+
+### isWait {#isWait}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Returns whether it is set to wait to request data.</p>
+
+### destroy {#destroy}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Releases the instnace and events and returns the CSS of the container and elements.</p>
+
+**Returns**: void
+
+### trigger {#trigger}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Trigger a custom event.</p>
+
+**Returns**: this
+- <p>An instance of the component itself</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|event|string \| ComponentEvent|||<p>The name of the custom event to be triggered or an instance of the ComponentEvent</p>|
+|params|Array&lt;any&gt; \| $ts:...|||<p>Event data to be sent when triggering a custom event </p>|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  beforeHi: ComponentEvent<{ foo: number; bar: string }>;
+  hi: { foo: { a: number; b: boolean } };
+  someEvent: (foo: number, bar: string) => void;
+  someOtherEvent: void; // When there's no event argument
+}> {
+  some(){
+    if(this.trigger("beforeHi")){ // When event call to stop return false.
+      this.trigger("hi");// fire hi event.
+    }
+  }
+}
+
+const some = new Some();
+some.on("beforeHi", e => {
+  if(condition){
+    e.stop(); // When event call to stop, `hi` event not call.
+  }
+  // `currentTarget` is component instance.
+  console.log(some === e.currentTarget); // true
+
+  typeof e.foo; // number
+  typeof e.bar; // string
+});
+some.on("hi", e => {
+  typeof e.foo.b; // boolean
+});
+// If you want to more know event design. You can see article.
+// https://github.com/naver/egjs-component/wiki/How-to-make-Component-event-design%3F
+```
+
+### once {#once}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Executed event just one time.</p>
+
+**Returns**: this
+- <p>An instance of the component itself</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string \| $ts:...|||<p>The name of the event to be attached or an event name - event handler mapped object.</p>|
+|handlerToAttach|function \| $ts:...|✔️||<p>The handler function of the event to be attached </p>|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  hi: ComponentEvent;
+}> {
+  hi() {
+    alert("hi");
+  }
+  thing() {
+    this.once("hi", this.hi);
+  }
+}
+
+var some = new Some();
+some.thing();
+some.trigger(new ComponentEvent("hi"));
+// fire alert("hi");
+some.trigger(new ComponentEvent("hi"));
+// Nothing happens
+```
+
+### hasOn {#hasOn}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Checks whether an event has been attached to a component.</p>
+
+**Returns**: boolean
+- <p>Indicates whether the event is attached. </p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string|||<p>The name of the event to be attached </p>|
+
+```ts
+import Component from "@egjs/component";
+
+class Some extends Component<{
+  hi: void;
+}> {
+  some() {
+    this.hasOn("hi");// check hi event.
+  }
+}
+```
+
+### on {#on}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Attaches an event to a component.</p>
+
+**Returns**: this
+- <p>An instance of a component itself</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string \| $ts:...|||<p>The name of the event to be attached or an event name - event handler mapped object.</p>|
+|handlerToAttach|function \| $ts:...|✔️||<p>The handler function of the event to be attached </p>|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  hi: void;
+}> {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.on("hi",this.hi); //attach event
+  }
+}
+```
+
+### off {#off}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Detaches an event from the component.<br/>If the <code>eventName</code> is not given this will detach all event handlers attached.<br/>If the <code>handlerToDetach</code> is not given, this will detach all event handlers for <code>eventName</code>.</p>
+
+**Returns**: this
+- <p>An instance of a component itself </p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string \| $ts:...|✔️||<p>The name of the event to be detached </p>|
+|handlerToDetach|function \| $ts:...|✔️||<p>The handler function of the event to be detached </p>|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  hi: void;
+}> {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.off("hi",this.hi); //detach event
+  }
+}
+```
+
+## Events
+### changeScroll {#event-changeScroll}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>This event is fired when scrolling.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnChangeScroll|||<p>The object of data to be sent to an event </p>|
+
+### requestAppend {#event-requestAppend}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>The event is fired when scrolling reaches the end or when data for a virtual group is required.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnRequestAppend|||<p>The object of data to be sent to an event </p>|
+
+### requestPrepend {#event-requestPrepend}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>The event is fired when scrolling reaches the start or when data for a virtual group is required.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnRequestPrepend|||<p>The object of data to be sent to an event </p>|
+
+### contentError {#event-contentError}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>The event is fired when scrolling reaches the start or when data for a virtual group is required.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnContentError|||<p>The object of data to be sent to an event </p>|
+
+### renderComplete {#event-renderComplete}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>This event is fired when the InfiniteGrid has completed rendering.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnRenderComplete|||<p>The object of data to be sent to an event </p>|
+
