@@ -2,9 +2,7 @@
 custom_edit_url: null
 ---
 
-### InfiniteGridOptions {#InfiniteGridOptions}
-
-<div className="bulma-tags">
+<div>
 
 </div>
 
@@ -23,9 +21,13 @@ custom_edit_url: null
 |autoResize|boolean|렌더링시 상단이 비어있을 때 아웃라인을 0으로 이동시킬지 여부. 하지만 상단보다 넘치는 경우 아웃라인을 0으로 강제 이동한다. (default: true)|
 |useFit|boolean|window의 resize 이벤트 이후 자동으로 resize()메소드를 호출할지의 여부. (default: true)|
 |useTransform|boolean|left, top css 속성 쓰는 대신 transform 속성을 사용할지 여부.|
-|renderOnPropertyChange|boolean|property의 변화를 통해 자동으로 render를 할지 여부.|
-|preserveUIOnDestroy|boolean|destroy 시 기존 컨테이너, 아이템의 UI를 보존할지 여부.|
-|defaultDirection|"start" \| "end"|render옵션에서 direction을 미설정시의 기본 방향값.|
+|renderOnPropertyChange|boolean|property의 변화를 통해 자동으로 render를 할지 여부.|
+|preserveUIOnDestroy|boolean|destroy 시 기존 컨테이너, 아이템의 UI를 보존할지 여부.|
+|defaultDirection|"start" \| "end"|outline의 개수. 아웃라인의 개수가 0이라면 grid의 종류에 따라 계산이 된다. (default: 0)|
+|outlineLength|number| outline의 사이즈. 만약 outline의 사이즈가 0이면, grid의 종류에 따라 계산이 된다. (default: 0) |
+|outlineSize|number|render옵션에서 direction을 미설정시의 기본 방향값.|
+|useRoundedSize|boolean|사이즈를 반올림된 사이즈(offsetWidth, offsetHeight)로 가져올지 여부. container에 transform이 적용되어 있다면 true로 설정해라. false면 getBoundingClientRect를 통해 사이즈를 가져온다. (default: true)|
+|useResizeObserver|boolean|autoResize 옵션 사용시 container의 사이즈 변화 감지를 위해 ResizeObserver 이벤트를 사용할지 여부. (default: false)|
 |externalItemRenderer|ItemRenderer \| null|외부에서 직접 ItemRenderer를 설정할 수 있다.|
 |externalContainerManager|ContainerManager \| null|외부에서 직접 ContainerManager를 설정할 수 있다.|
 |container|boolean \| string \| HTMLElement|container를 적용할 대상. false면 자기 자신, true면 container를 생성. string 또는 HTMLElement는 직접 대상을 지정. (default: false)|
