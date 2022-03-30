@@ -1,6 +1,6 @@
 {
 	"name": "@egjs/infinitegrid",
-	"version": "4.2.0-snapshot",
+	"version": "4.2.1",
 	"description": "A module used to arrange elements including content infinitely according to grid type. With this module, you can implement various grids composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
 	"module": "dist/infinitegrid.esm.js",
 	"main": "dist/infinitegrid.js",
@@ -24,7 +24,7 @@
 		"demo:prebuild-latest": "cpx 'dist/**/*' docs/build/release/latest/dist --clean",
 		"demo:build": "npm run docs:release && npm run build && npm run build:storybook && npm run demo:prebuild-version && npm run demo:prebuild-latest",
 		"demo:deploy": "npm run demo:build && gh-pages -d docs/build/ --add --remote upstream",
-    "gh-pages:add": "gh-pages -d docs/build/ --add --remote upstream",
+		"gh-pages:add": "gh-pages -d docs/build/ --add --remote upstream",
 		"release": "release-helper upstream",
 		"packages": "npm run packages:update && npm run packages:build && npm run packages:publish",
 		"packages:update": "pvu --update=react-infinitegrid,ngx-infinitegrid/projects/ngx-infinitegrid,vue-infinitegrid,vue3-infinitegrid,svelte-infinitegrid",
@@ -136,7 +136,7 @@
 	"dependencies": {
 		"@egjs/children-differ": "^1.0.1",
 		"@egjs/component": "^3.0.0",
-		"@egjs/grid": "~1.9.0",
+		"@egjs/grid": "~1.9.1",
 		"@egjs/list-differ": "^1.0.0"
 	}
 }
