@@ -24,7 +24,7 @@ export abstract class InfiniteGrid<T extends InfiniteGridOptions>
   private _grid!: VanillaInfiniteGrid;
   private _wrapperRef = React.createRef<HTMLDivElement>();
   private _containerRef = React.createRef<HTMLDivElement>();
-  private _renderer = new Renderer();
+  private _renderer!: Renderer;
 
   public render() {
     const attributes: { [key: string]: any } = {};
@@ -60,6 +60,7 @@ export abstract class InfiniteGrid<T extends InfiniteGridOptions>
     if (containerElement) {
       options.container = containerElement;
     }
+    this._renderer = new Renderer();
     options.renderer = this._renderer;
     const grid = new GridClass(this._wrapperRef.current!, options);
 
