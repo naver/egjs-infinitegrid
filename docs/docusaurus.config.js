@@ -15,6 +15,7 @@ module.exports = {
   organizationName: 'naver',
   plugins: ['docusaurus-plugin-sass', './webpack.js'],
   themes: ['@docusaurus/theme-live-codeblock'],
+  trailingSlash: false,
   themeConfig: {
     hideableSidebar: false,
     navbar: {
