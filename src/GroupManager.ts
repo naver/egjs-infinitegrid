@@ -670,6 +670,8 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       ...gridOptions,
       useFit: false,
       autoResize: false,
+      useResizeObserver: false,
+      observeChildren: false,
       renderOnPropertyChange: false,
       externalContainerManager: this.containerManager,
       externalItemRenderer: this.itemRenderer,
