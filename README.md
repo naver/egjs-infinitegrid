@@ -141,7 +141,7 @@ InfiniteGrid calculates the size of container and children by window resizing ev
 
 In this case, I recommend [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) for you.
 
-Provides `useResizeObserver` option to detect size change of container in Grid and `observeChildren` option to detect size change of children.
+Provides `useResizeObserver` option to detect size change of container and `observeChildren` option to detect size change of children.
 
 
 ```js
