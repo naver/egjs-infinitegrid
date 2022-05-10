@@ -136,7 +136,7 @@
 	"dependencies": {
 		"@egjs/children-differ": "^1.0.1",
 		"@egjs/component": "^3.0.0",
-		"@egjs/grid": "~1.9.1",
+		"@egjs/grid": "~1.10.0",
 		"@egjs/list-differ": "^1.0.0"
 	}
 }
