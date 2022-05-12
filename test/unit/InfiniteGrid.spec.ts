@@ -915,12 +915,16 @@ describe("test InfiniteGrid", () => {
         // partial cursors (0 ~ 2)
         await waitEvent(ig!, "renderComplete");
 
-
         // set place holder
         ig!.setPlaceholder({
           html: `<div class="placeholder"></div>`,
         });
         ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS));
+        // 0 ~ 9
+        // restore status
+        await waitEvent(ig!, "renderComplete");
+
+        // render changed items
         await waitEvent(ig!, "renderComplete");
 
         // When
@@ -1136,6 +1140,88 @@ describe("test InfiniteGrid", () => {
 
       // Then
       expect(spy.callCount).to.be.equals(1);
+    });
+    it(`should Check if ResizeObserver is also applied to children`, async () => {
+      // Given
+      container!.innerHTML = `
+      <div class="wrapper" style="width: 100%; height: 500px;">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+      </div>
+      `;
+      const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+      ig = new InfiniteGrid<InfiniteGridOptions>(wrapper, {
+        gridConstructor: SampleGrid,
+        container: true,
+        useResizeObserver: true,
+        observeChildren: true,
+      });
+
+      ig.renderItems();
+
+      await waitEvent(ig, "renderComplete");
+      // When
+      const item = ig.getItems()[0];
+
+      // resize child element
+      ig.getItems()[0].element!.style.height = "30px";
+
+      const e = await waitEvent(ig, "renderComplete");
+
+      // Then
+      expect(e.updated.length).to.be.equals(1);
+      expect(item.rect.height).to.be.equals(30);
+    });
+    it(`should check if ResizeObserver is applied only to visible items`, async () => {
+      // Given
+      container!.innerHTML = `
+      <div class="wrapper" style="width: 100%; height: 500px;"></div>
+      `;
+      const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+      ig = new InfiniteGrid<InfiniteGridOptions>(wrapper, {
+        gridConstructor: SampleGrid,
+        container: true,
+        useResizeObserver: true,
+        observeChildren: true,
+      });
+
+      ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: `key${child}`,
+          html: `<div style="height: 100px">${child}</div>`,
+        };
+      }));
+
+      ig!.setCursors(0, 4);
+      // all cursors
+      await waitEvent(ig!, "renderComplete");
+
+      // partial cursors (0 ~ 2)
+      await waitEvent(ig!, "renderComplete");
+
+      ig!.getScrollContainerElement().scrollTop = 500;
+
+      // partial cursors (1 ~ 3)
+      await waitEvent(ig!, "renderComplete");
+
+      // When
+      const visibleItem = ig.getVisibleItems()[0];
+      const invisibleItem = ig.getItems()[0];
+
+      // resize child element
+      visibleItem.element!.style.height = "30px";
+      invisibleItem.element!.style.height = "30px";
+
+      const e = await waitEvent(ig, "renderComplete");
+
+      // Then
+      expect(e.updated.length).to.be.equals(1);
+      expect(visibleItem.rect.height).to.be.equals(30);
+      expect(invisibleItem.rect.height).not.to.be.equals(30);
+      expect(ig!.getStartCursor()).to.be.equals(1);
+      expect(ig!.getEndCursor()).to.be.equals(3);
     });
   });
 });

@@ -108,6 +108,56 @@ ig.on("requestAppend", (e) => {
 });
 ig.renderItems();
 ```
+
+### Use Faster & Lazy Rendering
+
+* When the `loading="lazy"` or `data-grid-lazy="true"`(external lazy loading) attribute is used, Rendering of the items occurs immediately. When items are loaded, they are rendered sequentially.
+```html
+<img src="..." />
+<img src="..." />
+<img src="..." loading="lazy" />
+<img data-grid-lazy="true" />
+```
+* If you use `data-grid-width` and `data-grid-height` attributes, the size of self, child image, and video elements is automatically adjusted until loading is complete.
+```html
+<div data-grid-width="100" data-grid-height="100">
+   <img src="..." />
+   <img src="..." />
+   <img src="..." />
+</div>
+```
+
+* If you use `data-grid-skip="true"` attribute, you can omit it even if there are images in itself and child image, and video elements.
+```html
+<div data-grid-skip="true">
+   <img src="..." />
+   <img src="..." />
+   <img src="..." />
+</div>
+```
+
+### Detect resize of Container & Children
+InfiniteGrid calculates the size of container and children by window resizing event. However, even if the size of the window does not change, the size of the event container and children can change. Most of the first rendering issues are also like this.
+
+In this case, I recommend [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) for you.
+
+Provides `useResizeObserver` option to detect size change of container and `observeChildren` option to detect size change of children.
+
+
+```js
+import { MasonryInfiniteGrid, JustifiedInfiniteGrid, FrameInfiniteGrid, PackingInfiniteGrid } from "@egjs/infinitegrid";
+
+
+// InfiniteGrid.MasonryInfiniteGrid
+const grid = new MasonryInfiniteGrid(container, {
+  gap: 5,
+  useResizeObserver: true,
+  observeChildren: true,
+});
+
+grid.renderItems();
+```
+
 ## 📦 Packages
 |Package|Version|Description|
 |:-----:|:-----:|:-----:|
