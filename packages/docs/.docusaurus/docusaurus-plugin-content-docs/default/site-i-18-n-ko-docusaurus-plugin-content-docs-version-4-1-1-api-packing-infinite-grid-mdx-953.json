@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/PackingInfiniteGrid",
+  "id": "version-4.1.1/api/PackingInfiniteGrid",
+  "title": "PackingInfiniteGrid",
+  "description": "PackingInfiniteGrid는 아이템의 본래 크기에 따른 비중을 해치지 않으면서 중요한 카드는 더 크게 보여 주는 레이아웃이다.행과 열이 구분돼 아이템을 정돈되게 배치하는 대신 가로세로 일정 공간 내에서 동적으로 아이템을 배치한다.sizeWeight가 ratioWeight보다 높으면 아이템들의 size가 최대한 보존이 된다.반대로 ratioWeight가 sizeWeight보다 높으면 아이템들의 비율이 최대한 보존이 된다.",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.1.1/api/PackingInfiniteGrid.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/PackingInfiniteGrid",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.1.1/api/PackingInfiniteGrid",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.1.1",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.1.1/api",
+  "previous": {
+    "title": "MasonryInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.1.1/api/MasonryInfiniteGrid"
+  },
+  "next": {
+    "title": "Grid",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.1.1/api/Grid"
+  }
+}

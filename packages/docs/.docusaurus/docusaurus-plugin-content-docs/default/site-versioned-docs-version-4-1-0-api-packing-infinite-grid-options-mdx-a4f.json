@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/PackingInfiniteGridOptions",
+  "id": "version-4.1.0/api/PackingInfiniteGridOptions",
+  "isDocsHomePage": false,
+  "title": "PackingInfiniteGridOptions",
+  "description": "PackingInfiniteGridOptions",
+  "source": "@site/versioned_docs/version-4.1.0/api/PackingInfiniteGridOptions.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/PackingInfiniteGridOptions",
+  "permalink": "/egjs-infinitegrid/docs/api/PackingInfiniteGridOptions",
+  "editUrl": null,
+  "tags": [],
+  "version": "4.1.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.1.0/api",
+  "previous": {
+    "title": "MasonryInfiniteGridOptions",
+    "permalink": "/egjs-infinitegrid/docs/api/MasonryInfiniteGridOptions"
+  },
+  "next": {
+    "title": "InfiniteGridStatus",
+    "permalink": "/egjs-infinitegrid/docs/api/InfiniteGridStatus"
+  }
+}

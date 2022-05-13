@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/InfiniteGridOptions",
+  "id": "version-4.1.0/api/InfiniteGridOptions",
+  "isDocsHomePage": false,
+  "title": "InfiniteGridOptions",
+  "description": "InfiniteGridOptions",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.1.0/api/InfiniteGridOptions.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/InfiniteGridOptions",
+  "permalink": "/egjs-infinitegrid/ko/docs/api/InfiniteGridOptions",
+  "editUrl": null,
+  "tags": [],
+  "version": "4.1.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.1.0/api",
+  "previous": {
+    "title": "InfiniteGridItemInfo",
+    "permalink": "/egjs-infinitegrid/ko/docs/api/InfiniteGridItemInfo"
+  },
+  "next": {
+    "title": "InsertedPlaceholdersResult",
+    "permalink": "/egjs-infinitegrid/ko/docs/api/InsertedPlaceholdersResult"
+  }
+}

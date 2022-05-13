@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/Grid",
+  "id": "version-4.0.0/api/Grid",
+  "title": "Grid",
+  "description": "PropertiesMethodsEvents",
+  "source": "@site/versioned_docs/version-4.0.0/api/Grid.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/Grid",
+  "permalink": "/egjs-infinitegrid/docs/4.0.0/api/Grid",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.0.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.0.0/api",
+  "previous": {
+    "title": "PackingInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/docs/4.0.0/api/PackingInfiniteGrid"
+  },
+  "next": {
+    "title": "Component",
+    "permalink": "/egjs-infinitegrid/docs/4.0.0/api/Component"
+  }
+}

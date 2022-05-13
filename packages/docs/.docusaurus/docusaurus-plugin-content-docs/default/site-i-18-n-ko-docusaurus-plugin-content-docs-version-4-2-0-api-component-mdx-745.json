@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/Component",
+  "id": "version-4.2.0/api/Component",
+  "isDocsHomePage": false,
+  "title": "Component",
+  "description": "`ts",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.2.0/api/Component.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/Component",
+  "permalink": "/egjs-infinitegrid/ko/docs/api/Component",
+  "editUrl": null,
+  "tags": [],
+  "version": "4.2.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.2.0/api",
+  "previous": {
+    "title": "Grid",
+    "permalink": "/egjs-infinitegrid/ko/docs/api/Grid"
+  },
+  "next": {
+    "title": "withInfiniteGridMethods",
+    "permalink": "/egjs-infinitegrid/ko/docs/api/withInfiniteGridMethods"
+  }
+}

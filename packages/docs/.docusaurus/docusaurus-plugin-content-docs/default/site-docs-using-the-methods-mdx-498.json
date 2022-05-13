@@ -1,0 +1,29 @@
+{
+  "unversionedId": "using-the-methods",
+  "id": "using-the-methods",
+  "title": "Using the Methods",
+  "description": "<Tabs",
+  "source": "@site/docs/using-the-methods.mdx",
+  "sourceDirName": ".",
+  "slug": "/using-the-methods",
+  "permalink": "/egjs-infinitegrid/ko/docs/next/using-the-methods",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Using the Methods",
+    "id": "using-the-methods",
+    "slug": "/using-the-methods",
+    "custom_edit_url": null
+  },
+  "sidebar": "started",
+  "previous": {
+    "title": "Quick Start",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/quick-start"
+  },
+  "next": {
+    "title": "Listening to Events",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/listening-to-events"
+  }
+}

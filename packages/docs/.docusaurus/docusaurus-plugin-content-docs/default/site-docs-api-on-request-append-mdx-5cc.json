@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/OnRequestAppend",
+  "id": "api/OnRequestAppend",
+  "title": "OnRequestAppend",
+  "description": "Type: TSInterface",
+  "source": "@site/docs/api/OnRequestAppend.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/OnRequestAppend",
+  "permalink": "/egjs-infinitegrid/docs/next/api/OnRequestAppend",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "api",
+  "previous": {
+    "title": "InsertedPlaceholdersResult",
+    "permalink": "/egjs-infinitegrid/docs/next/api/InsertedPlaceholdersResult"
+  },
+  "next": {
+    "title": "OnRequestPrepend",
+    "permalink": "/egjs-infinitegrid/docs/next/api/OnRequestPrepend"
+  }
+}

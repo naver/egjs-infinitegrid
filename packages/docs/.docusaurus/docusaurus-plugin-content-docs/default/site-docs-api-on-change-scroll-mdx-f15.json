@@ -1,0 +1,22 @@
+{
+  "unversionedId": "api/OnChangeScroll",
+  "id": "api/OnChangeScroll",
+  "title": "OnChangeScroll",
+  "description": "Type: TSInterface",
+  "source": "@site/docs/api/OnChangeScroll.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/OnChangeScroll",
+  "permalink": "/egjs-infinitegrid/docs/next/api/OnChangeScroll",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "api",
+  "previous": {
+    "title": "OnContentError",
+    "permalink": "/egjs-infinitegrid/docs/next/api/OnContentError"
+  }
+}

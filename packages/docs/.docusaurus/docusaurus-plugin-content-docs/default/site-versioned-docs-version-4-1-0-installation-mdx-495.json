@@ -1,0 +1,25 @@
+{
+  "unversionedId": "installation",
+  "id": "version-4.1.0/installation",
+  "isDocsHomePage": false,
+  "title": "Installation",
+  "description": "Using the package managers (recommended)",
+  "source": "@site/versioned_docs/version-4.1.0/installation.mdx",
+  "sourceDirName": ".",
+  "slug": "/",
+  "permalink": "/egjs-infinitegrid/ko/docs/",
+  "editUrl": null,
+  "tags": [],
+  "version": "4.1.0",
+  "frontMatter": {
+    "title": "Installation",
+    "id": "installation",
+    "slug": "/",
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.1.0/started",
+  "next": {
+    "title": "Quick Start",
+    "permalink": "/egjs-infinitegrid/ko/docs/quick-start"
+  }
+}

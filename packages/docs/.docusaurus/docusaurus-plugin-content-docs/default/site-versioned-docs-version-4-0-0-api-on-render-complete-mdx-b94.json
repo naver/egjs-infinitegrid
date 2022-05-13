@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/OnRenderComplete",
+  "id": "version-4.0.0/api/OnRenderComplete",
+  "title": "OnRenderComplete",
+  "description": "OnRenderComplete",
+  "source": "@site/versioned_docs/version-4.0.0/api/OnRenderComplete.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/OnRenderComplete",
+  "permalink": "/egjs-infinitegrid/docs/4.0.0/api/OnRenderComplete",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.0.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.0.0/api",
+  "previous": {
+    "title": "OnRequestPrepend",
+    "permalink": "/egjs-infinitegrid/docs/4.0.0/api/OnRequestPrepend"
+  },
+  "next": {
+    "title": "OnContentError",
+    "permalink": "/egjs-infinitegrid/docs/4.0.0/api/OnContentError"
+  }
+}

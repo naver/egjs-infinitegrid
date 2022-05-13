@@ -1,0 +1,29 @@
+{
+  "unversionedId": "quick-start",
+  "id": "quick-start",
+  "title": "Quick Start",
+  "description": "If you don't want to use Infinite's features, use @egjs/grid.",
+  "source": "@site/docs/quick-start.mdx",
+  "sourceDirName": ".",
+  "slug": "/quick-start",
+  "permalink": "/egjs-infinitegrid/ko/docs/next/quick-start",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Quick Start",
+    "id": "quick-start",
+    "slug": "/quick-start",
+    "custom_edit_url": null
+  },
+  "sidebar": "started",
+  "previous": {
+    "title": "Installation",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/"
+  },
+  "next": {
+    "title": "Using the Methods",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/using-the-methods"
+  }
+}

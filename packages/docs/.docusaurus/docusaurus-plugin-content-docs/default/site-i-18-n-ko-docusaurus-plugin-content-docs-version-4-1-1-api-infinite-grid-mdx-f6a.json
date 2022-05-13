@@ -1,0 +1,22 @@
+{
+  "unversionedId": "api/InfiniteGrid",
+  "id": "version-4.1.1/api/InfiniteGrid",
+  "title": "InfiniteGrid",
+  "description": "콘텐츠가 있는 아이템을 레이아웃 타입에 따라 무한으로 배치하는 모듈. 다양한 크기의 아이템을 다양한 레이아웃으로 배치할 수 있다. 아이템의 개수가 계속 늘어나도 모듈이 처리하는 DOM의 개수를 일정하게 유지해 최적의 성능을 보장한다",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.1.1/api/InfiniteGrid.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/InfiniteGrid",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.1.1/api/InfiniteGrid",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.1.1",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.1.1/api",
+  "next": {
+    "title": "FrameInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.1.1/api/FrameInfiniteGrid"
+  }
+}

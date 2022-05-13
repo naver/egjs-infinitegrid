@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/JustifiedInfiniteGridOptions",
+  "id": "api/JustifiedInfiniteGridOptions",
+  "title": "JustifiedInfiniteGridOptions",
+  "description": "Type: TSInterface",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/current/api/JustifiedInfiniteGridOptions.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/JustifiedInfiniteGridOptions",
+  "permalink": "/egjs-infinitegrid/ko/docs/next/api/JustifiedInfiniteGridOptions",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "api",
+  "previous": {
+    "title": "FrameInfiniteGridOptions",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/api/FrameInfiniteGridOptions"
+  },
+  "next": {
+    "title": "MasonryInfiniteGridOptions",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/api/MasonryInfiniteGridOptions"
+  }
+}

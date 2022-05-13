@@ -1,0 +1,25 @@
+{
+  "unversionedId": "installation",
+  "id": "installation",
+  "title": "Installation",
+  "description": "Using the package managers (recommended)",
+  "source": "@site/docs/installation.mdx",
+  "sourceDirName": ".",
+  "slug": "/",
+  "permalink": "/egjs-infinitegrid/ko/docs/next/",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Installation",
+    "id": "installation",
+    "slug": "/",
+    "custom_edit_url": null
+  },
+  "sidebar": "started",
+  "next": {
+    "title": "Quick Start",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/quick-start"
+  }
+}

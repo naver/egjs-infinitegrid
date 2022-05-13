@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/Component",
+  "id": "version-4.0.0/api/Component",
+  "title": "Component",
+  "description": "A class used to manage events in a component",
+  "source": "@site/versioned_docs/version-4.0.0/api/Component.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/Component",
+  "permalink": "/egjs-infinitegrid/docs/4.0.0/api/Component",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.0.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.0.0/api",
+  "previous": {
+    "title": "Grid",
+    "permalink": "/egjs-infinitegrid/docs/4.0.0/api/Grid"
+  },
+  "next": {
+    "title": "withInfiniteGridMethods",
+    "permalink": "/egjs-infinitegrid/docs/4.0.0/api/withInfiniteGridMethods"
+  }
+}

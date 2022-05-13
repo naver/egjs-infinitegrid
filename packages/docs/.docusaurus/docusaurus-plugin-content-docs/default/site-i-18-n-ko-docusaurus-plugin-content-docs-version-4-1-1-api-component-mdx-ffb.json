@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/Component",
+  "id": "version-4.1.1/api/Component",
+  "title": "Component",
+  "description": "컴포넌트의 이벤트을 관리할 수 있게 하는 클래스",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.1.1/api/Component.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/Component",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.1.1/api/Component",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.1.1",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.1.1/api",
+  "previous": {
+    "title": "Grid",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.1.1/api/Grid"
+  },
+  "next": {
+    "title": "withInfiniteGridMethods",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.1.1/api/withInfiniteGridMethods"
+  }
+}

@@ -1,0 +1,3385 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "loadedVersions": [
+        {
+          "versionName": "current",
+          "label": "Next",
+          "banner": null,
+          "badge": true,
+          "className": "docs-version-current",
+          "path": "/docs",
+          "tagsPath": "/docs/tags",
+          "editUrl": "https://github.com/naver/egjs-infinitegrid/edit/master/docs/docs",
+          "editUrlLocalized": "https://github.com/naver/egjs-infinitegrid/edit/master/docs/i18n/en/docusaurus-plugin-content-docs/current",
+          "isLast": true,
+          "routePriority": -1,
+          "sidebarFilePath": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/sidebars.js",
+          "contentPath": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/docs",
+          "contentPathLocalized": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/i18n/en/docusaurus-plugin-content-docs/current",
+          "docs": [
+            {
+              "unversionedId": "api/Component",
+              "id": "api/Component",
+              "title": "Component",
+              "description": "A class used to manage events in a component",
+              "source": "@site/docs/api/Component.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/Component",
+              "permalink": "/docs/api/Component",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "Grid",
+                "permalink": "/docs/api/Grid"
+              },
+              "next": {
+                "title": "withInfiniteGridMethods",
+                "permalink": "/docs/api/withInfiniteGridMethods"
+              }
+            },
+            {
+              "unversionedId": "api/FrameInfiniteGrid",
+              "id": "api/FrameInfiniteGrid",
+              "title": "FrameInfiniteGrid",
+              "description": "'Frame' is a printing term with the meaning that 'it fits in one row wide'. FrameInfiniteGrid is a grid that the item is filled up on the basis of a line given a size.",
+              "source": "@site/docs/api/FrameInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/FrameInfiniteGrid",
+              "permalink": "/docs/api/FrameInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InfiniteGrid",
+                "permalink": "/docs/api/InfiniteGrid"
+              },
+              "next": {
+                "title": "JustifiedInfiniteGrid",
+                "permalink": "/docs/api/JustifiedInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/FrameInfiniteGridOptions",
+              "id": "api/FrameInfiniteGridOptions",
+              "title": "FrameInfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/FrameInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/FrameInfiniteGridOptions",
+              "permalink": "/docs/api/FrameInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "withInfiniteGridMethods",
+                "permalink": "/docs/api/withInfiniteGridMethods"
+              },
+              "next": {
+                "title": "JustifiedInfiniteGridOptions",
+                "permalink": "/docs/api/JustifiedInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/Grid",
+              "id": "api/Grid",
+              "title": "Grid",
+              "description": "PropertiesMethodsEvents",
+              "source": "@site/docs/api/Grid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/Grid",
+              "permalink": "/docs/api/Grid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "PackingInfiniteGrid",
+                "permalink": "/docs/api/PackingInfiniteGrid"
+              },
+              "next": {
+                "title": "Component",
+                "permalink": "/docs/api/Component"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGrid",
+              "id": "api/InfiniteGrid",
+              "title": "InfiniteGrid",
+              "description": "A module used to arrange items including content infinitely according to layout type. With this module, you can implement various layouts composed of different items whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
+              "source": "@site/docs/api/InfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGrid",
+              "permalink": "/docs/api/InfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "next": {
+                "title": "FrameInfiniteGrid",
+                "permalink": "/docs/api/FrameInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridItemInfo",
+              "id": "api/InfiniteGridItemInfo",
+              "title": "InfiniteGridItemInfo",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/InfiniteGridItemInfo.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridItemInfo",
+              "permalink": "/docs/api/InfiniteGridItemInfo",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InfiniteGridStatus",
+                "permalink": "/docs/api/InfiniteGridStatus"
+              },
+              "next": {
+                "title": "InfiniteGridOptions",
+                "permalink": "/docs/api/InfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridOptions",
+              "id": "api/InfiniteGridOptions",
+              "title": "InfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/InfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridOptions",
+              "permalink": "/docs/api/InfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InfiniteGridItemInfo",
+                "permalink": "/docs/api/InfiniteGridItemInfo"
+              },
+              "next": {
+                "title": "InsertedPlaceholdersResult",
+                "permalink": "/docs/api/InsertedPlaceholdersResult"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridStatus",
+              "id": "api/InfiniteGridStatus",
+              "title": "InfiniteGridStatus",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/InfiniteGridStatus.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridStatus",
+              "permalink": "/docs/api/InfiniteGridStatus",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "PackingInfiniteGridOptions",
+                "permalink": "/docs/api/PackingInfiniteGridOptions"
+              },
+              "next": {
+                "title": "InfiniteGridItemInfo",
+                "permalink": "/docs/api/InfiniteGridItemInfo"
+              }
+            },
+            {
+              "unversionedId": "api/InsertedPlaceholdersResult",
+              "id": "api/InsertedPlaceholdersResult",
+              "title": "InsertedPlaceholdersResult",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/InsertedPlaceholdersResult.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InsertedPlaceholdersResult",
+              "permalink": "/docs/api/InsertedPlaceholdersResult",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InfiniteGridOptions",
+                "permalink": "/docs/api/InfiniteGridOptions"
+              },
+              "next": {
+                "title": "OnRequestAppend",
+                "permalink": "/docs/api/OnRequestAppend"
+              }
+            },
+            {
+              "unversionedId": "api/JustifiedInfiniteGrid",
+              "id": "api/JustifiedInfiniteGrid",
+              "title": "JustifiedInfiniteGrid",
+              "description": "'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedInfiniteGrid is a grid that the item is filled up on the basis of a line given a size.If 'data-grid-inline-offset' or 'data-grid-content-offset' are set for item element, the ratio is maintained except for the offset value.If 'data-grid-maintained-target' is set for an element whose ratio is to be maintained, the item is rendered while maintaining the ratio of the element.",
+              "source": "@site/docs/api/JustifiedInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/JustifiedInfiniteGrid",
+              "permalink": "/docs/api/JustifiedInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "FrameInfiniteGrid",
+                "permalink": "/docs/api/FrameInfiniteGrid"
+              },
+              "next": {
+                "title": "MasonryInfiniteGrid",
+                "permalink": "/docs/api/MasonryInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/JustifiedInfiniteGridOptions",
+              "id": "api/JustifiedInfiniteGridOptions",
+              "title": "JustifiedInfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/JustifiedInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/JustifiedInfiniteGridOptions",
+              "permalink": "/docs/api/JustifiedInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "FrameInfiniteGridOptions",
+                "permalink": "/docs/api/FrameInfiniteGridOptions"
+              },
+              "next": {
+                "title": "MasonryInfiniteGridOptions",
+                "permalink": "/docs/api/MasonryInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/MasonryInfiniteGrid",
+              "id": "api/MasonryInfiniteGrid",
+              "title": "MasonryInfiniteGrid",
+              "description": "MasonryInfiniteGrid is a grid that stacks items with the same width as a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new item.",
+              "source": "@site/docs/api/MasonryInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/MasonryInfiniteGrid",
+              "permalink": "/docs/api/MasonryInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "JustifiedInfiniteGrid",
+                "permalink": "/docs/api/JustifiedInfiniteGrid"
+              },
+              "next": {
+                "title": "PackingInfiniteGrid",
+                "permalink": "/docs/api/PackingInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/MasonryInfiniteGridOptions",
+              "id": "api/MasonryInfiniteGridOptions",
+              "title": "MasonryInfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/MasonryInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/MasonryInfiniteGridOptions",
+              "permalink": "/docs/api/MasonryInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "JustifiedInfiniteGridOptions",
+                "permalink": "/docs/api/JustifiedInfiniteGridOptions"
+              },
+              "next": {
+                "title": "PackingInfiniteGridOptions",
+                "permalink": "/docs/api/PackingInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/OnChangeScroll",
+              "id": "api/OnChangeScroll",
+              "title": "OnChangeScroll",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/OnChangeScroll.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnChangeScroll",
+              "permalink": "/docs/api/OnChangeScroll",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "OnContentError",
+                "permalink": "/docs/api/OnContentError"
+              }
+            },
+            {
+              "unversionedId": "api/OnContentError",
+              "id": "api/OnContentError",
+              "title": "OnContentError",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/OnContentError.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnContentError",
+              "permalink": "/docs/api/OnContentError",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "OnRenderComplete",
+                "permalink": "/docs/api/OnRenderComplete"
+              },
+              "next": {
+                "title": "OnChangeScroll",
+                "permalink": "/docs/api/OnChangeScroll"
+              }
+            },
+            {
+              "unversionedId": "api/OnRenderComplete",
+              "id": "api/OnRenderComplete",
+              "title": "OnRenderComplete",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/OnRenderComplete.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRenderComplete",
+              "permalink": "/docs/api/OnRenderComplete",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "OnRequestPrepend",
+                "permalink": "/docs/api/OnRequestPrepend"
+              },
+              "next": {
+                "title": "OnContentError",
+                "permalink": "/docs/api/OnContentError"
+              }
+            },
+            {
+              "unversionedId": "api/OnRequestAppend",
+              "id": "api/OnRequestAppend",
+              "title": "OnRequestAppend",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/OnRequestAppend.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRequestAppend",
+              "permalink": "/docs/api/OnRequestAppend",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InsertedPlaceholdersResult",
+                "permalink": "/docs/api/InsertedPlaceholdersResult"
+              },
+              "next": {
+                "title": "OnRequestPrepend",
+                "permalink": "/docs/api/OnRequestPrepend"
+              }
+            },
+            {
+              "unversionedId": "api/OnRequestPrepend",
+              "id": "api/OnRequestPrepend",
+              "title": "OnRequestPrepend",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/OnRequestPrepend.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRequestPrepend",
+              "permalink": "/docs/api/OnRequestPrepend",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "OnRequestAppend",
+                "permalink": "/docs/api/OnRequestAppend"
+              },
+              "next": {
+                "title": "OnRenderComplete",
+                "permalink": "/docs/api/OnRenderComplete"
+              }
+            },
+            {
+              "unversionedId": "api/PackingInfiniteGrid",
+              "id": "api/PackingInfiniteGrid",
+              "title": "PackingInfiniteGrid",
+              "description": "The PackingInfiniteGrid is a grid that shows the important items bigger without sacrificing the weight of the items.Rows and columns are separated so that items are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.If sizeWeight is higher than ratioWeight, the size of items is preserved as much as possible.Conversely, if ratioWeight is higher than sizeWeight, the ratio of items is preserved as much as possible.",
+              "source": "@site/docs/api/PackingInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/PackingInfiniteGrid",
+              "permalink": "/docs/api/PackingInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "MasonryInfiniteGrid",
+                "permalink": "/docs/api/MasonryInfiniteGrid"
+              },
+              "next": {
+                "title": "Grid",
+                "permalink": "/docs/api/Grid"
+              }
+            },
+            {
+              "unversionedId": "api/PackingInfiniteGridOptions",
+              "id": "api/PackingInfiniteGridOptions",
+              "title": "PackingInfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/docs/api/PackingInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/PackingInfiniteGridOptions",
+              "permalink": "/docs/api/PackingInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "MasonryInfiniteGridOptions",
+                "permalink": "/docs/api/MasonryInfiniteGridOptions"
+              },
+              "next": {
+                "title": "InfiniteGridStatus",
+                "permalink": "/docs/api/InfiniteGridStatus"
+              }
+            },
+            {
+              "unversionedId": "api/withInfiniteGridMethods",
+              "id": "api/withInfiniteGridMethods",
+              "title": "withInfiniteGridMethods",
+              "description": "Decorator that makes the method of InfiniteGrid available in the framework.",
+              "source": "@site/docs/api/withInfiniteGridMethods.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/withInfiniteGridMethods",
+              "permalink": "/docs/api/withInfiniteGridMethods",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "Component",
+                "permalink": "/docs/api/Component"
+              },
+              "next": {
+                "title": "FrameInfiniteGridOptions",
+                "permalink": "/docs/api/FrameInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "installation",
+              "id": "installation",
+              "title": "Installation",
+              "description": "Using the package managers (recommended)",
+              "source": "@site/docs/installation.mdx",
+              "sourceDirName": ".",
+              "slug": "/",
+              "permalink": "/docs/",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "title": "Installation",
+                "id": "installation",
+                "slug": "/",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "next": {
+                "title": "Quick Start",
+                "permalink": "/docs/quick-start"
+              }
+            },
+            {
+              "unversionedId": "listening-to-events",
+              "id": "listening-to-events",
+              "title": "Listening to Events",
+              "description": "<Tabs",
+              "source": "@site/docs/listening-to-events.mdx",
+              "sourceDirName": ".",
+              "slug": "/listening-to-events",
+              "permalink": "/docs/listening-to-events",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "title": "Listening to Events",
+                "id": "listening-to-events",
+                "slug": "/listening-to-events",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "previous": {
+                "title": "Using the Methods",
+                "permalink": "/docs/using-the-methods"
+              },
+              "next": {
+                "title": "Migration Guide from v3 to v4",
+                "permalink": "/docs/migration-from-v3"
+              }
+            },
+            {
+              "unversionedId": "migration-from-v3",
+              "id": "migration-from-v3",
+              "title": "Migration Guide from v3 to v4",
+              "description": "Changed Usage",
+              "source": "@site/docs/migration-from-v3.mdx",
+              "sourceDirName": ".",
+              "slug": "/migration-from-v3",
+              "permalink": "/docs/migration-from-v3",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "title": "Migration Guide from v3 to v4",
+                "id": "migration-from-v3",
+                "slug": "/migration-from-v3",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "previous": {
+                "title": "Listening to Events",
+                "permalink": "/docs/listening-to-events"
+              }
+            },
+            {
+              "unversionedId": "quick-start",
+              "id": "quick-start",
+              "title": "Quick Start",
+              "description": "If you don't want to use Infinite's features, use @egjs/grid.",
+              "source": "@site/docs/quick-start.mdx",
+              "sourceDirName": ".",
+              "slug": "/quick-start",
+              "permalink": "/docs/quick-start",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "title": "Quick Start",
+                "id": "quick-start",
+                "slug": "/quick-start",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "previous": {
+                "title": "Installation",
+                "permalink": "/docs/"
+              },
+              "next": {
+                "title": "Using the Methods",
+                "permalink": "/docs/using-the-methods"
+              }
+            },
+            {
+              "unversionedId": "using-the-methods",
+              "id": "using-the-methods",
+              "title": "Using the Methods",
+              "description": "<Tabs",
+              "source": "@site/docs/using-the-methods.mdx",
+              "sourceDirName": ".",
+              "slug": "/using-the-methods",
+              "permalink": "/docs/using-the-methods",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "title": "Using the Methods",
+                "id": "using-the-methods",
+                "slug": "/using-the-methods",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "previous": {
+                "title": "Quick Start",
+                "permalink": "/docs/quick-start"
+              },
+              "next": {
+                "title": "Listening to Events",
+                "permalink": "/docs/listening-to-events"
+              }
+            }
+          ],
+          "drafts": [],
+          "sidebars": {
+            "started": [
+              {
+                "type": "doc",
+                "id": "installation"
+              },
+              {
+                "type": "doc",
+                "id": "quick-start"
+              },
+              {
+                "type": "doc",
+                "id": "using-the-methods"
+              },
+              {
+                "type": "doc",
+                "id": "listening-to-events"
+              },
+              {
+                "type": "doc",
+                "id": "migration-from-v3"
+              }
+            ],
+            "api": [
+              {
+                "type": "category",
+                "label": "Class",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "api/InfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/FrameInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/JustifiedInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/MasonryInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/PackingInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/Grid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/Component"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              },
+              {
+                "type": "category",
+                "label": "Constant",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "api/withInfiniteGridMethods"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              },
+              {
+                "type": "category",
+                "label": "Typedef",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "api/FrameInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/JustifiedInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/MasonryInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/PackingInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/InfiniteGridStatus"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/InfiniteGridItemInfo"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/InfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/InsertedPlaceholdersResult"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnRequestAppend"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnRequestPrepend"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnRenderComplete"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnContentError"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnChangeScroll"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              }
+            ]
+          }
+        },
+        {
+          "versionName": "4.2.1",
+          "label": "4.2.1",
+          "banner": "unmaintained",
+          "badge": true,
+          "className": "docs-version-4.2.1",
+          "path": "/docs/4.2.1",
+          "tagsPath": "/docs/4.2.1/tags",
+          "editUrl": "https://github.com/naver/egjs-infinitegrid/edit/master/docs/docs",
+          "editUrlLocalized": "https://github.com/naver/egjs-infinitegrid/edit/master/docs/i18n/en/docusaurus-plugin-content-docs/current",
+          "isLast": false,
+          "sidebarFilePath": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/versioned_sidebars/version-4.2.1-sidebars.json",
+          "contentPath": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/versioned_docs/version-4.2.1",
+          "contentPathLocalized": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/i18n/en/docusaurus-plugin-content-docs/version-4.2.1",
+          "docs": [
+            {
+              "unversionedId": "api/Component",
+              "id": "version-4.2.1/api/Component",
+              "title": "Component",
+              "description": "A class used to manage events in a component",
+              "source": "@site/versioned_docs/version-4.2.1/api/Component.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/Component",
+              "permalink": "/docs/4.2.1/api/Component",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "Grid",
+                "permalink": "/docs/4.2.1/api/Grid"
+              },
+              "next": {
+                "title": "withInfiniteGridMethods",
+                "permalink": "/docs/4.2.1/api/withInfiniteGridMethods"
+              }
+            },
+            {
+              "unversionedId": "api/FrameInfiniteGrid",
+              "id": "version-4.2.1/api/FrameInfiniteGrid",
+              "title": "FrameInfiniteGrid",
+              "description": "'Frame' is a printing term with the meaning that 'it fits in one row wide'. FrameInfiniteGrid is a grid that the item is filled up on the basis of a line given a size.",
+              "source": "@site/versioned_docs/version-4.2.1/api/FrameInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/FrameInfiniteGrid",
+              "permalink": "/docs/4.2.1/api/FrameInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InfiniteGrid",
+                "permalink": "/docs/4.2.1/api/InfiniteGrid"
+              },
+              "next": {
+                "title": "JustifiedInfiniteGrid",
+                "permalink": "/docs/4.2.1/api/JustifiedInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/FrameInfiniteGridOptions",
+              "id": "version-4.2.1/api/FrameInfiniteGridOptions",
+              "title": "FrameInfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/FrameInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/FrameInfiniteGridOptions",
+              "permalink": "/docs/4.2.1/api/FrameInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "withInfiniteGridMethods",
+                "permalink": "/docs/4.2.1/api/withInfiniteGridMethods"
+              },
+              "next": {
+                "title": "JustifiedInfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/JustifiedInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/Grid",
+              "id": "version-4.2.1/api/Grid",
+              "title": "Grid",
+              "description": "PropertiesMethodsEvents",
+              "source": "@site/versioned_docs/version-4.2.1/api/Grid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/Grid",
+              "permalink": "/docs/4.2.1/api/Grid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "PackingInfiniteGrid",
+                "permalink": "/docs/4.2.1/api/PackingInfiniteGrid"
+              },
+              "next": {
+                "title": "Component",
+                "permalink": "/docs/4.2.1/api/Component"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGrid",
+              "id": "version-4.2.1/api/InfiniteGrid",
+              "title": "InfiniteGrid",
+              "description": "A module used to arrange items including content infinitely according to layout type. With this module, you can implement various layouts composed of different items whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
+              "source": "@site/versioned_docs/version-4.2.1/api/InfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGrid",
+              "permalink": "/docs/4.2.1/api/InfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "next": {
+                "title": "FrameInfiniteGrid",
+                "permalink": "/docs/4.2.1/api/FrameInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridItemInfo",
+              "id": "version-4.2.1/api/InfiniteGridItemInfo",
+              "title": "InfiniteGridItemInfo",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/InfiniteGridItemInfo.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridItemInfo",
+              "permalink": "/docs/4.2.1/api/InfiniteGridItemInfo",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InfiniteGridStatus",
+                "permalink": "/docs/4.2.1/api/InfiniteGridStatus"
+              },
+              "next": {
+                "title": "InfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/InfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridOptions",
+              "id": "version-4.2.1/api/InfiniteGridOptions",
+              "title": "InfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/InfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridOptions",
+              "permalink": "/docs/4.2.1/api/InfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InfiniteGridItemInfo",
+                "permalink": "/docs/4.2.1/api/InfiniteGridItemInfo"
+              },
+              "next": {
+                "title": "InsertedPlaceholdersResult",
+                "permalink": "/docs/4.2.1/api/InsertedPlaceholdersResult"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridStatus",
+              "id": "version-4.2.1/api/InfiniteGridStatus",
+              "title": "InfiniteGridStatus",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/InfiniteGridStatus.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridStatus",
+              "permalink": "/docs/4.2.1/api/InfiniteGridStatus",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "PackingInfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/PackingInfiniteGridOptions"
+              },
+              "next": {
+                "title": "InfiniteGridItemInfo",
+                "permalink": "/docs/4.2.1/api/InfiniteGridItemInfo"
+              }
+            },
+            {
+              "unversionedId": "api/InsertedPlaceholdersResult",
+              "id": "version-4.2.1/api/InsertedPlaceholdersResult",
+              "title": "InsertedPlaceholdersResult",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/InsertedPlaceholdersResult.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InsertedPlaceholdersResult",
+              "permalink": "/docs/4.2.1/api/InsertedPlaceholdersResult",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/InfiniteGridOptions"
+              },
+              "next": {
+                "title": "OnRequestAppend",
+                "permalink": "/docs/4.2.1/api/OnRequestAppend"
+              }
+            },
+            {
+              "unversionedId": "api/JustifiedInfiniteGrid",
+              "id": "version-4.2.1/api/JustifiedInfiniteGrid",
+              "title": "JustifiedInfiniteGrid",
+              "description": "'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedInfiniteGrid is a grid that the item is filled up on the basis of a line given a size.If 'data-grid-inline-offset' or 'data-grid-content-offset' are set for item element, the ratio is maintained except for the offset value.If 'data-grid-maintained-target' is set for an element whose ratio is to be maintained, the item is rendered while maintaining the ratio of the element.",
+              "source": "@site/versioned_docs/version-4.2.1/api/JustifiedInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/JustifiedInfiniteGrid",
+              "permalink": "/docs/4.2.1/api/JustifiedInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "FrameInfiniteGrid",
+                "permalink": "/docs/4.2.1/api/FrameInfiniteGrid"
+              },
+              "next": {
+                "title": "MasonryInfiniteGrid",
+                "permalink": "/docs/4.2.1/api/MasonryInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/JustifiedInfiniteGridOptions",
+              "id": "version-4.2.1/api/JustifiedInfiniteGridOptions",
+              "title": "JustifiedInfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/JustifiedInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/JustifiedInfiniteGridOptions",
+              "permalink": "/docs/4.2.1/api/JustifiedInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "FrameInfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/FrameInfiniteGridOptions"
+              },
+              "next": {
+                "title": "MasonryInfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/MasonryInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/MasonryInfiniteGrid",
+              "id": "version-4.2.1/api/MasonryInfiniteGrid",
+              "title": "MasonryInfiniteGrid",
+              "description": "MasonryInfiniteGrid is a grid that stacks items with the same width as a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new item.",
+              "source": "@site/versioned_docs/version-4.2.1/api/MasonryInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/MasonryInfiniteGrid",
+              "permalink": "/docs/4.2.1/api/MasonryInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "JustifiedInfiniteGrid",
+                "permalink": "/docs/4.2.1/api/JustifiedInfiniteGrid"
+              },
+              "next": {
+                "title": "PackingInfiniteGrid",
+                "permalink": "/docs/4.2.1/api/PackingInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/MasonryInfiniteGridOptions",
+              "id": "version-4.2.1/api/MasonryInfiniteGridOptions",
+              "title": "MasonryInfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/MasonryInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/MasonryInfiniteGridOptions",
+              "permalink": "/docs/4.2.1/api/MasonryInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "JustifiedInfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/JustifiedInfiniteGridOptions"
+              },
+              "next": {
+                "title": "PackingInfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/PackingInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/OnChangeScroll",
+              "id": "version-4.2.1/api/OnChangeScroll",
+              "title": "OnChangeScroll",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/OnChangeScroll.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnChangeScroll",
+              "permalink": "/docs/4.2.1/api/OnChangeScroll",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "OnContentError",
+                "permalink": "/docs/4.2.1/api/OnContentError"
+              }
+            },
+            {
+              "unversionedId": "api/OnContentError",
+              "id": "version-4.2.1/api/OnContentError",
+              "title": "OnContentError",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/OnContentError.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnContentError",
+              "permalink": "/docs/4.2.1/api/OnContentError",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "OnRenderComplete",
+                "permalink": "/docs/4.2.1/api/OnRenderComplete"
+              },
+              "next": {
+                "title": "OnChangeScroll",
+                "permalink": "/docs/4.2.1/api/OnChangeScroll"
+              }
+            },
+            {
+              "unversionedId": "api/OnRenderComplete",
+              "id": "version-4.2.1/api/OnRenderComplete",
+              "title": "OnRenderComplete",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/OnRenderComplete.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRenderComplete",
+              "permalink": "/docs/4.2.1/api/OnRenderComplete",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "OnRequestPrepend",
+                "permalink": "/docs/4.2.1/api/OnRequestPrepend"
+              },
+              "next": {
+                "title": "OnContentError",
+                "permalink": "/docs/4.2.1/api/OnContentError"
+              }
+            },
+            {
+              "unversionedId": "api/OnRequestAppend",
+              "id": "version-4.2.1/api/OnRequestAppend",
+              "title": "OnRequestAppend",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/OnRequestAppend.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRequestAppend",
+              "permalink": "/docs/4.2.1/api/OnRequestAppend",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "InsertedPlaceholdersResult",
+                "permalink": "/docs/4.2.1/api/InsertedPlaceholdersResult"
+              },
+              "next": {
+                "title": "OnRequestPrepend",
+                "permalink": "/docs/4.2.1/api/OnRequestPrepend"
+              }
+            },
+            {
+              "unversionedId": "api/OnRequestPrepend",
+              "id": "version-4.2.1/api/OnRequestPrepend",
+              "title": "OnRequestPrepend",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/OnRequestPrepend.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRequestPrepend",
+              "permalink": "/docs/4.2.1/api/OnRequestPrepend",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "OnRequestAppend",
+                "permalink": "/docs/4.2.1/api/OnRequestAppend"
+              },
+              "next": {
+                "title": "OnRenderComplete",
+                "permalink": "/docs/4.2.1/api/OnRenderComplete"
+              }
+            },
+            {
+              "unversionedId": "api/PackingInfiniteGrid",
+              "id": "version-4.2.1/api/PackingInfiniteGrid",
+              "title": "PackingInfiniteGrid",
+              "description": "The PackingInfiniteGrid is a grid that shows the important items bigger without sacrificing the weight of the items.Rows and columns are separated so that items are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.If sizeWeight is higher than ratioWeight, the size of items is preserved as much as possible.Conversely, if ratioWeight is higher than sizeWeight, the ratio of items is preserved as much as possible.",
+              "source": "@site/versioned_docs/version-4.2.1/api/PackingInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/PackingInfiniteGrid",
+              "permalink": "/docs/4.2.1/api/PackingInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "MasonryInfiniteGrid",
+                "permalink": "/docs/4.2.1/api/MasonryInfiniteGrid"
+              },
+              "next": {
+                "title": "Grid",
+                "permalink": "/docs/4.2.1/api/Grid"
+              }
+            },
+            {
+              "unversionedId": "api/PackingInfiniteGridOptions",
+              "id": "version-4.2.1/api/PackingInfiniteGridOptions",
+              "title": "PackingInfiniteGridOptions",
+              "description": "Type: TSInterface",
+              "source": "@site/versioned_docs/version-4.2.1/api/PackingInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/PackingInfiniteGridOptions",
+              "permalink": "/docs/4.2.1/api/PackingInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "MasonryInfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/MasonryInfiniteGridOptions"
+              },
+              "next": {
+                "title": "InfiniteGridStatus",
+                "permalink": "/docs/4.2.1/api/InfiniteGridStatus"
+              }
+            },
+            {
+              "unversionedId": "api/withInfiniteGridMethods",
+              "id": "version-4.2.1/api/withInfiniteGridMethods",
+              "title": "withInfiniteGridMethods",
+              "description": "Decorator that makes the method of InfiniteGrid available in the framework.",
+              "source": "@site/versioned_docs/version-4.2.1/api/withInfiniteGridMethods.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/withInfiniteGridMethods",
+              "permalink": "/docs/4.2.1/api/withInfiniteGridMethods",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "api",
+              "previous": {
+                "title": "Component",
+                "permalink": "/docs/4.2.1/api/Component"
+              },
+              "next": {
+                "title": "FrameInfiniteGridOptions",
+                "permalink": "/docs/4.2.1/api/FrameInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "installation",
+              "id": "version-4.2.1/installation",
+              "title": "Installation",
+              "description": "Using the package managers (recommended)",
+              "source": "@site/versioned_docs/version-4.2.1/installation.mdx",
+              "sourceDirName": ".",
+              "slug": "/",
+              "permalink": "/docs/4.2.1/",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "title": "Installation",
+                "id": "installation",
+                "slug": "/",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "next": {
+                "title": "Quick Start",
+                "permalink": "/docs/4.2.1/quick-start"
+              }
+            },
+            {
+              "unversionedId": "listening-to-events",
+              "id": "version-4.2.1/listening-to-events",
+              "title": "Listening to Events",
+              "description": "<Tabs",
+              "source": "@site/versioned_docs/version-4.2.1/listening-to-events.mdx",
+              "sourceDirName": ".",
+              "slug": "/listening-to-events",
+              "permalink": "/docs/4.2.1/listening-to-events",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "title": "Listening to Events",
+                "id": "listening-to-events",
+                "slug": "/listening-to-events",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "previous": {
+                "title": "Using the Methods",
+                "permalink": "/docs/4.2.1/using-the-methods"
+              },
+              "next": {
+                "title": "Migration Guide from v3 to v4",
+                "permalink": "/docs/4.2.1/migration-from-v3"
+              }
+            },
+            {
+              "unversionedId": "migration-from-v3",
+              "id": "version-4.2.1/migration-from-v3",
+              "title": "Migration Guide from v3 to v4",
+              "description": "Changed Usage",
+              "source": "@site/versioned_docs/version-4.2.1/migration-from-v3.mdx",
+              "sourceDirName": ".",
+              "slug": "/migration-from-v3",
+              "permalink": "/docs/4.2.1/migration-from-v3",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "title": "Migration Guide from v3 to v4",
+                "id": "migration-from-v3",
+                "slug": "/migration-from-v3",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "previous": {
+                "title": "Listening to Events",
+                "permalink": "/docs/4.2.1/listening-to-events"
+              }
+            },
+            {
+              "unversionedId": "quick-start",
+              "id": "version-4.2.1/quick-start",
+              "title": "Quick Start",
+              "description": "If you don't want to use Infinite's features, use @egjs/grid.",
+              "source": "@site/versioned_docs/version-4.2.1/quick-start.mdx",
+              "sourceDirName": ".",
+              "slug": "/quick-start",
+              "permalink": "/docs/4.2.1/quick-start",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "title": "Quick Start",
+                "id": "quick-start",
+                "slug": "/quick-start",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "previous": {
+                "title": "Installation",
+                "permalink": "/docs/4.2.1/"
+              },
+              "next": {
+                "title": "Using the Methods",
+                "permalink": "/docs/4.2.1/using-the-methods"
+              }
+            },
+            {
+              "unversionedId": "using-the-methods",
+              "id": "version-4.2.1/using-the-methods",
+              "title": "Using the Methods",
+              "description": "<Tabs",
+              "source": "@site/versioned_docs/version-4.2.1/using-the-methods.mdx",
+              "sourceDirName": ".",
+              "slug": "/using-the-methods",
+              "permalink": "/docs/4.2.1/using-the-methods",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.2.1",
+              "frontMatter": {
+                "title": "Using the Methods",
+                "id": "using-the-methods",
+                "slug": "/using-the-methods",
+                "custom_edit_url": null
+              },
+              "sidebar": "started",
+              "previous": {
+                "title": "Quick Start",
+                "permalink": "/docs/4.2.1/quick-start"
+              },
+              "next": {
+                "title": "Listening to Events",
+                "permalink": "/docs/4.2.1/listening-to-events"
+              }
+            }
+          ],
+          "drafts": [],
+          "sidebars": {
+            "started": [
+              {
+                "type": "doc",
+                "id": "installation"
+              },
+              {
+                "type": "doc",
+                "id": "quick-start"
+              },
+              {
+                "type": "doc",
+                "id": "using-the-methods"
+              },
+              {
+                "type": "doc",
+                "id": "listening-to-events"
+              },
+              {
+                "type": "doc",
+                "id": "migration-from-v3"
+              }
+            ],
+            "api": [
+              {
+                "type": "category",
+                "label": "Class",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "api/InfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/FrameInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/JustifiedInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/MasonryInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/PackingInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/Grid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/Component"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              },
+              {
+                "type": "category",
+                "label": "Constant",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "api/withInfiniteGridMethods"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              },
+              {
+                "type": "category",
+                "label": "Typedef",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "api/FrameInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/JustifiedInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/MasonryInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/PackingInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/InfiniteGridStatus"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/InfiniteGridItemInfo"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/InfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/InsertedPlaceholdersResult"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnRequestAppend"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnRequestPrepend"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnRenderComplete"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnContentError"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/OnChangeScroll"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              }
+            ]
+          }
+        },
+        {
+          "versionName": "4.1.1",
+          "label": "4.1.1",
+          "banner": "unmaintained",
+          "badge": true,
+          "className": "docs-version-4.1.1",
+          "path": "/docs/4.1.1",
+          "tagsPath": "/docs/4.1.1/tags",
+          "editUrl": "https://github.com/naver/egjs-infinitegrid/edit/master/docs/docs",
+          "editUrlLocalized": "https://github.com/naver/egjs-infinitegrid/edit/master/docs/i18n/en/docusaurus-plugin-content-docs/current",
+          "isLast": false,
+          "sidebarFilePath": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/versioned_sidebars/version-4.1.1-sidebars.json",
+          "contentPath": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/versioned_docs/version-4.1.1",
+          "contentPathLocalized": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/i18n/en/docusaurus-plugin-content-docs/version-4.1.1",
+          "docs": [
+            {
+              "unversionedId": "api/Component",
+              "id": "version-4.1.1/api/Component",
+              "title": "Component",
+              "description": "A class used to manage events in a component",
+              "source": "@site/versioned_docs/version-4.1.1/api/Component.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/Component",
+              "permalink": "/docs/4.1.1/api/Component",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "Grid",
+                "permalink": "/docs/4.1.1/api/Grid"
+              },
+              "next": {
+                "title": "withInfiniteGridMethods",
+                "permalink": "/docs/4.1.1/api/withInfiniteGridMethods"
+              }
+            },
+            {
+              "unversionedId": "api/FrameInfiniteGrid",
+              "id": "version-4.1.1/api/FrameInfiniteGrid",
+              "title": "FrameInfiniteGrid",
+              "description": "'Frame' is a printing term with the meaning that 'it fits in one row wide'. FrameInfiniteGrid is a grid that the item is filled up on the basis of a line given a size.",
+              "source": "@site/versioned_docs/version-4.1.1/api/FrameInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/FrameInfiniteGrid",
+              "permalink": "/docs/4.1.1/api/FrameInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "InfiniteGrid",
+                "permalink": "/docs/4.1.1/api/InfiniteGrid"
+              },
+              "next": {
+                "title": "JustifiedInfiniteGrid",
+                "permalink": "/docs/4.1.1/api/JustifiedInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/FrameInfiniteGridOptions",
+              "id": "version-4.1.1/api/FrameInfiniteGridOptions",
+              "title": "FrameInfiniteGridOptions",
+              "description": "FrameInfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.1.1/api/FrameInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/FrameInfiniteGridOptions",
+              "permalink": "/docs/4.1.1/api/FrameInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "withInfiniteGridMethods",
+                "permalink": "/docs/4.1.1/api/withInfiniteGridMethods"
+              },
+              "next": {
+                "title": "JustifiedInfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/JustifiedInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/Grid",
+              "id": "version-4.1.1/api/Grid",
+              "title": "Grid",
+              "description": "PropertiesMethodsEvents",
+              "source": "@site/versioned_docs/version-4.1.1/api/Grid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/Grid",
+              "permalink": "/docs/4.1.1/api/Grid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "PackingInfiniteGrid",
+                "permalink": "/docs/4.1.1/api/PackingInfiniteGrid"
+              },
+              "next": {
+                "title": "Component",
+                "permalink": "/docs/4.1.1/api/Component"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGrid",
+              "id": "version-4.1.1/api/InfiniteGrid",
+              "title": "InfiniteGrid",
+              "description": "A module used to arrange items including content infinitely according to layout type. With this module, you can implement various layouts composed of different items whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
+              "source": "@site/versioned_docs/version-4.1.1/api/InfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGrid",
+              "permalink": "/docs/4.1.1/api/InfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "next": {
+                "title": "FrameInfiniteGrid",
+                "permalink": "/docs/4.1.1/api/FrameInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridItemInfo",
+              "id": "version-4.1.1/api/InfiniteGridItemInfo",
+              "title": "InfiniteGridItemInfo",
+              "description": "InfiniteGridItemInfo",
+              "source": "@site/versioned_docs/version-4.1.1/api/InfiniteGridItemInfo.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridItemInfo",
+              "permalink": "/docs/4.1.1/api/InfiniteGridItemInfo",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "InfiniteGridStatus",
+                "permalink": "/docs/4.1.1/api/InfiniteGridStatus"
+              },
+              "next": {
+                "title": "InfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/InfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridOptions",
+              "id": "version-4.1.1/api/InfiniteGridOptions",
+              "title": "InfiniteGridOptions",
+              "description": "InfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.1.1/api/InfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridOptions",
+              "permalink": "/docs/4.1.1/api/InfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "InfiniteGridItemInfo",
+                "permalink": "/docs/4.1.1/api/InfiniteGridItemInfo"
+              },
+              "next": {
+                "title": "InsertedPlaceholdersResult",
+                "permalink": "/docs/4.1.1/api/InsertedPlaceholdersResult"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridStatus",
+              "id": "version-4.1.1/api/InfiniteGridStatus",
+              "title": "InfiniteGridStatus",
+              "description": "InfiniteGridStatus",
+              "source": "@site/versioned_docs/version-4.1.1/api/InfiniteGridStatus.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridStatus",
+              "permalink": "/docs/4.1.1/api/InfiniteGridStatus",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "PackingInfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/PackingInfiniteGridOptions"
+              },
+              "next": {
+                "title": "InfiniteGridItemInfo",
+                "permalink": "/docs/4.1.1/api/InfiniteGridItemInfo"
+              }
+            },
+            {
+              "unversionedId": "api/InsertedPlaceholdersResult",
+              "id": "version-4.1.1/api/InsertedPlaceholdersResult",
+              "title": "InsertedPlaceholdersResult",
+              "description": "InsertedPlaceholdersResult",
+              "source": "@site/versioned_docs/version-4.1.1/api/InsertedPlaceholdersResult.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InsertedPlaceholdersResult",
+              "permalink": "/docs/4.1.1/api/InsertedPlaceholdersResult",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "InfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/InfiniteGridOptions"
+              },
+              "next": {
+                "title": "OnRequestAppend",
+                "permalink": "/docs/4.1.1/api/OnRequestAppend"
+              }
+            },
+            {
+              "unversionedId": "api/JustifiedInfiniteGrid",
+              "id": "version-4.1.1/api/JustifiedInfiniteGrid",
+              "title": "JustifiedInfiniteGrid",
+              "description": "'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedInfiniteGrid is a grid that the item is filled up on the basis of a line given a size.If 'data-grid-inline-offset' or 'data-grid-content-offset' are set for item element, the ratio is maintained except for the offset value.If 'data-grid-maintained-target' is set for an element whose ratio is to be maintained, the item is rendered while maintaining the ratio of the element.",
+              "source": "@site/versioned_docs/version-4.1.1/api/JustifiedInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/JustifiedInfiniteGrid",
+              "permalink": "/docs/4.1.1/api/JustifiedInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "FrameInfiniteGrid",
+                "permalink": "/docs/4.1.1/api/FrameInfiniteGrid"
+              },
+              "next": {
+                "title": "MasonryInfiniteGrid",
+                "permalink": "/docs/4.1.1/api/MasonryInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/JustifiedInfiniteGridOptions",
+              "id": "version-4.1.1/api/JustifiedInfiniteGridOptions",
+              "title": "JustifiedInfiniteGridOptions",
+              "description": "JustifiedInfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.1.1/api/JustifiedInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/JustifiedInfiniteGridOptions",
+              "permalink": "/docs/4.1.1/api/JustifiedInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "FrameInfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/FrameInfiniteGridOptions"
+              },
+              "next": {
+                "title": "MasonryInfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/MasonryInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/MasonryInfiniteGrid",
+              "id": "version-4.1.1/api/MasonryInfiniteGrid",
+              "title": "MasonryInfiniteGrid",
+              "description": "MasonryInfiniteGrid is a grid that stacks items with the same width as a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new item.",
+              "source": "@site/versioned_docs/version-4.1.1/api/MasonryInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/MasonryInfiniteGrid",
+              "permalink": "/docs/4.1.1/api/MasonryInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "JustifiedInfiniteGrid",
+                "permalink": "/docs/4.1.1/api/JustifiedInfiniteGrid"
+              },
+              "next": {
+                "title": "PackingInfiniteGrid",
+                "permalink": "/docs/4.1.1/api/PackingInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/MasonryInfiniteGridOptions",
+              "id": "version-4.1.1/api/MasonryInfiniteGridOptions",
+              "title": "MasonryInfiniteGridOptions",
+              "description": "MasonryInfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.1.1/api/MasonryInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/MasonryInfiniteGridOptions",
+              "permalink": "/docs/4.1.1/api/MasonryInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "JustifiedInfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/JustifiedInfiniteGridOptions"
+              },
+              "next": {
+                "title": "PackingInfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/PackingInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/OnChangeScroll",
+              "id": "version-4.1.1/api/OnChangeScroll",
+              "title": "OnChangeScroll",
+              "description": "OnChangeScroll",
+              "source": "@site/versioned_docs/version-4.1.1/api/OnChangeScroll.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnChangeScroll",
+              "permalink": "/docs/4.1.1/api/OnChangeScroll",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "OnContentError",
+                "permalink": "/docs/4.1.1/api/OnContentError"
+              }
+            },
+            {
+              "unversionedId": "api/OnContentError",
+              "id": "version-4.1.1/api/OnContentError",
+              "title": "OnContentError",
+              "description": "OnContentError",
+              "source": "@site/versioned_docs/version-4.1.1/api/OnContentError.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnContentError",
+              "permalink": "/docs/4.1.1/api/OnContentError",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "OnRenderComplete",
+                "permalink": "/docs/4.1.1/api/OnRenderComplete"
+              },
+              "next": {
+                "title": "OnChangeScroll",
+                "permalink": "/docs/4.1.1/api/OnChangeScroll"
+              }
+            },
+            {
+              "unversionedId": "api/OnRenderComplete",
+              "id": "version-4.1.1/api/OnRenderComplete",
+              "title": "OnRenderComplete",
+              "description": "OnRenderComplete",
+              "source": "@site/versioned_docs/version-4.1.1/api/OnRenderComplete.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRenderComplete",
+              "permalink": "/docs/4.1.1/api/OnRenderComplete",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "OnRequestPrepend",
+                "permalink": "/docs/4.1.1/api/OnRequestPrepend"
+              },
+              "next": {
+                "title": "OnContentError",
+                "permalink": "/docs/4.1.1/api/OnContentError"
+              }
+            },
+            {
+              "unversionedId": "api/OnRequestAppend",
+              "id": "version-4.1.1/api/OnRequestAppend",
+              "title": "OnRequestAppend",
+              "description": "OnRequestAppend",
+              "source": "@site/versioned_docs/version-4.1.1/api/OnRequestAppend.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRequestAppend",
+              "permalink": "/docs/4.1.1/api/OnRequestAppend",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "InsertedPlaceholdersResult",
+                "permalink": "/docs/4.1.1/api/InsertedPlaceholdersResult"
+              },
+              "next": {
+                "title": "OnRequestPrepend",
+                "permalink": "/docs/4.1.1/api/OnRequestPrepend"
+              }
+            },
+            {
+              "unversionedId": "api/OnRequestPrepend",
+              "id": "version-4.1.1/api/OnRequestPrepend",
+              "title": "OnRequestPrepend",
+              "description": "OnRequestPrepend",
+              "source": "@site/versioned_docs/version-4.1.1/api/OnRequestPrepend.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRequestPrepend",
+              "permalink": "/docs/4.1.1/api/OnRequestPrepend",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "OnRequestAppend",
+                "permalink": "/docs/4.1.1/api/OnRequestAppend"
+              },
+              "next": {
+                "title": "OnRenderComplete",
+                "permalink": "/docs/4.1.1/api/OnRenderComplete"
+              }
+            },
+            {
+              "unversionedId": "api/PackingInfiniteGrid",
+              "id": "version-4.1.1/api/PackingInfiniteGrid",
+              "title": "PackingInfiniteGrid",
+              "description": "The PackingInfiniteGrid is a grid that shows the important items bigger without sacrificing the weight of the items.Rows and columns are separated so that items are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.If sizeWeight is higher than ratioWeight, the size of items is preserved as much as possible.Conversely, if ratioWeight is higher than sizeWeight, the ratio of items is preserved as much as possible.",
+              "source": "@site/versioned_docs/version-4.1.1/api/PackingInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/PackingInfiniteGrid",
+              "permalink": "/docs/4.1.1/api/PackingInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "MasonryInfiniteGrid",
+                "permalink": "/docs/4.1.1/api/MasonryInfiniteGrid"
+              },
+              "next": {
+                "title": "Grid",
+                "permalink": "/docs/4.1.1/api/Grid"
+              }
+            },
+            {
+              "unversionedId": "api/PackingInfiniteGridOptions",
+              "id": "version-4.1.1/api/PackingInfiniteGridOptions",
+              "title": "PackingInfiniteGridOptions",
+              "description": "PackingInfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.1.1/api/PackingInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/PackingInfiniteGridOptions",
+              "permalink": "/docs/4.1.1/api/PackingInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "MasonryInfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/MasonryInfiniteGridOptions"
+              },
+              "next": {
+                "title": "InfiniteGridStatus",
+                "permalink": "/docs/4.1.1/api/InfiniteGridStatus"
+              }
+            },
+            {
+              "unversionedId": "api/withInfiniteGridMethods",
+              "id": "version-4.1.1/api/withInfiniteGridMethods",
+              "title": "withInfiniteGridMethods",
+              "description": "withInfiniteGridMethods",
+              "source": "@site/versioned_docs/version-4.1.1/api/withInfiniteGridMethods.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/withInfiniteGridMethods",
+              "permalink": "/docs/4.1.1/api/withInfiniteGridMethods",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/api",
+              "previous": {
+                "title": "Component",
+                "permalink": "/docs/4.1.1/api/Component"
+              },
+              "next": {
+                "title": "FrameInfiniteGridOptions",
+                "permalink": "/docs/4.1.1/api/FrameInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "installation",
+              "id": "version-4.1.1/installation",
+              "title": "Installation",
+              "description": "Using the package managers (recommended)",
+              "source": "@site/versioned_docs/version-4.1.1/installation.mdx",
+              "sourceDirName": ".",
+              "slug": "/",
+              "permalink": "/docs/4.1.1/",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "title": "Installation",
+                "id": "installation",
+                "slug": "/",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/started",
+              "next": {
+                "title": "Quick Start",
+                "permalink": "/docs/4.1.1/quick-start"
+              }
+            },
+            {
+              "unversionedId": "listening-to-events",
+              "id": "version-4.1.1/listening-to-events",
+              "title": "Listening to Events",
+              "description": "<Tabs",
+              "source": "@site/versioned_docs/version-4.1.1/listening-to-events.mdx",
+              "sourceDirName": ".",
+              "slug": "/listening-to-events",
+              "permalink": "/docs/4.1.1/listening-to-events",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "title": "Listening to Events",
+                "id": "listening-to-events",
+                "slug": "/listening-to-events",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/started",
+              "previous": {
+                "title": "Using the Methods",
+                "permalink": "/docs/4.1.1/using-the-methods"
+              },
+              "next": {
+                "title": "Migration Guide from v3 to v4",
+                "permalink": "/docs/4.1.1/migration-from-v3"
+              }
+            },
+            {
+              "unversionedId": "migration-from-v3",
+              "id": "version-4.1.1/migration-from-v3",
+              "title": "Migration Guide from v3 to v4",
+              "description": "Changed Usage",
+              "source": "@site/versioned_docs/version-4.1.1/migration-from-v3.mdx",
+              "sourceDirName": ".",
+              "slug": "/migration-from-v3",
+              "permalink": "/docs/4.1.1/migration-from-v3",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "title": "Migration Guide from v3 to v4",
+                "id": "migration-from-v3",
+                "slug": "/migration-from-v3",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/started",
+              "previous": {
+                "title": "Listening to Events",
+                "permalink": "/docs/4.1.1/listening-to-events"
+              }
+            },
+            {
+              "unversionedId": "quick-start",
+              "id": "version-4.1.1/quick-start",
+              "title": "Quick Start",
+              "description": "If you don't want to use Infinite's features, use @egjs/grid.",
+              "source": "@site/versioned_docs/version-4.1.1/quick-start.mdx",
+              "sourceDirName": ".",
+              "slug": "/quick-start",
+              "permalink": "/docs/4.1.1/quick-start",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "title": "Quick Start",
+                "id": "quick-start",
+                "slug": "/quick-start",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/started",
+              "previous": {
+                "title": "Installation",
+                "permalink": "/docs/4.1.1/"
+              },
+              "next": {
+                "title": "Using the Methods",
+                "permalink": "/docs/4.1.1/using-the-methods"
+              }
+            },
+            {
+              "unversionedId": "using-the-methods",
+              "id": "version-4.1.1/using-the-methods",
+              "title": "Using the Methods",
+              "description": "<Tabs",
+              "source": "@site/versioned_docs/version-4.1.1/using-the-methods.mdx",
+              "sourceDirName": ".",
+              "slug": "/using-the-methods",
+              "permalink": "/docs/4.1.1/using-the-methods",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.1.1",
+              "frontMatter": {
+                "title": "Using the Methods",
+                "id": "using-the-methods",
+                "slug": "/using-the-methods",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.1.1/started",
+              "previous": {
+                "title": "Quick Start",
+                "permalink": "/docs/4.1.1/quick-start"
+              },
+              "next": {
+                "title": "Listening to Events",
+                "permalink": "/docs/4.1.1/listening-to-events"
+              }
+            }
+          ],
+          "drafts": [],
+          "sidebars": {
+            "version-4.1.1/started": [
+              {
+                "type": "doc",
+                "id": "version-4.1.1/installation"
+              },
+              {
+                "type": "doc",
+                "id": "version-4.1.1/quick-start"
+              },
+              {
+                "type": "doc",
+                "id": "version-4.1.1/using-the-methods"
+              },
+              {
+                "type": "doc",
+                "id": "version-4.1.1/listening-to-events"
+              },
+              {
+                "type": "doc",
+                "id": "version-4.1.1/migration-from-v3"
+              }
+            ],
+            "version-4.1.1/api": [
+              {
+                "type": "category",
+                "label": "Class",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/InfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/FrameInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/JustifiedInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/MasonryInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/PackingInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/Grid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/Component"
+                  }
+                ],
+                "collapsible": true,
+                "collapsed": true
+              },
+              {
+                "type": "category",
+                "label": "Constant",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/withInfiniteGridMethods"
+                  }
+                ],
+                "collapsible": true,
+                "collapsed": true
+              },
+              {
+                "type": "category",
+                "label": "Typedef",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/FrameInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/JustifiedInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/MasonryInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/PackingInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/InfiniteGridStatus"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/InfiniteGridItemInfo"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/InfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/InsertedPlaceholdersResult"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/OnRequestAppend"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/OnRequestPrepend"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/OnRenderComplete"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/OnContentError"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.1.1/api/OnChangeScroll"
+                  }
+                ],
+                "collapsible": true,
+                "collapsed": true
+              }
+            ]
+          }
+        },
+        {
+          "versionName": "4.0.0",
+          "label": "4.0.0",
+          "banner": "unmaintained",
+          "badge": true,
+          "className": "docs-version-4.0.0",
+          "path": "/docs/4.0.0",
+          "tagsPath": "/docs/4.0.0/tags",
+          "editUrl": "https://github.com/naver/egjs-infinitegrid/edit/master/docs/docs",
+          "editUrlLocalized": "https://github.com/naver/egjs-infinitegrid/edit/master/docs/i18n/en/docusaurus-plugin-content-docs/current",
+          "isLast": false,
+          "sidebarFilePath": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/versioned_sidebars/version-4.0.0-sidebars.json",
+          "contentPath": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/versioned_docs/version-4.0.0",
+          "contentPathLocalized": "/Users/daybrush/Desktop/naver/egjs-infinitegrid/packages/docs/i18n/en/docusaurus-plugin-content-docs/version-4.0.0",
+          "docs": [
+            {
+              "unversionedId": "api/Component",
+              "id": "version-4.0.0/api/Component",
+              "title": "Component",
+              "description": "A class used to manage events in a component",
+              "source": "@site/versioned_docs/version-4.0.0/api/Component.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/Component",
+              "permalink": "/docs/4.0.0/api/Component",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "Grid",
+                "permalink": "/docs/4.0.0/api/Grid"
+              },
+              "next": {
+                "title": "withInfiniteGridMethods",
+                "permalink": "/docs/4.0.0/api/withInfiniteGridMethods"
+              }
+            },
+            {
+              "unversionedId": "api/FrameInfiniteGrid",
+              "id": "version-4.0.0/api/FrameInfiniteGrid",
+              "title": "FrameInfiniteGrid",
+              "description": "'Frame' is a printing term with the meaning that 'it fits in one row wide'. FrameInfiniteGrid is a grid that the item is filled up on the basis of a line given a size.",
+              "source": "@site/versioned_docs/version-4.0.0/api/FrameInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/FrameInfiniteGrid",
+              "permalink": "/docs/4.0.0/api/FrameInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "InfiniteGrid",
+                "permalink": "/docs/4.0.0/api/InfiniteGrid"
+              },
+              "next": {
+                "title": "JustifiedInfiniteGrid",
+                "permalink": "/docs/4.0.0/api/JustifiedInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/FrameInfiniteGridOptions",
+              "id": "version-4.0.0/api/FrameInfiniteGridOptions",
+              "title": "FrameInfiniteGridOptions",
+              "description": "FrameInfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.0.0/api/FrameInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/FrameInfiniteGridOptions",
+              "permalink": "/docs/4.0.0/api/FrameInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "withInfiniteGridMethods",
+                "permalink": "/docs/4.0.0/api/withInfiniteGridMethods"
+              },
+              "next": {
+                "title": "JustifiedInfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/JustifiedInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/Grid",
+              "id": "version-4.0.0/api/Grid",
+              "title": "Grid",
+              "description": "PropertiesMethodsEvents",
+              "source": "@site/versioned_docs/version-4.0.0/api/Grid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/Grid",
+              "permalink": "/docs/4.0.0/api/Grid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "PackingInfiniteGrid",
+                "permalink": "/docs/4.0.0/api/PackingInfiniteGrid"
+              },
+              "next": {
+                "title": "Component",
+                "permalink": "/docs/4.0.0/api/Component"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGrid",
+              "id": "version-4.0.0/api/InfiniteGrid",
+              "title": "InfiniteGrid",
+              "description": "A module used to arrange items including content infinitely according to layout type. With this module, you can implement various layouts composed of different items whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
+              "source": "@site/versioned_docs/version-4.0.0/api/InfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGrid",
+              "permalink": "/docs/4.0.0/api/InfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "next": {
+                "title": "FrameInfiniteGrid",
+                "permalink": "/docs/4.0.0/api/FrameInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridItemInfo",
+              "id": "version-4.0.0/api/InfiniteGridItemInfo",
+              "title": "InfiniteGridItemInfo",
+              "description": "InfiniteGridItemInfo",
+              "source": "@site/versioned_docs/version-4.0.0/api/InfiniteGridItemInfo.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridItemInfo",
+              "permalink": "/docs/4.0.0/api/InfiniteGridItemInfo",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "InfiniteGridStatus",
+                "permalink": "/docs/4.0.0/api/InfiniteGridStatus"
+              },
+              "next": {
+                "title": "InfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/InfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridOptions",
+              "id": "version-4.0.0/api/InfiniteGridOptions",
+              "title": "InfiniteGridOptions",
+              "description": "InfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.0.0/api/InfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridOptions",
+              "permalink": "/docs/4.0.0/api/InfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "InfiniteGridItemInfo",
+                "permalink": "/docs/4.0.0/api/InfiniteGridItemInfo"
+              },
+              "next": {
+                "title": "InsertedPlaceholdersResult",
+                "permalink": "/docs/4.0.0/api/InsertedPlaceholdersResult"
+              }
+            },
+            {
+              "unversionedId": "api/InfiniteGridStatus",
+              "id": "version-4.0.0/api/InfiniteGridStatus",
+              "title": "InfiniteGridStatus",
+              "description": "InfiniteGridStatus",
+              "source": "@site/versioned_docs/version-4.0.0/api/InfiniteGridStatus.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InfiniteGridStatus",
+              "permalink": "/docs/4.0.0/api/InfiniteGridStatus",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "PackingInfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/PackingInfiniteGridOptions"
+              },
+              "next": {
+                "title": "InfiniteGridItemInfo",
+                "permalink": "/docs/4.0.0/api/InfiniteGridItemInfo"
+              }
+            },
+            {
+              "unversionedId": "api/InsertedPlaceholdersResult",
+              "id": "version-4.0.0/api/InsertedPlaceholdersResult",
+              "title": "InsertedPlaceholdersResult",
+              "description": "InsertedPlaceholdersResult",
+              "source": "@site/versioned_docs/version-4.0.0/api/InsertedPlaceholdersResult.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/InsertedPlaceholdersResult",
+              "permalink": "/docs/4.0.0/api/InsertedPlaceholdersResult",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "InfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/InfiniteGridOptions"
+              },
+              "next": {
+                "title": "OnRequestAppend",
+                "permalink": "/docs/4.0.0/api/OnRequestAppend"
+              }
+            },
+            {
+              "unversionedId": "api/JustifiedInfiniteGrid",
+              "id": "version-4.0.0/api/JustifiedInfiniteGrid",
+              "title": "JustifiedInfiniteGrid",
+              "description": "'justified' is a printing term with the meaning that 'it fits in one row wide'. JustifiedInfiniteGrid is a grid that the item is filled up on the basis of a line given a size.If 'data-grid-inline-offset' or 'data-grid-content-offset' are set for item element, the ratio is maintained except for the offset value.If 'data-grid-maintained-target' is set for an element whose ratio is to be maintained, the item is rendered while maintaining the ratio of the element.",
+              "source": "@site/versioned_docs/version-4.0.0/api/JustifiedInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/JustifiedInfiniteGrid",
+              "permalink": "/docs/4.0.0/api/JustifiedInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "FrameInfiniteGrid",
+                "permalink": "/docs/4.0.0/api/FrameInfiniteGrid"
+              },
+              "next": {
+                "title": "MasonryInfiniteGrid",
+                "permalink": "/docs/4.0.0/api/MasonryInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/JustifiedInfiniteGridOptions",
+              "id": "version-4.0.0/api/JustifiedInfiniteGridOptions",
+              "title": "JustifiedInfiniteGridOptions",
+              "description": "JustifiedInfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.0.0/api/JustifiedInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/JustifiedInfiniteGridOptions",
+              "permalink": "/docs/4.0.0/api/JustifiedInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "FrameInfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/FrameInfiniteGridOptions"
+              },
+              "next": {
+                "title": "MasonryInfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/MasonryInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/MasonryInfiniteGrid",
+              "id": "version-4.0.0/api/MasonryInfiniteGrid",
+              "title": "MasonryInfiniteGrid",
+              "description": "MasonryInfiniteGrid is a grid that stacks items with the same width as a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new item.",
+              "source": "@site/versioned_docs/version-4.0.0/api/MasonryInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/MasonryInfiniteGrid",
+              "permalink": "/docs/4.0.0/api/MasonryInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "JustifiedInfiniteGrid",
+                "permalink": "/docs/4.0.0/api/JustifiedInfiniteGrid"
+              },
+              "next": {
+                "title": "PackingInfiniteGrid",
+                "permalink": "/docs/4.0.0/api/PackingInfiniteGrid"
+              }
+            },
+            {
+              "unversionedId": "api/MasonryInfiniteGridOptions",
+              "id": "version-4.0.0/api/MasonryInfiniteGridOptions",
+              "title": "MasonryInfiniteGridOptions",
+              "description": "MasonryInfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.0.0/api/MasonryInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/MasonryInfiniteGridOptions",
+              "permalink": "/docs/4.0.0/api/MasonryInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "JustifiedInfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/JustifiedInfiniteGridOptions"
+              },
+              "next": {
+                "title": "PackingInfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/PackingInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "api/OnChangeScroll",
+              "id": "version-4.0.0/api/OnChangeScroll",
+              "title": "OnChangeScroll",
+              "description": "OnChangeScroll",
+              "source": "@site/versioned_docs/version-4.0.0/api/OnChangeScroll.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnChangeScroll",
+              "permalink": "/docs/4.0.0/api/OnChangeScroll",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "OnContentError",
+                "permalink": "/docs/4.0.0/api/OnContentError"
+              }
+            },
+            {
+              "unversionedId": "api/OnContentError",
+              "id": "version-4.0.0/api/OnContentError",
+              "title": "OnContentError",
+              "description": "OnContentError",
+              "source": "@site/versioned_docs/version-4.0.0/api/OnContentError.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnContentError",
+              "permalink": "/docs/4.0.0/api/OnContentError",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "OnRenderComplete",
+                "permalink": "/docs/4.0.0/api/OnRenderComplete"
+              },
+              "next": {
+                "title": "OnChangeScroll",
+                "permalink": "/docs/4.0.0/api/OnChangeScroll"
+              }
+            },
+            {
+              "unversionedId": "api/OnRenderComplete",
+              "id": "version-4.0.0/api/OnRenderComplete",
+              "title": "OnRenderComplete",
+              "description": "OnRenderComplete",
+              "source": "@site/versioned_docs/version-4.0.0/api/OnRenderComplete.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRenderComplete",
+              "permalink": "/docs/4.0.0/api/OnRenderComplete",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "OnRequestPrepend",
+                "permalink": "/docs/4.0.0/api/OnRequestPrepend"
+              },
+              "next": {
+                "title": "OnContentError",
+                "permalink": "/docs/4.0.0/api/OnContentError"
+              }
+            },
+            {
+              "unversionedId": "api/OnRequestAppend",
+              "id": "version-4.0.0/api/OnRequestAppend",
+              "title": "OnRequestAppend",
+              "description": "OnRequestAppend",
+              "source": "@site/versioned_docs/version-4.0.0/api/OnRequestAppend.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRequestAppend",
+              "permalink": "/docs/4.0.0/api/OnRequestAppend",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "InsertedPlaceholdersResult",
+                "permalink": "/docs/4.0.0/api/InsertedPlaceholdersResult"
+              },
+              "next": {
+                "title": "OnRequestPrepend",
+                "permalink": "/docs/4.0.0/api/OnRequestPrepend"
+              }
+            },
+            {
+              "unversionedId": "api/OnRequestPrepend",
+              "id": "version-4.0.0/api/OnRequestPrepend",
+              "title": "OnRequestPrepend",
+              "description": "OnRequestPrepend",
+              "source": "@site/versioned_docs/version-4.0.0/api/OnRequestPrepend.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/OnRequestPrepend",
+              "permalink": "/docs/4.0.0/api/OnRequestPrepend",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "OnRequestAppend",
+                "permalink": "/docs/4.0.0/api/OnRequestAppend"
+              },
+              "next": {
+                "title": "OnRenderComplete",
+                "permalink": "/docs/4.0.0/api/OnRenderComplete"
+              }
+            },
+            {
+              "unversionedId": "api/PackingInfiniteGrid",
+              "id": "version-4.0.0/api/PackingInfiniteGrid",
+              "title": "PackingInfiniteGrid",
+              "description": "The PackingInfiniteGrid is a grid that shows the important items bigger without sacrificing the weight of the items.Rows and columns are separated so that items are dynamically placed within the horizontal and vertical space rather than arranged in an orderly fashion.If sizeWeight is higher than ratioWeight, the size of items is preserved as much as possible.Conversely, if ratioWeight is higher than sizeWeight, the ratio of items is preserved as much as possible.",
+              "source": "@site/versioned_docs/version-4.0.0/api/PackingInfiniteGrid.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/PackingInfiniteGrid",
+              "permalink": "/docs/4.0.0/api/PackingInfiniteGrid",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "MasonryInfiniteGrid",
+                "permalink": "/docs/4.0.0/api/MasonryInfiniteGrid"
+              },
+              "next": {
+                "title": "Grid",
+                "permalink": "/docs/4.0.0/api/Grid"
+              }
+            },
+            {
+              "unversionedId": "api/PackingInfiniteGridOptions",
+              "id": "version-4.0.0/api/PackingInfiniteGridOptions",
+              "title": "PackingInfiniteGridOptions",
+              "description": "PackingInfiniteGridOptions",
+              "source": "@site/versioned_docs/version-4.0.0/api/PackingInfiniteGridOptions.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/PackingInfiniteGridOptions",
+              "permalink": "/docs/4.0.0/api/PackingInfiniteGridOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "MasonryInfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/MasonryInfiniteGridOptions"
+              },
+              "next": {
+                "title": "InfiniteGridStatus",
+                "permalink": "/docs/4.0.0/api/InfiniteGridStatus"
+              }
+            },
+            {
+              "unversionedId": "api/withInfiniteGridMethods",
+              "id": "version-4.0.0/api/withInfiniteGridMethods",
+              "title": "withInfiniteGridMethods",
+              "description": "withInfiniteGridMethods",
+              "source": "@site/versioned_docs/version-4.0.0/api/withInfiniteGridMethods.mdx",
+              "sourceDirName": "api",
+              "slug": "/api/withInfiniteGridMethods",
+              "permalink": "/docs/4.0.0/api/withInfiniteGridMethods",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/api",
+              "previous": {
+                "title": "Component",
+                "permalink": "/docs/4.0.0/api/Component"
+              },
+              "next": {
+                "title": "FrameInfiniteGridOptions",
+                "permalink": "/docs/4.0.0/api/FrameInfiniteGridOptions"
+              }
+            },
+            {
+              "unversionedId": "installation",
+              "id": "version-4.0.0/installation",
+              "title": "Installation",
+              "description": "Using the package managers (recommended)",
+              "source": "@site/versioned_docs/version-4.0.0/installation.mdx",
+              "sourceDirName": ".",
+              "slug": "/",
+              "permalink": "/docs/4.0.0/",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "title": "Installation",
+                "id": "installation",
+                "slug": "/",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/started",
+              "next": {
+                "title": "Quick Start",
+                "permalink": "/docs/4.0.0/quick-start"
+              }
+            },
+            {
+              "unversionedId": "listening-to-events",
+              "id": "version-4.0.0/listening-to-events",
+              "title": "Listening to Events",
+              "description": "<Tabs",
+              "source": "@site/versioned_docs/version-4.0.0/listening-to-events.mdx",
+              "sourceDirName": ".",
+              "slug": "/listening-to-events",
+              "permalink": "/docs/4.0.0/listening-to-events",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "title": "Listening to Events",
+                "id": "listening-to-events",
+                "slug": "/listening-to-events",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/started",
+              "previous": {
+                "title": "Using the Methods",
+                "permalink": "/docs/4.0.0/using-the-methods"
+              },
+              "next": {
+                "title": "Migration Guide from v3 to v4",
+                "permalink": "/docs/4.0.0/migration-from-v3"
+              }
+            },
+            {
+              "unversionedId": "migration-from-v3",
+              "id": "version-4.0.0/migration-from-v3",
+              "title": "Migration Guide from v3 to v4",
+              "description": "Changed Usage",
+              "source": "@site/versioned_docs/version-4.0.0/migration-from-v3.mdx",
+              "sourceDirName": ".",
+              "slug": "/migration-from-v3",
+              "permalink": "/docs/4.0.0/migration-from-v3",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "title": "Migration Guide from v3 to v4",
+                "id": "migration-from-v3",
+                "slug": "/migration-from-v3",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/started",
+              "previous": {
+                "title": "Listening to Events",
+                "permalink": "/docs/4.0.0/listening-to-events"
+              }
+            },
+            {
+              "unversionedId": "quick-start",
+              "id": "version-4.0.0/quick-start",
+              "title": "Quick Start",
+              "description": "If you don't want to use Infinite's features, use @egjs/grid.",
+              "source": "@site/versioned_docs/version-4.0.0/quick-start.mdx",
+              "sourceDirName": ".",
+              "slug": "/quick-start",
+              "permalink": "/docs/4.0.0/quick-start",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "title": "Quick Start",
+                "id": "quick-start",
+                "slug": "/quick-start",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/started",
+              "previous": {
+                "title": "Installation",
+                "permalink": "/docs/4.0.0/"
+              },
+              "next": {
+                "title": "Using the Methods",
+                "permalink": "/docs/4.0.0/using-the-methods"
+              }
+            },
+            {
+              "unversionedId": "using-the-methods",
+              "id": "version-4.0.0/using-the-methods",
+              "title": "Using the Methods",
+              "description": "<Tabs",
+              "source": "@site/versioned_docs/version-4.0.0/using-the-methods.mdx",
+              "sourceDirName": ".",
+              "slug": "/using-the-methods",
+              "permalink": "/docs/4.0.0/using-the-methods",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "4.0.0",
+              "frontMatter": {
+                "title": "Using the Methods",
+                "id": "using-the-methods",
+                "slug": "/using-the-methods",
+                "custom_edit_url": null
+              },
+              "sidebar": "version-4.0.0/started",
+              "previous": {
+                "title": "Quick Start",
+                "permalink": "/docs/4.0.0/quick-start"
+              },
+              "next": {
+                "title": "Listening to Events",
+                "permalink": "/docs/4.0.0/listening-to-events"
+              }
+            }
+          ],
+          "drafts": [],
+          "sidebars": {
+            "version-4.0.0/started": [
+              {
+                "type": "doc",
+                "id": "version-4.0.0/installation"
+              },
+              {
+                "type": "doc",
+                "id": "version-4.0.0/quick-start"
+              },
+              {
+                "type": "doc",
+                "id": "version-4.0.0/using-the-methods"
+              },
+              {
+                "type": "doc",
+                "id": "version-4.0.0/listening-to-events"
+              },
+              {
+                "type": "doc",
+                "id": "version-4.0.0/migration-from-v3"
+              }
+            ],
+            "version-4.0.0/api": [
+              {
+                "type": "category",
+                "label": "Class",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/InfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/FrameInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/JustifiedInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/MasonryInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/PackingInfiniteGrid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/Grid"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/Component"
+                  }
+                ],
+                "collapsible": true,
+                "collapsed": true
+              },
+              {
+                "type": "category",
+                "label": "Constant",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/withInfiniteGridMethods"
+                  }
+                ],
+                "collapsible": true,
+                "collapsed": true
+              },
+              {
+                "type": "category",
+                "label": "Typedef",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/FrameInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/JustifiedInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/MasonryInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/PackingInfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/InfiniteGridStatus"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/InfiniteGridItemInfo"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/InfiniteGridOptions"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/InsertedPlaceholdersResult"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/OnRequestAppend"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/OnRequestPrepend"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/OnRenderComplete"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/OnContentError"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "version-4.0.0/api/OnChangeScroll"
+                  }
+                ],
+                "collapsible": true,
+                "collapsed": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "docusaurus-plugin-content-blog": {
+    "default": {
+      "blogSidebarTitle": "Recent posts",
+      "blogPosts": [],
+      "blogListPaginated": [],
+      "blogTags": {},
+      "blogTagsListPath": "/blog/tags",
+      "blogTagsPaginated": []
+    }
+  },
+  "docusaurus-plugin-content-pages": {
+    "default": [
+      {
+        "type": "mdx",
+        "permalink": "/Guides",
+        "source": "@site/src/pages/Guides.mdx",
+        "title": "Guides",
+        "description": "Grid Types",
+        "frontMatter": {
+          "title": "Guides",
+          "custom_edit_url": null
+        }
+      },
+      {
+        "type": "jsx",
+        "permalink": "/Main",
+        "source": "@site/src/pages/Main.tsx"
+      },
+      {
+        "type": "jsx",
+        "permalink": "/",
+        "source": "@site/src/pages/index.jsx"
+      },
+      {
+        "type": "jsx",
+        "permalink": "/main/Features",
+        "source": "@site/src/pages/main/Features.tsx"
+      },
+      {
+        "type": "jsx",
+        "permalink": "/main/Frameworks",
+        "source": "@site/src/pages/main/Frameworks.tsx"
+      },
+      {
+        "type": "jsx",
+        "permalink": "/main/Grids",
+        "source": "@site/src/pages/main/Grids.tsx"
+      },
+      {
+        "type": "jsx",
+        "permalink": "/main/MainLogo",
+        "source": "@site/src/pages/main/MainLogo.tsx"
+      },
+      {
+        "type": "jsx",
+        "permalink": "/main/VirtualInfiniteGrid",
+        "source": "@site/src/pages/main/VirtualInfiniteGrid.tsx"
+      }
+    ]
+  },
+  "docusaurus-plugin-google-analytics": {},
+  "docusaurus-plugin-debug": {},
+  "docusaurus-theme-classic": {},
+  "docusaurus-plugin-sass": {},
+  "custom-docusaurus-plugin": {},
+  "docusaurus-theme-live-codeblock": {},
+  "docusaurus-bootstrap-plugin": {},
+  "docusaurus-mdx-fallback-plugin": {}
+}

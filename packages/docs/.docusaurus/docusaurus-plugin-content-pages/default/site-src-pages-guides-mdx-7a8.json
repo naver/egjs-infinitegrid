@@ -1,0 +1,11 @@
+{
+  "type": "mdx",
+  "permalink": "/egjs-infinitegrid/ko/Guides",
+  "source": "@site/src/pages/Guides.mdx",
+  "title": "Guides",
+  "description": "Grid Types",
+  "frontMatter": {
+    "title": "Guides",
+    "custom_edit_url": null
+  }
+}

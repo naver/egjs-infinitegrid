@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/OnRequestPrepend",
+  "id": "version-4.1.0/api/OnRequestPrepend",
+  "isDocsHomePage": false,
+  "title": "OnRequestPrepend",
+  "description": "OnRequestPrepend",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.1.0/api/OnRequestPrepend.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/OnRequestPrepend",
+  "permalink": "/egjs-infinitegrid/ko/docs/api/OnRequestPrepend",
+  "editUrl": null,
+  "tags": [],
+  "version": "4.1.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.1.0/api",
+  "previous": {
+    "title": "OnRequestAppend",
+    "permalink": "/egjs-infinitegrid/ko/docs/api/OnRequestAppend"
+  },
+  "next": {
+    "title": "OnRenderComplete",
+    "permalink": "/egjs-infinitegrid/ko/docs/api/OnRenderComplete"
+  }
+}

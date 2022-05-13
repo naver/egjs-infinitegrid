@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/MasonryInfiniteGrid",
+  "id": "version-4.0.0/api/MasonryInfiniteGrid",
+  "title": "MasonryInfiniteGrid",
+  "description": "MasonryInfiniteGrid is a grid that stacks items with the same width as a stack of bricks. Adjust the width of all images to the same size, find the lowest height column, and insert a new item.",
+  "source": "@site/versioned_docs/version-4.0.0/api/MasonryInfiniteGrid.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/MasonryInfiniteGrid",
+  "permalink": "/egjs-infinitegrid/docs/4.0.0/api/MasonryInfiniteGrid",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.0.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.0.0/api",
+  "previous": {
+    "title": "JustifiedInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/docs/4.0.0/api/JustifiedInfiniteGrid"
+  },
+  "next": {
+    "title": "PackingInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/docs/4.0.0/api/PackingInfiniteGrid"
+  }
+}

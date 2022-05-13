@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/InfiniteGridStatus",
+  "id": "api/InfiniteGridStatus",
+  "title": "InfiniteGridStatus",
+  "description": "Type: TSInterface",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/current/api/InfiniteGridStatus.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/InfiniteGridStatus",
+  "permalink": "/egjs-infinitegrid/ko/docs/next/api/InfiniteGridStatus",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "api",
+  "previous": {
+    "title": "PackingInfiniteGridOptions",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/api/PackingInfiniteGridOptions"
+  },
+  "next": {
+    "title": "InfiniteGridItemInfo",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/api/InfiniteGridItemInfo"
+  }
+}

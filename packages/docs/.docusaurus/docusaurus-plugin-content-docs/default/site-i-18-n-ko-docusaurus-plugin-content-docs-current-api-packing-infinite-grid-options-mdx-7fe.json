@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/PackingInfiniteGridOptions",
+  "id": "api/PackingInfiniteGridOptions",
+  "title": "PackingInfiniteGridOptions",
+  "description": "Type: TSInterface",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/current/api/PackingInfiniteGridOptions.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/PackingInfiniteGridOptions",
+  "permalink": "/egjs-infinitegrid/ko/docs/next/api/PackingInfiniteGridOptions",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "api",
+  "previous": {
+    "title": "MasonryInfiniteGridOptions",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/api/MasonryInfiniteGridOptions"
+  },
+  "next": {
+    "title": "InfiniteGridStatus",
+    "permalink": "/egjs-infinitegrid/ko/docs/next/api/InfiniteGridStatus"
+  }
+}

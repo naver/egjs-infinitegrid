@@ -1,0 +1,25 @@
+{
+  "unversionedId": "migration-from-v3",
+  "id": "version-4.0.0/migration-from-v3",
+  "title": "Migration Guide from v3 to v4",
+  "description": "Changed Usage",
+  "source": "@site/versioned_docs/version-4.0.0/migration-from-v3.mdx",
+  "sourceDirName": ".",
+  "slug": "/migration-from-v3",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.0.0/migration-from-v3",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.0.0",
+  "frontMatter": {
+    "title": "Migration Guide from v3 to v4",
+    "id": "migration-from-v3",
+    "slug": "/migration-from-v3",
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.0.0/started",
+  "previous": {
+    "title": "Listening to Events",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.0.0/listening-to-events"
+  }
+}

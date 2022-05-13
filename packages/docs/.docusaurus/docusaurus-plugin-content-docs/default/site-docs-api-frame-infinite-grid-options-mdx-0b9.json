@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/FrameInfiniteGridOptions",
+  "id": "api/FrameInfiniteGridOptions",
+  "title": "FrameInfiniteGridOptions",
+  "description": "Type: TSInterface",
+  "source": "@site/docs/api/FrameInfiniteGridOptions.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/FrameInfiniteGridOptions",
+  "permalink": "/egjs-infinitegrid/docs/next/api/FrameInfiniteGridOptions",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "api",
+  "previous": {
+    "title": "withInfiniteGridMethods",
+    "permalink": "/egjs-infinitegrid/docs/next/api/withInfiniteGridMethods"
+  },
+  "next": {
+    "title": "JustifiedInfiniteGridOptions",
+    "permalink": "/egjs-infinitegrid/docs/next/api/JustifiedInfiniteGridOptions"
+  }
+}

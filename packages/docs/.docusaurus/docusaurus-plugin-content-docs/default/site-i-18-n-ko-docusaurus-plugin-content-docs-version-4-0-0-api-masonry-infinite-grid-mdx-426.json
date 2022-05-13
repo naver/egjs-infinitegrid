@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/MasonryInfiniteGrid",
+  "id": "version-4.0.0/api/MasonryInfiniteGrid",
+  "title": "MasonryInfiniteGrid",
+  "description": "MasonryInfiniteGrid는 벽돌을 쌓아 올린 모양처럼 동일한 너비를 가진 아이템을 쌓는 레이아웃이다. 모든 이미지의 너비를 동일한 크기로 조정하고, 가장 높이가 낮은 열을 찾아 새로운 이미지를 삽입한다. 따라서 배치된 아이템 사이에 빈 공간이 생기지는 않지만 배치된 레이아웃의 아래쪽은 울퉁불퉁해진다.",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.0.0/api/MasonryInfiniteGrid.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/MasonryInfiniteGrid",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.0.0/api/MasonryInfiniteGrid",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.0.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.0.0/api",
+  "previous": {
+    "title": "JustifiedInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.0.0/api/JustifiedInfiniteGrid"
+  },
+  "next": {
+    "title": "PackingInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.0.0/api/PackingInfiniteGrid"
+  }
+}

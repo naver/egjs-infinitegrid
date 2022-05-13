@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/FrameInfiniteGrid",
+  "id": "api/FrameInfiniteGrid",
+  "title": "FrameInfiniteGrid",
+  "description": "'Frame' is a printing term with the meaning that 'it fits in one row wide'. FrameInfiniteGrid is a grid that the item is filled up on the basis of a line given a size.",
+  "source": "@site/docs/api/FrameInfiniteGrid.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/FrameInfiniteGrid",
+  "permalink": "/egjs-infinitegrid/docs/next/api/FrameInfiniteGrid",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "api",
+  "previous": {
+    "title": "InfiniteGrid",
+    "permalink": "/egjs-infinitegrid/docs/next/api/InfiniteGrid"
+  },
+  "next": {
+    "title": "JustifiedInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/docs/next/api/JustifiedInfiniteGrid"
+  }
+}

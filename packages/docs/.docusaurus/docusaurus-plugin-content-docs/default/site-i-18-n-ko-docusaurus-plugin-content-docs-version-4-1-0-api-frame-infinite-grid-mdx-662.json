@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/FrameInfiniteGrid",
+  "id": "version-4.1.0/api/FrameInfiniteGrid",
+  "isDocsHomePage": false,
+  "title": "FrameInfiniteGrid",
+  "description": "`ts",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.1.0/api/FrameInfiniteGrid.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/FrameInfiniteGrid",
+  "permalink": "/egjs-infinitegrid/ko/docs/api/FrameInfiniteGrid",
+  "editUrl": null,
+  "tags": [],
+  "version": "4.1.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.1.0/api",
+  "previous": {
+    "title": "InfiniteGrid",
+    "permalink": "/egjs-infinitegrid/ko/docs/api/InfiniteGrid"
+  },
+  "next": {
+    "title": "JustifiedInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/ko/docs/api/JustifiedInfiniteGrid"
+  }
+}

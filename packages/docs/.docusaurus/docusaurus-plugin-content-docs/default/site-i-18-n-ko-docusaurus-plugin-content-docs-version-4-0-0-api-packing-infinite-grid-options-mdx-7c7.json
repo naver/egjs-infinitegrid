@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/PackingInfiniteGridOptions",
+  "id": "version-4.0.0/api/PackingInfiniteGridOptions",
+  "title": "PackingInfiniteGridOptions",
+  "description": "PackingInfiniteGridOptions",
+  "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.0.0/api/PackingInfiniteGridOptions.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/PackingInfiniteGridOptions",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.0.0/api/PackingInfiniteGridOptions",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "4.0.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.0.0/api",
+  "previous": {
+    "title": "MasonryInfiniteGridOptions",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.0.0/api/MasonryInfiniteGridOptions"
+  },
+  "next": {
+    "title": "InfiniteGridStatus",
+    "permalink": "/egjs-infinitegrid/ko/docs/4.0.0/api/InfiniteGridStatus"
+  }
+}

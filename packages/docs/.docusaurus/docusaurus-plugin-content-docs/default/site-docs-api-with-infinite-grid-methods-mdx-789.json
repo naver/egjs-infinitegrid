@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/withInfiniteGridMethods",
+  "id": "api/withInfiniteGridMethods",
+  "title": "withInfiniteGridMethods",
+  "description": "Decorator that makes the method of InfiniteGrid available in the framework.",
+  "source": "@site/docs/api/withInfiniteGridMethods.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/withInfiniteGridMethods",
+  "permalink": "/egjs-infinitegrid/docs/next/api/withInfiniteGridMethods",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "api",
+  "previous": {
+    "title": "Component",
+    "permalink": "/egjs-infinitegrid/docs/next/api/Component"
+  },
+  "next": {
+    "title": "FrameInfiniteGridOptions",
+    "permalink": "/egjs-infinitegrid/docs/next/api/FrameInfiniteGridOptions"
+  }
+}

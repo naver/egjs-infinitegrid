@@ -1,0 +1,26 @@
+{
+  "unversionedId": "api/PackingInfiniteGrid",
+  "id": "version-4.1.0/api/PackingInfiniteGrid",
+  "isDocsHomePage": false,
+  "title": "PackingInfiniteGrid",
+  "description": "`ts",
+  "source": "@site/versioned_docs/version-4.1.0/api/PackingInfiniteGrid.mdx",
+  "sourceDirName": "api",
+  "slug": "/api/PackingInfiniteGrid",
+  "permalink": "/egjs-infinitegrid/docs/api/PackingInfiniteGrid",
+  "editUrl": null,
+  "tags": [],
+  "version": "4.1.0",
+  "frontMatter": {
+    "custom_edit_url": null
+  },
+  "sidebar": "version-4.1.0/api",
+  "previous": {
+    "title": "MasonryInfiniteGrid",
+    "permalink": "/egjs-infinitegrid/docs/api/MasonryInfiniteGrid"
+  },
+  "next": {
+    "title": "Grid",
+    "permalink": "/egjs-infinitegrid/docs/api/Grid"
+  }
+}
