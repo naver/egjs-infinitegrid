@@ -36,5 +36,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * update packages versions ([bc07e37](https://github.com/naver/egjs-infinitegrid/commit/bc07e37a5fb40e94f87cd1b07f1f7a843ddbe7e8))
 * `@egjs/infinitegrid`
     * move test files ([6974101](https://github.com/naver/egjs-infinitegrid/commit/69741011c0b9fcf11eb22ef574523468d3cbca3f))
-* Other
-    * merge 4.2.1-rc ([ed554a3](https://github.com/naver/egjs-infinitegrid/commit/ed554a31dc5adc4af8f08cf6eb8afb115eed6255))
+
