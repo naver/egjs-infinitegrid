@@ -4,14 +4,14 @@
   "scripts": {
     "packages": "npm run packages:update && npm run packages:build && npm run packages:publish",
     "packages:update": "lerna-helper version",
-    "packages:build": "lerna run build --ignore ngx-infinitegrid --ignore docs",
-    "packages:publish": "lerna-helper publish --ignore ngx-infinitegrid --commit 'chore: update packages versions'",
-    "changelog": "lerna-helper changelog --type all --base infinitegrid",
+    "packages:build": "lerna run build --ignore @egjs/ngx-infinitegrid --ignore docs",
+    "packages:publish": "lerna-helper publish --ignore @egjs/ngx-infinitegrid --commit 'chore: update packages versions'",
+    "changelog": "lerna-helper changelog --type all --base @egjs/infinitegrid",
     "docs:build": "jsdoc-to-mdx -c ./jsdoc-to-mdx.json",
     "docs:version": "node ./config/docs-version-up",
     "demo:build": "npm run docs:build && npm run docs:version && npm run build --prefix packages/docs",
-    "demo:deploy": "lerna-helper deploy --base infinitegrid --remote upstream",
-    "release": "lerna-helper release --base infinitegrid --remote upstream --branch master",
+    "demo:deploy": "lerna-helper deploy --base @egjs/infinitegrid --remote upstream",
+    "release": "lerna-helper release --base @egjs/infinitegrid --remote upstream --branch master",
     "bootstrap": "lerna bootstrap"
   },
   "repository": {
@@ -39,7 +39,7 @@
   ],
   "devDependencies": {
     "@daybrush/jsdoc": "^0.3.12",
-    "@egjs/release-helper": "^0.2.0-beta.0",
+    "@egjs/release-helper": "^0.2.0-beta.2",
     "egjs-jsdoc-template": "^1.4.4",
     "jsdoc-to-mdx": "^1.1.2",
     "lerna": "^4.0.0",
