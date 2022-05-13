@@ -6,7 +6,7 @@
   "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.2.1/api/MasonryInfiniteGrid.mdx",
   "sourceDirName": "api",
   "slug": "/api/MasonryInfiniteGrid",
-  "permalink": "/egjs-infinitegrid/ko/docs/api/MasonryInfiniteGrid",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/api/MasonryInfiniteGrid",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "api",
   "previous": {
     "title": "JustifiedInfiniteGrid",
-    "permalink": "/egjs-infinitegrid/ko/docs/api/JustifiedInfiniteGrid"
+    "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/api/JustifiedInfiniteGrid"
   },
   "next": {
     "title": "PackingInfiniteGrid",
-    "permalink": "/egjs-infinitegrid/ko/docs/api/PackingInfiniteGrid"
+    "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/api/PackingInfiniteGrid"
   }
 }

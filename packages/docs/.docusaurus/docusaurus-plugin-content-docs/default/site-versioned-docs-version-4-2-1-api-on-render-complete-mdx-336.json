@@ -6,7 +6,7 @@
   "source": "@site/versioned_docs/version-4.2.1/api/OnRenderComplete.mdx",
   "sourceDirName": "api",
   "slug": "/api/OnRenderComplete",
-  "permalink": "/egjs-infinitegrid/docs/api/OnRenderComplete",
+  "permalink": "/egjs-infinitegrid/docs/4.2.1/api/OnRenderComplete",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "api",
   "previous": {
     "title": "OnRequestPrepend",
-    "permalink": "/egjs-infinitegrid/docs/api/OnRequestPrepend"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/OnRequestPrepend"
   },
   "next": {
     "title": "OnContentError",
-    "permalink": "/egjs-infinitegrid/docs/api/OnContentError"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/OnContentError"
   }
 }

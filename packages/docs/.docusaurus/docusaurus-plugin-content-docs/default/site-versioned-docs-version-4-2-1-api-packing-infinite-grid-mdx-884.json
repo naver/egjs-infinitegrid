@@ -6,7 +6,7 @@
   "source": "@site/versioned_docs/version-4.2.1/api/PackingInfiniteGrid.mdx",
   "sourceDirName": "api",
   "slug": "/api/PackingInfiniteGrid",
-  "permalink": "/egjs-infinitegrid/docs/api/PackingInfiniteGrid",
+  "permalink": "/egjs-infinitegrid/docs/4.2.1/api/PackingInfiniteGrid",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "api",
   "previous": {
     "title": "MasonryInfiniteGrid",
-    "permalink": "/egjs-infinitegrid/docs/api/MasonryInfiniteGrid"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/MasonryInfiniteGrid"
   },
   "next": {
     "title": "Grid",
-    "permalink": "/egjs-infinitegrid/docs/api/Grid"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/Grid"
   }
 }

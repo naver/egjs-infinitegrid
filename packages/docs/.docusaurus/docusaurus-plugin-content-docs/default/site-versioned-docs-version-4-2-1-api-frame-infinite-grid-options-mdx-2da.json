@@ -6,7 +6,7 @@
   "source": "@site/versioned_docs/version-4.2.1/api/FrameInfiniteGridOptions.mdx",
   "sourceDirName": "api",
   "slug": "/api/FrameInfiniteGridOptions",
-  "permalink": "/egjs-infinitegrid/docs/api/FrameInfiniteGridOptions",
+  "permalink": "/egjs-infinitegrid/docs/4.2.1/api/FrameInfiniteGridOptions",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "api",
   "previous": {
     "title": "withInfiniteGridMethods",
-    "permalink": "/egjs-infinitegrid/docs/api/withInfiniteGridMethods"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/withInfiniteGridMethods"
   },
   "next": {
     "title": "JustifiedInfiniteGridOptions",
-    "permalink": "/egjs-infinitegrid/docs/api/JustifiedInfiniteGridOptions"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/JustifiedInfiniteGridOptions"
   }
 }

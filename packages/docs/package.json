@@ -5,7 +5,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start --host 0.0.0.0",
-    "build": "docusaurus build",
+    "build": "docusaurus build --out-dir ../../demo",
     "swizzle": "docusaurus swizzle --danger",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",

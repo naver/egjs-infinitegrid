@@ -6,7 +6,7 @@
   "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.2.1/api/InfiniteGrid.mdx",
   "sourceDirName": "api",
   "slug": "/api/InfiniteGrid",
-  "permalink": "/egjs-infinitegrid/ko/docs/api/InfiniteGrid",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/api/InfiniteGrid",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,6 +17,6 @@
   "sidebar": "api",
   "next": {
     "title": "FrameInfiniteGrid",
-    "permalink": "/egjs-infinitegrid/ko/docs/api/FrameInfiniteGrid"
+    "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/api/FrameInfiniteGrid"
   }
 }

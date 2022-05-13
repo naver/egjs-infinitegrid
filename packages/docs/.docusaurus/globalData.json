@@ -158,8 +158,8 @@
           }
         },
         {
-          "name": "4.2.1",
-          "label": "4.2.1",
+          "name": "4.3.0",
+          "label": "4.3.0",
           "isLast": true,
           "path": "/egjs-infinitegrid/ko/docs",
           "mainDocId": "installation",
@@ -306,6 +306,160 @@
             "api": {
               "link": {
                 "path": "/egjs-infinitegrid/ko/docs/api/InfiniteGrid",
+                "label": "api/InfiniteGrid"
+              }
+            }
+          }
+        },
+        {
+          "name": "4.2.1",
+          "label": "4.2.1",
+          "isLast": false,
+          "path": "/egjs-infinitegrid/ko/docs/4.2.1",
+          "mainDocId": "installation",
+          "docs": [
+            {
+              "id": "api/Component",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/Component",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/FrameInfiniteGrid",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/FrameInfiniteGrid",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/FrameInfiniteGridOptions",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/FrameInfiniteGridOptions",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/Grid",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/Grid",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/InfiniteGrid",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/InfiniteGrid",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/InfiniteGridItemInfo",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/InfiniteGridItemInfo",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/InfiniteGridOptions",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/InfiniteGridOptions",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/InfiniteGridStatus",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/InfiniteGridStatus",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/InsertedPlaceholdersResult",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/InsertedPlaceholdersResult",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/JustifiedInfiniteGrid",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/JustifiedInfiniteGrid",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/JustifiedInfiniteGridOptions",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/JustifiedInfiniteGridOptions",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/MasonryInfiniteGrid",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/MasonryInfiniteGrid",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/MasonryInfiniteGridOptions",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/MasonryInfiniteGridOptions",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/OnChangeScroll",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/OnChangeScroll",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/OnContentError",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/OnContentError",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/OnRenderComplete",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/OnRenderComplete",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/OnRequestAppend",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/OnRequestAppend",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/OnRequestPrepend",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/OnRequestPrepend",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/PackingInfiniteGrid",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/PackingInfiniteGrid",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/PackingInfiniteGridOptions",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/PackingInfiniteGridOptions",
+              "sidebar": "api"
+            },
+            {
+              "id": "api/withInfiniteGridMethods",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/withInfiniteGridMethods",
+              "sidebar": "api"
+            },
+            {
+              "id": "installation",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/",
+              "sidebar": "started"
+            },
+            {
+              "id": "listening-to-events",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/listening-to-events",
+              "sidebar": "started"
+            },
+            {
+              "id": "migration-from-v3",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/migration-from-v3",
+              "sidebar": "started"
+            },
+            {
+              "id": "quick-start",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/quick-start",
+              "sidebar": "started"
+            },
+            {
+              "id": "using-the-methods",
+              "path": "/egjs-infinitegrid/ko/docs/4.2.1/using-the-methods",
+              "sidebar": "started"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "started": {
+              "link": {
+                "path": "/egjs-infinitegrid/ko/docs/4.2.1/",
+                "label": "installation"
+              }
+            },
+            "api": {
+              "link": {
+                "path": "/egjs-infinitegrid/ko/docs/4.2.1/api/InfiniteGrid",
                 "label": "api/InfiniteGrid"
               }
             }

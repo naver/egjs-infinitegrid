@@ -6,7 +6,7 @@
   "source": "@site/versioned_docs/version-4.2.1/api/JustifiedInfiniteGrid.mdx",
   "sourceDirName": "api",
   "slug": "/api/JustifiedInfiniteGrid",
-  "permalink": "/egjs-infinitegrid/docs/api/JustifiedInfiniteGrid",
+  "permalink": "/egjs-infinitegrid/docs/4.2.1/api/JustifiedInfiniteGrid",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "api",
   "previous": {
     "title": "FrameInfiniteGrid",
-    "permalink": "/egjs-infinitegrid/docs/api/FrameInfiniteGrid"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/FrameInfiniteGrid"
   },
   "next": {
     "title": "MasonryInfiniteGrid",
-    "permalink": "/egjs-infinitegrid/docs/api/MasonryInfiniteGrid"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/MasonryInfiniteGrid"
   }
 }

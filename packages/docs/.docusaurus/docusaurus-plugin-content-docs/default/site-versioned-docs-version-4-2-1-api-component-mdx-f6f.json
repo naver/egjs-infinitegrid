@@ -6,7 +6,7 @@
   "source": "@site/versioned_docs/version-4.2.1/api/Component.mdx",
   "sourceDirName": "api",
   "slug": "/api/Component",
-  "permalink": "/egjs-infinitegrid/docs/api/Component",
+  "permalink": "/egjs-infinitegrid/docs/4.2.1/api/Component",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "api",
   "previous": {
     "title": "Grid",
-    "permalink": "/egjs-infinitegrid/docs/api/Grid"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/Grid"
   },
   "next": {
     "title": "withInfiniteGridMethods",
-    "permalink": "/egjs-infinitegrid/docs/api/withInfiniteGridMethods"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/withInfiniteGridMethods"
   }
 }

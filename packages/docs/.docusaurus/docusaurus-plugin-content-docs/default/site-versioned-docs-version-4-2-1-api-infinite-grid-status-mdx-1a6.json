@@ -6,7 +6,7 @@
   "source": "@site/versioned_docs/version-4.2.1/api/InfiniteGridStatus.mdx",
   "sourceDirName": "api",
   "slug": "/api/InfiniteGridStatus",
-  "permalink": "/egjs-infinitegrid/docs/api/InfiniteGridStatus",
+  "permalink": "/egjs-infinitegrid/docs/4.2.1/api/InfiniteGridStatus",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "api",
   "previous": {
     "title": "PackingInfiniteGridOptions",
-    "permalink": "/egjs-infinitegrid/docs/api/PackingInfiniteGridOptions"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/PackingInfiniteGridOptions"
   },
   "next": {
     "title": "InfiniteGridItemInfo",
-    "permalink": "/egjs-infinitegrid/docs/api/InfiniteGridItemInfo"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/InfiniteGridItemInfo"
   }
 }

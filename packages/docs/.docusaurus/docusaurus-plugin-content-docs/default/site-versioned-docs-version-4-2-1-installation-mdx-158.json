@@ -6,7 +6,7 @@
   "source": "@site/versioned_docs/version-4.2.1/installation.mdx",
   "sourceDirName": ".",
   "slug": "/",
-  "permalink": "/egjs-infinitegrid/ko/docs/",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -20,6 +20,6 @@
   "sidebar": "started",
   "next": {
     "title": "Quick Start",
-    "permalink": "/egjs-infinitegrid/ko/docs/quick-start"
+    "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/quick-start"
   }
 }

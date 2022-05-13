@@ -6,7 +6,7 @@
   "source": "@site/i18n/ko/docusaurus-plugin-content-docs/version-4.2.1/api/OnChangeScroll.mdx",
   "sourceDirName": "api",
   "slug": "/api/OnChangeScroll",
-  "permalink": "/egjs-infinitegrid/ko/docs/api/OnChangeScroll",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/api/OnChangeScroll",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,6 +17,6 @@
   "sidebar": "api",
   "previous": {
     "title": "OnContentError",
-    "permalink": "/egjs-infinitegrid/ko/docs/api/OnContentError"
+    "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/api/OnContentError"
   }
 }

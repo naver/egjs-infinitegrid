@@ -6,7 +6,7 @@
   "source": "@site/versioned_docs/version-4.2.1/api/PackingInfiniteGridOptions.mdx",
   "sourceDirName": "api",
   "slug": "/api/PackingInfiniteGridOptions",
-  "permalink": "/egjs-infinitegrid/docs/api/PackingInfiniteGridOptions",
+  "permalink": "/egjs-infinitegrid/docs/4.2.1/api/PackingInfiniteGridOptions",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "api",
   "previous": {
     "title": "MasonryInfiniteGridOptions",
-    "permalink": "/egjs-infinitegrid/docs/api/MasonryInfiniteGridOptions"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/MasonryInfiniteGridOptions"
   },
   "next": {
     "title": "InfiniteGridStatus",
-    "permalink": "/egjs-infinitegrid/docs/api/InfiniteGridStatus"
+    "permalink": "/egjs-infinitegrid/docs/4.2.1/api/InfiniteGridStatus"
   }
 }

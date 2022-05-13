@@ -6,7 +6,7 @@
   "source": "@site/versioned_docs/version-4.2.1/quick-start.mdx",
   "sourceDirName": ".",
   "slug": "/quick-start",
-  "permalink": "/egjs-infinitegrid/ko/docs/quick-start",
+  "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/quick-start",
   "draft": false,
   "editUrl": null,
   "tags": [],
@@ -20,10 +20,10 @@
   "sidebar": "started",
   "previous": {
     "title": "Installation",
-    "permalink": "/egjs-infinitegrid/ko/docs/"
+    "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/"
   },
   "next": {
     "title": "Using the Methods",
-    "permalink": "/egjs-infinitegrid/ko/docs/using-the-methods"
+    "permalink": "/egjs-infinitegrid/ko/docs/4.2.1/using-the-methods"
   }
 }
