@@ -5,7 +5,7 @@
     "packages": "npm run packages:update && npm run packages:build && npm run packages:publish",
     "packages:update": "lerna-helper version",
     "packages:build": "lerna run build --ignore ngx-infinitegrid --ignore docs",
-    "packages:publish": "lerna-helper publish --ignore ngx-infinitegrid --commit",
+    "packages:publish": "lerna-helper publish --ignore ngx-infinitegrid --commit 'chore: update packages versions'",
     "changelog": "lerna-helper changelog --type all --base infinitegrid",
     "docs:build": "jsdoc-to-mdx -c ./jsdoc-to-mdx.json",
     "docs:version": "node ./config/docs-version-up",
