@@ -7,7 +7,7 @@
   <a href="https://www.npmjs.com/package/@egjs/infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/infinitegrid.svg?style=flat-square&color=007acc&label=version&logo=NPM" alt="version" /></a>
   <a href="https://www.npmjs.com/package/@egjs/infinitegrid" target="_blank"><img alt="npm weekly downloads" src="https://img.shields.io/npm/dw/@egjs/infinitegrid?logo=npm&style=flat-square&color=007acc" /></a>
   <a href="https://www.npmjs.com/package/@egjs/infinitegrid" target="_blank"><img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/infinitegrid.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc" /></a>
-  <a href="https://travis-ci.org/naver/egjs-infinitegrid" target="_blank"><img alt="Travis (.org)" src="https://img.shields.io/travis/naver/egjs-infinitegrid.svg?style=flat-square&label=build&logo=travis%20ci" /></a>
+  <a href="https://github.com/naver/egjs-infinitegrid/actions" target="_blank"><img alt="Github actions" src="https://img.shields.io/github/workflow/status/naver/egjs-infinitegrid/Run%20tests?style=flat-square" /></a>
   <a href="https://coveralls.io/github/naver/egjs-infinitegrid?branch=master&style=flat-square" target="_blank"><img alt="Coveralls github" src="https://img.shields.io/coveralls/github/naver/egjs-infinitegrid.svg?style=flat-square&label=%E2%9C%85%20coverage" /></a>
     <a href="https://github.com/naver/egjs-infinitegrid/blob/master/LICENSE" target="_blank"><img alt="GitHub" src="https://img.shields.io/github/license/naver/egjs-infinitegrid.svg?style=flat-square&label=%F0%9F%93%9C%20license&color=08CE5D" /></a>
 </p>
