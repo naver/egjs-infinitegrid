@@ -46,5 +46,5 @@ function replaceFiles(dir) {
   });
 }
 
-replaceFiles("../docs/i18n/ko/docusaurus-plugin-content-docs/current/api/");
-replaceFiles("../docs/docs/api/");
+replaceFiles("../packages/docs/i18n/ko/docusaurus-plugin-content-docs/current/api/");
+replaceFiles("../packages/docs/docs/api/");

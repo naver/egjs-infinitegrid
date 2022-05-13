@@ -47,7 +47,7 @@
 
 ## 📖 Articles
 * [InfiniteGrid 4 Release!!](https://medium.com/naver-fe-platform/infinitegrid-4-release-f4e2d05b0292)
-* []()
+
 ## ⚙️ Installation
 #### npm
 ```bash
@@ -161,6 +161,7 @@ grid.renderItems();
 ## 📦 Packages
 |Package|Version|Description|
 |:-----:|:-----:|:-----:|
+|[**@egjs/infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/infinitegrid.svg?style=flat-square&color=dddd31&label=%F0%9F%94%96" alt="version" /></a>|Vanilla Module of InfiniteGrid|
 |[**@egjs/ngx-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/ngx-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/ngx-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/ngx-infinitegrid.svg?style=flat-square&color=dd0031&label=%F0%9F%94%96" alt="version" /></a>|<img width="15" src="https://naver.github.io/egjs-infinitegrid/img/icons/angular.svg" valign="middle" alt="Angular" /> [Angular](https://angular.io/) port of @egjs/infinitegrid|
 |[**@egjs/react-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/react-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/react-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/react-infinitegrid.svg?style=flat-square&color=00d8ff&label=%F0%9F%94%96" alt="version" /></a>|<img width="15" src="https://naver.github.io/egjs-infinitegrid/img/icons/react.svg" valign="middle" alt="React" /> [React](https://reactjs.org/) port of @egjs/infinitegrid|
 |[**@egjs/vue-infinitegrid**](https://github.com/naver/egjs-infinitegrid/blob/master/packages/vue-infinitegrid/README.md)|<a href="https://www.npmjs.com/package/@egjs/vue-infinitegrid" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/vue-infinitegrid.svg?style=flat-square&color=42b883&label=%F0%9F%94%96" alt="version" /></a>|<img width="15" src="https://naver.github.io/egjs-infinitegrid/img/icons/vue.svg" valign="middle" alt="Vue.js" /> [Vue.js@2](https://vuejs.org/v2/guide/index.html) port of @egjs/infinitegrid|

@@ -68,6 +68,7 @@ export class NgxInfiniteGridComponent
   @Input() outlineSize!: NgxInfiniteGridProps['outlineSize'];
   @Input() useRoundedSize!: NgxInfiniteGridProps['useRoundedSize'];
   @Input() useResizeObserver!: NgxInfiniteGridProps['useResizeObserver'];
+  @Input() observeChildren!: NgxInfiniteGridProps['observeChildren'];
 
 
   @Input() usePlaceholder!: NgxInfiniteGridProps['useFirstRender'];

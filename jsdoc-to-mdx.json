@@ -1,7 +1,7 @@
 {
   "locales": ["ko"],
-  "outDir": "./docs/docs/api",
-  "localesDir": "./docs/i18n/{locale}/docusaurus-plugin-content-docs/current/api",
-  "sidebar": "./docs",
+  "outDir": "./packages/docs/docs/api",
+  "localesDir": "./packages/docs/i18n/{locale}/docusaurus-plugin-content-docs/current/api",
+  "sidebar": "./packages/docs",
   "jsdoc": "./jsdoc.json"
 }

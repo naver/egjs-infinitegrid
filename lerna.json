@@ -1,0 +1,23 @@
+{
+  "packages": [
+    "packages/*",
+    "packages/ngx-infinitegrid/projects/ngx-infinitegrid"
+  ],
+  "version": "independent",
+  "lernaHelperOptions": {
+    "beforeReleaseScripts": [
+      "npm run packages:build",
+      "npm run demo:build",
+      "npm run demo:deploy"
+    ],
+    "deployFileMap": [
+      {
+        "basePath": "packages/infinitegrid/dist",
+        "dists": [
+          "demo/release/{{version}}/dist",
+          "demo/release/latest/dist"
+        ]
+      }
+    ]
+  }
+}

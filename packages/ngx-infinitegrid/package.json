@@ -9,6 +9,7 @@
     "storybook": "start-storybook -p 6008",
     "build-storybook": "build-storybook"
   },
+  "lernaHelperPublishPath": "./dist/ngx-infinitegrid",
   "private": true,
   "dependencies": {
     "@angular/animations": "~11.2.5",

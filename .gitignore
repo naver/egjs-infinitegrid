@@ -211,12 +211,11 @@ docs/i18n/ko/docusaurus-plugin-content-docs/current/
 report/
 temp/
 doc/
-demo/_data/version.yml
-demo/release
-demo/storybook
+demo/
 declaration/
 dist/
 packages/*/dist/
 test/e2e/log/
 test/e2e/screenshots/diff/
 storybook/build/
+*.lerna-backup

@@ -17,8 +17,6 @@ module.exports = {
       },
     ]);
 
-    config.resolve.alias["@egjs/infinitegrid"] = path.resolve(__dirname, '../../../dist/infinitegrid.esm.js');
-
     return config;
   },
   stories: [

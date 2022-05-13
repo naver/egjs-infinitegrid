@@ -5,7 +5,7 @@ const path = require("path");
 
 const fs = require("fs-extra");
 
-const package = require("../package.json");
+const package = require("../packages/infinitegrid/package.json");
 
 const currentVersion = package.version;
 
@@ -14,14 +14,14 @@ if (!/^\d+\.\d+\.\d+$/.test(currentVersion)) {
 }
 
 const DIR = {
-  VERSION_JSON: path.resolve(__dirname, "../docs/versions.json"),
+  VERSION_JSON: path.resolve(__dirname, "../packages/docs/versions.json"),
   I18N: (lang, content) => lang
     ? content
-      ? path.resolve(__dirname, `../docs/i18n/${lang}/${content}`)
-      : path.resolve(__dirname, `../docs/i18n/${lang}`)
-    : path.resolve(__dirname, `../docs/i18n`),
-  VERSIONED_DOCS: path.resolve(__dirname, "../docs/versioned_docs"),
-  VERSIONED_SIDEBARS: path.resolve(__dirname, "../docs/versioned_sidebars")
+      ? path.resolve(__dirname, `../packages/docs/i18n/${lang}/${content}`)
+      : path.resolve(__dirname, `../packages/docs/i18n/${lang}`)
+    : path.resolve(__dirname, `../packages/docs/i18n`),
+  VERSIONED_DOCS: path.resolve(__dirname, "../packages/docs/versioned_docs"),
+  VERSIONED_SIDEBARS: path.resolve(__dirname, "../packages/docs/versioned_sidebars")
 };
 
 const getDirectories = dir => fs.readdirSync(dir, { withFileTypes: true })
@@ -60,7 +60,7 @@ const runVersionUpScript = () => new Promise((resolve, reject) => {
     removeCurrentVersion();
   }
 
-  process.chdir(path.resolve(__dirname, "../docs"));
+  process.chdir(path.resolve(__dirname, "../packages/docs"));
   const build = spawn("./node_modules/.bin/docusaurus", [
     "docs:version",
     `${currentVersion}`

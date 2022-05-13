@@ -8,11 +8,11 @@
   },
   "source": {
     "include": [
-      "src",
       "README.md",
-      "node_modules/@egjs/grid/src",
-      "node_modules/@egjs/component/src/Component.ts",
-      "node_modules/@egjs/component/src/ComponentEvent.ts"
+      "packages/infinitegrid/src",
+      "packages/infinitegrid/node_modules/@egjs/grid/src",
+      "packages/infinitegrid/node_modules/@egjs/component/src/Component.ts",
+      "packages/infinitegrid/node_modules/@egjs/component/src/ComponentEvent.ts"
     ],
     "includePattern": ".+\\.(j|t)s(doc|x)?$",
     "excludePattern": "(^|\\/|\\\\)_"
