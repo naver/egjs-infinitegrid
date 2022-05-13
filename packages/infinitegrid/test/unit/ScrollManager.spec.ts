@@ -1,6 +1,6 @@
 import { CONTAINER_CLASS_NAME } from "../../src/consts";
 import { ScrollManager } from "../../src/ScrollManager";
-import { cleanup, sandbox, waitEvent, waitFor } from "./utils/utils";
+import { cleanup, getScrollThumbSize, sandbox, waitEvent, waitFor } from "./utils/utils";
 import * as sinon from "sinon";
 import { ContainerManager } from "@egjs/grid";
 
@@ -79,6 +79,7 @@ describe("test ScrollManager", () => {
       // Given
       wrapper!.style.width = "300px";
       wrapper!.style.height = "300px";
+      const thumbSize = getScrollThumbSize();
 
       // When
       scrollManager = new ScrollManager(wrapper!, {
@@ -93,7 +94,7 @@ describe("test ScrollManager", () => {
       containerManager.resize();
 
       // Then
-      expect(containerManager.getInlineSize()).to.be.equals(300);
+      expect(containerManager.getInlineSize()).to.be.equals(300 - thumbSize);
     });
   });
   it("should check if the original style is restored", () => {

@@ -67,3 +67,24 @@ export function getItems(count: number): InfiniteGridItemInfo[] {
   }
   return elements;
 }
+
+let thumbSize = -1;
+
+export function getScrollThumbSize() {
+  if (thumbSize < 0) {
+    const wrapper = document.createElement("div");
+    const container = document.createElement("div");
+
+    wrapper.style.cssText = "overflow: visible; width: 100px; height: 100px;";
+    container.style.cssText = "height: 200px;";
+
+    wrapper.appendChild(container);
+    document.body.appendChild(wrapper);
+
+    thumbSize = wrapper.offsetWidth - wrapper.clientWidth;
+
+
+    document.body.removeChild(wrapper);
+  }
+  return thumbSize;
+}
