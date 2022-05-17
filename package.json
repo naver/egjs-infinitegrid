@@ -11,7 +11,7 @@
     "docs:version": "node ./config/docs-version-up",
     "demo:build": "npm run docs:build && npm run docs:version && npm run build --prefix packages/docs && npm run build:storybook --prefix packages/infinitegrid",
     "demo:deploy": "lerna-helper deploy --base @egjs/infinitegrid --remote upstream",
-    "release": "lerna-helper release --base @egjs/infinitegrid --scripts --remote upstream --branch master",
+    "release": "lerna-helper release --base @egjs/infinitegrid --remote upstream --branch master",
     "bootstrap": "lerna bootstrap"
   },
   "repository": {
