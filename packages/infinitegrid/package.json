@@ -1,6 +1,6 @@
 {
 	"name": "@egjs/infinitegrid",
-	"version": "4.3.0",
+	"version": "4.3.1",
 	"description": "A module used to arrange elements including content infinitely according to grid type. With this module, you can implement various grids composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
 	"module": "dist/infinitegrid.esm.js",
 	"main": "dist/infinitegrid.js",
@@ -8,7 +8,7 @@
 	"sideEffects": false,
 	"scripts": {
 		"start": "rollup -c -w",
-    "build": "rm -rf ./dist ./declaration && rollup -c && npm run declaration && npm run printsizes",
+		"build": "rm -rf ./dist ./declaration && rollup -c && npm run declaration && npm run printsizes",
 		"test": "karma start",
 		"lint": "eslint ./src/ --ext .ts",
 		"test:chrome": "karma start --chrome",
@@ -122,7 +122,7 @@
 	"dependencies": {
 		"@egjs/children-differ": "^1.0.1",
 		"@egjs/component": "^3.0.0",
-		"@egjs/grid": "~1.10.0",
+		"@egjs/grid": "~1.10.1",
 		"@egjs/list-differ": "^1.0.0"
 	}
 }
