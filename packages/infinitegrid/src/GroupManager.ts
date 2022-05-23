@@ -300,10 +300,12 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return this.endCursor;
   }
 
-  public getGroupStatus(type?: STATUS_TYPE): GroupManagerStatus {
+  public getGroupStatus(type?: STATUS_TYPE, includePlaceholders?: boolean): GroupManagerStatus {
     const orgStartCursor = this.startCursor;
     const orgEndCursor = this.endCursor;
     const orgGroups = this.groups;
+    const startGroup = orgGroups[orgStartCursor];
+    const endGroup = orgGroups[orgEndCursor];
 
     let startCursor = orgStartCursor;
     let endCursor = orgEndCursor;
@@ -313,11 +315,33 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     let groups: InfiniteGridGroup[];
 
     if (type === STATUS_TYPE.REMOVE_INVISIBLE_GROUPS) {
-      groups = this.getVisibleGroups();
-      endCursor -= startCursor;
+      groups = this.getVisibleGroups(includePlaceholders);
+      endCursor = groups.length - 1;
       startCursor = 0;
     } else {
-      groups = this.getGroups();
+      groups = this.getGroups(includePlaceholders);
+
+      if (!includePlaceholders) {
+        startCursor = -1;
+        endCursor = -1;
+
+        for (let orgIndex = orgStartCursor; orgIndex <= orgEndCursor; ++orgIndex) {
+          const orgGroup = orgGroups[orgIndex];
+
+          if (orgGroup && orgGroup.type !== GROUP_TYPE.VIRTUAL) {
+            startCursor = groups.indexOf(orgGroup);
+            break;
+          }
+        }
+        for (let orgIndex = orgEndCursor; orgIndex >= orgStartCursor; --orgIndex) {
+          const orgGroup = orgGroups[orgIndex];
+
+          if (orgGroup && orgGroup.type !== GROUP_TYPE.VIRTUAL) {
+            endCursor = groups.lastIndexOf(orgGroup);
+            break;
+          }
+        }
+      }
     }
 
     const groupStatus: InfiniteGridGroupStatus[] = groups.map(({ grid, groupKey }, i) => {
@@ -337,8 +361,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       };
     });
 
-    const startGroup = orgGroups[orgStartCursor];
-    const endGroup = orgGroups[orgEndCursor];
+
     const totalItems = this.getGroupItems();
 
     const itemStartCursor = totalItems.indexOf(startGroup?.items[0]);
