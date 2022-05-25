@@ -5,6 +5,7 @@
   "types": "declaration/index.d.ts",
   "main": "dist/infinitegrid.cjs.js",
   "module": "dist/infinitegrid.esm.js",
+  "browser": "dist/infinitegrid.umd.js",
   "sideEffects": false,
   "scripts": {
     "storybook": "start-storybook -p 6007",

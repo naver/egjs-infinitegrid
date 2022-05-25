@@ -1105,6 +1105,56 @@ describe("test InfiniteGrid", () => {
         expect(itemsLength2).to.be.equals(6);
         expect(allItemsLength2).to.be.equals(6);
       });
+      it(`should check if it is included in status with virtual items`, async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 4);
+        // render items for all cursors
+        await waitEvent(ig!, "renderComplete");
+
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+        ig!.getScrollContainerElement().scrollTop = 800;
+
+        // scroll cursors (2 ~ 4)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS, true));
+        await waitEvent(ig!, "renderComplete");
+
+        // restore cursors (2 ~ 4) with scroll 800
+        const scrollTop1 = ig!.getScrollContainerElement().scrollTop;
+        const startCursor1 = ig!.getStartCursor();
+        const endCursor1 = ig!.getEndCursor();
+
+        // restore with virtual items
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS, true));
+        await waitEvent(ig!, "renderComplete");
+
+        // 800
+        // restore cursors (2 ~ 4) with scroll 800
+        const scrollTop2 = ig!.getScrollContainerElement().scrollTop;
+        const startCursor2 = ig!.getStartCursor();
+        const endCursor2 = ig!.getEndCursor();
+
+        // Then
+        expect(scrollTop1).to.be.equals(800);
+        expect(startCursor1).to.be.equals(2);
+        expect(endCursor1).to.be.equals(4);
+
+        expect(scrollTop2).to.be.equals(800);
+        expect(startCursor2).to.be.equals(2);
+        expect(endCursor2).to.be.equals(4);
+      });
     });
   });
   describe("test ResizeObserver", () => {
