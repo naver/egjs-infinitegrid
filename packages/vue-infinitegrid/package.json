@@ -1,6 +1,6 @@
 {
   "name": "@egjs/vue-infinitegrid",
-  "version": "4.3.1",
+  "version": "4.4.0",
   "description": "A Vue component that can arrange items infinitely according to the type of grids",
   "sideEffects": false,
   "types": "declaration/index.d.ts",
@@ -42,7 +42,7 @@
     "layout"
   ],
   "dependencies": {
-    "@egjs/infinitegrid": "~4.3.1"
+    "@egjs/infinitegrid": "~4.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

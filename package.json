@@ -39,7 +39,7 @@
   ],
   "devDependencies": {
     "@daybrush/jsdoc": "^0.3.12",
-    "@egjs/release-helper": "^0.2.0-beta.2",
+    "@egjs/release-helper": "^0.2.1",
     "egjs-jsdoc-template": "^1.4.4",
     "jsdoc-to-mdx": "^1.1.2",
     "lerna": "^4.0.0",
