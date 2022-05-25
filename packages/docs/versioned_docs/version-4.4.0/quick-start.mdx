@@ -1,0 +1,301 @@
+---
+title: Quick Start
+id: quick-start
+slug: /quick-start
+custom_edit_url: null
+---
+If you don't want to use Infinite's features, use [`@egjs/grid`](https://github.com/naver/egjs-grid).
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+<Tabs
+  groupId="cfc"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@2", value: "vue" },
+    { label: "Vue@3", value: "vue3" },
+    { label: "Angular", value: "angular" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+Add the script/CSS to the page.
+```html
+<!-- https://naver.github.io/egjs-infinitegrid/release/latest/dist/infinitegrid.min.js -->
+<script src="https://unpkg.com/@egjs/infinitegrid/dist/infinitegrid.min.js" crossorigin="anonymous"></script>
+```
+
+Or, you can rather import them if you're using a bundler like [webpack](https://webpack.js.org/) or [rollup](https://rollupjs.org/guide/en/).
+```js
+import { MasonryInfiniteGrid } from "@egjs/infinitegrid";
+```
+
+Then, add some basic HTML layout of InfiniteGrid to your page.
+
+```html
+<div class="wrapper">
+  <div class="item">1</div>
+  <div class="item">2</div>
+  <div class="item">3</div>
+</div>
+```
+Then initialize InfiniteGrid instance with JavaScript after.
+
+```js
+import { MasonryInfiniteGrid } from "@egjs/infinitegrid";
+
+const ig = new MasonryInfiniteGrid(".wrapper", {
+  align: "center",
+  gap: 5,
+});
+
+ig.on("requestAppend", e => {
+  const nextGroupKey = (e.groupKey || 0) + 1;
+  const length = items.length;
+
+  ig.append([
+    `<div class="item">${length}</div>`,
+    `<div class="item">${length + 1}</div>`,
+    `<div class="item">${length + 2}</div>`,
+  ], nextGroupKey);
+});
+ig.renderItems();
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+You can import & use InfiniteGrid as a React Component.
+
+```jsx title="SomeComponent.jsx"
+import * as React from "react";
+import { MasonryInfiniteGrid } from "@egjs/react-infinitegrid";
+
+export default () => {
+  const [items, setItems] = React.useState([]);
+
+  return <MasonryInfiniteGrid
+    align="center"
+    gap={5}
+    onRequestAppend={e => {
+      const nextGroupKey = (e.groupKey || 0) + 1;
+      const length = items.length;
+
+      setItems([
+        ...items,
+        { groupKey: nextGroupKey, key: length },
+        { groupKey: nextGroupKey, key: length + 1 },
+        { groupKey: nextGroupKey, key: length + 2 },
+      ]);
+    }}>
+    {items.map((item) => {
+      return <div className="item" data-grid-groupkey={item.groupKey} key={item.key}>{item.key}</div>
+    })}
+  </MasonryInfiniteGrid>;
+}
+```
+
+  </TabItem>
+  <TabItem value="vue">
+You can import & use InfiniteGrid as a Vue Component.
+
+```html title="<template>"
+<masonry-infinite-grid
+  class="container"
+  v-bind:gap="5"
+  v-on:requestAppend="onRequestAppend"
+>
+  <div
+    class="item"
+    v-for="item in items"
+    :key="item.key"
+    :data-grid-groupkey="item.groupKey"
+  >{{ item.key }}</div>
+</masonry-infinite-grid>
+```
+
+```js title="<script>"
+import { MasonryInfiniteGrid } from "@egjs/vue-infinitegrid";
+
+export default {
+  components: {
+    MasonryInfiniteGrid,
+  },
+  data() {
+    return {
+      items: [],
+    };
+  },
+  methods: {
+    onRequestAppend(e) {
+      const nextGroupKey = (e.groupKey || 0) + 1;
+      const length = this.items.length;
+
+      this.items = [
+        ...this.items,
+        { groupKey: nextGroupKey, key: length },
+        { groupKey: nextGroupKey, key: length + 1 },
+        { groupKey: nextGroupKey, key: length + 2 },
+      ];
+    },
+  },
+};
+
+```
+
+  </TabItem>
+  <TabItem value="vue3">
+You can import & use InfiniteGrid as a Vue Component.
+
+```html title="<template>"
+<masonry-infinite-grid
+  class="container"
+  v-bind:gap="5"
+  v-on:requestAppend="onRequestAppend"
+>
+  <div
+    class="item"
+    v-for="item in items"
+    :key="item.key"
+    :data-grid-groupkey="item.groupKey"
+  >{{ item.key }}</div>
+</masonry-infinite-grid>
+```
+
+```js title="<script>"
+import { MasonryInfiniteGrid } from "@egjs/vue3-infinitegrid";
+
+export default {
+  components: {
+    MasonryInfiniteGrid,
+  },
+  data() {
+    return {
+      items: [],
+    };
+  },
+  methods: {
+    onRequestAppend(e) {
+      const nextGroupKey = (e.groupKey || 0) + 1;
+      const length = this.items.length;
+
+      this.items = [
+        ...this.items,
+        { groupKey: nextGroupKey, key: length },
+        { groupKey: nextGroupKey, key: length + 1 },
+        { groupKey: nextGroupKey, key: length + 2 },
+      ];
+    },
+  },
+};
+
+```
+  </TabItem>
+  <TabItem value="angular">
+
+You can add `NgxInfiniteGridModule` at `imports` of your app module to use InfiniteGrid.
+
+```js title="app.module.ts"
+import { NgxInfiniteGridModule } from '@egjs/ngx-infinitegrid';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    NgxInfiniteGridModule /* Add in imports */
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { } /* Your app */
+```
+
+```html title="app.component.html"
+<div NgxMasonryInfiniteGrid
+  [items]="items"
+  [trackBy]="trackBy"
+  [groupBy]="groupBy"
+  [gap]="5"
+  (requestAppend)="onRequestAppend($event)"
+  #ig
+  >
+  <div class="item" *ngFor ="let item of ig.visibleItems; trackBy: trackBy;">
+    {{item.data.key}}
+  </div>
+</div>
+```
+
+```js title="app.component.ts"
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+})
+export class AppComponent {
+  items = [];
+  groupBy(_: any, item: any) {
+    return item.groupKey;
+  }
+  trackBy(_: any, item: any) {
+    return item.key;
+  }
+  onRequestAppend(e) {
+    const nextGroupKey = (e.groupKey || 0) + 1;
+    const length = this.items.length;
+
+    this.items = [
+      ...this.items,
+      { groupKey: nextGroupKey, key: length },
+      { groupKey: nextGroupKey, key: length + 1 },
+      { groupKey: nextGroupKey, key: length + 2 },
+    ];
+  }
+}
+```
+  </TabItem>
+  <TabItem value="svelte">
+
+You can import `InfiniteGrid` from the "@egjs/svelte-infinitegrid" package.
+
+```jsx title="App.svelte"
+<script lang="ts">
+  import { MasonryInfiniteGrid } from "@egjs/svelte-infinitegrid";
+
+  let items = [];
+</script>
+<MasonryInfiniteGrid
+  class="container"
+  gap={5}
+  {items}
+  on:requestAppend={({ detail: e }) => {
+    const nextGroupKey = (e.groupKey || 0) + 1;
+    const length = items.length;
+
+    items = [
+      ...items,
+      { groupKey: nextGroupKey, key: length },
+      { groupKey: nextGroupKey, key: length + 1 },
+      { groupKey: nextGroupKey, key: length + 2 },
+    ];
+  }}
+  let:visibleItems
+>
+   {#each visibleItems as item (item.key)}
+    <div class="item">
+     {item.data.key}
+    </div>
+  {/each}
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+</Tabs>
