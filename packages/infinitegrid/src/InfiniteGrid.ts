@@ -335,6 +335,19 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     }
     return this.syncItems(nextItemInfos);
   }
+  public insertByGroupIndex(groupIndex: number, items: InfiniteGridInsertedItems, groupKey?: string | number): this {
+    const nextGroupInfos: InfiniteGridGroup[] = this.groupManager.getGroups();
+    const rightGroup = nextGroupInfos[groupIndex];
+
+    if (!rightGroup) {
+      return this.append(items, groupKey);
+    }
+    const nextItemInfos: InfiniteGridItemInfo[] = this.groupManager.getGroupItems();
+    const rightGroupKey = rightGroup.groupKey;
+    const rightItemIndex = findIndex(nextItemInfos, (item) => item.groupKey === rightGroupKey);
+
+    return this.insert(rightItemIndex, items, groupKey);
+  }
   /**
    * Returns the current state of a module such as location information. You can use the setStatus() method to restore the information returned through a call to this method.
    * @ko 아이템의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
