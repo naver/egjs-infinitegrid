@@ -46,6 +46,7 @@ export const ITEM_INFO_PROPERTIES = {
 
 
 export const INFINITEGRID_METHODS = [
+  "insertByGroupIndex",
   "updateItems",
   "getItems",
   "getVisibleItems",
