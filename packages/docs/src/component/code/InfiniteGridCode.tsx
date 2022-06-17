@@ -56,40 +56,40 @@ export default (props: {
       { label: "Svelte", value: "svelte" },
     ]}>
     <TabItem value="js">
-    <CodeBlock className="html">
+    <CodeBlock className="language-html">
       {htmlCode}
     </CodeBlock>
 
-      <CodeBlock className="js">
+      <CodeBlock className="language-js">
         {jsCode}
       </CodeBlock>
     </TabItem>
     <TabItem value="react">
-      <CodeBlock className="jsx">
+      <CodeBlock className="language-jsx">
         {reactCode}
       </CodeBlock>
     </TabItem>
     <TabItem value="vue">
-      <CodeBlock className="html">
+      <CodeBlock className="language-html">
         {vueCode}
       </CodeBlock>
     </TabItem>
     <TabItem value="vue3">
-      <CodeBlock className="html">
+      <CodeBlock className="language-html">
         {vueCode.replace("vue-infinitegrid", "vue3-infinitegrid")}
       </CodeBlock>
     </TabItem>
     <TabItem value="angular">
-      <CodeBlock className="html">
+      <CodeBlock className="language-html">
         {angularHTMLCode}
       </CodeBlock>
 
-      <CodeBlock className="ts">
+      <CodeBlock className="language-ts">
         {angularComponentCode}
       </CodeBlock>
     </TabItem>
     <TabItem value="svelte">
-      <CodeBlock className="html">
+      <CodeBlock className="language-html">
         {svelteCode}
       </CodeBlock>
     </TabItem>
