@@ -1,17 +1,19 @@
 import Component from "@egjs/component";
 import { diff } from "@egjs/list-differ";
 import { DIRECTION } from "./consts";
-import { findIndex, getNextCursors, isFlatOutline } from "./utils";
+import { findIndex, findLastIndex, getNextCursors, isFlatOutline } from "./utils";
 
 export interface OnInfiniteRequestAppend {
   key?: string | number | undefined;
   nextKey?: string | number | undefined;
+  nextKeys?: Array<string | number>;
   isVirtual: boolean;
 }
 
 export interface OnInfiniteRequestPrepend {
   key?: string | number;
   nextKey?: string | number;
+  nextKeys?: Array<string | number>;
   isVirtual: boolean;
 }
 
@@ -129,6 +131,36 @@ export class Infinite extends Component<InfiniteEvents> {
     if (nextEndCursor === prevEndCursor && hasEndItems && isEnd) {
       nextEndCursor += 1;
     }
+    let nextVisibleItems = items.slice(nextStartCursor, nextEndCursor + 1);
+
+    // It must contain no virtual items.
+    if (nextVisibleItems.every((item) => item.isVirtual === true)) {
+      // The real item can be in either the start or end direction.
+      let hasRealItem = false;
+
+      for (let i = nextStartCursor - 1; i >= 0; --i) {
+        if (!items[i].isVirtual) {
+          nextStartCursor = i;
+          hasRealItem = true;
+          break;
+        }
+      }
+      if (!hasRealItem) {
+        for (let i = nextEndCursor + 1; i < length; ++i) {
+          if (!items[i].isVirtual) {
+            nextEndCursor = i;
+            hasRealItem = true;
+            break;
+          }
+        }
+      }
+      if (hasRealItem) {
+        nextVisibleItems = items.slice(nextStartCursor, nextEndCursor + 1);
+      }
+    }
+
+    const hasVirtualItems = nextVisibleItems.some((item) => item.isVirtual === true);
+
     if (prevStartCursor !== nextStartCursor || prevEndCursor !== nextEndCursor) {
       this.trigger("change", {
         prevStartCursor,
@@ -136,19 +168,54 @@ export class Infinite extends Component<InfiniteEvents> {
         nextStartCursor,
         nextEndCursor,
       });
-      return;
-    } else if (this._requestVirtualItems()) {
-      return;
-    } else if ((!isDirectionEnd || !isEnd) && isStart) {
-      this.trigger("requestPrepend", {
-        key: items[prevStartCursor].key,
-        isVirtual: false,
-      });
-    } else if ((isDirectionEnd || !isStart) && isEnd) {
-      this.trigger("requestAppend", {
-        key: items[prevEndCursor].key,
-        isVirtual: false,
-      });
+
+      if (!hasVirtualItems) {
+        return;
+      }
+    }
+
+    // If a virtual item is included, a requestPrepend (or requestAppend) event is triggered.
+    if (hasVirtualItems) {
+      const isStartVirtual = nextVisibleItems[0]?.isVirtual;
+      const isEndVirtual = nextVisibleItems[nextVisibleItems.length - 1]?.isVirtual;
+
+      if ((!isDirectionEnd || !isEnd) && isStartVirtual) {
+        const realItemIndex = findIndex(nextVisibleItems, (item) => !item.isVirtual);
+        const endVirtualItemIndex = (realItemIndex === -1 ? nextVisibleItems.length : realItemIndex) - 1;
+
+        if (nextVisibleItems[endVirtualItemIndex]) {
+          this.trigger("requestPrepend", {
+            key: nextVisibleItems[realItemIndex].key,
+            nextKey: nextVisibleItems[endVirtualItemIndex].key,
+            nextKeys: nextVisibleItems.slice(0, endVirtualItemIndex + 1).map((item) => item.key),
+            isVirtual: true,
+          });
+        }
+      } else if ((isDirectionEnd || !isStart) && isEndVirtual) {
+        const realItemIndex = findLastIndex(nextVisibleItems, (item) => !item.isVirtual);
+        const startVirtualItemIndex = realItemIndex + 1;
+
+        if (nextVisibleItems[startVirtualItemIndex]) {
+          this.trigger("requestAppend", {
+            key: nextVisibleItems[realItemIndex].key,
+            nextKey: nextVisibleItems[startVirtualItemIndex].key,
+            nextKeys: nextVisibleItems.slice(startVirtualItemIndex).map((item) => item.key),
+            isVirtual: true,
+          });
+        }
+      }
+    } else if (!this._requestVirtualItems()) {
+      if ((!isDirectionEnd || !isEnd) && isStart) {
+        this.trigger("requestPrepend", {
+          key: items[prevStartCursor].key,
+          isVirtual: false,
+        });
+      } else if ((isDirectionEnd || !isStart) && isEnd) {
+        this.trigger("requestAppend", {
+          key: items[prevEndCursor].key,
+          isVirtual: false,
+        });
+      }
     }
   }
 
