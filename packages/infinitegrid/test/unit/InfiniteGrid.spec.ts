@@ -897,7 +897,7 @@ describe("test InfiniteGrid", () => {
         });
       });
 
-      it.only(`should check whether it is possible to restore all virtual groups in the minimized status`, async () => {
+      it(`should check whether it is possible to restore all virtual groups in the minimized status`, async () => {
         // Given
         const nums = new Array(29).fill(0).map((_, i) => i);
 

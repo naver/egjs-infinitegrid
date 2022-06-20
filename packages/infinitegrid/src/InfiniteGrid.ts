@@ -759,7 +759,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
         direction: this.defaultDirection,
       });
     }
-    if (!isRestore || isResize || (!isRestore && e.isItemChanged)) {
+    if (!isRestore || isResize || e.isItemChanged) {
       this.groupManager.renderItems();
     }
   }
