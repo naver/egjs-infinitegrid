@@ -394,6 +394,58 @@ describe("test Infinite", () => {
     expect(ev1.nextKey).to.be.equals(2);
     expect(ev1.isVirtual).to.be.equals(true);
   });
+  it(`should check if requestAppend occurs with change event including virtual group`, () => {
+    // Given
+    const changeSpy = sinon.spy();
+    const requestAppendSpy = sinon.spy();
+
+    infinite = new Infinite({
+      defaultDirection: "end",
+    });
+    infinite.on("change", changeSpy);
+    infinite.on("requestAppend", requestAppendSpy);
+    infinite.setItems([
+      {
+        key: 1,
+        startOutline: [0],
+        endOutline: [200],
+      },
+      {
+        key: 2,
+        startOutline: [200],
+        endOutline: [400],
+        isVirtual: true,
+      },
+      {
+        key: 3,
+        startOutline: [400],
+        endOutline: [600],
+        isVirtual: true,
+      },
+      {
+        key: 4,
+        startOutline: [600],
+        endOutline: [800],
+        isVirtual: true,
+      },
+    ]);
+    infinite.setCursors(0, 2);
+    infinite.setSize(400);
+
+    // When
+    infinite.scroll(600);
+
+    // Then
+    const changeEvent = changeSpy.args[0][0];
+    const requestAppendEvent = requestAppendSpy.args[0][0];
+
+    expect(changeSpy.callCount).to.be.equals(1);
+    expect(requestAppendSpy.callCount).to.be.equals(1);
+    expect(changeEvent.nextStartCursor).to.be.equals(0);
+    expect(changeEvent.nextEndCursor).to.be.equals(3);
+    expect(requestAppendEvent.nextKey).to.be.equals(2);
+    expect(requestAppendEvent.nextKeys).to.be.deep.equals([2, 3, 4]);
+  });
   it(`should check whether the minimum and maximum cursors are maintained when useRecycle is false.`, () => {
     // Given
     const changeEventSpy = sinon.spy();

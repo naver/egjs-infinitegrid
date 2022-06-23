@@ -1,0 +1,44 @@
+import { Component, Input } from '@angular/core';
+import { ITEM_TYPE, OnRequestPrepend, OnRequestAppend } from '@egjs/infinitegrid';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+})
+export class AppComponent {
+  ITEM_TYPE = ITEM_TYPE;
+  items = this.getItems(0, 10);
+  getItems(nextGroupKey: number, count: number) {
+    const nextItems = [];
+    const nextKey = nextGroupKey * count;
+
+    for (let i = 0; i < count; ++i) {
+      nextItems.push({ groupKey: nextGroupKey, key: nextKey + i });
+    }
+    return nextItems;
+  }
+  onRequestPrepend(e: OnRequestPrepend) {
+    if (e.isVirtual) {
+      e.wait();
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...e.nextGroupKeys.map(key => this.getItems(key as number, 10)).flat(),
+          ...this.items,
+        ];
+      }, 200);
+    }
+  }
+  onRequestAppend(e: OnRequestAppend) {
+    if (e.isVirtual) {
+      e.wait();
+      setTimeout(() => {
+        e.ready();
+        this.items = [
+          ...this.items,
+          ...e.nextGroupKeys.map(key => this.getItems(key as number, 10)).flat(),
+        ];
+      }, 200);
+    }
+  }
+}

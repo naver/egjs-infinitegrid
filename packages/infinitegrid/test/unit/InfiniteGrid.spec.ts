@@ -1,7 +1,7 @@
 import { cleanup, sandbox, waitEvent, waitFor } from "./utils/utils";
 import InfiniteGrid from "../../src/InfiniteGrid";
 import { SampleGrid } from "./samples/SampleGrid";
-import { toArray } from "../../src/utils";
+import { flat, toArray } from "../../src/utils";
 import {
   InfiniteGridOptions,
   OnRenderComplete,
@@ -10,6 +10,7 @@ import {
   OnContentError,
   OnChangeScroll,
   STATUS_TYPE,
+  ITEM_TYPE,
 } from "../../src";
 import * as sinon from "sinon";
 
@@ -894,6 +895,54 @@ describe("test InfiniteGrid", () => {
         children3.forEach((el, i) => {
           expect(el).to.be.not.equal(children[i]);
         });
+      });
+
+      it(`should check whether it is possible to restore all virtual groups in the minimized status`, async () => {
+        // Given
+        const nums = new Array(29).fill(0).map((_, i) => i);
+
+        ig!.syncItems(nums.map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 8);
+        // all cursors
+        await waitEvent(ig!, "renderComplete");
+        // partial cursors (0 ~ 2)
+        await waitEvent(ig!, "renderComplete");
+
+
+        ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS));
+        // visible(0 ~ 2) invisible(3 ~ 9)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        ig!.getScrollContainerElement().scrollTop = 3000;
+
+        const requestAppendEvent = await waitEvent<OnRequestAppend>(ig!, "requestAppend");
+
+        // 3 ~ 9
+        ig!.append(flat(requestAppendEvent.nextGroupKeys.map((groupKey) => {
+          return [0, 1, 2].map((index) => {
+            const child = (groupKey as number) * 3 + index;
+            return {
+              groupKey: groupKey,
+              key: `key${child}`,
+              html: `<div style="height: 100px">${child}</div>`,
+            };
+          });
+        })));
+
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        expect(ig!.getStartCursor()).to.be.equals(6);
+        expect(ig!.getEndCursor()).to.be.equals(9);
+        expect(ig!.getItems(true).every((item) => item.type !== ITEM_TYPE.VIRTUAL)).to.be.equals(true);
       });
       it(`should check if requestAppend event for invisible items is triggered`, async () => {
         // Given

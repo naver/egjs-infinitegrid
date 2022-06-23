@@ -16,9 +16,11 @@ import Placeholder from "@site/src/component/grids/Placeholder";
 import Loading from "@site/src/component/grids/Loading";
 import Status from "@site/src/component/grids/Status";
 import VisibleStatus from "@site/src/component/grids/VisibleStatus";
+import VisibleStatusWithScroll from "@site/src/component/grids/VisibleStatusWithScroll";
 
 import InfiniteGridDefaultCode from "@site/src/component/code/InfiniteGridDefaultCode";
 import InfiniteGridStatusCode from "@site/src/component/code/InfiniteGridStatusCode";
+import InfiniteGridAllRestoreCode from "@site/src/component/code/InfiniteGridAllRestoreCode";
 import Transition from "@site/src/component/grids/Transition";
 
 
@@ -1134,6 +1136,15 @@ Since you got the status for the visible area, replace it with a placeholder to 
 
 <InfiniteGridStatusCode className="MasonryInfiniteGrid" />
 
+### Restore Visible Status with virtual items and scroll 0
+
+Since you got the status for the visible area, replace it with a placeholder to handle the invisible area.
+
+Even if you move the scroll to 0 to the invisible area, all items can be restored.
+
+<VisibleStatusWithScroll/>
+
+<InfiniteGridAllRestoreCode className="MasonryInfiniteGrid" />
 
 ## Use Transition
 

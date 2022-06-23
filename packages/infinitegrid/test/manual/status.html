@@ -130,12 +130,16 @@
 
     for (let i = 0; i < count; ++i) {
       const num = nextGroupKey * count + i;
-      nextItems.push(`<div class="item">
+      nextItems.push({
+        groupKey: nextGroupKey,
+        key: num,
+        html: `<div class="item">
     <div class="thumbnail">
         <a href="https://naver.com"><img src="https://naver.github.io/egjs-infinitegrid/assets/image/${(num % 33) + 1}.jpg" alt="egjs" /></a>
     </div>
     <div class="info">egjs ${num}</div>
-</div>`);
+</div>`,
+    });
     }
     return nextItems;
   }
@@ -152,17 +156,30 @@
       useResizeObserver: true,
       gap: 5,
     });
-  }
-  function append() {
-    // ig.setPlaceholder({ html: `<div class="placeholder">Placeholder</div>` })
     ig.on("requestPrepend", e => {
       console.log("REQP", e);
+
+      if (e.isVirtual) {
+        const nextGroupKeys = e.nextGroupKeys;
+
+        nextGroupKeys.slice(0, 1).forEach(nextGroupKey => {
+          ig.prepend(getItems(nextGroupKey, 10), nextGroupKey);
+        });
+      }
     });
     ig.on("requestAppend", e => {
-      const nextGroupKey = (+e.groupKey || 0) + 1;
+      console.log("REQA", e);
 
-      ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+      if (!e.isVirtual) {
+        const nextGroupKey = (+e.groupKey || 0) + 1;
+
+        ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+      }
     });
+
+  }
+  function render() {
+    // ig.setPlaceholder({ html: `<div class="placeholder">Placeholder</div>` })
 
     ig.renderItems();
   }
@@ -177,5 +194,5 @@
   }
 
   init();
-  append();
+  render();
 </script>

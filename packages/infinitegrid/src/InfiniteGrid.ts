@@ -808,6 +808,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.trigger(new ComponentEvent(eventType, {
       groupKey: e.key,
       nextGroupKey: e.nextKey,
+      nextGroupKeys: e.nextKeys || [],
       isVirtual: e.isVirtual,
       wait: () => {
         this.wait(direction);

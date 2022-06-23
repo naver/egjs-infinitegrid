@@ -144,23 +144,28 @@ export function splitVirtualGroups<Group extends { type: GROUP_TYPE, groupKey: s
     if (index === -1) {
       return [];
     }
-    virtualGroups = groups.slice(0, index);
+    // Get the virtual group maintained in the group from the next group.
+    const endMaintainedIndex = findIndex(groups, (group) => {
+      return findIndex(nextGroups, (nextGroup) => nextGroup.groupKey === group.groupKey) >= 0;
+    });
+    const endIndex = endMaintainedIndex >= 0 ? Math.min(index, endMaintainedIndex) : index;
+
+    virtualGroups = groups.slice(0, endIndex);
   } else {
     const index = findLastIndex(groups, (group) => group.type === GROUP_TYPE.NORMAL);
 
     if (index === -1) {
       return [];
     }
-    virtualGroups = groups.slice(index + 1);
+    const startMaintainedIndex = findLastIndex(groups, (group) => {
+      return findIndex(nextGroups, (nextGroup) => nextGroup.groupKey === group.groupKey) >= 0;
+    });
+    const startIndex = startMaintainedIndex >= 0 ? Math.max(index, startMaintainedIndex) : index;
+
+    virtualGroups = groups.slice(startIndex + 1);
   }
 
-  const nextVirtualGroups = diff<{ groupKey: string | number }>(
-    virtualGroups, nextGroups, ({ groupKey }) => groupKey,
-  ).removed.map((index) => {
-    return virtualGroups[index];
-  }).reverse();
-
-  return nextVirtualGroups;
+  return virtualGroups;
 }
 
 export function getFirstRenderingItems(
