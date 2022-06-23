@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.5.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/react-infinitegrid@4.4.0...@egjs/react-infinitegrid@4.5.0) (2022-06-23)
+
+
+### :mega: Other
+
+* remove browser field (#486) ([14b063c](https://github.com/naver/egjs-infinitegrid/commit/14b063cc220eb71fb946614f2c82207d19a682ab))
+* update packages versions ([171bb74](https://github.com/naver/egjs-infinitegrid/commit/171bb74f708110a2fd986276c9b8d65472fa64ab))
+
+
+
 ## [4.4.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/react-infinitegrid@4.3.1...@egjs/react-infinitegrid@4.4.0) (2022-05-25)
 
 

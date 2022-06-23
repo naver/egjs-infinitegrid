@@ -1,0 +1,66 @@
+---
+custom_edit_url: null
+---
+
+<div>
+
+</div>
+
+**Type**: TSInterface
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|horizontal|boolean||
+|percentage|Array&lt;"position" \| "size"&gt; \| boolean||
+|isEqualSize|boolean||
+|isConstantSize|boolean||
+|gap|number||
+|attributePrefix|string||
+|resizeDebounce|number||
+|maxResizeDebounce|number||
+|autoResize|boolean||
+|useFit|boolean||
+|useTransform|boolean||
+|renderOnPropertyChange|boolean||
+|preserveUIOnDestroy|boolean||
+|defaultDirection|"start" \| "end"||
+|outlineLength|number||
+|outlineSize|number||
+|useRoundedSize|boolean||
+|useResizeObserver|boolean||
+|observeChildren|boolean||
+|externalItemRenderer|ItemRenderer \| null||
+|externalContainerManager|ContainerManager \| null||
+|column|number|<p>The number of columns. If the number of columns is 0, it is automatically calculated according to the size of the container. Can be used instead of outlineLength. (default: 0)</p>|
+|columnSize|number|<p>The size of the columns. If it is 0, it is calculated as the size of the first item in items. Can be used instead of outlineSize. (default: 0) </p>|
+|columnSizeRatio|number|<p>The size ratio(inlineSize / contentSize) of the columns. 0 is not set. (default: 0) </p>|
+|align|GridAlign|<p>Align of the position of the items. If you want to use <code>stretch</code>, be sure to set <code>column</code> or <code>columnSize</code> option. (&quot;start&quot;, &quot;center&quot;, &quot;end&quot;, &quot;justify&quot;, &quot;stretch&quot;) (default: &quot;justify&quot;) </p>|
+|columnCalculationThreshold|number|<p>Difference Threshold for Counting Columns. Since offsetSize is calculated by rounding, the number of columns may not be accurate. (default: 1) </p>|
+|horizontal|boolean||
+|percentage|Array&lt;"position" \| "size"&gt; \| boolean||
+|isEqualSize|boolean||
+|isConstantSize|boolean||
+|gap|number||
+|attributePrefix|string||
+|resizeDebounce|number||
+|maxResizeDebounce|number||
+|autoResize|boolean||
+|useFit|boolean||
+|useTransform|boolean||
+|renderOnPropertyChange|boolean||
+|preserveUIOnDestroy|boolean||
+|defaultDirection|"start" \| "end"||
+|outlineLength|number||
+|outlineSize|number||
+|useRoundedSize|boolean||
+|useResizeObserver|boolean||
+|observeChildren|boolean||
+|externalItemRenderer|ItemRenderer \| null||
+|externalContainerManager|ContainerManager \| null||
+|container|boolean \| string \| HTMLElement|<p>The target to which the container is applied. If false, create itself, if true, create container. A string or HTMLElement specifies the target directly. (default: false) </p>|
+|containerTag|string|<p>If you create a container, you can set the container's tag. (default: &quot;div&quot;) </p>|
+|threshold|number|<p>The size of the scrollable area for adding the next group of items. (default: 100) </p>|
+|useRecycle|boolean|<p>Whether to show only the DOM of the visible area. (default: true) </p>|
+|gridConstructor|GridFunction|<p>Grid class to apply Infinite function. </p>|
+|renderer|Renderer \| null|<p>class that renders the DOM. </p>|
+

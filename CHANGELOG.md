@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.5.0](https://github.com/naver/egjs-infinitegrid/compare/4.4.0...4.5.0) (2022-06-23)
+### :sparkles: Packages
+* `@egjs/infinitegrid` 4.5.0
+* `@egjs/react-infinitegrid` 4.5.0
+* `@egjs/svelte-infinitegrid` 4.5.0
+* `@egjs/vue-infinitegrid` 4.5.0
+* `@egjs/vue3-infinitegrid` 4.5.0
+* `@egjs/ngx-infinitegrid` 4.5.0
+
+
+### :rocket: New Features
+
+* `@egjs/infinitegrid`
+    * add insertByGroupIndex method (#489) ([87a06ef](https://github.com/naver/egjs-infinitegrid/commit/87a06ef9aad2a289e1360ac6c17f36e125ea75cf))
+    * add nextGroupKeys property in request events (#493) ([b0260ad](https://github.com/naver/egjs-infinitegrid/commit/b0260ad828e725e6f1266898e0df7ac30a116d80))
+
+
+### :mega: Other
+
+* All
+    * update packages versions ([171bb74](https://github.com/naver/egjs-infinitegrid/commit/171bb74f708110a2fd986276c9b8d65472fa64ab))
+* `@egjs/react-infinitegrid`
+    * remove browser field (#486) ([14b063c](https://github.com/naver/egjs-infinitegrid/commit/14b063cc220eb71fb946614f2c82207d19a682ab))
+
+
+
 ## [4.4.0](https://github.com/naver/egjs-infinitegrid/compare/4.3.1...4.4.0) (2022-05-25)
 ### :sparkles: Packages
 * `@egjs/infinitegrid` 4.4.0

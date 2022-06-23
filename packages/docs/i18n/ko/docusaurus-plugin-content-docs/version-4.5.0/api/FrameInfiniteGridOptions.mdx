@@ -1,0 +1,64 @@
+---
+custom_edit_url: null
+---
+
+<div>
+
+</div>
+
+**Type**: TSInterface
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|horizontal|boolean||
+|percentage|Array&lt;"position" \| "size"&gt; \| boolean||
+|isEqualSize|boolean||
+|isConstantSize|boolean||
+|gap|number||
+|attributePrefix|string||
+|resizeDebounce|number||
+|maxResizeDebounce|number||
+|autoResize|boolean||
+|useFit|boolean||
+|useTransform|boolean||
+|renderOnPropertyChange|boolean||
+|preserveUIOnDestroy|boolean||
+|defaultDirection|"start" \| "end"||
+|outlineLength|number||
+|outlineSize|number||
+|useRoundedSize|boolean||
+|useResizeObserver|boolean||
+|observeChildren|boolean||
+|externalItemRenderer|ItemRenderer \| null||
+|externalContainerManager|ContainerManager \| null||
+|frame|number[][]|Grid의 모양. 2d 배열([contentPos][inlinePos])로 아이템의 모양과 순서를 설정할 수 있다. 숫자로 배열을 채운만큼 아이템을 배치할 수 있으며 0과 공백은 빈 공간이다. 아이템들의 순서는 배열을 채운 숫자값의 오름차순대로 배치가 된다. (default: [])|
+|useFrameFill|boolean| 다음 프레임이 전 프레임에 이어 붙일 수 있는지 있는지 확인한다.|
+|rectSize|number \| {inlineSize: number, contentSize: number}|1x1 직사각형 크기. 0이면 frame의 column의 개수에 의해 결정된다. (default: 0)|
+|horizontal|boolean||
+|percentage|Array&lt;"position" \| "size"&gt; \| boolean||
+|isEqualSize|boolean||
+|isConstantSize|boolean||
+|gap|number||
+|attributePrefix|string||
+|resizeDebounce|number||
+|maxResizeDebounce|number||
+|autoResize|boolean||
+|useFit|boolean||
+|useTransform|boolean||
+|renderOnPropertyChange|boolean||
+|preserveUIOnDestroy|boolean||
+|defaultDirection|"start" \| "end"||
+|outlineLength|number||
+|outlineSize|number||
+|useRoundedSize|boolean||
+|useResizeObserver|boolean||
+|observeChildren|boolean||
+|externalItemRenderer|ItemRenderer \| null||
+|externalContainerManager|ContainerManager \| null||
+|container|boolean \| string \| HTMLElement|container를 적용할 대상. false면 자기 자신, true면 container를 생성. string 또는 HTMLElement는 직접 대상을 지정. (default: false)|
+|containerTag|string|container를 생성한다면 container의 tag를 정할 수 있다. (default: &quot;div&quot;)|
+|threshold|number|다음 아이템 그룹을 추가하기 위한 스크롤 영역의 크기. (default: 100)|
+|useRecycle|boolean|보이는 영역의 DOM만 보여줄지 여부. (default: true)|
+|gridConstructor|GridFunction|Infinite 기능을 적용할 Grid 클래스.|
+|renderer|Renderer \| null| DOM을 렌더하는 클래스. |
+
