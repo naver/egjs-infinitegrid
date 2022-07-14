@@ -208,8 +208,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       groups.reverse();
     }
 
-    const outlineLength = this.getComputedOutlineLength(items);
-    const outlineSize = this.getComputedOutlineSize(items);
+    const groupItems = this.groupItems;
+    const outlineLength = this.getComputedOutlineLength(groupItems);
+    const outlineSize = this.getComputedOutlineSize(groupItems);
 
     groups.forEach((group) => {
       const grid = group.grid;
