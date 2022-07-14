@@ -1,0 +1,174 @@
+
+<div class="container"></div>
+<div class="margin"></div>
+<style>
+  html,
+body {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #fff;
+}
+
+a {
+  color: unset;
+  text-decoration: none;
+}
+
+.header {
+  text-align: center;
+  background: #333;
+  color: #fff;
+  padding: 20px 0px;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.description {
+  padding: 6px 30px;
+  margin: 0;
+  font-weight: 400;
+}
+
+.description li {
+  padding: 3px 0px;
+}
+
+.wrapper {
+  margin-top: 50px;
+}
+
+.container {
+  width: 100%;
+  height: 600px;
+}
+
+.item {
+  display: inline-block;
+  width: 250px;
+  opacity: 0;
+  transition: opacity ease 0.5s;
+}
+.item.mounted {
+  opacity: 1;
+}
+
+.masonrygrid.horizontal .item {
+  width: auto;
+  height: 250px;
+}
+
+.item .thumbnail {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.item .thumbnail img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.masonrygrid.horizontal .item .thumbnail img {
+  width: auto;
+  height: 210px;
+}
+
+.item .info {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #777;
+}
+
+.item.animate {
+  transition: opacity ease 1s;
+  transition-delay: 0.2s;
+  opacity: 1;
+}
+
+.placeholder {
+  width: 250px;
+  border-radius: 5px;
+  background: #eee;
+  height: 250px;
+}
+
+.loading {
+  position: absolute;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.button-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  height: 50px;
+  z-index: 1;
+}
+.margin {
+  height: 800px;
+}
+</style>
+<script src="../../dist/infinitegrid.js"></script>
+<script>
+  const MasonryInfiniteGrid = InfiniteGrid.MasonryInfiniteGrid;
+
+function getItems(nextGroupKey, count) {
+  const nextItems = [];
+
+  for (let i = 0; i < count; ++i) {
+    const num = nextGroupKey * count + i;
+    nextItems.push(`<div class="item">
+  <div class="thumbnail">
+      <img src="https://naver.github.io/egjs-infinitegrid/assets/image/${
+        (num % 33) + 1
+      }.jpg" alt="egjs" />
+  </div>
+  <div class="info">egjs ${num}</div>
+</div>`);
+  }
+  return nextItems;
+}
+
+const ig = new MasonryInfiniteGrid(".container", {
+  gap: 5
+});
+
+// onRequestAppend:debounce(function (e) {
+//   if (this.loading || this.requesting) {
+//     return
+//   }
+//   e.wait();
+//   this.getList({ pageNumber: this.requestParams.pageNumber }, 'append');
+//   e.ready()
+// }, 80),
+
+let sid = 0;
+ig.on("requestAppend", (e) => {
+    const nextGroupKey = +(e.groupKey || 0) + 1;
+
+    if (nextGroupKey >= 10) {
+      return;
+    }
+    if (nextGroupKey === 9) {
+      ig.append(getItems(nextGroupKey, 5).slice(0, 3), nextGroupKey);
+    } else {
+      ig.append(getItems(nextGroupKey, 5), nextGroupKey);
+    }
+});
+
+ig.on("renderComplete", (e) => {
+  e.mounted.forEach((item) => {
+    item.element.classList.add("mounted");
+  });
+});
+
+ig.renderItems();
+
+</script>
