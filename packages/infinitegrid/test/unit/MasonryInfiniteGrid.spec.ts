@@ -20,7 +20,7 @@ describe("test InfiniteGrid", () => {
   describe("test outlines", () => {
     it("should check whether the outline of the invisible area and the visible area are connected", async () => {
       // Given
-      container!.innerHTML = `<div class="wrapper" style="width: 300px; height: 500px;"></div>`;
+      container!.innerHTML = `<div class="wrapper" style="width: 330px; height: 500px;"></div>`;
       const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
       ig = new MasonryInfiniteGrid(wrapper, {
         container: true,
@@ -65,7 +65,7 @@ describe("test InfiniteGrid", () => {
     });
     it("should check whether the outline of the invisible area and the last area are connected", async () => {
       // Given
-      container!.innerHTML = `<div class="wrapper" style="width: 300px; height: 500px;"></div>`;
+      container!.innerHTML = `<div class="wrapper" style="width: 330px; height: 500px;"></div>`;
       const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
       ig = new MasonryInfiniteGrid(wrapper, {
         container: true,
