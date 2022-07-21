@@ -293,6 +293,32 @@ describe("test InfiniteGrid", () => {
           expect(child.style.top).to.be.equals(`${i * 250}px`);
         });
       });
+      it("should check if startOutline is set to 0 when prepend", async () => {
+        // Given
+        ig!.destroy();
+        container!.innerHTML = `<div class="wrapper" style="width: 100%; height: 500px;"></div>`;
+        ig = new InfiniteGrid<InfiniteGridOptions>(container!.querySelector<HTMLElement>(".wrapper")!, {
+          gridConstructor: SampleGrid,
+          container: true,
+          defaultDirection: "start",
+        });
+        ig!.prepend([0, 1, 2, 3, 4].map((child) => {
+          return {
+            groupKey: Math.floor(child / 5),
+            key: child,
+            html: `<div style="height: 200px;">${child}</div>`,
+          };
+        }));
+
+        await waitEvent(ig!, "renderComplete");
+
+        console.log(ig.getGroups()[0].grid.getOutlines());
+        // Then
+        expect(ig!.getGroups()[0].grid.getOutlines()).to.be.deep.equals({
+          start: [0],
+          end: [1000],
+        });
+      });
       it("should check if the scroll position changes when prepend", async () => {
         // Given
         const igContainer = ig!.getContainerElement();
