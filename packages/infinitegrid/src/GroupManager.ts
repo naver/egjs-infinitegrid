@@ -133,6 +133,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return !!this._getLoadingItem();
   }
 
+  public updateItems(items = this.groupItems, options?: RenderOptions) {
+    return super.updateItems(items, options);
+  }
   public setPlaceholder(placeholder: Partial<InfiniteGridItemStatus> | null) {
     this._placeholder = placeholder;
     this._updatePlaceholder();
