@@ -135,6 +135,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       useResizeObserver,
       resizeDebounce,
       maxResizeDebounce,
+      defaultDirection,
     } = gridOptions;
     const wrapperElement = isString(wrapper) ? document.querySelector(wrapper) as HTMLElement : wrapper;
     const scrollManager = new ScrollManager(wrapperElement, {
@@ -161,6 +162,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       isConstantSize,
     });
     const infinite = new Infinite({
+      defaultDirection,
       useRecycle,
       threshold,
     }).on({
@@ -654,7 +656,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   private _syncInfinite() {
     this.infinite.syncItems(this.getGroups(true).map(({ groupKey, grid, type }) => {
       const outlines = grid.getOutlines();
-
+      
       return {
         key: groupKey,
         isVirtual: type === GROUP_TYPE.VIRTUAL,
