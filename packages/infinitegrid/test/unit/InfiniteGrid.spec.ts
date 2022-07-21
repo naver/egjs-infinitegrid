@@ -13,6 +13,7 @@ import {
   ITEM_TYPE,
 } from "../../src";
 import * as sinon from "sinon";
+import { MOUNT_STATE } from "@egjs/grid";
 
 describe("test InfiniteGrid", () => {
   let ig: InfiniteGrid | null;
@@ -219,6 +220,52 @@ describe("test InfiniteGrid", () => {
       children.forEach((child, i) => {
         expect(child.style.top).to.be.equals(`${i * 23}px`);
       });
+    });
+    it("should check that the mounte state is mounted only in the visible area after rendering.", async () => {
+      // Given
+      ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: child,
+          html: `<div style="height: 250px">${child}</div>`,
+        };
+      }));
+
+      // render [0, 2]
+      ig!.setCursors(0, 2);
+      await waitEvent(ig!, "renderComplete");
+
+      // render only [0, 0]
+      await waitEvent(ig!, "renderComplete");
+
+      // When
+      // Render elements
+      setTimeout(() => {
+        // Check ready
+        setTimeout(() => {
+          ig!.setCursors(0, 2);
+        });
+      });
+      ig!.setCursors(0, 1);
+      const e = await waitEvent<OnRenderComplete>(ig!, "renderComplete");
+
+      // 1 ~ 1
+      const mounteStates = e.mounted.map((item) => item.mountState);
+      // 0 ~ 2
+      const allMountStates = e.items.map((item) => item.mountState);
+
+      await waitEvent(ig!, "renderComplete");
+
+      // Then
+      expect(mounteStates).to.be.lengthOf(3);
+      // 0 ~ 5 MOUNTED
+      for (let i = 0; i < 6; ++i) {
+        expect(allMountStates[i]).to.be.equal(MOUNT_STATE.MOUNTED);
+      }
+      // 6 ~ 8 UNMOUNTED
+      for (let i = 6; i < 9; ++i) {
+        expect(allMountStates[i]).to.be.equal(MOUNT_STATE.UNMOUNTED);
+      }
     });
     describe("test append, prepend, insert, insertByGroupIndex", () => {
       it("should check if render is complete after append", async () => {

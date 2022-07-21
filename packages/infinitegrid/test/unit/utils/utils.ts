@@ -80,7 +80,6 @@ export function getScrollThumbSize() {
 
     wrapper.appendChild(container);
     document.body.appendChild(wrapper);
-
     thumbSize = wrapper.offsetWidth - container.clientWidth;
 
 

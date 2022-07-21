@@ -176,10 +176,6 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   }
 
   public applyGrid(items: InfiniteGridItem[], direction: "end" | "start", outline: number[]): GridOutlines {
-    items.forEach((item) => {
-      item.mountState = MOUNT_STATE.MOUNTED;
-    });
-
     const renderingGroups = this.groups.slice();
 
     if (!renderingGroups.length) {
