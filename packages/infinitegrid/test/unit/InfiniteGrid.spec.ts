@@ -698,6 +698,32 @@ describe("test InfiniteGrid", () => {
           expect(child.style.top).to.be.equals(`${i * 100}px`);
         });
       });
+      it("should check if invisible group can be removed when the removeGroupByIndex method is called", async () => {
+        // Given
+        const igContainer = ig!.getContainerElement();
+
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        // render all items (0, 3)
+        ig!.setCursors(0, 3);
+        await waitEvent(ig!, "renderComplete");
+        // (0, 2)
+        await waitEvent(ig!, "renderComplete");
+
+        // When
+        // [1, 2, 3, 4] => [1, 2, 3]
+        ig!.removeGroupByIndex(0);
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        expect(ig!.getGroups().map(group => group.groupKey)).to.be.deep.equals([1, 2, 3]);
+      });
       it("should checks whether the item is removed when the removeGroupByIndex method is called", async () => {
         // Given
         const igContainer = ig!.getContainerElement();
