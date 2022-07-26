@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-infinitegrid",
-  "version": "4.5.0",
+  "version": "4.6.0",
   "description": "A React component that can arrange items infinitely according to the type of grids",
   "types": "declaration/index.d.ts",
   "main": "dist/infinitegrid.cjs.js",
@@ -35,7 +35,7 @@
     "layout"
   ],
   "dependencies": {
-    "@egjs/infinitegrid": "~4.5.0"
+    "@egjs/infinitegrid": "~4.6.0"
   },
   "devDependencies": {
     "@codeceptjs/configure": "^0.6.2",
