@@ -377,7 +377,40 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       outlines: this.outlines,
     };
   }
+  protected fitOutlines(useFit = this.useFit) {
+    const groups = this.groups;
+    const firstGroup = groups[0];
 
+    if (!firstGroup) {
+      return;
+    }
+    const outlines = firstGroup.grid.getOutlines();
+    const startOutline = outlines.start;
+    const outlineOffset = startOutline.length ? Math.min(...startOutline) : 0;
+
+    // If the outline is less than 0, a fit occurs forcibly.
+    if (!useFit && outlineOffset > 0) {
+      return;
+    }
+
+    groups.forEach(({ grid }) => {
+      const { start, end } = grid.getOutlines();
+
+      grid.setOutlines({
+        start: start.map((point) => point - outlineOffset),
+        end: end.map((point) => point - outlineOffset),
+      });
+    });
+
+    this.groupItems.forEach((item) => {
+      const contentPos = item.cssContentPos;
+
+      if (!isNumber(contentPos)) {
+        return;
+      }
+      item.cssContentPos = contentPos - outlineOffset;
+    });
+  }
   public setGroupStatus(status: GroupManagerStatus) {
     this.itemKeys = {};
     this.groupItems = [];
