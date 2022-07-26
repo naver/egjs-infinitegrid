@@ -481,7 +481,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @ko index에 해당하는 그룹을 제거 한다.
    */
   public removeGroupByIndex(index: number): this {
-    const nextGroups = this.groupManager.getGroups();
+    const nextGroups = this.getGroups();
 
     return this.removeGroupByKey(nextGroups[index].groupKey);
   }
@@ -490,7 +490,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
    * @ko key에 해당하는 그룹을 제거 한다.
    */
   public removeGroupByKey(key: number | string): this {
-    const nextItemInfos = this.groupManager.getItems();
+    const nextItemInfos = this.getItems();
 
     const firstIndex = findIndex(nextItemInfos, (item) => item.groupKey === key);
     const lastIndex = findLastIndex(nextItemInfos, (item) => item.groupKey === key);
