@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.0](https://github.com/naver/egjs-infinitegrid/compare/4.5.0...4.6.0) (2022-07-26)
+### :sparkles: Packages
+* `@egjs/infinitegrid` 4.6.0
+* `@egjs/react-infinitegrid` 4.6.0
+* `@egjs/svelte-infinitegrid` 4.6.0
+* `@egjs/vue-infinitegrid` 4.6.0
+* `@egjs/vue3-infinitegrid` 4.6.0
+* `@egjs/ngx-infinitegrid` 4.6.0
+
+
+### :bug: Bug Fix
+
+* `@egjs/infinitegrid`
+    * fit groups' outlines for start direction (#502) ([51308c0](https://github.com/naver/egjs-infinitegrid/commit/51308c0750caa517d325a320ac2f14dcfc097337))
+    * fix items to be removed (#500) ([8317f39](https://github.com/naver/egjs-infinitegrid/commit/8317f3926318e468ef49e9f28d54384c12ae3565))
+    * fix mounted setting (#497) ([6d4a281](https://github.com/naver/egjs-infinitegrid/commit/6d4a281e17570b9049afebe651fd4708d230be36))
+    * fix outline calculation (#498) ([0446dd4](https://github.com/naver/egjs-infinitegrid/commit/0446dd48f2d532dffc3a460472080fcd78df5724))
+
+
+### :mega: Other
+
+* All
+    * update packages versions ([d4aa615](https://github.com/naver/egjs-infinitegrid/commit/d4aa615a8cd3e25b621500e2a7b243dcc9696eef))
+
+
+
 ## [4.5.0](https://github.com/naver/egjs-infinitegrid/compare/4.4.0...4.5.0) (2022-06-23)
 ### :sparkles: Packages
 * `@egjs/infinitegrid` 4.5.0

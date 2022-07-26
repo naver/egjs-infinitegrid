@@ -31,12 +31,10 @@ custom_edit_url: null
 |observeChildren|boolean||
 |externalItemRenderer|ItemRenderer \| null||
 |externalContainerManager|ContainerManager \| null||
-|column|number|<p>The number of columns. If the number of columns is 0, it is automatically calculated according to the size of the container. Can be used instead of outlineLength. (default: 0)</p>|
-|columnSize|number|<p>The size of the columns. If it is 0, it is calculated as the size of the first item in items. Can be used instead of outlineSize. (default: 0) </p>|
-|columnSizeRatio|number|<p>The size ratio(inlineSize / contentSize) of the columns. 0 is not set. (default: 0) </p>|
-|align|GridAlign|<p>Align of the position of the items. If you want to use <code>stretch</code>, be sure to set <code>column</code>, <code>columnSize</code> or <code>maxStretchColumnSize</code> option. (&quot;start&quot;, &quot;center&quot;, &quot;end&quot;, &quot;justify&quot;, &quot;stretch&quot;) (default: &quot;justify&quot;) </p>|
-|columnCalculationThreshold|number|<p>Difference Threshold for Counting Columns. Since offsetSize is calculated by rounding, the number of columns may not be accurate. (default: 1) </p>|
-|maxStretchColumnSize|number|<p>If stretch is used, the column can be automatically calculated by setting the maximum size of the column that can be stretched. (default: Infinity) </p>|
+|aspectRatio|number|<p>The aspect ratio (inlineSize / contentSize) of the container with items. (default: 1) </p>|
+|sizeWeight|number|<p>The size weight when placing items. (default: 1)</p>|
+|ratioWeight|number|<p>The weight to keep ratio when placing items. (default: 1)</p>|
+|weightPriority|"size" \| "ratio" \| "custom"|<p>The priority that determines the weight of the item. (default: &quot;custom&quot;), &quot;size&quot; = (sizeWieght: 100, ratioWeight: 1), &quot;ratio&quot; = (sizeWeight: 1, ratioWeight; 100), &quot;custom&quot; = (set sizeWeight, ratioWeight)<br />item's weight = item's ratio(inlineSize / contentSize) change * <code>ratioWeight</code> + size(inlineSize * contentSize) change * <code>sizeWeight</code>.<br /></p>|
 |horizontal|boolean||
 |percentage|Array&lt;"position" \| "size"&gt; \| boolean||
 |isEqualSize|boolean||

@@ -31,12 +31,10 @@ custom_edit_url: null
 |observeChildren|boolean||
 |externalItemRenderer|ItemRenderer \| null||
 |externalContainerManager|ContainerManager \| null||
-|column|number|열의 개수. 열의 개수가 0이라면, 컨테이너의 사이즈에 의해 계산이 된다. outlineLength 대신 사용할 수 있다.(default: 0) |
-|columnSize|number| 열의 사이즈. 만약 열의 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. outlineSize 대신 사용할 수 있다.(default: 0) |
-|columnSizeRatio|number|열의 사이즈 비율(inlineSize / contentSize). 0은 미설정이다. |
-|align|GridAlign|아이템들의 위치의 정렬. <code>stretch</code>를 사용하고 싶다면 <code>column</code>, <code>columnSize</code> 또는 <code>maxStretchColumnSize</code> 옵션을 설정해라.  (&quot;start&quot;, &quot;center&quot;, &quot;end&quot;, &quot;justify&quot;, &quot;stretch&quot;) (default: &quot;justify&quot;)|
-|columnCalculationThreshold|number|칼럼 개수를 계산하기 위한 차이 임계값. offset 사이즈는 반올림으로 게산하기 때문에 정확하지 않을 수 있다. (default: 1)|
-|maxStretchColumnSize|number|stretch를 사용한 경우 최대로 늘릴 수 있는 column의 사이즈를 설정하여 column을 자동 계산할 수 있다. (default: Infinity)|
+|aspectRatio|number|아이템들을 가진 컨테이너의 종횡비(inlineSize / contentSize). (default: 1)|
+|sizeWeight|number|아이템들을 배치하는데 사이즈 가중치. (default: 1)|
+|ratioWeight|number|아이템들을 배치하는데 비율을 유지하는 가중치. (default: 1)|
+|weightPriority|"size" \| "ratio" \| "custom"| 아이템의 가중치를 결정하는 우선수치. (default: &quot;custom&quot;), &quot;size&quot; = (sizeWieght: 100, ratioWeight: 1), &quot;ratio&quot; = (sizeWeight: 1, ratioWeight; 100), &quot;custom&quot; = (set sizeWeight, ratioWeight). 아이템의 가중치 = ratio(inlineSize / contentSize)의 변화량 * <code>ratioWeight</code> + size(inlineSize * contentSize)의 변화량 * <code>sizeWeight</code>.|
 |horizontal|boolean||
 |percentage|Array&lt;"position" \| "size"&gt; \| boolean||
 |isEqualSize|boolean||

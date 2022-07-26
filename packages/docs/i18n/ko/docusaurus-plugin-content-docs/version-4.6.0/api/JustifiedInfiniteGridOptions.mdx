@@ -31,12 +31,11 @@ custom_edit_url: null
 |observeChildren|boolean||
 |externalItemRenderer|ItemRenderer \| null||
 |externalContainerManager|ContainerManager \| null||
-|column|number|열의 개수. 열의 개수가 0이라면, 컨테이너의 사이즈에 의해 계산이 된다. outlineLength 대신 사용할 수 있다.(default: 0) |
-|columnSize|number| 열의 사이즈. 만약 열의 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. outlineSize 대신 사용할 수 있다.(default: 0) |
-|columnSizeRatio|number|열의 사이즈 비율(inlineSize / contentSize). 0은 미설정이다. |
-|align|GridAlign|아이템들의 위치의 정렬. <code>stretch</code>를 사용하고 싶다면 <code>column</code>, <code>columnSize</code> 또는 <code>maxStretchColumnSize</code> 옵션을 설정해라.  (&quot;start&quot;, &quot;center&quot;, &quot;end&quot;, &quot;justify&quot;, &quot;stretch&quot;) (default: &quot;justify&quot;)|
-|columnCalculationThreshold|number|칼럼 개수를 계산하기 위한 차이 임계값. offset 사이즈는 반올림으로 게산하기 때문에 정확하지 않을 수 있다. (default: 1)|
-|maxStretchColumnSize|number|stretch를 사용한 경우 최대로 늘릴 수 있는 column의 사이즈를 설정하여 column을 자동 계산할 수 있다. (default: Infinity)|
+|columnRange|number \| number[]| 한 줄에 들어가는 아이템의 최소, 최대 개수. (default: [1, 8]) |
+|rowRange|number \| number[]| 한 그룹에 들어가는 행의 최소, 최대 개수, 0은 미설정이다. (default: 0) |
+|sizeRange|number \| number[]|아이템이 조정되는 최소, 최대 사이즈. 계산이 되지 않는 경우 최소, 최대 사이즈를 벗어날 수 있다. (default: [0, Infinity])|
+|displayedRow|number|컨테이너 크기에 계산될 최대 row 개수. overflow: hidden을 설정하면 화면에 가릴 수 있다. -1은 미설정이다. (default: -1)|
+|isCroppedSize|boolean|row사이즈가 sizeRange에 벗어나면 크롭할지 여부. true로 설정하면 비율이 깨질 수 있다. (default: false)|
 |horizontal|boolean||
 |percentage|Array&lt;"position" \| "size"&gt; \| boolean||
 |isEqualSize|boolean||

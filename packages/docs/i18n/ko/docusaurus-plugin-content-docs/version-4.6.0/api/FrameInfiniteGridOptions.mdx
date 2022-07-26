@@ -31,12 +31,9 @@ custom_edit_url: null
 |observeChildren|boolean||
 |externalItemRenderer|ItemRenderer \| null||
 |externalContainerManager|ContainerManager \| null||
-|column|number|열의 개수. 열의 개수가 0이라면, 컨테이너의 사이즈에 의해 계산이 된다. outlineLength 대신 사용할 수 있다.(default: 0) |
-|columnSize|number| 열의 사이즈. 만약 열의 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. outlineSize 대신 사용할 수 있다.(default: 0) |
-|columnSizeRatio|number|열의 사이즈 비율(inlineSize / contentSize). 0은 미설정이다. |
-|align|GridAlign|아이템들의 위치의 정렬. <code>stretch</code>를 사용하고 싶다면 <code>column</code>, <code>columnSize</code> 또는 <code>maxStretchColumnSize</code> 옵션을 설정해라.  (&quot;start&quot;, &quot;center&quot;, &quot;end&quot;, &quot;justify&quot;, &quot;stretch&quot;) (default: &quot;justify&quot;)|
-|columnCalculationThreshold|number|칼럼 개수를 계산하기 위한 차이 임계값. offset 사이즈는 반올림으로 게산하기 때문에 정확하지 않을 수 있다. (default: 1)|
-|maxStretchColumnSize|number|stretch를 사용한 경우 최대로 늘릴 수 있는 column의 사이즈를 설정하여 column을 자동 계산할 수 있다. (default: Infinity)|
+|frame|number[][]|Grid의 모양. 2d 배열([contentPos][inlinePos])로 아이템의 모양과 순서를 설정할 수 있다. 숫자로 배열을 채운만큼 아이템을 배치할 수 있으며 0과 공백은 빈 공간이다. 아이템들의 순서는 배열을 채운 숫자값의 오름차순대로 배치가 된다. (default: [])|
+|useFrameFill|boolean| 다음 프레임이 전 프레임에 이어 붙일 수 있는지 있는지 확인한다.|
+|rectSize|number \| {inlineSize: number, contentSize: number}|1x1 직사각형 크기. 0이면 frame의 column의 개수에 의해 결정된다. (default: 0)|
 |horizontal|boolean||
 |percentage|Array&lt;"position" \| "size"&gt; \| boolean||
 |isEqualSize|boolean||

@@ -1,0 +1,732 @@
+---
+custom_edit_url: null
+---
+
+```ts
+class PackingInfiniteGrid extends InfiniteGrid
+```
+
+<div>
+
+</div>
+
+PackingInfiniteGrid는 아이템의 본래 크기에 따른 비중을 해치지 않으면서 중요한 카드는 더 크게 보여 주는 레이아웃이다.<br />행과 열이 구분돼 아이템을 정돈되게 배치하는 대신 가로세로 일정 공간 내에서 동적으로 아이템을 배치한다.<br />`sizeWeight`가 `ratioWeight`보다 높으면 아이템들의 size가 최대한 보존이 된다.<br />반대로 `ratioWeight`가 `sizeWeight`보다 높으면 아이템들의 비율이 최대한 보존이 된다.
+
+<div className="container">
+  <div className="row mb-2"><div className="col col--6"><strong>Methods</strong></div><div className="col col--6"><strong>Events</strong></div></div>
+  <div className="row"><div className="col col--6"><a href="#renderItems">renderItems</a><br/><a href="#getWrapperElement">getWrapperElement</a><br/><a href="#getScrollContainerElement">getScrollContainerElement</a><br/><a href="#getContainerElement">getContainerElement</a><br/><a href="#syncItems">syncItems</a><br/><a href="#setCursors">setCursors</a><br/><a href="#getStartCursor">getStartCursor</a><br/><a href="#getEndCursor">getEndCursor</a><br/><a href="#append">append</a><br/><a href="#prepend">prepend</a><br/><a href="#insert">insert</a><br/><a href="#insertByGroupIndex">insertByGroupIndex</a><br/><a href="#getStatus">getStatus</a><br/><a href="#setPlaceholder">setPlaceholder</a><br/><a href="#setLoading">setLoading</a><br/><a href="#appendPlaceholders">appendPlaceholders</a><br/><a href="#prependPlaceholders">prependPlaceholders</a><br/><a href="#removePlaceholders">removePlaceholders</a><br/><a href="#setStatus">setStatus</a><br/><a href="#removeGroupByIndex">removeGroupByIndex</a><br/><a href="#removeGroupByKey">removeGroupByKey</a><br/><a href="#removeByIndex">removeByIndex</a><br/><a href="#removeByKey">removeByKey</a><br/><a href="#updateItems">updateItems</a><br/><a href="#getItems">getItems</a><br/><a href="#getVisibleItems">getVisibleItems</a><br/><a href="#getRenderingItems">getRenderingItems</a><br/><a href="#getGroups">getGroups</a><br/><a href="#getVisibleGroups">getVisibleGroups</a><br/><a href="#wait">wait</a><br/><a href="#ready">ready</a><br/><a href="#isWait">isWait</a><br/><a href="#destroy">destroy</a><br/><a href="#trigger">trigger</a><br/><a href="#once">once</a><br/><a href="#hasOn">hasOn</a><br/><a href="#on">on</a><br/><a href="#off">off</a></div><div className="col col--6"><a href="#event-changeScroll">changeScroll</a><br/><a href="#event-requestAppend">requestAppend</a><br/><a href="#event-requestPrepend">requestPrepend</a><br/><a href="#event-contentError">contentError</a><br/><a href="#event-renderComplete">renderComplete</a></div></div>
+</div>
+
+## constructor
+```ts
+new PackingInfiniteGrid(container, options)
+```
+
+<div>
+
+</div>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|container|HTMLElement \| string|||모듈을 적용할 기준 엘리먼트|
+|options|[PackingInfiniteGridOptions](PackingInfiniteGridOptions)|||PackingInfiniteGrid 모듈의 옵션 객체|
+
+## Methods
+
+### renderItems {#renderItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+grid에 맞게 아이템을 재배치하고 렌더링을 한다. 배치가 완료되면 `renderComplete` 이벤트가 발생한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|options|RenderOptions|✔️|{}|렌더링을 하기 위한 옵션.|
+
+```ts
+import { MasonryInfiniteGrid } from "@egjs/infinitegrid";
+const grid = new MasonryInfiniteGrid();
+
+grid.on("renderComplete", e => {
+  console.log(e);
+});
+grid.renderItems();
+```
+
+### getWrapperElement {#getWrapperElement}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+컨테이너 엘리먼트를 반환한다.
+
+### getScrollContainerElement {#getScrollContainerElement}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+스크롤 영역에 해당하는 컨테이너 엘리먼트를 반환한다.
+
+### getContainerElement {#getContainerElement}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+아이템 엘리먼트들을 담긴 컨테이너 엘리먼트를 반환한다.
+
+### syncItems {#syncItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+items가 바뀐 경우 동기화를 하고 렌더링을 한다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|[InfiniteGridItemInfo](InfiniteGridItemInfo)[]|||렌더링을 하기 위한 옵션.|
+
+### setCursors {#setCursors}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+현재 보이는 그룹들을 바꾼다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|startCursor|number|||보이는 그룹의 첫번째 index.|
+|endCursor|number|||보이는 그룹의 마지막 index.|
+|useFirstRender|boolean|✔️||첫 렌더링이 이미 되어있는지 여부.|
+
+### getStartCursor {#getStartCursor}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+보이는 그룹들의 첫번째 index를 반환한다.
+
+**Returns**: number
+
+### getEndCursor {#getEndCursor}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+보이는 그룹들의 마지막 index를 반환한다.
+
+**Returns**: number
+
+### append {#append}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+아이템들을 grid 아래(오른쪽)에 추가한다.
+
+**Returns**: this
+- 모듈 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|InfiniteGridInsertedItems|||추가할 아이템들|
+|groupKey|string \| number|✔️||추가할 아이템에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.|
+
+```js
+ig.append(`<div class="item">test1</div><div class="item">test2</div>`);
+ig.append([`<div class="item">test1</div>`, `<div class="item">test2</div>`]);
+ig.append([HTMLElement1, HTMLElement2]);
+```
+
+### prepend {#prepend}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+아이템들을 grid 위(왼쪽)에 추가한다.
+
+**Returns**: this
+- 모듈 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|InfiniteGridInsertedItems|||추가할 아이템들|
+|groupKey|string \| number|✔️||추가할 아이템에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.|
+
+```ts
+ig.prepend(`<div class="item">test1</div><div class="item">test2</div>`);
+ig.prepend([`<div class="item">test1</div>`, `<div class="item">test2</div>`]);
+ig.prepend([HTMLElement1, HTMLElement2]);
+```
+
+### insert {#insert}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+아이템들을 특정 index에 추가한다.
+
+**Returns**: this
+- 모듈 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|index|number|||추가하기 위한 index|
+|items|InfiniteGridInsertedItems|||추가할 아이템들|
+|groupKey|string \| number|✔️||추가할 아이템에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.|
+
+```ts
+ig.insert(2, `<div class="item">test1</div><div class="item">test2</div>`);
+ig.insert(3, [`<div class="item">test1</div>`, `<div class="item">test2</div>`]);
+ig.insert(4, [HTMLElement1, HTMLElement2]);
+```
+
+### insertByGroupIndex {#insertByGroupIndex}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+group의 index 기준으로 item들을 추가한다.
+
+**Returns**: this
+- 모듈 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|groupIndex|number|||추가하기 위한 group의 index|
+|items|InfiniteGridInsertedItems|||추가할 아이템들|
+|groupKey|string \| number|✔️||추가할 아이템에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.|
+
+```ts
+ig.insertByGroupIndex(2, `<div class="item">test1</div><div class="item">test2</div>`);
+ig.insertByGroupIndex(3, [`<div class="item">test1</div>`, `<div class="item">test2</div>`]);
+ig.insertByGroupIndex(4, [HTMLElement1, HTMLElement2]);
+```
+
+### getStatus {#getStatus}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+아이템의 위치 정보 등 모듈의 현재 상태 정보를 반환한다. 이 메서드가 반환한 정보를 저장해 두었다가 setStatus() 메서드로 복원할 수 있다
+
+**Returns**: [InfiniteGridStatus](InfiniteGridStatus)
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|type|STATUS_TYPE|✔️|| STATUS_TYPE.NOT_REMOVE = 모든 아이템들의 정보를 가져온다. STATUS_TYPE.REMOVE_INVISIBLE_ITEMS = 보이는 아이템들의 정보만 가져온다. STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS = 안보이는 아이템들을 압축한다. placeholder로 대체가 가능하다. STATUS_TYPE.MINIMIZE_INVISIBLE_GROUPS = 안보이는 그룹을 압축한다.|
+|includePlaceholders|boolean|✔️||placeholder에 해당하는 아이템들을 포함할지 여부.|
+
+### setPlaceholder {#setPlaceholder}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+status 복구 또는 아이템 추가 대기를 위한 placeholder를 설정할 수 있다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|info|Partial&lt;InfiniteGridItemStatus&gt; \| null|||placeholder의 status|
+
+### setLoading {#setLoading}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+status 복구 또는 아이템 추가 대기를 위한 placeholder를 설정할 수 있다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|info|Partial&lt;InfiniteGridItemStatus&gt; \| null|||placeholder의 status|
+
+### appendPlaceholders {#appendPlaceholders}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+placeholder들을 마지막에 추가한다.
+
+**Returns**: [InsertedPlaceholdersResult](InsertedPlaceholdersResult)
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|number \| InfiniteGridItemStatus[]|||placeholder에 해당하는 아이템들. 숫자면 갯수만큼 복제를 한다.|
+|groupKey|string \| number|✔️||추가할 아이템에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.|
+
+### prependPlaceholders {#prependPlaceholders}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+placeholder들을 처음에 추가한다.
+
+**Returns**: [InsertedPlaceholdersResult](InsertedPlaceholdersResult)
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|number \| InfiniteGridItemStatus[]|||placeholder에 해당하는 아이템들. 숫자면 갯수만큼 복제를 한다.|
+|groupKey|string \| number|✔️||추가할 아이템에 설정할 그룹 키. 생략하면 값이 자동으로 생성된다.|
+
+### removePlaceholders {#removePlaceholders}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+placeholder들을 삭제한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|type|"start" \| "end" \| {groupKey: string \| number}|||groupkey에 해당하는 placeholder들을 삭제한다. &quot;start&quot; 또는 &quot;end&quot; 일 때 해당 방향의 모든 placeholder들을 삭제한다.|
+
+### setStatus {#setStatus}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+getStatus() 메서드가 저장한 정보로 InfiniteGrid 모듈의 상태를 설정한다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|status|[InfiniteGridStatus](InfiniteGridStatus)|||InfiniteGrid 모듈의 status 객체.|
+|useFirstRender|boolean|✔️||첫 렌더링이 이미 되어있는지 여부.|
+
+### removeGroupByIndex {#removeGroupByIndex}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+index에 해당하는 그룹을 제거 한다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|index|number||||
+
+### removeGroupByKey {#removeGroupByKey}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+key에 해당하는 그룹을 제거 한다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|key|number \| string||||
+
+### removeByIndex {#removeByIndex}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+index에 해당하는 아이템을 제거 한다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|index|number||||
+
+### removeByKey {#removeByKey}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+key에 해당하는 아이템을 제거 한다.
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|key|string \| number||||
+
+### updateItems {#updateItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+아이템들의 사이즈를 업데이트하고 렌더링을 한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|InfiniteGridItem[]|✔️||업데이트할 아이템들.|
+|options|RenderOptions|✔️|{}|렌더링을 하기 위한 옵션.|
+
+### getItems {#getItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+InfiniteGrid의 모든 아이템들을 반환한다.
+
+**Returns**: InfiniteGridItem[]
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|includePlaceholders|boolean|✔️||placeholder에 해당하는 아이템들을 포함할지 여부.|
+
+### getVisibleItems {#getVisibleItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+InfiniteGrid의 보이는 아이템들을 반환한다.
+
+**Returns**: InfiniteGridItem[]
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|includePlaceholders|boolean|✔️||placeholder에 해당하는 아이템들을 포함할지 여부.|
+
+### getRenderingItems {#getRenderingItems}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+InfiniteGrid의 렌더링 아이템들을 반환한다.
+
+**Returns**: InfiniteGridItem[]
+
+### getGroups {#getGroups}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+InfiniteGrid의 모든 그룹들을 반환한다.
+
+**Returns**: InfiniteGridGroup[]
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|includePlaceholders|boolean|✔️||placeholder에 해당하는 그룹들을 포함할지 여부.|
+
+### getVisibleGroups {#getVisibleGroups}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+InfiniteGrid의 보이는 그룹들을 반환한다.
+
+**Returns**: InfiniteGridGroup[]
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|includePlaceholders|boolean|✔️||placeholder에 해당하는 그룹들을 포함할지 여부.|
+
+### wait {#wait}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+데이터를 요청하기 위해 대기 상태로 설정한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|direction|"start" \| "end"|✔️|DIRECTION.END|데이터를 추가하기 위한 방향.|
+
+### ready {#ready}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+데이터 요청이 끝났다면 준비 상태로 설정한다.
+
+### isWait {#isWait}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+데이터를 요청하기 위해 대기 상태로 설정되어 있는지 여부를 반환한다.
+
+### destroy {#destroy}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+인스턴스와 이벤트를 해제하고 컨테이너와 엘리먼트들의 CSS를 되돌린다.
+
+**Returns**: void
+
+### trigger {#trigger}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+커스텀 이벤트를 발생시킨다
+
+**Returns**: this
+- 컴포넌트 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|event|string \| ComponentEvent|||발생할 커스텀 이벤트의 이름 또는 ComponentEvent의 인스턴스|
+|params|Array&lt;any&gt; \| $ts:...|||커스텀 이벤트가 발생할 때 전달할 데이터|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  beforeHi: ComponentEvent<{ foo: number; bar: string }>;
+  hi: { foo: { a: number; b: boolean } };
+  someEvent: (foo: number, bar: string) => void;
+  someOtherEvent: void; // When there's no event argument
+}> {
+  some(){
+    if(this.trigger("beforeHi")){ // When event call to stop return false.
+      this.trigger("hi");// fire hi event.
+    }
+  }
+}
+
+const some = new Some();
+some.on("beforeHi", e => {
+  if(condition){
+    e.stop(); // When event call to stop, `hi` event not call.
+  }
+  // `currentTarget` is component instance.
+  console.log(some === e.currentTarget); // true
+
+  typeof e.foo; // number
+  typeof e.bar; // string
+});
+some.on("hi", e => {
+  typeof e.foo.b; // boolean
+});
+// If you want to more know event design. You can see article.
+// https://github.com/naver/egjs-component/wiki/How-to-make-Component-event-design%3F
+```
+
+### once {#once}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+이벤트가 한번만 실행된다.
+
+**Returns**: this
+- 컴포넌트 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string \| $ts:...|||등록할 이벤트의 이름 또는 이벤트 이름-핸들러 오브젝트|
+|handlerToAttach|function \| $ts:...|✔️||등록할 이벤트의 핸들러 함수|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  hi: ComponentEvent;
+}> {
+  hi() {
+    alert("hi");
+  }
+  thing() {
+    this.once("hi", this.hi);
+  }
+}
+
+var some = new Some();
+some.thing();
+some.trigger(new ComponentEvent("hi"));
+// fire alert("hi");
+some.trigger(new ComponentEvent("hi"));
+// Nothing happens
+```
+
+### hasOn {#hasOn}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+컴포넌트에 이벤트가 등록됐는지 확인한다.
+
+**Returns**: boolean
+- 이벤트 등록 여부
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string|||등록 여부를 확인할 이벤트의 이름|
+
+```ts
+import Component from "@egjs/component";
+
+class Some extends Component<{
+  hi: void;
+}> {
+  some() {
+    this.hasOn("hi");// check hi event.
+  }
+}
+```
+
+### on {#on}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+컴포넌트에 이벤트를 등록한다.
+
+**Returns**: this
+- 컴포넌트 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string \| $ts:...|||등록할 이벤트의 이름 또는 이벤트 이름-핸들러 오브젝트|
+|handlerToAttach|function \| $ts:...|✔️||등록할 이벤트의 핸들러 함수|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  hi: void;
+}> {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.on("hi",this.hi); //attach event
+  }
+}
+```
+
+### off {#off}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+컴포넌트에 등록된 이벤트를 해제한다.<br/>`eventName`이 주어지지 않았을 경우 모든 이벤트 핸들러를 제거한다.<br/>`handlerToAttach`가 주어지지 않았을 경우 `eventName`에 해당하는 모든 이벤트 핸들러를 제거한다.
+
+**Returns**: this
+- 컴포넌트 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string \| $ts:...|✔️||해제할 이벤트의 이름|
+|handlerToDetach|function \| $ts:...|✔️||해제할 이벤트의 핸들러 함수|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  hi: void;
+}> {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.off("hi",this.hi); //detach event
+  }
+}
+```
+
+## Events
+### changeScroll {#event-changeScroll}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+스크롤하면 발생하는 이벤트이다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnChangeScroll|||이벤트에 전달되는 데이터 객체|
+
+### requestAppend {#event-requestAppend}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+스크롤이 끝에 도달하거나 virtual 그룹에 대한 데이터가 필요한 경우 이벤트가 발생한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnRequestAppend|||이벤트에 전달되는 데이터 객체|
+
+### requestPrepend {#event-requestPrepend}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+스크롤이 끝에 도달하거나 virtual 그룹에 대한 데이터가 필요한 경우 이벤트가 발생한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnRequestPrepend|||이벤트에 전달되는 데이터 객체|
+
+### contentError {#event-contentError}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+스크롤이 끝에 도달하거나 virtual 그룹에 대한 데이터가 필요한 경우 이벤트가 발생한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnContentError|||이벤트에 전달되는 데이터 객체|
+
+### renderComplete {#event-renderComplete}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+InfiniteGrid가 렌더링이 완료됐을 때 이벤트가 발생한다.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|InfiniteGrid.OnRenderComplete|||이벤트에 전달되는 데이터 객체|
+

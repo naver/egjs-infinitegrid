@@ -31,12 +31,11 @@ custom_edit_url: null
 |observeChildren|boolean||
 |externalItemRenderer|ItemRenderer \| null||
 |externalContainerManager|ContainerManager \| null||
-|column|number|<p>The number of columns. If the number of columns is 0, it is automatically calculated according to the size of the container. Can be used instead of outlineLength. (default: 0)</p>|
-|columnSize|number|<p>The size of the columns. If it is 0, it is calculated as the size of the first item in items. Can be used instead of outlineSize. (default: 0) </p>|
-|columnSizeRatio|number|<p>The size ratio(inlineSize / contentSize) of the columns. 0 is not set. (default: 0) </p>|
-|align|GridAlign|<p>Align of the position of the items. If you want to use <code>stretch</code>, be sure to set <code>column</code>, <code>columnSize</code> or <code>maxStretchColumnSize</code> option. (&quot;start&quot;, &quot;center&quot;, &quot;end&quot;, &quot;justify&quot;, &quot;stretch&quot;) (default: &quot;justify&quot;) </p>|
-|columnCalculationThreshold|number|<p>Difference Threshold for Counting Columns. Since offsetSize is calculated by rounding, the number of columns may not be accurate. (default: 1) </p>|
-|maxStretchColumnSize|number|<p>If stretch is used, the column can be automatically calculated by setting the maximum size of the column that can be stretched. (default: Infinity) </p>|
+|columnRange|number \| number[]|<p>The minimum and maximum number of items per line. (default: [1, 8]) </p>|
+|rowRange|number \| number[]|<p>The minimum and maximum number of rows in a group, 0 is not set. (default: 0) </p>|
+|sizeRange|number \| number[]|<p>The minimum and maximum size by which the item is adjusted. If it is not calculated, it may deviate from the minimum and maximum sizes. (default: [0, Infinity]) </p>|
+|displayedRow|number|<p>Maximum number of rows to be counted for container size. You can hide it on the screen by setting overflow: hidden. -1 is not set. (default: -1)</p>|
+|isCroppedSize|boolean|<p>Whether to crop when the row size is out of sizeRange. If set to true, this ratio can be broken. (default: false) </p>|
 |horizontal|boolean||
 |percentage|Array&lt;"position" \| "size"&gt; \| boolean||
 |isEqualSize|boolean||
