@@ -1,92 +1,89 @@
 {
-  "name": "@egjs/react-infinitegrid",
-  "version": "4.6.0",
-  "description": "A React component that can arrange items infinitely according to the type of grids",
-  "types": "declaration/index.d.ts",
-  "main": "dist/infinitegrid.cjs.js",
-  "module": "dist/infinitegrid.esm.js",
-  "sideEffects": false,
+	"name": "@egjs/react-infinitegrid",
+	"version": "4.6.0",
+	"description": "A React component that can arrange items infinitely according to the type of grids",
+	"types": "declaration/index.d.ts",
+	"main": "dist/infinitegrid.cjs.js",
+	"module": "dist/infinitegrid.esm.js",
+	"sideEffects": false,
   "scripts": {
     "storybook": "start-storybook -p 6007",
     "build": "rollup -c && npm run declaration",
     "declaration": "rimraf declaration && tsc -p tsconfig.declaration.json"
   },
-  "author": {
-    "name": "NAVER Corp."
-  },
-  "license": "MIT",
-  "homepage": "https://github.com/naver/egjs-infinitegrid",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/naver/egjs-infinitegrid"
-  },
-  "keywords": [
-    "react",
-    "lazyloading",
-    "ready",
-    "grid",
-    "image",
-    "video",
-    "egjs",
-    "masonry",
-    "justified",
-    "packing",
-    "frame",
-    "layout"
-  ],
+	"author": {
+		"name": "NAVER Corp."
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/naver/egjs-infinitegrid",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/naver/egjs-infinitegrid"
+	},
+	"keywords": [
+		"react",
+		"lazyloading",
+		"ready",
+		"grid",
+		"image",
+		"video",
+		"egjs",
+		"masonry",
+		"justified",
+		"packing",
+		"frame",
+		"layout"
+	],
   "dependencies": {
     "@egjs/infinitegrid": "~4.6.0"
   },
-  "devDependencies": {
-    "@codeceptjs/configure": "^0.6.2",
-    "@codeceptjs/examples": "^1.2.1",
-    "@codeceptjs/ui": "^0.4.3",
-    "@egjs/build-helper": "^0.1.2",
-    "@storybook/addon-actions": "^6.0.21",
-    "@storybook/addon-controls": "^6.0.21",
-    "@storybook/addon-docs": "^6.0.21",
-    "@storybook/addon-links": "^6.0.21",
-    "@storybook/addon-viewport": "^6.0.21",
-    "@storybook/addons": "^6.0.21",
-    "@storybook/react": "^6.0.21",
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.8.3",
-    "@types/jest": "^26.0.20",
-    "@types/node": "^12.20.5",
-    "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.2",
-    "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.0.6",
-    "css-loader": "^5.0.1",
-    "eslint-plugin-react": "^7.24.0",
-    "raw-loader": "^4.0.2",
-    "react": "^17.0.1",
-    "react-docgen-typescript-loader": "^3.3.0",
-    "react-dom": "^17.0.1",
-    "react-scripts": "4.0.3",
-    "storybook-addon-preview": "^2.1.1",
-    "storybook-dark-mode": "^1.0.3",
-    "tslib": "^2.3.0",
-    "typescript": "^4.2.3",
-    "web-vitals": "^1.1.0"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+	"devDependencies": {
+		"@egjs/build-helper": "^0.1.2",
+		"@storybook/addon-actions": "^6.0.21",
+		"@storybook/addon-controls": "^6.0.21",
+		"@storybook/addon-docs": "^6.0.21",
+		"@storybook/addon-links": "^6.0.21",
+		"@storybook/addon-viewport": "^6.0.21",
+		"@storybook/addons": "^6.0.21",
+		"@storybook/react": "^6.0.21",
+		"@testing-library/jest-dom": "^5.11.9",
+		"@testing-library/react": "^11.2.5",
+		"@testing-library/user-event": "^12.8.3",
+		"@types/jest": "^26.0.20",
+		"@types/node": "^12.20.5",
+		"@types/react": "^17.0.3",
+		"@types/react-dom": "^17.0.2",
+		"awesome-typescript-loader": "^5.2.1",
+		"babel-loader": "^8.0.6",
+		"css-loader": "^5.0.1",
+		"eslint-plugin-react": "^7.24.0",
+		"raw-loader": "^4.0.2",
+		"react": "^17.0.1",
+		"react-docgen-typescript-loader": "^3.3.0",
+		"react-dom": "^17.0.1",
+		"react-scripts": "4.0.3",
+		"storybook-addon-preview": "^2.1.1",
+		"storybook-dark-mode": "^1.0.3",
+		"tslib": "^2.3.0",
+		"typescript": "^4.2.3",
+		"web-vitals": "^1.1.0"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
 }
