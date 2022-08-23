@@ -3,7 +3,7 @@
 	"version": "4.6.0",
 	"description": "A module used to arrange elements including content infinitely according to grid type. With this module, you can implement various grids composed of different card elements whose sizes vary. It guarantees performance by maintaining the number of DOMs the module is handling under any circumstance",
 	"module": "dist/infinitegrid.esm.js",
-	"main": "dist/infinitegrid.js",
+	"main": "dist/infinitegrid.cjs.js",
 	"types": "declaration/index.d.ts",
 	"sideEffects": false,
 	"scripts": {
@@ -49,7 +49,6 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@babel/core": "^7.13.10",
-		"@codeceptjs/ui": "^0.4.3",
 		"@daybrush/jsdoc": "^0.3.11",
 		"@egjs/build-helper": "^0.1.2",
 		"@egjs/release-helper": "0.0.3",
@@ -76,8 +75,6 @@
 		"awesome-typescript-loader": "^5.2.1",
 		"babel-loader": "^8.0.6",
 		"chai": "^4.2.0",
-		"codeceptjs": "^3.0.6",
-		"codeceptjs-resemblehelper": "^1.9.3",
 		"concurrently": "^6.0.2",
 		"coveralls": "^3.1.0",
 		"cpx": "^1.5.0",
@@ -96,7 +93,6 @@
 		"karma-typescript": "^4.0.0",
 		"karma-viewport": "^1.0.4",
 		"mocha": "^6.0.2",
-		"playwright": "^1.10.0",
 		"postcss-loader": "^4.1.0",
 		"print-coveralls": "^1.2.2",
 		"print-sizes": "^0.1.0",

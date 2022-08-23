@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2.1.5
         with:
-          node-version: 14.15.4
+          node-version: 16.16.0
       - name: install
         run: npm install
         working-directory: ./packages/infinitegrid
