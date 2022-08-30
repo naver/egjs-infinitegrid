@@ -1,6 +1,7 @@
 import VanillaInfiniteGrid, {
   FrameInfiniteGridOptions, InfiniteGridMethods, InfiniteGridOptions, JustifiedInfiniteGridOptions,
   MasonryInfiniteGridOptions, PackingInfiniteGridOptions,
+  InfiniteGridStatus,
 } from "@egjs/Infinitegrid";
 import { SvelteComponentDev } from "svelte/internal";
 
