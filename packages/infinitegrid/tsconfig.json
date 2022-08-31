@@ -7,6 +7,7 @@
     "strictNullChecks": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
+    "skipLibCheck": true,
     "jsx": "react",
     "lib": [
       "es2015",
@@ -16,7 +17,6 @@
   "baseUrl": ".",
   "include": [
     "./src/**/*.ts",
-    "./test/unit/**/*.ts",
     "./stories/**/*.ts",
     "./global.d.ts"
   ],
