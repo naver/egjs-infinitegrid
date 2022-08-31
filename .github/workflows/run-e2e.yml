@@ -9,7 +9,7 @@ jobs:
         with:
           node-version: 16.16.0
       - name: install
-        run: npm install
+        run: yarn
         working-directory: ./packages/infinitegrid
       - name: lint
         run: npm run lint
