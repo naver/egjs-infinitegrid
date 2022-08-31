@@ -477,7 +477,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   public insertPlaceholders(
     direction: "start" | "end",
     items: number | InfiniteGridItemStatus[],
-    groupKey: string | number = makeKey(this.groupKeys),
+    groupKey: string | number = makeKey(this.groupKeys, "virtual_"),
   ) {
 
     let infos: InfiniteGridItemInfo[] = [];
@@ -634,7 +634,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       let key = info.key!;
 
       if (info.key == null) {
-        key = makeKey(nextItemKeys);
+        key = makeKey(nextItemKeys, info.type === ITEM_TYPE.VIRTUAL ? "virtual_" : "");
       }
       let item = nextItemKeys[key];
 

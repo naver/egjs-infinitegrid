@@ -312,7 +312,6 @@ describe("test InfiniteGrid", () => {
 
         await waitEvent(ig!, "renderComplete");
 
-        console.log(ig.getGroups()[0].grid.getOutlines());
         // Then
         expect(ig!.getGroups()[0].grid.getOutlines()).to.be.deep.equals({
           start: [0],
@@ -726,8 +725,6 @@ describe("test InfiniteGrid", () => {
       });
       it("should check if invisible group can be removed when the removeGroupByIndex method is called", async () => {
         // Given
-        const igContainer = ig!.getContainerElement();
-
         ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((child) => {
           return {
             groupKey: Math.floor(child / 3),
@@ -748,7 +745,7 @@ describe("test InfiniteGrid", () => {
         await waitEvent(ig!, "renderComplete");
 
         // Then
-        expect(ig!.getGroups().map(group => group.groupKey)).to.be.deep.equals([1, 2, 3]);
+        expect(ig!.getGroups().map((group) => group.groupKey)).to.be.deep.equals([1, 2, 3]);
       });
       it("should checks whether the item is removed when the removeGroupByIndex method is called", async () => {
         // Given
@@ -1266,6 +1263,40 @@ describe("test InfiniteGrid", () => {
         // items (6) virtual items (3)
         expect(ig!.getVisibleItems(true).length).to.be.equals(9);
         expect(ig!.getVisibleItems().length).to.be.equals(6);
+      });
+      it(`should check if the placeholder is replaced when appending after adding the placeholder with no keys`, async () => {
+        // Given
+        // set place holder
+        ig!.setPlaceholder({
+          html: `<div class="placeholder"></div>`,
+        });
+        ig!.renderItems();
+
+        // When
+        // append placeholders
+        ig!.appendPlaceholders(3, 1);
+        await waitEvent(ig!, "renderComplete");
+        // placeholders
+        const length1 = ig!.getRenderingItems().length;
+
+        ig!.append([0, 1, 2].map((child) => {
+          return `<div style="height: 100px">${child}</div>`;
+        }), 1);
+
+        // items with placeholders
+        const length2 = ig!.getRenderingItems().length;
+
+        await waitEvent(ig!, "renderComplete");
+
+        // When the items are rendered, the placeholder is removed.
+        const length3 = ig!.getRenderingItems().length;
+        await waitEvent(ig!, "renderComplete");
+
+        // then
+        expect(length1).to.be.equals(3);
+        expect(length2).to.be.equals(6);
+        expect(length3).to.be.equals(3);
+        expect(ig!.getItems(true).map((item) => item.cssContentPos)).to.be.deep.equals([0, 100, 200]);
       });
       it(`should check if the placeholder is replaced when appending after adding the placeholder`, async () => {
         // Given
