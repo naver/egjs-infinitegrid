@@ -2070,10 +2070,10 @@
     taffydb "2.6.2"
     underscore "~1.8.3"
 
-"@daybrush/jsdoc@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.npmjs.org/@daybrush/jsdoc/-/jsdoc-0.4.1.tgz"
-  integrity sha512-BBsNgR4WImtaAByEDfLfdNkD5/wWO7bqx2uJnPg9mKG1WUZkjFGA1DqYeWG+02VqVm65VNNQgH+KSLUtYaiUiw==
+"@daybrush/jsdoc@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@daybrush/jsdoc/-/jsdoc-0.4.3.tgz#9073899e099e5faa5a7e8d34dcd22766b84e1681"
+  integrity sha512-0ZbqoitrE060eNOFQzW+TdzNqQSTQnWYHMqwLhrsFpPZy8GzorTdZwNll9XxKcDFoTR0sphcv1OKh9odHfLuvw==
   dependencies:
     "@babel/parser" "^7.2.3"
     "@babel/types" "^7.2.2"
@@ -18773,7 +18773,7 @@ jsdoc-to-markdown@^7.0.1:
 
 jsdoc-to-mdx@^1.1.0, jsdoc-to-mdx@^1.1.2:
   version "1.1.2"
-  resolved "https://registry.npmjs.org/jsdoc-to-mdx/-/jsdoc-to-mdx-1.1.2.tgz"
+  resolved "https://registry.yarnpkg.com/jsdoc-to-mdx/-/jsdoc-to-mdx-1.1.2.tgz#b3a07df2d4a11b67a204a6bb483042ff7a292534"
   integrity sha512-F+pAJnP7T6oEqytY3z6tEcRpOeYk0zul8t+zDy5wsLJSzL/lonU68sXhIC8HN9+5wRS8M7DSMOVtxWTKUg2dHg==
   dependencies:
     "@daybrush/jsdoc" "^0.3.10"
@@ -28137,12 +28137,7 @@ table@^6.0.9:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
 
-taffydb@2.6.2:
-  version "2.6.2"
-  resolved "https://registry.npmjs.org/taffydb/-/taffydb-2.6.2.tgz"
-  integrity sha1-fLy2S1oUG2ou/CxdLGe04VCyomg=
-
-"taffydb@https://github.com/hegemonic/taffydb/tarball/7d100bcee0e997ee4977e273cdce60bd8933050e":
+taffydb@2.6.2, "taffydb@https://github.com/hegemonic/taffydb/tarball/7d100bcee0e997ee4977e273cdce60bd8933050e":
   version "2.6.2"
   resolved "https://github.com/hegemonic/taffydb/tarball/7d100bcee0e997ee4977e273cdce60bd8933050e"
   integrity sha512-iWx+oupEjIH7KA4mYZKlPS/C7by3/aVcFPmFq6P/DYeoa3m3NH0ojTuvrwBBkJcUPbLN2yAhFmcU2jRJpxQGnw==

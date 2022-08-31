@@ -58,11 +58,11 @@ custom_edit_url: null
 |observeChildren|boolean|useResizeObserver옵션을 사용한다면 children의 사이즈 변화 감지 여부.|
 |externalItemRenderer|ItemRenderer \| null|외부에서 직접 ItemRenderer를 설정할 수 있다.|
 |externalContainerManager|ContainerManager \| null|외부에서 직접 ContainerManager를 설정할 수 있다.|
-|container|boolean \| HTMLElement \| string \| Ref&lt;HTMLElement&gt;|<p>The target to which the container is applied. If false, create itself, if true, create container. A string or HTMLElement specifies the target directly.</p>|
-|containerTag|string|<p>If you create a container, you can set the container's tag.</p>|
-|threshold|number|<p>The size of the scrollable area for adding the next group of items.</p>|
-|useRecycle|boolean|<p>Whether to show only the DOM of the visible area.</p>|
-|scrollContainer|HTMLElement \| string \| Ref&lt;HTMLElement&gt; \| null||
-|gridConstructor|GridFunction|<p>Grid class to apply Infinite function.</p>|
-|renderer|Renderer \| null|<p>class that renders the DOM.</p>|
+|container|boolean \| HTMLElement \| string \| Ref&lt;HTMLElement&gt;|container를 적용할 대상. false면 자기 자신, true면 container를 생성. string 또는 HTMLElement는 직접 대상을 지정.<br />|
+|containerTag|string|container를 생성한다면 container의 tag를 정할 수 있다.<br />|
+|threshold|number|다음 아이템 그룹을 추가하기 위한 스크롤 영역의 크기.<br />|
+|useRecycle|boolean|보이는 영역의 DOM만 보여줄지 여부.<br />|
+|scrollContainer|HTMLElement \| string \| Ref&lt;HTMLElement&gt; \| null|scrollContainer를 직접 정할 수 있다. 이 경우 container는 wrapper 자기 자신이 된다.<br />   |
+|gridConstructor|GridFunction|Infinite 기능을 적용할 Grid 클래스.<br />   |
+|renderer|Renderer \| null|DOM을 렌더하는 클래스.<br />   |
 

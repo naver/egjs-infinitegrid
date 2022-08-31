@@ -37,7 +37,7 @@
     "SquareLayout"
   ],
   "devDependencies": {
-    "@daybrush/jsdoc": "^0.4.1",
+    "@daybrush/jsdoc": "^0.4.3",
     "@egjs/release-helper": "^0.2.6",
     "egjs-jsdoc-template": "^1.4.4",
     "jsdoc-to-mdx": "^1.1.2",
