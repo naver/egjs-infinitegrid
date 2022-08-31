@@ -69,7 +69,7 @@ export class NgxInfiniteGridComponent
   @Input() useRoundedSize!: NgxInfiniteGridProps['useRoundedSize'];
   @Input() useResizeObserver!: NgxInfiniteGridProps['useResizeObserver'];
   @Input() observeChildren!: NgxInfiniteGridProps['observeChildren'];
-
+  @Input() scrollContainer!: NgxInfiniteGridProps['scrollContainer'];
 
   @Input() usePlaceholder!: NgxInfiniteGridProps['useFirstRender'];
   @Input() useLoading!: NgxInfiniteGridProps['useLoading'];
