@@ -185,7 +185,7 @@ export class Infinite extends Component<InfiniteEvents> {
 
         if (nextVisibleItems[endVirtualItemIndex]) {
           this.trigger("requestPrepend", {
-            key: nextVisibleItems[realItemIndex].key,
+            key: realItemIndex > -1 ? nextVisibleItems[realItemIndex].key : undefined,
             nextKey: nextVisibleItems[endVirtualItemIndex].key,
             nextKeys: nextVisibleItems.slice(0, endVirtualItemIndex + 1).map((item) => item.key),
             isVirtual: true,
@@ -197,7 +197,7 @@ export class Infinite extends Component<InfiniteEvents> {
 
         if (nextVisibleItems[startVirtualItemIndex]) {
           this.trigger("requestAppend", {
-            key: nextVisibleItems[realItemIndex].key,
+            key: realItemIndex > -1 ? nextVisibleItems[realItemIndex].key : undefined,
             nextKey: nextVisibleItems[startVirtualItemIndex].key,
             nextKeys: nextVisibleItems.slice(startVirtualItemIndex).map((item) => item.key),
             isVirtual: true,

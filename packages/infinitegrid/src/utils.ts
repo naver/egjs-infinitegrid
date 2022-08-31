@@ -1,4 +1,5 @@
-import Grid, { GRID_PROPERTY_TYPES, withMethods } from "@egjs/grid";
+import { withClassMethods } from "@cfcs/core";
+import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
 import { diff } from "@egjs/list-differ";
 import { GROUP_TYPE, IGNORE_PROPERITES_MAP, INFINITEGRID_METHODS, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
 import { GroupManagerStatus, InfiniteGridGroupStatus } from "./GroupManager";
@@ -313,11 +314,14 @@ export function InfiniteGridGetterSetter(component: {
   }
 }
 
-export function makeKey(registeredKeys: Record<string, any>) {
+export function makeKey(
+  registeredKeys: Record<string, any>,
+  prefix = "",
+) {
   let index = 0;
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const key = `infinitegrid_${index++}`;
+    const key = `infinitegrid_${prefix}${index++}`;
 
     if (!(key in registeredKeys)) {
       return key;
@@ -380,6 +384,20 @@ export function toArray<T>(nodes: { length: number, [key: number]: T }): T[] {
   return array;
 }
 
+
+export function find<T>(arr: T[], callback: (value: T, index: number) => boolean): T | null {
+  const length = arr.length;
+
+  for (let i = 0; i < length; ++i) {
+    const value = arr[i];
+
+    if (callback(value, i)) {
+      return value;
+    }
+  }
+
+  return null;
+}
 
 export function findIndex<T>(arr: T[], callback: (value: T, index: number) => boolean) {
   const length = arr.length;
@@ -452,7 +470,7 @@ export function filterVirtuals<T extends InfiniteGridItem | InfiniteGridGroup>(
   includePlaceholders?: boolean
 ): T[] {
   if (includePlaceholders) {
-    return items;
+    return [...items];
   } else {
     return items.filter((item) => item.type !== ITEM_TYPE.VIRTUAL);
   }
@@ -472,5 +490,5 @@ export function filterVirtuals<T extends InfiniteGridItem | InfiniteGridGroup>(
  * }
  * ```
  */
-export const withInfiniteGridMethods = withMethods(INFINITEGRID_METHODS);
+export const withInfiniteGridMethods = withClassMethods(INFINITEGRID_METHODS);
 
