@@ -55,6 +55,32 @@ describe("test InfiniteGrid", () => {
       expect(ig!.getScrollContainerElement()).to.be.equals(wrapper);
       expect(ig!.getItems().length).to.be.equals(0);
     });
+    it("should check if scrollContainer changes the scroll area instead of window", async () => {
+      // Given
+      container!.innerHTML = `
+      <div class="scroller" style="width: 100%; height: 500px;">
+        <div class="wrapper" style="width: 100%;">
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+          <div>4</div>
+          <div>5</div>
+          <div>6</div>
+        </div>
+      </div>
+      `;
+      const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+
+      ig = new InfiniteGrid<InfiniteGridOptions>(wrapper, {
+        gridConstructor: SampleGrid,
+        scrollContainer: ".scroller",
+      });
+
+      // When, Then
+      expect(ig!.getWrapperElement()).to.be.equals(wrapper);
+      expect(ig!.getContainerElement()).to.be.equals(wrapper);
+      expect(ig!.getScrollContainerElement()).to.be.equals(wrapper.parentElement);
+    });
   });
   describe("test rendering", () => {
     beforeEach(() => {
@@ -312,7 +338,6 @@ describe("test InfiniteGrid", () => {
 
         await waitEvent(ig!, "renderComplete");
 
-        console.log(ig.getGroups()[0].grid.getOutlines());
         // Then
         expect(ig!.getGroups()[0].grid.getOutlines()).to.be.deep.equals({
           start: [0],
@@ -726,8 +751,6 @@ describe("test InfiniteGrid", () => {
       });
       it("should check if invisible group can be removed when the removeGroupByIndex method is called", async () => {
         // Given
-        const igContainer = ig!.getContainerElement();
-
         ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((child) => {
           return {
             groupKey: Math.floor(child / 3),
@@ -748,7 +771,7 @@ describe("test InfiniteGrid", () => {
         await waitEvent(ig!, "renderComplete");
 
         // Then
-        expect(ig!.getGroups().map(group => group.groupKey)).to.be.deep.equals([1, 2, 3]);
+        expect(ig!.getGroups().map((group) => group.groupKey)).to.be.deep.equals([1, 2, 3]);
       });
       it("should checks whether the item is removed when the removeGroupByIndex method is called", async () => {
         // Given

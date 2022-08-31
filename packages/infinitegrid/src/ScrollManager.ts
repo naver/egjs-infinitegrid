@@ -1,10 +1,12 @@
+import { findTarget, Ref } from "@cfcs/core";
 import Component, { ComponentEvent } from "@egjs/component";
 import { CONTAINER_CLASS_NAME, IS_IOS } from "./consts";
 import { OnChangeScroll } from "./types";
 import { isWindow, toArray } from "./utils";
 
 export interface ScrollManagerOptions {
-  container?: HTMLElement | boolean | string;
+  scrollContainer?: HTMLElement | string | Ref<HTMLElement> | null;
+  container?: boolean | HTMLElement | string | Ref<HTMLElement>;
   containerTag?: string;
   horizontal?: boolean;
 }
@@ -41,6 +43,7 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       container: false,
       containerTag: "div",
       horizontal: false,
+      scrollContainer: null,
       ...options,
     };
 
@@ -171,6 +174,7 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       container: containerOption,
       containerTag,
       horizontal,
+      scrollContainer: scrollContainerOption,
     } = this.options;
     const wrapper = this.wrapper;
     let scrollContainer = wrapper;
@@ -178,13 +182,10 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     let containerCSSText = "";
 
     if (!containerOption) {
-      scrollContainer = document.body;
+      scrollContainer = findTarget(scrollContainerOption) || document.body;
       containerCSSText = container.style.cssText;
     } else {
-      if (containerOption instanceof HTMLElement) {
-        // Container that already exists
-        container = containerOption;
-      } else if (containerOption === true) {
+      if (containerOption === true) {
         // Create Container
         container = document.createElement(containerTag) as HTMLElement;
 
@@ -199,8 +200,8 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
 
         this._isCreateElement = true;
       } else {
-        // Find Container by Selector
-        container = scrollContainer.querySelector(containerOption) as HTMLElement;
+        // Find Container
+        container = findTarget(containerOption)!;
       }
       containerCSSText = container.style.cssText;
 

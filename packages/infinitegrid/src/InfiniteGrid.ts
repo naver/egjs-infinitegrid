@@ -90,6 +90,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     renderer: null,
     threshold: 100,
     useRecycle: true,
+    scrollContainer: null,
   } as Required<InfiniteGridOptions>;
   public static propertyTypes = INFINITEGRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
@@ -119,6 +120,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       renderer,
       threshold,
       useRecycle,
+      scrollContainer,
       ...gridOptions
     } = this.options;
     // options.container === false, wrapper = container, scrollContainer = document.body
@@ -139,6 +141,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     } = gridOptions;
     const wrapperElement = isString(wrapper) ? document.querySelector(wrapper) as HTMLElement : wrapper;
     const scrollManager = new ScrollManager(wrapperElement, {
+      scrollContainer,
       container,
       containerTag,
       horizontal,
@@ -656,7 +659,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   private _syncInfinite() {
     this.infinite.syncItems(this.getGroups(true).map(({ groupKey, grid, type }) => {
       const outlines = grid.getOutlines();
-      
+
       return {
         key: groupKey,
         isVirtual: type === GROUP_TYPE.VIRTUAL,
