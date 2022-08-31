@@ -79,8 +79,8 @@ export interface InfiniteGridOptions extends GridOptions {
    */
   useRecycle?: boolean;
   /**
-   * @ko container 미설정한 경우 scrollContainer를 직접 정할 수 있다.
-   * @default document.body
+   * You can set the scrollContainer directly. In this case, the container becomes the wrapper itself.
+   * @ko scrollContainer를 직접 정할 수 있다. 이 경우 container는 wrapper 자기 자신이 된다.
    */
   scrollContainer?: HTMLElement | string | Ref<HTMLElement> | null;
   /**
