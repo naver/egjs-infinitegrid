@@ -116,6 +116,7 @@
 		"typescript": "^3.9.7"
 	},
 	"dependencies": {
+		"@cfcs/core": "^0.0.5",
 		"@egjs/children-differ": "^1.0.1",
 		"@egjs/component": "^3.0.0",
 		"@egjs/grid": "~1.11.0",

@@ -1,8 +1,9 @@
 <h1 class="header">
   <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">Virtual Scroll - GridLayout</a>
 </h1>
-
+<div class="scroller">
 <div class="container gridlayout">
+</div>
 </div>
 
 
@@ -19,6 +20,10 @@
   a {
     color: unset;
     text-decoration: none;
+  }
+  .scroller {
+    height: 1000px;
+    overflow-y: auto;
   }
 
   .header {
@@ -140,7 +145,7 @@
     return nextItems;
   }
   const ig = new InfiniteGrid.MasonryInfiniteGrid(".container", {
-    container: false,
+    scrollContainer: ".scroller",
     useFit: true,
     useRecycle: true,
     horizontal: false,

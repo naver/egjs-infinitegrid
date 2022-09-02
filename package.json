@@ -11,9 +11,7 @@
     "docs:version": "node ./config/docs-version-up",
     "demo:build": "npm run docs:build && npm run docs:version && npm run build --prefix packages/docs && npm run build:storybook --prefix packages/infinitegrid",
     "demo:deploy": "lerna-helper deploy --base @egjs/infinitegrid --remote upstream",
-    "release": "lerna-helper release --base @egjs/infinitegrid --remote upstream --branch master",
-    "bootstrap:before": "lerna bootstrap",
-    "bootstrap": "npm run bootstrap:before --legacy-peer-deps"
+    "release": "lerna-helper release --base @egjs/infinitegrid --remote upstream --branch master"
   },
   "repository": {
     "type": "git",
@@ -39,14 +37,37 @@
     "SquareLayout"
   ],
   "devDependencies": {
-    "@daybrush/jsdoc": "^0.3.12",
+    "@daybrush/jsdoc": "^0.4.3",
     "@egjs/release-helper": "^0.2.6",
     "egjs-jsdoc-template": "^1.4.4",
     "jsdoc-to-mdx": "^1.1.2",
     "lerna": "^4.0.0",
     "typescript": "^4.6.4"
   },
-  "dependencies": {
-    "ast-parser": "^0.1.1"
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "packages/ngx-infinitegrid/projects/ngx-infinitegrid"
+    ],
+    "nohoist": [
+      "**/@egjs/build-helper",
+      "**/@egjs/build-helper/**",
+      "**/rollup-plugin-vue",
+      "**/rollup-plugin-vue/**",
+      "**/karma",
+      "**/karma/**",
+      "**/karma-*",
+      "**/karma-*/**",
+      "**/@types/chai",
+      "**/@types/chai/**",
+      "**/@types/karma-chai",
+      "**/@types/karma-chai/**",
+      "**/@types/mocha",
+      "**/@types/mocha/**",
+      "**/@vue/*",
+      "**/@vue/*/**",
+      "**/vue",
+      "**/vue/**"
+    ]
   }
 }

@@ -1,9 +1,11 @@
 {
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "version": "independent",
   "packages": [
     "packages/*",
     "packages/ngx-infinitegrid/projects/ngx-infinitegrid"
   ],
-  "version": "independent",
   "lernaHelperOptions": {
     "beforeReleaseScripts": [
       "npm run packages:build",

@@ -1,4 +1,5 @@
-import Grid, { GRID_PROPERTY_TYPES, withMethods } from "@egjs/grid";
+import { withClassMethods } from "@cfcs/core";
+import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
 import { diff } from "@egjs/list-differ";
 import { GROUP_TYPE, IGNORE_PROPERITES_MAP, INFINITEGRID_METHODS, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
 import { GroupManagerStatus, InfiniteGridGroupStatus } from "./GroupManager";
@@ -472,5 +473,5 @@ export function filterVirtuals<T extends InfiniteGridItem | InfiniteGridGroup>(
  * }
  * ```
  */
-export const withInfiniteGridMethods = withMethods(INFINITEGRID_METHODS);
+export const withInfiniteGridMethods = withClassMethods(INFINITEGRID_METHODS);
 
