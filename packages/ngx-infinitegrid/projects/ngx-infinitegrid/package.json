@@ -1,6 +1,6 @@
 {
   "name": "@egjs/ngx-infinitegrid",
-  "version": "4.6.0",
+  "version": "4.7.0",
   "description": "An Angular component that can arrange items infinitely according to the type of grids",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
     "@angular/core": "^11.2.14"
   },
   "dependencies": {
-    "@egjs/infinitegrid": "~4.6.0",
+    "@egjs/infinitegrid": "~4.7.0",
     "tslib": "^2.0.0"
   }
 }
