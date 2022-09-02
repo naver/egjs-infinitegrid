@@ -1290,6 +1290,40 @@ describe("test InfiniteGrid", () => {
         expect(ig!.getVisibleItems(true).length).to.be.equals(9);
         expect(ig!.getVisibleItems().length).to.be.equals(6);
       });
+      it(`should check if the placeholder is replaced when appending after adding the placeholder with no keys`, async () => {
+        // Given
+        // set place holder
+        ig!.setPlaceholder({
+          html: `<div class="placeholder"></div>`,
+        });
+        ig!.renderItems();
+
+        // When
+        // append placeholders
+        ig!.appendPlaceholders(3, 1);
+        await waitEvent(ig!, "renderComplete");
+        // placeholders
+        const length1 = ig!.getRenderingItems().length;
+
+        ig!.append([0, 1, 2].map((child) => {
+          return `<div style="height: 100px">${child}</div>`;
+        }), 1);
+
+        // items with placeholders
+        const length2 = ig!.getRenderingItems().length;
+
+        await waitEvent(ig!, "renderComplete");
+
+        // When the items are rendered, the placeholder is removed.
+        const length3 = ig!.getRenderingItems().length;
+        await waitEvent(ig!, "renderComplete");
+
+        // then
+        expect(length1).to.be.equals(3);
+        expect(length2).to.be.equals(6);
+        expect(length3).to.be.equals(3);
+        expect(ig!.getItems(true).map((item) => item.cssContentPos)).to.be.deep.equals([0, 100, 200]);
+      });
       it(`should check if the placeholder is replaced when appending after adding the placeholder`, async () => {
         // Given
         ig!.append([0, 1, 2].map((child) => {
