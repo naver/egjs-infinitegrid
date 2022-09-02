@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.7.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/infinitegrid@4.6.0...@egjs/infinitegrid@4.7.0) (2022-09-02)
+
+
+### :rocket: New Features
+
+* add scrollContainer option (#511) ([78043ad](https://github.com/naver/egjs-infinitegrid/commit/78043ada3f65c54ed26b04bf2e4655d74961d449))
+
+
+### :bug: Bug Fix
+
+* add cjs file (#506) ([63fea02](https://github.com/naver/egjs-infinitegrid/commit/63fea02a34ed2e4c7702929cdef87191ce2208dc))
+* fix placholder key (#514) ([af62a98](https://github.com/naver/egjs-infinitegrid/commit/af62a98c5f0562e929e09bf976298e8e29aa94e7))
+
+
+### :mega: Other
+
+* update packages versions ([e438c00](https://github.com/naver/egjs-infinitegrid/commit/e438c00929ba28bd001d6174bd57efd918144686))
+
+
+
 ## [4.6.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/infinitegrid@4.5.0...@egjs/infinitegrid@4.6.0) (2022-07-26)
 
 
