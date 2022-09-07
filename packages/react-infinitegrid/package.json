@@ -20,6 +20,12 @@
 		"type": "git",
 		"url": "https://github.com/naver/egjs-infinitegrid"
 	},
+	"files": [
+		"./*",
+		"declaration/*",
+		"src/*",
+		"dist/*"
+	],
 	"keywords": [
 		"react",
 		"lazyloading",

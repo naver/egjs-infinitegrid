@@ -27,6 +27,12 @@
   "bugs": {
     "url": "https://github.com/naver/egjs-infinitegrid/issues"
   },
+  "files": [
+    "./*",
+    "declaration/*",
+    "src/*",
+    "dist/*"
+  ],
   "keywords": [
     "vue",
     "lazyloading",
