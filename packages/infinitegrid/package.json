@@ -29,6 +29,12 @@
 	"namespace": {
 		"eg": "eg"
 	},
+	"files": [
+		"./*",
+		"declaration/*",
+		"src/*",
+		"dist/*"
+	],
 	"keywords": [
 		"infinitegrid",
 		"infinite",
