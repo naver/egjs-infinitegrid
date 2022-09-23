@@ -6,9 +6,11 @@
 import {
   AfterViewChecked, AfterViewInit, Component, ElementRef,
   EventEmitter, Input, OnChanges, OnDestroy, Output, ViewChild,
-  PLATFORM_ID, Inject,
+  PLATFORM_ID, Inject, NgZone
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { fromEvent, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import {
   getRenderingItems,
@@ -89,22 +91,30 @@ export class NgxInfiniteGridComponent
   private _renderer = new Renderer();
   private _isChange = false;
 
-  constructor(protected elementRef: ElementRef, @Inject(PLATFORM_ID) private _platform: Object) {
+  private _destroy$ = new Subject<void>();
+
+  constructor(
+    protected elementRef: ElementRef,
+    @Inject(PLATFORM_ID) private _platform: string,
+    private _ngZone: NgZone
+  ) {
     super();
+
     for (const name in INFINITEGRID_EVENTS) {
       const eventName = (INFINITEGRID_EVENTS as any)[name];
       (this as any)[eventName] = new EventEmitter();
     }
   }
 
-
   ngOnInit() {
     this._updateVisibleChildren();
   }
+
   ngOnChanges() {
     this._isChange = true;
     this._updateVisibleChildren();
   }
+
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this._platform)) {
       return;
@@ -125,21 +135,34 @@ export class NgxInfiniteGridComponent
     options.renderer = this._renderer;
     const wrapper = this._wrapperRef! || this.elementRef;
 
-    const grid = new GridClass(wrapper.nativeElement, options);
+    // The `InfiniteGrid` set ups `scroll` and `resize` events through `ScrollManager`
+    // and `ResizeWatcher`. These events force Angular to run change detection whenever
+    // dispatched; this happens too often.
+    const grid = this._ngZone.runOutsideAngular(
+      () => new GridClass(wrapper.nativeElement, options)
+    );
 
     for (const name in INFINITEGRID_EVENTS) {
       const eventName = (INFINITEGRID_EVENTS as any)[name];
 
-      grid.on(eventName, (e: any) => {
-        (this as any)[eventName].emit(e as any);
-      });
+      fromEvent(grid, eventName)
+        .pipe(takeUntil(this._destroy$))
+        .subscribe((event) => {
+          const emitter = (this as any)[eventName];
+          if (emitter && emitter.observers.length > 0) {
+            this._ngZone.run(() => emitter.emit(event));
+          }
+        });
     }
 
     this.vanillaGrid = grid;
-    this._renderer.on("requestUpdate", () => {
-      this._isChange = true;
-      this._updateVisibleChildren();
-    });
+
+    fromEvent(this._renderer, 'requestUpdate')
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(() => {
+        this._isChange = true;
+        this._updateVisibleChildren();
+      });
 
     mountRenderingItems(this._getItemInfos(), {
       grid,
@@ -151,6 +174,7 @@ export class NgxInfiniteGridComponent
     });
     this._renderer.updated();
   }
+
   ngAfterViewChecked() {
     if (!this._isChange || !this.vanillaGrid) {
       return;
