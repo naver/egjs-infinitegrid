@@ -47,7 +47,6 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "ng-packagr": "^11.0.0",
-    "protractor": "~7.0.0",
     "raw-loader": "^4.0.2",
     "react-docgen-typescript-loader": "^3.7.2",
     "storybook-addon-preview": "^2.1.1",
