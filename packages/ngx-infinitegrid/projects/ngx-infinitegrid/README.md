@@ -33,7 +33,9 @@
 
 ## ⚙️ Installation
 ```sh
-npm install --save @egjs/ngx-infinitegrid
+npm install @egjs/ngx-infinitegrid
+# Or if you're using yarn
+yarn add @egjs/ngx-infinitegrid
 ```
 
 ## 🏃 Quick Start
@@ -54,22 +56,25 @@ import { NgModule } from '@angular/core';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { } /* Your app */
+export class AppModule {} /* Your app */
 ```
 
 ```html
-<div NgxMasonryInfiniteGrid
+<div
+  NgxMasonryInfiniteGrid
   class="container"
   [gap]="5"
   [items]="items"
   [trackBy]="trackBy"
   [groupBy]="groupBy"
   (requestAppend)="onRequestAppend($event)"
-  *ngFor="let item of [0]; trackBy: randomTrackBy;"
+  *ngFor="let item of [0]; trackBy: randomTrackBy"
   #ig
-  >
-  <div class="item" *ngFor ="let item of ig.visibleItems; trackBy: trackBy;">
-  </div>
+>
+  <div
+    class="item"
+    *ngFor="let item of ig.visibleItems; trackBy: trackBy;"
+  ></div>
 </div>
 ```
 
@@ -79,10 +84,11 @@ import { OnRequestAppend } from '@egjs/infinitegrid';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
   items = this.getItems(0, 10);
+
   getItems(nextGroupKey: number, count: number) {
     const nextItems = [];
     const nextKey = nextGroupKey * count;
@@ -92,19 +98,19 @@ export class AppComponent {
     }
     return nextItems;
   }
+
   groupBy(_: any, item: any) {
     return item.groupKey;
   }
+
   trackBy(_: any, item: any) {
     return item.key;
   }
+
   onRequestAppend(e: OnRequestAppend) {
     const nextGroupKey = (+e.groupKey! || 0) + 1;
 
-    this.items = [
-      ...this.items,
-      ...this.getItems(nextGroupKey, 10),
-    ];
+    this.items = [...this.items, ...this.getItems(nextGroupKey, 10)];
   }
 }
 ```

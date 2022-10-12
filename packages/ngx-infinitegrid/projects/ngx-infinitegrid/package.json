@@ -18,11 +18,10 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^11.2.14",
-    "@angular/core": "^11.2.14"
+    "@angular/common": ">=11.0.0",
+    "@angular/core": ">=11.0.0"
   },
   "dependencies": {
-    "@egjs/infinitegrid": "~4.7.1",
-    "tslib": "^2.0.0"
+    "@egjs/infinitegrid": "~4.7.1"
   }
 }

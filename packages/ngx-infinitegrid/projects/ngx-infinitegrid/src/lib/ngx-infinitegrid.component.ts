@@ -3,12 +3,21 @@
  * Copyright (c) 2021-present NAVER Corp.
  * MIT license
  */
-import {
-  AfterViewChecked, AfterViewInit, Component, ElementRef,
-  EventEmitter, Input, OnChanges, OnDestroy, Output, ViewChild,
-  PLATFORM_ID, Inject, NgZone
+ import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  PLATFORM_ID,
+  Inject,
+  NgZone
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformServer } from '@angular/common';
 import { fromEvent, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -30,7 +39,6 @@ import {
 import { NgxInfiniteGridInterface } from './ngx-infinitegrid.interface';
 import { NgxInfiniteGridProps } from './types';
 
-// @dynamic
 @Component({
   selector: 'ngx-infinite-grid, [NgxInfiniteGrid]',
   template: '<slot></slot>',
@@ -86,16 +94,15 @@ export class NgxInfiniteGridComponent
   @Output() requestAppend!: EventEmitter<OnRequestAppend>;
   @Output() requestPrepend!: EventEmitter<OnRequestPrepend>;
   public visibleItems: InfiniteGridItem[] = [];
-  @ViewChild('wrapperRef', { static: false }) _wrapperRef!: ElementRef;
-  @ViewChild('containerRef', { static: false }) _containerRef!: ElementRef;
+
   private _renderer = new Renderer();
   private _isChange = false;
 
   private _destroy$ = new Subject<void>();
 
   constructor(
-    protected elementRef: ElementRef,
-    @Inject(PLATFORM_ID) private _platform: string,
+    protected elementRef: ElementRef<HTMLElement>,
+    @Inject(PLATFORM_ID) private _platformId: string,
     private _ngZone: NgZone
   ) {
     super();
@@ -116,30 +123,27 @@ export class NgxInfiniteGridComponent
   }
 
   ngAfterViewInit(): void {
-    if (!isPlatformBrowser(this._platform)) {
+    if (isPlatformServer(this._platformId)) {
       return;
     }
+
     const GridClass = (this.constructor as typeof NgxInfiniteGridComponent).GridClass;
     const defaultOptions = GridClass.defaultOptions;
     const options: Partial<InfiniteGridOptions> = {};
-    const containerElement = this._containerRef?.nativeElement;
 
     for (const name in defaultOptions) {
       if (name in this && typeof (this as any)[name] !== "undefined") {
         (options as any)[name] = (this as any)[name];
       }
     }
-    if (containerElement) {
-      options.container = containerElement;
-    }
+
     options.renderer = this._renderer;
-    const wrapper = this._wrapperRef! || this.elementRef;
 
     // The `InfiniteGrid` set ups `scroll` and `resize` events through `ScrollManager`
     // and `ResizeWatcher`. These events force Angular to run change detection whenever
     // dispatched; this happens too often.
     const grid = this._ngZone.runOutsideAngular(
-      () => new GridClass(wrapper.nativeElement, options)
+      () => new GridClass(this.elementRef.nativeElement, options)
     );
 
     for (const name in INFINITEGRID_EVENTS) {
@@ -197,7 +201,9 @@ export class NgxInfiniteGridComponent
 
     this._renderer.updated(children);
   }
+
   ngOnDestroy() {
+    this._destroy$.next();
     this.vanillaGrid?.destroy();
   }
 
@@ -214,6 +220,7 @@ export class NgxInfiniteGridComponent
       };
     });
   }
+
   private _updateVisibleChildren() {
     this.visibleItems = getRenderingItems(this._getItemInfos(), {
       grid: this.vanillaGrid,
