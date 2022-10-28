@@ -1,8 +1,10 @@
 import {
-  FrameInfiniteGrid as VanillaFrameInfiniteGrid,
+  FrameInfiniteGrid as VanillaFrameInfiniteGrid, FrameInfiniteGridOptions,
 } from "@egjs/infinitegrid";
 import { makeInfiniteGrid } from "../InfiniteGrid";
-import { VueInfiniteGridInterface } from "../types";
 
-export const FrameInfiniteGrid = makeInfiniteGrid("frame-infinite-grid", VanillaFrameInfiniteGrid);
-export type FrameInfiniteGrid = VueInfiniteGridInterface<typeof VanillaFrameInfiniteGrid>;
+export const FrameInfiniteGrid = makeInfiniteGrid<FrameInfiniteGridOptions>(
+  "frame-infinite-grid",
+  VanillaFrameInfiniteGrid,
+);
+export type FrameInfiniteGrid = InstanceType<typeof FrameInfiniteGrid>;

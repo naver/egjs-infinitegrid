@@ -4,5 +4,5 @@ import {
 import { makeInfiniteGrid } from "../InfiniteGrid";
 import { VueInfiniteGridInterface } from "../types";
 
-export const MasonryInfiniteGrid = makeInfiniteGrid("masonry-grid", VanillaMasonryInfiniteGrid);
+export const MasonryInfiniteGrid = makeInfiniteGrid("masonry-infinite-grid", VanillaMasonryInfiniteGrid);
 export type MasonryInfiniteGrid = VueInfiniteGridInterface<typeof VanillaMasonryInfiniteGrid>;
