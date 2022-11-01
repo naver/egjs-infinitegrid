@@ -1,8 +1,11 @@
 import {
-  JustifiedInfiniteGrid as VanillaJustifiedInfiniteGrid,
+  JustifiedInfiniteGrid as VanillaJustifiedInfiniteGrid, JustifiedInfiniteGridOptions,
 } from "@egjs/infinitegrid";
 import { makeInfiniteGrid } from "../InfiniteGrid";
-import { VueInfiniteGridInterface } from "../types";
 
-export const JustifiedInfiniteGrid = makeInfiniteGrid("justified-infinite-grid", VanillaJustifiedInfiniteGrid);
-export type JustifiedInfiniteGrid = VueInfiniteGridInterface<typeof VanillaJustifiedInfiniteGrid>;
+export const JustifiedInfiniteGrid = makeInfiniteGrid<JustifiedInfiniteGridOptions>(
+  "justified-infinite-grid",
+  VanillaJustifiedInfiniteGrid,
+);
+export type JustifiedInfiniteGrid = InstanceType<typeof JustifiedInfiniteGrid>;
+

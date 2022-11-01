@@ -8,6 +8,7 @@ import InfiniteGrid, {
   InfiniteGridMethods,
   InfiniteGridItemInfo,
   Renderer,
+  InfiniteGridEvents,
 } from "@egjs/infinitegrid";
 
 export type VueInfiniteGridProps<T extends InfiniteGridFunction> = T["defaultOptions"] & {
@@ -32,3 +33,8 @@ export interface VueInnerInfiniteInterface extends VueInfiniteGridInterface<any>
   $_getVisibleChildren(): any[];
   $_renderContainer(h: any): any;
 }
+
+
+export type VueInfiniteGridEvents = {
+  [key in keyof InfiniteGridEvents]: (e: InfiniteGridEvents[key]) => void;
+};
