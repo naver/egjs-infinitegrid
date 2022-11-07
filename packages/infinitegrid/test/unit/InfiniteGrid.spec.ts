@@ -216,6 +216,39 @@ describe("test InfiniteGrid", () => {
         expect(child.style.top).to.be.equals(`${i * 250}px`);
       });
     });
+    it("should check whether it is rendered even if gropukey is changed", async () => {
+      // Given
+      const igContainer = ig!.getContainerElement();
+
+      ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: child,
+          html: `<div style="height: 50px">${child}</div>`,
+        };
+      }));
+      ig!.setCursors(0, 1);
+
+      await waitEvent<OnRenderComplete>(ig!, "renderComplete");
+
+      // When
+      // 0, 1, 2, 3, 4, 5 => 3, 4, 5
+      ig!.syncItems([3, 4, 5].map((child) => {
+        return {
+          groupKey: 0,
+          key: child,
+          html: `<div style="height: 250px">${child}</div>`,
+        };
+      }));
+
+      const e = await waitEvent<OnRenderComplete>(ig!, "renderComplete");
+
+      // Then
+      expect(e.startCursor).to.be.equals(0);
+      expect(e.endCursor).to.be.equals(0);
+      expect(e.groups.length).to.be.deep.equals(1);
+      expect(e.groups[0].groupKey).to.be.deep.equals(0);
+    });
     it("should check whether it is rendered after changing options", async () => {
       // Given
       const igContainer = ig!.getContainerElement();
