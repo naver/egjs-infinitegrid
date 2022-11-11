@@ -627,6 +627,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
         if (info.data) {
           prevItem.data = info.data;
         }
+        if (info.groupKey != null) {
+          prevItem.groupKey = info.groupKey!;
+        }
         nextItemKeys[key] = prevItem;
       }
     });
