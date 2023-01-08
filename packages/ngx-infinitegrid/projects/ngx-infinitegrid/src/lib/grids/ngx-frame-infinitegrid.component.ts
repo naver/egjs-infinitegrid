@@ -8,11 +8,9 @@ import {
 } from "@egjs/infinitegrid";
 import { TEMPLATE } from '../consts';
 
-
 @Component({
   selector: 'ngx-frame-infinite-grid, [NgxFrameInfiniteGrid]',
   template: TEMPLATE,
-  styles: [],
 })
 export class NgxFrameInfiniteGridComponent extends NgxInfiniteGridComponent
   implements Required<FrameInfiniteGridOptions> {

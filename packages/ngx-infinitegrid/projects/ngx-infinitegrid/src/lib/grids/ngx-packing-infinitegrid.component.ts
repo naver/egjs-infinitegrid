@@ -12,7 +12,6 @@ import { TEMPLATE } from '../consts';
 @Component({
   selector: 'ngx-packing-infinite-grid, [NgxPackingInfiniteGrid]',
   template: TEMPLATE,
-  styles: [],
 })
 export class NgxPackingInfiniteGridComponent extends NgxInfiniteGridComponent
   implements Required<PackingInfiniteGridOptions> {

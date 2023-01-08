@@ -12,7 +12,6 @@ import { TEMPLATE } from '../consts';
 @Component({
   selector: 'ngx-masonry-infinite-grid, [NgxMasonryInfiniteGrid]',
   template: TEMPLATE,
-  styles: [],
 })
 export class NgxMasonryInfiniteGridComponent extends NgxInfiniteGridComponent
   implements Required<MasonryInfiniteGridOptions> {

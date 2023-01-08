@@ -2,23 +2,20 @@ export const TEMPLATE = `
 <ng-template #content><ng-content></ng-content></ng-template>
 
 <ng-template #viewer>
-  <ng-template [ngIf]="container === true" [ngIfElse]="noContainer">
-    <div #containerRef>
-      <ng-container *ngTemplateOutlet="content"></ng-container>
-    </div>
-  </ng-template>
+  <div *ngIf="container === true; else noContainer" #containerRef>
+    <ng-template [ngTemplateOutlet]="content"></ng-template>
+  </div>
+
   <ng-template #noContainer>
-    <ng-container *ngTemplateOutlet="content"></ng-container>
+    <ng-template [ngTemplateOutlet]="content"></ng-template>
   </ng-template>
 </ng-template>
 
-<ng-template [ngIf]="elementRef.nativeElement.tagName.indexOf('NGX-') === 0" [ngIfElse]="noWrapper">
-  <div #wrapperRef>
-    <ng-container *ngTemplateOutlet="viewer"></ng-container>
-  </div>
-</ng-template>
+<div *ngIf="elementRef.nativeElement.tagName.indexOf('NGX-') === 0; else noWrapper" #wrapperRef>
+  <ng-template [ngTemplateOutlet]="viewer"></ng-template>
+</div>
 
 <ng-template #noWrapper>
-  <ng-container *ngTemplateOutlet="viewer"></ng-container>
+  <ng-template [ngTemplateOutlet]="viewer"></ng-template>
 </ng-template>
 `;

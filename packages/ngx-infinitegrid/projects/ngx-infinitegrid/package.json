@@ -17,10 +17,6 @@
     "url": "https://github.com/naver/egjs-infinitegrid/issues"
   },
   "license": "MIT",
-  "peerDependencies": {
-    "@angular/common": ">=11.0.0",
-    "@angular/core": ">=11.0.0"
-  },
   "dependencies": {
     "@egjs/infinitegrid": "~4.9.0"
   }
