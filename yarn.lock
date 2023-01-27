@@ -1948,7 +1948,7 @@
   resolved "https://registry.npmjs.org/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@daybrush/jsdoc@^0.3.10", "@daybrush/jsdoc@^0.3.11":
+"@daybrush/jsdoc@^0.3.10":
   version "0.3.12"
   resolved "https://registry.npmjs.org/@daybrush/jsdoc/-/jsdoc-0.3.12.tgz#22fc3a008eb52a01eae728d8b75fe7661cc71d48"
   integrity sha512-aejzziZRBQH7pQXyt9DBeJt80Z2prmkFPFSCXspvN0XWTBeDkonZst5Ku3IzB4CXhd17fGa6hAhX4l/e3x20Bg==
@@ -2501,10 +2501,10 @@
     "@egjs/imready" "^1.1.3"
     "@egjs/list-differ" "^1.0.0"
 
-"@egjs/grid@~1.11.0":
-  version "1.11.1"
-  resolved "https://registry.npmjs.org/@egjs/grid/-/grid-1.11.1.tgz#f082ea0745b2ec12fe59045f0f5611ee7a8a82c6"
-  integrity sha512-/UkSeapVLh4eF3obxaJkgg30yYQPCl8Ugua7vTTHkSljgidwZQKweTvgY57gUnAhHWj12KoR65FxfJ9Qq9tyXQ==
+"@egjs/grid@~1.12.0":
+  version "1.12.0"
+  resolved "https://registry.npmjs.org/@egjs/grid/-/grid-1.12.0.tgz#0e83eb20ecc43e149f4d144bab84d23fbc9687df"
+  integrity sha512-LKUgbDE0Dr1Nq2V+DPrf3CNaQb/f3ELFX9V+23QlBxBdvcb7HqnywNjDfUoQ7fEdyiTfIg55r9vHl8v9B/WXJw==
   dependencies:
     "@egjs/children-differ" "^1.0.1"
     "@egjs/component" "^3.0.0"
@@ -2531,19 +2531,10 @@
     "@egjs/flicking" "~4.10.2"
     "@egjs/list-differ" "^1.0.0"
 
-"@egjs/release-helper@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.npmjs.org/@egjs/release-helper/-/release-helper-0.0.3.tgz#3231fe8a58597d8c1e708a125b82d2d18de75e09"
-  integrity sha512-/O4SQdiJhLoT41/0mDqaE1fhtEqdBh64/YHHZPLwWuRVVj+KmurLt0tItlLasI9fRbsMH+ljJH312LJsDVvzjg==
-  dependencies:
-    chalk "^2.4.2"
-    fs-extra "^7.0.1"
-    sync-exec "^0.6.2"
-
-"@egjs/release-helper@^0.2.6":
-  version "0.2.7"
-  resolved "https://registry.npmjs.org/@egjs/release-helper/-/release-helper-0.2.7.tgz#7138b9b6e79d663e57b0cc9ceb372b3195e94d38"
-  integrity sha512-p58Y50qqn+wgEdLusmUhTFvWO4WSBX5fExgaLvNk5SKMcLBaDqS+f2Xct1MQJlAcOyq6GZq12O3AYK9vueJn6g==
+"@egjs/release-helper@^0.2.8":
+  version "0.2.8"
+  resolved "https://registry.npmjs.org/@egjs/release-helper/-/release-helper-0.2.8.tgz#1b6cccd5994bd5027d616b7aa84eec2620630958"
+  integrity sha512-BNeh0K7ah2dcisD7gkQTcreLTunHRIaqAOyi2CBMPXVHLEyry3xPDzixKngRLnJAUNjjfGMt92rXsC4e1i62rw==
   dependencies:
     chalk "^2.4.2"
     commander "^9.2.0"
@@ -18588,7 +18579,7 @@ jsdoc-to-markdown@^7.0.1:
     jsdoc-parse "^6.1.0"
     walk-back "^5.1.0"
 
-jsdoc-to-mdx@^1.1.0, jsdoc-to-mdx@^1.1.2:
+jsdoc-to-mdx@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/jsdoc-to-mdx/-/jsdoc-to-mdx-1.1.2.tgz#b3a07df2d4a11b67a204a6bb483042ff7a292534"
   integrity sha512-F+pAJnP7T6oEqytY3z6tEcRpOeYk0zul8t+zDy5wsLJSzL/lonU68sXhIC8HN9+5wRS8M7DSMOVtxWTKUg2dHg==
@@ -28755,20 +28746,15 @@ typeface-oswald@0.0.54:
   resolved "https://registry.npmjs.org/typeface-oswald/-/typeface-oswald-0.0.54.tgz#1e253011622cdd50f580c04e7d625e7f449763d7"
   integrity sha512-U1WMNp4qfy4/3khIfHMVAIKnNu941MXUfs3+H9R8PFgnoz42Hh9pboSFztWr86zut0eXC8byalmVhfkiKON/8Q==
 
-typescript@*, typescript@^4.0.0, typescript@^4.2.3, typescript@^4.3.5, typescript@^4.6.4:
-  version "4.8.4"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-4.8.4.tgz#c464abca159669597be5f96b8943500b238e60e6"
-  integrity sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==
+typescript@*, "typescript@^4.5.0 <4.6.0":
+  version "4.5.5"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-4.5.5.tgz#d8c953832d28924a9e3d37c73d729c846c5896f3"
+  integrity sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==
 
 typescript@4.1.5:
   version "4.1.5"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.1.5.tgz#123a3b214aaff3be32926f0d8f1f6e704eb89a72"
   integrity sha512-6OSu9PTIzmn9TCDiovULTnET6BgXtDYL4Gg4szY+cGsc3JP1dQL8qvE8kShTRx1NIw4Q9IBHlwODjkjWEtMUyA==
-
-typescript@^3.9.7, typescript@~3.9.3:
-  version "3.9.10"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-3.9.10.tgz#70f3910ac7a51ed6bef79da7800690b19bf778b8"
-  integrity sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==
 
 typescript@~4.1.5:
   version "4.1.6"

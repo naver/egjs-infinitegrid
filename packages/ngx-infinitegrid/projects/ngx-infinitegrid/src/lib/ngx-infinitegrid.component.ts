@@ -51,7 +51,7 @@ export class NgxInfiniteGridComponent
   implements Required<InfiniteGridOptions>,
   NgxInfiniteGridProps,
   AfterViewInit, AfterViewChecked, OnChanges, OnDestroy {
-  public static GridClass: InfiniteGridFunction;
+  public static GridClass: InfiniteGridFunction | null = null;
   @Input() gridConstructor!: NgxInfiniteGridProps['gridConstructor'];
   @Input() renderer!: NgxInfiniteGridProps['renderer'];
   @Input() container!: NgxInfiniteGridProps['container'];
@@ -128,7 +128,7 @@ export class NgxInfiniteGridComponent
     }
 
     const GridClass = (this.constructor as typeof NgxInfiniteGridComponent).GridClass;
-    const defaultOptions = GridClass.defaultOptions;
+    const defaultOptions = GridClass!.defaultOptions;
     const options: Partial<InfiniteGridOptions> = {};
 
     for (const name in defaultOptions) {
@@ -143,7 +143,7 @@ export class NgxInfiniteGridComponent
     // and `ResizeWatcher`. These events force Angular to run change detection whenever
     // dispatched; this happens too often.
     const grid = this._ngZone.runOutsideAngular(
-      () => new GridClass(this.elementRef.nativeElement, options)
+      () => new GridClass!(this.elementRef.nativeElement, options)
     );
 
     for (const name in INFINITEGRID_EVENTS) {
@@ -190,7 +190,7 @@ export class NgxInfiniteGridComponent
     }
     this._isChange = false;
     const GridClass = (this.constructor as typeof NgxInfiniteGridComponent).GridClass;
-    const propertyTypes = GridClass.propertyTypes;
+    const propertyTypes = GridClass!.propertyTypes;
     const grid = this.vanillaGrid;
 
     for (const name in propertyTypes) {

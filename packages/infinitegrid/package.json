@@ -55,9 +55,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@babel/core": "^7.13.10",
-		"@daybrush/jsdoc": "^0.3.11",
 		"@egjs/build-helper": "^0.1.2",
-		"@egjs/release-helper": "0.0.3",
 		"@storybook/addon-actions": "^6.0.21",
 		"@storybook/addon-controls": "^6.0.21",
 		"@storybook/addon-docs": "^6.0.21",
@@ -85,12 +83,10 @@
 		"coveralls": "^3.1.0",
 		"cpx": "^1.5.0",
 		"css-loader": "^5.0.1",
-		"egjs-jsdoc-template": "^1.4.4",
 		"eslint": "^7.7.0",
 		"eslint-plugin-import": "^2.22.1",
 		"eslint-plugin-react": "^7.22.0",
 		"gh-pages": "^2.0.1",
-		"jsdoc-to-mdx": "^1.1.0",
 		"karma": "^4.0.1",
 		"karma-chai": "^0.1.0",
 		"karma-chrome-launcher": "^2.2.0",
@@ -119,13 +115,13 @@
 		"storybook-dark-mode": "^1.0.3",
 		"ts-node": "^9.1.1",
 		"tslib": "^2.0.3",
-		"typescript": "^3.9.7"
+		"typescript": "^4.5.0 <4.6.0"
 	},
 	"dependencies": {
 		"@cfcs/core": "^0.0.5",
 		"@egjs/children-differ": "^1.0.1",
 		"@egjs/component": "^3.0.0",
-		"@egjs/grid": "~1.11.0",
+		"@egjs/grid": "~1.12.0",
 		"@egjs/list-differ": "^1.0.0"
 	}
 }
