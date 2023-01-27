@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.8.1](https://github.com/naver/egjs-infinitegrid/compare/4.7.1...4.8.1) (2023-01-27)
+### :sparkles: Packages
+* `@egjs/infinitegrid` 4.8.1
+* `@egjs/react-infinitegrid` 4.8.1
+* `@egjs/svelte-infinitegrid` 4.8.1
+* `@egjs/vue-infinitegrid` 4.8.1
+* `@egjs/vue3-infinitegrid` 4.8.1
+* `@egjs/ngx-infinitegrid` 4.8.1
+
+
+### :rocket: New Features
+
+* All
+    * update `@egjs/grid` module ([081acd5](https://github.com/naver/egjs-infinitegrid/commit/081acd53fd4ccd00b16e70e8ef86f11a63bd764c))
+
+
+### :bug: Bug Fix
+
+* `@egjs/vue3-infinitegrid`, `@egjs/vue-infinitegrid`
+    * support vue 3 types (#523) ([1e09868](https://github.com/naver/egjs-infinitegrid/commit/1e0986889421ecf7a690e1f59d4adf9c0966c90f))
+* `@egjs/infinitegrid`
+    * fix changed groupKey (#526) ([6db0bff](https://github.com/naver/egjs-infinitegrid/commit/6db0bffc8a2d23568eb36caf1cfb8d1677c08192))
+* `@egjs/ngx-infinitegrid`
+    * **ngx-infinitegrid:** re-arrange peer deps and call `next` on the destroy subject (#520) ([0410c76](https://github.com/naver/egjs-infinitegrid/commit/0410c7630d443475fbc9252ea2cc5e53cb9abc21))
+    * **ngx-infinitegrid:** reduce change detection cycles and teardown event listeners once the view is removed (#518) ([ee30a5b](https://github.com/naver/egjs-infinitegrid/commit/ee30a5bb21e78653844b63ac76f21e2614d8f10c))
+
+
+### :memo: Documentation
+
+* fix README ([1fe439f](https://github.com/naver/egjs-infinitegrid/commit/1fe439f513d9bcefeca92700d592d1b394b0a0dd))
+
+
+### :mega: Other
+
+* All
+    * update packages versions ([191e57f](https://github.com/naver/egjs-infinitegrid/commit/191e57fbb4df5c2fc8f990fa44e2819bdadf5ee6))
+
+
+
 ## 4.7.1 (2022-09-08)
 ### :sparkles: Packages
 * `@egjs/infinitegrid` 4.7.1

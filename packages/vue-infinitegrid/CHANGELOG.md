@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.8.1](https://github.com/naver/egjs-infinitegrid/compare/@egjs/vue-infinitegrid@4.7.1...@egjs/vue-infinitegrid@4.8.1) (2023-01-27)
+
+
+### :rocket: New Features
+
+* update `@egjs/grid` module ([081acd5](https://github.com/naver/egjs-infinitegrid/commit/081acd53fd4ccd00b16e70e8ef86f11a63bd764c))
+
+
+### :bug: Bug Fix
+
+* support vue 3 types (#523) ([1e09868](https://github.com/naver/egjs-infinitegrid/commit/1e0986889421ecf7a690e1f59d4adf9c0966c90f))
+
+
+### :mega: Other
+
+* update packages versions ([191e57f](https://github.com/naver/egjs-infinitegrid/commit/191e57fbb4df5c2fc8f990fa44e2819bdadf5ee6))
+
+
+
 ## 4.7.1 (2022-09-08)
 
 

@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.8.1](https://github.com/naver/egjs-infinitegrid/compare/@egjs/infinitegrid@4.7.1...@egjs/infinitegrid@4.8.1) (2023-01-27)
+
+
+### :rocket: New Features
+
+* update `@egjs/grid` module ([081acd5](https://github.com/naver/egjs-infinitegrid/commit/081acd53fd4ccd00b16e70e8ef86f11a63bd764c))
+
+
+### :bug: Bug Fix
+
+* fix changed groupKey (#526) ([6db0bff](https://github.com/naver/egjs-infinitegrid/commit/6db0bffc8a2d23568eb36caf1cfb8d1677c08192))
+
+
+### :mega: Other
+
+* update packages versions ([191e57f](https://github.com/naver/egjs-infinitegrid/commit/191e57fbb4df5c2fc8f990fa44e2819bdadf5ee6))
+
+
+
 ## 4.7.1 (2022-09-08)
 
 
