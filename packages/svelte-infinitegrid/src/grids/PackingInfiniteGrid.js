@@ -2,16 +2,16 @@ import InfiniteGrid from "../InfiniteGrid.js";
 import { PackingInfiniteGrid as GridClass } from "@egjs/infinitegrid";
 
 
-let PackingInfiniteGrid;
+let SveltePackingInfiniteGrid;
 
 if (typeof InfiniteGrid === "object") {
-  PackingInfiniteGrid = InfiniteGrid;
+  SveltePackingInfiniteGrid = InfiniteGrid;
 } else {
-  PackingInfiniteGrid = class PackingInfiniteGrid extends InfiniteGrid {
+  SveltePackingInfiniteGrid = class SveltePackingInfiniteGrid extends InfiniteGrid {
     constructor(options) {
       options.props.GridClass = GridClass;
       super(options);
     }
   }
 }
-export { PackingInfiniteGrid };
+export { SveltePackingInfiniteGrid as PackingInfiniteGrid };

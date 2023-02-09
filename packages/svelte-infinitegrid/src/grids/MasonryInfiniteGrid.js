@@ -2,16 +2,16 @@ import InfiniteGrid from "../InfiniteGrid.js";
 import { MasonryInfiniteGrid as GridClass } from "@egjs/infinitegrid";
 
 
-let MasonryInfiniteGrid;
+let SvelteMasonryInfiniteGrid;
 
 if (typeof InfiniteGrid === "object") {
-  MasonryInfiniteGrid = InfiniteGrid;
+  SvelteMasonryInfiniteGrid = InfiniteGrid;
 } else {
-  MasonryInfiniteGrid = class MasonryInfiniteGrid extends InfiniteGrid {
+  SvelteMasonryInfiniteGrid = class SvelteMasonryInfiniteGrid extends InfiniteGrid {
     constructor(options) {
       options.props.GridClass = GridClass;
       super(options);
     }
   }
 }
-export { MasonryInfiniteGrid };
+export { SvelteMasonryInfiniteGrid as MasonryInfiniteGrid };
