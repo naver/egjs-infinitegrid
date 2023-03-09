@@ -76,8 +76,13 @@ export function categorize<Item extends InfiniteGridItemInfo = InfiniteGridItem>
   let generatedGroupKey: number | string;
   let isContinuousGroupKey = false;
 
-  items.forEach((item) => {
+  items.forEach((item, i) => {
     if (item.groupKey != null) {
+      isContinuousGroupKey = false;
+    } else if (!item.inserted && items[i - 1]) {
+      // In case of framework, inserted is false.
+      // If groupKey is not set, the group key of the previous item is followed.
+      item.groupKey = items[i - 1].groupKey!;
       isContinuousGroupKey = false;
     } else {
       if (!isContinuousGroupKey) {
@@ -358,14 +363,17 @@ export function convertInsertedItems(
       element = item;
       html = item.outerHTML;
     } else {
-      return { groupKey, ...item };
+      // inserted is true when adding via a method.
+      return { groupKey, inserted: true, ...item };
     }
 
+    // inserted is true when adding via a method.
     return {
       key,
       groupKey,
       html,
       element,
+      inserted: true,
     };
   });
 }

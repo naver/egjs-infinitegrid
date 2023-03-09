@@ -42,6 +42,7 @@ export interface CategorizedGroup<Item extends InfiniteGridItemInfo = InfiniteGr
 export interface InfiniteGridItemInfo {
   type?: ITEM_TYPE;
   groupKey?: string | number;
+  inserted?: boolean;
   key?: string | number;
   element?: HTMLElement | null;
   html?: string;
