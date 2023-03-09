@@ -183,6 +183,40 @@ describe("test InfiniteGrid", () => {
         expect(child.style.top).to.be.equals(`${i * 18}px`);
       });
     });
+    it("should check if items are added in order even if items are added in own group", async () => {
+      // Given
+      ig!.syncItems([0, 2, 4, 6, 8, 10].map((child) => {
+        return {
+          key: child,
+          html: `<div>${child}</div>`,
+        };
+      }));
+
+      ig!.setCursors(0, 0);
+
+      await waitEvent<OnRenderComplete>(ig!, "renderComplete");
+
+      // When
+      ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((child) => {
+        return {
+          key: child,
+          html: `<div>${child}</div>`,
+        };
+      }));
+      await waitEvent<OnRenderComplete>(ig!, "renderComplete");
+
+      // Then
+      expect(ig!.getItems()).to.be.lengthOf(11);
+      expect(ig!.getVisibleItems()).to.be.lengthOf(11);
+
+      const firstGroupKey = ig!.getItems()[0].groupKey;
+
+      ig!.getItems().forEach((item, i) => {
+        // All items have the same group, and the key is the same as the index.
+        expect(item.groupKey).to.be.equals(firstGroupKey);
+        expect(item.key).to.be.equals(i);
+      });
+    });
     it("should check if only visible items are rendered", async () => {
       // Given
       const igContainer = ig!.getContainerElement();
