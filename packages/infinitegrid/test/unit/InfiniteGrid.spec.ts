@@ -1,6 +1,6 @@
 import { cleanup, sandbox, waitEvent, waitFor } from "./utils/utils";
 import InfiniteGrid from "../../src/InfiniteGrid";
-import { SampleGrid } from "./samples/SampleGrid";
+import { SampleGrid, SampleGridOptions } from "./samples/SampleGrid";
 import { flat, toArray } from "../../src/utils";
 import {
   InfiniteGridOptions,
@@ -1568,6 +1568,153 @@ describe("test InfiniteGrid", () => {
       expect(invisibleItem.rect.height).not.to.be.equals(30);
       expect(ig!.getStartCursor()).to.be.equals(1);
       expect(ig!.getEndCursor()).to.be.equals(3);
+    });
+  });
+  describe("test size group, equal size", () => {
+    it("should check if isEqualSize calculates the size of the items in the invisible area.", async () => {
+      // Given
+      container!.innerHTML = `<div class="wrapper" style="width: 100%; height: 500px;"></div>`;
+      const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+
+      ig = new InfiniteGrid<InfiniteGridOptions & SampleGridOptions>(wrapper, {
+        gridConstructor: SampleGrid,
+        container: true,
+        isEqualSize: true,
+        injectCSSSize: false,
+      });
+
+      ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: `key${child}`,
+          html: `<div style="height: ${100 + child * 10}px;width: 100%;">${child}</div>`,
+        };
+      }));
+
+      ig!.setCursors(0, 4);
+      // all cursors
+      await waitEvent(ig!, "renderComplete");
+      // partial cursors (0 ~ 2)
+      await waitEvent(ig!, "renderComplete");
+
+      ig!.getScrollContainerElement().scrollTop = 500;
+      // partial cursors (1 ~ 3)
+      await waitEvent(ig!, "renderComplete");
+      // When
+      // Based on the first item of the currently displayed item, the size of all items is determined to be the same.
+      ig!.renderItems({
+        useResize: true,
+      });
+
+      await waitEvent(ig!, "renderComplete");
+      const visibleItem = ig!.getVisibleItems()[0];
+
+      // Then
+      expect(visibleItem.groupKey).to.be.equals(1);
+      expect(visibleItem.key).to.be.equals("key3");
+
+      ig!.getItems().forEach((item) => {
+        // The size of all items is the same as the "key3" item
+        expect(item.rect.height).to.be.equals(130);
+      });
+    });
+    it("should checks if the sizes of the not-equal-size items are different.", async () => {
+      // Given
+      container!.innerHTML = `<div class="wrapper" style="width: 100%; height: 500px;"></div>`;
+      const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+
+      ig = new InfiniteGrid<InfiniteGridOptions & SampleGridOptions>(wrapper, {
+        gridConstructor: SampleGrid,
+        container: true,
+        isEqualSize: true,
+        injectCSSSize: false,
+      });
+
+      ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: `key${child}`,
+          html: `<div style="height: ${100 + child * 10}px;width: 100%;" ${
+            child === 7 ? `data-grid-not-equal-size="true"` : ""
+          }>${child}</div>`,
+        };
+      }));
+
+      ig!.setCursors(0, 4);
+      // all cursors
+      await waitEvent(ig!, "renderComplete");
+      // partial cursors (0 ~ 2)
+      await waitEvent(ig!, "renderComplete");
+
+      ig!.getScrollContainerElement().scrollTop = 500;
+      // partial cursors (1 ~ 3)
+      await waitEvent(ig!, "renderComplete");
+      // When
+      // Based on the first item of the currently displayed item, the size of all items is determined to be the same.
+      ig!.renderItems({
+        useResize: true,
+      });
+
+      await waitEvent(ig!, "renderComplete");
+      // Then
+      ig!.getItems().forEach((item, i) => {
+        // Except for item 7, all are the same size (130).
+        if (i === 7) {
+          expect(ig!.getItems()[7].rect.height).to.be.equals(170);
+        } else {
+          // The size of all items is the same as the "key3" item
+          expect(item.rect.height).to.be.equals(130);
+        }
+      });
+    });
+    it("should check if size group calculates the size of the group of items in the invisible area.", async () => {
+      // Given
+      container!.innerHTML = `<div class="wrapper" style="width: 100%; height: 500px;"></div>`;
+      const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+
+      ig = new InfiniteGrid<InfiniteGridOptions & SampleGridOptions>(wrapper, {
+        gridConstructor: SampleGrid,
+        container: true,
+        injectCSSSize: false,
+      });
+
+      ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: `key${child}`,
+          html: `<div style="height: ${100 + child * 10}px;width: 100%;" data-grid-size-group="${child % 2}">${child}</div>`,
+        };
+      }));
+
+      ig!.setCursors(0, 4);
+      // all cursors
+      await waitEvent(ig!, "renderComplete");
+      // partial cursors (0 ~ 2)
+      await waitEvent(ig!, "renderComplete");
+
+      ig!.getScrollContainerElement().scrollTop = 500;
+      // partial cursors (1 ~ 3)
+      await waitEvent(ig!, "renderComplete");
+      // When
+      // Based on the first item of the currently displayed item, the size of all items is determined to be the same.
+      ig!.renderItems({
+        useResize: true,
+      });
+
+      await waitEvent(ig!, "renderComplete");
+      const [item1, item2] = ig!.getVisibleItems();
+
+      // Then
+      expect(item1.key).to.be.equals("key3");
+      expect(item2.key).to.be.equals("key4");
+      expect(item1.rect.height).to.be.equals(130);
+      expect(item2.rect.height).to.be.equals(140);
+
+      // The size of all items (even "0") is the same as the "key4" item
+      // The size of all items (odd, "1") is the same as the "key3" item
+      ig!.getItems().forEach((item, i) => {
+        expect(item.rect.height).to.be.equals(i % 2 ? 130 : 140);
+      });
     });
   });
 });

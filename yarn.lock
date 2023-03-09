@@ -2478,10 +2478,10 @@
     "@egjs/imready" "^1.1.3"
     "@egjs/list-differ" "^1.0.0"
 
-"@egjs/grid@~1.12.0":
-  version "1.12.0"
-  resolved "https://registry.npmjs.org/@egjs/grid/-/grid-1.12.0.tgz#0e83eb20ecc43e149f4d144bab84d23fbc9687df"
-  integrity sha512-LKUgbDE0Dr1Nq2V+DPrf3CNaQb/f3ELFX9V+23QlBxBdvcb7HqnywNjDfUoQ7fEdyiTfIg55r9vHl8v9B/WXJw==
+"@egjs/grid@^1.13.0-beta.2":
+  version "1.13.0-beta.2"
+  resolved "https://registry.npmjs.org/@egjs/grid/-/grid-1.13.0-beta.2.tgz#3ab64c25e98075b6fb2f3d151d260ea02f6863c0"
+  integrity sha512-YsXQG1xVUGuIHhDRlKGgy+5+a1SygubP3BKcnSSsn/Ba8U6ey4R2PQvxofUq5OtMvJBw6teCbH6JJUTjoX2NEw==
   dependencies:
     "@egjs/children-differ" "^1.0.1"
     "@egjs/component" "^3.0.0"

@@ -9,6 +9,7 @@ import Grid, {
 export interface SampleGridOptions extends GridOptions {
   renderProperty?: number;
   property?: string;
+  injectCSSSize?: boolean;
 }
 
 @GetterSetter
@@ -17,11 +18,13 @@ export class SampleGrid extends Grid<SampleGridOptions> {
     ...Grid.propertyTypes,
     renderProperty: PROPERTY_TYPE.RENDER_PROPERTY,
     property: PROPERTY_TYPE.PROPERTY,
+    injectCSSSize: PROPERTY_TYPE.PROPERTY,
   };
   public static defaultOptions: Required<SampleGridOptions> = {
     ...Grid.defaultOptions,
     renderProperty: -1,
     property: "property1",
+    injectCSSSize: true,
   };
 
   public applyGrid(items: GridItem[], direction: "start" | "end", outline: number[]) {
@@ -33,13 +36,19 @@ export class SampleGrid extends Grid<SampleGridOptions> {
         const prevPos = endOutline[0] || 0;
         const rect = item.rect;
 
-
-        item.setCSSGridRect({
-          inlineSize: item.inlineSize,
-          contentSize: item.contentSize,
-          contentPos: prevPos,
-          inlinePos: 0,
-        });
+        if (this.injectCSSSize) {
+          item.setCSSGridRect({
+            inlineSize: item.inlineSize,
+            contentSize: item.contentSize,
+            contentPos: prevPos,
+            inlinePos: 0,
+          });
+        } else {
+          item.setCSSGridRect({
+            contentPos: prevPos,
+            inlinePos: 0,
+          });
+        }
 
         endOutline = [prevPos + (rect?.height ?? 0) + this.gap];
       });
@@ -49,13 +58,20 @@ export class SampleGrid extends Grid<SampleGridOptions> {
         const rect = item.rect;
 
         startOutline = [prevPos - (rect?.height ?? 0) - this.gap];
-        
-        item.setCSSGridRect({
-          inlineSize: item.inlineSize,
-          contentSize: item.contentSize,
-          contentPos: startOutline[0],
-          inlinePos: 0,
-        });
+
+        if (this.injectCSSSize) {
+          item.setCSSGridRect({
+            inlineSize: item.inlineSize,
+            contentSize: item.contentSize,
+            contentPos: startOutline[0],
+            inlinePos: 0,
+          });
+        } else {
+          item.setCSSGridRect({
+            contentPos: startOutline[0],
+            inlinePos: 0,
+          });
+        }
       });
     }
     return {
