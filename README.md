@@ -158,6 +158,40 @@ const grid = new MasonryInfiniteGrid(container, {
 grid.renderItems();
 ```
 
+
+## Pre-guess size for performance or invisible items.
+### What if all items were the same size?
+If you use the `isEqualSize` option, all items are considered to be the same size.
+Each resize only calculates the size of one item.
+Add `data-grid-not-equal-size="true"` attribute if there is an exceptional item whose size needs to be calculated while using isEqualSize.
+```html
+<div class="item item1"></div>
+<div class="item item1"></div>
+<div class="item item1"></div>
+<!--item2 is a different size than item1.-->
+<div class="item item2" data-grid-not-equal-size="true"></div>
+```
+
+### What if a size group exists?
+
+`isEqualSize` assumes all items are equal. But if there are more than two size-groups, use `data-grid-size-group`.
+
+
+```html
+<!--item1 has the same size.-->
+<div class="item item1" data-grid-size-group="1"></div>
+<div class="item item1" data-grid-size-group="1"></div>
+<!--item2 has the same size.-->
+<div class="item item2" data-grid-size-group="2"></div>
+<div class="item item2" data-grid-size-group="2"></div>
+```
+
+
+### What if all items don't change size?
+If all items do not have a constant size, use the `isConstantSize` option. Resizing doesn't calculate the item's size.
+If you want to recalculate, use `.updateItems(items, { useOrgResize: true })` method or `.renderItems({ useOrgResize: true })` method.
+
+
 ## 📦 Packages
 |Package|Version|Description|
 |:-----:|:-----:|:-----:|

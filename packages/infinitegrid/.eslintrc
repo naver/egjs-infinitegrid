@@ -29,7 +29,7 @@
         "arrow-parens": ["error", "always"],
         "@typescript-eslint/naming-convention": [
             "error",
-            { "selector": "default", "modifiers": ["protected"], "format": ["camelCase"], "leadingUnderscore": "forbid" },
+            { "selector": "default", "modifiers": ["protected"], "format": ["camelCase"], "leadingUnderscore": "allow" },
             { "selector": "default", "modifiers": ["private"], "format": ["camelCase"], "leadingUnderscore": "require" }
         ],
         "no-empty-interface": "off",

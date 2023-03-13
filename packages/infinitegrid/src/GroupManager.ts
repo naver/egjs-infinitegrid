@@ -1,6 +1,6 @@
 import Grid, {
   GetterSetter,
-  GridFunction, GridOptions,
+  GridFunction, GridItem, GridOptions,
   GridOutlines, MOUNT_STATE, Properties, PROPERTY_TYPE,
   RenderOptions, UPDATE_STATE,
 } from "@egjs/grid";
@@ -545,6 +545,10 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       this.items = this._getRenderingItems();
     }
     return isRerender;
+  }
+
+  protected _updateItems(items: GridItem[]): void {
+    this.itemRenderer.updateEqualSizeItems(items, this.groupItems);
   }
 
   private _getGroupItems() {
