@@ -1,4 +1,5 @@
 import { GRID_PROPERTY_TYPES } from "@egjs/grid";
+import { InfiniteGridItemInfo } from "./types";
 
 const ua = typeof window !== "undefined" ? window.navigator.userAgent : "";
 
@@ -29,19 +30,14 @@ export const INFINITEGRID_EVENTS = {
   CONTENT_ERROR: "contentError",
 } as const;
 
-// type?: ITEM_TYPE;
-// groupKey?: string | number;
-// key?: string | number;
-// element?: HTMLElement | null;
-// html?: string;
-// data?: Record<string, any>;
-export const ITEM_INFO_PROPERTIES = {
+export const ITEM_INFO_PROPERTIES: Record<keyof InfiniteGridItemInfo, true> = {
   type: true,
   groupKey: true,
   key: true,
   element: true,
   html: true,
   data: true,
+  inserted: true,
 };
 
 
