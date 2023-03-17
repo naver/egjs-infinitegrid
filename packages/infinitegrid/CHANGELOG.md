@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.9.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/infinitegrid@4.8.1...@egjs/infinitegrid@4.9.0) (2023-03-17)
+
+
+### :rocket: New Features
+
+* support size-group, not-equal-size attribute  (#533) ([f693db9](https://github.com/naver/egjs-infinitegrid/commit/f693db9635295065bbbc6aab25deb87e6274a21d))
+
+
+### :bug: Bug Fix
+
+* fix the groupKey of the inserted item in own group (#531) ([a798406](https://github.com/naver/egjs-infinitegrid/commit/a798406c30ef02d46692403eac1e3761742e95ae))
+
+
+### :mega: Other
+
+* update packages versions ([f628845](https://github.com/naver/egjs-infinitegrid/commit/f628845d3e3a8d0cb91f1802c352d12944b6a2a7))
+
+
+
 ## [4.8.1](https://github.com/naver/egjs-infinitegrid/compare/@egjs/infinitegrid@4.7.1...@egjs/infinitegrid@4.8.1) (2023-01-27)
 
 

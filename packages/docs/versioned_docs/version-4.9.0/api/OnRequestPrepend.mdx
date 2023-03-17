@@ -1,0 +1,20 @@
+---
+custom_edit_url: null
+---
+
+<div>
+
+</div>
+
+**Type**: TSInterface
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|currentTarget|[InfiniteGrid](InfiniteGrid)|<p>An InfiniteGrid instance that triggered this event. </p>|
+|groupKey|string \| number \| undefined|<p>First group key. </p>|
+|nextGroupKey|string \| number \| undefined|<p>The key of the next group that should replace Virtual Item(placeholder)s. </p>|
+|nextGroupKeys|Array&lt;string \| number&gt;|<p>Array of the following group keys that need to be replaced with Virtual Item(placeholder)s. </p>|
+|isVirtual|boolean|<p>Whether to request virtual groups corresponding to Virtual Item(placeholder)s. </p>|
+|wait|() =&gt; void|<p>Set to standby to request data. </p>|
+|ready|() =&gt; void|<p>When the data request is complete, it is set to ready state. </p>|
+

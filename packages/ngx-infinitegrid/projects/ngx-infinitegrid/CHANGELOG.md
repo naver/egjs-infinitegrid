@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.9.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/ngx-infinitegrid@4.8.1...@egjs/ngx-infinitegrid@4.9.0) (2023-03-17)
+
+
+### :mega: Other
+
+* update packages versions ([f628845](https://github.com/naver/egjs-infinitegrid/commit/f628845d3e3a8d0cb91f1802c352d12944b6a2a7))
+
+
+
 ## [4.8.1](https://github.com/naver/egjs-infinitegrid/compare/@egjs/ngx-infinitegrid@4.7.1...@egjs/ngx-infinitegrid@4.8.1) (2023-01-27)
 
 

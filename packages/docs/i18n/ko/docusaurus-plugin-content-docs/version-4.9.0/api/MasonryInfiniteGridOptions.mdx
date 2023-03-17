@@ -1,0 +1,68 @@
+---
+custom_edit_url: null
+---
+
+<div>
+
+</div>
+
+**Type**: TSInterface
+
+|PROPERTY|TYPE|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|
+|horizontal|boolean|false|스크롤 이동 방향. (true: 가로방향, false: 세로방향) horizontal이 false 면 <code>inlinePos</code>는 left, <code>inlineSize</code>는 width, <code>contentPos</code>는 top, <code>contentSize</code>는 height다. horizontal이 true면 <code>inlinePos</code>는 top, <code>inlineSize</code>는 height, <code>contentPos</code>는 left, <code>contentSize</code>는 width이다.|
+|percentage|Array&lt;"position" \| "size"&gt; \| boolean|false|item의 css size와 position를 %로 설정할지 여부.|
+|isEqualSize|boolean|false|카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다.|
+|isConstantSize|boolean|false|모든 카드 엘리먼트의 크기가 불변일 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다.|
+|gap|number|5|아이템들 사이의 공간.|
+|attributePrefix|string|"data-grid-"|엘리먼트의 데이타 속성에 사용할 접두사.|
+|resizeDebounce|number|100|리사이즈 이벤트에 설정할 디바운스 시간.(단위: ms)|
+|maxResizeDebounce|number|0|리사이즈 이벤트를 디바운스할 수 있는 최대 시간. (0은 미설정이다)|
+|autoResize|boolean|true|window의 resize 이벤트 이후 자동으로 resize()메소드를 호출할지의 여부.|
+|useFit|boolean|true|렌더링시 상단이 비어있을 때 아웃라인을 0으로 이동시킬지 여부. 하지만 상단보다 넘치는 경우 아웃라인을 0으로 강제 이동한다.|
+|useTransform|boolean|false|left, top css 속성 쓰는 대신 transform 속성을 사용할지 여부.|
+|renderOnPropertyChange|boolean|true|property의 변화를 통해 자동으로 render를 할지 여부.|
+|preserveUIOnDestroy|boolean|false|destroy 시 기존 컨테이너, 아이템의 UI를 보존할지 여부.|
+|defaultDirection|"start" \| "end"|"end"|render옵션에서 direction을 미설정시의 기본 방향값.|
+|outlineLength|number|0|outline의 개수. 아웃라인의 개수가 0이라면 grid의 종류에 따라 계산이 된다.|
+|outlineSize|number|0| outline의 사이즈. 만약 outline의 사이즈가 0이면, grid의 종류에 따라 계산이 된다. |
+|useRoundedSize|boolean|true|사이즈를 반올림된 사이즈(offsetWidth, offsetHeight)로 가져올지 여부. container에 transform이 적용되어 있다면 true로 설정해라. false면 getBoundingClientRect를 통해 사이즈를 가져온다.|
+|useResizeObserver|boolean|false|autoResize 옵션 사용시 container의 사이즈 변화 감지를 위해 ResizeObserver 이벤트를 사용할지 여부.|
+|observeChildren|boolean|false|useResizeObserver옵션을 사용한다면 children의 사이즈 변화 감지 여부.|
+|externalItemRenderer|ItemRenderer \| null||외부에서 직접 ItemRenderer를 설정할 수 있다.|
+|externalContainerManager|ContainerManager \| null||외부에서 직접 ContainerManager를 설정할 수 있다.|
+|column|number|0|열의 개수. 열의 개수가 0이라면, 컨테이너의 사이즈에 의해 계산이 된다. outlineLength 대신 사용할 수 있다.|
+|columnSize|number|0|열의 사이즈. 만약 열의 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. outlineSize 대신 사용할 수 있다.|
+|columnSizeRatio|number|0|열의 사이즈 비율(inlineSize / contentSize). 0은 미설정이다.|
+|align|GridAlign|"justify"|아이템들의 위치의 정렬. <code>stretch</code>를 사용하고 싶다면 <code>column</code>, <code>columnSize</code> 또는 <code>maxStretchColumnSize</code> 옵션을 설정해라.  (&quot;start&quot;, &quot;center&quot;, &quot;end&quot;, &quot;justify&quot;, &quot;stretch&quot;)|
+|columnCalculationThreshold|number|1|칼럼 개수를 계산하기 위한 차이 임계값. offset 사이즈는 반올림으로 게산하기 때문에 정확하지 않을 수 있다.|
+|maxStretchColumnSize|number|Infinity|stretch를 사용한 경우 최대로 늘릴 수 있는 column의 사이즈를 설정하여 column을 자동 계산할 수 있다.|
+|horizontal|boolean|false|스크롤 이동 방향. (true: 가로방향, false: 세로방향) horizontal이 false 면 <code>inlinePos</code>는 left, <code>inlineSize</code>는 width, <code>contentPos</code>는 top, <code>contentSize</code>는 height다. horizontal이 true면 <code>inlinePos</code>는 top, <code>inlineSize</code>는 height, <code>contentPos</code>는 left, <code>contentSize</code>는 width이다.|
+|percentage|Array&lt;"position" \| "size"&gt; \| boolean|false|item의 css size와 position를 %로 설정할지 여부.|
+|isEqualSize|boolean|false|카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다.|
+|isConstantSize|boolean|false|모든 카드 엘리먼트의 크기가 불변일 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다.|
+|gap|number|5|아이템들 사이의 공간.|
+|attributePrefix|string|"data-grid-"|엘리먼트의 데이타 속성에 사용할 접두사.|
+|resizeDebounce|number|100|리사이즈 이벤트에 설정할 디바운스 시간.(단위: ms)|
+|maxResizeDebounce|number|0|리사이즈 이벤트를 디바운스할 수 있는 최대 시간. (0은 미설정이다)|
+|autoResize|boolean|true|window의 resize 이벤트 이후 자동으로 resize()메소드를 호출할지의 여부.|
+|useFit|boolean|true|렌더링시 상단이 비어있을 때 아웃라인을 0으로 이동시킬지 여부. 하지만 상단보다 넘치는 경우 아웃라인을 0으로 강제 이동한다.|
+|useTransform|boolean|false|left, top css 속성 쓰는 대신 transform 속성을 사용할지 여부.|
+|renderOnPropertyChange|boolean|true|property의 변화를 통해 자동으로 render를 할지 여부.|
+|preserveUIOnDestroy|boolean|false|destroy 시 기존 컨테이너, 아이템의 UI를 보존할지 여부.|
+|defaultDirection|"start" \| "end"|"end"|render옵션에서 direction을 미설정시의 기본 방향값.|
+|outlineLength|number|0|outline의 개수. 아웃라인의 개수가 0이라면 grid의 종류에 따라 계산이 된다.|
+|outlineSize|number|0| outline의 사이즈. 만약 outline의 사이즈가 0이면, grid의 종류에 따라 계산이 된다. |
+|useRoundedSize|boolean|true|사이즈를 반올림된 사이즈(offsetWidth, offsetHeight)로 가져올지 여부. container에 transform이 적용되어 있다면 true로 설정해라. false면 getBoundingClientRect를 통해 사이즈를 가져온다.|
+|useResizeObserver|boolean|false|autoResize 옵션 사용시 container의 사이즈 변화 감지를 위해 ResizeObserver 이벤트를 사용할지 여부.|
+|observeChildren|boolean|false|useResizeObserver옵션을 사용한다면 children의 사이즈 변화 감지 여부.|
+|externalItemRenderer|ItemRenderer \| null||외부에서 직접 ItemRenderer를 설정할 수 있다.|
+|externalContainerManager|ContainerManager \| null||외부에서 직접 ContainerManager를 설정할 수 있다.|
+|container|boolean \| HTMLElement \| string \| Ref&lt;HTMLElement&gt;|false|container를 적용할 대상. false면 자기 자신, true면 container를 생성. string 또는 HTMLElement는 직접 대상을 지정.<br />|
+|containerTag|string|"div"|container를 생성한다면 container의 tag를 정할 수 있다.<br />|
+|threshold|number|100|다음 아이템 그룹을 추가하기 위한 스크롤 영역의 크기.<br />|
+|useRecycle|boolean|true|보이는 영역의 DOM만 보여줄지 여부.<br />|
+|scrollContainer|HTMLElement \| string \| Ref&lt;HTMLElement&gt; \| null||scrollContainer를 직접 정할 수 있다. 이 경우 container는 wrapper 자기 자신이 된다.<br />   |
+|gridConstructor|GridFunction||Infinite 기능을 적용할 Grid 클래스.<br />   |
+|renderer|Renderer \| null||DOM을 렌더하는 클래스.<br />   |
+

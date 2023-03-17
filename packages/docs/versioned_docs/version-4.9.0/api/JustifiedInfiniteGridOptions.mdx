@@ -1,0 +1,67 @@
+---
+custom_edit_url: null
+---
+
+<div>
+
+</div>
+
+**Type**: TSInterface
+
+|PROPERTY|TYPE|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|
+|horizontal|boolean|false|<p>Direction of the scroll movement. (true: horizontal, false: vertical) If horizontal is false, <code>inlinePos</code> is left, <code>inlineSize</code> is width, <code>contentPos</code> is top, and <code>contentSize</code> is height. If horizontal is true, <code>inlinePos</code> is top, <code>inlineSize</code> is height, <code>contentPos</code> is left, and <code>contentSize</code> is width.<br /></p>|
+|percentage|Array&lt;"position" \| "size"&gt; \| boolean|false|<p>Whether to set the css size and position of the item to %.<br /></p>|
+|isEqualSize|boolean|false|<p>Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to &quot;true&quot;, the performance of layout arrangement can be improved.<br /></p>|
+|isConstantSize|boolean|false|<p>Indicates whether sizes of all card elements does not change, the performance of layout arrangement can be improved.<br /></p>|
+|gap|number|5|<p>Gap used to create space around items.<br /></p>|
+|attributePrefix|string|"data-grid-"|<p>The prefix to use element's data attribute.<br /></p>|
+|resizeDebounce|number|100|<p>Debounce time to set in the resize event. (unit: ms)<br /></p>|
+|maxResizeDebounce|number|0|<p>Maximum time to debounce the resize event. (0 is not set)<br /></p>|
+|autoResize|boolean|true|<p>Whether the resize method should be called automatically after a window resize event.<br /></p>|
+|useFit|boolean|true|<p>Whether to move the outline to 0 when the top is empty when rendering. However, if it overflows above the top, the outline is forced to 0.<br /></p>|
+|useTransform|boolean|false|<p>Whether to use transform property instead of using left and top css properties.<br /></p>|
+|renderOnPropertyChange|boolean|true|<p>Whether to automatically render through property change.<br /></p>|
+|preserveUIOnDestroy|boolean|false|<p>Whether to preserve the UI of the existing container or item when destroying.<br /></p>|
+|defaultDirection|"start" \| "end"|"end"|<p>The default direction value when direction is not set in the render option.<br /></p>|
+|outlineLength|number|0|<p>The number of outlines. If the number of outlines is 0, it is calculated according to the type of grid.<br /></p>|
+|outlineSize|number|0|<p>The size of the outline. If the outline size is 0, it is calculated according to the grid type.<br /></p>|
+|useRoundedSize|boolean|true|<p>Whether to get the size as rounded size(offsetWidth, offsetHeight). Set to true if transform is applied to the container. If false, get the size through getBoundingClientRect.<br /></p>|
+|useResizeObserver|boolean|false|<p>Whether to use ResizeObserver event to detect container size change when <code>autoResize</code> option is used.<br /></p>|
+|observeChildren|boolean|false|<p>Whether to detect size change of children if useResizeObserver option is used.<br /></p>|
+|externalItemRenderer|ItemRenderer \| null||<p>You can set the ItemRenderer directly externally.<br /></p>|
+|externalContainerManager|ContainerManager \| null||<p>You can set the ContainerManager directly externally.<br /></p>|
+|columnRange|number \| number[]|[1, 8]|<p>The minimum and maximum number of items per line.<br /></p>|
+|rowRange|number \| number[]|0|<p>The minimum and maximum number of rows in a group, 0 is not set.<br /></p>|
+|sizeRange|number \| number[]|[0, Infinity]|<p>The minimum and maximum size by which the item is adjusted. If it is not calculated, it may deviate from the minimum and maximum sizes.<br /></p>|
+|displayedRow|number|-1|<p>Maximum number of rows to be counted for container size. You can hide it on the screen by setting overflow: hidden. -1 is not set.<br /></p>|
+|isCroppedSize|boolean|false|<p>Whether to crop when the row size is out of sizeRange. If set to true, this ratio can be broken.<br /></p>|
+|horizontal|boolean|false|<p>Direction of the scroll movement. (true: horizontal, false: vertical) If horizontal is false, <code>inlinePos</code> is left, <code>inlineSize</code> is width, <code>contentPos</code> is top, and <code>contentSize</code> is height. If horizontal is true, <code>inlinePos</code> is top, <code>inlineSize</code> is height, <code>contentPos</code> is left, and <code>contentSize</code> is width.<br /></p>|
+|percentage|Array&lt;"position" \| "size"&gt; \| boolean|false|<p>Whether to set the css size and position of the item to %.<br /></p>|
+|isEqualSize|boolean|false|<p>Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to &quot;true&quot;, the performance of layout arrangement can be improved.<br /></p>|
+|isConstantSize|boolean|false|<p>Indicates whether sizes of all card elements does not change, the performance of layout arrangement can be improved.<br /></p>|
+|gap|number|5|<p>Gap used to create space around items.<br /></p>|
+|attributePrefix|string|"data-grid-"|<p>The prefix to use element's data attribute.<br /></p>|
+|resizeDebounce|number|100|<p>Debounce time to set in the resize event. (unit: ms)<br /></p>|
+|maxResizeDebounce|number|0|<p>Maximum time to debounce the resize event. (0 is not set)<br /></p>|
+|autoResize|boolean|true|<p>Whether the resize method should be called automatically after a window resize event.<br /></p>|
+|useFit|boolean|true|<p>Whether to move the outline to 0 when the top is empty when rendering. However, if it overflows above the top, the outline is forced to 0.<br /></p>|
+|useTransform|boolean|false|<p>Whether to use transform property instead of using left and top css properties.<br /></p>|
+|renderOnPropertyChange|boolean|true|<p>Whether to automatically render through property change.<br /></p>|
+|preserveUIOnDestroy|boolean|false|<p>Whether to preserve the UI of the existing container or item when destroying.<br /></p>|
+|defaultDirection|"start" \| "end"|"end"|<p>The default direction value when direction is not set in the render option.<br /></p>|
+|outlineLength|number|0|<p>The number of outlines. If the number of outlines is 0, it is calculated according to the type of grid.<br /></p>|
+|outlineSize|number|0|<p>The size of the outline. If the outline size is 0, it is calculated according to the grid type.<br /></p>|
+|useRoundedSize|boolean|true|<p>Whether to get the size as rounded size(offsetWidth, offsetHeight). Set to true if transform is applied to the container. If false, get the size through getBoundingClientRect.<br /></p>|
+|useResizeObserver|boolean|false|<p>Whether to use ResizeObserver event to detect container size change when <code>autoResize</code> option is used.<br /></p>|
+|observeChildren|boolean|false|<p>Whether to detect size change of children if useResizeObserver option is used.<br /></p>|
+|externalItemRenderer|ItemRenderer \| null||<p>You can set the ItemRenderer directly externally.<br /></p>|
+|externalContainerManager|ContainerManager \| null||<p>You can set the ContainerManager directly externally.<br /></p>|
+|container|boolean \| HTMLElement \| string \| Ref&lt;HTMLElement&gt;|false|<p>The target to which the container is applied. If false, create itself, if true, create container. A string or HTMLElement specifies the target directly.</p>|
+|containerTag|string|"div"|<p>If you create a container, you can set the container's tag.</p>|
+|threshold|number|100|<p>The size of the scrollable area for adding the next group of items.</p>|
+|useRecycle|boolean|true|<p>Whether to show only the DOM of the visible area.</p>|
+|scrollContainer|HTMLElement \| string \| Ref&lt;HTMLElement&gt; \| null||<p>You can set the scrollContainer directly. In this case, the container becomes the wrapper itself.</p>|
+|gridConstructor|GridFunction||<p>Grid class to apply Infinite function.</p>|
+|renderer|Renderer \| null||<p>class that renders the DOM.</p>|
+

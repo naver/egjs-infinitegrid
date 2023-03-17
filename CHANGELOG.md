@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.9.0](https://github.com/naver/egjs-infinitegrid/compare/4.8.1...4.9.0) (2023-03-17)
+### :sparkles: Packages
+* `@egjs/infinitegrid` 4.9.0
+* `@egjs/react-infinitegrid` 4.9.0
+* `@egjs/svelte-infinitegrid` 4.9.0
+* `@egjs/vue-infinitegrid` 4.9.0
+* `@egjs/vue3-infinitegrid` 4.9.0
+* `@egjs/ngx-infinitegrid` 4.9.0
+
+
+### :rocket: New Features
+
+* `@egjs/infinitegrid`
+    * support size-group, not-equal-size attribute  (#533) ([f693db9](https://github.com/naver/egjs-infinitegrid/commit/f693db9635295065bbbc6aab25deb87e6274a21d))
+
+
+### :bug: Bug Fix
+
+* `@egjs/svelte-infinitegrid`
+    * fix svelte module naming (#529) ([5e3d9fe](https://github.com/naver/egjs-infinitegrid/commit/5e3d9fefbc45066e1256a408a909045f7c4c70f7))
+* `@egjs/infinitegrid`
+    * fix the groupKey of the inserted item in own group (#531) ([a798406](https://github.com/naver/egjs-infinitegrid/commit/a798406c30ef02d46692403eac1e3761742e95ae))
+
+
+### :mega: Other
+
+* All
+    * update packages versions ([f628845](https://github.com/naver/egjs-infinitegrid/commit/f628845d3e3a8d0cb91f1802c352d12944b6a2a7))
+
+
+
 ## [4.8.1](https://github.com/naver/egjs-infinitegrid/compare/4.7.1...4.8.1) (2023-01-27)
 ### :sparkles: Packages
 * `@egjs/infinitegrid` 4.8.1
