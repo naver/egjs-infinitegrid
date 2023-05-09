@@ -12,7 +12,6 @@ import { TEMPLATE } from '../consts';
 @Component({
   selector: 'ngx-justified-infinite-grid, [NgxJustifiedInfiniteGrid]',
   template: TEMPLATE,
-  styles: [],
 })
 export class NgxJustifiedInfiniteGridComponent extends NgxInfiniteGridComponent
   implements Required<JustifiedInfiniteGridOptions> {
