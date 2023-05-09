@@ -101,7 +101,7 @@ export class NgxInfiniteGridComponent
   private _destroy$ = new Subject<void>();
 
   constructor(
-    protected elementRef: ElementRef<HTMLElement>,
+    public elementRef: ElementRef<HTMLElement>,
     @Inject(PLATFORM_ID) private _platformId: string,
     private _ngZone: NgZone
   ) {
