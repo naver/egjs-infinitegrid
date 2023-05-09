@@ -164,8 +164,10 @@ export class NgxInfiniteGridComponent
     fromEvent(this._renderer, 'requestUpdate')
       .pipe(takeUntil(this._destroy$))
       .subscribe(() => {
-        this._isChange = true;
-        this._updateVisibleChildren();
+        this._ngZone.run(() => {
+          this._isChange = true;
+          this._updateVisibleChildren();
+        });
       });
 
     mountRenderingItems(this._getItemInfos(), {
