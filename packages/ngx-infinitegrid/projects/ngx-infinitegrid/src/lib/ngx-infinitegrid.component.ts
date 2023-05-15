@@ -101,7 +101,7 @@ export class NgxInfiniteGridComponent
   private _destroy$ = new Subject<void>();
 
   constructor(
-    protected elementRef: ElementRef<HTMLElement>,
+    public elementRef: ElementRef<HTMLElement>,
     @Inject(PLATFORM_ID) private _platformId: string,
     private _ngZone: NgZone
   ) {
@@ -164,8 +164,10 @@ export class NgxInfiniteGridComponent
     fromEvent(this._renderer, 'requestUpdate')
       .pipe(takeUntil(this._destroy$))
       .subscribe(() => {
-        this._isChange = true;
-        this._updateVisibleChildren();
+        this._ngZone.run(() => {
+          this._isChange = true;
+          this._updateVisibleChildren();
+        });
       });
 
     mountRenderingItems(this._getItemInfos(), {
