@@ -98,7 +98,7 @@ export class Infinite extends Component<InfiniteEvents> {
         endOutline,
       } = item;
 
-      if (!startOutline.length || !endOutline.length) {
+      if (!startOutline.length || !endOutline.length || isFlatOutline(startOutline, endOutline)) {
         return false;
       }
       const startPos = Math.min(...startOutline);

@@ -38,6 +38,7 @@ export const ITEM_INFO_PROPERTIES: Record<keyof InfiniteGridItemInfo, true> = {
   html: true,
   data: true,
   inserted: true,
+  attributes: true,
 };
 
 

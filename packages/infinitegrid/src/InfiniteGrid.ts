@@ -1,5 +1,5 @@
 import Component, { ComponentEvent } from "@egjs/component";
-import {
+import Grid, {
   ContainerManager,
   DEFAULT_GRID_OPTIONS,
   Properties,
@@ -91,6 +91,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     threshold: 100,
     useRecycle: true,
     scrollContainer: null,
+    appliedItemChecker: (() => false) as (item: InfiniteGridItem, grid: Grid) => boolean,
   } as Required<InfiniteGridOptions>;
   public static propertyTypes = INFINITEGRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
@@ -121,6 +122,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       threshold,
       useRecycle,
       scrollContainer,
+      appliedItemChecker,
       ...gridOptions
     } = this.options;
     // options.container === false, wrapper = container, scrollContainer = document.body
@@ -176,6 +178,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
     infinite.setSize(scrollManager.getContentSize());
     const groupManager = new GroupManager(containerElement, {
+      appliedItemChecker: appliedItemChecker!,
       gridConstructor: gridConstructor!,
       externalItemRenderer: itemRenderer,
       externalContainerManager: containerManager,
