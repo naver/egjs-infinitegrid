@@ -213,7 +213,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     const groupItems = this.groupItems;
     const outlineLength = this.getComputedOutlineLength(groupItems);
     const outlineSize = this.getComputedOutlineSize(groupItems);
-    const itemRenderer = this.options.externalItemRenderer!;
+    const itemRenderer = this.itemRenderer;
 
     groups.forEach((group) => {
       const grid = group.grid;
