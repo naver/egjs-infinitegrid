@@ -2495,10 +2495,10 @@
     "@egjs/imready" "^1.3.1"
     "@egjs/list-differ" "^1.0.1"
 
-"@egjs/grid@^1.13.0":
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/@egjs/grid/-/grid-1.13.0.tgz#8298a9464afbcd44a6738b190e00c22313340b37"
-  integrity sha512-wUljkpteE6THydxBvIPcXKQWx4PUo+BCOoRnq1R0cF/pauYQKMEEuzZfMzI6NpjNBtfC3SzdXANeJYtq01cSkg==
+"@egjs/grid@^1.14.0-beta.2":
+  version "1.14.0-beta.2"
+  resolved "https://registry.npmjs.org/@egjs/grid/-/grid-1.14.0-beta.2.tgz#6e59ec7ec8ccf39f70724d7951bde8be155ea26f"
+  integrity sha512-n0yWMNN6DzREQqflR1xeMGIHkiLxzPQxK3gpZam6aJiPCx0hNSYzevxTs568bUSZYTSOT6KxySQopgCw19FjrA==
   dependencies:
     "@egjs/children-differ" "^1.0.1"
     "@egjs/component" "^3.0.0"

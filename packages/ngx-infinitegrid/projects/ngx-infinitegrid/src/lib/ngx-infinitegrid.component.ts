@@ -38,6 +38,7 @@ import {
 } from '@egjs/infinitegrid';
 import { NgxInfiniteGridInterface } from './ngx-infinitegrid.interface';
 import { NgxInfiniteGridProps } from './types';
+import Grid, { GridOptions } from '@egjs/grid';
 
 @Component({
   selector: 'ngx-infinite-grid, [NgxInfiniteGrid]',
@@ -80,6 +81,7 @@ export class NgxInfiniteGridComponent
   @Input() useResizeObserver!: NgxInfiniteGridProps['useResizeObserver'];
   @Input() observeChildren!: NgxInfiniteGridProps['observeChildren'];
   @Input() scrollContainer!: NgxInfiniteGridProps['scrollContainer'];
+  @Input() appliedItemChecker!: NgxInfiniteGridProps['appliedItemChecker'];
 
   @Input() usePlaceholder!: NgxInfiniteGridProps['useFirstRender'];
   @Input() useLoading!: NgxInfiniteGridProps['useLoading'];
@@ -88,6 +90,7 @@ export class NgxInfiniteGridComponent
   @Input() items: NgxInfiniteGridProps['items'] = [];
   @Input() trackBy: NgxInfiniteGridProps['trackBy'] = ((_, item) => item.key);
   @Input() groupBy: NgxInfiniteGridProps['groupBy'] = ((_, item) => item.groupKey);
+  @Input() infoBy: NgxInfiniteGridProps['infoBy'] = () => ({});
   @Output() renderComplete!: EventEmitter<OnRenderComplete>;
   @Output() contentError!: EventEmitter<OnContentError>;
   @Output() changeScroll!: EventEmitter<OnChangeScroll>;
@@ -213,12 +216,21 @@ export class NgxInfiniteGridComponent
     const items = this.items;
     const trackBy = this.trackBy;
     const groupBy = this.groupBy;
+    const infoBy = this.infoBy;
 
     return items.map((item, i) => {
+      const {
+        data,
+        ...rest
+      } = infoBy(i, item);
       return {
         groupKey: groupBy(i, item),
         key: trackBy(i, item),
-        data: item,
+        ...rest,
+        data: {
+          ...data,
+          ...item,
+        },
       };
     });
   }

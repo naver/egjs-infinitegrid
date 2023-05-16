@@ -55,6 +55,7 @@ export function makeInfiniteGrid<Options extends InfiniteGridOptions>(tagName: s
 
       return props ? props[`${attributePrefix}groupkey`] : undefined;
     });
+    const infoBy = props.infoBy || (() => ({}));
 
     let children: any[] = [];
 
@@ -68,7 +69,7 @@ export function makeInfiniteGrid<Options extends InfiniteGridOptions>(tagName: s
       // const KEYED_FRAGMENT = 1 << 7;
       // const UNKEYED_FRAGMENT = 1 << 8;
       children = children.reduce((prev, cur) => {
-        if ((cur.patchFlag > 0 && cur.patchFlag & ((1 << 6) + (1 << 7) + (1 << 8))) > 0) {
+        if ((cur.patchFlag && cur.patchFlag & ((1 << 6) + (1 << 7) + (1 << 8))) > 0) {
           return [...prev, ...cur.children];
         } else if (cur) {
           return [...prev, cur];
@@ -78,10 +79,17 @@ export function makeInfiniteGrid<Options extends InfiniteGridOptions>(tagName: s
     }
 
     return children.map((child, i) => {
+      const {
+        data,
+        ...rest
+      } = infoBy(child, i) || {};
+
       return {
         groupKey: groupBy(child, i),
         key: itemBy(child, i),
+        ...rest,
         data: {
+          ...data,
           vnode: child,
         },
       };

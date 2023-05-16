@@ -19,4 +19,5 @@ export interface NgxInfiniteGridProps extends NgxInfiniteGridEvents, Required<In
   items: any[];
   trackBy: (index: number, item: any) => any;
   groupBy: (index: number, item: any) => any;
+  infoBy: (index: number, item: any) => Record<string, any>;
 }
