@@ -103,5 +103,53 @@ describe("test InfiniteGrid", () => {
       expect(ig.getStartCursor()).to.be.equals(3);
       expect(ig.getVisibleGroups()[0].grid.getOutlines().start).to.be.lengthOf(2);
     });
+    it("should check whether the outline of the invisible area and the last area are connected", async () => {
+      // Given
+      container!.innerHTML = `<div class="wrapper" style="width: 330px; height: 500px;"></div>`;
+      const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+      ig = new MasonryInfiniteGrid(wrapper, {
+        container: true,
+      });
+
+      const bottomArea = document.createElement("div");
+
+      bottomArea.style.cssText = "position: relative;height: 500px";
+      wrapper.appendChild(bottomArea);
+
+      ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((child) => {
+        // 0 ~ 3, 4 ~ 7, 8 ~ 11, 12 ~ 13
+        const width = child >= 12 ? "100%" : "150px";
+        const column = child >= 12 ? "2" : "";
+
+        return {
+          groupKey: Math.floor(child / 4),
+          key: `key${child}`,
+          attributes: {
+            column,
+          },
+          html: `<div style="position:absolute; width: ${width}; height: 250px">${child}</div>`,
+        };
+      }));
+
+      ig!.renderItems();
+
+      // [0, 0]
+      await waitEvent(ig!, "renderComplete");
+
+      // [0, 1]
+      await waitEvent(ig!, "renderComplete");
+
+
+      // 12 left 0, top 1000
+      const rect12 = ig.getItems()[12].cssRect;
+      // 13 left 0, top 1000
+      const rect13 = ig.getItems()[13].cssRect;
+
+      // Then
+      expect(rect12.left).to.be.equals(0);
+      expect(rect12.top).to.be.equals(1000);
+      expect(rect13.left).to.be.equals(0);
+      expect(rect13.top).to.be.equals(1000);
+    });
   });
 });

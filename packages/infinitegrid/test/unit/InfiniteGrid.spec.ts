@@ -1090,6 +1090,7 @@ describe("test InfiniteGrid", () => {
         // Given
         const nums = new Array(29).fill(0).map((_, i) => i);
 
+        // 0 ~ 9
         ig!.syncItems(nums.map((child) => {
           return {
             groupKey: Math.floor(child / 3),
@@ -1098,6 +1099,7 @@ describe("test InfiniteGrid", () => {
           };
         }));
 
+        // 0 ~ 8
         ig!.setCursors(0, 8);
         // all cursors
         await waitEvent(ig!, "renderComplete");
@@ -1106,7 +1108,7 @@ describe("test InfiniteGrid", () => {
 
 
         ig!.setStatus(ig!.getStatus(STATUS_TYPE.MINIMIZE_INVISIBLE_ITEMS));
-        // visible(0 ~ 2) invisible(3 ~ 9)
+        // visible(0 ~ 2) invisible(3 ~ 8) unchecked(9)
         await waitEvent(ig!, "renderComplete");
 
         // When
@@ -1114,7 +1116,7 @@ describe("test InfiniteGrid", () => {
 
         const requestAppendEvent = await waitEvent<OnRequestAppend>(ig!, "requestAppend");
 
-        // 3 ~ 9
+        // 3 ~ 8
         ig!.append(flat(requestAppendEvent.nextGroupKeys.map((groupKey) => {
           return [0, 1, 2].map((index) => {
             const child = (groupKey as number) * 3 + index;
@@ -1128,10 +1130,14 @@ describe("test InfiniteGrid", () => {
 
         await waitEvent(ig!, "renderComplete");
 
+        const items = ig!.getItems(true);
+        const items0to26 = items.slice(0, 26);
+        const items27 = items.slice(27);
         // Then
         expect(ig!.getStartCursor()).to.be.equals(6);
-        expect(ig!.getEndCursor()).to.be.equals(9);
-        expect(ig!.getItems(true).every((item) => item.type !== ITEM_TYPE.VIRTUAL)).to.be.equals(true);
+        expect(ig!.getEndCursor()).to.be.equals(8);
+        expect(items0to26.every((item) => item.type !== ITEM_TYPE.VIRTUAL)).to.be.equals(true);
+        expect(items27.every((item) => item.type === ITEM_TYPE.VIRTUAL)).to.be.equals(true);
       });
       it(`should check if requestAppend event for invisible items is triggered`, async () => {
         // Given
