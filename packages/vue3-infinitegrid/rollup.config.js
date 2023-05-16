@@ -18,8 +18,6 @@ export default buildHelper([
   {
     ...defaultOptions,
     format: "cjs",
-    input: "./src/index.umd.ts",
-    exports: "default",
     output: "./dist/infinitegrid.cjs.js",
   },
 ]);
