@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.10.0](https://github.com/naver/egjs-infinitegrid/compare/4.9.0...4.10.0) (2023-05-26)
+### :sparkles: Packages
+* `@egjs/infinitegrid` 4.10.0
+* `@egjs/react-infinitegrid` 4.10.0
+* `@egjs/svelte-infinitegrid` 4.10.0
+* `@egjs/vue-infinitegrid` 4.10.0
+* `@egjs/vue3-infinitegrid` 4.10.0
+* `@egjs/ngx-infinitegrid` 4.10.0
+
+
+### :rocket: New Features
+
+* All
+    * add infoBy prop for frameworks (#538) ([6fd5c0b](https://github.com/naver/egjs-infinitegrid/commit/6fd5c0b36f2aded59d3fce54d880f8882b2a3ec6))
+* `@egjs/ngx-infinitegrid`
+    * upgrade to Angular 15 and enable partial compilation (#527) ([2f05376](https://github.com/naver/egjs-infinitegrid/commit/2f05376864f2021e10f4074621bb59911046c002))
+
+
+### :bug: Bug Fix
+
+* `@egjs/ngx-infinitegrid`
+    * fix zone inside run #535 (#537) ([a2d9dd5](https://github.com/naver/egjs-infinitegrid/commit/a2d9dd5b7195342eb118a4ae17052d5cf3377974))
+
+
+### :mega: Other
+
+* All
+    * update packages versions ([dce9a8c](https://github.com/naver/egjs-infinitegrid/commit/dce9a8c79342d01190b59197b82bf11d25c5665c))
+
+
+
 ## [4.9.0](https://github.com/naver/egjs-infinitegrid/compare/4.8.1...4.9.0) (2023-03-17)
 ### :sparkles: Packages
 * `@egjs/infinitegrid` 4.9.0

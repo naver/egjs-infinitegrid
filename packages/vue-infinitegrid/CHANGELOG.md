@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.10.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/vue-infinitegrid@4.9.0...@egjs/vue-infinitegrid@4.10.0) (2023-05-26)
+
+
+### :rocket: New Features
+
+* add infoBy prop for frameworks (#538) ([6fd5c0b](https://github.com/naver/egjs-infinitegrid/commit/6fd5c0b36f2aded59d3fce54d880f8882b2a3ec6))
+
+
+### :mega: Other
+
+* update packages versions ([dce9a8c](https://github.com/naver/egjs-infinitegrid/commit/dce9a8c79342d01190b59197b82bf11d25c5665c))
+
+
+
 ## [4.9.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/vue-infinitegrid@4.8.1...@egjs/vue-infinitegrid@4.9.0) (2023-03-17)
 
 
