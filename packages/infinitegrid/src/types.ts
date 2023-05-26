@@ -47,6 +47,7 @@ export interface InfiniteGridItemInfo {
   element?: HTMLElement | null;
   html?: string;
   data?: Record<string, any>;
+  attributes?: Record<string, any>;
 }
 
 
@@ -90,8 +91,15 @@ export interface InfiniteGridOptions extends GridOptions {
    */
   gridConstructor?: GridFunction;
   /**
+   * A function that checks whether non-rendering items are included in the Grid.
+   * @ko 렌더링 되지 않는 아이템를 Grid에 포함시킬지 체크하는 함수.
+   * @private
+   */
+  appliedItemChecker?: (item: InfiniteGridItem, grid: Grid) => boolean;
+  /**
    * class that renders the DOM.
    * @ko DOM을 렌더하는 클래스.
+   * @private
    */
   renderer?: Renderer | null;
 }

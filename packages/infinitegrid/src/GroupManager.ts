@@ -25,6 +25,7 @@ export interface InfiniteGridGroupStatus {
 }
 
 export interface GroupManagerOptions extends GridOptions {
+  appliedItemChecker?: (item: InfiniteGridItem, grid: Grid) => boolean;
   gridConstructor: GridFunction | null;
   gridOptions: Record<string, any>;
 }
@@ -43,6 +44,7 @@ export interface GroupManagerStatus {
 export class GroupManager extends Grid<GroupManagerOptions> {
   public static defaultOptions: Required<GroupManagerOptions> = {
     ...Grid.defaultOptions,
+    appliedItemChecker: () => false,
     gridConstructor: null,
     gridOptions: {},
   };
@@ -207,19 +209,27 @@ export class GroupManager extends Grid<GroupManagerOptions> {
       groups.reverse();
     }
 
+    const appliedItemChecker = this.options.appliedItemChecker;
     const groupItems = this.groupItems;
     const outlineLength = this.getComputedOutlineLength(groupItems);
     const outlineSize = this.getComputedOutlineSize(groupItems);
+    const itemRenderer = this.itemRenderer;
 
     groups.forEach((group) => {
       const grid = group.grid;
-      const gridItems = grid.getItems();
+      const gridItems = grid.getItems() as InfiniteGridItem[];
       const isVirtual = group.type === GROUP_TYPE.VIRTUAL && !gridItems[0];
-      const appliedItems = gridItems.filter((item) => item.mountState !== MOUNT_STATE.UNCHECKED && item.rect.width);
-      let gridOutlines: GridOutlines;
 
       grid.outlineLength = outlineLength;
       grid.outlineSize = outlineSize;
+
+      const appliedItems = gridItems.filter((item) => {
+        if (item.mountState === MOUNT_STATE.UNCHECKED || !item.rect.width) {
+          itemRenderer.updateItem(item, true);
+        }
+        return (item.orgRect.width && item.rect.width) || appliedItemChecker(item, grid);
+      });
+      let gridOutlines: GridOutlines;
 
       if (isVirtual) {
         gridOutlines = this._applyVirtualGrid(grid, direction, nextOutline);

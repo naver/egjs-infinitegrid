@@ -7,7 +7,8 @@ import * as React from "react";
 import VanillaInfiniteGrid, {
   InfiniteGridOptions, InfiniteGridFunction,
   Renderer,
-  InfiniteGridItemInfo, ITEM_TYPE,
+  InfiniteGridItemInfo,
+  ITEM_TYPE,
   InfiniteGridMethods,
   withInfiniteGridMethods,
   getRenderingItems,
@@ -114,12 +115,22 @@ export abstract class InfiniteGrid<T extends InfiniteGridOptions>
     const attributePrefix = props.attributePrefix || VanillaInfiniteGrid.defaultOptions.attributePrefix;
     const itemBy = props.itemBy || ((item: React.ReactElement) => item.key);
     const groupBy = props.groupBy || ((item: React.ReactElement) => item.props[`${attributePrefix}groupkey`]);
+    const infoBy = props.infoBy || (() => ({}));
 
+    
     return children.map((child, i) => {
+      const {
+        data,
+        ...rest
+      } = infoBy(child, i) || {};
+
+      
       return {
         groupKey: groupBy(child, i),
         key: itemBy(child, i),
+        ...rest,
         data: {
+          ...data,
           jsx: child,
         },
       };

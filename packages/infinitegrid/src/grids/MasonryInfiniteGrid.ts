@@ -27,5 +27,10 @@ export class MasonryInfiniteGrid extends InfiniteGrid<MasonryInfiniteGridOptions
     ...InfiniteGrid.defaultOptions,
     ...MasonryGrid.defaultOptions,
     gridConstructor: MasonryGrid,
+    appliedItemChecker: (item, grid) => {
+      const column = parseFloat(item.attributes.column) || 0;
+
+      return column >= grid.outlineLength;
+    },
   } as const;
 }

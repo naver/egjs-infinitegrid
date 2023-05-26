@@ -17,4 +17,5 @@ export interface ReactInfiniteGridProps extends ReactInfiniteGridEvents {
   useFirstRender?: boolean;
   itemBy?: (item: React.ReactElement, index: number) => string | number;
   groupBy?: (item: React.ReactElement, index: number) => string | number;
+  infoBy?: (item: React.ReactElement, index: number) => Record<string, any>;
 }

@@ -8,10 +8,18 @@ import InfiniteGrid, {
   InfiniteGridMethods,
   InfiniteGridItemInfo,
   Renderer,
+  InfiniteGridStatus,
+  InfiniteGridItem,
 } from "@egjs/infinitegrid";
+import { VNode } from "vue";
 
 export type VueInfiniteGridProps<T extends InfiniteGridFunction> = T["defaultOptions"] & {
   tag?: string;
+  status?: InfiniteGridStatus;
+  useFirstRender?: boolean;
+  itemBy?: (item: VNode, index: number) => string | number;
+  groupBy?: (item: VNode, index: number) => string | number;
+  infoBy?: (item: VNode, index: number) => Record<string, any>;
 };
 
 export interface VueInfiniteGridInterface<T extends InfiniteGridFunction>

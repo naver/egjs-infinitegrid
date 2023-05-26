@@ -52,10 +52,11 @@ export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string
     const attributePrefix = props.attributePrefix || VanillaInfiniteGrid.defaultOptions.attributePrefix;
 
     const groupBy = props.groupBy || ((item: any) => {
-      const props = item.props || item.data?.attrs;
+      const itemProps = item.props || item.data?.attrs;
 
-      return props ? props[`${attributePrefix}groupkey`] : undefined;
+      return itemProps ? itemProps[`${attributePrefix}groupkey`] : undefined;
     });
+    const infoBy = props.infoBy || (() => ({}));
 
     let children: any[] = [];
 
@@ -63,12 +64,18 @@ export function makeInfiniteGrid<T extends InfiniteGridFunction>(tagName: string
       children = slots;
     }
     // Check Vue3 Slot Type
-
     return children.map((child, i) => {
+      const {
+        data,
+        ...rest
+      } = infoBy(child, i) || {};
+
       return {
         groupKey: groupBy(child, i),
         key: itemBy(child, i),
+        ...rest,
         data: {
+          ...data,
           vnode: child,
         },
       };

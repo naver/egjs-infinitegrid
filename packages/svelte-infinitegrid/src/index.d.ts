@@ -11,6 +11,9 @@ export interface SveltInfiniteGridOptions {
   usePlaceholder?: boolean;
   useLoading?: boolean;
   status?: InfiniteGridStatus;
+  itemBy?: (item: any, index: number) => string | number;
+  groupBy?: (item: any, index: number) => string | number;
+  infoBy?: (item: any, index: number) => Record<string, any>;
 }
 
 export default abstract class InfiniteGrid<T extends InfiniteGridOptions> extends SvelteComponentDev {

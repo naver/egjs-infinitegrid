@@ -47,12 +47,21 @@
     const items = $$props.items || [];
     const itemBy = $$props.itemBy || ((item) => item.key);
     const groupBy = $$props.groupBy || ((item) => item.groupKey);
+    const infoBy = $$props.infoBy || (() => ({}));
 
     return items.map((item, i) => {
+      const {
+        data,
+        ...rest
+      } = infoBy(child, i) || {};
       return {
         groupKey: groupBy(item, i),
         key: itemBy(item, i),
-        data: item,
+        ...rest,
+        data: {
+          ...data,
+          ...item,
+        },
       };
     });
   }
