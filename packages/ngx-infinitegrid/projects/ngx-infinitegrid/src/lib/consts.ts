@@ -1,3 +1,6 @@
+import { InjectionToken } from '@angular/core';
+import { InfiniteGridFunction } from '@egjs/infinitegrid';
+
 export const TEMPLATE = `
 <ng-template #content><ng-content></ng-content></ng-template>
 
@@ -19,3 +22,5 @@ export const TEMPLATE = `
   <ng-template [ngTemplateOutlet]="viewer"></ng-template>
 </ng-template>
 `;
+
+export const GridClass = new InjectionToken<InfiniteGridFunction>('GridClass');

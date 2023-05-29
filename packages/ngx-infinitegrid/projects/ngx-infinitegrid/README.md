@@ -32,6 +32,7 @@
 </p>
 
 ## ⚙️ Installation
+
 ```sh
 npm install @egjs/ngx-infinitegrid
 # Or if you're using yarn
@@ -39,52 +40,42 @@ yarn add @egjs/ngx-infinitegrid
 ```
 
 ## 🏃 Quick Start
-### Module definition
+
+`@egjs/ngx-infinitegrid` exposes standalone components thus you can import them into your components individually.
+
+### Import the component
+
 ```diff
-+import { NgxInfiniteGridModule } from '@egjs/ngx-infinitegrid';
++import { NgxMasonryInfiniteGridComponent } from '@egjs/ngx-infinitegrid';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
- 
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  standalone: true,
   imports: [
-    BrowserModule,
-+   NgxInfiniteGridModule /* Add in imports */
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
++   NgxMasonryInfiniteGridComponent
+  ]
 })
-export class AppModule {} /* Your app */
+export class AppComponent {}
 ```
 
+Use it in your template:
+
 ```html
-<div
-  NgxMasonryInfiniteGrid
-  class="container"
-  [gap]="5"
-  [items]="items"
-  [trackBy]="trackBy"
-  [groupBy]="groupBy"
-  (requestAppend)="onRequestAppend($event)"
-  *ngFor="let item of [0]; trackBy: randomTrackBy"
-  #ig
->
-  <div
-    class="item"
-    *ngFor="let item of ig.visibleItems; trackBy: trackBy;"
-  ></div>
+<div NgxMasonryInfiniteGrid class="container" [gap]="5" [items]="items" [trackBy]="trackBy" [groupBy]="groupBy" (requestAppend)="onRequestAppend($event)" *ngFor="let item of [0]" #ig>
+  <div class="item" *ngFor="let item of ig.visibleItems; trackBy: trackBy;"></div>
 </div>
 ```
 
 ```ts
-import { Component, Input } from '@angular/core';
-import { OnRequestAppend } from '@egjs/infinitegrid';
+import { Component, Input } from "@angular/core";
+import { OnRequestAppend } from "@egjs/infinitegrid";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html'
+  selector: "app-root",
+  templateUrl: "./app.component.html"
 })
 export class AppComponent {
   items = this.getItems(0, 10);
@@ -115,43 +106,52 @@ export class AppComponent {
 }
 ```
 
-
 ## 📖 More Options & Examples
+
 [Options](https://naver.github.io/egjs-infinitegrid/Options) / [Demos](https://naver.github.io/egjs-infinitegrid/Demos)
 
 ## 🙌 Contributing
+
 See [CONTRIBUTING.md](https://github.com/naver/egjs-infinitegrid/blob/master/CONTRIBUTING.md)
 
 ## 📝 Feedback
+
 Please file an [Issue](https://github.com/naver/egjs-infinitegrid/issues) with label "Angular".
 
 ## Local development
+
 ### Project setup
+
 ```
 npm install
 ```
 
 ### Compiles and hot-reloads demo
+
 ```sh
 npm run start
 ```
 
 ### Compiles and minifies for production
+
 ```
 npm run build
 ```
 
 ### Run your tests
+
 ```
 npm run test
 ```
 
 ### Lints and fixes files
+
 ```
 npm run lint
 ```
 
 ## 📜 License
+
 egjs-infinitegrid is released under the [MIT license](http://naver.github.io/egjs/license.txt).
 
 ```
@@ -176,4 +176,3 @@ THE SOFTWARE.
 <p align="center">
   <a href="https://naver.github.io/egjs/"><img height="50" src="https://naver.github.io/egjs/img/logotype1_black.svg" ></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/naver"><img height="50" src="https://naver.github.io/OpenSourceGuide/book/assets/naver_logo.png" /></a>
 </p>
-
