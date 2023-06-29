@@ -1,6 +1,6 @@
 {
   "name": "@egjs/svelte-infinitegrid",
-  "version": "4.10.0",
+  "version": "4.10.1",
   "description": "A Svelte component that can arrange items infinitely according to the type of grids",
   "sideEffects": false,
   "svelte": "src/index.js",
