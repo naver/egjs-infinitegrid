@@ -53,7 +53,7 @@
       const {
         data,
         ...rest
-      } = infoBy(child, i) || {};
+      } = infoBy(item, i) || {};
       return {
         groupKey: groupBy(item, i),
         key: itemBy(item, i),
