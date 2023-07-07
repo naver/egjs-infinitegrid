@@ -6,6 +6,6 @@ addons.setConfig({
 
 
 if (location.hostname.indexOf("localhost") > -1) {
-  window.STORYBOOK_GA_ID = "G-D9LV7W8GJF";
+  window.STORYBOOK_GA_ID = "G-LWLTCXMENE";
   window.STORYBOOK_REACT_GA_OPTIONS = {};
 }

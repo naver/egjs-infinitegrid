@@ -155,7 +155,7 @@ module.exports = {
           ]
         },
         googleAnalytics: {
-          trackingID: 'UA-70842526-18',
+          trackingID: 'G-LWLTCXMENE',
           anonymizeIP: true
         }
       }
