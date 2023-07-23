@@ -3,7 +3,7 @@
  * Copyright (c) 2021-present NAVER Corp.
  * MIT license
  */
- import {
+import {
   AfterViewChecked,
   AfterViewInit,
   Component,
@@ -15,7 +15,9 @@
   Output,
   PLATFORM_ID,
   Inject,
-  NgZone
+  NgZone,
+  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { fromEvent, Subject } from 'rxjs';
@@ -23,7 +25,6 @@ import { takeUntil } from 'rxjs/operators';
 
 import {
   getRenderingItems,
-  InfiniteGridFunction,
   InfiniteGridItem,
   InfiniteGridItemInfo,
   InfiniteGridOptions,
@@ -34,25 +35,28 @@ import {
   OnRequestAppend,
   OnRequestPrepend,
   OnChangeScroll,
-  Renderer,
+  Renderer
 } from '@egjs/infinitegrid';
+
 import { NgxInfiniteGridInterface } from './ngx-infinitegrid.interface';
 import { NgxInfiniteGridProps } from './types';
-import Grid, { GridOptions } from '@egjs/grid';
+import { GridClass } from './consts';
 
 @Component({
   selector: 'ngx-infinite-grid, [NgxInfiniteGrid]',
-  template: '<slot></slot>',
-  styles: [
-    ':host { display: block }',
-  ],
+  template: '',
+  styles: [':host { display: block }'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true
 })
-export class NgxInfiniteGridComponent
-  extends NgxInfiniteGridInterface
-  implements Required<InfiniteGridOptions>,
-  NgxInfiniteGridProps,
-  AfterViewInit, AfterViewChecked, OnChanges, OnDestroy {
-  public static GridClass: InfiniteGridFunction | null = null;
+export class NgxInfiniteGridComponent extends NgxInfiniteGridInterface
+  implements
+    Required<InfiniteGridOptions>,
+    NgxInfiniteGridProps,
+    AfterViewInit,
+    AfterViewChecked,
+    OnChanges,
+    OnDestroy {
   @Input() gridConstructor!: NgxInfiniteGridProps['gridConstructor'];
   @Input() renderer!: NgxInfiniteGridProps['renderer'];
   @Input() container!: NgxInfiniteGridProps['container'];
@@ -70,11 +74,13 @@ export class NgxInfiniteGridComponent
   @Input() autoResize!: NgxInfiniteGridProps['autoResize'];
   @Input() useFit!: NgxInfiniteGridProps['useFit'];
   @Input() useTransform!: NgxInfiniteGridProps['useTransform'];
-  @Input() renderOnPropertyChange!: NgxInfiniteGridProps['renderOnPropertyChange'];
+  @Input()
+  renderOnPropertyChange!: NgxInfiniteGridProps['renderOnPropertyChange'];
   @Input() preserveUIOnDestroy!: NgxInfiniteGridProps['preserveUIOnDestroy'];
   @Input() defaultDirection!: NgxInfiniteGridProps['defaultDirection'];
   @Input() externalItemRenderer!: NgxInfiniteGridProps['externalItemRenderer'];
-  @Input() externalContainerManager!: NgxInfiniteGridProps['externalContainerManager'];
+  @Input()
+  externalContainerManager!: NgxInfiniteGridProps['externalContainerManager'];
   @Input() outlineLength!: NgxInfiniteGridProps['outlineLength'];
   @Input() outlineSize!: NgxInfiniteGridProps['outlineSize'];
   @Input() useRoundedSize!: NgxInfiniteGridProps['useRoundedSize'];
@@ -88,8 +94,9 @@ export class NgxInfiniteGridComponent
   @Input() status!: NgxInfiniteGridProps['status'];
   @Input() useFirstRender!: NgxInfiniteGridProps['useFirstRender'];
   @Input() items: NgxInfiniteGridProps['items'] = [];
-  @Input() trackBy: NgxInfiniteGridProps['trackBy'] = ((_, item) => item.key);
-  @Input() groupBy: NgxInfiniteGridProps['groupBy'] = ((_, item) => item.groupKey);
+  @Input() trackBy: NgxInfiniteGridProps['trackBy'] = (_, item) => item.key;
+  @Input() groupBy: NgxInfiniteGridProps['groupBy'] = (_, item) =>
+    item.groupKey;
   @Input() infoBy: NgxInfiniteGridProps['infoBy'] = () => ({});
   @Output() renderComplete!: EventEmitter<OnRenderComplete>;
   @Output() contentError!: EventEmitter<OnContentError>;
@@ -102,6 +109,12 @@ export class NgxInfiniteGridComponent
   private _isChange = false;
 
   private _destroy$ = new Subject<void>();
+
+  /**
+   * Each grid component provides its `GridClass` individually. For instance, it's
+   * `VanillaFrameInfiniteGrid` for the `ngx-frame-infinite-grid`.
+   */
+  private _GridClass = inject(GridClass);
 
   constructor(
     public elementRef: ElementRef<HTMLElement>,
@@ -130,12 +143,12 @@ export class NgxInfiniteGridComponent
       return;
     }
 
-    const GridClass = (this.constructor as typeof NgxInfiniteGridComponent).GridClass;
+    const GridClass = this._GridClass;
     const defaultOptions = GridClass!.defaultOptions;
     const options: Partial<InfiniteGridOptions> = {};
 
     for (const name in defaultOptions) {
-      if (name in this && typeof (this as any)[name] !== "undefined") {
+      if (name in this && typeof (this as any)[name] !== 'undefined') {
         (options as any)[name] = (this as any)[name];
       }
     }
@@ -154,7 +167,7 @@ export class NgxInfiniteGridComponent
 
       fromEvent(grid, eventName)
         .pipe(takeUntil(this._destroy$))
-        .subscribe((event) => {
+        .subscribe(event => {
           const emitter = (this as any)[eventName];
           if (emitter && emitter.observers.length > 0) {
             this._ngZone.run(() => emitter.emit(event));
@@ -179,7 +192,7 @@ export class NgxInfiniteGridComponent
       useLoading: this.useLoading,
       usePlaceholder: this.usePlaceholder,
       horizontal: this.horizontal,
-      status: this.status,
+      status: this.status
     });
     this._renderer.updated();
   }
@@ -194,7 +207,7 @@ export class NgxInfiniteGridComponent
       return;
     }
     this._isChange = false;
-    const GridClass = (this.constructor as typeof NgxInfiniteGridComponent).GridClass;
+    const GridClass = this._GridClass;
     const propertyTypes = GridClass!.propertyTypes;
     const grid = this.vanillaGrid;
 
@@ -219,18 +232,15 @@ export class NgxInfiniteGridComponent
     const infoBy = this.infoBy;
 
     return items.map((item, i) => {
-      const {
-        data,
-        ...rest
-      } = infoBy(i, item);
+      const { data, ...rest } = infoBy(i, item);
       return {
         groupKey: groupBy(i, item),
         key: trackBy(i, item),
         ...rest,
         data: {
           ...data,
-          ...item,
-        },
+          ...item
+        }
       };
     });
   }
@@ -242,7 +252,7 @@ export class NgxInfiniteGridComponent
       useLoading: this.useLoading,
       usePlaceholder: this.usePlaceholder,
       horizontal: this.horizontal,
-      status: this.status,
+      status: this.status
     });
   }
 }
