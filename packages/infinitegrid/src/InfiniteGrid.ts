@@ -693,12 +693,20 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.setCursors(e.nextStartCursor, e.nextEndCursor);
   }
   private _onRendererUpdated = (e: OnRendererUpdated<GridRendererItem>): void => {
+    const renderedItems = e.items;
+
+    renderedItems.forEach((item) => {
+      // set grid element
+      const gridItem = item.orgItem;
+
+      gridItem.element = item.element as HTMLElement;
+    });
+
     if (!e.isChanged) {
       this._checkEndLoading();
       this._scroll();
       return;
     }
-    const renderedItems = e.items;
 
     const {
       added,
@@ -715,12 +723,6 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       }
     });
 
-    renderedItems.forEach((item) => {
-      // set grid element
-      const gridItem = item.orgItem;
-
-      gridItem.element = item.element as HTMLElement;
-    });
 
     const horizontal = this.options.horizontal;
     const addedItems = added.map((index) => {

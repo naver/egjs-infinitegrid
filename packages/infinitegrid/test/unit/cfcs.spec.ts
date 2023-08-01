@@ -133,6 +133,55 @@ describe("test cfcs", () => {
       expect(item.element).to.be.equals(item2.element);
     });
   });
+  it("should check if the element is updated even if the key is the same", async () => {
+    // Given
+    const firstItems = [0, 1, 2, 3, 4, 5].map((i) => {
+      return {
+        key: i,
+        element: document.createElement("div"),
+      };
+    });
+    container!.innerHTML = `
+    <div class="wrapper" style="width: 100%; height: 500px;"></div>
+    `;
+    const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
+    ig = new InfiniteGrid<InfiniteGridOptions>(wrapper, {
+      gridConstructor: SampleGrid,
+      container: true,
+    });
+
+    // first render
+    ig.syncItems(firstItems);
+
+    await waitEvent(ig!, "renderComplete");
+
+    // When
+    // second render with same key
+    const nextItems = [0, 1, 2, 3, 4, 5].map((i) => {
+      return {
+        key: i,
+        element: document.createElement("li"),
+      };
+    });
+    ig.getContainerElement().innerHTML = "";
+
+    nextItems.forEach((item) => {
+      ig!.getContainerElement().appendChild(item.element);
+    });
+    ig.syncItems(nextItems);
+    ig.renderItems();
+
+    await waitEvent(ig!, "renderComplete");
+
+    const renderingItems2 = ig.getRenderingItems();
+
+    // Then
+    nextItems.forEach((item, i) => {
+      const item2 = renderingItems2[i];
+
+      expect(item.element).to.be.equals(item2.element);
+    });
+  });
   it("should check if rendering items exists with placeholders", async () => {
     // Given
     container!.innerHTML = `
