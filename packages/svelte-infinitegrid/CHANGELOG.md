@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.10.2](https://github.com/naver/egjs-infinitegrid/compare/@egjs/svelte-infinitegrid@4.10.0...@egjs/svelte-infinitegrid@4.10.2) (2023-08-04)
+
+
+### :bug: Bug Fix
+
+* fix infoBy typo (#545) ([a3f1a75](https://github.com/naver/egjs-infinitegrid/commit/a3f1a75a1ec5d1829848113a7e7d94ac17da7882))
+
+
+### :mega: Other
+
+* update packages versions ([2222f2f](https://github.com/naver/egjs-infinitegrid/commit/2222f2f5537e3cd8ab1e16c0aa4b761c494a2e4a))
+
+
+
 ## [4.10.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/svelte-infinitegrid@4.9.0...@egjs/svelte-infinitegrid@4.10.0) (2023-05-26)
 
 
