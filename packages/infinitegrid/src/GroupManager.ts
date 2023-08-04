@@ -644,6 +644,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
         if (info.groupKey != null) {
           prevItem.groupKey = info.groupKey!;
         }
+        if (info.element) {
+          prevItem.element = info.element;
+        }
         nextItemKeys[key] = prevItem;
       }
     });
@@ -663,6 +666,9 @@ export class GroupManager extends Grid<GroupManagerOptions> {
 
           if (info.data) {
             item.data = info.data;
+          }
+          if (info.element) {
+            item.element = info.element;
           }
         } else {
           item = new InfiniteGridItem(horizontal, {
