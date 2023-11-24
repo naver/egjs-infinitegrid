@@ -22,4 +22,5 @@ export class NgxMasonryInfiniteGridComponent extends NgxInfiniteGridComponent
   @Input() align!: Required<MasonryInfiniteGridOptions>['align'];
   @Input() columnCalculationThreshold!: Required<MasonryInfiniteGridOptions>['columnCalculationThreshold'];
   @Input() maxStretchColumnSize!: Required<MasonryInfiniteGridOptions>['maxStretchColumnSize'];
+  @Input() contentAlign!: Required<MasonryInfiniteGridOptions>['contentAlign'];
 }
