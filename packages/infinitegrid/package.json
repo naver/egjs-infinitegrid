@@ -122,7 +122,7 @@
 		"@cfcs/core": "^0.0.5",
 		"@egjs/children-differ": "^1.0.1",
 		"@egjs/component": "^3.0.0",
-		"@egjs/grid": "^1.14.2",
+		"@egjs/grid": "^1.15.0",
 		"@egjs/list-differ": "^1.0.0"
 	}
 }
