@@ -2717,7 +2717,7 @@
     "@egjs/imready" "^1.3.1"
     "@egjs/list-differ" "^1.0.1"
 
-"@egjs/grid@^1.15.0", "@egjs/grid@^1.15.0-beta.0":
+"@egjs/grid@^1.15.0":
   version "1.15.0"
   resolved "https://registry.npmjs.org/@egjs/grid/-/grid-1.15.0.tgz#bfe18fb2937b2c25363a9c8ef36911ec0cfe99f0"
   integrity sha512-qJ+JxwA+mN47PYaAcYHXttmINEpsN4Mf9uBQZ6m7innIRGHw3zDf47vlTxb0iZwWGynRAwl3BjPli6oc80vuWg==
@@ -2733,17 +2733,6 @@
   dependencies:
     "@cfcs/core" "^0.0.24"
     "@egjs/component" "^3.0.1"
-
-"@egjs/infinitegrid@4.11.0-beta.0":
-  version "4.11.0-beta.0"
-  resolved "https://registry.npmjs.org/@egjs/infinitegrid/-/infinitegrid-4.11.0-beta.0.tgz#6b941542b32ce5878f5cf38fd2d9b23496719421"
-  integrity sha512-H71AGVWXvsZNgpBm/NV2eCQQRadw1LY8tkWx77BYS8jre9NtSIaeAxCYWK7Maw695y61tq7+6itQsIeZ9k/O4g==
-  dependencies:
-    "@cfcs/core" "^0.0.5"
-    "@egjs/children-differ" "^1.0.1"
-    "@egjs/component" "^3.0.0"
-    "@egjs/grid" "^1.15.0-beta.0"
-    "@egjs/list-differ" "^1.0.0"
 
 "@egjs/list-differ@^1.0.0", "@egjs/list-differ@^1.0.1":
   version "1.0.1"
