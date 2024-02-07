@@ -31,13 +31,11 @@ custom_edit_url: null
 |observeChildren|boolean|false|<p>Whether to detect size change of children if useResizeObserver option is used.<br /></p>|
 |externalItemRenderer|ItemRenderer \| null||<p>You can set the ItemRenderer directly externally.<br /></p>|
 |externalContainerManager|ContainerManager \| null||<p>You can set the ContainerManager directly externally.<br /></p>|
-|column|number|0|<p>The number of columns. If the number of columns is 0, it is automatically calculated according to the size of the container. Can be used instead of outlineLength.<br /></p>|
-|columnSize|number|0|<p>The size of the columns. If it is 0, it is calculated as the size of the first item in items. Can be used instead of outlineSize.<br /></p>|
-|columnSizeRatio|number|0|<p>The size ratio(inlineSize / contentSize) of the columns. 0 is not set.<br /></p>|
-|align|GridAlign|"justify"|<p>Align of the position of the items. If you want to use <code>stretch</code>, be sure to set <code>column</code>, <code>columnSize</code> or <code>maxStretchColumnSize</code> option. (&quot;start&quot;, &quot;center&quot;, &quot;end&quot;, &quot;justify&quot;, &quot;stretch&quot;)<br /></p>|
-|contentAlign|MasonryGridVerticalAlign|"masonry"|<p>Content direction alignment of items. “Masonry” is sorted in the form of masonry. Others are applied as content direction alignment, similar to vertical-align of inline-block.<br />If you set multiple columns (<code>data-grid-column</code>), the screen may look strange.<br /></p>|
-|columnCalculationThreshold|number|1|<p>Difference Threshold for Counting Columns. Since offsetSize is calculated by rounding, the number of columns may not be accurate.<br /></p>|
-|maxStretchColumnSize|number|Infinity|<p>If stretch is used, the column can be automatically calculated by setting the maximum size of the column that can be stretched.<br /></p>|
+|columnRange|number \| number[]|[1, 8]|<p>The minimum and maximum number of items per line.<br /></p>|
+|rowRange|number \| number[]|0|<p>The minimum and maximum number of rows in a group, 0 is not set.<br /></p>|
+|sizeRange|number \| number[]|[0, Infinity]|<p>The minimum and maximum size by which the item is adjusted. If it is not calculated, it may deviate from the minimum and maximum sizes.<br /></p>|
+|displayedRow|number|-1|<p>Maximum number of rows to be counted for container size. You can hide it on the screen by setting overflow: hidden. -1 is not set.<br /></p>|
+|isCroppedSize|boolean|false|<p>Whether to crop when the row size is out of sizeRange. If set to true, this ratio can be broken.<br /></p>|
 |horizontal|boolean|false|<p>Direction of the scroll movement. (true: horizontal, false: vertical) If horizontal is false, <code>inlinePos</code> is left, <code>inlineSize</code> is width, <code>contentPos</code> is top, and <code>contentSize</code> is height. If horizontal is true, <code>inlinePos</code> is top, <code>inlineSize</code> is height, <code>contentPos</code> is left, and <code>contentSize</code> is width.<br /></p>|
 |percentage|Array&lt;"position" \| "size"&gt; \| boolean|false|<p>Whether to set the css size and position of the item to %.<br /></p>|
 |isEqualSize|boolean|false|<p>Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to &quot;true&quot;, the performance of layout arrangement can be improved.<br /></p>|

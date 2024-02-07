@@ -31,13 +31,10 @@ custom_edit_url: null
 |observeChildren|boolean|false|useResizeObserver옵션을 사용한다면 children의 사이즈 변화 감지 여부.|
 |externalItemRenderer|ItemRenderer \| null||외부에서 직접 ItemRenderer를 설정할 수 있다.|
 |externalContainerManager|ContainerManager \| null||외부에서 직접 ContainerManager를 설정할 수 있다.|
-|column|number|0|열의 개수. 열의 개수가 0이라면, 컨테이너의 사이즈에 의해 계산이 된다. outlineLength 대신 사용할 수 있다.|
-|columnSize|number|0|열의 사이즈. 만약 열의 사이즈가 0이면, 아이템들의 첫번째 아이템의 사이즈로 계산이 된다. outlineSize 대신 사용할 수 있다.|
-|columnSizeRatio|number|0|열의 사이즈 비율(inlineSize / contentSize). 0은 미설정이다.|
-|align|GridAlign|"justify"|아이템들의 위치의 정렬. <code>stretch</code>를 사용하고 싶다면 <code>column</code>, <code>columnSize</code> 또는 <code>maxStretchColumnSize</code> 옵션을 설정해라.  (&quot;start&quot;, &quot;center&quot;, &quot;end&quot;, &quot;justify&quot;, &quot;stretch&quot;)|
-|contentAlign|MasonryGridVerticalAlign|"masonry"|아이템들의 Content 방향의 정렬. &quot;masonry&quot;는 masonry 형태로 정렬이 된다. 그 외는 inline-block의 vertical-align과 유사하게 content 방향 정렬로 적용이 된다.칼럼(<code>data-grid-column</code> )을 여러개 설정하면 화면이 이상하게 보일 수 있다. |
-|columnCalculationThreshold|number|1|칼럼 개수를 계산하기 위한 차이 임계값. offset 사이즈는 반올림으로 게산하기 때문에 정확하지 않을 수 있다.|
-|maxStretchColumnSize|number|Infinity|stretch를 사용한 경우 최대로 늘릴 수 있는 column의 사이즈를 설정하여 column을 자동 계산할 수 있다.|
+|aspectRatio|number|1|아이템들을 가진 컨테이너의 종횡비(inlineSize / contentSize).|
+|sizeWeight|number|1|아이템들을 배치하는데 사이즈 가중치.|
+|ratioWeight|number|1|아이템들을 배치하는데 비율을 유지하는 가중치.|
+|weightPriority|"size" \| "ratio" \| "custom"|"custom"| 아이템의 가중치를 결정하는 우선수치. &quot;size&quot; = (sizeWieght: 100, ratioWeight: 1), &quot;ratio&quot; = (sizeWeight: 1, ratioWeight; 100), &quot;custom&quot; = (set sizeWeight, ratioWeight). 아이템의 가중치 = ratio(inlineSize / contentSize)의 변화량 * <code>ratioWeight</code> + size(inlineSize * contentSize)의 변화량 * <code>sizeWeight</code>.|
 |horizontal|boolean|false|스크롤 이동 방향. (true: 가로방향, false: 세로방향) horizontal이 false 면 <code>inlinePos</code>는 left, <code>inlineSize</code>는 width, <code>contentPos</code>는 top, <code>contentSize</code>는 height다. horizontal이 true면 <code>inlinePos</code>는 top, <code>inlineSize</code>는 height, <code>contentPos</code>는 left, <code>contentSize</code>는 width이다.|
 |percentage|Array&lt;"position" \| "size"&gt; \| boolean|false|item의 css size와 position를 %로 설정할지 여부.|
 |isEqualSize|boolean|false|카드 엘리먼트의 크기가 동일한지 여부. 배치될 카드 엘리먼트의 크기가 모두 동일할 때 이 옵션을 'true'로 설정하면 레이아웃 배치 성능을 높일 수 있다.|

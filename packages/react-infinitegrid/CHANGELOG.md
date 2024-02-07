@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.11.1](https://github.com/naver/egjs-infinitegrid/compare/@egjs/react-infinitegrid@4.10.1...@egjs/react-infinitegrid@4.11.1) (2024-02-07)
+
+
+### :bug: Bug Fix
+
+* fix observe order (#563) ([e5bfcc4](https://github.com/naver/egjs-infinitegrid/commit/e5bfcc4c61ed03009ff35b6fca8a1f70969995ae))
+
+
+### :mega: Other
+
+* update packages versions ([13597dd](https://github.com/naver/egjs-infinitegrid/commit/13597dd1e4ddcc28fdca0e9fa62f0a9c2df3b312))
+
+
+
 ## [4.10.1](https://github.com/naver/egjs-infinitegrid/compare/@egjs/react-infinitegrid@4.10.0...@egjs/react-infinitegrid@4.10.1) (2023-08-04)
 
 
