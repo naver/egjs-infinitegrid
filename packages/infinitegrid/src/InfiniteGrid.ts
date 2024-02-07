@@ -750,8 +750,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
     const containerManager = this.containerManager;
     if (this.options.observeChildren) {
-      containerManager.observeChildren(added.map((index) => list[index].element!));
       containerManager.unobserveChildren(removed.map((index) => prevList[index].element!));
+      containerManager.observeChildren(added.map((index) => list[index].element!));
     }
 
     const {
