@@ -141,6 +141,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       resizeDebounce,
       maxResizeDebounce,
       defaultDirection,
+      useRoundedSize,
     } = gridOptions;
     const wrapperElement = isString(wrapper) ? document.querySelector(wrapper) as HTMLElement : wrapper;
     const scrollManager = new ScrollManager(wrapperElement, {
@@ -166,6 +167,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       percentage,
       isEqualSize,
       isConstantSize,
+      useRoundedSize,
     });
     const infinite = new Infinite({
       defaultDirection,
