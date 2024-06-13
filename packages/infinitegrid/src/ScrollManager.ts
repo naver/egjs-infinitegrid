@@ -139,7 +139,7 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       : scrollContainer.getBoundingClientRect();
     const containerRect = this.container.getBoundingClientRect();
 
-    this.scrollOffset = (this.prevScrollPos! || 0) + (horizontal
+    this.scrollOffset = (this.getOrgScrollPos()! || 0) + (horizontal
       ? containerRect.left - scrollContainerRect.left
       : containerRect.top - scrollContainerRect.top);
 

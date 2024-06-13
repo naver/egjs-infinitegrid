@@ -12,7 +12,7 @@ export type ReactInfiniteGridEvents = {
 export interface ReactInfiniteGridProps extends ReactInfiniteGridEvents {
   tag?: string;
   status?: InfiniteGridStatus;
-  placeholder?: React.ReactElement | ((item: InfiniteGridItem) => React.ReactElement);
+  placeholder?: React.ReactElement | ((item: InfiniteGridItem, index: number) => React.ReactElement);
   loading?: React.ReactElement | ((item: InfiniteGridItem) => React.ReactElement);
   useFirstRender?: boolean;
   itemBy?: (item: React.ReactElement, index: number) => string | number;

@@ -7,8 +7,32 @@ export const LOADING_ITEM_KEY = "__INFINITEGRID__LOADING_ITEM";
 
 export class LoadingGrid extends Grid {
   public type: "start" | "end" | "" = "";
+  public isWaitEnd = false;
+  public initialDisplay: string | null = null;
   public getLoadingItem(): InfiniteGridItem | null {
     return this.items[0] as InfiniteGridItem || null;
+  }
+  public startLoading() {
+    const element = this.items[0].element;
+
+    if (element) {
+      if (this.initialDisplay != null) {
+        this.initialDisplay = element.style.display || "";
+      } else if (this.initialDisplay) {
+        element.style.display = this.initialDisplay;
+      } else {
+        element.style.removeProperty("display");
+      }
+    }
+  }
+  public endLoading() {
+    if (this.type) {
+      const element = this.items[0].element;
+
+      if (element) {
+        element.style.display = "none";
+      }
+    }
   }
   public setLoadingItem(item: Partial<InfiniteGridItemStatus> | null) {
     if (item) {

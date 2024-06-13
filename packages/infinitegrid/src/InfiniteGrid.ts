@@ -15,6 +15,7 @@ import {
   DIRECTION,
   GROUP_TYPE,
   INFINITEGRID_EVENTS, INFINITEGRID_PROPERTY_TYPES,
+  INVISIBLE_POS,
   ITEM_TYPE, STATUS_TYPE,
 } from "./consts";
 import { GroupManager } from "./GroupManager";
@@ -265,6 +266,11 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.infinite.setCursors(startCursor, endCursor);
 
     if (useFirstRender) {
+      this.getVisibleItems().forEach((item) => {
+        if (item.cssRect.top === INVISIBLE_POS) {
+          item.cssRect = {};
+        }
+      });
       this._syncItems();
     } else {
       this._update();
@@ -592,9 +598,18 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   /**
    * When the data request is complete, it is set to ready state.
    * @ko 데이터 요청이 끝났다면 준비 상태로 설정한다.
+   * @param - <ko>데이터가 존재하지 않으면 loading bar를 즉시 제거 한다.</ko>
    */
-  public ready() {
+  public ready(hasNoData?: boolean) {
     this._waitType = "";
+
+    if (hasNoData) {
+      this.groupManager.waitEndLoading();
+
+      if (this.groupManager.endLoading()) {
+        this._update();
+      }
+    }
   }
   /**
    * Returns whether it is set to wait to request data.
@@ -823,8 +838,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       wait: () => {
         this.wait(direction);
       },
-      ready: () => {
-        this.ready();
+      ready: (hasNoData?: boolean) => {
+        this.ready(hasNoData);
       },
     }));
   }
@@ -865,6 +880,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       this.scrollManager.scrollBy(offset);
     }
 
+    const completeMounted = (mounted as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING);
+
     /**
      * This event is fired when the InfiniteGrid has completed rendering.
      * @ko InfiniteGrid가 렌더링이 완료됐을 때 이벤트가 발생한다.
@@ -874,7 +891,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.RENDER_COMPLETE, {
       isResize,
       direction,
-      mounted: (mounted as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING),
+      mounted: completeMounted,
       updated: (updated as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING),
       startCursor: this.getStartCursor(),
       endCursor: this.getEndCursor(),
@@ -882,7 +899,13 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       groups: this.getVisibleGroups(true),
     }));
 
-    if (this.groupManager.shouldRerenderItems()) {
+    let isUpdate = this.groupManager.shouldRerenderItems();
+
+    if (completeMounted.length || updated.length) {
+      isUpdate ||= !!this.groupManager.endLoading();
+    }
+
+    if (isUpdate) {
       this._update();
     } else {
       this._checkEndLoading();
@@ -934,7 +957,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     if (
       loadingType
       && (!this._waitType || !this.infinite.isLoading(loadingType))
-      && groupManager.endLoading()
+      && groupManager.waitEndLoading()
       && groupManager.hasLoadingItem()
     ) {
       this._update();

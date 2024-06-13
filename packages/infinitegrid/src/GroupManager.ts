@@ -154,12 +154,24 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return true;
   }
 
-  public endLoading() {
-    const prevType = this._loadingGrid.type;
+  public waitEndLoading() {
+    if (this._loadingGrid.type) {
+      this._loadingGrid.isWaitEnd = true;
+      return true;
+    }
+    return false;
+  }
 
-    this._loadingGrid.type = "";
-    this.items = this._getRenderingItems();
-    return !!prevType;
+  public endLoading() {
+    if (this._loadingGrid.isWaitEnd) {
+      const prevType = this._loadingGrid.type;
+
+      this._loadingGrid.type = "";
+      this._loadingGrid.endLoading();
+      this.items = this._getRenderingItems();
+      return !!prevType;
+    }
+    return false;
   }
 
   public setLoading(loading: Partial<InfiniteGridItemStatus> | null) {
@@ -214,16 +226,18 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     const outlineLength = this.getComputedOutlineLength(groupItems);
     const outlineSize = this.getComputedOutlineSize(groupItems);
     const itemRenderer = this.itemRenderer;
+    let passedItems: InfiniteGridItem[] = [];
 
     groups.forEach((group) => {
       const grid = group.grid;
       const gridItems = grid.getItems() as InfiniteGridItem[];
       const isVirtual = group.type === GROUP_TYPE.VIRTUAL && !gridItems[0];
 
+      passedItems = direction === "end" ? [...passedItems, ...gridItems] : [...gridItems, ...passedItems];
       grid.outlineLength = outlineLength;
       grid.outlineSize = outlineSize;
 
-      const appliedItems = gridItems.filter((item) => {
+      const appliedItems = passedItems.filter((item) => {
         if (item.mountState === MOUNT_STATE.UNCHECKED || !item.rect.width) {
           itemRenderer.updateItem(item, true);
         }
@@ -241,8 +255,10 @@ export class GroupManager extends Grid<GroupManagerOptions> {
           end: [...nextOutline],
         };
       }
+
       grid.setOutlines(gridOutlines);
-      nextOutline = gridOutlines[direction];
+      nextOutline = gridOutlines.passed || gridOutlines[direction];
+      passedItems = gridOutlines.passedItems?.map((index) => passedItems[index]) ?? [];
     });
 
     return {
@@ -389,12 +405,11 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   }
   protected fitOutlines(useFit = this.useFit) {
     const groups = this.groups;
-    const firstGroup = groups[0];
 
-    if (!firstGroup) {
+    if (!groups[0]) {
       return;
     }
-    const outlines = firstGroup.grid.getOutlines();
+    const outlines = this.outlines;
     const startOutline = outlines.start;
     const outlineOffset = startOutline.length ? Math.min(...startOutline) : 0;
 
@@ -557,6 +572,19 @@ export class GroupManager extends Grid<GroupManagerOptions> {
     return isRerender;
   }
 
+  // protected checkReady(options: RenderOptions = {}) {
+  //   const items = this.items;
+  //   const updated = items.filter((item) => item.element?.parentNode && item.updateState !== UPDATE_STATE.UPDATED);
+  //   const mounted = items.filter((item) => item.element?.parentNode && item.mountState !== MOUNT_STATE.MOUNTED);
+
+
+  //   if (updated.length && updated.every((item) => item.type != ITEM_TYPE.NORMAL)) {
+  //     this._updateItems(updated);
+  //     this.readyItems(mounted, updated, options);
+  //   } else {
+  //     super.checkReady(options);
+  //   }
+  // }
   protected _updateItems(items: GridItem[]): void {
     this.itemRenderer.updateEqualSizeItems(items, this.groupItems);
   }

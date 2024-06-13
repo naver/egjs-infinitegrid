@@ -21,5 +21,6 @@ export const REACT_INFINITEGRID_PROPS = [
   "loading",
   "itemBy",
   "groupBy",
+  "infoBy",
   ...REACT_INFINITEGRID_EVENTS,
 ];
