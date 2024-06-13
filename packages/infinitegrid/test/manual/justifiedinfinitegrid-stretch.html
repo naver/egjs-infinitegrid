@@ -1,0 +1,125 @@
+<h1 class="header">
+  <a href="https://github.com/naver/egjs-infinitegrid" target="_blank">JustifiedInfiniteGrid</a>
+</h1>
+<div class="scroller">
+  <div class="container gridlayout">
+  </div>
+</div>
+
+<style>
+  html,
+  body {
+    position: relative;
+    height: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .container {
+    position: relative;
+  }
+
+  .container:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: "";
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+    z-index: 10;
+    pointer-events: none;
+    display: block;
+  }
+
+  .image {
+    position: absolute;
+    color: black;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .imageArea {
+    position: relative;
+    height: 188px;
+    background: #5f5;
+  }
+
+  .imageArea img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .result {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  .button {
+    position: relative;
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background: white;
+    border: 1px solid #ccc;
+    appearance: none;
+    font-weight: bold;
+    width: 150px;
+    text-align: center;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  .title {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    background: #f55;
+  }
+</style>
+
+<script src="../../dist/infinitegrid.js"></script>
+<script>
+  const itemCount = 10;
+
+  function getItems(nextGroupKey, count) {
+    const nextItems = [];
+
+    for (let i = 0; i < count; ++i) {
+      const num = nextGroupKey * count + i;
+      nextItems.push(`<div class="image">
+    <div class="imageArea">
+        <img src="https://naver.github.io/egjs-infinitegrid/assets/image/${(num % 33) + 1}.jpg" alt="egjs" />
+    </div>
+    <div class="title">Test ${num}</div>
+</div>`);
+    }
+    return nextItems;
+  }
+  const ig = new InfiniteGrid.JustifiedInfiniteGrid(".container", {
+    // scrollContainer: ".scroller",
+    // useFit: true,
+    useRecycle: true,
+    useResizeObserver: true,
+    gap: 5,
+    stretch: true,
+    sizeRange: [228, 228],
+    stretchRange: [144, 320],
+    columnRange: [0, Infinity],
+  });
+
+  ig.on("requestAppend", e => {
+    const nextGroupKey = (+e.groupKey || 0) + 1;
+
+    ig.append(getItems(nextGroupKey, 40), nextGroupKey);
+  });
+
+  ig.renderItems();
+</script>

@@ -24,8 +24,15 @@ const Item = ({ num }: any) => <div className="item" style={{
   <div className="info">{`egjs ${num}`}</div>
 </div>;
 
-export default function App() {
+export default function App(props: Record<string, any>) {
   const [items, setItems] = React.useState(() => getItems(0, 10));
+
+  const extraProps = props.stretch ? {
+    stretch: true,
+    passUnstretchRow: true,
+    sizeRange: [228, 228],
+    stretchRange: [144, 320],
+  } : {};
 
   return <JustifiedInfiniteGrid
     className="container"
@@ -34,6 +41,7 @@ export default function App() {
     }}
     container={true}
     gap={5}
+    {...extraProps}
     onRequestAppend={(e) => {
       const nextGroupKey = (+e.groupKey! || 0) + 1;
 

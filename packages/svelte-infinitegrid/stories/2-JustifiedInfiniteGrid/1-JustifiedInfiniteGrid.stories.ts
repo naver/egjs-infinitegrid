@@ -1,5 +1,5 @@
 import JustifiedInfiniteGridApp from "./apps/SvelteJustifiedInfiniteGridApp.svelte";
-import "../../../../stories/templates/default.css";
+import "../../../infinitegrid/stories/templates/default.css";
 
 
 export const JustifiedInfiniteGridTemplate = (props) => ({

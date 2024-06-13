@@ -2,20 +2,14 @@ const path = require("path");
 
 module.exports = {
   webpackFinal: config => {
-    config.module.rules.push(...[
-      {
-        test: /\.(ts|tsx)$/,
-        use: [
-          {
-            loader: require.resolve('awesome-typescript-loader'),
-          },
-          // Optional
-          {
-            loader: require.resolve('react-docgen-typescript-loader'),
-          },
-        ],
+    config.module.rules.push({
+      test: /\.(ts|tsx)$/,
+      loader: 'ts-loader',
+      options: {
+        // disable type checker - we will use it in fork plugin
+        transpileOnly: true
       },
-    ]);
+    });
 
     return config;
   },

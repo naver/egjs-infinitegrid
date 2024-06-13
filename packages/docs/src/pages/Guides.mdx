@@ -49,6 +49,27 @@ MasonryInfiniteGrid is a grid that stacks items with the same width as a stack o
   hasMaintained={true}
   />
 
+
+### JustifiedInfiniteGrid (Stretch)
+`stretch` is possible to basically break the proportion of the item and stretch the inline size to fill the container. If you set the `sizeRange` range narrowly, you can stretch well.
+
+* `stretchRange`: If `-`, `+`, or `%` are added as a string value, it is a relative value to the original size. If it is a number value, the stretch range can be set as an absolute value. If `data-grid-min-stretch` and `data-grid-max-stretch` are set in the Element or JSX of each item, they will be applied first.
+* `passUnstretchRow`: Items placed in the last row are not stretched and are drawn maintaining their proportions. When using InfiniteGrid, it is calculated and re-rendered as follows:
+
+
+<JustifiedInfiniteGrid stretch={true} />
+
+<InfiniteGridDefaultCode
+  className="JustifiedInfiniteGrid"
+  options={{
+    gap: 5,
+    stretch: true,
+    passUnstretchRow: true,
+    sizeRange: [228, 228],
+    stretchRange: [144, 320],
+  }}
+  />
+
 ### FrameInfiniteGrid
 'Frame' is a printing term with the meaning that 'it fits in one row wide'. FrameGrid is a grid that the item is filled up on the basis of a line given a size.
 

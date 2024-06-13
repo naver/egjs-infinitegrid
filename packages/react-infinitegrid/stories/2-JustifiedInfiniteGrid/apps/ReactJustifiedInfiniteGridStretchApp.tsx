@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MasonryInfiniteGrid } from "../../../src";
+import { JustifiedInfiniteGrid } from "../../../src";
 
 
 function getItems(nextGroupKey: number, count: number) {
@@ -16,6 +16,7 @@ const Item = ({ num }: any) => <div className="item">
   <div className="thumbnail">
     <img
       src={`https://naver.github.io/egjs-infinitegrid/assets/image/${(num % 33) + 1}.jpg`}
+      data-grid-maintained-target="true"
       alt="egjs"
     />
   </div>
@@ -25,11 +26,13 @@ const Item = ({ num }: any) => <div className="item">
 export default function App() {
   const [items, setItems] = React.useState(() => getItems(0, 10));
 
-  return <MasonryInfiniteGrid
+  return <JustifiedInfiniteGrid
     className="container"
     gap={5}
-    align={"justify"}
-    useFirstRender={true}
+    stretch={true}
+    passUnstretchRow={true}
+    sizeRange={[228, 228]}
+    stretchRange={[144, 320]}
     onRequestAppend={(e) => {
       const nextGroupKey = (+e.groupKey! || 0) + 1;
 
@@ -43,5 +46,5 @@ export default function App() {
     }}
   >
     {items.map((item) => <Item data-grid-groupkey={item.groupKey} key={item.key} num={item.key} />)}
-  </MasonryInfiniteGrid>;
+  </JustifiedInfiniteGrid>;
 }

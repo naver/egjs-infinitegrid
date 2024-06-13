@@ -2,7 +2,8 @@ import * as React from "react";
 /* eslint-disable import/no-webpack-loader-syntax */
 import MasonryInfiniteGridApp from "./apps/ReactMasonryInfiniteGridApp";
 // import RawMasonryInfiniteGridApp from "!!raw-loader!./apps/ReactMasonryInfiniteGridApp";
-import "../../../../stories/templates/default.css";
+import "../../../infinitegrid/stories/templates/default.css";
+
 
 export const MasonryInfiniteGridTemplate = () => <MasonryInfiniteGridApp />;
 

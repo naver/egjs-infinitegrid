@@ -4,7 +4,7 @@ import JustifiedInfiniteGridApp from "./apps/ReactJustifiedInfiniteGridApp";
 // import RawJustifiedInfiniteGridApp from "!!raw-loader!./apps/ReactJustifiedInfiniteGridApp";
 import "../../../infinitegrid/stories/templates/default.css";
 
-export const JustifiedInfiniteGridTemplate = () => <JustifiedInfiniteGridApp />;
+export const JustifiedInfiniteGridStretchTemplate = () => <JustifiedInfiniteGridApp />;
 
 
-JustifiedInfiniteGridTemplate.storyName = "JustifiedInfiniteGrid";
+JustifiedInfiniteGridStretchTemplate.storyName = "JustifiedInfiniteGrid (stretch)";

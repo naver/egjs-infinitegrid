@@ -34,8 +34,14 @@ custom_edit_url: null
 |columnRange|number \| number[]|[1, 8]|<p>The minimum and maximum number of items per line.<br /></p>|
 |rowRange|number \| number[]|0|<p>The minimum and maximum number of rows in a group, 0 is not set.<br /></p>|
 |sizeRange|number \| number[]|[0, Infinity]|<p>The minimum and maximum size by which the item is adjusted. If it is not calculated, it may deviate from the minimum and maximum sizes.<br /></p>|
+|stretch|boolean|false|<p>아이템의 inlineSize를 stretch 할지 여부</p>|
+|stretchRange|Array&lt;string \| number&gt;|["-10%", "+10%"]|<p>string 값으로 <code>-</code>, <code>+</code>, <code>%</code>이 붙으면 원본 크기에 대한 상대값이며 number 값으로 들어오면 절대 값으로 stretch 범위를 설정할 수 있습니다.<br />낱개로 설정하고 싶다면 각 Element 또는 JSX로 data-grid-min-stretch=&quot;-10%&quot;, data-grid-max-stretch=&quot;+10%&quot;로 설정할 수 있다.</p>|
+|passUnstretchRow|boolean||<p>마지막 열에 stretch 범위에 벗어난 경우 다음 InfiniteGrid</p>|
 |displayedRow|number|-1|<p>Maximum number of rows to be counted for container size. You can hide it on the screen by setting overflow: hidden. -1 is not set.<br /></p>|
 |isCroppedSize|boolean|false|<p>Whether to crop when the row size is out of sizeRange. If set to true, this ratio can be broken.<br /></p>|
+|contentMargin|number||<p>test contentMargin</p>|
+|inlineOffset|number||<p>test inlineOffset</p>|
+|contentOffset|number||<p>test contentOffset</p>|
 |horizontal|boolean|false|<p>Direction of the scroll movement. (true: horizontal, false: vertical) If horizontal is false, <code>inlinePos</code> is left, <code>inlineSize</code> is width, <code>contentPos</code> is top, and <code>contentSize</code> is height. If horizontal is true, <code>inlinePos</code> is top, <code>inlineSize</code> is height, <code>contentPos</code> is left, and <code>contentSize</code> is width.<br /></p>|
 |percentage|Array&lt;"position" \| "size"&gt; \| boolean|false|<p>Whether to set the css size and position of the item to %.<br /></p>|
 |isEqualSize|boolean|false|<p>Indicates whether sizes of all card elements are equal to one another. If sizes of card elements to be arranged are all equal and this option is set to &quot;true&quot;, the performance of layout arrangement can be improved.<br /></p>|

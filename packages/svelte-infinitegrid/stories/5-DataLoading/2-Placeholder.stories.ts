@@ -1,5 +1,5 @@
 import PlaceholderApp from "./apps/SveltePlaceholderApp.svelte";
-import "../../../../stories/templates/default.css";
+import "../../../infinitegrid/stories/templates/default.css";
 
 
 export const PlaceholderTemplate = (props) => ({
