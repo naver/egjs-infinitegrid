@@ -47,6 +47,56 @@ describe("test Infinite", () => {
     expect(items2.map((item) => item.key)).to.be.deep.equals([1, 2]);
     expect(items3.map((item) => item.key)).to.be.deep.equals([2, 3]);
   });
+  it("should check whether rendered visible items change according to scroll pos", () => {
+    infinite = new Infinite({
+      useRecycle: false,
+    });
+    infinite.setItems([
+      {
+        key: 1,
+        startOutline: [0],
+        endOutline: [300],
+      },
+      {
+        key: 2,
+        startOutline: [300],
+        endOutline: [600],
+      },
+      {
+        key: 3,
+        startOutline: [600],
+        endOutline: [900],
+      },
+    ]);
+    infinite.setSize(400);
+
+    // When
+    infinite.setCursors(0, 0);
+    const items1 = infinite.getRenderedVisibleItems();
+
+    infinite.setCursors(0, 1);
+    const items2 = infinite.getRenderedVisibleItems();
+
+    infinite.setCursors(1, 2);
+    const items3 = infinite.getRenderedVisibleItems();
+
+    const posItems1 = infinite.getRenderedVisibleItems(-200); // 1
+    const posItems2 = infinite.getRenderedVisibleItems(0); // 1 2
+    const posItems3 = infinite.getRenderedVisibleItems(250); // 1 2 3
+    const posItems4 = infinite.getRenderedVisibleItems(350); // 2 3
+    const posItems5 = infinite.getRenderedVisibleItems(700); // 3
+
+
+    // Then
+    expect(items1.map((item) => item.key)).to.be.deep.equals([1]);
+    expect(items2.map((item) => item.key)).to.be.deep.equals([1, 2]);
+    expect(items3.map((item) => item.key)).to.be.deep.equals([2, 3]);
+    expect(posItems1.map((item) => item.key)).to.be.deep.equals([1]);
+    expect(posItems2.map((item) => item.key)).to.be.deep.equals([1, 2]);
+    expect(posItems3.map((item) => item.key)).to.be.deep.equals([1, 2, 3]);
+    expect(posItems4.map((item) => item.key)).to.be.deep.equals([2, 3]);
+    expect(posItems5.map((item) => item.key)).to.be.deep.equals([3]);
+  });
   it("should check if the cursor changes when you sync items", () => {
     infinite = new Infinite({});
     infinite.setItems([

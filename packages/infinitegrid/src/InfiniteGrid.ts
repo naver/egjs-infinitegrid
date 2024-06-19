@@ -866,7 +866,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
   private _onRenderComplete = ({ isResize, mounted, updated, direction }: OnPickedRenderComplete): void => {
     const infinite = this.infinite;
-    const prevRenderedGroups = infinite.getRenderedVisibleItems();
+    const prevRenderedGroups = infinite.getRenderedVisibleItems(this.scrollManager.getScrollPos()!);
     const length = prevRenderedGroups.length;
     const isDirectionEnd = direction === DIRECTION.END;
 

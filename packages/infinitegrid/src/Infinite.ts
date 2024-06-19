@@ -220,6 +220,79 @@ export class Infinite extends Component<InfiniteEvents> {
   }
 
   /**
+   * Visible item area according to scrollPos
+   * @param scrollPos
+   */
+  public getVisibleArea(scrollPos: number): {
+    start: number;
+    end: number;
+    direction?: "end" | "start";
+    hasVirtualItems?: boolean;
+    isStart?: boolean;
+    isEnd?: boolean;
+    nextVisibleItems?: InfiniteItem[];
+  } {
+    const prevStartCursor = this.startCursor;
+    const prevEndCursor = this.endCursor;
+    const items = this.items;
+    const length = items.length;
+    const size = this.size;
+    const {
+      defaultDirection,
+      threshold,
+    } = this.options;
+    const isDirectionEnd = defaultDirection === "end";
+
+    if (!length) {
+      // no items
+      return {
+        start: -1,
+        end: -1,
+        direction: isDirectionEnd ? "end" : "start",
+      };
+    } else if (prevStartCursor === -1 || prevEndCursor === -1) {
+      const nextCursor = isDirectionEnd ? 0 : length - 1;
+
+      return {
+        start: nextCursor,
+        end: nextCursor,
+        direction: isDirectionEnd ? "end" : "start",
+      };
+    }
+
+    const endScrollPos = scrollPos + size;
+    const visibles = items.map((item) => {
+      const {
+        startOutline,
+        endOutline,
+      } = item;
+
+      if (!startOutline.length || !endOutline.length || isFlatOutline(startOutline, endOutline)) {
+        return false;
+      }
+      const startPos = Math.min(...startOutline);
+      const endPos = Math.max(...endOutline);
+
+      if (startPos - threshold <= endScrollPos && scrollPos <= endPos + threshold) {
+        return true;
+      }
+      return false;
+    });
+    let nextStartCursor = visibles.indexOf(true);
+    let nextEndCursor = visibles.lastIndexOf(true);
+
+    if (nextStartCursor === -1) {
+      nextStartCursor = prevStartCursor;
+      nextEndCursor = prevEndCursor;
+    }
+
+    return {
+      start: nextStartCursor,
+      end: nextEndCursor,
+    };
+  }
+
+  /**
    * Call the requestAppend or requestPrepend event to fill the virtual items.
    * @ko virtual item을 채우기 위해 requestAppend 또는 requestPrepend 이벤트를 호출합니다.
    * @return - Whether the event is called. <ko>이벤트를 호출했는지 여부.</ko>
@@ -374,8 +447,21 @@ export class Infinite extends Component<InfiniteEvents> {
   public getItemByKey(key: string | number) {
     return this.itemKeys[key];
   }
-  public getRenderedVisibleItems() {
-    const items = this.getVisibleItems();
+  /**
+   *
+   * @param scrollPos
+   * @returns
+   */
+  public getRenderedVisibleItems(scrollPos?: number) {
+    let items = this.getVisibleItems();
+
+    if (!this.options.useRecycle && scrollPos != null) {
+      const area = this.getVisibleArea(scrollPos);
+
+      if (area.start > -1) {
+        items = this.items.slice(area.start, area.end + 1);
+      }
+    }
     const rendered = items.map(({ startOutline, endOutline }) => {
       const length = startOutline.length;
 
