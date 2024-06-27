@@ -21,6 +21,8 @@ import {
 import { GroupManager } from "./GroupManager";
 import {
   Infinite,
+  InfiniteItem,
+  InfiniteItemPart,
   OnInfiniteChange,
   OnInfiniteRequestAppend,
   OnInfiniteRequestPrepend,
@@ -685,6 +687,13 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
         isVirtual: type === GROUP_TYPE.VIRTUAL,
         startOutline: outlines.start,
         endOutline: outlines.end,
+        parts: grid.getItems().map((item) => {
+          return {
+            key: item.key,
+            pos: item.computedContentPos,
+            size: item.computedContentSize,
+          };
+        }),
       };
     }));
   }
@@ -866,20 +875,63 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
   private _onRenderComplete = ({ isResize, mounted, updated, direction }: OnPickedRenderComplete): void => {
     const infinite = this.infinite;
-    const prevRenderedGroups = infinite.getRenderedVisibleItems(this.scrollManager.getScrollPos()!);
-    const length = prevRenderedGroups.length;
+    const scrollManager = this.scrollManager;
+    const scrollPos = scrollManager.getRelativeScrollPos()!;
+    const prevScrollSize = infinite.getScrollSize();
+    const prevContainerSize = infinite.getSize();
+    const prevVisibleArea = infinite.getVisibleArea(scrollPos, direction);
     const isDirectionEnd = direction === DIRECTION.END;
+
+
 
     this._syncInfinite();
 
-    if (length) {
-      const prevStandardGroup = prevRenderedGroups[isDirectionEnd ? 0 : length - 1];
-      const nextStandardGroup = infinite.getItemByKey(prevStandardGroup.key);
-      const offset = isDirectionEnd
-        ? Math.min(...nextStandardGroup.startOutline) - Math.min(...prevStandardGroup.startOutline)
-        : Math.max(...nextStandardGroup.endOutline) - Math.max(...prevStandardGroup.endOutline);
+    if (prevVisibleArea) {
+      const prevPart = prevVisibleArea.part;
+      const prevItem = prevVisibleArea.item;
+      let nextPart!: InfiniteItemPart;
+      let nextItem!: InfiniteItem;
 
-      this.scrollManager.scrollBy(offset);
+      if (prevPart) {
+        nextPart = infinite.getItemPartByKey(prevPart.key);
+      }
+      if (prevItem) {
+        nextItem = infinite.getItemByKey(prevItem.key);
+      }
+
+      if (nextPart || nextItem) {
+        let prevPos = 0;
+        let nextPos = 0;
+
+        if (nextPart) {
+          nextPos = nextPart.pos + (isDirectionEnd ? 0 : nextPart.size);
+          prevPos = prevPart.pos + (isDirectionEnd ? 0 : prevPart.size);
+        } else {
+          const prevStartPos = Math.min(...prevItem.startOutline);
+          const prevEndPos = Math.max(...prevItem.endOutline);
+          const nextStartPos = Math.min(...nextItem.startOutline);
+          const nextEndPos = Math.max(...nextItem.endOutline);
+
+          nextPos = isDirectionEnd ? nextStartPos : nextEndPos;
+          prevPos = isDirectionEnd ? prevStartPos : prevEndPos;
+        }
+        let offset = nextPos - prevPos;
+
+        // If reversed, scroll size (case where container size is reduced)
+        if (offset < 0) {
+          const nextScrollSize = infinite.getScrollSize();
+          const nextContainerSize = infinite.getSize();
+          const endOffset = Math.max(scrollPos - Math.max(0, prevScrollSize - prevContainerSize), 0);
+          const nextScollPos
+            = Math.min(scrollPos, Math.max(0, nextScrollSize - nextContainerSize))
+            + endOffset;
+
+          // The scroll size is restored to the extent that it has been reduced.
+          offset += scrollPos - nextScollPos;
+        }
+
+        this.scrollManager.scrollBy(offset);
+      }
     }
 
     const completeMounted = (mounted as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING);

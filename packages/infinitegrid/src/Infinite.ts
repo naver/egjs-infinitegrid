@@ -36,10 +36,16 @@ export interface InfiniteOptions {
   defaultDirection?: "start" | "end";
 }
 
+export interface InfiniteItemPart {
+  key: string | number;
+  pos: number;
+  size: number;
+}
 export interface InfiniteItem {
   key: string | number;
   startOutline: number[];
   endOutline: number[];
+  parts?: InfiniteItemPart[];
   isVirtual?: boolean;
 }
 
@@ -220,79 +226,6 @@ export class Infinite extends Component<InfiniteEvents> {
   }
 
   /**
-   * Visible item area according to scrollPos
-   * @param scrollPos
-   */
-  public getVisibleArea(scrollPos: number): {
-    start: number;
-    end: number;
-    direction?: "end" | "start";
-    hasVirtualItems?: boolean;
-    isStart?: boolean;
-    isEnd?: boolean;
-    nextVisibleItems?: InfiniteItem[];
-  } {
-    const prevStartCursor = this.startCursor;
-    const prevEndCursor = this.endCursor;
-    const items = this.items;
-    const length = items.length;
-    const size = this.size;
-    const {
-      defaultDirection,
-      threshold,
-    } = this.options;
-    const isDirectionEnd = defaultDirection === "end";
-
-    if (!length) {
-      // no items
-      return {
-        start: -1,
-        end: -1,
-        direction: isDirectionEnd ? "end" : "start",
-      };
-    } else if (prevStartCursor === -1 || prevEndCursor === -1) {
-      const nextCursor = isDirectionEnd ? 0 : length - 1;
-
-      return {
-        start: nextCursor,
-        end: nextCursor,
-        direction: isDirectionEnd ? "end" : "start",
-      };
-    }
-
-    const endScrollPos = scrollPos + size;
-    const visibles = items.map((item) => {
-      const {
-        startOutline,
-        endOutline,
-      } = item;
-
-      if (!startOutline.length || !endOutline.length || isFlatOutline(startOutline, endOutline)) {
-        return false;
-      }
-      const startPos = Math.min(...startOutline);
-      const endPos = Math.max(...endOutline);
-
-      if (startPos - threshold <= endScrollPos && scrollPos <= endPos + threshold) {
-        return true;
-      }
-      return false;
-    });
-    let nextStartCursor = visibles.indexOf(true);
-    let nextEndCursor = visibles.lastIndexOf(true);
-
-    if (nextStartCursor === -1) {
-      nextStartCursor = prevStartCursor;
-      nextEndCursor = prevEndCursor;
-    }
-
-    return {
-      start: nextStartCursor,
-      end: nextEndCursor,
-    };
-  }
-
-  /**
    * Call the requestAppend or requestPrepend event to fill the virtual items.
    * @ko virtual item을 채우기 위해 requestAppend 또는 requestPrepend 이벤트를 호출합니다.
    * @return - Whether the event is called. <ko>이벤트를 호출했는지 여부.</ko>
@@ -444,24 +377,85 @@ export class Infinite extends Component<InfiniteEvents> {
     }
     return this.items.slice(startCursor, endCursor + 1);
   }
+  public getSize() {
+    return this.size;
+  }
   public getItemByKey(key: string | number) {
     return this.itemKeys[key];
   }
-  /**
-   *
-   * @param scrollPos
-   * @returns
-   */
-  public getRenderedVisibleItems(scrollPos?: number) {
-    let items = this.getVisibleItems();
+  public getItemPartByKey(partKey: string | number) {
+    let itemPart!: InfiniteItemPart;
 
-    if (!this.options.useRecycle && scrollPos != null) {
-      const area = this.getVisibleArea(scrollPos);
+    this.items.forEach((item) => {
+      item.parts?.forEach((part) => {
+        if (part.key === partKey) {
+          itemPart = part;
+        }
+      });
+    });
 
-      if (area.start > -1) {
-        items = this.items.slice(area.start, area.end + 1);
-      }
+    return itemPart;
+  }
+  public getScrollSize() {
+    const items = this.items;
+    const length = items.length;
+
+    if (!length) {
+      return 0;
     }
+    return Math.max(0, ...items[length - 1].endOutline);
+  }
+  public getVisibleArea(scrollPos: number, direction = this.options.defaultDirection) {
+    const isDirectionEnd = direction === DIRECTION.END;
+    const visibleItems = this.getRenderedVisibleItems();
+
+    if (!visibleItems.length) {
+      return null;
+    }
+    const visibleItem = visibleItems[isDirectionEnd ? 0 : length - 1];
+    const itemPos = isDirectionEnd
+      ? Math.min(...visibleItem.startOutline)
+      : Math.max(...visibleItem.endOutline);
+    let pos = itemPos;
+    let itemPart!: InfiniteItemPart;
+
+    if (isDirectionEnd) {
+      visibleItems.forEach((item) => {
+        item.parts?.forEach((part) => {
+          if (itemPart && itemPart.pos >= part.pos) {
+            return;
+          }
+          if (pos < part.pos && part.pos <= scrollPos) {
+            itemPart = part;
+            pos = part.pos;
+          }
+        });
+      });
+    } else {
+      visibleItems.forEach((item) => {
+        item.parts?.forEach((part) => {
+          const endPos = part.pos + part.size;
+
+          if (itemPart && itemPart.pos + itemPart.size <= endPos) {
+            return;
+          }
+
+          if (pos > endPos && endPos >= scrollPos) {
+            itemPart = part;
+            pos = endPos;
+          }
+        });
+      });
+    }
+
+    return {
+      item: visibleItem,
+      part: itemPart,
+    };
+  }
+  public getRenderedVisibleItems() {
+    const items = this.getVisibleItems();
+
     const rendered = items.map(({ startOutline, endOutline }) => {
       const length = startOutline.length;
 
