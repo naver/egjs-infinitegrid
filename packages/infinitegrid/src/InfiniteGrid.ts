@@ -15,11 +15,14 @@ import {
   DIRECTION,
   GROUP_TYPE,
   INFINITEGRID_EVENTS, INFINITEGRID_PROPERTY_TYPES,
+  INVISIBLE_POS,
   ITEM_TYPE, STATUS_TYPE,
 } from "./consts";
 import { GroupManager } from "./GroupManager";
 import {
   Infinite,
+  InfiniteItem,
+  InfiniteItemPart,
   OnInfiniteChange,
   OnInfiniteRequestAppend,
   OnInfiniteRequestPrepend,
@@ -140,6 +143,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       resizeDebounce,
       maxResizeDebounce,
       defaultDirection,
+      useRoundedSize,
     } = gridOptions;
     const wrapperElement = isString(wrapper) ? document.querySelector(wrapper) as HTMLElement : wrapper;
     const scrollManager = new ScrollManager(wrapperElement, {
@@ -165,6 +169,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       percentage,
       isEqualSize,
       isConstantSize,
+      useRoundedSize,
     });
     const infinite = new Infinite({
       defaultDirection,
@@ -265,6 +270,11 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.infinite.setCursors(startCursor, endCursor);
 
     if (useFirstRender) {
+      this.getVisibleItems().forEach((item) => {
+        if (item.cssRect.top === INVISIBLE_POS) {
+          item.cssRect = {};
+        }
+      });
       this._syncItems();
     } else {
       this._update();
@@ -592,9 +602,18 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   /**
    * When the data request is complete, it is set to ready state.
    * @ko 데이터 요청이 끝났다면 준비 상태로 설정한다.
+   * @param - <ko>데이터가 존재하지 않으면 loading bar를 즉시 제거 한다.</ko>
    */
-  public ready() {
+  public ready(hasNoData?: boolean) {
     this._waitType = "";
+
+    if (hasNoData) {
+      this.groupManager.waitEndLoading();
+
+      if (this.groupManager.endLoading()) {
+        this._update();
+      }
+    }
   }
   /**
    * Returns whether it is set to wait to request data.
@@ -668,6 +687,13 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
         isVirtual: type === GROUP_TYPE.VIRTUAL,
         startOutline: outlines.start,
         endOutline: outlines.end,
+        parts: grid.getItems().map((item) => {
+          return {
+            key: item.key,
+            pos: item.computedContentPos,
+            size: item.computedContentSize,
+          };
+        }),
       };
     }));
   }
@@ -823,8 +849,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       wait: () => {
         this.wait(direction);
       },
-      ready: () => {
-        this.ready();
+      ready: (hasNoData?: boolean) => {
+        this.ready(hasNoData);
       },
     }));
   }
@@ -849,21 +875,66 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
   private _onRenderComplete = ({ isResize, mounted, updated, direction }: OnPickedRenderComplete): void => {
     const infinite = this.infinite;
-    const prevRenderedGroups = infinite.getRenderedVisibleItems();
-    const length = prevRenderedGroups.length;
+    const scrollManager = this.scrollManager;
+    const scrollPos = scrollManager.getRelativeScrollPos()!;
+    const prevScrollSize = infinite.getScrollSize();
+    const prevContainerSize = infinite.getSize();
+    const prevVisibleArea = infinite.getVisibleArea(scrollPos, direction);
     const isDirectionEnd = direction === DIRECTION.END;
+
+
 
     this._syncInfinite();
 
-    if (length) {
-      const prevStandardGroup = prevRenderedGroups[isDirectionEnd ? 0 : length - 1];
-      const nextStandardGroup = infinite.getItemByKey(prevStandardGroup.key);
-      const offset = isDirectionEnd
-        ? Math.min(...nextStandardGroup.startOutline) - Math.min(...prevStandardGroup.startOutline)
-        : Math.max(...nextStandardGroup.endOutline) - Math.max(...prevStandardGroup.endOutline);
+    if (prevVisibleArea) {
+      const prevPart = prevVisibleArea.part;
+      const prevItem = prevVisibleArea.item;
+      let nextPart!: InfiniteItemPart;
+      let nextItem!: InfiniteItem;
 
-      this.scrollManager.scrollBy(offset);
+      if (prevPart) {
+        nextPart = infinite.getItemPartByKey(prevPart.key);
+      }
+      if (prevItem) {
+        nextItem = infinite.getItemByKey(prevItem.key);
+      }
+
+      if (nextPart || nextItem) {
+        let prevPos = 0;
+        let nextPos = 0;
+
+        if (nextPart) {
+          nextPos = nextPart.pos + (isDirectionEnd ? 0 : nextPart.size);
+          prevPos = prevPart.pos + (isDirectionEnd ? 0 : prevPart.size);
+        } else {
+          const prevStartPos = Math.min(...prevItem.startOutline);
+          const prevEndPos = Math.max(...prevItem.endOutline);
+          const nextStartPos = Math.min(...nextItem.startOutline);
+          const nextEndPos = Math.max(...nextItem.endOutline);
+
+          nextPos = isDirectionEnd ? nextStartPos : nextEndPos;
+          prevPos = isDirectionEnd ? prevStartPos : prevEndPos;
+        }
+        let offset = nextPos - prevPos;
+
+        // If reversed, scroll size (case where container size is reduced)
+        if (offset < 0) {
+          const nextScrollSize = infinite.getScrollSize();
+          const nextContainerSize = infinite.getSize();
+          const endOffset = Math.max(scrollPos - Math.max(0, prevScrollSize - prevContainerSize), 0);
+          const nextScollPos
+            = Math.min(scrollPos, Math.max(0, nextScrollSize - nextContainerSize))
+            + endOffset;
+
+          // The scroll size is restored to the extent that it has been reduced.
+          offset += scrollPos - nextScollPos;
+        }
+
+        this.scrollManager.scrollBy(offset);
+      }
     }
+
+    const completeMounted = (mounted as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING);
 
     /**
      * This event is fired when the InfiniteGrid has completed rendering.
@@ -874,7 +945,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this.trigger(new ComponentEvent(INFINITEGRID_EVENTS.RENDER_COMPLETE, {
       isResize,
       direction,
-      mounted: (mounted as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING),
+      mounted: completeMounted,
       updated: (updated as InfiniteGridItem[]).filter((item) => item.type !== ITEM_TYPE.LOADING),
       startCursor: this.getStartCursor(),
       endCursor: this.getEndCursor(),
@@ -882,7 +953,13 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       groups: this.getVisibleGroups(true),
     }));
 
-    if (this.groupManager.shouldRerenderItems()) {
+    let isUpdate = this.groupManager.shouldRerenderItems();
+
+    if (completeMounted.length || updated.length) {
+      isUpdate ||= !!this.groupManager.endLoading();
+    }
+
+    if (isUpdate) {
       this._update();
     } else {
       this._checkEndLoading();
@@ -934,7 +1011,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     if (
       loadingType
       && (!this._waitType || !this.infinite.isLoading(loadingType))
-      && groupManager.endLoading()
+      && groupManager.waitEndLoading()
       && groupManager.hasLoadingItem()
     ) {
       this._update();

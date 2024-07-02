@@ -1492,6 +1492,49 @@ describe("test InfiniteGrid", () => {
         expect(endCursor2).to.be.equals(4);
       });
     });
+    describe("test scroll position", () => {
+      it(`should check if it is included in status with virtual items`, async () => {
+        // Given
+        ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: `key${child}`,
+            html: `<div style="height: 100px">${child}</div>`,
+          };
+        }));
+
+        ig!.setCursors(0, 5);
+        // render items for all cursors
+        await waitEvent(ig!, "renderComplete");
+
+        // change cursor (0, 2)
+        await waitEvent(ig!, "renderComplete");
+
+
+        // change scroll (1, 3)
+        ig!.getScrollContainerElement().scrollTop = 500;
+
+        await waitEvent(ig!, "renderComplete");
+
+        ig!.getItems().forEach((item) => {
+          item.element!.style.height = "200px";
+        });
+
+        ig!.renderItems({ useResize: true });
+
+        // 100 100 100 100 100 100 100
+        // to
+        // 100 100 100 200 200 200 200
+        await waitEvent(ig!, "renderComplete");
+
+
+        // 500 to 700
+        const correctedPos = ig!.getScrollContainerElement().scrollTop;
+
+
+        expect(correctedPos).to.be.equals(700);
+      });
+    });
   });
   describe("test ResizeObserver", () => {
     it(`should check if renderComplete does trigger when useResizeObserver is enabled and container's size is changed`, async () => {

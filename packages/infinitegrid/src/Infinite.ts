@@ -36,10 +36,16 @@ export interface InfiniteOptions {
   defaultDirection?: "start" | "end";
 }
 
+export interface InfiniteItemPart {
+  key: string | number;
+  pos: number;
+  size: number;
+}
 export interface InfiniteItem {
   key: string | number;
   startOutline: number[];
   endOutline: number[];
+  parts?: InfiniteItemPart[];
   isVirtual?: boolean;
 }
 
@@ -371,11 +377,85 @@ export class Infinite extends Component<InfiniteEvents> {
     }
     return this.items.slice(startCursor, endCursor + 1);
   }
+  public getSize() {
+    return this.size;
+  }
   public getItemByKey(key: string | number) {
     return this.itemKeys[key];
   }
+  public getItemPartByKey(partKey: string | number) {
+    let itemPart!: InfiniteItemPart;
+
+    this.items.forEach((item) => {
+      item.parts?.forEach((part) => {
+        if (part.key === partKey) {
+          itemPart = part;
+        }
+      });
+    });
+
+    return itemPart;
+  }
+  public getScrollSize() {
+    const items = this.items;
+    const length = items.length;
+
+    if (!length) {
+      return 0;
+    }
+    return Math.max(0, ...items[length - 1].endOutline);
+  }
+  public getVisibleArea(scrollPos: number, direction = this.options.defaultDirection) {
+    const isDirectionEnd = direction === DIRECTION.END;
+    const visibleItems = this.getRenderedVisibleItems();
+
+    if (!visibleItems.length) {
+      return null;
+    }
+    const visibleItem = visibleItems[isDirectionEnd ? 0 : length - 1];
+    const itemPos = isDirectionEnd
+      ? Math.min(...visibleItem.startOutline)
+      : Math.max(...visibleItem.endOutline);
+    let pos = itemPos;
+    let itemPart!: InfiniteItemPart;
+
+    if (isDirectionEnd) {
+      visibleItems.forEach((item) => {
+        item.parts?.forEach((part) => {
+          if (itemPart && itemPart.pos >= part.pos) {
+            return;
+          }
+          if (pos < part.pos && part.pos <= scrollPos) {
+            itemPart = part;
+            pos = part.pos;
+          }
+        });
+      });
+    } else {
+      visibleItems.forEach((item) => {
+        item.parts?.forEach((part) => {
+          const endPos = part.pos + part.size;
+
+          if (itemPart && itemPart.pos + itemPart.size <= endPos) {
+            return;
+          }
+
+          if (pos > endPos && endPos >= scrollPos) {
+            itemPart = part;
+            pos = endPos;
+          }
+        });
+      });
+    }
+
+    return {
+      item: visibleItem,
+      part: itemPart,
+    };
+  }
   public getRenderedVisibleItems() {
     const items = this.getVisibleItems();
+
     const rendered = items.map(({ startOutline, endOutline }) => {
       const length = startOutline.length;
 

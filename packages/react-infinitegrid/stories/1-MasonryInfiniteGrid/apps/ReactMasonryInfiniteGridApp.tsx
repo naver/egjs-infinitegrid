@@ -29,6 +29,7 @@ export default function App() {
     className="container"
     gap={5}
     align={"justify"}
+    useFirstRender={true}
     onRequestAppend={(e) => {
       const nextGroupKey = (+e.groupKey! || 0) + 1;
 

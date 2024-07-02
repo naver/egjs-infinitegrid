@@ -4,4 +4,5 @@ export const VUE_INFINITEGRID_PROPS = [
   "useFirstRender",
   "itemBy",
   "groupBy",
+  "infoBy",
 ];

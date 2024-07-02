@@ -50,14 +50,14 @@ export class SampleGrid extends Grid<SampleGridOptions> {
           });
         }
 
-        endOutline = [prevPos + (rect?.height ?? 0) + this.gap];
+        endOutline = [prevPos + (rect?.height ?? 0) + this.getContentGap()];
       });
     } else {
       items.forEach((item) => {
         const prevPos = startOutline[0] || 0;
         const rect = item.rect;
 
-        startOutline = [prevPos - (rect?.height ?? 0) - this.gap];
+        startOutline = [prevPos - (rect?.height ?? 0) - this.getContentGap()];
 
         if (this.injectCSSSize) {
           item.setCSSGridRect({

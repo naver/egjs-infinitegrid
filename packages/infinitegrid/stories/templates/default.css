@@ -50,14 +50,35 @@ a {
   height: 250px;
 }
 
+
+.item .info {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  color: #777;
+  height: 30px;
+}
 .item .thumbnail {
   overflow: hidden;
   border-radius: 8px;
+  font-size: 0;
+  height: calc(100% - 30px);
 }
 
 .item .thumbnail img {
   width: 100%;
+  height: 100%;
   border-radius: 8px;
+  background: #eee;
+  object-fit: contain;
+}
+
+.item .thumbnail img {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: #eee;
+  object-fit: contain;
 }
 
 .masonrygrid.horizontal .item .thumbnail img {
@@ -65,11 +86,6 @@ a {
   height: 210px;
 }
 
-.item .info {
-  margin-top: 10px;
-  font-weight: bold;
-  color: #777;
-}
 
 .item.animate {
   transition: opacity ease 1s;

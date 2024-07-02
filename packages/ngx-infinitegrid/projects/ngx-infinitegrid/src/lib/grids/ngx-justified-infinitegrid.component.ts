@@ -20,5 +20,8 @@ export class NgxJustifiedInfiniteGridComponent extends NgxInfiniteGridComponent
   @Input() sizeRange!: Required<JustifiedInfiniteGridOptions>['sizeRange'];
   @Input() displayedRow!: Required<JustifiedInfiniteGridOptions>['displayedRow'];
   @Input() isCroppedSize!: Required<JustifiedInfiniteGridOptions>['isCroppedSize'];
+  @Input() stretch!: Required<JustifiedInfiniteGridOptions>['stretch'];
+  @Input() stretchRange!: Required<JustifiedInfiniteGridOptions>['stretchRange'];
+  @Input() passUnstretchRow!: Required<JustifiedInfiniteGridOptions>['passUnstretchRow'];
   public static GridClass = VanillaJustifiedInfiniteGrid;
 }

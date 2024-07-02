@@ -1,5 +1,5 @@
 import FrameInfiniteGridApp from "./apps/SvelteFrameInfiniteGridApp.svelte";
-import "../../../../stories/templates/default.css";
+import "../../../infinitegrid/stories/templates/default.css";
 
 
 export const FrameInfiniteGridTemplate = (props) => ({
