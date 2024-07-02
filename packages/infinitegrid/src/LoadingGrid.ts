@@ -62,7 +62,7 @@ export class LoadingGrid extends Grid {
     }
     const nextOutline = outline.length ? [...outline] : [0];
     const item = items[0];
-    const offset = item.contentSize + this.gap;
+    const offset = item.contentSize + this.getContentGap();
 
     item.cssInlinePos = this.getContainerInlineSize() / 2 - item.inlineSize / 2;
 
