@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.12.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/vue3-infinitegrid@4.11.1...@egjs/vue3-infinitegrid@4.12.0) (2024-07-02)
+
+
+### :mega: Other
+
+* update packages versions ([2e2a638](https://github.com/naver/egjs-infinitegrid/commit/2e2a63806a6d8d6b1b2b492c4b762dad689de3b6))
+
+
+
 ## [4.11.1](https://github.com/naver/egjs-infinitegrid/compare/@egjs/vue3-infinitegrid@4.10.1...@egjs/vue3-infinitegrid@4.11.1) (2024-02-07)
 
 

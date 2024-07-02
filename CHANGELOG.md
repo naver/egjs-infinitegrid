@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.12.0](https://github.com/naver/egjs-infinitegrid/compare/4.11.1...4.12.0) (2024-07-02)
+### :sparkles: Packages
+* `@egjs/infinitegrid` 4.12.0
+* `@egjs/react-infinitegrid` 4.12.0
+* `@egjs/svelte-infinitegrid` 4.12.0
+* `@egjs/vue-infinitegrid` 4.12.0
+* `@egjs/vue3-infinitegrid` 4.12.0
+* `@egjs/ngx-infinitegrid` 4.12.0
+
+
+### :mega: Other
+
+* All
+    * update packages versions ([2e2a638](https://github.com/naver/egjs-infinitegrid/commit/2e2a63806a6d8d6b1b2b492c4b762dad689de3b6))
+
+
+
 ## [4.11.1](https://github.com/naver/egjs-infinitegrid/compare/4.10.1...4.11.1) (2024-02-07)
 ### :sparkles: Packages
 * `@egjs/infinitegrid` 4.11.1
