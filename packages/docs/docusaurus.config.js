@@ -41,7 +41,12 @@ module.exports = {
         },
         {
           to: "https://naver.github.io/egjs-infinitegrid/storybook",
-          label: "Demos",
+          label: "InfiniteGrid Demos",
+          position: "left"
+        },
+        {
+          to: "https://naver.github.io/egjs-grid/storybook",
+          label: "Grid Demos",
           position: "left"
         },
         {
@@ -83,11 +88,20 @@ module.exports = {
           ]
         },
         {
-          title: 'Demo',
+          title: 'InfiniteGrid Demo',
           items: [
             {
-              label: 'Demos',
+              label: 'InfiniteGrid Demos',
               to: "https://naver.github.io/egjs-infinitegrid/storybook",
+            },
+          ]
+        },
+        {
+          title: 'Grid Demo',
+          items: [
+            {
+              label: 'Grid Demos',
+              to: "https://naver.github.io/egjs-grid/storybook",
             },
           ]
         },
