@@ -11,7 +11,6 @@ export const IGNORE_PROPERITES_MAP = {
   autoResize: true,
 } as const;
 
-
 export const INFINITEGRID_PROPERTY_TYPES = {
   ...GRID_PROPERTY_TYPES,
 };

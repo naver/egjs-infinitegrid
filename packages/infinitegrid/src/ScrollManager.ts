@@ -130,6 +130,9 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       eventTarget.scrollTop += y;
     }
   }
+  /**
+   * @return Returns true if scrollOffset or contentSize has changed, otherwise returns false. <ko>scrollOffset 또는 contentSize가 변화가 있으면 true 아니면 false를 반환한다.</ko>
+   */
   public resize() {
     const scrollContainer = this.scrollContainer;
     const horizontal = this.options.horizontal;
@@ -138,6 +141,9 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       ? { top: 0, left: 0 }
       : scrollContainer.getBoundingClientRect();
     const containerRect = this.container.getBoundingClientRect();
+
+    const prevScrollOffset = this.scrollOffset;
+    const prevContentSize = this.contentSize;
 
     this.scrollOffset = (this.getOrgScrollPos()! || 0) + (horizontal
       ? containerRect.left - scrollContainerRect.left
@@ -148,6 +154,8 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     } else {
       this.contentSize = horizontal ? scrollContainer.offsetWidth : scrollContainer.offsetHeight;
     }
+
+    return prevScrollOffset !== this.scrollOffset || prevContentSize !== this.contentSize;
   }
   public destroy() {
     const container = this.container;

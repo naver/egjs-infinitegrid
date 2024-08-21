@@ -81,6 +81,15 @@ export interface InfiniteGridOptions extends GridOptions {
    */
   useRecycle?: boolean;
   /**
+   * @default false
+   */
+  isReachStart?: boolean;
+  /**
+   * @default false
+   */
+  isReachEnd?: boolean;
+
+  /**
    * You can set the scrollContainer directly. In this case, the container becomes the wrapper itself.
    * @ko scrollContainer를 직접 정할 수 있다. 이 경우 container는 wrapper 자기 자신이 된다.
    */
@@ -119,41 +128,98 @@ export interface InsertedPlaceholdersResult {
 
 /**
  * @typedef
- * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
- * @property - Last group key. <ko>마지막 그룹의 키.</ko>
- * @property - The key of the next group that should replace Virtual Item(placeholder)s. <ko>Virtual Item(placeholder)들을 대체해야 할 다음 그룹의 키.</ko>
- * @property - Array of the following group keys that need to be replaced with Virtual Item(placeholder)s. <ko>Virtual Item(placeholder)들을 대체해야 할 다음 그룹키 배열.</ko>
- * @property - Whether to request virtual groups corresponding to Virtual Item(placeholder)s. <ko>Virtual Item(placeholder)들에 해당하는 가상의 그룹을 요청하는지 여부</ko>
- * @property - Set to standby to request data. <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
- * @property - When the data request is complete, it is set to ready state. <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
  */
 export interface OnRequestAppend {
+  /**
+   * An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+   */
   currentTarget: InfiniteGrid;
+  /**
+   * Last group key. <ko>마지막 그룹의 키.</ko>
+   */
   groupKey: string | number | undefined;
+  /**
+   * The key of the next group that should replace Virtual Item(placeholder)s. <ko>Virtual Item(placeholder)들을 대체해야 할 다음 그룹의 키.</ko>
+   */
   nextGroupKey?: string | number | undefined;
+  /**
+   * Array of the following group keys that need to be replaced with Virtual Item(placeholder)s.
+   * <ko>Virtual Item(placeholder)들을 대체해야 할 다음 그룹키 배열.</ko>
+   */
   nextGroupKeys: Array<string | number>;
+  /**
+   * Whether to request virtual groups corresponding to Virtual Item(placeholder)s.
+   * <ko>Virtual Item(placeholder)들에 해당하는 가상의 그룹을 요청하는지 여부</ko>
+   */
   isVirtual: boolean;
+  /**
+   * Call this when the end has been reached and there are no more groups (or items) to add. Or set the `isReachEnd` prop to true.
+   * <ko>끝에 도달해서 더 이상 추가할 그룹(또는 아이템)이 없는 경우 호출해라. 또는 `isReachEnd` 옵션을 true로 설정해라.</ko>
+   */
+  reachEnd(): void;
+  /**
+   * Call this when the start has been reached and there are no more groups (or items) to add. Or set the `isReachStart` prop to true.
+   * <ko>시작에 도달해서 더 이상 추가할 그룹(또는 아이템)이 없는 경우 호출해라. 또는 `isReachStart` 옵션을 true로 설정해라.</ko>
+   */
+  reachStart(): void;
+  /**
+   * Set to standby to request data. <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
+   */
   wait(): void;
+  /**
+   * When the data request is complete, it is set to ready state. <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
+   */
   ready(): void;
 }
 
 /**
  * @typedef
- * @property - An InfiniteGrid instance that triggered this event. <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
- * @property - First group key. <ko>첫번째 그룹의 키.</ko>
- * @property - The key of the next group that should replace Virtual Item(placeholder)s. <ko>Virtual Item(placeholder)들을 대체해야 할 다음 그룹의 키.</ko>
- * @property - Array of the following group keys that need to be replaced with Virtual Item(placeholder)s. <ko>Virtual Item(placeholder)들을 대체해야 할 다음 그룹키 배열.</ko>
- * @property - Whether to request virtual groups corresponding to Virtual Item(placeholder)s. <ko>Virtual Item(placeholder)들에 해당하는 가상의 그룹을 요청하는지 여부</ko>
- * @property - Set to standby to request data. <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
- * @property - When the data request is complete, it is set to ready state. <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
  */
 export interface OnRequestPrepend {
+  /**
+   * An InfiniteGrid instance that triggered this event.
+   * <ko>이 이벤트를 트리거한 InfiniteGrid의 인스턴스</ko>
+   */
   currentTarget: InfiniteGrid;
+  /**
+   * The key of the next group that should replace Virtual Item(placeholder)s.
+   * <ko>Virtual Item(placeholder)들을 대체해야 할 다음 그룹의 키.</ko>
+   */
   groupKey: string | number | undefined;
+  /**
+   * The key of the next group that should replace Virtual Item(placeholder)s.
+   * <ko>Virtual Item(placeholder)들을 대체해야 할 다음 그룹의 키.</ko>
+   */
   nextGroupKey?: string | number | undefined;
+  /**
+   * Array of the following group keys that need to be replaced with Virtual Item(placeholder)s.
+   * <ko>Virtual Item(placeholder)들을 대체해야 할 다음 그룹키 배열.</ko>
+   */
   nextGroupKeys: Array<string | number>;
+  /**
+   * Whether to request virtual groups corresponding to Virtual Item(placeholder)s.
+   * <ko>Virtual Item(placeholder)들에 해당하는 가상의 그룹을 요청하는지 여부</ko>
+   */
   isVirtual: boolean;
+  /**
+   * Call this when the end has been reached and there are no more groups (or items) to add. Or set the `isReachEnd` prop to true.
+   * <ko>끝에 도달해서 더 이상 추가할 그룹(또는 아이템)이 없는 경우 호출해라. 또는 `isReachEnd` 옵션을 true로 설정해라.</ko>
+   */
+  reachEnd(): void;
+  /**
+   * Call this when the start has been reached and there are no more groups (or items) to add. Or set the `isReachStart` prop to true.
+   * <ko>시작에 도달해서 더 이상 추가할 그룹(또는 아이템)이 없는 경우 호출해라. 또는 `isReachStart` 옵션을 true로 설정해라.</ko>
+   */
+  reachStart(): void;
+  /**
+   * Set to standby to request data.
+   * <ko>데이터를 요청하기 위해 대기 상태로 설정한다.</ko>
+   */
   wait(): void;
+  /**
+   * When the data request is complete, it is set to ready state.
+   * <ko>데이터 요청이 끝났다면 준비 상태로 설정한다.</ko>
+   */
   ready(): void;
 }
 
