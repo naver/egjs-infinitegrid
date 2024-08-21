@@ -155,7 +155,7 @@ export class GroupManager extends Grid<GroupManagerOptions> {
   }
 
   public waitEndLoading() {
-    if (this._loadingGrid.type) {
+    if (!this._loadingGrid.isWaitEnd && this._loadingGrid.type) {
       this._loadingGrid.isWaitEnd = true;
       return true;
     }
