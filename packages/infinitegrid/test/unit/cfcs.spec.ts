@@ -311,6 +311,7 @@ describe("test cfcs", () => {
 
     // restore
     await waitEvent(ig, "renderComplete");
+
     // re-render
     await waitEvent(ig, "renderComplete");
 

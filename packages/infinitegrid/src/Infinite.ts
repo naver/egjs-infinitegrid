@@ -394,6 +394,38 @@ export class Infinite extends Component<InfiniteEvents> {
         || visibleResult.removed.length > 0
         || visibleResult.changed.length > 0;
     }
+
+    const defaultDirection = this.options.defaultDirection;
+    let prevOutline: number[] = [];
+    const outlinedItems = [...nextItems];
+
+    if (defaultDirection === "start") {
+      outlinedItems.reverse();
+    }
+    outlinedItems.forEach((item, i) => {
+      if (i > 0 && prevOutline.length) {
+        if (defaultDirection === "start") {
+          if (!item.endOutline.length) {
+            item.endOutline = [...prevOutline];
+          }
+          if (!item.startOutline.length) {
+            item.startOutline = [...item.endOutline];
+          }
+        } else {
+          if (!item.startOutline.length) {
+            item.startOutline = [...prevOutline];
+          }
+          if (!item.endOutline.length) {
+            item.endOutline = [...item.startOutline];
+          }
+        }
+      }
+      if (defaultDirection === "start") {
+        prevOutline = item.startOutline;
+      } else {
+        prevOutline = item.endOutline;
+      }
+    });
     this.setItems(nextItems);
     this.setCursors(nextStartCursor, nextEndCursor);
     return isChange;

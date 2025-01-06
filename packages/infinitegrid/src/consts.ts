@@ -42,6 +42,7 @@ export const ITEM_INFO_PROPERTIES: Record<keyof InfiniteGridItemInfo, true> = {
 
 
 export const INFINITEGRID_METHODS = [
+  "resizeScroll",
   "insertByGroupIndex",
   "updateItems",
   "getItems",

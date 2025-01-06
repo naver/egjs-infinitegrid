@@ -81,6 +81,12 @@ export interface InfiniteGridOptions extends GridOptions {
    */
   useRecycle?: boolean;
   /**
+   * When using `useRecycle` option, remove elements of invisible items. If you want to improve performance (memory issues), enable it.
+   * @ko `useRecycle`옵션을 사용하는 경우 보이지 않는 아이템들의 element를 제거한다. 성능(메모리 이슈)을 높이고 싶다면 활성화 해라.
+   * @default false
+   */
+  useDetachedRecycle?: boolean;
+  /**
    * @default false
    */
   isReachStart?: boolean;

@@ -94,6 +94,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     renderer: null,
     threshold: 100,
     useRecycle: true,
+    useDetachedRecycle: false,
     scrollContainer: null,
     isReachStart: false,
     isReachEnd: false,
@@ -697,6 +698,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     }
     this._syncInfinite();
     this.groupManager.setCursors(infinite.getStartCursor(), infinite.getEndCursor());
+
     if (isUpdate) {
       this._update();
     } else {
@@ -771,6 +773,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       if (orgItem.mountState !== MOUNT_STATE.UNCHECKED) {
         orgItem.mountState = MOUNT_STATE.UNMOUNTED;
+
+        if (this.options.useDetachedRecycle) {
+          orgItem.element = null;
+        }
       }
     });
 

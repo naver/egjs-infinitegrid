@@ -33,7 +33,7 @@ export class SampleGrid extends Grid<SampleGridOptions> {
 
     if (direction === "end") {
       items.forEach((item) => {
-        const prevPos = endOutline[0] || 0;
+        const prevPos = Math.max(0, endOutline[0] || 0);
         const rect = item.rect;
 
         if (this.injectCSSSize) {
@@ -74,6 +74,7 @@ export class SampleGrid extends Grid<SampleGridOptions> {
         }
       });
     }
+
     return {
       start: startOutline,
       end: endOutline,
