@@ -509,6 +509,48 @@ describe("test InfiniteGrid", () => {
 
         expect(elements.map((el) => el.innerHTML)).to.be.deep.equals(["0", "1", "2", "3", "4", "5", "6", "7", "8"]);
       });
+      it("should check if the offset is entered correctly when prepend", async () => {
+        // Given
+        // sufficient height so that scroll size does not occur
+        const igScrollContainer = ig!.getScrollContainerElement();
+
+        igScrollContainer.style.height = "1000px";
+        ig!.isReachEnd = true;
+        ig!.syncItems([3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: child,
+            html: `<div style="height: 150px;">${child}</div>`,
+          };
+        }));
+        ig!.renderItems({
+          useResize: true,
+        });
+
+        await waitEvent(ig!, "renderComplete");
+
+        const spy = sinon.spy();
+
+
+        // When
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: child,
+            html: `<div style="height: 150px;">${child}</div>`,
+          };
+        }));
+        ig!.renderItems();
+
+        // the requestPrepend event is fired because scrollPos is 0.
+        ig!.once("requestPrepend", spy);
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        expect(ig!.getStartCursor()).to.be.equals(0);
+        expect(ig!.getEndCursor()).to.be.equals(1);
+        expect(spy.called).to.be.true;
+      });
     });
     describe("test contentError event", () => {
       it("should check if contentError event occurs with error image", async () => {

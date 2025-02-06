@@ -916,6 +916,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const infinite = this.infinite;
     const scrollManager = this.scrollManager;
     const scrollPos = scrollManager.getRelativeScrollPos()!;
+    const orgScrollPos = scrollManager.getScrollPos()!;
     const prevScrollSize = infinite.getScrollSize();
     const prevContainerSize = infinite.getSize();
     const prevVisibleArea = infinite.getVisibleArea(scrollPos, direction);
@@ -957,9 +958,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
         let offset = nextPos - prevPos;
 
         // If reversed, scroll size (case where container size is reduced)
+        const nextScrollSize = infinite.getScrollSize();
+        const nextContainerSize = infinite.getSize();
+
         if (offset < 0) {
-          const nextScrollSize = infinite.getScrollSize();
-          const nextContainerSize = infinite.getSize();
           const endOffset = Math.max(scrollPos - Math.max(0, prevScrollSize - prevContainerSize), 0);
           const nextScollPos
             = Math.min(scrollPos, Math.max(0, nextScrollSize - nextContainerSize))
@@ -967,6 +969,12 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
           // The scroll size is restored to the extent that it has been reduced.
           offset += scrollPos - nextScollPos;
+        } else if (offset > 0) {
+          // If it is smaller than the scroll size when in the forward direction, the offset is 0.
+          const maxScrollPos = Math.max(0, nextScrollSize - nextContainerSize);
+          const nextScrollPos = orgScrollPos + offset;
+
+          offset = Math.max(0, Math.min(maxScrollPos, nextScrollPos) - orgScrollPos);
         }
 
         this.scrollManager.scrollBy(offset);

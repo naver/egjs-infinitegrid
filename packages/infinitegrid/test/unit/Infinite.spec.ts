@@ -2,7 +2,7 @@ import { Infinite } from "../../src/Infinite";
 import { cleanup } from "./utils/utils";
 import * as sinon from "sinon";
 
-describe.only("test Infinite", () => {
+describe("test Infinite", () => {
   let infinite: Infinite | null;
 
   afterEach(() => {
