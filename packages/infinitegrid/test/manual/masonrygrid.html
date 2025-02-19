@@ -154,6 +154,9 @@
   });
 
   ig.setPlaceholder({ html: `<div class="placeholder">Placeholder</div>` })
+  ig.on("requestPrepend", e => {
+    console.log("PP");
+  });
   ig.on("requestAppend", e => {
     if (e.isVirtual) {
       console.log("placeholder");
@@ -161,7 +164,12 @@
     } else {
       const nextGroupKey = (+e.groupKey || 0) + 1;
 
-      ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+      console.log(nextGroupKey);
+      if (nextGroupKey < 10) {
+        ig.append(getItems(nextGroupKey, 10), nextGroupKey);
+      } else {
+        e.reachEnd();
+      }
     }
   });
 

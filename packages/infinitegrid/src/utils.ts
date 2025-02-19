@@ -1,4 +1,4 @@
-import { withClassMethods } from "@cfcs/core";
+import { camelize, withClassMethods } from "@cfcs/core";
 import Grid, { GRID_PROPERTY_TYPES } from "@egjs/grid";
 import { diff } from "@egjs/list-differ";
 import { GROUP_TYPE, IGNORE_PROPERITES_MAP, INFINITEGRID_METHODS, ITEM_INFO_PROPERTIES, ITEM_TYPE } from "./consts";
@@ -287,11 +287,37 @@ export function getRenderingItems(items: InfiniteGridItemInfo[], options: Render
 export function InfiniteGridGetterSetter(component: {
   prototype: InfiniteGrid<any>,
   propertyTypes: typeof GRID_PROPERTY_TYPES,
+  infinitegridTypes: any,
 }) {
   const {
     prototype,
     propertyTypes,
+    infinitegridTypes,
   } = component;
+
+  for (const name in infinitegridTypes) {
+    const attributes: Record<string, any> = {
+      enumerable: true,
+      configurable: true,
+      get: function get(this: InfiniteGrid) {
+        const options = this.options;
+
+        return options[name];
+      },
+      set: function set(this: InfiniteGrid, value: any) {
+        const setterName = `_${camelize(`set ${name}`)}`;
+
+        if (this[setterName]) {
+          this[setterName](value);
+        } else {
+          this.options[name] = value;
+        }
+      },
+    };
+
+
+    Object.defineProperty(prototype, name, attributes);
+  }
   for (const name in propertyTypes) {
     const attributes: Record<string, any> = {
       enumerable: true,

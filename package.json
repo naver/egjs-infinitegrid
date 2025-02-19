@@ -45,6 +45,10 @@
     "lerna": "^4.0.0",
     "typescript": "^4.5.0 <4.6.0"
   },
+  "resolutions": {
+    "@types/lodash": "4.14.30",
+    "@storybook/addon-essentials": "6.1.11"
+  },
   "workspaces": {
     "packages": [
       "packages/*",

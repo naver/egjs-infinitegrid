@@ -36,12 +36,12 @@ describe("test InfiniteGrid", () => {
       // Given
       container!.innerHTML = `
       <div class="wrapper" style="width: 100%; height: 500px;">
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
-        <div>5</div>
-        <div>6</div>
+        <div>11</div>
+        <div>22</div>
+        <div>33</div>
+        <div>44</div>
+        <div>55</div>
+        <div>66</div>
       </div>
       `;
       const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;
@@ -60,12 +60,12 @@ describe("test InfiniteGrid", () => {
       container!.innerHTML = `
       <div class="scroller" style="width: 100%; height: 500px;">
         <div class="wrapper" style="width: 100%;">
-          <div>1</div>
-          <div>2</div>
-          <div>3</div>
-          <div>4</div>
-          <div>5</div>
-          <div>6</div>
+          <div>11</div>
+          <div>22</div>
+          <div>33</div>
+          <div>44</div>
+          <div>55</div>
+          <div>66</div>
         </div>
       </div>
       `;
@@ -99,12 +99,12 @@ describe("test InfiniteGrid", () => {
       // Given
       const igContainer = ig!.getContainerElement();
 
-      igContainer.innerHTML = `<div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-      <div>6</div>`;
+      igContainer.innerHTML = `<div>11</div>
+      <div>22</div>
+      <div>33</div>
+      <div>44</div>
+      <div>55</div>
+      <div>66</div>`;
       const children = toArray(igContainer.children);
 
       // When
@@ -134,12 +134,12 @@ describe("test InfiniteGrid", () => {
       // Given
       const igContainer = ig!.getContainerElement();
 
-      igContainer.innerHTML = `<div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-      <div>6</div>`;
+      igContainer.innerHTML = `<div>11</div>
+      <div>22</div>
+      <div>33</div>
+      <div>44</div>
+      <div>55</div>
+      <div>66</div>`;
       // When
       ig!.renderItems();
       ig!.removeByIndex(0);
@@ -162,15 +162,19 @@ describe("test InfiniteGrid", () => {
         return {
           groupKey: Math.floor(child / 3),
           key: child,
-          html: `<div>${child}</div>`,
+          html: `<div>${child}${child}</div>`,
         };
       }));
       // When
       ig!.setCursors(0, 1);
 
       const e = await waitEvent<OnRenderComplete>(ig!, "renderComplete");
+
       const children = toArray(igContainer.children);
 
+      ig?.getItems().forEach(itm => {
+        console.log(itm.cssRect, itm.mountState, itm.updateState);
+      })
       // Then
       expect(e.startCursor).to.be.equals(0);
       expect(e.endCursor).to.be.equals(1);
@@ -504,6 +508,48 @@ describe("test InfiniteGrid", () => {
         const elements: HTMLElement[] = [].slice.call(ig!.getContainerElement().children);
 
         expect(elements.map((el) => el.innerHTML)).to.be.deep.equals(["0", "1", "2", "3", "4", "5", "6", "7", "8"]);
+      });
+      it("should check if the offset is entered correctly when prepend", async () => {
+        // Given
+        // sufficient height so that scroll size does not occur
+        const igScrollContainer = ig!.getScrollContainerElement();
+
+        igScrollContainer.style.height = "1000px";
+        ig!.isReachEnd = true;
+        ig!.syncItems([3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: child,
+            html: `<div style="height: 150px;">${child}</div>`,
+          };
+        }));
+        ig!.renderItems({
+          useResize: true,
+        });
+
+        await waitEvent(ig!, "renderComplete");
+
+        const spy = sinon.spy();
+
+
+        // When
+        ig!.syncItems([0, 1, 2, 3, 4, 5].map((child) => {
+          return {
+            groupKey: Math.floor(child / 3),
+            key: child,
+            html: `<div style="height: 150px;">${child}</div>`,
+          };
+        }));
+        ig!.renderItems();
+
+        // the requestPrepend event is fired because scrollPos is 0.
+        ig!.once("requestPrepend", spy);
+        await waitEvent(ig!, "renderComplete");
+
+        // Then
+        expect(ig!.getStartCursor()).to.be.equals(0);
+        expect(ig!.getEndCursor()).to.be.equals(1);
+        expect(spy.called).to.be.true;
       });
     });
     describe("test contentError event", () => {
@@ -1541,9 +1587,9 @@ describe("test InfiniteGrid", () => {
       // Given
       container!.innerHTML = `
       <div class="wrapper" style="width: 100%; height: 500px;">
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
+        <div>11</div>
+        <div>22</div>
+        <div>33</div>
       </div>
       `;
       const spy = sinon.spy();
@@ -1574,9 +1620,9 @@ describe("test InfiniteGrid", () => {
       // Given
       container!.innerHTML = `
       <div class="wrapper" style="width: 100%; height: 500px;">
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
+        <div>11</div>
+        <div>22</div>
+        <div>33</div>
       </div>
       `;
       const wrapper = container!.querySelector<HTMLElement>(".wrapper")!;

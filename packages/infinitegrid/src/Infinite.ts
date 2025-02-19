@@ -34,6 +34,8 @@ export interface InfiniteOptions {
   useRecycle?: boolean;
   threshold?: number;
   defaultDirection?: "start" | "end";
+  isReachStart?: boolean;
+  isReachEnd?: boolean;
 }
 
 export interface InfiniteItemPart {
@@ -62,8 +64,16 @@ export class Infinite extends Component<InfiniteEvents> {
       threshold: 0,
       useRecycle: true,
       defaultDirection: "end",
+      isReachStart: false,
+      isReachEnd: false,
       ...options,
     };
+  }
+  public set isReachStart(value: boolean)  {
+    this.options.isReachStart = value;
+  }
+  public set isReachEnd(value: boolean)  {
+    this.options.isReachEnd = value;
   }
   public scroll(scrollPos: number) {
     const prevStartCursor = this.startCursor;
@@ -75,11 +85,34 @@ export class Infinite extends Component<InfiniteEvents> {
       defaultDirection,
       threshold,
       useRecycle,
+      isReachEnd,
+      isReachStart,
     } = this.options;
     const isDirectionEnd = defaultDirection === "end";
 
     if (!length) {
-      this.trigger(isDirectionEnd ? "requestAppend" : "requestPrepend", {
+      if (isReachStart && isReachEnd) {
+        return;
+      }
+      let requestType: "requestAppend" | "requestPrepend" | "" = "";
+
+      if (!isReachEnd && isDirectionEnd) {
+        // 1st order
+        requestType = "requestAppend";
+      } else if (!isReachStart && !isDirectionEnd) {
+        // 2nd order
+        requestType = "requestPrepend";
+      } else if (!isReachEnd && isReachStart) {
+        // 3rd order
+        requestType = "requestAppend";
+      } else if (isReachEnd && !isReachStart) {
+        // 4th order
+        requestType = "requestPrepend";
+      }
+      if (!requestType) {
+        return;
+      }
+      this.trigger(requestType, {
         key: undefined,
         isVirtual: false,
       });
@@ -211,12 +244,12 @@ export class Infinite extends Component<InfiniteEvents> {
         }
       }
     } else if (!this._requestVirtualItems()) {
-      if ((!isDirectionEnd || !isEnd) && isStart) {
+      if ((!isDirectionEnd || !isEnd || isReachEnd) && isStart && !isReachStart) {
         this.trigger("requestPrepend", {
           key: items[prevStartCursor].key,
           isVirtual: false,
         });
-      } else if ((isDirectionEnd || !isStart) && isEnd) {
+      } else if ((isDirectionEnd || !isStart || isReachStart) && isEnd && !isReachEnd) {
         this.trigger("requestAppend", {
           key: items[prevEndCursor].key,
           isVirtual: false,
@@ -361,6 +394,38 @@ export class Infinite extends Component<InfiniteEvents> {
         || visibleResult.removed.length > 0
         || visibleResult.changed.length > 0;
     }
+
+    const defaultDirection = this.options.defaultDirection;
+    let prevOutline: number[] = [];
+    const outlinedItems = [...nextItems];
+
+    if (defaultDirection === "start") {
+      outlinedItems.reverse();
+    }
+    outlinedItems.forEach((item, i) => {
+      if (i > 0 && prevOutline.length) {
+        if (defaultDirection === "start") {
+          if (!item.endOutline.length) {
+            item.endOutline = [...prevOutline];
+          }
+          if (!item.startOutline.length) {
+            item.startOutline = [...item.endOutline];
+          }
+        } else {
+          if (!item.startOutline.length) {
+            item.startOutline = [...prevOutline];
+          }
+          if (!item.endOutline.length) {
+            item.endOutline = [...item.startOutline];
+          }
+        }
+      }
+      if (defaultDirection === "start") {
+        prevOutline = item.startOutline;
+      } else {
+        prevOutline = item.endOutline;
+      }
+    });
     this.setItems(nextItems);
     this.setCursors(nextStartCursor, nextEndCursor);
     return isChange;

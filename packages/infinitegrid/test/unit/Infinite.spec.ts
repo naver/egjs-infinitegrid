@@ -47,6 +47,34 @@ describe("test Infinite", () => {
     expect(items2.map((item) => item.key)).to.be.deep.equals([1, 2]);
     expect(items3.map((item) => item.key)).to.be.deep.equals([2, 3]);
   });
+  it("should check if outline is empty but arbitrary outline and size are calculated", () => {
+    // Given, When
+    infinite = new Infinite({});
+    infinite.syncItems([
+      {
+        key: 1,
+        startOutline: [0],
+        endOutline: [300],
+      },
+      {
+        key: 2,
+        startOutline: [],
+        endOutline: [],
+      },
+      {
+        key: 3,
+        startOutline: [],
+        endOutline: [],
+      },
+    ]);
+
+    // Then
+    expect(infinite.getScrollSize()).to.be.deep.equals(300);
+    expect(infinite.getItems()[1].startOutline).to.be.deep.equals([300]);
+    expect(infinite.getItems()[1].endOutline).to.be.deep.equals([300]);
+    expect(infinite.getItems()[2].startOutline).to.be.deep.equals([300]);
+    expect(infinite.getItems()[2].endOutline).to.be.deep.equals([300]);
+  });
   it("should check whether rendered visible items change according to scroll pos", () => {
     infinite = new Infinite({});
     infinite.setItems([

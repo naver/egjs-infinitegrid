@@ -31,6 +31,7 @@ describe("test ScrollManager", () => {
     expect(scrollManager.getScrollContainer().style.overflow).to.be.equals("");
     expect(scrollManager.getScrollContainer()).to.be.equals(document.body);
     expect(scrollManager.getContentSize()).to.be.equals(400);
+
   });
 
   it("should check if container is virtual container(div) and scrollContainer is wrapper", () => {

@@ -10,6 +10,7 @@ import Grid, {
   GridItem,
   ResizeWatcherResizeEvent,
   getUpdatedItems,
+  PROPERTY_TYPE,
 } from "@egjs/grid";
 import {
   DIRECTION,
@@ -93,9 +94,16 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     renderer: null,
     threshold: 100,
     useRecycle: true,
+    useDetachedRecycle: false,
     scrollContainer: null,
+    isReachStart: false,
+    isReachEnd: false,
     appliedItemChecker: (() => false) as (item: InfiniteGridItem, grid: Grid) => boolean,
   } as Required<InfiniteGridOptions>;
+  public static infinitegridTypes = {
+    isReachEnd: PROPERTY_TYPE.PROPERTY,
+    isReachStart: PROPERTY_TYPE.PROPERTY,
+  };
   public static propertyTypes = INFINITEGRID_PROPERTY_TYPES;
   protected wrapperElement: HTMLElement;
   protected scrollManager: ScrollManager;
@@ -394,7 +402,6 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       scrollManager: this.scrollManager.getStatus(),
     };
   }
-
   /**
    * You can set placeholders to restore status or wait for items to be added.
    * @ko status 복구 또는 아이템 추가 대기를 위한 placeholder를 설정할 수 있다.
@@ -623,6 +630,16 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     return !!this._waitType;
   }
   /**
+   * <ko>scrollOffset(startOffset) 또는 scrollSize의 사이즈를 수동으로 업데이트 한다. 변경이 됐다면 스크롤이 발생시킨다.</ko>
+   */
+  public resizeScroll() {
+    const result = this._resizeScroll();
+
+    if (result) {
+      this._scroll();
+    }
+  }
+  /**
    * Releases the instnace and events and returns the CSS of the container and elements.
    * @ko 인스턴스와 이벤트를 해제하고 컨테이너와 엘리먼트들의 CSS를 되돌린다.
    */
@@ -647,6 +664,14 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       };
     });
   }
+  private _setIsReachStart(value: boolean) {
+    this.options.isReachStart = value;
+    this.infinite.isReachStart = value;
+  }
+  private _setIsReachEnd(value: boolean) {
+    this.options.isReachEnd = value;
+    this.infinite.isReachEnd = value;
+  }
   private _syncItems(state?: Record<string, any>): void {
     this._getRenderer().syncItems(this._getRendererItems(), state);
   }
@@ -659,9 +684,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   private _resizeScroll() {
     const scrollManager = this.scrollManager;
 
-    scrollManager.resize();
-
+    const result = scrollManager.resize();
     this.infinite.setSize(scrollManager.getContentSize());
+
+    return result;
   }
   private _syncGroups(isUpdate?: boolean) {
     const infinite = this.infinite;
@@ -672,6 +698,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     }
     this._syncInfinite();
     this.groupManager.setCursors(infinite.getStartCursor(), infinite.getEndCursor());
+
     if (isUpdate) {
       this._update();
     } else {
@@ -746,6 +773,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       if (orgItem.mountState !== MOUNT_STATE.UNCHECKED) {
         orgItem.mountState = MOUNT_STATE.UNMOUNTED;
+
+        if (this.options.useDetachedRecycle) {
+          orgItem.element = null;
+        }
       }
     });
 
@@ -846,6 +877,14 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       nextGroupKey: e.nextKey,
       nextGroupKeys: e.nextKeys || [],
       isVirtual: e.isVirtual,
+      reachStart: () => {
+        this._setIsReachStart(true);
+        this._scroll();
+      },
+      reachEnd: () => {
+        this._setIsReachEnd(true);
+        this._scroll();
+      },
       wait: () => {
         this.wait(direction);
       },
@@ -877,6 +916,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const infinite = this.infinite;
     const scrollManager = this.scrollManager;
     const scrollPos = scrollManager.getRelativeScrollPos()!;
+    const orgScrollPos = scrollManager.getScrollPos()!;
     const prevScrollSize = infinite.getScrollSize();
     const prevContainerSize = infinite.getSize();
     const prevVisibleArea = infinite.getVisibleArea(scrollPos, direction);
@@ -918,9 +958,10 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
         let offset = nextPos - prevPos;
 
         // If reversed, scroll size (case where container size is reduced)
+        const nextScrollSize = infinite.getScrollSize();
+        const nextContainerSize = infinite.getSize();
+
         if (offset < 0) {
-          const nextScrollSize = infinite.getScrollSize();
-          const nextContainerSize = infinite.getSize();
           const endOffset = Math.max(scrollPos - Math.max(0, prevScrollSize - prevContainerSize), 0);
           const nextScollPos
             = Math.min(scrollPos, Math.max(0, nextScrollSize - nextContainerSize))
@@ -928,6 +969,12 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
           // The scroll size is restored to the extent that it has been reduced.
           offset += scrollPos - nextScollPos;
+        } else if (offset > 0) {
+          // If it is smaller than the scroll size when in the forward direction, the offset is 0.
+          const maxScrollPos = Math.max(0, nextScrollSize - nextContainerSize);
+          const nextScrollPos = orgScrollPos + offset;
+
+          offset = Math.max(0, Math.min(maxScrollPos, nextScrollPos) - orgScrollPos);
         }
 
         this.scrollManager.scrollBy(offset);
@@ -1019,6 +1066,12 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
   }
 }
 
-interface InfiniteGrid extends Properties<typeof InfiniteGrid> { }
+interface InfiniteGrid extends Properties<typeof InfiniteGrid> {
+  isReachStart: boolean;
+  isReachEnd: boolean;
+}
 
 export default InfiniteGrid;
+
+
+
