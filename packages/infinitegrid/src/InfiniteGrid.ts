@@ -22,8 +22,6 @@ import {
 import { GroupManager } from "./GroupManager";
 import {
   Infinite,
-  InfiniteItem,
-  InfiniteItemPart,
   OnInfiniteChange,
   OnInfiniteRequestAppend,
   OnInfiniteRequestPrepend,
@@ -919,43 +917,17 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const orgScrollPos = scrollManager.getScrollPos()!;
     const prevScrollSize = infinite.getScrollSize();
     const prevContainerSize = infinite.getSize();
-    const prevVisibleArea = infinite.getVisibleArea(scrollPos, direction);
-    const isDirectionEnd = direction === DIRECTION.END;
-
+    const prevVisibleArea = infinite.getVisibleArea(scrollPos);
 
 
     this._syncInfinite();
 
     if (prevVisibleArea) {
-      const prevPart = prevVisibleArea.part;
-      const prevItem = prevVisibleArea.item;
-      let nextPart!: InfiniteItemPart;
-      let nextItem!: InfiniteItem;
+      const prevParts = prevVisibleArea.parts;
+      const nextVisibleArea = infinite.getVisibleAreaByParts(prevParts);
 
-      if (prevPart) {
-        nextPart = infinite.getItemPartByKey(prevPart.key);
-      }
-      if (prevItem) {
-        nextItem = infinite.getItemByKey(prevItem.key);
-      }
-
-      if (nextPart || nextItem) {
-        let prevPos = 0;
-        let nextPos = 0;
-
-        if (nextPart) {
-          nextPos = nextPart.pos + (isDirectionEnd ? 0 : nextPart.size);
-          prevPos = prevPart.pos + (isDirectionEnd ? 0 : prevPart.size);
-        } else {
-          const prevStartPos = Math.min(...prevItem.startOutline);
-          const prevEndPos = Math.max(...prevItem.endOutline);
-          const nextStartPos = Math.min(...nextItem.startOutline);
-          const nextEndPos = Math.max(...nextItem.endOutline);
-
-          nextPos = isDirectionEnd ? nextStartPos : nextEndPos;
-          prevPos = isDirectionEnd ? prevStartPos : prevEndPos;
-        }
-        let offset = nextPos - prevPos;
+      if (nextVisibleArea) {
+        let offset = nextVisibleArea.centerPos - prevVisibleArea.centerPos;
 
         // If reversed, scroll size (case where container size is reduced)
         const nextScrollSize = infinite.getScrollSize();
