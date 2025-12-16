@@ -142,10 +142,13 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       : scrollContainer.getBoundingClientRect();
     const containerRect = this.container.getBoundingClientRect();
 
-    const prevScrollOffset = this.scrollOffset;
+    const prevRelativeScrollPos = this.getRelativeScrollPos();
     const prevContentSize = this.contentSize;
+    const nextScrollPos = (this.getOrgScrollPos()! || 0);
 
-    this.scrollOffset = (this.getOrgScrollPos()! || 0) + (horizontal
+
+    this.setScrollPos(nextScrollPos);
+    this.scrollOffset = nextScrollPos + (horizontal
       ? containerRect.left - scrollContainerRect.left
       : containerRect.top - scrollContainerRect.top);
 
@@ -155,7 +158,10 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
       this.contentSize = horizontal ? scrollContainer.offsetWidth : scrollContainer.offsetHeight;
     }
 
-    return prevScrollOffset !== this.scrollOffset || prevContentSize !== this.contentSize;
+    const nextRelativeScrollPos = this.getRelativeScrollPos();
+
+    // 상대 scroll pos가 같다면 현재 화면에 보이는 아이템의 위치가 같기 때문에 업데이트할 필요가 없다.
+    return nextRelativeScrollPos !== prevRelativeScrollPos || prevContentSize !== this.contentSize;
   }
   public destroy() {
     const container = this.container;
