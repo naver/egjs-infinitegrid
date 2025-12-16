@@ -628,7 +628,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     return !!this._waitType;
   }
   /**
-   * <ko>scrollOffset(startOffset) 또는 scrollSize의 사이즈를 수동으로 업데이트 한다. 변경이 됐다면 스크롤이 발생시킨다.</ko>
+   * <ko>scrollOffset(startOffset) 또는 scrollSize와 scrollPos를 수동으로 업데이트 한다. 변경이 된 경우 스크롤이 발생시킨다.</ko>
    */
   public resizeScroll() {
     const result = this._resizeScroll();

@@ -235,7 +235,6 @@ export class ScrollManager extends Component<ScrollManagerEvents> {
     this.scrollContainer = scrollContainer;
     this.eventTarget = eventTarget;
     this.resize();
-    this.setScrollPos(this.getOrgScrollPos());
   }
   private _onCheck = () => {
     const prevScrollPos = this.getScrollPos();
