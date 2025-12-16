@@ -4,6 +4,7 @@ import { DIRECTION } from "./consts";
 import { findIndex, findLastIndex, getNextCursors, isFlatOutline } from "./utils";
 
 
+// 파트의 가운데 부분을 중심으로 스크롤 하기 위한 함수
 function getCenterPosByParts(parts: InfiniteItemPart[]) {
   if (!parts.length) {
     return 0;
@@ -486,6 +487,9 @@ export class Infinite extends Component<InfiniteEvents> {
     }
     return Math.max(0, ...items[length - 1].endOutline);
   }
+  /**
+   * 보이는 영역의 가운데를 기준으로 스크롤을 한다.
+   */
   public getVisibleAreaByParts(parts: InfiniteItemPart[]) {
     const nextParts = parts.map((part) => this.getItemPartByKey(part.key)).filter(Boolean);
 
