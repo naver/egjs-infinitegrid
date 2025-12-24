@@ -151,7 +151,7 @@ export function makeInfiniteGrid<Options extends InfiniteGridOptions>(tagName: s
     props: [...VUE_INFINITEGRID_PROPS, ...Object.keys(defaultOptions)],
     watch,
     methods,
-    emits: Object.keys(INFINITEGRID_EVENTS).map(name => (INFINITEGRID_EVENTS as any)[name]),
+    emits: Object.values(INFINITEGRID_EVENTS),
     render(this: VueInnerInfiniteInterface) {
       const props = this.$props;
       const tag = props.tag || "div";
