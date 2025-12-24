@@ -503,6 +503,9 @@ export class Infinite extends Component<InfiniteEvents> {
       centerPos,
     };
   }
+  /**
+   * 스크롤 가운데 위치에 가장 가까운 요소들
+   */
   public getVisibleArea(scrollPos: number) {
     const centerScrollPos = scrollPos + this.size / 2;
     const visibleItems = this.getRenderedVisibleItems();
@@ -531,6 +534,7 @@ export class Infinite extends Component<InfiniteEvents> {
     if (!maxOutlineLength) {
       return null;
     }
+
     const visibleParts = minParts.sort(([minPos1], [minPos2]) => {
       return minPos1 - minPos2;
     }).slice(0, maxOutlineLength).map(([, part]) => part);
