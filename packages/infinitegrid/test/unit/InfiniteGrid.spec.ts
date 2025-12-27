@@ -151,7 +151,7 @@ describe("test InfiniteGrid", () => {
       // 2 3 4 5 6
       toArray(igContainer.children).forEach((child, i) => {
         expect(child.style.top).to.be.equals(`${i * 18}px`);
-        expect(child.innerHTML).to.be.equals(`${i + 2}`);
+        expect(child.innerHTML).to.be.equals(`${i + 2}${i + 2}`);
       });
     });
     it("should check if items are rendered", async () => {
@@ -1286,8 +1286,9 @@ describe("test InfiniteGrid", () => {
         expect(ig!.getScrollContainerElement().scrollTop).to.be.equals(500);
         expect(ig!.getStartCursor()).to.be.equals(1);
         expect(ig!.getEndCursor()).to.be.equals(4);
-        // items (6) virtual items (3)
-        expect(ig!.getVisibleItems(true).length).to.be.equals(9);
+        // items (6) virtual items (6)
+        // 4 * 3 = 12
+        expect(ig!.getVisibleItems(true).length).to.be.equals(12);
         expect(ig!.getVisibleItems().length).to.be.equals(6);
 
         const children = [].slice.call(igContainer.children) as HTMLElement[];
