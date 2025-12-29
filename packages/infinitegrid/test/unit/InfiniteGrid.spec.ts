@@ -151,7 +151,7 @@ describe("test InfiniteGrid", () => {
       // 2 3 4 5 6
       toArray(igContainer.children).forEach((child, i) => {
         expect(child.style.top).to.be.equals(`${i * 18}px`);
-        expect(child.innerHTML).to.be.equals(`${i + 2}`);
+        expect(child.innerHTML).to.be.equals(`${i + 2}${i + 2}`);
       });
     });
     it("should check if items are rendered", async () => {
@@ -1278,13 +1278,17 @@ describe("test InfiniteGrid", () => {
         // When
         ig!.getScrollContainerElement().scrollTop = 500;
         await waitEvent(ig!, "renderComplete");
+        // 500 ~ 1000
+        // 300 / 100 100 [100 / 300 / 300 / 300] / 300 / 300
+        
 
         // Then
         expect(ig!.getScrollContainerElement().scrollTop).to.be.equals(500);
         expect(ig!.getStartCursor()).to.be.equals(1);
-        expect(ig!.getEndCursor()).to.be.equals(3);
-        // items (6) virtual items (3)
-        expect(ig!.getVisibleItems(true).length).to.be.equals(9);
+        expect(ig!.getEndCursor()).to.be.equals(4);
+        // items (6) virtual items (6)
+        // 4 * 3 = 12
+        expect(ig!.getVisibleItems(true).length).to.be.equals(12);
         expect(ig!.getVisibleItems().length).to.be.equals(6);
 
         const children = [].slice.call(igContainer.children) as HTMLElement[];
@@ -1558,6 +1562,9 @@ describe("test InfiniteGrid", () => {
 
 
         // change scroll (1, 3)
+        // 750 (7 ~ 8) 500 ~ 1000
+        // 100 100 100 / 200 200 200 / 200 (v) 200 200 / 200 200 200
+        // 750 => 1200 
         ig!.getScrollContainerElement().scrollTop = 500;
 
         await waitEvent(ig!, "renderComplete");
@@ -1578,7 +1585,7 @@ describe("test InfiniteGrid", () => {
         const correctedPos = ig!.getScrollContainerElement().scrollTop;
 
 
-        expect(correctedPos).to.be.equals(700);
+        expect(correctedPos).to.be.equals(950);
       });
     });
   });

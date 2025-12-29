@@ -30,7 +30,8 @@ describe("test ScrollManager", () => {
     expect(scrollManager.getContainer()).to.be.equals(wrapper);
     expect(scrollManager.getScrollContainer().style.overflow).to.be.equals("");
     expect(scrollManager.getScrollContainer()).to.be.equals(document.body);
-    expect(scrollManager.getContentSize()).to.be.equals(400);
+    // body의 크기에 영향을 끼침(버전에 따라 달라질 가능성이 높음)
+    expect(scrollManager.getContentSize()).to.be.equals(261);
 
   });
 

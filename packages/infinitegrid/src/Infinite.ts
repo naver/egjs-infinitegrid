@@ -3,6 +3,23 @@ import { diff } from "@egjs/list-differ";
 import { DIRECTION } from "./consts";
 import { findIndex, findLastIndex, getNextCursors, isFlatOutline } from "./utils";
 
+
+// 파트의 가운데 부분을 중심으로 스크롤 하기 위한 함수
+function getCenterPosByParts(parts: InfiniteItemPart[]) {
+  if (!parts.length) {
+    return 0;
+  }
+  let minPos = Infinity;
+  let maxPos = -Infinity;
+
+  parts.forEach((part) => {
+    minPos = Math.min(minPos, part.pos);
+    maxPos = Math.max(maxPos, part.pos + part.size);
+  }, 0);
+
+  return (minPos + maxPos) / 2;
+}
+
 export interface OnInfiniteRequestAppend {
   key?: string | number | undefined;
   nextKey?: string | number | undefined;
@@ -470,52 +487,66 @@ export class Infinite extends Component<InfiniteEvents> {
     }
     return Math.max(0, ...items[length - 1].endOutline);
   }
-  public getVisibleArea(scrollPos: number, direction = this.options.defaultDirection) {
-    const isDirectionEnd = direction === DIRECTION.END;
+  /**
+   * 보이는 영역의 가운데를 기준으로 스크롤을 한다.
+   */
+  public getVisibleAreaByParts(parts: InfiniteItemPart[]) {
+    const nextParts = parts.map((part) => this.getItemPartByKey(part.key)).filter(Boolean);
+
+    if (!nextParts.length) {
+      return null;
+    }
+    const centerPos = getCenterPosByParts(nextParts);
+
+    return {
+      parts: nextParts,
+      centerPos,
+    };
+  }
+  /**
+   * 스크롤 가운데 위치에 가장 가까운 요소들
+   */
+  public getVisibleArea(scrollPos: number) {
+    const centerScrollPos = scrollPos + this.size / 2;
     const visibleItems = this.getRenderedVisibleItems();
 
     if (!visibleItems.length) {
       return null;
     }
-    const visibleItem = visibleItems[isDirectionEnd ? 0 : length - 1];
-    const itemPos = isDirectionEnd
-      ? Math.min(...visibleItem.startOutline)
-      : Math.max(...visibleItem.endOutline);
-    let pos = itemPos;
-    let itemPart!: InfiniteItemPart;
+    const minParts: Array<[number, InfiniteItemPart]> = [];
 
-    if (isDirectionEnd) {
-      visibleItems.forEach((item) => {
-        item.parts?.forEach((part) => {
-          if (itemPart && itemPart.pos >= part.pos) {
-            return;
-          }
-          if (pos < part.pos && part.pos <= scrollPos) {
-            itemPart = part;
-            pos = part.pos;
-          }
-        });
+    visibleItems.forEach((item) => {
+      item.parts?.forEach((part) => {
+        const centerPos = part.pos + part.size / 2;
+        const minDist = Math.abs(centerScrollPos - centerPos);
+
+        minParts.push([minDist, part]);
       });
-    } else {
-      visibleItems.forEach((item) => {
-        item.parts?.forEach((part) => {
-          const endPos = part.pos + part.size;
+    });
 
-          if (itemPart && itemPart.pos + itemPart.size <= endPos) {
-            return;
-          }
+    let maxOutlineLength = 0;
 
-          if (pos > endPos && endPos >= scrollPos) {
-            itemPart = part;
-            pos = endPos;
-          }
-        });
-      });
+
+    visibleItems.forEach((item) => {
+      maxOutlineLength = Math.max(maxOutlineLength, item.startOutline.length);
+    });
+
+    if (!maxOutlineLength) {
+      return null;
     }
 
+    const visibleParts = minParts.sort(([minPos1], [minPos2]) => {
+      return minPos1 - minPos2;
+    }).slice(0, maxOutlineLength).map(([, part]) => part);
+
+    if (!visibleParts.length)  {
+      return null;
+    }
+    const centerPos = getCenterPosByParts(visibleParts);
+
     return {
-      item: visibleItem,
-      part: itemPart,
+      parts: visibleParts,
+      centerPos,
     };
   }
   public getRenderedVisibleItems() {

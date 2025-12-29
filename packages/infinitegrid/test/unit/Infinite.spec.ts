@@ -86,17 +86,17 @@ describe("test Infinite", () => {
           {
             key: 1,
             pos: 0,
-            size: 1,
+            size: 100,
           },
           {
             key: 2,
             pos: 100,
-            size: 1,
+            size: 100,
           },
           {
             key: 3,
             pos: 200,
-            size: 1,
+            size: 100,
           },
         ],
       },
@@ -108,17 +108,17 @@ describe("test Infinite", () => {
           {
             key: 4,
             pos: 300,
-            size: 1,
+            size: 100,
           },
           {
             key: 5,
             pos: 400,
-            size: 1,
+            size: 100,
           },
           {
             key: 6,
             pos: 500,
-            size: 1,
+            size: 100,
           },
         ],
       },
@@ -130,17 +130,17 @@ describe("test Infinite", () => {
           {
             key: 7,
             pos: 600,
-            size: 1,
+            size: 100,
           },
           {
             key: 8,
             pos: 700,
-            size: 1,
+            size: 100,
           },
           {
             key: 9,
             pos: 800,
-            size: 1,
+            size: 100,
           },
         ],
       },
@@ -166,43 +166,50 @@ describe("test Infinite", () => {
     const area11 = infinite.getVisibleArea(600);
     const area12 = infinite.getVisibleArea(800);
 
+    // parts는 아웃라인 수 만큼 나오고 가장 가까운 대상이 key로 나온다.
+    // 250과 가장 가까운 part
+    expect(area1!.parts[0].key).to.be.deep.equals(3);
+    expect(area1!.centerPos).to.be.deep.equals(250);
 
     // Then
-    expect(area1!.item.key).to.be.deep.equals(1);
-    expect(area1!.part.key).to.be.deep.equals(2);
 
-    expect(area2!.item.key).to.be.deep.equals(1);
-    expect(area2!.part.key).to.be.deep.equals(3);
+    expect(area2!.parts[0].key).to.be.deep.equals(3);
+    expect(area2!.centerPos).to.be.deep.equals(250);
 
-    expect(area3!.item.key).to.be.deep.equals(1);
-    expect(area3!.part.key).to.be.deep.equals(2);
 
-    expect(area4!.item.key).to.be.deep.equals(1);
-    expect(area4!.part.key).to.be.deep.equals(3);
+    expect(area3!.parts[0].key).to.be.deep.equals(3);
+    expect(area3!.centerPos).to.be.deep.equals(250);
 
-    expect(area5!.item.key).to.be.deep.equals(1);
-    expect(area5!.part.key).to.be.deep.equals(5);
+    expect(area4!.parts[0].key).to.be.deep.equals(5);
+    expect(area4!.centerPos).to.be.deep.equals(450);
 
-    expect(area6!.item.key).to.be.deep.equals(1);
-    expect(area6!.part.key).to.be.deep.equals(6);
+    expect(area5!.parts[0].key).to.be.deep.equals(6);
+    expect(area5!.centerPos).to.be.deep.equals(550);
 
-    expect(area7!.item.key).to.be.deep.equals(2);
-    expect(area7!.part).to.be.not.ok;
 
-    expect(area8!.item.key).to.be.deep.equals(2);
-    expect(area8!.part).to.be.not.ok;
+    expect(area6!.parts[0].key).to.be.deep.equals(6);
+    expect(area6!.centerPos).to.be.deep.equals(550);
 
-    expect(area9!.item.key).to.be.deep.equals(2);
-    expect(area9!.part.key).to.be.deep.equals(5);
+    expect(area7!.parts[0].key).to.be.deep.equals(4);
+    expect(area7!.centerPos).to.be.deep.equals(350);
 
-    expect(area10!.item.key).to.be.deep.equals(2);
-    expect(area10!.part.key).to.be.deep.equals(6);
 
-    expect(area11!.item.key).to.be.deep.equals(2);
-    expect(area11!.part.key).to.be.deep.equals(7);
+    expect(area8!.parts[0].key).to.be.deep.equals(4);
+    expect(area8!.centerPos).to.be.deep.equals(350);
 
-    expect(area12!.item.key).to.be.deep.equals(2);
-    expect(area12!.part.key).to.be.deep.equals(9);
+    expect(area9!.parts[0].key).to.be.deep.equals(6);
+    expect(area9!.centerPos).to.be.deep.equals(550);
+
+    
+
+    expect(area10!.parts[0].key).to.be.deep.equals(8);
+    expect(area10!.centerPos).to.be.deep.equals(750);
+
+    expect(area11!.parts[0].key).to.be.deep.equals(8);
+    expect(area11!.centerPos).to.be.deep.equals(750);
+
+    expect(area12!.parts[0].key).to.be.deep.equals(9);
+    expect(area12!.centerPos).to.be.deep.equals(850);   
   });
   it("should check if the cursor changes when you sync items", () => {
     infinite = new Infinite({});
