@@ -1,0 +1,139 @@
+---
+title: Using the Methods
+id: using-the-methods
+slug: /using-the-methods
+custom_edit_url: null
+---
+
+import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+  groupId="cfc"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@2", value: "vue" },
+    { label: "Vue@3", value: "vue3" },
+    { label: "Angular", value: "angular" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+You can call methods directly from the InfiniteGrid instance.
+
+```js
+const ig = new MasonryInfiniteGrid("#el", options);
+
+ig.getItems();
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+You can call methods of InfiniteGrid by getting a `ref` of InfiniteGrid
+
+```jsx
+import * as React from "react";
+import { MasonryInfiniteGrid } from "@egjs/react-infinitegrid";
+
+export default () => {
+  const igRef = React.useRef();
+
+  React.useEffect(() => {
+    console.log(igRef.current.getItems());
+  }, []);
+  return <MasonryInfiniteGrid ref={igRef}>
+  </MasonryInfiniteGrid>
+};
+```
+
+See [React Refs and the DOM](https://reactjs.org/docs/refs-and-the-dom.html) for more info.
+
+  </TabItem>
+  <TabItem value="vue">
+
+You can access instance of InfiniteGrid component with the [ref](https://vuejs.org/v2/guide/components-edge-cases.html#Accessing-Child-Component-Instances-amp-Child-Elements) property.
+
+```js
+<masonry-infinite-grid ref="igRef"></masonry-infinite-grid>
+```
+
+Then call methods of it like
+```js
+this.$refs.igRef.getItems();
+```
+
+  </TabItem>
+  <TabItem value="vue3">
+
+You can access instance of InfiniteGrid component with the [ref](https://vuejs.org/v2/guide/components-edge-cases.html#Accessing-Child-Component-Instances-amp-Child-Elements) property.
+
+```js
+<masonry-infinite-grid ref="igRef"></masonry-infinite-grid>
+```
+
+Then call methods of it like
+```js
+this.$refs.igRef.getItems();
+```
+
+  </TabItem>
+  <TabItem value="angular">
+
+There're few ways to interact with child component in Angular.
+See [Component Interaction](https://angular.io/guide/component-interaction#parent-interacts-with-child-via-local-variable) page from Angular official document, and use that to interact with InfiniteGrid.
+
+```html title="app.component.html"
+<div NgxMasonryInfiniteGrid
+  #ig
+  >
+</div>
+```
+
+```js title="app.component.ts"
+import { Component, Input, AfterViewInit } from '@angular/core';
+
+import { NgxInfiniteGridComponent } from '@egjs/ngx-infinitegrid';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+})
+export class AppComponent implements AfterViewInit {
+  @ViewChild("ig") ig!: NgxInfiniteGridComponent;
+  ngAfterViewInit() {
+    console.log(this.ig.getItems());
+  }
+}
+}
+```
+
+  </TabItem>
+  <TabItem value="svelte">
+
+You can use [bind:this](https://svelte.dev/tutorial/bind-this) syntax of svelte to get the reference of InfiniteGrid.
+
+```jsx
+<script lang="ts">
+  import { onMount } from "svelte";
+  import { MasonryInfiniteGrid } from "@egjs/svelte-infinitegrid";
+
+  let ig;
+
+  onMount(() => {
+    console.log(ig.getItems());
+  });
+</script>
+<MasonryInfiniteGrid
+  bind:this={ig}
+>
+</MasonryInfiniteGrid>
+```
+
+  </TabItem>
+</Tabs>
+
+See all available methods at our <Link to={useBaseUrl("docs/api/InfiniteGrid#methods")}>API</Link> page.

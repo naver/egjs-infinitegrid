@@ -53,6 +53,10 @@ export class NgxInfiniteGridComponent
   NgxInfiniteGridProps,
   AfterViewInit, AfterViewChecked, OnChanges, OnDestroy {
   public static GridClass: InfiniteGridFunction | null = null;
+
+  @Input() useDetachedRecycle!: NgxInfiniteGridProps['useDetachedRecycle'];
+  @Input() isReachStart!: NgxInfiniteGridProps['isReachStart'];
+  @Input() isReachEnd!: NgxInfiniteGridProps['isReachEnd'];
   @Input() gridConstructor!: NgxInfiniteGridProps['gridConstructor'];
   @Input() renderer!: NgxInfiniteGridProps['renderer'];
   @Input() container!: NgxInfiniteGridProps['container'];

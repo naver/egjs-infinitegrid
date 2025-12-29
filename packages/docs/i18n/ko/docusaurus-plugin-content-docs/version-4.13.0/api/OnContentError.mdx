@@ -1,0 +1,19 @@
+---
+custom_edit_url: null
+---
+
+<div>
+
+</div>
+
+**Type**: TSInterface
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|currentTarget|[InfiniteGrid](InfiniteGrid)|이 이벤트를 트리거한 InfiniteGrid의 인스턴스|
+|element|HTMLElement|아이템의 엘리먼트.|
+|target|HTMLElement|에러난 발생한 콘텐츠 엘리먼트.|
+|item|InfiniteGridItem|에러난 콘텐츠를 가지고 있는 아이템|
+|update|() =&gt; void|에러를 해결했고 재검사하고 싶으면 update()를 호출해라. 만약 엘리먼트를 삭제한 경우 syncElements() 메서드를 호출해라.|
+|remove|() =&gt; void|에러에 해당하는 아이템을 제거하고 싶으면 remove()를 호출해라.|
+

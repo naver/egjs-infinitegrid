@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.13.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/infinitegrid@4.12.0...@egjs/infinitegrid@4.13.0) (2025-12-29)
+
+
+### :rocket: New Features
+
+* add useDetachedRecycle option, fix loading state, offset (#585) ([91d0c07](https://github.com/naver/egjs-infinitegrid/commit/91d0c070fe29d07068120c2dd57166129914f1db))
+
+
+### :bug: Bug Fix
+
+* scroll manager resize for relative scroll pos (#588) ([fcd722f](https://github.com/naver/egjs-infinitegrid/commit/fcd722fc2871312b3f9dade57031da2abefd334e))
+
+
+
 ## [4.12.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/infinitegrid@4.11.1...@egjs/infinitegrid@4.12.0) (2024-07-02)
 
 

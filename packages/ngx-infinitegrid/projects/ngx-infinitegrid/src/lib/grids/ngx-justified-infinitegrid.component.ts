@@ -15,6 +15,7 @@ import { TEMPLATE } from '../consts';
 })
 export class NgxJustifiedInfiniteGridComponent extends NgxInfiniteGridComponent
   implements Required<JustifiedInfiniteGridOptions> {
+    
   @Input() inlineOffset!: Required<JustifiedInfiniteGridOptions>['inlineOffset'];
   @Input() contentOffset!: Required<JustifiedInfiniteGridOptions>['contentOffset'];
   @Input() columnRange!: Required<JustifiedInfiniteGridOptions>['columnRange'];

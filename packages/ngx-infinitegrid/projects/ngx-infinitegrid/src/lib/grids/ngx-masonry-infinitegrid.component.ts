@@ -16,6 +16,9 @@ import { TEMPLATE } from '../consts';
 export class NgxMasonryInfiniteGridComponent extends NgxInfiniteGridComponent
   implements Required<MasonryInfiniteGridOptions> {
   public static GridClass = VanillaMasonryInfiniteGrid;
+  @Input() stretchOutline!: Required<MasonryInfiniteGridOptions>['stretchOutline'];
+  @Input() stretchContainerSize!: Required<MasonryInfiniteGridOptions>['stretchContainerSize'];
+  @Input() stretchItemSize!: Required<MasonryInfiniteGridOptions>['stretchItemSize'];
   @Input() column!: Required<MasonryInfiniteGridOptions>['column'];
   @Input() columnSize!: Required<MasonryInfiniteGridOptions>['columnSize'];
   @Input() columnSizeRatio!: Required<MasonryInfiniteGridOptions>['columnSizeRatio'];

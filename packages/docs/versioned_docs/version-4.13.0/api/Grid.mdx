@@ -1,0 +1,583 @@
+---
+custom_edit_url: null
+---
+
+```ts
+class Grid
+```
+
+<div>
+
+</div>
+
+<div className="container">
+  <div className="row mb-2"><div className="col col--4"><strong>Properties</strong></div><div className="col col--4"><strong>Methods</strong></div><div className="col col--4"><strong>Events</strong></div></div>
+  <div className="row"><div className="col col--4"><a href="#gap">gap</a><br/><a href="#defaultDirection">defaultDirection</a><br/><a href="#useFit">useFit</a><br/><a href="#preserveUIOnDestroy">preserveUIOnDestroy</a><br/><a href="#outlineLength">outlineLength</a><br/><a href="#outlineSize">outlineSize</a></div><div className="col col--4"><a href="#applyGrid">applyGrid</a><br/><a href="#getContainerElement">getContainerElement</a><br/><a href="#getItems">getItems</a><br/><a href="#getChildren">getChildren</a><br/><a href="#setItems">setItems</a><br/><a href="#getContainerInlineSize">getContainerInlineSize</a><br/><a href="#getOutlines">getOutlines</a><br/><a href="#setOutlines">setOutlines</a><br/><a href="#syncElements">syncElements</a><br/><a href="#updateItems">updateItems</a><br/><a href="#renderItems">renderItems</a><br/><a href="#getStatus">getStatus</a><br/><a href="#setStatus">setStatus</a><br/><a href="#getComputedOutlineSize">getComputedOutlineSize</a><br/><a href="#getComputedOutlineLength">getComputedOutlineLength</a><br/><a href="#destroy">destroy</a><br/><a href="#trigger">trigger</a><br/><a href="#once">once</a><br/><a href="#hasOn">hasOn</a><br/><a href="#on">on</a><br/><a href="#off">off</a></div><div className="col col--4"><a href="#event-contentError">contentError</a><br/><a href="#event-renderComplete">renderComplete</a></div></div>
+</div>
+
+## constructor
+```ts
+new Grid(containerElement, options)
+```
+
+<div>
+
+</div>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|containerElement|HTMLElement \| string|||<p>A base element for a module </p>|
+|options|Partial&lt;Options&gt;|✔️|{}|<p>The option object of the Grid module </p>|
+
+## Properties
+
+### gap {#gap}
+
+<div>
+
+</div>
+
+<p>Gap used to create space around items.</p>
+
+**Type**: $ts:Grid.GridOptions["gap"]
+
+**Default**: 0
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  gap: 0,
+});
+
+grid.gap = 5;
+```
+
+### defaultDirection {#defaultDirection}
+
+<div>
+
+</div>
+
+<p>The default direction value when direction is not set in the render option.</p>
+
+**Type**: $ts:Grid.GridOptions["defaultDirection"]
+
+**Default**: "end"
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  defaultDirection: "end",
+});
+
+grid.defaultDirection = "start";
+```
+
+### useFit {#useFit}
+
+<div>
+
+</div>
+
+<p>Whether to move the outline to 0 when the top is empty when rendering. However, if it overflows above the top, the outline is forced to 0. (default: true)</p>
+
+**Type**: $ts:Grid.GridOptions["useFit"]
+
+**Default**: true
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  useFit: true,
+});
+
+grid.useFit = false;
+```
+
+### preserveUIOnDestroy {#preserveUIOnDestroy}
+
+<div>
+
+</div>
+
+<p>Whether to preserve the UI of the existing container or item when destroying.</p>
+
+**Type**: $ts:Grid.GridOptions["preserveUIOnDestroy"]
+
+**Default**: false
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  preserveUIOnDestroy: false,
+});
+
+grid.preserveUIOnDestroy = true;
+```
+
+### outlineLength {#outlineLength}
+
+<div>
+
+</div>
+
+<p>The number of outlines. If the number of outlines is 0, it is calculated according to the type of grid.</p>
+
+**Type**: $ts:Grid.GridOptions["outlineLength"]
+
+**Default**: 0
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  outlineLength: 0,
+  outlineSize: 0,
+});
+
+grid.outlineLength = 3;
+```
+
+### outlineSize {#outlineSize}
+
+<div>
+
+</div>
+
+<p>The size of the outline. If the outline size is 0, it is calculated according to the grid type.</p>
+
+**Type**: $ts:Grid.GridOptions["outlineSize"]
+
+**Default**: 0
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+
+const grid = new MasonryGrid(container, {
+  outlineLength: 0,
+  outlineSize: 0,
+});
+
+grid.outlineSize = 300;
+```
+
+## Methods
+
+### applyGrid {#applyGrid}
+
+<div>
+
+</div>
+
+<p>Apply the CSS rect of items to fit the Grid and calculate the outline.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|direcion|"start" \| "end"|||<p>The direction to apply the Grid. (&quot;end&quot;: start to end, &quot;start&quot;: end to start) </p>|
+|outline|Array&lt;number&gt;|||<p>The start outline to apply the Grid. </p>|
+
+### getContainerElement {#getContainerElement}
+
+<div>
+
+</div>
+
+<p>Return Container Element.</p>
+
+**Returns**: HTMLElement
+
+### getItems {#getItems}
+
+<div>
+
+</div>
+
+<p>Return items.</p>
+
+**Returns**: GridItem[]
+
+### getChildren {#getChildren}
+
+<div>
+
+</div>
+
+<p>Returns the children of the container element.</p>
+
+**Returns**: HTMLElement[]
+
+### setItems {#setItems}
+
+<div>
+
+</div>
+
+<p>Set items.</p>
+
+**Returns**: this
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|||<p>The items to set. </p>|
+
+### getContainerInlineSize {#getContainerInlineSize}
+
+<div>
+
+</div>
+
+<p>Gets the container's inline size. (&quot;width&quot; if horizontal is false, otherwise &quot;height&quot;)</p>
+
+**Returns**: number
+
+### getOutlines {#getOutlines}
+
+<div>
+
+</div>
+
+<p>Returns the outlines of the start and end of the Grid.</p>
+
+**Returns**: GridOutlines
+
+### setOutlines {#setOutlines}
+
+<div>
+
+</div>
+
+<p>Set outlines.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|outlines|GridOutlines|||<p>The outlines to set. </p>|
+
+### syncElements {#syncElements}
+
+<div>
+
+</div>
+
+<p>When elements change, it synchronizes and renders items.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|options|RenderOptions|✔️|{}|<p>Options for rendering. </p>|
+
+### updateItems {#updateItems}
+
+<div>
+
+</div>
+
+<p>Update the size of the items and render them.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|✔️|this.items|<p>Items to be updated. </p>|
+|options|RenderOptions|✔️|{}|<p>Options for rendering. </p>|
+
+### renderItems {#renderItems}
+
+<div>
+
+</div>
+
+<p>Rearrange items to fit the grid and render them. When rearrange is complete, the <code>renderComplete</code> event is fired.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|options|RenderOptions|✔️|{}|<p>Options for rendering. </p>|
+
+```js
+import { MasonryGrid } from "@egjs/grid";
+const grid = new MasonryGrid();
+
+grid.on("renderComplete", e => {
+  console.log(e);
+});
+grid.renderItems();
+```
+
+### getStatus {#getStatus}
+
+<div>
+
+</div>
+
+<p>Returns current status such as item's position, size. The returned status can be restored with the setStatus() method.</p>
+
+**Returns**: GridStatus
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|minimize|boolean|✔️||<p>Whether to minimize the status of the item. (default: false) </p>|
+
+### setStatus {#setStatus}
+
+<div>
+
+</div>
+
+<p>Set status of the Grid module with the status returned through a call to the getStatus() method.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|status|GridStatus||||
+
+### getComputedOutlineSize {#getComputedOutlineSize}
+
+<div>
+
+</div>
+
+<p>Get the inline size corresponding to outline.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|✔️|this.items|<p>Items to get outline size. </p>|
+
+### getComputedOutlineLength {#getComputedOutlineLength}
+
+<div>
+
+</div>
+
+<p>Get the length corresponding to outline.</p>
+
+**Returns**: number
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|items|GridItem[]|✔️|this.items|<p>Items to get outline length. </p>|
+
+### destroy {#destroy}
+
+<div>
+
+</div>
+
+<p>Releases the instnace and events and returns the CSS of the container and elements.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|Options|DestroyOptions|✔️|{}|<p>for destroy. </p>|
+
+### trigger {#trigger}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Trigger a custom event.</p>
+
+**Returns**: this
+- <p>An instance of the component itself</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|event|string \| ComponentEvent|||<p>The name of the custom event to be triggered or an instance of the ComponentEvent</p>|
+|params|Array&lt;any&gt; \| $ts:...|||<p>Event data to be sent when triggering a custom event </p>|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  beforeHi: ComponentEvent<{ foo: number; bar: string }>;
+  hi: { foo: { a: number; b: boolean } };
+  someEvent: (foo: number, bar: string) => void;
+  someOtherEvent: void; // When there's no event argument
+}> {
+  some(){
+    if(this.trigger("beforeHi")){ // When event call to stop return false.
+      this.trigger("hi");// fire hi event.
+    }
+  }
+}
+
+const some = new Some();
+some.on("beforeHi", e => {
+  if(condition){
+    e.stop(); // When event call to stop, `hi` event not call.
+  }
+  // `currentTarget` is component instance.
+  console.log(some === e.currentTarget); // true
+
+  typeof e.foo; // number
+  typeof e.bar; // string
+});
+some.on("hi", e => {
+  typeof e.foo.b; // boolean
+});
+// If you want to more know event design. You can see article.
+// https://github.com/naver/egjs-component/wiki/How-to-make-Component-event-design%3F
+```
+
+### once {#once}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Executed event just one time.</p>
+
+**Returns**: this
+- <p>An instance of the component itself</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string \| $ts:...|||<p>The name of the event to be attached or an event name - event handler mapped object.</p>|
+|handlerToAttach|function \| $ts:...|✔️||<p>The handler function of the event to be attached </p>|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  hi: ComponentEvent;
+}> {
+  hi() {
+    alert("hi");
+  }
+  thing() {
+    this.once("hi", this.hi);
+  }
+}
+
+var some = new Some();
+some.thing();
+some.trigger(new ComponentEvent("hi"));
+// fire alert("hi");
+some.trigger(new ComponentEvent("hi"));
+// Nothing happens
+```
+
+### hasOn {#hasOn}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Checks whether an event has been attached to a component.</p>
+
+**Returns**: boolean
+- <p>Indicates whether the event is attached. </p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string|||<p>The name of the event to be attached </p>|
+
+```ts
+import Component from "@egjs/component";
+
+class Some extends Component<{
+  hi: void;
+}> {
+  some() {
+    this.hasOn("hi");// check hi event.
+  }
+}
+```
+
+### on {#on}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Attaches an event to a component.</p>
+
+**Returns**: this
+- <p>An instance of a component itself</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string \| $ts:...|||<p>The name of the event to be attached or an event name - event handler mapped object.</p>|
+|handlerToAttach|function \| $ts:...|✔️||<p>The handler function of the event to be attached </p>|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  hi: void;
+}> {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.on("hi",this.hi); //attach event
+  }
+}
+```
+
+### off {#off}
+
+<div>
+  <span className="badge badge--danger">inherited</span>
+</div>
+
+<p>Detaches an event from the component.<br/>If the <code>eventName</code> is not given this will detach all event handlers attached.<br/>If the <code>handlerToDetach</code> is not given, this will detach all event handlers for <code>eventName</code>.</p>
+
+**Returns**: this
+- <p>An instance of a component itself </p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|eventName|string \| $ts:...|✔️||<p>The name of the event to be detached </p>|
+|handlerToDetach|function \| $ts:...|✔️||<p>The handler function of the event to be detached </p>|
+
+```ts
+import Component, { ComponentEvent } from "@egjs/component";
+
+class Some extends Component<{
+  hi: void;
+}> {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.off("hi",this.hi); //detach event
+  }
+}
+```
+
+## Events
+### contentError {#event-contentError}
+
+<div>
+
+</div>
+
+<p>This event is fired when an error occurs in the content.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|[Grid.OnContentError](Grid:OnContentError)|||<p>The object of data to be sent to an event </p>|
+
+```js
+grid.on("contentError", e => {
+  e.update();
+});
+```
+
+### renderComplete {#event-renderComplete}
+
+<div>
+
+</div>
+
+<p>This event is fired when the Grid has completed rendering.</p>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|e|[Grid.OnRenderComplete](Grid:OnRenderComplete)|||<p>The object of data to be sent to an event </p>|
+
+```js
+grid.on("renderComplete", e => {
+  console.log(e.mounted, e.updated, e.useResize);
+});
+```
+

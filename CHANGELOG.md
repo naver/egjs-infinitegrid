@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.13.0](https://github.com/naver/egjs-infinitegrid/compare/4.12.0...4.13.0) (2025-12-29)
+### :sparkles: Packages
+* `@egjs/infinitegrid` 4.13.0
+* `@egjs/react-infinitegrid` 4.13.0
+* `@egjs/svelte-infinitegrid` 4.13.0
+* `@egjs/vue-infinitegrid` 4.13.0
+* `@egjs/vue3-infinitegrid` 4.13.0
+* `@egjs/ngx-infinitegrid` 4.13.0
+
+
+### :rocket: New Features
+
+* `@egjs/infinitegrid`
+    * add useDetachedRecycle option, fix loading state, offset (#585) ([91d0c07](https://github.com/naver/egjs-infinitegrid/commit/91d0c070fe29d07068120c2dd57166129914f1db))
+
+
+### :bug: Bug Fix
+
+* `@egjs/vue3-infinitegrid`, `@egjs/infinitegrid`
+    * scroll manager resize for relative scroll pos (#588) ([fcd722f](https://github.com/naver/egjs-infinitegrid/commit/fcd722fc2871312b3f9dade57031da2abefd334e))
+* Other
+    * fix gh-pages yml ([eb6d533](https://github.com/naver/egjs-infinitegrid/commit/eb6d533a4c6983d37fe0fbefc37f03f2dd4ae021))
+
+
+
 ## [4.12.0](https://github.com/naver/egjs-infinitegrid/compare/4.11.1...4.12.0) (2024-07-02)
 ### :sparkles: Packages
 * `@egjs/infinitegrid` 4.12.0
