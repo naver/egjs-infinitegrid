@@ -1647,7 +1647,7 @@ describe("test InfiniteGrid", () => {
       await waitEvent(ig!, "renderComplete");
 
 
-      ig!.getScrollContainerElement().scrollTop = 700;
+      ig!.getScrollContainerElement().scrollTop = 800;
 
       // 스크롤 이동에 따른 보이는 아이템 자동 변경: change cursor (2, 4)
       // 6 ~ 14 9개
@@ -1677,7 +1677,7 @@ describe("test InfiniteGrid", () => {
       expect(prevStartCursor).to.be.equals(2);
       expect(prevEndCursor).to.be.equals(4);
       const correctedPos = ig!.getScrollContainerElement().scrollTop;
-      expect(correctedPos).to.be.equals(1150);
+      expect(correctedPos).to.be.equals(1250);
       expect(ig!.getStartCursor()).to.be.equals(2);
       expect(ig!.getEndCursor()).to.be.equals(4);
     });

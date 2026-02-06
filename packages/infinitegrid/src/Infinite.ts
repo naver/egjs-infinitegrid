@@ -1,6 +1,6 @@
 import Component from "@egjs/component";
 import { diff } from "@egjs/list-differ";
-import { DIRECTION } from "./consts";
+import { DIRECTION, INVISIBLE_POS } from "./consts";
 import { findIndex, findLastIndex, getNextCursors, isFlatOutline } from "./utils";
 
 
@@ -491,7 +491,9 @@ export class Infinite extends Component<InfiniteEvents> {
    * 보이는 영역의 가운데를 기준으로 스크롤을 한다.
    */
   public getVisibleAreaByParts(parts: InfiniteItemPart[]) {
-    const nextParts = parts.map((part) => this.getItemPartByKey(part.key)).filter(Boolean);
+    const nextParts = parts.map((part) => this.getItemPartByKey(part.key))
+      .filter(Boolean)
+      .filter((p) => p.pos !== INVISIBLE_POS);;
 
     if (!nextParts.length) {
       return null;

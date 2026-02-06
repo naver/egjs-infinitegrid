@@ -924,13 +924,11 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     this._syncInfinite();
 
     if (prevVisibleArea) {
-      const prevParts = prevVisibleArea.parts;
+      const prevParts = prevVisibleArea.parts.filter((p) => p.pos !== INVISIBLE_POS);
       const nextVisibleArea = infinite.getVisibleAreaByParts(prevParts);
 
       // 같아야 비교대상이 되고 위치 보정이 가능하다.
       const nextParts = nextVisibleArea?.parts ?? [];
-      const prevVisibleParts = prevParts.filter((p) => p.pos !== INVISIBLE_POS);
-      const nextVisibleParts = nextParts.filter((p) => p.pos !== INVISIBLE_POS);
       if (
         nextVisibleArea
         // 커서가 시작이 아니어야 그룹들의 위치 보정이 가능하다.
@@ -938,8 +936,6 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
         && prevStartCursor > 0
         // 기존 개수가 같아야 하고
         && prevParts.length === nextParts.length
-        // 혹시 중간에 위치가 초기화된 케이스가 없어야 한다.
-        && prevVisibleParts.length === nextVisibleParts.length
       ) {
         let offset = nextVisibleArea.centerPos - prevVisibleArea.centerPos;
 
