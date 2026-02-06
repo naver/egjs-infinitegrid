@@ -1588,6 +1588,99 @@ describe("test InfiniteGrid", () => {
         expect(correctedPos).to.be.equals(950);
       });
     });
+    it.only(`should check if scroll position is corrected when size, pos, window size is changed (startCursor = 0)`, async () => {
+      // Given
+      ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: `key${child}`,
+          html: `<div style="height: 100px">${child}</div>`,
+        };
+      }));
+
+      // 커서를 전체로 지정하여 모든 아이템의 사이즈를 계산
+      ig!.setCursors(0, 5);
+      await waitEvent(ig!, "renderComplete");
+
+      // 현재 스크롤 위치에 따른 보이는 아이템 자동 변경: change cursor (0, 2)
+      await waitEvent(ig!, "renderComplete");
+
+
+      ig!.getScrollContainerElement().scrollTop = 300;
+
+      // 스크롤 이동에 따른 보이는 아이템 자동 변경: change cursor (0, 3)
+      await waitEvent(ig!, "renderComplete");
+
+
+      // When
+      ig!.getItems().forEach((item) => {
+        item.element!.style.height = "200px";
+      });
+
+
+      // 스크롤 위치는 변경 되지 않는다.
+      ig!.renderItems({ useResize: true });
+      await waitEvent(ig!, "renderComplete");
+
+
+      // Then
+      const correctedPos = ig!.getScrollContainerElement().scrollTop;
+      expect(correctedPos).to.be.equals(300);
+      expect(ig!.getStartCursor()).to.be.equals(0);
+      expect(ig!.getEndCursor()).to.be.equals(1);
+    });
+  it.only(`should check if scroll position is corrected when size, pos, window size is changed (startCursor > 0)`, async () => {
+      // Given
+      ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map((child) => {
+        return {
+          groupKey: Math.floor(child / 3),
+          key: `key${child}`,
+          html: `<div style="height: 100px">${child}</div>`,
+        };
+      }));
+
+      // 커서를 전체로 지정하여 모든 아이템의 사이즈를 계산
+      ig!.setCursors(0, 5);
+      await waitEvent(ig!, "renderComplete");
+
+      // 현재 스크롤 위치에 따른 보이는 아이템 자동 변경: change cursor (0, 2)
+      await waitEvent(ig!, "renderComplete");
+
+
+      ig!.getScrollContainerElement().scrollTop = 700;
+
+      // 스크롤 이동에 따른 보이는 아이템 자동 변경: change cursor (2, 4)
+      // 6 ~ 14 9개
+      // 600 ~ 1500
+      // 중간값: 1050 
+      await waitEvent(ig!, "renderComplete");
+      const prevStartCursor = ig!.getStartCursor();
+      const prevEndCursor = ig!.getEndCursor();
+      
+
+
+      // When
+      // 6 ~ 14 9개
+      // 600 + 0 ~ 600 + 1800
+      // 중간값: 1500 
+      ig!.getItems().forEach((item) => {
+        item.element!.style.height = "200px";
+      });
+
+
+      // 스크롤 위치는 변경 되지 않는다.
+      // 450만큼 스크롤 차이가 발생
+      ig!.renderItems({ useResize: true });
+      await waitEvent(ig!, "renderComplete");
+
+      // Then
+      expect(prevStartCursor).to.be.equals(2);
+      expect(prevEndCursor).to.be.equals(4);
+      const correctedPos = ig!.getScrollContainerElement().scrollTop;
+      expect(correctedPos).to.be.equals(1150);
+      expect(ig!.getStartCursor()).to.be.equals(2);
+      expect(ig!.getEndCursor()).to.be.equals(4);
+    });
   });
   describe("test ResizeObserver", () => {
     it(`should check if renderComplete does trigger when useResizeObserver is enabled and container's size is changed`, async () => {
