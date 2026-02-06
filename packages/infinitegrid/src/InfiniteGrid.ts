@@ -918,6 +918,7 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const prevScrollSize = infinite.getScrollSize();
     const prevContainerSize = infinite.getSize();
     const prevVisibleArea = infinite.getVisibleArea(scrollPos);
+    const prevStartCursor = infinite.getStartCursor();
 
 
     this._syncInfinite();
@@ -926,7 +927,18 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       const prevParts = prevVisibleArea.parts;
       const nextVisibleArea = infinite.getVisibleAreaByParts(prevParts);
 
-      if (nextVisibleArea) {
+      // 같아야 비교대상이 되고 위치 보정이 가능하다.
+      const nextParts = nextVisibleArea?.parts ?? [];
+      if (
+        nextVisibleArea
+        // 커서가 시작이 아니어야 그룹들의 위치 보정이 가능하다.
+        // startCursor가 0이면 위의 아이템들의 위치가 심각하게 흔들릴 가능성이 매우 높다.
+        && prevStartCursor > 0
+        // 기존 개수가 같아야 하고
+        && nextParts.length === prevParts.length
+        // 혹시 중간에 위치가 초기화된 케이스가 없어야 한다.
+        && nextParts.filter(p => p.pos !== INVISIBLE_POS).length === prevParts.filter(p => p.pos !== INVISIBLE_POS).length
+      ) {
         let offset = nextVisibleArea.centerPos - prevVisibleArea.centerPos;
 
         // If reversed, scroll size (case where container size is reduced)
