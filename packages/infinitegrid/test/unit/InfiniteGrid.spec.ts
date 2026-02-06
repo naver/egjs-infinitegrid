@@ -1588,7 +1588,7 @@ describe("test InfiniteGrid", () => {
         expect(correctedPos).to.be.equals(950);
       });
     });
-    it.only(`should check if scroll position is corrected when size, pos, window size is changed (startCursor = 0)`, async () => {
+    it(`should check if scroll position is corrected when size, pos, window size is changed (startCursor = 0)`, async () => {
       // Given
       ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map((child) => {
         return {
@@ -1629,7 +1629,7 @@ describe("test InfiniteGrid", () => {
       expect(ig!.getStartCursor()).to.be.equals(0);
       expect(ig!.getEndCursor()).to.be.equals(1);
     });
-  it.only(`should check if scroll position is corrected when size, pos, window size is changed (startCursor > 0)`, async () => {
+  it(`should check if scroll position is corrected when size, pos, window size is changed (startCursor > 0)`, async () => {
       // Given
       ig!.syncItems([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].map((child) => {
         return {
