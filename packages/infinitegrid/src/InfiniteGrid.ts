@@ -932,8 +932,9 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
       if (
         nextVisibleArea
         // 커서가 시작이 아니어야 그룹들의 위치 보정이 가능하다.
+        // end direction만 해당
         // startCursor가 0이면 위의 아이템들의 위치가 심각하게 흔들릴 가능성이 매우 높다.
-        && prevStartCursor > 0
+        && (direction !== "end" || prevStartCursor > 0)
         // 기존 개수가 같아야 하고
         && prevParts.length === nextParts.length
       ) {

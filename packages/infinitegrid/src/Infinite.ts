@@ -493,7 +493,7 @@ export class Infinite extends Component<InfiniteEvents> {
   public getVisibleAreaByParts(parts: InfiniteItemPart[]) {
     const nextParts = parts.map((part) => this.getItemPartByKey(part.key))
       .filter(Boolean)
-      .filter((p) => p.pos !== INVISIBLE_POS);;
+      .filter((p) => p.pos !== INVISIBLE_POS);
 
     if (!nextParts.length) {
       return null;
