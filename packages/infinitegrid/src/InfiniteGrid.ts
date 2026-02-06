@@ -929,8 +929,8 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
 
       // 같아야 비교대상이 되고 위치 보정이 가능하다.
       const nextParts = nextVisibleArea?.parts ?? [];
-      const prevVisibleParts = prevParts.filter(p => p.pos !== INVISIBLE_POS);
-      const nextVisibleParts = nextParts.filter(p => p.pos !== INVISIBLE_POS);
+      const prevVisibleParts = prevParts.filter((p) => p.pos !== INVISIBLE_POS);
+      const nextVisibleParts = nextParts.filter((p) => p.pos !== INVISIBLE_POS);
       if (
         nextVisibleArea
         // 커서가 시작이 아니어야 그룹들의 위치 보정이 가능하다.
