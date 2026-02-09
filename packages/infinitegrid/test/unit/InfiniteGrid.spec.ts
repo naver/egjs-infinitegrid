@@ -422,19 +422,18 @@ describe("test InfiniteGrid", () => {
         ig!.append([0, 1, 2, 3, 4].map((child) => {
           return {
             groupKey: Math.floor(child / 5),
-            key: child,
-            html: `<div style="height: 200px;">${child}</div>`,
+            key: `${child}`,
+            html: `<div style="height: 200px;width: 2px;">${child}</div>`,
           };
         }));
 
         await waitEvent(ig!, "renderComplete");
 
-
         ig!.prepend([5, 6, 7, 8, 9].map((child) => {
           return {
             groupKey: Math.floor(child / 5),
             key: child,
-            html: `<div style="height: 200px;">${child}</div>`,
+            html: `<div style="height: 200px;width: 2px;">${child}</div>`,
           };
         }));
 
@@ -448,9 +447,8 @@ describe("test InfiniteGrid", () => {
         expect(ig!.getVisibleGroups().map((group) => group.groupKey)).to.be.deep.equals([1, 0]);
         expect(ig!.getScrollContainerElement().scrollTop).to.be.equals(1000);
         expect(children.length).to.be.equals(10);
-
         children.forEach((child, i) => {
-          expect(child.style.top).to.be.equals(`${i * 200}px`);
+          expect(child.style.top).to.be.equals(`${i * 200}px`, `Index ${i} Error`);
         });
       });
       it("should check if item can be inserted in the center", async () => {
@@ -1606,7 +1604,7 @@ describe("test InfiniteGrid", () => {
       await waitEvent(ig!, "renderComplete");
 
 
-      ig!.getScrollContainerElement().scrollTop = 300;
+      ig!.getScrollContainerElement().scrollTop = 320;
 
       // 스크롤 이동에 따른 보이는 아이템 자동 변경: change cursor (0, 3)
       await waitEvent(ig!, "renderComplete");
@@ -1625,9 +1623,9 @@ describe("test InfiniteGrid", () => {
 
       // Then
       const correctedPos = ig!.getScrollContainerElement().scrollTop;
-      expect(correctedPos).to.be.equals(300);
-      expect(ig!.getStartCursor()).to.be.equals(0);
-      expect(ig!.getEndCursor()).to.be.equals(1);
+      expect(correctedPos).to.be.equals(670);
+      expect(ig!.getStartCursor()).to.be.equals(1);
+      expect(ig!.getEndCursor()).to.be.equals(2);
     });
   it(`should check if scroll position is corrected when size, pos, window size is changed (startCursor > 0)`, async () => {
       // Given
@@ -1647,7 +1645,7 @@ describe("test InfiniteGrid", () => {
       await waitEvent(ig!, "renderComplete");
 
 
-      ig!.getScrollContainerElement().scrollTop = 800;
+      ig!.getScrollContainerElement().scrollTop = 750;
 
       // 스크롤 이동에 따른 보이는 아이템 자동 변경: change cursor (2, 4)
       // 6 ~ 14 9개
@@ -1677,7 +1675,7 @@ describe("test InfiniteGrid", () => {
       expect(prevStartCursor).to.be.equals(2);
       expect(prevEndCursor).to.be.equals(4);
       const correctedPos = ig!.getScrollContainerElement().scrollTop;
-      expect(correctedPos).to.be.equals(1250);
+      expect(correctedPos).to.be.equals(1200);
       expect(ig!.getStartCursor()).to.be.equals(2);
       expect(ig!.getEndCursor()).to.be.equals(4);
     });

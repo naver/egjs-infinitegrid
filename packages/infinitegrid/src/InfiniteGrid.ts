@@ -918,25 +918,21 @@ class InfiniteGrid<Options extends InfiniteGridOptions = InfiniteGridOptions> ex
     const prevScrollSize = infinite.getScrollSize();
     const prevContainerSize = infinite.getSize();
     const prevVisibleArea = infinite.getVisibleArea(scrollPos);
-    const prevStartCursor = infinite.getStartCursor();
 
 
     this._syncInfinite();
 
     if (prevVisibleArea) {
+      // 화면의 가운데가 어디에 위치해있는지 확인
       const prevParts = prevVisibleArea.parts.filter((p) => p.pos !== INVISIBLE_POS);
       const nextVisibleArea = infinite.getVisibleAreaByParts(prevParts);
 
-      // 같아야 비교대상이 되고 위치 보정이 가능하다.
-      const nextParts = nextVisibleArea?.parts ?? [];
       if (
         nextVisibleArea
         // 커서가 시작이 아니어야 그룹들의 위치 보정이 가능하다.
         // end direction만 해당
         // startCursor가 0이면 위의 아이템들의 위치가 심각하게 흔들릴 가능성이 매우 높다.
-        && (direction !== "end" || prevStartCursor > 0)
-        // 기존 개수가 같아야 하고
-        && prevParts.length === nextParts.length
+        && (direction !== "end" || prevVisibleArea.centerStartIndex !== 0)
       ) {
         let offset = nextVisibleArea.centerPos - prevVisibleArea.centerPos;
 
