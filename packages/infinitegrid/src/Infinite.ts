@@ -507,7 +507,7 @@ export class Infinite extends Component<InfiniteEvents> {
     let startCursor = Infinity;
     let endCursor = -1;
 
-    nextPartInfos.forEach(part => {
+    nextPartInfos.forEach((part) => {
       startCursor = Math.min(part.itemIndex, startCursor);
       endCursor = Math.min(part.itemIndex, endCursor);
     });
@@ -544,7 +544,7 @@ export class Infinite extends Component<InfiniteEvents> {
 
         minParts.push([minDist, {
           part,
-          itemIndex: items.findIndex(allItem => allItem.key === item.key),
+          itemIndex: items.findIndex((allItem) => allItem.key === item.key),
         }]);
       });
     });
