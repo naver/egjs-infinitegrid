@@ -39,7 +39,7 @@
 
 ## ✨ Features
 - Use it in a framework you like.
-  - We supports all major JS frameworks like React, Vue, Angular
+  - We support all major JS frameworks like React, Vue, Angular
 - Restore state like position and active slide with [persist](https://naver.github.io/egjs-persist/)
 - Supports both Desktop & Mobile
 - Support Dynamic Options
