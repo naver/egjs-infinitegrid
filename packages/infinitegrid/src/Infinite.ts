@@ -1,6 +1,6 @@
 import Component from "@egjs/component";
 import { diff } from "@egjs/list-differ";
-import { DIRECTION } from "./consts";
+import { DIRECTION, INVISIBLE_POS } from "./consts";
 import { findIndex, findLastIndex, getNextCursors, isFlatOutline } from "./utils";
 
 
@@ -466,12 +466,18 @@ export class Infinite extends Component<InfiniteEvents> {
     return this.itemKeys[key];
   }
   public getItemPartByKey(partKey: string | number) {
-    let itemPart!: InfiniteItemPart;
+    let itemPart!: {
+      itemIndex: number;
+      part: InfiniteItemPart;
+    };
 
-    this.items.forEach((item) => {
+    this.items.forEach((item, itemIndex) => {
       item.parts?.forEach((part) => {
         if (part.key === partKey) {
-          itemPart = part;
+          itemPart = {
+            itemIndex: itemIndex,
+            part,
+          };
         }
       });
     });
@@ -491,36 +497,55 @@ export class Infinite extends Component<InfiniteEvents> {
    * 보이는 영역의 가운데를 기준으로 스크롤을 한다.
    */
   public getVisibleAreaByParts(parts: InfiniteItemPart[]) {
-    const nextParts = parts.map((part) => this.getItemPartByKey(part.key)).filter(Boolean);
+    const nextPartInfos = parts.map((part) => this.getItemPartByKey(part.key))
+      .filter(Boolean);
 
-    if (!nextParts.length) {
+    if (!nextPartInfos.length) {
       return null;
     }
+
+    let startCursor = Infinity;
+    let endCursor = -1;
+
+    nextPartInfos.forEach((part) => {
+      startCursor = Math.min(part.itemIndex, startCursor);
+      endCursor = Math.min(part.itemIndex, endCursor);
+    });
+    const nextParts = nextPartInfos.map(({ part }) => part);
     const centerPos = getCenterPosByParts(nextParts);
 
     return {
       parts: nextParts,
       centerPos,
+      startCursor,
+      endCursor,
     };
   }
   /**
    * 스크롤 가운데 위치에 가장 가까운 요소들
    */
   public getVisibleArea(scrollPos: number) {
+    const items = this.items;
     const centerScrollPos = scrollPos + this.size / 2;
     const visibleItems = this.getRenderedVisibleItems();
 
     if (!visibleItems.length) {
       return null;
     }
-    const minParts: Array<[number, InfiniteItemPart]> = [];
+    const minParts: Array<[number, {
+      itemIndex: number;
+      part: InfiniteItemPart;
+    }]> = [];
 
     visibleItems.forEach((item) => {
-      item.parts?.forEach((part) => {
+      item.parts?.filter((p) => p.pos !== INVISIBLE_POS).forEach((part) => {
         const centerPos = part.pos + part.size / 2;
         const minDist = Math.abs(centerScrollPos - centerPos);
 
-        minParts.push([minDist, part]);
+        minParts.push([minDist, {
+          part,
+          itemIndex: items.findIndex((allItem) => allItem.key === item.key),
+        }]);
       });
     });
 
@@ -535,16 +560,21 @@ export class Infinite extends Component<InfiniteEvents> {
       return null;
     }
 
-    const visibleParts = minParts.sort(([minPos1], [minPos2]) => {
+    const visiblePartInfos = minParts.sort(([minPos1], [minPos2]) => {
       return minPos1 - minPos2;
     }).slice(0, maxOutlineLength).map(([, part]) => part);
 
-    if (!visibleParts.length)  {
+    if (!visiblePartInfos.length)  {
       return null;
     }
+
+    const visibleParts = visiblePartInfos.map(({ part }) => part);
     const centerPos = getCenterPosByParts(visibleParts);
+    const centerIndexes = visiblePartInfos.map((part) => part.itemIndex);
 
     return {
+      centerStartIndex: Math.min(...centerIndexes),
+      centerEndIndex: Math.max(...centerIndexes),
       parts: visibleParts,
       centerPos,
     };
