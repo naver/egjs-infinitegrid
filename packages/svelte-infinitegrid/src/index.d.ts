@@ -3,7 +3,7 @@ import VanillaInfiniteGrid, {
   MasonryInfiniteGridOptions, PackingInfiniteGridOptions,
   InfiniteGridStatus,
 } from "@egjs/Infinitegrid";
-import { SvelteComponentDev } from "svelte/internal";
+import { SvelteComponent } from "svelte";
 
 export interface SveltInfiniteGridOptions {
   items?: any[];
@@ -16,7 +16,7 @@ export interface SveltInfiniteGridOptions {
   infoBy?: (item: any, index: number) => Record<string, any>;
 }
 
-export default abstract class InfiniteGrid<T extends InfiniteGridOptions> extends SvelteComponentDev {
+export default abstract class InfiniteGrid<T extends InfiniteGridOptions> extends SvelteComponent {
   $$prop_def: Record<string, any> & SveltInfiniteGridOptions & T;
   getInstance(): VanillaInfiniteGrid;
 }
