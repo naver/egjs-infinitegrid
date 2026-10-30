@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.13.1](https://github.com/naver/egjs-infinitegrid/compare/4.13.0...4.13.1) (2026-10-30)
+### :sparkles: Packages
+* `@egjs/infinitegrid` 4.13.1
+* `@egjs/react-infinitegrid` 4.13.1
+* `@egjs/svelte-infinitegrid` 4.13.1
+* `@egjs/vue-infinitegrid` 4.13.1
+* `@egjs/vue3-infinitegrid` 4.13.1
+* `@egjs/ngx-infinitegrid` 4.13.1
+
+
+### :bug: Bug Fix
+
+* `@egjs/infinitegrid`
+    * correct scroll position for zero cursor (#589) ([818c85a](https://github.com/naver/egjs-infinitegrid/commit/818c85aabbd1a5bc7b0e1a7e7ef3862d87e1baa5))
+
+
+### :mega: Other
+
+* All
+    * @egjs/grid getUpdatedItems 수정으로 인한 업데이트 ([898a87e](https://github.com/naver/egjs-infinitegrid/commit/898a87ef1a7f540f48ee3f6b28fb4d99e5077898))
+
+
+
 ## [4.13.0](https://github.com/naver/egjs-infinitegrid/compare/4.12.0...4.13.0) (2025-12-29)
 ### :sparkles: Packages
 * `@egjs/infinitegrid` 4.13.0

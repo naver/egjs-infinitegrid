@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.13.1](https://github.com/naver/egjs-infinitegrid/compare/@egjs/react-infinitegrid@4.13.0...@egjs/react-infinitegrid@4.13.1) (2026-10-30)
+
+
+### :mega: Other
+
+* @egjs/grid getUpdatedItems 수정으로 인한 업데이트 ([898a87e](https://github.com/naver/egjs-infinitegrid/commit/898a87ef1a7f540f48ee3f6b28fb4d99e5077898))
+
+
+
 ## [4.13.0](https://github.com/naver/egjs-infinitegrid/compare/@egjs/react-infinitegrid@4.12.0...@egjs/react-infinitegrid@4.13.0) (2025-12-29)
 
 **Note:** Version bump only for package @egjs/react-infinitegrid
